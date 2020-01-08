@@ -343,12 +343,24 @@ namespace Aardvark.Base
             Read = "ReadShift3d",
         };
 
+        public static readonly SimpleType Trafo2fType = new SimpleType()
+        {
+            Name = "Trafo2f",
+            Read = "ReadTrafo2f",
+        };
+        
         public static readonly SimpleType Trafo2dType = new SimpleType()
         {
             Name = "Trafo2d",
             Read = "ReadTrafo2d",
         };
 
+        public static readonly SimpleType Trafo3fType = new SimpleType()
+        {
+            Name = "Trafo3f",
+            Read = "ReadTrafo3f",
+        };
+        
         public static readonly SimpleType Trafo3dType = new SimpleType()
         {
             Name = "Trafo3d",
@@ -383,7 +395,8 @@ namespace Aardvark.Base
             Rot2fType, Rot2dType, Rot3fType, Rot3dType,
             Scale3fType, Scale3dType,
             Shift3fType, Shift3dType,
-            Trafo2dType, Trafo3dType,
+            Trafo2fType, Trafo2dType,
+            Trafo3fType, Trafo3dType,
         };
 
         public static readonly string[] VecFields = new string[]
@@ -807,10 +820,6 @@ namespace Aardvark.Base
         public static readonly SimpleType Triangle2dType = new SimpleType() { Name = "Triangle2d" };
         public static readonly SimpleType Triangle3dType = new SimpleType() { Name = "Triangle3d" };
 
-        public static readonly SimpleType CameraExtrinsicsType = new SimpleType() { Name = "CameraExtrinsics" };
-        public static readonly SimpleType CameraIntrinsicsType = new SimpleType() { Name = "CameraIntrinsics" };
-
-
         /// <summary>
         /// All geometry types that need to be serialized.
         /// </summary>
@@ -818,7 +827,7 @@ namespace Aardvark.Base
         {
             Circle2dType, Line2dType, Line3dType, Plane2dType, Plane3dType, PlaneWithPoint3dType,
             Quad2dType, Quad3dType, Ray2dType, Ray3dType, Sphere3dType,
-            Triangle2dType, Triangle3dType, CameraExtrinsicsType, CameraIntrinsicsType,
+            Triangle2dType, Triangle3dType
         };
     }
 }

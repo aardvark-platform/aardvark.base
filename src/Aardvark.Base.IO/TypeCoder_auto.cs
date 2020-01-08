@@ -1959,6 +1959,30 @@ namespace Aardvark.Base.Coder
 
             #endregion
 
+            #region Trafo2f
+
+            { typeof(Trafo2f), (c,o) => { var v = (Trafo2f)o; c.CodeTrafo2f(ref v); } },
+            { typeof(Trafo2f[]), (c,o) => { var v = (Trafo2f[])o; c.CodeTrafo2fArray(ref v); } },
+            { typeof(List<Trafo2f>), (c,o) => { var v = (List<Trafo2f>)o; c.CodeList_of_Trafo2f_(ref v); } },
+
+            { typeof(Vector<Trafo2f>), (c,o) => { var v = (Vector<Trafo2f>)o; c.CodeVector_of_Trafo2f_(ref v); } },
+            { typeof(Vector<Trafo2f>[]), (c,o) => { var v = (Vector<Trafo2f>[])o; c.CodeVector_of_Trafo2f_Array(ref v); } },
+            { typeof(List<Vector<Trafo2f>>), (c,o) => { var v = (List<Vector<Trafo2f>>)o; c.CodeList_of_Vector_of_Trafo2f__(ref v); } },
+
+            { typeof(Matrix<Trafo2f>), (c,o) => { var v = (Matrix<Trafo2f>)o; c.CodeMatrix_of_Trafo2f_(ref v); } },
+            { typeof(Matrix<Trafo2f>[]), (c,o) => { var v = (Matrix<Trafo2f>[])o; c.CodeMatrix_of_Trafo2f_Array(ref v); } },
+            { typeof(List<Matrix<Trafo2f>>), (c,o) => { var v = (List<Matrix<Trafo2f>>)o; c.CodeList_of_Matrix_of_Trafo2f__(ref v); } },
+
+            { typeof(Volume<Trafo2f>), (c,o) => { var v = (Volume<Trafo2f>)o; c.CodeVolume_of_Trafo2f_(ref v); } },
+            { typeof(Volume<Trafo2f>[]), (c,o) => { var v = (Volume<Trafo2f>[])o; c.CodeVolume_of_Trafo2f_Array(ref v); } },
+            { typeof(List<Volume<Trafo2f>>), (c,o) => { var v = (List<Volume<Trafo2f>>)o; c.CodeList_of_Volume_of_Trafo2f__(ref v); } },
+
+            { typeof(Tensor<Trafo2f>), (c,o) => { var v = (Tensor<Trafo2f>)o; c.CodeTensor_of_Trafo2f_(ref v); } },
+            { typeof(Tensor<Trafo2f>[]), (c,o) => { var v = (Tensor<Trafo2f>[])o; c.CodeTensor_of_Trafo2f_Array(ref v); } },
+            { typeof(List<Tensor<Trafo2f>>), (c,o) => { var v = (List<Tensor<Trafo2f>>)o; c.CodeList_of_Tensor_of_Trafo2f__(ref v); } },
+
+            #endregion
+
             #region Trafo2d
 
             { typeof(Trafo2d), (c,o) => { var v = (Trafo2d)o; c.CodeTrafo2d(ref v); } },
@@ -1980,6 +2004,30 @@ namespace Aardvark.Base.Coder
             { typeof(Tensor<Trafo2d>), (c,o) => { var v = (Tensor<Trafo2d>)o; c.CodeTensor_of_Trafo2d_(ref v); } },
             { typeof(Tensor<Trafo2d>[]), (c,o) => { var v = (Tensor<Trafo2d>[])o; c.CodeTensor_of_Trafo2d_Array(ref v); } },
             { typeof(List<Tensor<Trafo2d>>), (c,o) => { var v = (List<Tensor<Trafo2d>>)o; c.CodeList_of_Tensor_of_Trafo2d__(ref v); } },
+
+            #endregion
+
+            #region Trafo3f
+
+            { typeof(Trafo3f), (c,o) => { var v = (Trafo3f)o; c.CodeTrafo3f(ref v); } },
+            { typeof(Trafo3f[]), (c,o) => { var v = (Trafo3f[])o; c.CodeTrafo3fArray(ref v); } },
+            { typeof(List<Trafo3f>), (c,o) => { var v = (List<Trafo3f>)o; c.CodeList_of_Trafo3f_(ref v); } },
+
+            { typeof(Vector<Trafo3f>), (c,o) => { var v = (Vector<Trafo3f>)o; c.CodeVector_of_Trafo3f_(ref v); } },
+            { typeof(Vector<Trafo3f>[]), (c,o) => { var v = (Vector<Trafo3f>[])o; c.CodeVector_of_Trafo3f_Array(ref v); } },
+            { typeof(List<Vector<Trafo3f>>), (c,o) => { var v = (List<Vector<Trafo3f>>)o; c.CodeList_of_Vector_of_Trafo3f__(ref v); } },
+
+            { typeof(Matrix<Trafo3f>), (c,o) => { var v = (Matrix<Trafo3f>)o; c.CodeMatrix_of_Trafo3f_(ref v); } },
+            { typeof(Matrix<Trafo3f>[]), (c,o) => { var v = (Matrix<Trafo3f>[])o; c.CodeMatrix_of_Trafo3f_Array(ref v); } },
+            { typeof(List<Matrix<Trafo3f>>), (c,o) => { var v = (List<Matrix<Trafo3f>>)o; c.CodeList_of_Matrix_of_Trafo3f__(ref v); } },
+
+            { typeof(Volume<Trafo3f>), (c,o) => { var v = (Volume<Trafo3f>)o; c.CodeVolume_of_Trafo3f_(ref v); } },
+            { typeof(Volume<Trafo3f>[]), (c,o) => { var v = (Volume<Trafo3f>[])o; c.CodeVolume_of_Trafo3f_Array(ref v); } },
+            { typeof(List<Volume<Trafo3f>>), (c,o) => { var v = (List<Volume<Trafo3f>>)o; c.CodeList_of_Volume_of_Trafo3f__(ref v); } },
+
+            { typeof(Tensor<Trafo3f>), (c,o) => { var v = (Tensor<Trafo3f>)o; c.CodeTensor_of_Trafo3f_(ref v); } },
+            { typeof(Tensor<Trafo3f>[]), (c,o) => { var v = (Tensor<Trafo3f>[])o; c.CodeTensor_of_Trafo3f_Array(ref v); } },
+            { typeof(List<Tensor<Trafo3f>>), (c,o) => { var v = (List<Tensor<Trafo3f>>)o; c.CodeList_of_Tensor_of_Trafo3f__(ref v); } },
 
             #endregion
 
@@ -2463,54 +2511,6 @@ namespace Aardvark.Base.Coder
 
             #endregion
 
-            #region CameraExtrinsics
-
-            { typeof(CameraExtrinsics), (c,o) => { var v = (CameraExtrinsics)o; c.CodeCameraExtrinsics(ref v); } },
-            { typeof(CameraExtrinsics[]), (c,o) => { var v = (CameraExtrinsics[])o; c.CodeCameraExtrinsicsArray(ref v); } },
-            { typeof(List<CameraExtrinsics>), (c,o) => { var v = (List<CameraExtrinsics>)o; c.CodeList_of_CameraExtrinsics_(ref v); } },
-
-            { typeof(Vector<CameraExtrinsics>), (c,o) => { var v = (Vector<CameraExtrinsics>)o; c.CodeVector_of_CameraExtrinsics_(ref v); } },
-            { typeof(Vector<CameraExtrinsics>[]), (c,o) => { var v = (Vector<CameraExtrinsics>[])o; c.CodeVector_of_CameraExtrinsics_Array(ref v); } },
-            { typeof(List<Vector<CameraExtrinsics>>), (c,o) => { var v = (List<Vector<CameraExtrinsics>>)o; c.CodeList_of_Vector_of_CameraExtrinsics__(ref v); } },
-
-            { typeof(Matrix<CameraExtrinsics>), (c,o) => { var v = (Matrix<CameraExtrinsics>)o; c.CodeMatrix_of_CameraExtrinsics_(ref v); } },
-            { typeof(Matrix<CameraExtrinsics>[]), (c,o) => { var v = (Matrix<CameraExtrinsics>[])o; c.CodeMatrix_of_CameraExtrinsics_Array(ref v); } },
-            { typeof(List<Matrix<CameraExtrinsics>>), (c,o) => { var v = (List<Matrix<CameraExtrinsics>>)o; c.CodeList_of_Matrix_of_CameraExtrinsics__(ref v); } },
-
-            { typeof(Volume<CameraExtrinsics>), (c,o) => { var v = (Volume<CameraExtrinsics>)o; c.CodeVolume_of_CameraExtrinsics_(ref v); } },
-            { typeof(Volume<CameraExtrinsics>[]), (c,o) => { var v = (Volume<CameraExtrinsics>[])o; c.CodeVolume_of_CameraExtrinsics_Array(ref v); } },
-            { typeof(List<Volume<CameraExtrinsics>>), (c,o) => { var v = (List<Volume<CameraExtrinsics>>)o; c.CodeList_of_Volume_of_CameraExtrinsics__(ref v); } },
-
-            { typeof(Tensor<CameraExtrinsics>), (c,o) => { var v = (Tensor<CameraExtrinsics>)o; c.CodeTensor_of_CameraExtrinsics_(ref v); } },
-            { typeof(Tensor<CameraExtrinsics>[]), (c,o) => { var v = (Tensor<CameraExtrinsics>[])o; c.CodeTensor_of_CameraExtrinsics_Array(ref v); } },
-            { typeof(List<Tensor<CameraExtrinsics>>), (c,o) => { var v = (List<Tensor<CameraExtrinsics>>)o; c.CodeList_of_Tensor_of_CameraExtrinsics__(ref v); } },
-
-            #endregion
-
-            #region CameraIntrinsics
-
-            { typeof(CameraIntrinsics), (c,o) => { var v = (CameraIntrinsics)o; c.CodeCameraIntrinsics(ref v); } },
-            { typeof(CameraIntrinsics[]), (c,o) => { var v = (CameraIntrinsics[])o; c.CodeCameraIntrinsicsArray(ref v); } },
-            { typeof(List<CameraIntrinsics>), (c,o) => { var v = (List<CameraIntrinsics>)o; c.CodeList_of_CameraIntrinsics_(ref v); } },
-
-            { typeof(Vector<CameraIntrinsics>), (c,o) => { var v = (Vector<CameraIntrinsics>)o; c.CodeVector_of_CameraIntrinsics_(ref v); } },
-            { typeof(Vector<CameraIntrinsics>[]), (c,o) => { var v = (Vector<CameraIntrinsics>[])o; c.CodeVector_of_CameraIntrinsics_Array(ref v); } },
-            { typeof(List<Vector<CameraIntrinsics>>), (c,o) => { var v = (List<Vector<CameraIntrinsics>>)o; c.CodeList_of_Vector_of_CameraIntrinsics__(ref v); } },
-
-            { typeof(Matrix<CameraIntrinsics>), (c,o) => { var v = (Matrix<CameraIntrinsics>)o; c.CodeMatrix_of_CameraIntrinsics_(ref v); } },
-            { typeof(Matrix<CameraIntrinsics>[]), (c,o) => { var v = (Matrix<CameraIntrinsics>[])o; c.CodeMatrix_of_CameraIntrinsics_Array(ref v); } },
-            { typeof(List<Matrix<CameraIntrinsics>>), (c,o) => { var v = (List<Matrix<CameraIntrinsics>>)o; c.CodeList_of_Matrix_of_CameraIntrinsics__(ref v); } },
-
-            { typeof(Volume<CameraIntrinsics>), (c,o) => { var v = (Volume<CameraIntrinsics>)o; c.CodeVolume_of_CameraIntrinsics_(ref v); } },
-            { typeof(Volume<CameraIntrinsics>[]), (c,o) => { var v = (Volume<CameraIntrinsics>[])o; c.CodeVolume_of_CameraIntrinsics_Array(ref v); } },
-            { typeof(List<Volume<CameraIntrinsics>>), (c,o) => { var v = (List<Volume<CameraIntrinsics>>)o; c.CodeList_of_Volume_of_CameraIntrinsics__(ref v); } },
-
-            { typeof(Tensor<CameraIntrinsics>), (c,o) => { var v = (Tensor<CameraIntrinsics>)o; c.CodeTensor_of_CameraIntrinsics_(ref v); } },
-            { typeof(Tensor<CameraIntrinsics>[]), (c,o) => { var v = (Tensor<CameraIntrinsics>[])o; c.CodeTensor_of_CameraIntrinsics_Array(ref v); } },
-            { typeof(List<Tensor<CameraIntrinsics>>), (c,o) => { var v = (List<Tensor<CameraIntrinsics>>)o; c.CodeList_of_Tensor_of_CameraIntrinsics__(ref v); } },
-
-            #endregion
-
             #region Multi-Dimensional Arrays
 
             { typeof(byte[,]), (c,o) => { var v = (byte[,])o; c.CodeByteArray2d(ref v); } },
@@ -2675,8 +2675,12 @@ namespace Aardvark.Base.Coder
             { typeof(Shift3f[, ,]), (c,o) => { var v = (Shift3f[, ,])o; c.CodeShift3fArray3d(ref v); } },
             { typeof(Shift3d[,]), (c,o) => { var v = (Shift3d[,])o; c.CodeShift3dArray2d(ref v); } },
             { typeof(Shift3d[, ,]), (c,o) => { var v = (Shift3d[, ,])o; c.CodeShift3dArray3d(ref v); } },
+            { typeof(Trafo2f[,]), (c,o) => { var v = (Trafo2f[,])o; c.CodeTrafo2fArray2d(ref v); } },
+            { typeof(Trafo2f[, ,]), (c,o) => { var v = (Trafo2f[, ,])o; c.CodeTrafo2fArray3d(ref v); } },
             { typeof(Trafo2d[,]), (c,o) => { var v = (Trafo2d[,])o; c.CodeTrafo2dArray2d(ref v); } },
             { typeof(Trafo2d[, ,]), (c,o) => { var v = (Trafo2d[, ,])o; c.CodeTrafo2dArray3d(ref v); } },
+            { typeof(Trafo3f[,]), (c,o) => { var v = (Trafo3f[,])o; c.CodeTrafo3fArray2d(ref v); } },
+            { typeof(Trafo3f[, ,]), (c,o) => { var v = (Trafo3f[, ,])o; c.CodeTrafo3fArray3d(ref v); } },
             { typeof(Trafo3d[,]), (c,o) => { var v = (Trafo3d[,])o; c.CodeTrafo3dArray2d(ref v); } },
             { typeof(Trafo3d[, ,]), (c,o) => { var v = (Trafo3d[, ,])o; c.CodeTrafo3dArray3d(ref v); } },
 
@@ -2846,8 +2850,12 @@ namespace Aardvark.Base.Coder
             { typeof(Shift3f[][][]), (c,o) => { var v = (Shift3f[][][])o; c.CodeShift3fArrayArrayArray(ref v); } },
             { typeof(Shift3d[][]), (c,o) => { var v = (Shift3d[][])o; c.CodeShift3dArrayArray(ref v); } },
             { typeof(Shift3d[][][]), (c,o) => { var v = (Shift3d[][][])o; c.CodeShift3dArrayArrayArray(ref v); } },
+            { typeof(Trafo2f[][]), (c,o) => { var v = (Trafo2f[][])o; c.CodeTrafo2fArrayArray(ref v); } },
+            { typeof(Trafo2f[][][]), (c,o) => { var v = (Trafo2f[][][])o; c.CodeTrafo2fArrayArrayArray(ref v); } },
             { typeof(Trafo2d[][]), (c,o) => { var v = (Trafo2d[][])o; c.CodeTrafo2dArrayArray(ref v); } },
             { typeof(Trafo2d[][][]), (c,o) => { var v = (Trafo2d[][][])o; c.CodeTrafo2dArrayArrayArray(ref v); } },
+            { typeof(Trafo3f[][]), (c,o) => { var v = (Trafo3f[][])o; c.CodeTrafo3fArrayArray(ref v); } },
+            { typeof(Trafo3f[][][]), (c,o) => { var v = (Trafo3f[][][])o; c.CodeTrafo3fArrayArrayArray(ref v); } },
             { typeof(Trafo3d[][]), (c,o) => { var v = (Trafo3d[][])o; c.CodeTrafo3dArrayArray(ref v); } },
             { typeof(Trafo3d[][][]), (c,o) => { var v = (Trafo3d[][][])o; c.CodeTrafo3dArrayArrayArray(ref v); } },
 
@@ -4811,6 +4819,30 @@ namespace Aardvark.Base.Coder
 
             #endregion
 
+            #region Trafo2f
+
+            { typeof(Trafo2f), c => { var v = default(Trafo2f); c.CodeTrafo2f(ref v); return v; } },
+            { typeof(Trafo2f[]), c => { var v = default(Trafo2f[]); c.CodeTrafo2fArray(ref v); return v; } },
+            { typeof(List<Trafo2f>), c => { var v = default(List<Trafo2f>); c.CodeList_of_Trafo2f_(ref v); return v; } },
+
+            { typeof(Vector<Trafo2f>), c => { var v = default(Vector<Trafo2f>); c.CodeVector_of_Trafo2f_(ref v); return v; } },
+            { typeof(Vector<Trafo2f>[]), c => { var v = default(Vector<Trafo2f>[]); c.CodeVector_of_Trafo2f_Array(ref v); return v; } },
+            { typeof(List<Vector<Trafo2f>>), c => { var v = default(List<Vector<Trafo2f>>); c.CodeList_of_Vector_of_Trafo2f__(ref v); return v; } },
+
+            { typeof(Matrix<Trafo2f>), c => { var v = default(Matrix<Trafo2f>); c.CodeMatrix_of_Trafo2f_(ref v); return v; } },
+            { typeof(Matrix<Trafo2f>[]), c => { var v = default(Matrix<Trafo2f>[]); c.CodeMatrix_of_Trafo2f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Trafo2f>>), c => { var v = default(List<Matrix<Trafo2f>>); c.CodeList_of_Matrix_of_Trafo2f__(ref v); return v; } },
+
+            { typeof(Volume<Trafo2f>), c => { var v = default(Volume<Trafo2f>); c.CodeVolume_of_Trafo2f_(ref v); return v; } },
+            { typeof(Volume<Trafo2f>[]), c => { var v = default(Volume<Trafo2f>[]); c.CodeVolume_of_Trafo2f_Array(ref v); return v; } },
+            { typeof(List<Volume<Trafo2f>>), c => { var v = default(List<Volume<Trafo2f>>); c.CodeList_of_Volume_of_Trafo2f__(ref v); return v; } },
+
+            { typeof(Tensor<Trafo2f>), c => { var v = default(Tensor<Trafo2f>); c.CodeTensor_of_Trafo2f_(ref v); return v; } },
+            { typeof(Tensor<Trafo2f>[]), c => { var v = default(Tensor<Trafo2f>[]); c.CodeTensor_of_Trafo2f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Trafo2f>>), c => { var v = default(List<Tensor<Trafo2f>>); c.CodeList_of_Tensor_of_Trafo2f__(ref v); return v; } },
+
+            #endregion
+
             #region Trafo2d
 
             { typeof(Trafo2d), c => { var v = default(Trafo2d); c.CodeTrafo2d(ref v); return v; } },
@@ -4832,6 +4864,30 @@ namespace Aardvark.Base.Coder
             { typeof(Tensor<Trafo2d>), c => { var v = default(Tensor<Trafo2d>); c.CodeTensor_of_Trafo2d_(ref v); return v; } },
             { typeof(Tensor<Trafo2d>[]), c => { var v = default(Tensor<Trafo2d>[]); c.CodeTensor_of_Trafo2d_Array(ref v); return v; } },
             { typeof(List<Tensor<Trafo2d>>), c => { var v = default(List<Tensor<Trafo2d>>); c.CodeList_of_Tensor_of_Trafo2d__(ref v); return v; } },
+
+            #endregion
+
+            #region Trafo3f
+
+            { typeof(Trafo3f), c => { var v = default(Trafo3f); c.CodeTrafo3f(ref v); return v; } },
+            { typeof(Trafo3f[]), c => { var v = default(Trafo3f[]); c.CodeTrafo3fArray(ref v); return v; } },
+            { typeof(List<Trafo3f>), c => { var v = default(List<Trafo3f>); c.CodeList_of_Trafo3f_(ref v); return v; } },
+
+            { typeof(Vector<Trafo3f>), c => { var v = default(Vector<Trafo3f>); c.CodeVector_of_Trafo3f_(ref v); return v; } },
+            { typeof(Vector<Trafo3f>[]), c => { var v = default(Vector<Trafo3f>[]); c.CodeVector_of_Trafo3f_Array(ref v); return v; } },
+            { typeof(List<Vector<Trafo3f>>), c => { var v = default(List<Vector<Trafo3f>>); c.CodeList_of_Vector_of_Trafo3f__(ref v); return v; } },
+
+            { typeof(Matrix<Trafo3f>), c => { var v = default(Matrix<Trafo3f>); c.CodeMatrix_of_Trafo3f_(ref v); return v; } },
+            { typeof(Matrix<Trafo3f>[]), c => { var v = default(Matrix<Trafo3f>[]); c.CodeMatrix_of_Trafo3f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Trafo3f>>), c => { var v = default(List<Matrix<Trafo3f>>); c.CodeList_of_Matrix_of_Trafo3f__(ref v); return v; } },
+
+            { typeof(Volume<Trafo3f>), c => { var v = default(Volume<Trafo3f>); c.CodeVolume_of_Trafo3f_(ref v); return v; } },
+            { typeof(Volume<Trafo3f>[]), c => { var v = default(Volume<Trafo3f>[]); c.CodeVolume_of_Trafo3f_Array(ref v); return v; } },
+            { typeof(List<Volume<Trafo3f>>), c => { var v = default(List<Volume<Trafo3f>>); c.CodeList_of_Volume_of_Trafo3f__(ref v); return v; } },
+
+            { typeof(Tensor<Trafo3f>), c => { var v = default(Tensor<Trafo3f>); c.CodeTensor_of_Trafo3f_(ref v); return v; } },
+            { typeof(Tensor<Trafo3f>[]), c => { var v = default(Tensor<Trafo3f>[]); c.CodeTensor_of_Trafo3f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Trafo3f>>), c => { var v = default(List<Tensor<Trafo3f>>); c.CodeList_of_Tensor_of_Trafo3f__(ref v); return v; } },
 
             #endregion
 
@@ -5315,54 +5371,6 @@ namespace Aardvark.Base.Coder
 
             #endregion
 
-            #region CameraExtrinsics
-
-            { typeof(CameraExtrinsics), c => { var v = default(CameraExtrinsics); c.CodeCameraExtrinsics(ref v); return v; } },
-            { typeof(CameraExtrinsics[]), c => { var v = default(CameraExtrinsics[]); c.CodeCameraExtrinsicsArray(ref v); return v; } },
-            { typeof(List<CameraExtrinsics>), c => { var v = default(List<CameraExtrinsics>); c.CodeList_of_CameraExtrinsics_(ref v); return v; } },
-
-            { typeof(Vector<CameraExtrinsics>), c => { var v = default(Vector<CameraExtrinsics>); c.CodeVector_of_CameraExtrinsics_(ref v); return v; } },
-            { typeof(Vector<CameraExtrinsics>[]), c => { var v = default(Vector<CameraExtrinsics>[]); c.CodeVector_of_CameraExtrinsics_Array(ref v); return v; } },
-            { typeof(List<Vector<CameraExtrinsics>>), c => { var v = default(List<Vector<CameraExtrinsics>>); c.CodeList_of_Vector_of_CameraExtrinsics__(ref v); return v; } },
-
-            { typeof(Matrix<CameraExtrinsics>), c => { var v = default(Matrix<CameraExtrinsics>); c.CodeMatrix_of_CameraExtrinsics_(ref v); return v; } },
-            { typeof(Matrix<CameraExtrinsics>[]), c => { var v = default(Matrix<CameraExtrinsics>[]); c.CodeMatrix_of_CameraExtrinsics_Array(ref v); return v; } },
-            { typeof(List<Matrix<CameraExtrinsics>>), c => { var v = default(List<Matrix<CameraExtrinsics>>); c.CodeList_of_Matrix_of_CameraExtrinsics__(ref v); return v; } },
-
-            { typeof(Volume<CameraExtrinsics>), c => { var v = default(Volume<CameraExtrinsics>); c.CodeVolume_of_CameraExtrinsics_(ref v); return v; } },
-            { typeof(Volume<CameraExtrinsics>[]), c => { var v = default(Volume<CameraExtrinsics>[]); c.CodeVolume_of_CameraExtrinsics_Array(ref v); return v; } },
-            { typeof(List<Volume<CameraExtrinsics>>), c => { var v = default(List<Volume<CameraExtrinsics>>); c.CodeList_of_Volume_of_CameraExtrinsics__(ref v); return v; } },
-
-            { typeof(Tensor<CameraExtrinsics>), c => { var v = default(Tensor<CameraExtrinsics>); c.CodeTensor_of_CameraExtrinsics_(ref v); return v; } },
-            { typeof(Tensor<CameraExtrinsics>[]), c => { var v = default(Tensor<CameraExtrinsics>[]); c.CodeTensor_of_CameraExtrinsics_Array(ref v); return v; } },
-            { typeof(List<Tensor<CameraExtrinsics>>), c => { var v = default(List<Tensor<CameraExtrinsics>>); c.CodeList_of_Tensor_of_CameraExtrinsics__(ref v); return v; } },
-
-            #endregion
-
-            #region CameraIntrinsics
-
-            { typeof(CameraIntrinsics), c => { var v = default(CameraIntrinsics); c.CodeCameraIntrinsics(ref v); return v; } },
-            { typeof(CameraIntrinsics[]), c => { var v = default(CameraIntrinsics[]); c.CodeCameraIntrinsicsArray(ref v); return v; } },
-            { typeof(List<CameraIntrinsics>), c => { var v = default(List<CameraIntrinsics>); c.CodeList_of_CameraIntrinsics_(ref v); return v; } },
-
-            { typeof(Vector<CameraIntrinsics>), c => { var v = default(Vector<CameraIntrinsics>); c.CodeVector_of_CameraIntrinsics_(ref v); return v; } },
-            { typeof(Vector<CameraIntrinsics>[]), c => { var v = default(Vector<CameraIntrinsics>[]); c.CodeVector_of_CameraIntrinsics_Array(ref v); return v; } },
-            { typeof(List<Vector<CameraIntrinsics>>), c => { var v = default(List<Vector<CameraIntrinsics>>); c.CodeList_of_Vector_of_CameraIntrinsics__(ref v); return v; } },
-
-            { typeof(Matrix<CameraIntrinsics>), c => { var v = default(Matrix<CameraIntrinsics>); c.CodeMatrix_of_CameraIntrinsics_(ref v); return v; } },
-            { typeof(Matrix<CameraIntrinsics>[]), c => { var v = default(Matrix<CameraIntrinsics>[]); c.CodeMatrix_of_CameraIntrinsics_Array(ref v); return v; } },
-            { typeof(List<Matrix<CameraIntrinsics>>), c => { var v = default(List<Matrix<CameraIntrinsics>>); c.CodeList_of_Matrix_of_CameraIntrinsics__(ref v); return v; } },
-
-            { typeof(Volume<CameraIntrinsics>), c => { var v = default(Volume<CameraIntrinsics>); c.CodeVolume_of_CameraIntrinsics_(ref v); return v; } },
-            { typeof(Volume<CameraIntrinsics>[]), c => { var v = default(Volume<CameraIntrinsics>[]); c.CodeVolume_of_CameraIntrinsics_Array(ref v); return v; } },
-            { typeof(List<Volume<CameraIntrinsics>>), c => { var v = default(List<Volume<CameraIntrinsics>>); c.CodeList_of_Volume_of_CameraIntrinsics__(ref v); return v; } },
-
-            { typeof(Tensor<CameraIntrinsics>), c => { var v = default(Tensor<CameraIntrinsics>); c.CodeTensor_of_CameraIntrinsics_(ref v); return v; } },
-            { typeof(Tensor<CameraIntrinsics>[]), c => { var v = default(Tensor<CameraIntrinsics>[]); c.CodeTensor_of_CameraIntrinsics_Array(ref v); return v; } },
-            { typeof(List<Tensor<CameraIntrinsics>>), c => { var v = default(List<Tensor<CameraIntrinsics>>); c.CodeList_of_Tensor_of_CameraIntrinsics__(ref v); return v; } },
-
-            #endregion
-
             #region Multi-Dimensional Arrays
 
             { typeof(byte[,]), c => { var v = default(byte[,]); c.CodeByteArray2d(ref v); return v; } },
@@ -5527,8 +5535,12 @@ namespace Aardvark.Base.Coder
             { typeof(Shift3f[, ,]), c => { var v = default(Shift3f[, ,]); c.CodeShift3fArray3d(ref v); return v; } },
             { typeof(Shift3d[,]), c => { var v = default(Shift3d[,]); c.CodeShift3dArray2d(ref v); return v; } },
             { typeof(Shift3d[, ,]), c => { var v = default(Shift3d[, ,]); c.CodeShift3dArray3d(ref v); return v; } },
+            { typeof(Trafo2f[,]), c => { var v = default(Trafo2f[,]); c.CodeTrafo2fArray2d(ref v); return v; } },
+            { typeof(Trafo2f[, ,]), c => { var v = default(Trafo2f[, ,]); c.CodeTrafo2fArray3d(ref v); return v; } },
             { typeof(Trafo2d[,]), c => { var v = default(Trafo2d[,]); c.CodeTrafo2dArray2d(ref v); return v; } },
             { typeof(Trafo2d[, ,]), c => { var v = default(Trafo2d[, ,]); c.CodeTrafo2dArray3d(ref v); return v; } },
+            { typeof(Trafo3f[,]), c => { var v = default(Trafo3f[,]); c.CodeTrafo3fArray2d(ref v); return v; } },
+            { typeof(Trafo3f[, ,]), c => { var v = default(Trafo3f[, ,]); c.CodeTrafo3fArray3d(ref v); return v; } },
             { typeof(Trafo3d[,]), c => { var v = default(Trafo3d[,]); c.CodeTrafo3dArray2d(ref v); return v; } },
             { typeof(Trafo3d[, ,]), c => { var v = default(Trafo3d[, ,]); c.CodeTrafo3dArray3d(ref v); return v; } },
 
@@ -5698,8 +5710,12 @@ namespace Aardvark.Base.Coder
             { typeof(Shift3f[][][]), c => { var v = default(Shift3f[][][]); c.CodeShift3fArrayArrayArray(ref v); return v; } },
             { typeof(Shift3d[][]), c => { var v = default(Shift3d[][]); c.CodeShift3dArrayArray(ref v); return v; } },
             { typeof(Shift3d[][][]), c => { var v = default(Shift3d[][][]); c.CodeShift3dArrayArrayArray(ref v); return v; } },
+            { typeof(Trafo2f[][]), c => { var v = default(Trafo2f[][]); c.CodeTrafo2fArrayArray(ref v); return v; } },
+            { typeof(Trafo2f[][][]), c => { var v = default(Trafo2f[][][]); c.CodeTrafo2fArrayArrayArray(ref v); return v; } },
             { typeof(Trafo2d[][]), c => { var v = default(Trafo2d[][]); c.CodeTrafo2dArrayArray(ref v); return v; } },
             { typeof(Trafo2d[][][]), c => { var v = default(Trafo2d[][][]); c.CodeTrafo2dArrayArrayArray(ref v); return v; } },
+            { typeof(Trafo3f[][]), c => { var v = default(Trafo3f[][]); c.CodeTrafo3fArrayArray(ref v); return v; } },
+            { typeof(Trafo3f[][][]), c => { var v = default(Trafo3f[][][]); c.CodeTrafo3fArrayArrayArray(ref v); return v; } },
             { typeof(Trafo3d[][]), c => { var v = default(Trafo3d[][]); c.CodeTrafo3dArrayArray(ref v); return v; } },
             { typeof(Trafo3d[][][]), c => { var v = default(Trafo3d[][][]); c.CodeTrafo3dArrayArrayArray(ref v); return v; } },
 
@@ -7666,6 +7682,30 @@ namespace Aardvark.Base.Coder
 
                 #endregion
 
+                #region Trafo2f
+
+                new TypeInfo("Trafo2f", typeof(Trafo2f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Trafo2f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Trafo2f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Trafo2f>", "Vector_of_" + "Trafo2f", typeof(Vector<Trafo2f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Trafo2f>[]", "Array_of_Vector_of_" + "Trafo2f", typeof(Vector<Trafo2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Trafo2f>>", "List_of_Vector_of_" + "Trafo2f", typeof(List<Vector<Trafo2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Trafo2f>", "Matrix_of_" + "Trafo2f", typeof(Matrix<Trafo2f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Trafo2f>[]", "Array_of_Matrix_of_" + "Trafo2f", typeof(Matrix<Trafo2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Trafo2f>>", "List_of_Matrix_of_" + "Trafo2f", typeof(List<Matrix<Trafo2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Trafo2f>", "Volume_of_" + "Trafo2f", typeof(Volume<Trafo2f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Trafo2f>[]", "Array_of_Volume_of_" + "Trafo2f", typeof(Volume<Trafo2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Trafo2f>>", "List_of_Volume_of_" + "Trafo2f", typeof(List<Volume<Trafo2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Trafo2f>", "Tensor_of_" + "Trafo2f", typeof(Tensor<Trafo2f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Trafo2f>[]", "Array_of_Tensor_of_" + "Trafo2f", typeof(Tensor<Trafo2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Trafo2f>>", "List_of_Tensor_of_" + "Trafo2f", typeof(List<Tensor<Trafo2f>>), TypeInfo.Option.None),
+
+                #endregion
+
                 #region Trafo2d
 
                 new TypeInfo("Trafo2d", typeof(Trafo2d), TypeInfo.Option.None),
@@ -7687,6 +7727,30 @@ namespace Aardvark.Base.Coder
                 new TypeInfo("Tensor<Trafo2d>", "Tensor_of_" + "Trafo2d", typeof(Tensor<Trafo2d>), TypeInfo.Option.None),
                 new TypeInfo("Tensor<Trafo2d>[]", "Array_of_Tensor_of_" + "Trafo2d", typeof(Tensor<Trafo2d>[]), TypeInfo.Option.None),
                 new TypeInfo("List<Tensor<Trafo2d>>", "List_of_Tensor_of_" + "Trafo2d", typeof(List<Tensor<Trafo2d>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Trafo3f
+
+                new TypeInfo("Trafo3f", typeof(Trafo3f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Trafo3f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Trafo3f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Trafo3f>", "Vector_of_" + "Trafo3f", typeof(Vector<Trafo3f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Trafo3f>[]", "Array_of_Vector_of_" + "Trafo3f", typeof(Vector<Trafo3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Trafo3f>>", "List_of_Vector_of_" + "Trafo3f", typeof(List<Vector<Trafo3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Trafo3f>", "Matrix_of_" + "Trafo3f", typeof(Matrix<Trafo3f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Trafo3f>[]", "Array_of_Matrix_of_" + "Trafo3f", typeof(Matrix<Trafo3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Trafo3f>>", "List_of_Matrix_of_" + "Trafo3f", typeof(List<Matrix<Trafo3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Trafo3f>", "Volume_of_" + "Trafo3f", typeof(Volume<Trafo3f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Trafo3f>[]", "Array_of_Volume_of_" + "Trafo3f", typeof(Volume<Trafo3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Trafo3f>>", "List_of_Volume_of_" + "Trafo3f", typeof(List<Volume<Trafo3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Trafo3f>", "Tensor_of_" + "Trafo3f", typeof(Tensor<Trafo3f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Trafo3f>[]", "Array_of_Tensor_of_" + "Trafo3f", typeof(Tensor<Trafo3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Trafo3f>>", "List_of_Tensor_of_" + "Trafo3f", typeof(List<Tensor<Trafo3f>>), TypeInfo.Option.None),
 
                 #endregion
 
@@ -8167,54 +8231,6 @@ namespace Aardvark.Base.Coder
                 new TypeInfo("Tensor<Triangle3d>", "Tensor_of_" + "Triangle3d", typeof(Tensor<Triangle3d>), TypeInfo.Option.None),
                 new TypeInfo("Tensor<Triangle3d>[]", "Array_of_Tensor_of_" + "Triangle3d", typeof(Tensor<Triangle3d>[]), TypeInfo.Option.None),
                 new TypeInfo("List<Tensor<Triangle3d>>", "List_of_Tensor_of_" + "Triangle3d", typeof(List<Tensor<Triangle3d>>), TypeInfo.Option.None),
-
-                #endregion
-
-                #region CameraExtrinsics
-
-                new TypeInfo("CameraExtrinsics", typeof(CameraExtrinsics), TypeInfo.Option.None),
-                new TypeInfo(typeof(CameraExtrinsics[]), TypeInfo.Option.None),
-                new TypeInfo(typeof(List<CameraExtrinsics>), TypeInfo.Option.None),
-
-                new TypeInfo("Vector<CameraExtrinsics>", "Vector_of_" + "CameraExtrinsics", typeof(Vector<CameraExtrinsics>), TypeInfo.Option.None),
-                new TypeInfo("Vector<CameraExtrinsics>[]", "Array_of_Vector_of_" + "CameraExtrinsics", typeof(Vector<CameraExtrinsics>[]), TypeInfo.Option.None),
-                new TypeInfo("List<Vector<CameraExtrinsics>>", "List_of_Vector_of_" + "CameraExtrinsics", typeof(List<Vector<CameraExtrinsics>>), TypeInfo.Option.None),
-
-                new TypeInfo("Matrix<CameraExtrinsics>", "Matrix_of_" + "CameraExtrinsics", typeof(Matrix<CameraExtrinsics>), TypeInfo.Option.None),
-                new TypeInfo("Matrix<CameraExtrinsics>[]", "Array_of_Matrix_of_" + "CameraExtrinsics", typeof(Matrix<CameraExtrinsics>[]), TypeInfo.Option.None),
-                new TypeInfo("List<Matrix<CameraExtrinsics>>", "List_of_Matrix_of_" + "CameraExtrinsics", typeof(List<Matrix<CameraExtrinsics>>), TypeInfo.Option.None),
-
-                new TypeInfo("Volume<CameraExtrinsics>", "Volume_of_" + "CameraExtrinsics", typeof(Volume<CameraExtrinsics>), TypeInfo.Option.None),
-                new TypeInfo("Volume<CameraExtrinsics>[]", "Array_of_Volume_of_" + "CameraExtrinsics", typeof(Volume<CameraExtrinsics>[]), TypeInfo.Option.None),
-                new TypeInfo("List<Volume<CameraExtrinsics>>", "List_of_Volume_of_" + "CameraExtrinsics", typeof(List<Volume<CameraExtrinsics>>), TypeInfo.Option.None),
-
-                new TypeInfo("Tensor<CameraExtrinsics>", "Tensor_of_" + "CameraExtrinsics", typeof(Tensor<CameraExtrinsics>), TypeInfo.Option.None),
-                new TypeInfo("Tensor<CameraExtrinsics>[]", "Array_of_Tensor_of_" + "CameraExtrinsics", typeof(Tensor<CameraExtrinsics>[]), TypeInfo.Option.None),
-                new TypeInfo("List<Tensor<CameraExtrinsics>>", "List_of_Tensor_of_" + "CameraExtrinsics", typeof(List<Tensor<CameraExtrinsics>>), TypeInfo.Option.None),
-
-                #endregion
-
-                #region CameraIntrinsics
-
-                new TypeInfo("CameraIntrinsics", typeof(CameraIntrinsics), TypeInfo.Option.None),
-                new TypeInfo(typeof(CameraIntrinsics[]), TypeInfo.Option.None),
-                new TypeInfo(typeof(List<CameraIntrinsics>), TypeInfo.Option.None),
-
-                new TypeInfo("Vector<CameraIntrinsics>", "Vector_of_" + "CameraIntrinsics", typeof(Vector<CameraIntrinsics>), TypeInfo.Option.None),
-                new TypeInfo("Vector<CameraIntrinsics>[]", "Array_of_Vector_of_" + "CameraIntrinsics", typeof(Vector<CameraIntrinsics>[]), TypeInfo.Option.None),
-                new TypeInfo("List<Vector<CameraIntrinsics>>", "List_of_Vector_of_" + "CameraIntrinsics", typeof(List<Vector<CameraIntrinsics>>), TypeInfo.Option.None),
-
-                new TypeInfo("Matrix<CameraIntrinsics>", "Matrix_of_" + "CameraIntrinsics", typeof(Matrix<CameraIntrinsics>), TypeInfo.Option.None),
-                new TypeInfo("Matrix<CameraIntrinsics>[]", "Array_of_Matrix_of_" + "CameraIntrinsics", typeof(Matrix<CameraIntrinsics>[]), TypeInfo.Option.None),
-                new TypeInfo("List<Matrix<CameraIntrinsics>>", "List_of_Matrix_of_" + "CameraIntrinsics", typeof(List<Matrix<CameraIntrinsics>>), TypeInfo.Option.None),
-
-                new TypeInfo("Volume<CameraIntrinsics>", "Volume_of_" + "CameraIntrinsics", typeof(Volume<CameraIntrinsics>), TypeInfo.Option.None),
-                new TypeInfo("Volume<CameraIntrinsics>[]", "Array_of_Volume_of_" + "CameraIntrinsics", typeof(Volume<CameraIntrinsics>[]), TypeInfo.Option.None),
-                new TypeInfo("List<Volume<CameraIntrinsics>>", "List_of_Volume_of_" + "CameraIntrinsics", typeof(List<Volume<CameraIntrinsics>>), TypeInfo.Option.None),
-
-                new TypeInfo("Tensor<CameraIntrinsics>", "Tensor_of_" + "CameraIntrinsics", typeof(Tensor<CameraIntrinsics>), TypeInfo.Option.None),
-                new TypeInfo("Tensor<CameraIntrinsics>[]", "Array_of_Tensor_of_" + "CameraIntrinsics", typeof(Tensor<CameraIntrinsics>[]), TypeInfo.Option.None),
-                new TypeInfo("List<Tensor<CameraIntrinsics>>", "List_of_Tensor_of_" + "CameraIntrinsics", typeof(List<Tensor<CameraIntrinsics>>), TypeInfo.Option.None),
 
                 #endregion
 

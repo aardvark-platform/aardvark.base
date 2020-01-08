@@ -100,7 +100,9 @@ namespace Aardvark.Base.Coder
         public void CodeScale3d(ref Scale3d v) { throw new NotImplementedException(); }
         public void CodeShift3f(ref Shift3f v) { throw new NotImplementedException(); }
         public void CodeShift3d(ref Shift3d v) { throw new NotImplementedException(); }
+        public void CodeTrafo2f(ref Trafo2f v) { throw new NotImplementedException(); }
         public void CodeTrafo2d(ref Trafo2d v) { throw new NotImplementedException(); }
+        public void CodeTrafo3f(ref Trafo3f v) { throw new NotImplementedException(); }
         public void CodeTrafo3d(ref Trafo3d v) { throw new NotImplementedException(); }
 
         #endregion
@@ -512,7 +514,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVector_of_Trafo2f_(ref Vector<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeVector_of_Trafo2d_(ref Vector<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Trafo3f_(ref Vector<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -613,16 +625,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeVector_of_Triangle3d_(ref Vector<Triangle3d> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVector_of_CameraExtrinsics_(ref Vector<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVector_of_CameraIntrinsics_(ref Vector<CameraIntrinsics> value)
         {
             throw new NotImplementedException();
         }
@@ -1032,7 +1034,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeMatrix_of_Trafo2f_(ref Matrix<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeMatrix_of_Trafo2d_(ref Matrix<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Trafo3f_(ref Matrix<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -1133,16 +1145,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeMatrix_of_Triangle3d_(ref Matrix<Triangle3d> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeMatrix_of_CameraExtrinsics_(ref Matrix<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeMatrix_of_CameraIntrinsics_(ref Matrix<CameraIntrinsics> value)
         {
             throw new NotImplementedException();
         }
@@ -1552,7 +1554,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVolume_of_Trafo2f_(ref Volume<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeVolume_of_Trafo2d_(ref Volume<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Trafo3f_(ref Volume<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -1653,16 +1665,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeVolume_of_Triangle3d_(ref Volume<Triangle3d> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVolume_of_CameraExtrinsics_(ref Volume<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVolume_of_CameraIntrinsics_(ref Volume<CameraIntrinsics> value)
         {
             throw new NotImplementedException();
         }
@@ -2072,7 +2074,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeTensor_of_Trafo2f_(ref Tensor<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeTensor_of_Trafo2d_(ref Tensor<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Trafo3f_(ref Tensor<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -2173,16 +2185,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeTensor_of_Triangle3d_(ref Tensor<Triangle3d> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeTensor_of_CameraExtrinsics_(ref Tensor<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeTensor_of_CameraIntrinsics_(ref Tensor<CameraIntrinsics> value)
         {
             throw new NotImplementedException();
         }
@@ -2541,7 +2543,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeTrafo2fArray(ref Trafo2f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeTrafo2dArray(ref Trafo2d[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTrafo3fArray(ref Trafo3f[] value)
         {
             throw new NotImplementedException();
         }
@@ -2612,16 +2624,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeTriangle3dArray(ref Triangle3d[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeCameraExtrinsicsArray(ref CameraExtrinsics[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeCameraIntrinsicsArray(ref CameraIntrinsics[] value)
         {
             throw new NotImplementedException();
         }
@@ -2873,8 +2875,14 @@ namespace Aardvark.Base.Coder
         public void CodeShift3dArray2d(ref Shift3d[,] value) { throw new NotImplementedException(); }
         public void CodeShift3dArray3d(ref Shift3d[, ,] value) { throw new NotImplementedException(); }
 
+        public void CodeTrafo2fArray2d(ref Trafo2f[,] value) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArray3d(ref Trafo2f[, ,] value) { throw new NotImplementedException(); }
+
         public void CodeTrafo2dArray2d(ref Trafo2d[,] value) { throw new NotImplementedException(); }
         public void CodeTrafo2dArray3d(ref Trafo2d[, ,] value) { throw new NotImplementedException(); }
+
+        public void CodeTrafo3fArray2d(ref Trafo3f[,] value) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArray3d(ref Trafo3f[, ,] value) { throw new NotImplementedException(); }
 
         public void CodeTrafo3dArray2d(ref Trafo3d[,] value) { throw new NotImplementedException(); }
         public void CodeTrafo3dArray3d(ref Trafo3d[, ,] value) { throw new NotImplementedException(); }
@@ -3126,8 +3134,14 @@ namespace Aardvark.Base.Coder
         public void CodeShift3dArrayArray(ref Shift3d[][] value) { throw new NotImplementedException(); }
         public void CodeShift3dArrayArrayArray(ref Shift3d[][][] value) { throw new NotImplementedException(); }
 
+        public void CodeTrafo2fArrayArray(ref Trafo2f[][] value) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArrayArrayArray(ref Trafo2f[][][] value) { throw new NotImplementedException(); }
+
         public void CodeTrafo2dArrayArray(ref Trafo2d[][] value) { throw new NotImplementedException(); }
         public void CodeTrafo2dArrayArrayArray(ref Trafo2d[][][] value) { throw new NotImplementedException(); }
+
+        public void CodeTrafo3fArrayArray(ref Trafo3f[][] value) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArrayArrayArray(ref Trafo3f[][][] value) { throw new NotImplementedException(); }
 
         public void CodeTrafo3dArrayArray(ref Trafo3d[][] value) { throw new NotImplementedException(); }
         public void CodeTrafo3dArrayArrayArray(ref Trafo3d[][][] value) { throw new NotImplementedException(); }
@@ -3486,7 +3500,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Trafo2f_(ref List<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_Trafo2d_(ref List<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Trafo3f_(ref List<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -3557,16 +3581,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeList_of_Triangle3d_(ref List<Triangle3d> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_CameraExtrinsics_(ref List<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_CameraIntrinsics_(ref List<CameraIntrinsics> value)
         {
             throw new NotImplementedException();
         }
@@ -3980,7 +3994,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVector_of_Trafo2f_Array(ref Vector<Trafo2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeVector_of_Trafo2d_Array(ref Vector<Trafo2d>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Trafo3f_Array(ref Vector<Trafo3f>[] value)
         {
             throw new NotImplementedException();
         }
@@ -4081,16 +4105,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeVector_of_Triangle3d_Array(ref Vector<Triangle3d>[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVector_of_CameraExtrinsics_Array(ref Vector<CameraExtrinsics>[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVector_of_CameraIntrinsics_Array(ref Vector<CameraIntrinsics>[] value)
         {
             throw new NotImplementedException();
         }
@@ -4500,7 +4514,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeMatrix_of_Trafo2f_Array(ref Matrix<Trafo2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeMatrix_of_Trafo2d_Array(ref Matrix<Trafo2d>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Trafo3f_Array(ref Matrix<Trafo3f>[] value)
         {
             throw new NotImplementedException();
         }
@@ -4601,16 +4625,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeMatrix_of_Triangle3d_Array(ref Matrix<Triangle3d>[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeMatrix_of_CameraExtrinsics_Array(ref Matrix<CameraExtrinsics>[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeMatrix_of_CameraIntrinsics_Array(ref Matrix<CameraIntrinsics>[] value)
         {
             throw new NotImplementedException();
         }
@@ -5020,7 +5034,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVolume_of_Trafo2f_Array(ref Volume<Trafo2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeVolume_of_Trafo2d_Array(ref Volume<Trafo2d>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Trafo3f_Array(ref Volume<Trafo3f>[] value)
         {
             throw new NotImplementedException();
         }
@@ -5121,16 +5145,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeVolume_of_Triangle3d_Array(ref Volume<Triangle3d>[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVolume_of_CameraExtrinsics_Array(ref Volume<CameraExtrinsics>[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVolume_of_CameraIntrinsics_Array(ref Volume<CameraIntrinsics>[] value)
         {
             throw new NotImplementedException();
         }
@@ -5540,7 +5554,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeTensor_of_Trafo2f_Array(ref Tensor<Trafo2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeTensor_of_Trafo2d_Array(ref Tensor<Trafo2d>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Trafo3f_Array(ref Tensor<Trafo3f>[] value)
         {
             throw new NotImplementedException();
         }
@@ -5641,16 +5665,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeTensor_of_Triangle3d_Array(ref Tensor<Triangle3d>[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeTensor_of_CameraExtrinsics_Array(ref Tensor<CameraExtrinsics>[] value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeTensor_of_CameraIntrinsics_Array(ref Tensor<CameraIntrinsics>[] value)
         {
             throw new NotImplementedException();
         }
@@ -6064,7 +6078,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Vector_of_Trafo2f__(ref List<Vector<Trafo2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_Vector_of_Trafo2d__(ref List<Vector<Trafo2d>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Trafo3f__(ref List<Vector<Trafo3f>> value)
         {
             throw new NotImplementedException();
         }
@@ -6165,16 +6189,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeList_of_Vector_of_Triangle3d__(ref List<Vector<Triangle3d>> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_Vector_of_CameraExtrinsics__(ref List<Vector<CameraExtrinsics>> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_Vector_of_CameraIntrinsics__(ref List<Vector<CameraIntrinsics>> value)
         {
             throw new NotImplementedException();
         }
@@ -6584,7 +6598,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Matrix_of_Trafo2f__(ref List<Matrix<Trafo2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_Matrix_of_Trafo2d__(ref List<Matrix<Trafo2d>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Trafo3f__(ref List<Matrix<Trafo3f>> value)
         {
             throw new NotImplementedException();
         }
@@ -6685,16 +6709,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeList_of_Matrix_of_Triangle3d__(ref List<Matrix<Triangle3d>> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_Matrix_of_CameraExtrinsics__(ref List<Matrix<CameraExtrinsics>> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_Matrix_of_CameraIntrinsics__(ref List<Matrix<CameraIntrinsics>> value)
         {
             throw new NotImplementedException();
         }
@@ -7104,7 +7118,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Volume_of_Trafo2f__(ref List<Volume<Trafo2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_Volume_of_Trafo2d__(ref List<Volume<Trafo2d>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Trafo3f__(ref List<Volume<Trafo3f>> value)
         {
             throw new NotImplementedException();
         }
@@ -7205,16 +7229,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeList_of_Volume_of_Triangle3d__(ref List<Volume<Triangle3d>> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_Volume_of_CameraExtrinsics__(ref List<Volume<CameraExtrinsics>> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_Volume_of_CameraIntrinsics__(ref List<Volume<CameraIntrinsics>> value)
         {
             throw new NotImplementedException();
         }
@@ -7624,7 +7638,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Tensor_of_Trafo2f__(ref List<Tensor<Trafo2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_Tensor_of_Trafo2d__(ref List<Tensor<Trafo2d>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Trafo3f__(ref List<Tensor<Trafo3f>> value)
         {
             throw new NotImplementedException();
         }
@@ -7729,16 +7753,6 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
-        public void CodeList_of_Tensor_of_CameraExtrinsics__(ref List<Tensor<CameraExtrinsics>> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeList_of_Tensor_of_CameraIntrinsics__(ref List<Tensor<CameraIntrinsics>> value)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
     }
 
@@ -7836,7 +7850,9 @@ namespace Aardvark.Base.Coder
         public void CodeScale3d(ref Scale3d v) { v = Scale3d.Parse(CurrentValue()); }
         public void CodeShift3f(ref Shift3f v) { v = Shift3f.Parse(CurrentValue()); }
         public void CodeShift3d(ref Shift3d v) { v = Shift3d.Parse(CurrentValue()); }
+        public void CodeTrafo2f(ref Trafo2f v) { v = Trafo2f.Parse(CurrentValue()); }
         public void CodeTrafo2d(ref Trafo2d v) { v = Trafo2d.Parse(CurrentValue()); }
+        public void CodeTrafo3f(ref Trafo3f v) { v = Trafo3f.Parse(CurrentValue()); }
         public void CodeTrafo3d(ref Trafo3d v) { v = Trafo3d.Parse(CurrentValue()); }
 
         #endregion
@@ -11164,6 +11180,47 @@ namespace Aardvark.Base.Coder
             value = new Vector<Shift3d>(data, origin, size, delta);
         }
 
+        public void CodeVector_of_Trafo2f_(ref Vector<Trafo2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Trafo2f[] data = null; CodeTrafo2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Trafo2f>(data, origin, size, delta);
+        }
+
         public void CodeVector_of_Trafo2d_(ref Vector<Trafo2d> value)
         {
             m_stateStack.Push(m_state);
@@ -11203,6 +11260,47 @@ namespace Aardvark.Base.Coder
             m_state = m_stateStack.Pop();
 
             value = new Vector<Trafo2d>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Trafo3f_(ref Vector<Trafo3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Trafo3f[] data = null; CodeTrafo3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Trafo3f>(data, origin, size, delta);
         }
 
         public void CodeVector_of_Trafo3d_(ref Vector<Trafo3d> value)
@@ -12023,88 +12121,6 @@ namespace Aardvark.Base.Coder
             m_state = m_stateStack.Pop();
 
             value = new Vector<Triangle3d>(data, origin, size, delta);
-        }
-
-        public void CodeVector_of_CameraExtrinsics_(ref Vector<CameraExtrinsics> value)
-        {
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            CameraExtrinsics[] data = null; CodeCameraExtrinsicsArray(ref data);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long origin = 0L; CodeLong(ref origin);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long size = default(long); CodeLong(ref size);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long delta = default(long); CodeLong(ref delta);
-
-            m_state = m_stateStack.Pop();
-            m_state = m_stateStack.Pop();
-
-            value = new Vector<CameraExtrinsics>(data, origin, size, delta);
-        }
-
-        public void CodeVector_of_CameraIntrinsics_(ref Vector<CameraIntrinsics> value)
-        {
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            CameraIntrinsics[] data = null; CodeCameraIntrinsicsArray(ref data);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long origin = 0L; CodeLong(ref origin);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long size = default(long); CodeLong(ref size);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long delta = default(long); CodeLong(ref delta);
-
-            m_state = m_stateStack.Pop();
-            m_state = m_stateStack.Pop();
-
-            value = new Vector<CameraIntrinsics>(data, origin, size, delta);
         }
 
         public void CodeMatrix_of_Byte_(ref Matrix<byte> value)
@@ -15428,6 +15444,47 @@ namespace Aardvark.Base.Coder
             value = new Matrix<Shift3d>(data, origin, size, delta);
         }
 
+        public void CodeMatrix_of_Trafo2f_(ref Matrix<Trafo2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Trafo2f[] data = null; CodeTrafo2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Trafo2f>(data, origin, size, delta);
+        }
+
         public void CodeMatrix_of_Trafo2d_(ref Matrix<Trafo2d> value)
         {
             m_stateStack.Push(m_state);
@@ -15467,6 +15524,47 @@ namespace Aardvark.Base.Coder
             m_state = m_stateStack.Pop();
 
             value = new Matrix<Trafo2d>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Trafo3f_(ref Matrix<Trafo3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Trafo3f[] data = null; CodeTrafo3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Trafo3f>(data, origin, size, delta);
         }
 
         public void CodeMatrix_of_Trafo3d_(ref Matrix<Trafo3d> value)
@@ -16287,88 +16385,6 @@ namespace Aardvark.Base.Coder
             m_state = m_stateStack.Pop();
 
             value = new Matrix<Triangle3d>(data, origin, size, delta);
-        }
-
-        public void CodeMatrix_of_CameraExtrinsics_(ref Matrix<CameraExtrinsics> value)
-        {
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            CameraExtrinsics[] data = null; CodeCameraExtrinsicsArray(ref data);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long origin = 0L; CodeLong(ref origin);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            V2l size = default(V2l); CodeV2l(ref size);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            V2l delta = default(V2l); CodeV2l(ref delta);
-
-            m_state = m_stateStack.Pop();
-            m_state = m_stateStack.Pop();
-
-            value = new Matrix<CameraExtrinsics>(data, origin, size, delta);
-        }
-
-        public void CodeMatrix_of_CameraIntrinsics_(ref Matrix<CameraIntrinsics> value)
-        {
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            CameraIntrinsics[] data = null; CodeCameraIntrinsicsArray(ref data);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long origin = 0L; CodeLong(ref origin);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            V2l size = default(V2l); CodeV2l(ref size);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            V2l delta = default(V2l); CodeV2l(ref delta);
-
-            m_state = m_stateStack.Pop();
-            m_state = m_stateStack.Pop();
-
-            value = new Matrix<CameraIntrinsics>(data, origin, size, delta);
         }
 
         public void CodeVolume_of_Byte_(ref Volume<byte> value)
@@ -19692,6 +19708,47 @@ namespace Aardvark.Base.Coder
             value = new Volume<Shift3d>(data, origin, size, delta);
         }
 
+        public void CodeVolume_of_Trafo2f_(ref Volume<Trafo2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Trafo2f[] data = null; CodeTrafo2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Trafo2f>(data, origin, size, delta);
+        }
+
         public void CodeVolume_of_Trafo2d_(ref Volume<Trafo2d> value)
         {
             m_stateStack.Push(m_state);
@@ -19731,6 +19788,47 @@ namespace Aardvark.Base.Coder
             m_state = m_stateStack.Pop();
 
             value = new Volume<Trafo2d>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Trafo3f_(ref Volume<Trafo3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Trafo3f[] data = null; CodeTrafo3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Trafo3f>(data, origin, size, delta);
         }
 
         public void CodeVolume_of_Trafo3d_(ref Volume<Trafo3d> value)
@@ -20551,88 +20649,6 @@ namespace Aardvark.Base.Coder
             m_state = m_stateStack.Pop();
 
             value = new Volume<Triangle3d>(data, origin, size, delta);
-        }
-
-        public void CodeVolume_of_CameraExtrinsics_(ref Volume<CameraExtrinsics> value)
-        {
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            CameraExtrinsics[] data = null; CodeCameraExtrinsicsArray(ref data);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long origin = 0L; CodeLong(ref origin);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            V3l size = default(V3l); CodeV3l(ref size);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            V3l delta = default(V3l); CodeV3l(ref delta);
-
-            m_state = m_stateStack.Pop();
-            m_state = m_stateStack.Pop();
-
-            value = new Volume<CameraExtrinsics>(data, origin, size, delta);
-        }
-
-        public void CodeVolume_of_CameraIntrinsics_(ref Volume<CameraIntrinsics> value)
-        {
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            CameraIntrinsics[] data = null; CodeCameraIntrinsicsArray(ref data);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long origin = 0L; CodeLong(ref origin);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            V3l size = default(V3l); CodeV3l(ref size);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            V3l delta = default(V3l); CodeV3l(ref delta);
-
-            m_state = m_stateStack.Pop();
-            m_state = m_stateStack.Pop();
-
-            value = new Volume<CameraIntrinsics>(data, origin, size, delta);
         }
 
         public void CodeTensor_of_Byte_(ref Tensor<byte> value)
@@ -23956,6 +23972,47 @@ namespace Aardvark.Base.Coder
             value = new Tensor<Shift3d>(data, origin, size, delta);
         }
 
+        public void CodeTensor_of_Trafo2f_(ref Tensor<Trafo2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Trafo2f[] data = null; CodeTrafo2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Trafo2f>(data, origin, size, delta);
+        }
+
         public void CodeTensor_of_Trafo2d_(ref Tensor<Trafo2d> value)
         {
             m_stateStack.Push(m_state);
@@ -23995,6 +24052,47 @@ namespace Aardvark.Base.Coder
             m_state = m_stateStack.Pop();
 
             value = new Tensor<Trafo2d>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Trafo3f_(ref Tensor<Trafo3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Trafo3f[] data = null; CodeTrafo3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Trafo3f>(data, origin, size, delta);
         }
 
         public void CodeTensor_of_Trafo3d_(ref Tensor<Trafo3d> value)
@@ -24817,88 +24915,6 @@ namespace Aardvark.Base.Coder
             value = new Tensor<Triangle3d>(data, origin, size, delta);
         }
 
-        public void CodeTensor_of_CameraExtrinsics_(ref Tensor<CameraExtrinsics> value)
-        {
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            CameraExtrinsics[] data = null; CodeCameraExtrinsicsArray(ref data);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long origin = 0L; CodeLong(ref origin);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long[] size = default(long[]); CodeLongArray(ref size);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long[] delta = default(long[]); CodeLongArray(ref delta);
-
-            m_state = m_stateStack.Pop();
-            m_state = m_stateStack.Pop();
-
-            value = new Tensor<CameraExtrinsics>(data, origin, size, delta);
-        }
-
-        public void CodeTensor_of_CameraIntrinsics_(ref Tensor<CameraIntrinsics> value)
-        {
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            CameraIntrinsics[] data = null; CodeCameraIntrinsicsArray(ref data);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long origin = 0L; CodeLong(ref origin);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long[] size = default(long[]); CodeLongArray(ref size);
-
-            m_state = m_stateStack.Pop();
-            m_state.Advance();
-            m_stateStack.Push(m_state);
-            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
-            m_state.Element = m_state.Enumerator.Current;
-
-            long[] delta = default(long[]); CodeLongArray(ref delta);
-
-            m_state = m_stateStack.Pop();
-            m_state = m_stateStack.Pop();
-
-            value = new Tensor<CameraIntrinsics>(data, origin, size, delta);
-        }
-
         #endregion
 
         #region Arrays
@@ -25253,9 +25269,19 @@ namespace Aardvark.Base.Coder
             CodeArray(ref value, s_nestedBracketSplitter, s => Shift3d.Parse(s));
         }
 
+        public void CodeTrafo2fArray(ref Trafo2f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Trafo2f.Parse(s));
+        }
+
         public void CodeTrafo2dArray(ref Trafo2d[] value)
         {
             CodeArray(ref value, s_nestedBracketSplitter, s => Trafo2d.Parse(s));
+        }
+
+        public void CodeTrafo3fArray(ref Trafo3f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Trafo3f.Parse(s));
         }
 
         public void CodeTrafo3dArray(ref Trafo3d[] value)
@@ -25326,16 +25352,6 @@ namespace Aardvark.Base.Coder
         public void CodeTriangle3dArray(ref Triangle3d[] value)
         {
             CodeArray(ref value, s_nestedBracketSplitter, s => Triangle3d.Parse(s));
-        }
-
-        public void CodeCameraExtrinsicsArray(ref CameraExtrinsics[] value)
-        {
-            throw new NotSupportedException("cannot xml serialize cameras");
-        }
-
-        public void CodeCameraIntrinsicsArray(ref CameraIntrinsics[] value)
-        {
-            throw new NotSupportedException("cannot xml serialize cameras");
         }
 
         #endregion
@@ -25585,8 +25601,14 @@ namespace Aardvark.Base.Coder
         public void CodeShift3dArray2d(ref Shift3d[,] value) { throw new NotImplementedException(); }
         public void CodeShift3dArray3d(ref Shift3d[, ,] value) { throw new NotImplementedException(); }
 
+        public void CodeTrafo2fArray2d(ref Trafo2f[,] value) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArray3d(ref Trafo2f[, ,] value) { throw new NotImplementedException(); }
+
         public void CodeTrafo2dArray2d(ref Trafo2d[,] value) { throw new NotImplementedException(); }
         public void CodeTrafo2dArray3d(ref Trafo2d[, ,] value) { throw new NotImplementedException(); }
+
+        public void CodeTrafo3fArray2d(ref Trafo3f[,] value) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArray3d(ref Trafo3f[, ,] value) { throw new NotImplementedException(); }
 
         public void CodeTrafo3dArray2d(ref Trafo3d[,] value) { throw new NotImplementedException(); }
         public void CodeTrafo3dArray3d(ref Trafo3d[, ,] value) { throw new NotImplementedException(); }
@@ -25838,8 +25860,14 @@ namespace Aardvark.Base.Coder
         public void CodeShift3dArrayArray(ref Shift3d[][] value) { throw new NotImplementedException(); }
         public void CodeShift3dArrayArrayArray(ref Shift3d[][][] value) { throw new NotImplementedException(); }
 
+        public void CodeTrafo2fArrayArray(ref Trafo2f[][] value) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArrayArrayArray(ref Trafo2f[][][] value) { throw new NotImplementedException(); }
+
         public void CodeTrafo2dArrayArray(ref Trafo2d[][] value) { throw new NotImplementedException(); }
         public void CodeTrafo2dArrayArrayArray(ref Trafo2d[][][] value) { throw new NotImplementedException(); }
+
+        public void CodeTrafo3fArrayArray(ref Trafo3f[][] value) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArrayArrayArray(ref Trafo3f[][][] value) { throw new NotImplementedException(); }
 
         public void CodeTrafo3dArrayArray(ref Trafo3d[][] value) { throw new NotImplementedException(); }
         public void CodeTrafo3dArrayArrayArray(ref Trafo3d[][][] value) { throw new NotImplementedException(); }
@@ -26198,9 +26226,19 @@ namespace Aardvark.Base.Coder
             CodeList(ref value, s_nestedBracketSplitter, s => Shift3d.Parse(s));
         }
 
+        public void CodeList_of_Trafo2f_(ref List<Trafo2f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Trafo2f.Parse(s));
+        }
+
         public void CodeList_of_Trafo2d_(ref List<Trafo2d> value)
         {
             CodeList(ref value, s_nestedBracketSplitter, s => Trafo2d.Parse(s));
+        }
+
+        public void CodeList_of_Trafo3f_(ref List<Trafo3f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Trafo3f.Parse(s));
         }
 
         public void CodeList_of_Trafo3d_(ref List<Trafo3d> value)
@@ -26271,16 +26309,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Triangle3d_(ref List<Triangle3d> value)
         {
             CodeList(ref value, s_nestedBracketSplitter, s => Triangle3d.Parse(s));
-        }
-
-        public void CodeList_of_CameraExtrinsics_(ref List<CameraExtrinsics> value)
-        {
-            throw new NotSupportedException("cannot xml serialize cameras");
-        }
-
-        public void CodeList_of_CameraIntrinsics_(ref List<CameraIntrinsics> value)
-        {
-            throw new NotSupportedException("cannot xml serialize cameras");
         }
 
         #endregion
@@ -27178,6 +27206,17 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeVector_of_Trafo2f_Array(ref Vector<Trafo2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Trafo2f> item = default(Vector<Trafo2f>); CodeVector_of_Trafo2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeVector_of_Trafo2d_Array(ref Vector<Trafo2d>[] value)
         {
             int count = CodeCount(ref value);
@@ -27185,6 +27224,17 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Vector<Trafo2d> item = default(Vector<Trafo2d>); CodeVector_of_Trafo2d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Trafo3f_Array(ref Vector<Trafo3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Trafo3f> item = default(Vector<Trafo3f>); CodeVector_of_Trafo3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -27405,28 +27455,6 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Vector<Triangle3d> item = default(Vector<Triangle3d>); CodeVector_of_Triangle3d_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeVector_of_CameraExtrinsics_Array(ref Vector<CameraExtrinsics>[] value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Vector<CameraExtrinsics> item = default(Vector<CameraExtrinsics>); CodeVector_of_CameraExtrinsics_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeVector_of_CameraIntrinsics_Array(ref Vector<CameraIntrinsics>[] value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Vector<CameraIntrinsics> item = default(Vector<CameraIntrinsics>); CodeVector_of_CameraIntrinsics_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -28322,6 +28350,17 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeMatrix_of_Trafo2f_Array(ref Matrix<Trafo2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Trafo2f> item = default(Matrix<Trafo2f>); CodeMatrix_of_Trafo2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeMatrix_of_Trafo2d_Array(ref Matrix<Trafo2d>[] value)
         {
             int count = CodeCount(ref value);
@@ -28329,6 +28368,17 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Matrix<Trafo2d> item = default(Matrix<Trafo2d>); CodeMatrix_of_Trafo2d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Trafo3f_Array(ref Matrix<Trafo3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Trafo3f> item = default(Matrix<Trafo3f>); CodeMatrix_of_Trafo3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -28549,28 +28599,6 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Matrix<Triangle3d> item = default(Matrix<Triangle3d>); CodeMatrix_of_Triangle3d_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeMatrix_of_CameraExtrinsics_Array(ref Matrix<CameraExtrinsics>[] value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Matrix<CameraExtrinsics> item = default(Matrix<CameraExtrinsics>); CodeMatrix_of_CameraExtrinsics_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeMatrix_of_CameraIntrinsics_Array(ref Matrix<CameraIntrinsics>[] value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Matrix<CameraIntrinsics> item = default(Matrix<CameraIntrinsics>); CodeMatrix_of_CameraIntrinsics_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -29466,6 +29494,17 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeVolume_of_Trafo2f_Array(ref Volume<Trafo2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Trafo2f> item = default(Volume<Trafo2f>); CodeVolume_of_Trafo2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeVolume_of_Trafo2d_Array(ref Volume<Trafo2d>[] value)
         {
             int count = CodeCount(ref value);
@@ -29473,6 +29512,17 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Volume<Trafo2d> item = default(Volume<Trafo2d>); CodeVolume_of_Trafo2d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Trafo3f_Array(ref Volume<Trafo3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Trafo3f> item = default(Volume<Trafo3f>); CodeVolume_of_Trafo3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -29693,28 +29743,6 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Volume<Triangle3d> item = default(Volume<Triangle3d>); CodeVolume_of_Triangle3d_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeVolume_of_CameraExtrinsics_Array(ref Volume<CameraExtrinsics>[] value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Volume<CameraExtrinsics> item = default(Volume<CameraExtrinsics>); CodeVolume_of_CameraExtrinsics_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeVolume_of_CameraIntrinsics_Array(ref Volume<CameraIntrinsics>[] value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Volume<CameraIntrinsics> item = default(Volume<CameraIntrinsics>); CodeVolume_of_CameraIntrinsics_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -30610,6 +30638,17 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeTensor_of_Trafo2f_Array(ref Tensor<Trafo2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Trafo2f> item = default(Tensor<Trafo2f>); CodeTensor_of_Trafo2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeTensor_of_Trafo2d_Array(ref Tensor<Trafo2d>[] value)
         {
             int count = CodeCount(ref value);
@@ -30617,6 +30656,17 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Tensor<Trafo2d> item = default(Tensor<Trafo2d>); CodeTensor_of_Trafo2d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Trafo3f_Array(ref Tensor<Trafo3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Trafo3f> item = default(Tensor<Trafo3f>); CodeTensor_of_Trafo3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -30837,28 +30887,6 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Tensor<Triangle3d> item = default(Tensor<Triangle3d>); CodeTensor_of_Triangle3d_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeTensor_of_CameraExtrinsics_Array(ref Tensor<CameraExtrinsics>[] value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Tensor<CameraExtrinsics> item = default(Tensor<CameraExtrinsics>); CodeTensor_of_CameraExtrinsics_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeTensor_of_CameraIntrinsics_Array(ref Tensor<CameraIntrinsics>[] value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Tensor<CameraIntrinsics> item = default(Tensor<CameraIntrinsics>); CodeTensor_of_CameraIntrinsics_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -31758,6 +31786,17 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Vector_of_Trafo2f__(ref List<Vector<Trafo2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Trafo2f> item = default(Vector<Trafo2f>); CodeVector_of_Trafo2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeList_of_Vector_of_Trafo2d__(ref List<Vector<Trafo2d>> value)
         {
             int count = CodeCount(ref value);
@@ -31765,6 +31804,17 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Vector<Trafo2d> item = default(Vector<Trafo2d>); CodeVector_of_Trafo2d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Trafo3f__(ref List<Vector<Trafo3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Trafo3f> item = default(Vector<Trafo3f>); CodeVector_of_Trafo3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -31985,28 +32035,6 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Vector<Triangle3d> item = default(Vector<Triangle3d>); CodeVector_of_Triangle3d_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeList_of_Vector_of_CameraExtrinsics__(ref List<Vector<CameraExtrinsics>> value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Vector<CameraExtrinsics> item = default(Vector<CameraExtrinsics>); CodeVector_of_CameraExtrinsics_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeList_of_Vector_of_CameraIntrinsics__(ref List<Vector<CameraIntrinsics>> value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Vector<CameraIntrinsics> item = default(Vector<CameraIntrinsics>); CodeVector_of_CameraIntrinsics_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -32902,6 +32930,17 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Matrix_of_Trafo2f__(ref List<Matrix<Trafo2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Trafo2f> item = default(Matrix<Trafo2f>); CodeMatrix_of_Trafo2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeList_of_Matrix_of_Trafo2d__(ref List<Matrix<Trafo2d>> value)
         {
             int count = CodeCount(ref value);
@@ -32909,6 +32948,17 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Matrix<Trafo2d> item = default(Matrix<Trafo2d>); CodeMatrix_of_Trafo2d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Trafo3f__(ref List<Matrix<Trafo3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Trafo3f> item = default(Matrix<Trafo3f>); CodeMatrix_of_Trafo3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -33129,28 +33179,6 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Matrix<Triangle3d> item = default(Matrix<Triangle3d>); CodeMatrix_of_Triangle3d_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeList_of_Matrix_of_CameraExtrinsics__(ref List<Matrix<CameraExtrinsics>> value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Matrix<CameraExtrinsics> item = default(Matrix<CameraExtrinsics>); CodeMatrix_of_CameraExtrinsics_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeList_of_Matrix_of_CameraIntrinsics__(ref List<Matrix<CameraIntrinsics>> value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Matrix<CameraIntrinsics> item = default(Matrix<CameraIntrinsics>); CodeMatrix_of_CameraIntrinsics_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -34046,6 +34074,17 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Volume_of_Trafo2f__(ref List<Volume<Trafo2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Trafo2f> item = default(Volume<Trafo2f>); CodeVolume_of_Trafo2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeList_of_Volume_of_Trafo2d__(ref List<Volume<Trafo2d>> value)
         {
             int count = CodeCount(ref value);
@@ -34053,6 +34092,17 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Volume<Trafo2d> item = default(Volume<Trafo2d>); CodeVolume_of_Trafo2d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Trafo3f__(ref List<Volume<Trafo3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Trafo3f> item = default(Volume<Trafo3f>); CodeVolume_of_Trafo3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -34273,28 +34323,6 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Volume<Triangle3d> item = default(Volume<Triangle3d>); CodeVolume_of_Triangle3d_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeList_of_Volume_of_CameraExtrinsics__(ref List<Volume<CameraExtrinsics>> value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Volume<CameraExtrinsics> item = default(Volume<CameraExtrinsics>); CodeVolume_of_CameraExtrinsics_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeList_of_Volume_of_CameraIntrinsics__(ref List<Volume<CameraIntrinsics>> value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Volume<CameraIntrinsics> item = default(Volume<CameraIntrinsics>); CodeVolume_of_CameraIntrinsics_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -35190,6 +35218,17 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Tensor_of_Trafo2f__(ref List<Tensor<Trafo2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Trafo2f> item = default(Tensor<Trafo2f>); CodeTensor_of_Trafo2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeList_of_Tensor_of_Trafo2d__(ref List<Tensor<Trafo2d>> value)
         {
             int count = CodeCount(ref value);
@@ -35197,6 +35236,17 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Tensor<Trafo2d> item = default(Tensor<Trafo2d>); CodeTensor_of_Trafo2d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Trafo3f__(ref List<Tensor<Trafo3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Trafo3f> item = default(Tensor<Trafo3f>); CodeTensor_of_Trafo3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -35417,28 +35467,6 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Tensor<Triangle3d> item = default(Tensor<Triangle3d>); CodeTensor_of_Triangle3d_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeList_of_Tensor_of_CameraExtrinsics__(ref List<Tensor<CameraExtrinsics>> value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Tensor<CameraExtrinsics> item = default(Tensor<CameraExtrinsics>); CodeTensor_of_CameraExtrinsics_(ref item); value[i] = item;
-                m_state.Advance();
-            }
-        }
-
-        public void CodeList_of_Tensor_of_CameraIntrinsics__(ref List<Tensor<CameraIntrinsics>> value)
-        {
-            int count = CodeCount(ref value);
-            if (count < 1) return;
-            for (int i = 0; i < count; i++)
-            {
-                Tensor<CameraIntrinsics> item = default(Tensor<CameraIntrinsics>); CodeTensor_of_CameraIntrinsics_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }

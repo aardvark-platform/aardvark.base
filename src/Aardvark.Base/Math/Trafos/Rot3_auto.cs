@@ -562,25 +562,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Euler-Angles from the quatarnion.
         /// </summary>
-        public V3d GetEulerAngles()
+        public V3f GetEulerAngles()
         {
             var test = W * Y - X * Z;
             if (test > 0.49999f) // singularity at north pole
             {
-                return new V3d(
+                return new V3f(
                     2 * Fun.Atan2(X, W),
-                    Constant.PiHalf,
+                    (float)Constant.PiHalf,
                     0);
             }
             if (test < -0.49999f) // singularity at south pole
             {
-                return new V3d(
+                return new V3f(
                     2 * Fun.Atan2(X, W),
-                    -Constant.PiHalf,
+                    -(float)Constant.PiHalf,
                     0);
             }
             // From Wikipedia, conversion between quaternions and Euler angles.
-            return new V3d(
+            return new V3f(
                         Fun.Atan2(2 * (W * X + Y * Z),
                                   1 - 2 * (X * X + Y * Y)),
                         Fun.AsinClamped(2 * test),

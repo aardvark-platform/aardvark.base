@@ -25,6 +25,7 @@ namespace Aardvark.Base
     //#   var rotIntoEps = isDouble ? "1e-7" : "1e-3f";
     //#   var eulerAnglesEps = isDouble ? "0.49999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
+    //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
     /// <summary>
     /// Represents an arbitrary rotation in three dimensions. Implemented as
     /// a normalized quaternion.
@@ -580,25 +581,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Euler-Angles from the quatarnion.
         /// </summary>
-        public V3d GetEulerAngles()
+        public __v3t__ GetEulerAngles()
         {
             var test = W * Y - X * Z;
             if (test > __eulerAnglesEps__) // singularity at north pole
             {
-                return new V3d(
+                return new __v3t__(
                     2 * Fun.Atan2(X, W),
-                    Constant.PiHalf,
+                    __piHalf__,
                     0);
             }
             if (test < -__eulerAnglesEps__) // singularity at south pole
             {
-                return new V3d(
+                return new __v3t__(
                     2 * Fun.Atan2(X, W),
-                    -Constant.PiHalf,
+                    -__piHalf__,
                     0);
             }
             // From Wikipedia, conversion between quaternions and Euler angles.
-            return new V3d(
+            return new __v3t__(
                         Fun.Atan2(2 * (W * X + Y * Z),
                                   1 - 2 * (X * X + Y * Y)),
                         Fun.AsinClamped(2 * test),
