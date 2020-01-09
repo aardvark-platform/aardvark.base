@@ -1081,7 +1081,7 @@ namespace Aardvark.Base
         {
             lock(s_nativePaths)
             {
-                return s_nativePaths.Values.ToArray();
+                return s_nativePaths.Values.Where(p => p != null).ToArray();
             }
         }
 
