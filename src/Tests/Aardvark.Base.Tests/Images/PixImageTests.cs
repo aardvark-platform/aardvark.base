@@ -20,6 +20,7 @@ namespace Aardvark.Tests.Images
                 switch(ip)
                 {
                     case ImageInterpolation.Near: targetMat.SetScaledNearest(sourceMat); break;
+                    case ImageInterpolation.Linear: targetMat.SetScaledLinear(sourceMat, (s, a, b) => s.Lerp(a, b), (s, a, b) => s.Lerp(a, b)); break;
                     case ImageInterpolation.Cubic: targetMat.SetScaledCubic(sourceMat); break;
                     case ImageInterpolation.Lanczos: targetMat.SetScaledLanczos(sourceMat); break;
                     default: throw new NotImplementedException();
