@@ -673,7 +673,7 @@ module NativeUtilities =
             NativePtr.get (NativePtr.ofNativeInt<'a> ptr) index
   
         let inline set<'a when 'a : unmanaged> (ptr : nativeint) (index : int) (value : 'a)=
-            NativePtr.set (NativePtr.ofNativeInt<'a> ptr) index      
+            NativePtr.set (NativePtr.ofNativeInt<'a> ptr) index value
 
     type Marshal with
         static member Copy(source : nativeint, destination : nativeint, length : unativeint) =

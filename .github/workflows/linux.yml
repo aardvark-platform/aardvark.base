@@ -1,0 +1,19 @@
+name: linux
+
+on: 
+  push:
+    paths-ignore:
+    - 'README.md'
+  pull_request:
+    paths-ignore:
+    - 'README.md'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: sudo apt-get install fsharp -qq && sh ./build.sh

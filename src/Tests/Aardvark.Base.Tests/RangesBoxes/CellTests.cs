@@ -679,6 +679,29 @@ namespace Aardvark.Tests
             Assert.IsTrue(c.GetOctant(new Cell(0, 0, 2, 0)) == null);
         }
 
+
+        [Test]
+        public void Cell_GetOctantOfCell_2()
+        {
+            var c = new Cell(0, 1, 0, 1);
+
+            Assert.IsTrue(c.GetOctant(new Cell(0, 2, 0, 0)) == 0);
+            Assert.IsTrue(c.GetOctant(new Cell(1, 2, 0, 0)) == 1);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 3, 0, 0)) == 2);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 2, 1, 0)) == 4);
+        }
+
+        [Test]
+        public void Cell_GetOctantOfCell_2_Outside()
+        {
+            var c = new Cell(0, 1, 0, 1);
+
+            Assert.IsTrue(c.GetOctant(new Cell(-1, 2, 0, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(1, 1, 0, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 4, 0, 0)) == null);
+            Assert.IsTrue(c.GetOctant(new Cell(0, 2, 2, 0)) == null);
+        }
+
         #endregion
 
         #region operators
