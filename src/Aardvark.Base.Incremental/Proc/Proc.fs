@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace FSharp.Data.Adaptive
 
 open System.Threading
 open System.Threading.Tasks

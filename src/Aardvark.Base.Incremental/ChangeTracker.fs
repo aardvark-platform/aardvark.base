@@ -1,4 +1,4 @@
-namespace Aardvark.Base.Incremental
+namespace FSharp.Data.Adaptive
 
 
 module ChangeTracker =

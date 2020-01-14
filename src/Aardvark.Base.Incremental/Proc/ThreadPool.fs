@@ -1,10 +1,7 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace FSharp.Data.Adaptive
 
 open System
 open System.Threading
-open System.Threading.Tasks
-
-open Aardvark.Base
 open FSharp.Data.Adaptive
 
 [<AbstractClass>]

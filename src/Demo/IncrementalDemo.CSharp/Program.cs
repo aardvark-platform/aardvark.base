@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Aardvark.Base;
-using Aardvark.Base.Incremental;
-using Aardvark.Base.Incremental.CSharp;
 using FSharp.Data.Adaptive;
+using CSharp.Data.Adaptive;
 using FSharp.Data.Traceable;
 
 namespace IncrementalDemo.CSharp
@@ -28,7 +27,7 @@ namespace IncrementalDemo.CSharp
             Report.End();
 
             Report.Begin("m = 3");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 m.Value = 3;
             }
@@ -37,7 +36,7 @@ namespace IncrementalDemo.CSharp
 
 
             Report.Begin("m = 1; m = 2");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 m.Value = 1;
                 m.Value = 2;
@@ -72,7 +71,7 @@ namespace IncrementalDemo.CSharp
             
 
             Report.Begin("set = {1,2,3,4,5,6}");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 set.Add(5); set.Add(6);
             }
@@ -80,7 +79,7 @@ namespace IncrementalDemo.CSharp
             Report.End();
 
             Report.Begin("set = {2,4,6}");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 set.Remove(1); set.Remove(3); set.Remove(5);
             }
@@ -88,7 +87,7 @@ namespace IncrementalDemo.CSharp
             Report.End();
 
             Report.Begin("set = {4,6}");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 set.Remove(2);
             }
@@ -96,7 +95,7 @@ namespace IncrementalDemo.CSharp
             Report.End();
 
             Report.Begin("set = {4,5,6}");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 set.Add(5);
             }
@@ -112,7 +111,7 @@ namespace IncrementalDemo.CSharp
         {
             Action<FSharp.Data.Traceable.IOpReader<CountingHashSet<int>, HashSetDelta<int>>> print = (r) =>
             {
-                var deltas = r.GetOperations();
+                var deltas = r.GetChanges(AdaptiveToken.Top);
                 var content = r.State;
 
                 var deltaStr = deltas.Select(d => d.Count > 0 ? string.Format("Add {0}", d.Value) : string.Format("Rem {0}", d.Value)).Join(", ");
@@ -125,7 +124,7 @@ namespace IncrementalDemo.CSharp
             var i0 = new ChangeableHashSet<int>(new [] { 1, 2, 3 });
             var i1 = new ChangeableHashSet<int>(new [] { 4, 5 });
             var i2 = new ChangeableHashSet<int>(new [] { 6, 7 });
-            var input = new ChangeableHashSet<AdaptiveHashSet<int>>(new [] { i0, i1 });
+            var input = new ChangeableHashSet<IAdaptiveHashSet<int>>(new [] { i0, i1 });
 
             var flat = input.SelectMany(a => a);
 
@@ -137,7 +136,7 @@ namespace IncrementalDemo.CSharp
 
             Report.Begin("add i2; i1.rem 4");
             Report.Line("all changes (inner and outer) shall be seen consistently");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 input.Add(i2);
                 i1.Remove(4);
@@ -148,7 +147,7 @@ namespace IncrementalDemo.CSharp
 
             Report.Begin("rem i0; i0.add 10");
             Report.Line("the set shall not see the (Add 10) operation since i0 was removed as a whole");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 input.Remove(i0);
                 i0.Add(10);
@@ -160,7 +159,7 @@ namespace IncrementalDemo.CSharp
 
             Report.Begin("add i0; i0.rem 10");
             Report.Line("the set shall not see the (Add 10) operation since 10 was removed from i0");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 input.Add(i0);
                 i0.Remove(10);

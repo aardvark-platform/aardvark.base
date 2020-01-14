@@ -6,8 +6,8 @@ open System.Threading
 open System.Runtime.InteropServices
 open System.IO
 open Aardvark.Base
-open Aardvark.Base.Incremental
 open Microsoft.FSharp.NativeInterop
+open FSharp.Data.Adaptive
 
 #nowarn "9"
 
@@ -261,7 +261,6 @@ type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, comp
         if not disposed then
             disposed <- true
             cache.Clear()
-            reader.Dispose()
             manager.Dispose()
             prolog <- null
             NativePtr.write entryPointerStore 0n
@@ -287,10 +286,10 @@ type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, comp
             if disposed then
                 raise <| ObjectDisposedException("AdaptiveProgram")
 
-            let ops = reader.GetOperations token
+            let ops = reader.GetChanges token
 
             let dirty = 
-                if isDifferential then HashSet<Fragment<'a, 'b>>()
+                if isDifferential then System.Collections.Generic.HashSet<Fragment<'a, 'b>>()
                 else null
 
             let mutable added = 0
@@ -298,7 +297,7 @@ type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, comp
             let mutable updated = 0
             let mutable compiled = 0
 
-            for i, op in PDeltaList.toSeq ops do
+            for i, op in IndexListDelta.toSeq ops do
                 match op with
                     | Remove ->
                         match cache.TryGetValue i with
@@ -336,7 +335,7 @@ type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, comp
                                 | Some f ->
                                     f.Tag <- v
                                     let o = f.Stats
-                                    let s = using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
+                                    let s = Operators.using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
                                     if isDifferential && not (isNull f.next) then dirty.Add f.next |> ignore
                                     stats <- add (sub stats o) s
                                     updated <- updated + 1
@@ -346,7 +345,7 @@ type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, comp
 
                                 | None ->
                                     let f = new Fragment<'a, 'b>(jumpDistance, manager, v, zero)
-                                    let s = using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
+                                    let s = Operators.using f.AssemblerStream (fun s -> compileDelta.Invoke(prev, v, s))
                                     stats <- add stats s
                                     count <- count + 1
                                     f.Stats <- s
@@ -374,7 +373,7 @@ type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, comp
                         else Some d.Prev.Tag
 
                     let o = d.Stats
-                    let s = using d.AssemblerStream (fun s -> compileDelta.Invoke(prev, d.Tag, s))
+                    let s = Operators.using d.AssemblerStream (fun s -> compileDelta.Invoke(prev, d.Tag, s))
                     compiled <- compiled + 1
                     stats <- add (sub stats o) s
                     d.Stats <- s
@@ -467,7 +466,7 @@ type ChangeableNativeProgram<'a, 'b>(compile : 'a -> IAssemblerStream -> 'b, zer
             false
         else
             let f = new Fragment<'a, 'b>(jumpDistance, manager, value, zero)
-            let s = using f.AssemblerStream (fun s -> compile value s)
+            let s = Operators.using f.AssemblerStream (fun s -> compile value s)
             stats <- add stats s
             last.Next <- f
             f.Next <- null

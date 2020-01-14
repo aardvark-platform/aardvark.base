@@ -1,9 +1,8 @@
-﻿namespace Aardvark.Base.Incremental.CSharp
+﻿namespace FSharp.Data.Adaptive.OldCSharpInterop
 
 open System
 open System.Runtime.InteropServices
 open System.Runtime.CompilerServices
-open Aardvark.Base.Incremental
 open Aardvark.Base
 open System.Collections
 open System.Collections.Generic

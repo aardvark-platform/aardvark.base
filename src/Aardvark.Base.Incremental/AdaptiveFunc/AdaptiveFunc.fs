@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace FSharp.Data.Adaptive
 
 open FSharp.Data.Adaptive
 
@@ -98,9 +98,7 @@ module AFun =
         let inputChanged = ChangeTracker.track<'a>
         initial |> inputChanged |> ignore
 
-        //let ti = AdaptiveObject.Time
         AVal.custom (fun s -> 
-            //lock ti (fun () -> ti.Outputs.Remove input |> ignore)
             let v = input.GetValue s
             let res = f.Evaluate(s, v)
             if inputChanged res then

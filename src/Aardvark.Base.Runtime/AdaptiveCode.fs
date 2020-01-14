@@ -6,7 +6,6 @@ open System.Threading.Tasks
 open System.Runtime.InteropServices
 open System.Collections.Generic
 open Aardvark.Base
-open Aardvark.Base.Incremental
 open FSharp.Data.Adaptive
 
 module internal Unchecked =

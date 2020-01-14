@@ -7,7 +7,6 @@ open System.Threading
 open System.Collections.Generic
 open Aardvark.Base
 open Aardvark.Base.Runtime
-open Aardvark.Base.Incremental
 open Aardvark.Base.Monads.State
 open FSharp.Data.Adaptive
 open System.IO

@@ -3,6 +3,7 @@
     <AssemblyName>Aardvark.Base.Incremental</AssemblyName>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\Debug\</OutputPath>
@@ -23,7 +24,6 @@
     <Compile Include="AdaptiveFunc/AdaptiveFunc.fs" />
     <Compile Include="Builders.fs" />
     <Compile Include="CSharp.fs" />
-    <Compile Include="Adapters/EventAdapter.fs" />
     <Compile Include="IncrementalBvh.fs" />
     <Compile Include="Proc/Proc.fs" />
     <Compile Include="Proc/ProcList.fs" />

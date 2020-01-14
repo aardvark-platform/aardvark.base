@@ -159,7 +159,7 @@ module OverloadResolution =
                )
             |> Seq.toArray
             |> Seq.groupBy (fun m -> m.definition.Name)
-            |> Seq.map (fun (name, exts) -> name, Seq.toArray (HashSet exts))
+            |> Seq.map (fun (name, exts) -> name, Seq.toArray (System.Collections.Generic.HashSet exts))
             |> Dictionary.ofSeq
 
     let tryUnifyTypes (decl : Type) (real : Type) =

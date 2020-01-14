@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace FSharp.Data.Adaptive
 
 open FSharp.Data.Adaptive
 
@@ -35,25 +35,18 @@ module Operators =
     /// creates a constant cell containing the given value
     let inline (~~) (v : 'a) = AVal.constant v
 
-    /// creates a changeable cell containing the given value
-    let inline mref (v : 'a) = AVal.init v
+[<AutoOpen>]
+module EvaluationExtensions =
 
-open System.Runtime.CompilerServices
+    type IAdaptiveValue with
+        member inline x.GetValue() = x.GetValueUntyped(AdaptiveToken.Top)
 
-[<AbstractClass; Sealed; Extension>]
-type EvaluationExtensions() =
+    type IAdaptiveValue<'T> with
+        member inline x.GetValue() = x.GetValue(AdaptiveToken.Top)
+        
+    type FSharp.Data.Traceable.IOpReader<'a> with
+        member inline x.GetChanges() = x.GetChanges(AdaptiveToken.Top)
+        member inline x.Update() = x.GetChanges(AdaptiveToken.Top) |> ignore
 
-    [<Extension>]
-    static member inline GetValue(x : AdaptiveValue) = x.GetValueUntyped(AdaptiveToken.Top)
-
-    [<Extension>]
-    static member inline GetValue(x : aval<'a>) = x.GetValue(AdaptiveToken.Top)
-
-    [<Extension>]
-    static member inline GetOperations(x : FSharp.Data.Traceable.IOpReader<'a>) = x.GetChanges(AdaptiveToken.Top)
-
-    [<Extension>]
-    static member inline Update(x : FSharp.Data.Traceable.IOpReader<'a>) = x.GetChanges(AdaptiveToken.Top) |> ignore
-
-    //[<Extension>]
-    //static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(AdaptiveToken.Top, v)
+    type afun<'a, 'b> with 
+        member x.Evaluate(v : 'a) = x.Evaluate(AdaptiveToken.Top, v)

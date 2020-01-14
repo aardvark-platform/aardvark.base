@@ -4,9 +4,9 @@ open System
 open System.Collections.Generic
 open System.IO
 open Aardvark.Base
-open Aardvark.Base.Incremental
 open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
+open FSharp.Data.Adaptive
 
 #nowarn "9"
 #nowarn "51"

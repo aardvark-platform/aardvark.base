@@ -6,7 +6,6 @@ open System.Threading
 open System.Threading.Tasks
 open System.Collections.Generic
 open Aardvark.Base
-open Aardvark.Base.Incremental
 open Aardvark.Base.Runtime
 open NUnit.Framework
 open FsUnit
