@@ -3,7 +3,7 @@ source https://api.nuget.org/v3/index.json
 
 nuget FSharp.Core                  >= 4.6.2 lowest_matching: true
 
-nuget Aardvark.Base.TypeProviders  ~> 4.5.14
+nuget Aardvark.Base.TypeProviders  ~> 4.5.15
 nuget System.Collections.Immutable ~> 1.5.0
 
 nuget System.Reactive              ~> 4.1.5
