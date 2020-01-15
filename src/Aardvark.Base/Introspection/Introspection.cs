@@ -1077,6 +1077,13 @@ namespace Aardvark.Base
 
         private static Dictionary<Assembly, string>  s_nativePaths = new Dictionary<Assembly, string>();
 
+        public static string[] GetNativeLibraryPaths()
+        {
+            lock(s_nativePaths)
+            {
+                return s_nativePaths.Values.Where(p => p != null).ToArray();
+            }
+        }
 
         public static bool TryGetNativeLibraryPath(Assembly assembly, out string path)
         {
@@ -1107,8 +1114,8 @@ namespace Aardvark.Base
                                 var md5 = System.Security.Cryptography.MD5.Create();
                                 var hash = new Guid(md5.ComputeHash(s));
                                 md5.Dispose();
-
-                                var folderName = string.Format("{0}-{1}", assembly.GetName().Name, hash.ToString());
+                                var bits = IntPtr.Size * 8;
+                                var folderName = string.Format("{0}-{1}-{2}", assembly.GetName().Name, hash.ToString(), bits);
                                 dstFolder = Path.Combine(NativeLibraryPath, folderName);
                             }
 
@@ -1148,35 +1155,36 @@ namespace Aardvark.Base
             }
             else
             {
-                lock (s_nativePaths)
-                {
-                    paths = s_nativePaths.Values.Where((p) => p != null).ToArray();
-                }
+                paths = GetNativeLibraryPaths();
             }
 
 #if NETCOREAPP3_0
-
-            if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
-            else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
 
             var realName = Path.GetFileNameWithoutExtension(nativeName);
             foreach (var fmt in formats)
             {
                 var libName = string.Format(fmt, realName);
 
+                // probe all paths.
+                foreach (var p in paths)
+                {
+                    var lowerLibName = libName.ToLower();
+                    var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
+                    if (libPath != null)
+                    {
+                        if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
+                        else Report.Warn("found native library {0} in {1} but it could not be loaded.", Path.GetFileName(libPath), p);
+                    }
+                }
+
+                // try the plain loading mechanism.
                 if (assembly != null && NativeLibrary.TryLoad(libName, assembly, null, out ptr)) return ptr;
                 else if (NativeLibrary.TryLoad(libName, out ptr)) return ptr;
 
-                foreach (var p in paths)
-                {
-                    var libPath = Path.Combine(p, libName);
-                    if (File.Exists(libPath))
-                    {
-                        if (assembly != null && NativeLibrary.TryLoad(libPath, assembly, null, out ptr)) return ptr;
-                        else if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
-                    }
-                }
             }
+            // try the standard loading mechanism as a last resort.
+            if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
+            else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
 
             if (windows) return IntPtr.Zero;
             else return IntPtr.Zero;
@@ -1389,6 +1397,12 @@ namespace Aardvark.Base
             Report.Line("Environment.Version: {0}", Environment.Version);
             Report.End();
 
+#if NETCOREAPP3_0
+            System.Runtime.Loader.AssemblyLoadContext.Default.ResolvingUnmanagedDll += (ass, name) =>
+            {
+                return LoadLibrary(null, name);
+            };
+#endif
 
             AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
             {

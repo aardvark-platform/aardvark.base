@@ -12,7 +12,19 @@ open Aardvark.Base
 /// the reference count is 0.
 /// </summary>
 type Cache<'a, 'b>(f : 'a -> 'b) =  
-    let cache = Dictionary<obj, 'b * ref<int>>(1)
+
+    static let isNull : 'a -> bool =
+        if typeof<'a>.IsValueType then fun _ -> false
+        else fun v -> isNull (v :> obj)
+
+    static let comparer =
+        {
+            new IEqualityComparer<'a> with
+                member x.GetHashCode (a : 'a) = Unchecked.hash a
+                member x.Equals(a : 'a, b : 'a) = Unchecked.equals a b
+        }
+
+    let cache = Dictionary<'a, 'b * ref<int>>(comparer)
     let mutable nullCache = None
 
     /// <summary>
@@ -37,7 +49,7 @@ type Cache<'a, 'b>(f : 'a -> 'b) =
     /// and increases the associated reference count.
     /// </summary>
     member x.Invoke (v : 'a) =
-        if isNull (v :> obj) then
+        if isNull v then
             match nullCache with
                 | Some (r, ref) -> 
                     ref := !ref + 1
@@ -60,7 +72,7 @@ type Cache<'a, 'b>(f : 'a -> 'b) =
     /// with the given argument and decreases its reference count.
     /// </summary>
     member x.RevokeAndGetDeleted (v : 'a) =
-        if isNull (v :> obj) then
+        if isNull v then
             match nullCache with
                 | Some (r, ref) -> 
                     ref := !ref - 1
@@ -82,7 +94,7 @@ type Cache<'a, 'b>(f : 'a -> 'b) =
                 | _ -> failwithf "cannot revoke unknown value: %A" v
 
     member x.RevokeAndGetDeletedTotal (v : 'a) =
-        if isNull (v :> obj) then
+        if isNull v then
             match nullCache with
                 | Some (r, ref) -> 
                     ref := !ref - 1
@@ -105,7 +117,8 @@ type Cache<'a, 'b>(f : 'a -> 'b) =
 
     member x.Revoke (v : 'a) =
         x.RevokeAndGetDeleted v |> snd
-
+        
+    member x.Keys = cache.Keys :> seq<_>
     member x.Values = cache.Values |> Seq.map fst
 
     new(scope : Ag.Scope, f : 'a -> 'b) = Cache(fun a -> Ag.useScope scope (fun () -> f a))
