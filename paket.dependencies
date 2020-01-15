@@ -1,7 +1,7 @@
 framework: netstandard2.0, net471, netcoreapp3.0
 source https://api.nuget.org/v3/index.json
 
-nuget Aardvark.Base.TypeProviders  ~> 4.5.14
+nuget Aardvark.Base.TypeProviders  ~> 4.5.15
 nuget FSharp.Core ~> 4.6.2
 nuget System.Collections.Immutable ~> 1.5.0
 
@@ -22,5 +22,6 @@ nuget FsPickler                    ~> 5.2.2
 nuget FsPickler.Json               ~> 5.2.2
 
 group Build
+framework: netstandard2.0
 source https://api.nuget.org/v3/index.json
 github aardvark-platform/aardvark.fake:v5
