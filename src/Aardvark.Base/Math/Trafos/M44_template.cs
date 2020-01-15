@@ -655,33 +655,6 @@ namespace Aardvark.Base
             return this * v;
         }
 
-        /// <summary>
-        /// Transforms direction vector v (p.w is presumed 0)
-        /// with the inverse of this transform.
-        /// </summary>
-        public V__x3t__ InvTransformDir(V__x3t__ v)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// No projective transform is performed.
-        /// </summary>
-        public V__x3t__ InvTransformPos(V__x3t__ p)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// Projective transform is performed.
-        /// </summary>
-        public V__x3t__ InvTransformPosProj(V__x3t__ p)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
     }
     //# } // isDouble

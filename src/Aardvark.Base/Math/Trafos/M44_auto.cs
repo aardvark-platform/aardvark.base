@@ -650,33 +650,6 @@ namespace Aardvark.Base
             return this * v;
         }
 
-        /// <summary>
-        /// Transforms direction vector v (p.w is presumed 0)
-        /// with the inverse of this transform.
-        /// </summary>
-        public V3f InvTransformDir(V3f v)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// No projective transform is performed.
-        /// </summary>
-        public V3f InvTransformPos(V3f p)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// Projective transform is performed.
-        /// </summary>
-        public V3f InvTransformPosProj(V3f p)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
     }
     public partial struct M44d : ISquareMatrix<M44d, V4d, V3d, double>
@@ -1323,33 +1296,6 @@ namespace Aardvark.Base
         public V4d Transform(V4d v)
         {
             return this * v;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (p.w is presumed 0)
-        /// with the inverse of this transform.
-        /// </summary>
-        public V3d InvTransformDir(V3d v)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// No projective transform is performed.
-        /// </summary>
-        public V3d InvTransformPos(V3d p)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// Projective transform is performed.
-        /// </summary>
-        public V3d InvTransformPosProj(V3d p)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion
