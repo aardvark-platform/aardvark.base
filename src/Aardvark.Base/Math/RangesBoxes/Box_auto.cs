@@ -6037,7 +6037,7 @@ namespace Aardvark.Base
         /// Linearly interpolates between min and max.
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
-        public float Lerp(double x)
+        public float Lerp(float x)
         {
             return Fun.Lerp(x, Min, Max);
         }
@@ -7241,8 +7241,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2i(V2i p0, V2i p1, V2i p2)
         {
-            Min = VecFun.Min(p0, p1, p2);
-            Max = VecFun.Max(p0, p1, p2);
+            Min = Fun.Min(p0, p1, p2);
+            Max = Fun.Max(p0, p1, p2);
         }
 
         /// <summary>
@@ -7250,8 +7250,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2i(V2i p0, V2i p1, V2i p2, V2i p3)
         {
-            Min = VecFun.Min(p0, p1, p2, p3);
-            Max = VecFun.Max(p0, p1, p2, p3);
+            Min = Fun.Min(p0, p1, p2, p3);
+            Max = Fun.Max(p0, p1, p2, p3);
         }
 
         /// <summary>
@@ -7268,8 +7268,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2i(Box2i b0, Box2i b1)
         {
-            Min = VecFun.Min(b0.Min, b1.Min);
-            Max = VecFun.Max(b0.Max, b1.Max);
+            Min = Fun.Min(b0.Min, b1.Min);
+            Max = Fun.Max(b0.Max, b1.Max);
         }
 
         /// <summary>
@@ -7277,8 +7277,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2i(Box2i b0, Box2i b1, Box2i b2)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max);
         }
 
         /// <summary>
@@ -7286,8 +7286,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2i(Box2i b0, Box2i b1, Box2i b2, Box2i b3)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
         }
 
         /// <summary>
@@ -8042,12 +8042,12 @@ namespace Aardvark.Base
 
         public static Box2i Union(Box2i a, Box2i b)
         {
-            return new Box2i(VecFun.Min(a.Min, b.Min), VecFun.Max(a.Max, b.Max));
+            return new Box2i(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static Box2i Intersection(Box2i a, Box2i b)
         {
-            return new Box2i(VecFun.Max(a.Min, b.Min), VecFun.Min(a.Max, b.Max));
+            return new Box2i(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public Box2i Union(Box2i b)
@@ -8139,7 +8139,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Box2i FromPoints(V2i p0, V2i p1)
         {
-            return new Box2i(VecFun.Min(p0, p1), VecFun.Max(p0, p1));
+            return new Box2i(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         public static Box2i FromSize(int width, int height)
@@ -8521,8 +8521,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2l(V2l p0, V2l p1, V2l p2)
         {
-            Min = VecFun.Min(p0, p1, p2);
-            Max = VecFun.Max(p0, p1, p2);
+            Min = Fun.Min(p0, p1, p2);
+            Max = Fun.Max(p0, p1, p2);
         }
 
         /// <summary>
@@ -8530,8 +8530,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2l(V2l p0, V2l p1, V2l p2, V2l p3)
         {
-            Min = VecFun.Min(p0, p1, p2, p3);
-            Max = VecFun.Max(p0, p1, p2, p3);
+            Min = Fun.Min(p0, p1, p2, p3);
+            Max = Fun.Max(p0, p1, p2, p3);
         }
 
         /// <summary>
@@ -8548,8 +8548,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2l(Box2l b0, Box2l b1)
         {
-            Min = VecFun.Min(b0.Min, b1.Min);
-            Max = VecFun.Max(b0.Max, b1.Max);
+            Min = Fun.Min(b0.Min, b1.Min);
+            Max = Fun.Max(b0.Max, b1.Max);
         }
 
         /// <summary>
@@ -8557,8 +8557,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2l(Box2l b0, Box2l b1, Box2l b2)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max);
         }
 
         /// <summary>
@@ -8566,8 +8566,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2l(Box2l b0, Box2l b1, Box2l b2, Box2l b3)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
         }
 
         /// <summary>
@@ -9322,12 +9322,12 @@ namespace Aardvark.Base
 
         public static Box2l Union(Box2l a, Box2l b)
         {
-            return new Box2l(VecFun.Min(a.Min, b.Min), VecFun.Max(a.Max, b.Max));
+            return new Box2l(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static Box2l Intersection(Box2l a, Box2l b)
         {
-            return new Box2l(VecFun.Max(a.Min, b.Min), VecFun.Min(a.Max, b.Max));
+            return new Box2l(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public Box2l Union(Box2l b)
@@ -9419,7 +9419,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Box2l FromPoints(V2l p0, V2l p1)
         {
-            return new Box2l(VecFun.Min(p0, p1), VecFun.Max(p0, p1));
+            return new Box2l(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         public static Box2l FromSize(long width, long height)
@@ -9801,8 +9801,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2f(V2f p0, V2f p1, V2f p2)
         {
-            Min = VecFun.Min(p0, p1, p2);
-            Max = VecFun.Max(p0, p1, p2);
+            Min = Fun.Min(p0, p1, p2);
+            Max = Fun.Max(p0, p1, p2);
         }
 
         /// <summary>
@@ -9810,8 +9810,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2f(V2f p0, V2f p1, V2f p2, V2f p3)
         {
-            Min = VecFun.Min(p0, p1, p2, p3);
-            Max = VecFun.Max(p0, p1, p2, p3);
+            Min = Fun.Min(p0, p1, p2, p3);
+            Max = Fun.Max(p0, p1, p2, p3);
         }
 
         /// <summary>
@@ -9828,8 +9828,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2f(Box2f b0, Box2f b1)
         {
-            Min = VecFun.Min(b0.Min, b1.Min);
-            Max = VecFun.Max(b0.Max, b1.Max);
+            Min = Fun.Min(b0.Min, b1.Min);
+            Max = Fun.Max(b0.Max, b1.Max);
         }
 
         /// <summary>
@@ -9837,8 +9837,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2f(Box2f b0, Box2f b1, Box2f b2)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max);
         }
 
         /// <summary>
@@ -9846,8 +9846,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2f(Box2f b0, Box2f b1, Box2f b2, Box2f b3)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
         }
 
         /// <summary>
@@ -10269,9 +10269,9 @@ namespace Aardvark.Base
         /// Linearly interpolates between min and max.
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
-        public V2f Lerp(double x)
+        public V2f Lerp(float x)
         {
-            return VecFun.Lerp(x, Min, Max);
+            return Fun.Lerp(x, Min, Max);
         }
 
         /// <summary>
@@ -10280,8 +10280,8 @@ namespace Aardvark.Base
         public V2f Lerp(V2f p)
         {
             return new V2f(
-                        Min.X + p.X * (Max.X - Min.X), 
-                        Min.Y + p.Y * (Max.Y - Min.Y));
+                        Fun.Lerp(p.X, Min.X, Max.X), 
+                        Fun.Lerp(p.Y, Min.Y, Max.Y));
         }
 
         /// <summary>
@@ -10290,8 +10290,8 @@ namespace Aardvark.Base
         public V2f Lerp(float x, float y)
         {
             return new V2f(
-                        Min.X + x * (Max.X - Min.X), 
-                        Min.Y + y * (Max.Y - Min.Y));
+                         Fun.Lerp(x, Min.X, Max.X), 
+                         Fun.Lerp(y, Min.Y, Max.Y));
         }
 
         /// <summary>
@@ -10300,8 +10300,8 @@ namespace Aardvark.Base
         public V2f InvLerp(V2f p)
         {
             return new V2f(
-                        (p.X - Min.X) / (Max.X - Min.X), 
-                        (p.Y - Min.Y) / (Max.Y - Min.Y));
+                        Fun.InvLerp(p.X, Min.X, Max.X), 
+                        Fun.InvLerp(p.Y, Min.Y, Max.Y));
         }
 
         /// <summary>
@@ -10310,10 +10310,9 @@ namespace Aardvark.Base
         public V2f InvLerp(float x, float y)
         {
             return new V2f(
-                        (x - Min.X) / (Max.X - Min.X), 
-                        (y - Min.Y) / (Max.Y - Min.Y));
+                        Fun.InvLerp(x, Min.X, Max.X), 
+                        Fun.InvLerp(y, Min.Y, Max.Y));
         }
-
 
         /// <summary>
         /// Returns the box with Min value clamped to splitValue.
@@ -10709,12 +10708,12 @@ namespace Aardvark.Base
 
         public static Box2f Union(Box2f a, Box2f b)
         {
-            return new Box2f(VecFun.Min(a.Min, b.Min), VecFun.Max(a.Max, b.Max));
+            return new Box2f(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static Box2f Intersection(Box2f a, Box2f b)
         {
-            return new Box2f(VecFun.Max(a.Min, b.Min), VecFun.Min(a.Max, b.Max));
+            return new Box2f(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public Box2f Union(Box2f b)
@@ -10806,7 +10805,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Box2f FromPoints(V2f p0, V2f p1)
         {
-            return new Box2f(VecFun.Min(p0, p1), VecFun.Max(p0, p1));
+            return new Box2f(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         public static Box2f FromSize(float width, float height)
@@ -11177,8 +11176,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2d(V2d p0, V2d p1, V2d p2)
         {
-            Min = VecFun.Min(p0, p1, p2);
-            Max = VecFun.Max(p0, p1, p2);
+            Min = Fun.Min(p0, p1, p2);
+            Max = Fun.Max(p0, p1, p2);
         }
 
         /// <summary>
@@ -11186,8 +11185,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2d(V2d p0, V2d p1, V2d p2, V2d p3)
         {
-            Min = VecFun.Min(p0, p1, p2, p3);
-            Max = VecFun.Max(p0, p1, p2, p3);
+            Min = Fun.Min(p0, p1, p2, p3);
+            Max = Fun.Max(p0, p1, p2, p3);
         }
 
         /// <summary>
@@ -11204,8 +11203,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2d(Box2d b0, Box2d b1)
         {
-            Min = VecFun.Min(b0.Min, b1.Min);
-            Max = VecFun.Max(b0.Max, b1.Max);
+            Min = Fun.Min(b0.Min, b1.Min);
+            Max = Fun.Max(b0.Max, b1.Max);
         }
 
         /// <summary>
@@ -11213,8 +11212,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2d(Box2d b0, Box2d b1, Box2d b2)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max);
         }
 
         /// <summary>
@@ -11222,8 +11221,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box2d(Box2d b0, Box2d b1, Box2d b2, Box2d b3)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
         }
 
         /// <summary>
@@ -11647,7 +11646,7 @@ namespace Aardvark.Base
         /// <param name="x">Position between min and max [0,1].</param>
         public V2d Lerp(double x)
         {
-            return VecFun.Lerp(x, Min, Max);
+            return Fun.Lerp(x, Min, Max);
         }
 
         /// <summary>
@@ -11656,8 +11655,8 @@ namespace Aardvark.Base
         public V2d Lerp(V2d p)
         {
             return new V2d(
-                        Min.X + p.X * (Max.X - Min.X), 
-                        Min.Y + p.Y * (Max.Y - Min.Y));
+                        Fun.Lerp(p.X, Min.X, Max.X), 
+                        Fun.Lerp(p.Y, Min.Y, Max.Y));
         }
 
         /// <summary>
@@ -11666,8 +11665,8 @@ namespace Aardvark.Base
         public V2d Lerp(double x, double y)
         {
             return new V2d(
-                        Min.X + x * (Max.X - Min.X), 
-                        Min.Y + y * (Max.Y - Min.Y));
+                         Fun.Lerp(x, Min.X, Max.X), 
+                         Fun.Lerp(y, Min.Y, Max.Y));
         }
 
         /// <summary>
@@ -11676,8 +11675,8 @@ namespace Aardvark.Base
         public V2d InvLerp(V2d p)
         {
             return new V2d(
-                        (p.X - Min.X) / (Max.X - Min.X), 
-                        (p.Y - Min.Y) / (Max.Y - Min.Y));
+                        Fun.InvLerp(p.X, Min.X, Max.X), 
+                        Fun.InvLerp(p.Y, Min.Y, Max.Y));
         }
 
         /// <summary>
@@ -11686,10 +11685,9 @@ namespace Aardvark.Base
         public V2d InvLerp(double x, double y)
         {
             return new V2d(
-                        (x - Min.X) / (Max.X - Min.X), 
-                        (y - Min.Y) / (Max.Y - Min.Y));
+                        Fun.InvLerp(x, Min.X, Max.X), 
+                        Fun.InvLerp(y, Min.Y, Max.Y));
         }
-
 
         /// <summary>
         /// Returns the box with Min value clamped to splitValue.
@@ -12085,12 +12083,12 @@ namespace Aardvark.Base
 
         public static Box2d Union(Box2d a, Box2d b)
         {
-            return new Box2d(VecFun.Min(a.Min, b.Min), VecFun.Max(a.Max, b.Max));
+            return new Box2d(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static Box2d Intersection(Box2d a, Box2d b)
         {
-            return new Box2d(VecFun.Max(a.Min, b.Min), VecFun.Min(a.Max, b.Max));
+            return new Box2d(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public Box2d Union(Box2d b)
@@ -12182,7 +12180,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Box2d FromPoints(V2d p0, V2d p1)
         {
-            return new Box2d(VecFun.Min(p0, p1), VecFun.Max(p0, p1));
+            return new Box2d(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         public static Box2d FromSize(double width, double height)
@@ -12555,8 +12553,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3i(V3i p0, V3i p1, V3i p2)
         {
-            Min = VecFun.Min(p0, p1, p2);
-            Max = VecFun.Max(p0, p1, p2);
+            Min = Fun.Min(p0, p1, p2);
+            Max = Fun.Max(p0, p1, p2);
         }
 
         /// <summary>
@@ -12564,8 +12562,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3i(V3i p0, V3i p1, V3i p2, V3i p3)
         {
-            Min = VecFun.Min(p0, p1, p2, p3);
-            Max = VecFun.Max(p0, p1, p2, p3);
+            Min = Fun.Min(p0, p1, p2, p3);
+            Max = Fun.Max(p0, p1, p2, p3);
         }
 
         /// <summary>
@@ -12582,8 +12580,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3i(Box3i b0, Box3i b1)
         {
-            Min = VecFun.Min(b0.Min, b1.Min);
-            Max = VecFun.Max(b0.Max, b1.Max);
+            Min = Fun.Min(b0.Min, b1.Min);
+            Max = Fun.Max(b0.Max, b1.Max);
         }
 
         /// <summary>
@@ -12591,8 +12589,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3i(Box3i b0, Box3i b1, Box3i b2)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max);
         }
 
         /// <summary>
@@ -12600,8 +12598,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3i(Box3i b0, Box3i b1, Box3i b2, Box3i b3)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
         }
 
         /// <summary>
@@ -13385,12 +13383,12 @@ namespace Aardvark.Base
 
         public static Box3i Union(Box3i a, Box3i b)
         {
-            return new Box3i(VecFun.Min(a.Min, b.Min), VecFun.Max(a.Max, b.Max));
+            return new Box3i(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static Box3i Intersection(Box3i a, Box3i b)
         {
-            return new Box3i(VecFun.Max(a.Min, b.Min), VecFun.Min(a.Max, b.Max));
+            return new Box3i(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public Box3i Union(Box3i b)
@@ -13482,7 +13480,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Box3i FromPoints(V3i p0, V3i p1)
         {
-            return new Box3i(VecFun.Min(p0, p1), VecFun.Max(p0, p1));
+            return new Box3i(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         #endregion
@@ -13867,8 +13865,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3l(V3l p0, V3l p1, V3l p2)
         {
-            Min = VecFun.Min(p0, p1, p2);
-            Max = VecFun.Max(p0, p1, p2);
+            Min = Fun.Min(p0, p1, p2);
+            Max = Fun.Max(p0, p1, p2);
         }
 
         /// <summary>
@@ -13876,8 +13874,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3l(V3l p0, V3l p1, V3l p2, V3l p3)
         {
-            Min = VecFun.Min(p0, p1, p2, p3);
-            Max = VecFun.Max(p0, p1, p2, p3);
+            Min = Fun.Min(p0, p1, p2, p3);
+            Max = Fun.Max(p0, p1, p2, p3);
         }
 
         /// <summary>
@@ -13894,8 +13892,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3l(Box3l b0, Box3l b1)
         {
-            Min = VecFun.Min(b0.Min, b1.Min);
-            Max = VecFun.Max(b0.Max, b1.Max);
+            Min = Fun.Min(b0.Min, b1.Min);
+            Max = Fun.Max(b0.Max, b1.Max);
         }
 
         /// <summary>
@@ -13903,8 +13901,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3l(Box3l b0, Box3l b1, Box3l b2)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max);
         }
 
         /// <summary>
@@ -13912,8 +13910,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3l(Box3l b0, Box3l b1, Box3l b2, Box3l b3)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
         }
 
         /// <summary>
@@ -14697,12 +14695,12 @@ namespace Aardvark.Base
 
         public static Box3l Union(Box3l a, Box3l b)
         {
-            return new Box3l(VecFun.Min(a.Min, b.Min), VecFun.Max(a.Max, b.Max));
+            return new Box3l(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static Box3l Intersection(Box3l a, Box3l b)
         {
-            return new Box3l(VecFun.Max(a.Min, b.Min), VecFun.Min(a.Max, b.Max));
+            return new Box3l(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public Box3l Union(Box3l b)
@@ -14794,7 +14792,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Box3l FromPoints(V3l p0, V3l p1)
         {
-            return new Box3l(VecFun.Min(p0, p1), VecFun.Max(p0, p1));
+            return new Box3l(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         #endregion
@@ -15179,8 +15177,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3f(V3f p0, V3f p1, V3f p2)
         {
-            Min = VecFun.Min(p0, p1, p2);
-            Max = VecFun.Max(p0, p1, p2);
+            Min = Fun.Min(p0, p1, p2);
+            Max = Fun.Max(p0, p1, p2);
         }
 
         /// <summary>
@@ -15188,8 +15186,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3f(V3f p0, V3f p1, V3f p2, V3f p3)
         {
-            Min = VecFun.Min(p0, p1, p2, p3);
-            Max = VecFun.Max(p0, p1, p2, p3);
+            Min = Fun.Min(p0, p1, p2, p3);
+            Max = Fun.Max(p0, p1, p2, p3);
         }
 
         /// <summary>
@@ -15206,8 +15204,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3f(Box3f b0, Box3f b1)
         {
-            Min = VecFun.Min(b0.Min, b1.Min);
-            Max = VecFun.Max(b0.Max, b1.Max);
+            Min = Fun.Min(b0.Min, b1.Min);
+            Max = Fun.Max(b0.Max, b1.Max);
         }
 
         /// <summary>
@@ -15215,8 +15213,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3f(Box3f b0, Box3f b1, Box3f b2)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max);
         }
 
         /// <summary>
@@ -15224,8 +15222,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3f(Box3f b0, Box3f b1, Box3f b2, Box3f b3)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
         }
 
         /// <summary>
@@ -15702,9 +15700,9 @@ namespace Aardvark.Base
         /// Linearly interpolates between min and max.
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
-        public V3f Lerp(double x)
+        public V3f Lerp(float x)
         {
-            return VecFun.Lerp(x, Min, Max);
+            return Fun.Lerp(x, Min, Max);
         }
 
         /// <summary>
@@ -15713,9 +15711,9 @@ namespace Aardvark.Base
         public V3f Lerp(V3f p)
         {
             return new V3f(
-                        Min.X + p.X * (Max.X - Min.X), 
-                        Min.Y + p.Y * (Max.Y - Min.Y), 
-                        Min.Z + p.Z * (Max.Z - Min.Z));
+                        Fun.Lerp(p.X, Min.X, Max.X), 
+                        Fun.Lerp(p.Y, Min.Y, Max.Y), 
+                        Fun.Lerp(p.Z, Min.Z, Max.Z));
         }
 
         /// <summary>
@@ -15724,9 +15722,9 @@ namespace Aardvark.Base
         public V3f Lerp(float x, float y, float z)
         {
             return new V3f(
-                        Min.X + x * (Max.X - Min.X), 
-                        Min.Y + y * (Max.Y - Min.Y), 
-                        Min.Z + z * (Max.Z - Min.Z));
+                         Fun.Lerp(x, Min.X, Max.X), 
+                         Fun.Lerp(y, Min.Y, Max.Y), 
+                         Fun.Lerp(z, Min.Z, Max.Z));
         }
 
         /// <summary>
@@ -15735,9 +15733,9 @@ namespace Aardvark.Base
         public V3f InvLerp(V3f p)
         {
             return new V3f(
-                        (p.X - Min.X) / (Max.X - Min.X), 
-                        (p.Y - Min.Y) / (Max.Y - Min.Y), 
-                        (p.Z - Min.Z) / (Max.Z - Min.Z));
+                        Fun.InvLerp(p.X, Min.X, Max.X), 
+                        Fun.InvLerp(p.Y, Min.Y, Max.Y), 
+                        Fun.InvLerp(p.Z, Min.Z, Max.Z));
         }
 
         /// <summary>
@@ -15746,11 +15744,10 @@ namespace Aardvark.Base
         public V3f InvLerp(float x, float y, float z)
         {
             return new V3f(
-                        (x - Min.X) / (Max.X - Min.X), 
-                        (y - Min.Y) / (Max.Y - Min.Y), 
-                        (z - Min.Z) / (Max.Z - Min.Z));
+                        Fun.InvLerp(x, Min.X, Max.X), 
+                        Fun.InvLerp(y, Min.Y, Max.Y), 
+                        Fun.InvLerp(z, Min.Z, Max.Z));
         }
-
 
         /// <summary>
         /// Returns the box with Min value clamped to splitValue.
@@ -16122,12 +16119,12 @@ namespace Aardvark.Base
 
         public static Box3f Union(Box3f a, Box3f b)
         {
-            return new Box3f(VecFun.Min(a.Min, b.Min), VecFun.Max(a.Max, b.Max));
+            return new Box3f(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static Box3f Intersection(Box3f a, Box3f b)
         {
-            return new Box3f(VecFun.Max(a.Min, b.Min), VecFun.Min(a.Max, b.Max));
+            return new Box3f(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public Box3f Union(Box3f b)
@@ -16219,7 +16216,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Box3f FromPoints(V3f p0, V3f p1)
         {
-            return new Box3f(VecFun.Min(p0, p1), VecFun.Max(p0, p1));
+            return new Box3f(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         #endregion
@@ -16592,8 +16589,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3d(V3d p0, V3d p1, V3d p2)
         {
-            Min = VecFun.Min(p0, p1, p2);
-            Max = VecFun.Max(p0, p1, p2);
+            Min = Fun.Min(p0, p1, p2);
+            Max = Fun.Max(p0, p1, p2);
         }
 
         /// <summary>
@@ -16601,8 +16598,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3d(V3d p0, V3d p1, V3d p2, V3d p3)
         {
-            Min = VecFun.Min(p0, p1, p2, p3);
-            Max = VecFun.Max(p0, p1, p2, p3);
+            Min = Fun.Min(p0, p1, p2, p3);
+            Max = Fun.Max(p0, p1, p2, p3);
         }
 
         /// <summary>
@@ -16619,8 +16616,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3d(Box3d b0, Box3d b1)
         {
-            Min = VecFun.Min(b0.Min, b1.Min);
-            Max = VecFun.Max(b0.Max, b1.Max);
+            Min = Fun.Min(b0.Min, b1.Min);
+            Max = Fun.Max(b0.Max, b1.Max);
         }
 
         /// <summary>
@@ -16628,8 +16625,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3d(Box3d b0, Box3d b1, Box3d b2)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max);
         }
 
         /// <summary>
@@ -16637,8 +16634,8 @@ namespace Aardvark.Base
         /// </summary>
         public Box3d(Box3d b0, Box3d b1, Box3d b2, Box3d b3)
         {
-            Min = VecFun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
-            Max = VecFun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
+            Min = Fun.Min(b0.Min, b1.Min, b2.Min, b3.Min);
+            Max = Fun.Max(b0.Max, b1.Max, b2.Max, b3.Max);
         }
 
         /// <summary>
@@ -17117,7 +17114,7 @@ namespace Aardvark.Base
         /// <param name="x">Position between min and max [0,1].</param>
         public V3d Lerp(double x)
         {
-            return VecFun.Lerp(x, Min, Max);
+            return Fun.Lerp(x, Min, Max);
         }
 
         /// <summary>
@@ -17126,9 +17123,9 @@ namespace Aardvark.Base
         public V3d Lerp(V3d p)
         {
             return new V3d(
-                        Min.X + p.X * (Max.X - Min.X), 
-                        Min.Y + p.Y * (Max.Y - Min.Y), 
-                        Min.Z + p.Z * (Max.Z - Min.Z));
+                        Fun.Lerp(p.X, Min.X, Max.X), 
+                        Fun.Lerp(p.Y, Min.Y, Max.Y), 
+                        Fun.Lerp(p.Z, Min.Z, Max.Z));
         }
 
         /// <summary>
@@ -17137,9 +17134,9 @@ namespace Aardvark.Base
         public V3d Lerp(double x, double y, double z)
         {
             return new V3d(
-                        Min.X + x * (Max.X - Min.X), 
-                        Min.Y + y * (Max.Y - Min.Y), 
-                        Min.Z + z * (Max.Z - Min.Z));
+                         Fun.Lerp(x, Min.X, Max.X), 
+                         Fun.Lerp(y, Min.Y, Max.Y), 
+                         Fun.Lerp(z, Min.Z, Max.Z));
         }
 
         /// <summary>
@@ -17148,9 +17145,9 @@ namespace Aardvark.Base
         public V3d InvLerp(V3d p)
         {
             return new V3d(
-                        (p.X - Min.X) / (Max.X - Min.X), 
-                        (p.Y - Min.Y) / (Max.Y - Min.Y), 
-                        (p.Z - Min.Z) / (Max.Z - Min.Z));
+                        Fun.InvLerp(p.X, Min.X, Max.X), 
+                        Fun.InvLerp(p.Y, Min.Y, Max.Y), 
+                        Fun.InvLerp(p.Z, Min.Z, Max.Z));
         }
 
         /// <summary>
@@ -17159,11 +17156,10 @@ namespace Aardvark.Base
         public V3d InvLerp(double x, double y, double z)
         {
             return new V3d(
-                        (x - Min.X) / (Max.X - Min.X), 
-                        (y - Min.Y) / (Max.Y - Min.Y), 
-                        (z - Min.Z) / (Max.Z - Min.Z));
+                        Fun.InvLerp(x, Min.X, Max.X), 
+                        Fun.InvLerp(y, Min.Y, Max.Y), 
+                        Fun.InvLerp(z, Min.Z, Max.Z));
         }
-
 
         /// <summary>
         /// Returns the box with Min value clamped to splitValue.
@@ -17535,12 +17531,12 @@ namespace Aardvark.Base
 
         public static Box3d Union(Box3d a, Box3d b)
         {
-            return new Box3d(VecFun.Min(a.Min, b.Min), VecFun.Max(a.Max, b.Max));
+            return new Box3d(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static Box3d Intersection(Box3d a, Box3d b)
         {
-            return new Box3d(VecFun.Max(a.Min, b.Min), VecFun.Min(a.Max, b.Max));
+            return new Box3d(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public Box3d Union(Box3d b)
@@ -17632,7 +17628,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Box3d FromPoints(V3d p0, V3d p1)
         {
-            return new Box3d(VecFun.Min(p0, p1), VecFun.Max(p0, p1));
+            return new Box3d(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         #endregion

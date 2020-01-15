@@ -799,7 +799,7 @@ namespace Aardvark.Base
         {
             V2d a = r0.Origin - r1.Origin;
 
-            if (r0.Origin.ApproxEqual(r1.Origin, Constant<double>.PositiveTinyValue))
+            if (r0.Origin.ApproximateEquals(r1.Origin, Constant<double>.PositiveTinyValue))
             {
                 t0 = 0.0;
                 t1 = 0.0;

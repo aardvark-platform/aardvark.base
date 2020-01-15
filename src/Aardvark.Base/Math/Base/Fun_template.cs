@@ -11,9 +11,12 @@ namespace Aardvark.Base
 
     //# Action comma = () => Out(", ");
     //# Action add = () => Out(" + ");
-    //# var signtypes = Meta.SignedTypes;
+    //# var signedtypes = Meta.SignedTypes;
+    //# var unsignedtypes = Meta.UnsignedTypes;
     //# var numtypes = Meta.StandardNumericTypes;
     //# var numdectypes = Meta.BuiltInNumericTypes;
+    //# var modtypes = new [] { Meta.IntType, Meta.LongType, Meta.UIntType, Meta.ULongType };
+    //# var smalltypes = new [] { Meta.SByteType, Meta.ShortType, Meta.ByteType, Meta.UShortType };
     //# var iltypes = new[] { Meta.IntType, Meta.LongType };
     //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
     //# var ilfdtypes = Meta.VecFieldTypes;
@@ -24,32 +27,32 @@ namespace Aardvark.Base
         //# Meta.ComparableTypes.ForEach(t => { var type = t.Name;
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Min(__type__ a, __type__ b)
+        public static __type__ Min(this __type__ a, __type__ b)
             => a < b ? a : b;
-        
+
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Max(__type__ a, __type__ b)
+        public static __type__ Max(this __type__ a, __type__ b)
             => a > b ? a : b;
 
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Min(__type__ a, __type__ b, __type__ c)
+        public static __type__ Min(this __type__ a, __type__ b, __type__ c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Max(__type__ a, __type__ b, __type__ c)
+        public static __type__ Max(this __type__ a, __type__ b, __type__ c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Min(__type__ a, __type__ b, __type__ c, __type__ d)
+        public static __type__ Min(this __type__ a, __type__ b, __type__ c, __type__ d)
             => Min(Min(a, b), Min(c, d));
 
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Max(__type__ a, __type__ b, __type__ c, __type__ d)
+        public static __type__ Max(this __type__ a, __type__ b, __type__ c, __type__ d)
             => Max(Max(a, b), Max(c, d));
 
         //# });
@@ -57,7 +60,7 @@ namespace Aardvark.Base
 
         #region Abs
 
-        //# signtypes.ForEach(t => {
+        //# signedtypes.ForEach(t => {
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
@@ -70,7 +73,7 @@ namespace Aardvark.Base
 
         #region ApproximateEquals
 
-        //# signtypes.ForEach(t => {
+        //# signedtypes.ForEach(t => {
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
@@ -78,6 +81,17 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __t.Name__ x, __t.Name__ y, __t.Name__ epsilon)
             => Abs(x - y) <= epsilon;
+
+        //# });
+        //# fdtypes.ForEach(t => {
+        /// <summary>
+        /// Returns whether the distance between x and y is not more than
+        /// Constant{__t.Name__}.PositiveTinyValue.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __t.Name__ x, __t.Name__ y)
+            => ApproximateEquals(x, y, Constant<__t.Name__>.PositiveTinyValue);
 
         //# });
         #endregion
@@ -114,12 +128,39 @@ namespace Aardvark.Base
 
         //# fdtypes.ForEach(t => {
         /// <summary>
-        /// Rounds a float-point value to the nearest integral value.
+        /// Rounds a floating-point value to the nearest integral value.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Round(this __t.Name__ x)
             => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Round(x);
+
+        //# });
+        #endregion
+
+        #region Truncate
+
+        //# fdtypes.ForEach(t => {
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integar towards zero.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Truncate(this __t.Name__ x)
+            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */Math.Truncate(x);
+
+        //# });
+        #endregion
+
+        #region Frac
+
+        //# fdtypes.ForEach(t => {
+        /// <summary>
+        /// Returns fractional part of t. Calculated as t - floor(t).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Frac(this __t.Name__ t) => t - Floor(t);
 
         //# });
         #endregion
@@ -212,8 +253,24 @@ namespace Aardvark.Base
         //# });
         #endregion
 
+        #region Saturate
+        //# numdectypes.ForEach(t => {
+        //# var cast = smalltypes.Contains(t) ? "(" + t.Name + ")" : "";
+        /// <summary>
+        /// Clamps value to interval [0,1].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Saturate(this __t.Name__ x)
+            => Clamp(x, __cast__0, __cast__1);
+
+        //# });
+        #endregion
+
         #region MapToUnitInterval
 
+        //# fdtypes.ForEach(t => {
+        //# var half = (t != Meta.DoubleType) ? "0.5f" : "0.5";
         /// <summary>
         /// Maps value from interval [0, tMax] to interval [0, 1].
         /// Values outside [0, tMax] are clamped - if t is greater than tMax
@@ -225,8 +282,8 @@ namespace Aardvark.Base
         /// [0,1)[1,0)[0,1)...
         /// </summary>
         [Pure]
-        public static double MapToUnitInterval(
-            this double t, double tMax,
+        public static __t.Name__ MapToUnitInterval(
+            this __t.Name__ t, __t.Name__ tMax,
             bool repeat, bool mirror
             )
         {
@@ -238,12 +295,12 @@ namespace Aardvark.Base
             }
             if (mirror)
             {
-                t = t - Math.Floor(t * 0.5) * 2;
+                t = t - Floor(t * __half__) * 2;
                 return t < 1 ? t : 2 - t;
             }
             else
             {
-                return t - Math.Floor(t);
+                return t - Floor(t);
             }
         }
 
@@ -253,7 +310,7 @@ namespace Aardvark.Base
         /// (for i from integers) is mapped to [0, 1].
         /// </summary>
         [Pure]
-        public static double MapToUnitInterval(this double t, double tMax, bool repeat)
+        public static __t.Name__ MapToUnitInterval(this __t.Name__ t, __t.Name__ tMax, bool repeat)
         {
             t = t / tMax;
             if (!repeat)
@@ -261,14 +318,14 @@ namespace Aardvark.Base
                 if (t >= 1) return 1;
                 if (t <= 0) return 0;
             }
-            return t - Math.Floor(t);
+            return t - Floor(t);
         }
 
         /// <summary>
         /// Maps value from interval [0, tMax] to interval [0, 1].
         /// </summary>
         [Pure]
-        public static double MapToUnitInterval(this double t, double tMax)
+        public static __t.Name__ MapToUnitInterval(this __t.Name__ t, __t.Name__ tMax)
         {
             t = t / tMax;
             if (t > 1) return 1;
@@ -280,7 +337,7 @@ namespace Aardvark.Base
         /// Maps value from interval [tMin, tMax] to interval [0, 1].
         /// </summary>
         [Pure]
-        public static double MapToUnitInterval(this double t, double tMin, double tMax)
+        public static __t.Name__ MapToUnitInterval(this __t.Name__ t, __t.Name__ tMin, __t.Name__ tMax)
         {
             t = (t - tMin) / (tMax - tMin);
             if (t > 1) return 1;
@@ -288,19 +345,33 @@ namespace Aardvark.Base
             return t;
         }
 
+        //# });
+
         #endregion
 
         #region Sign
 
-        //# signtypes.ForEach(t => {
+        //# signedtypes.ForEach(t => {
         /// <summary>
-        /// Returns either -1, 0, or +1, indicating the sign of the specified value .
+        /// Returns either -1, 0, or +1, indicating the sign of the specified value.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this __t.Name__ x)
             => Math.Sign(x);
 
+        /// <summary>
+        /// Returns either -1, 0, or +1, indicating the sign of the specified value.
+        /// </summary>
+        // Same as Fun.Sign(), we need this for the F# generic math library!
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Signumi(this __t.Name__ x)
+            => Sign(x);
+
+        /// <summary>
+        /// Returns either -1, 0, or +1, indicating the sign of the specified value.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Signum(this __t.Name__ x)
@@ -335,7 +406,7 @@ namespace Aardvark.Base
 
         #region AbsSum
 
-        //# signtypes.ForEach(t => { var st = Meta.SummationTypeOf(t);
+        //# signedtypes.ForEach(t => { var st = Meta.SummationTypeOf(t);
         /// <summary>
         /// Returns the sum of the absolute values of the given numbers.
         /// </summary>
@@ -348,112 +419,132 @@ namespace Aardvark.Base
         }
 
         //# });
-        #endregion 
+        #endregion
 
-        #region Cbrt
+        #region Roots
 
-        //# fdtypes.ForEach(t => {
+        //# numdectypes.ForEach(t => {
+        //# var cast = (t == Meta.DecimalType) ? "(double)" : "";
+        //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
+        //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
+        /// <summary>
+        /// Returns the square root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rtype.Name__ Sqrt(this __t.Name__ x) =>
+            __rcast__Math.Sqrt(__cast__x);
+
+        //# });
+        //# signedtypes.ForEach(t => {
+        //# var cast = (t == Meta.DecimalType) ? "(double)" : "";
+        //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
+        //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
+        /// <summary>
+        /// Returns the cubic root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rtype.Name__ Cbrt(this __t.Name__ x)
+            => x < 0 ? __rcast__-Math.Pow(-(__cast__x), Constant.OneThird)
+                         : __rcast__Math.Pow(__cast__x, Constant.OneThird);
+
+        //# });
+        //# unsignedtypes.ForEach(t => {
+        /// <summary>
+        /// Returns the cubic root of the specified number.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this __t.Name__ x)
-            => x < 0 ? -/*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */Math.Pow(-x, Constant.OneThird)
-                         : /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */Math.Pow(x, Constant.OneThird);
+            => Math.Pow(x, Constant.OneThird);
 
         //# });
         #endregion
 
-        #region Square
+        #region Square and Power
 
-        //# numdectypes.ForEach(t => { var st = Meta.SummationTypeOf(t);
+        //# numdectypes.ForEach(t => {
         /// <summary>
         /// Returns the square of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __st.Name__ Square(this __t.Name__ x) => x * x;
+        public static __t.Name__ Square(this __t.Name__ x)
+            => (__t.Name__)(x * x);
 
-        //# });
-        #endregion 
-
-        #region Sqrt
-
-        //# foreach (var t in numtypes) { if (t == Meta.FloatType) continue;
+        //# if (fdtypes.Contains(t)) { 
+        //# var rcast = (t != Meta.DoubleType) ? "(" + t.Name + ")" : "";
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns the square of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this __t.Name__ x) => Math.Sqrt(x);
+        public static __t.Name__ Pow(this __t.Name__ x, __t.Name__ y)
+            => __rcast__Math.Pow(x, y);
 
+        //# } else {
+        //# fdtypes.ForEach(rt => {
+        //# var rcast = (rt != Meta.DoubleType) ? "(" + rt.Name + ")" : "";
+        //# var cast = (t == Meta.DecimalType) ? "(double)" : "";
+        /// <summary>
+        /// Returns the square of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rt.Name__ Pow(this __t.Name__ x, __rt.Name__ y)
+            => __rcast__Math.Pow(__cast__x, y);
+
+        //# });
         //# }
+        //# });
+        #endregion
+
+        #region Exp and Log
+
+        //# numdectypes.ForEach(t => {
+        //# var cast = (t == Meta.DecimalType) ? "(double)" : "";
+        //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
+        //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Sqrt(this float x) => (float)System.Math.Sqrt(x);
+        public static __rtype.Name__ Exp(this __t.Name__ x) =>
+            __rcast__Math.Exp(__cast__x);
 
-        #endregion 
-
-        #region Pow
-
-        //# ilfdtypes.ForEach(t => { var ct = Meta.ComputationTypeOf(t);
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct.Name__ Pow(this __t.Name__ x, __ct.Name__ y)
-            => /*# if (ct != Meta.DoubleType) {*/(__t.Name__)/*# } */System.Math.Pow(x, y);
-
-        //# });
-        #endregion
-        
-        #region Exp
-
-        //# fdtypes.ForEach(t => {
-        /// <summary>
-        /// Returns e raised to the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Exp(this __t.Name__ x)
-            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Exp(x);
-
-        //# });
-
-        #endregion
-
-        #region Log, Log10, Log2
-
-        //# numtypes.ForEach(t => {
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this __t.Name__ x) => Math.Log(x);
+        public static __rtype.Name__ Log(this __t.Name__ x) =>
+            __rcast__Math.Log(__cast__x);
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this __t.Name__ x) => Math.Log10(x);
+        public static __rtype.Name__ Log10(this __t.Name__ x) =>
+            __rcast__Math.Log10(__cast__x);
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this __t.Name__ x) => x.Log() * Constant.Ln2Inv;
+        public static __rtype.Name__ Log2(this __t.Name__ x) =>
+            x.Log() * __rcast__Constant.Ln2Inv;
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this __t.Name__ x, double basis) => x.Log() / basis.Log();
+        public static __rtype.Name__ Log(this __t.Name__ x, __rtype.Name__ basis) =>
+            x.Log() / basis.Log();
 
         //# });
         #endregion
@@ -491,7 +582,7 @@ namespace Aardvark.Base
 
         #region ModP
 
-        //# signtypes.ForEach(t => {
+        //# signedtypes.ForEach(t => {
         /// <summary>
         /// Returns the positive modulo operation a mod b giving values between [0,b[ 
         /// instead of a % b giving values between ]-b,b[.
@@ -720,9 +811,65 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Atanh(this __t.Name__ x)
-            => __cast__(0.5 * System.Math.Log((1.0 + x)/(1.0 - x)));
+            => __cast__(0.5 * System.Math.Log((1.0 + x) / (1.0 - x)));
 
         //# });
+        #endregion
+
+        #region Interpolation
+
+        //# numdectypes.ForEach(t => {
+        //# if (fdtypes.Contains(t)) {
+        /// <summary>
+        /// Linearly interpolates between a and b according to t.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Lerp(this __t.Name__ t, __t.Name__ a, __t.Name__ b)
+            => a * (1 - t) + b * t;
+
+        /// <summary>
+        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
+        /// </summary>
+        [Pure]
+        public static __t.Name__ Smoothstep(this __t.Name__ x, __t.Name__ edge0, __t.Name__ edge1)
+        {
+            var t = Saturate((x - edge0) / (edge1 - edge0));
+            return t * t * (3 - 2 * t);
+        }
+
+        /// <summary>
+        /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ InvLerp(this __t.Name__ y, __t.Name__ a, __t.Name__ b)
+            => (a - y) / (a - b);
+
+        //# } else {
+        //# fdtypes.ForEach(rt => {
+        //# var one = (rt != Meta.DoubleType) ? "1.0f" : "1.0";
+        //# var cast = (t == Meta.DecimalType) ? "(" + rt.Name + ")" : "";
+        /// <summary>
+        /// Linearly interpolates between a and b according to t.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rt.Name__ Lerp(this __rt.Name__ t, __t.Name__ a, __t.Name__ b)
+            => __cast__a * (1 - t) + __cast__b * t;
+
+        //# });
+        /// <summary>
+        /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double InvLerp(this __t.Name__ y, __t.Name__ a, __t.Name__ b)
+            => ((double)a - (double)y) / ((double)a - (double)b);
+
+        //# }
+        //# });
+
         #endregion
 
         #region Mean
@@ -827,7 +974,7 @@ namespace Aardvark.Base
 
         #region CountPositives
 
-        //# signtypes.ForEach(t => {
+        //# signedtypes.ForEach(t => {
         /// <summary>
         /// Return the number of values greater than 0.
         /// </summary>
@@ -845,7 +992,7 @@ namespace Aardvark.Base
 
         #region CountNegatives
 
-        //# signtypes.ForEach(t => {
+        //# signedtypes.ForEach(t => {
         /// <summary>
         /// Return the number of values less than 0.
         /// </summary>
@@ -858,31 +1005,6 @@ namespace Aardvark.Base
         }
 
         //# });
-        #endregion
-
-        #region Frac
-
-        /// <summary>
-        /// Returns fractional part of t. Calculated as t - floor(t).
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Frac(this double t) => t - System.Math.Floor(t);
-
-        /// <summary>
-        /// Returns fractional part of t. Calculated as t - floor(t).
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Frac(this float t) => (float)(t - System.Math.Floor(t));
-
-        /// <summary>
-        /// Returns fractional part of t. Calculated as t - floor(t).
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static decimal Frac(this decimal t) => t - System.Math.Floor(t);
-
         #endregion
         
         #region Primes
@@ -954,16 +1076,20 @@ namespace Aardvark.Base
 
         #region Common Divisor and Multiple
 
+        //# modtypes.ForEach(t => {
+        /// TODO: Handle negative inputs?
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long GreatestCommonDivisor(long a, long b)
+        public static __t.Name__ GreatestCommonDivisor(this __t.Name__ a, __t.Name__ b)
             => b == 0 ? a : GreatestCommonDivisor(b, a % b);
 
+        /// TODO: Handle negative inputs?
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long LeastCommonMultiple(long a, long b)
+        public static __t.Name__ LeastCommonMultiple(this __t.Name__ a, __t.Name__ b)
             => a * b / GreatestCommonDivisor(a, b);
 
+        //# });
         #endregion
 
         #region Conversion

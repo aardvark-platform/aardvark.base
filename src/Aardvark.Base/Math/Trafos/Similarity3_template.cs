@@ -240,14 +240,14 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproxEqual(Similarity__x3t__ t0, Similarity__x3t__ t1)
+        public static bool ApproximateEquals(Similarity__x3t__ t0, Similarity__x3t__ t1)
         {
-            return ApproxEqual(t0, t1, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue);
+            return ApproximateEquals(t0, t1, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue);
         }
 
-        public static bool ApproxEqual(Similarity__x3t__ t0, Similarity__x3t__ t1, __ft__ angleTol, __ft__ posTol, __ft__ scaleTol)
+        public static bool ApproximateEquals(Similarity__x3t__ t0, Similarity__x3t__ t1, __ft__ angleTol, __ft__ posTol, __ft__ scaleTol)
         {
-            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && Euclidean__x3t__.ApproxEqual(t0.EuclideanTransformation, t1.EuclideanTransformation, angleTol, posTol);
+            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && Euclidean__x3t__.ApproximateEquals(t0.EuclideanTransformation, t1.EuclideanTransformation, angleTol, posTol);
         }
 
         #endregion

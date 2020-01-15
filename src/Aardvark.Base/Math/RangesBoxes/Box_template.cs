@@ -17,7 +17,6 @@ namespace Aardvark.Base
     //#     var lt = t.LimitType; var vt = lt as Meta.VecType;
     //#     int dim = vt != null ? vt.Len : 1;
     //#     var ft = dim > 1 ? vt.FieldType : lt;
-    //#     var fun = dim > 1 ? "VecFun" : "Fun";
     //#     var ch = ft.Char;
     //#     int dplus1 = dim + 1;
     //#     var fields = dim > 1 ? vt.Fields : null;
@@ -87,8 +86,8 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(/*# k.ForEach(i => {*/__ltype__ p__i__/*#}, comma);*/)
         {
-            Min = __fun__.Min(/*# k.ForEach(i => {*/p__i__/*#}, comma);*/);
-            Max = __fun__.Max(/*# k.ForEach(i => {*/p__i__/*#}, comma);*/);
+            Min = Fun.Min(/*# k.ForEach(i => {*/p__i__/*#}, comma);*/);
+            Max = Fun.Max(/*# k.ForEach(i => {*/p__i__/*#}, comma);*/);
         }
 
         //# }
@@ -107,8 +106,8 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(/*# k.ForEach(i => {*/__type__ b__i__/*#}, comma);*/)
         {
-            Min = __fun__.Min(/*# k.ForEach(i => {*/b__i__.Min/*#}, comma);*/);
-            Max = __fun__.Max(/*# k.ForEach(i => {*/b__i__.Max/*#}, comma);*/);
+            Min = Fun.Min(/*# k.ForEach(i => {*/b__i__.Min/*#}, comma);*/);
+            Max = Fun.Max(/*# k.ForEach(i => {*/b__i__.Max/*#}, comma);*/);
         }
 
         //# }
@@ -660,9 +659,9 @@ namespace Aardvark.Base
         /// Linearly interpolates between min and max.
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
-        public __ltype__ Lerp(double x)
+        public __ltype__ Lerp(__ftype__ x)
         {
-            return __fun__.Lerp(x, Min, Max);
+            return Fun.Lerp(x, Min, Max);
         }
 
         //# if (dim == 1) {
@@ -671,7 +670,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ltype__ InvLerp(__ltype__ x)
         {
-            return __fun__.InvLerp(x, Min, Max);
+            return Fun.InvLerp(x, Min, Max);
         }
 
         //# } else { // dim > 1
@@ -681,7 +680,7 @@ namespace Aardvark.Base
         public __ltype__ Lerp(__ltype__ p)
         {
             return new __ltype__(/*# fields.ForEach(f => { */
-                        Min.__f__ + p.__f__ * (Max.__f__ - Min.__f__)/*# }, comma); */);
+                        Fun.Lerp(p.__f__, Min.__f__, Max.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -690,7 +689,7 @@ namespace Aardvark.Base
         public __ltype__ Lerp(/*# args.ForEach(a => { */__ftype__ __a__/*# }, comma); */)
         {
             return new __ltype__(/*# fields.ForEach(args, (f, a) => { */
-                        Min.__f__ + __a__ * (Max.__f__ - Min.__f__)/*# }, comma); */);
+                         Fun.Lerp(__a__, Min.__f__, Max.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -699,7 +698,7 @@ namespace Aardvark.Base
         public __ltype__ InvLerp(__ltype__ p)
         {
             return new __ltype__(/*# fields.ForEach(f => { */
-                        (p.__f__ - Min.__f__) / (Max.__f__ - Min.__f__)/*# }, comma); */);
+                        Fun.InvLerp(p.__f__, Min.__f__, Max.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -708,9 +707,8 @@ namespace Aardvark.Base
         public __ltype__ InvLerp(/*# args.ForEach(a => { */__ftype__ __a__/*# }, comma); */)
         {
             return new __ltype__(/*# fields.ForEach(args, (f, a) => { */
-                        (__a__ - Min.__f__) / (Max.__f__ - Min.__f__)/*# }, comma); */);
+                        Fun.InvLerp(__a__, Min.__f__, Max.__f__)/*# }, comma); */);
         }
-
         //# } // dim > 1
         //# } // ftype == "float" || ftype == "double"
 
@@ -1219,12 +1217,12 @@ namespace Aardvark.Base
 
         public static __type__ Union(__type__ a, __type__ b)
         {
-            return new __type__(__fun__.Min(a.Min, b.Min), __fun__.Max(a.Max, b.Max));
+            return new __type__(Fun.Min(a.Min, b.Min), Fun.Max(a.Max, b.Max));
         }
 
         public static __type__ Intersection(__type__ a, __type__ b)
         {
-            return new __type__(__fun__.Max(a.Min, b.Min), __fun__.Min(a.Max, b.Max));
+            return new __type__(Fun.Max(a.Min, b.Min), Fun.Min(a.Max, b.Max));
         }
 
         public __type__ Union(__type__ b)
@@ -1318,7 +1316,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __type__ FromPoints(__ltype__ p0, __ltype__ p1)
         {
-            return new __type__(__fun__.Min(p0, p1), __fun__.Max(p0, p1));
+            return new __type__(Fun.Min(p0, p1), Fun.Max(p0, p1));
         }
 
         //# if (dim == 2) {

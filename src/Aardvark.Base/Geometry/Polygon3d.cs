@@ -197,7 +197,7 @@ namespace Aardvark.Base
             {
                 for (int pj = pi + 1; pj < pc; pj++)
                 {
-                    if (polygon[pi].ApproxEqual(polygon[pj], toleranceAbsolute))
+                    if (polygon[pi].ApproximateEquals(polygon[pj], toleranceAbsolute))
                         yield return (pi, pj);
                 }
             }

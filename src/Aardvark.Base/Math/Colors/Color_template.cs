@@ -54,6 +54,7 @@ namespace Aardvark.Base
     //#         { Meta.FloatType, new[] { Meta.FloatType, Meta.DoubleType } },
     //#         { Meta.DoubleType, new[] { Meta.DoubleType } },
     //#     };
+    //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
     //# foreach (var t in Meta.ColorTypes) {
     //#     var type = t.Name;
     //#     var ft = t.FieldType;
@@ -864,42 +865,31 @@ namespace Aardvark.Base
         //# }
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  __flttype__.
-        /// </summary>
-        public static __flttype__ LerpRaw__flttype__(this double x, __type__ a, __type__ b)
-        {
-            return new __flttype__(/*# fields.ForEach(f => { */
-                        (float)a.__f__ + ((float)x * (float)((__htype__)b.__f__ - (__htype__)a.__f__))/*#
-                        }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a __dbltype__.
-        /// </summary>
-        public static __dbltype__ LerpRaw__dbltype__(this double x, __type__ a, __type__ b)
-        {
-            return new __dbltype__(/*# fields.ForEach(f => { */
-                        (double)a.__f__ + (x * (double)((__htype__)b.__f__ - (__htype__)a.__f__))/*#
-                        }, comma); */);
-        }
-
+        //# if (!fdtypes.Contains(ft)) {
+        //# fdtypes.ForEach(rt => {
+        //# var rtype = Meta.ColorTypeOf(t.Len, rt).Name;
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static __type__ Lerp(this double x, __type__ a, __type__ b)
+        public static __rtype__ Lerp(this __rt.Name__ x, __type__ a, __type__ b)
         {
-            return new __type__(/*# fields.ForEach(f => { */
-                        (__ftype__)((__htype__)a.__f__ + /*# if (hnd) {
-                        */(__htype__)/*# } */(x * /*# if (hnd) {
-                        */(double)/*# } */((__htype__)b.__f__ - (__htype__)a.__f__)))/*#
-                        }, comma); */);
+            return new __rtype__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
         }
 
+        //# });
+        //# } else {
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static __type__ Lerp(this __ftype__ x, __type__ a, __type__ b)
+        {
+            return new __type__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
+        }
+        //# }
         #endregion
     }
 

@@ -325,7 +325,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = boxes[i].Transformed(trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
 
@@ -333,7 +333,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = Transform1(boxes[i], trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
 
@@ -342,7 +342,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = Transform2(boxes[i], trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
 
@@ -350,7 +350,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = Transform3(boxes[i], trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
 
@@ -358,7 +358,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = Transform4(boxes[i], trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
             }

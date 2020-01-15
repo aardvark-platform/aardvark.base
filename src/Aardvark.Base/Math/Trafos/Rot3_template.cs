@@ -607,15 +607,15 @@ namespace Aardvark.Base
                                   1 - 2 * (Y * Y + Z * Z)));
         }
 
-        public static bool ApproxEqual(__rot3t__ r0, __rot3t__ r1)
+        public static bool ApproximateEquals(__rot3t__ r0, __rot3t__ r1)
         {
-            return ApproxEqual(r0, r1, Constant<__ft__>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue);
         }
 
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproxEqual(__rot3t__ other);
-        public static bool ApproxEqual(__rot3t__ r0, __rot3t__ r1, __ft__ tolerance)
+        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproximateEquals(__rot3t__ other);
+        public static bool ApproximateEquals(__rot3t__ r0, __rot3t__ r1, __ft__ tolerance)
         {
             return (r0.W - r1.W).Abs() <= tolerance &&
                    (r0.X - r1.X).Abs() <= tolerance &&

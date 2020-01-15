@@ -9,28 +9,6 @@ open System
 module Math =
 
     module Helpers =
-        type Signum() =
-            static member inline Signum(x : sbyte) = sign x |> sbyte
-            static member inline Signum(x : int16) = sign x |> int16
-            static member inline Signum(x : int32) = sign x |> int32
-            static member inline Signum(x : int64) = sign x |> int64
-
-            static member inline Signum(x : nativeint) = sign x |> nativeint
-            static member inline Signum(x : float) = sign x |> float
-            static member inline Signum(x : float32) = sign x |> float32
-            static member inline Signum(x : decimal) = sign x |> decimal
-        
-        type Signumi() =
-            static member inline Signumi(x : sbyte) = sign x
-            static member inline Signumi(x : int16) = sign x
-            static member inline Signumi(x : int32) = sign x
-            static member inline Signumi(x : int64) = sign x
-
-            static member inline Signumi(x : nativeint) = sign x
-            static member inline Signumi(x : float) = sign x
-            static member inline Signumi(x : float32) = sign x
-            static member inline Signumi(x : decimal) = sign x
-
         type Power() =
             static member inline Power(x : sbyte, y : sbyte) = pown x (int y)
             static member inline Power(x : int16, y : int16) = pown x (int y)
@@ -47,47 +25,10 @@ module Math =
             static member inline Power(x : float32, y : float32) = x ** y
             static member inline Power(x : decimal, y : decimal) = Math.Pow(float x, float y) |> decimal
 
-        type Log2() =
-            static member inline Log2(x : float) = Fun.Log2 x
-            static member inline Log2(x : float32) = Fun.Log2 x
-            static member inline Log2(x : decimal) = Fun.Log2(float x) |> decimal
-
-        type Cbrt() =
-            static member inline Cbrt(x : float) = Fun.Cbrt x
-            static member inline Cbrt(x : float32) = Fun.Cbrt x
-            static member inline Cbrt(x : decimal) = Fun.Cbrt(float x) |> decimal
-
-        type Min() =
-            static member inline Min(x : sbyte, y : sbyte) = min x y
-            static member inline Min(x : int16, y : int16) = min x y
-            static member inline Min(x : int32, y : int32) = min x y
-            static member inline Min(x : int64, y : int64) = min x y
-
-            static member inline Min(x : byte, y : byte) = min x y
-            static member inline Min(x : uint16, y : uint16) = min x y
-            static member inline Min(x : uint32, y : uint32) = min x y
-            static member inline Min(x : uint64, y : uint64) = min x y
-
+        type NativeInt() =
             static member inline Min(x : nativeint, y : nativeint) = min x y
-            static member inline Min(x : float, y : float) = min x y
-            static member inline Min(x : float32, y : float32) = min x y
-            static member inline Min(x : decimal, y : decimal) = min x y
-
-        type Max() =
-            static member inline Max(x : sbyte, y : sbyte) = max x y
-            static member inline Max(x : int16, y : int16) = max x y
-            static member inline Max(x : int32, y : int32) = max x y
-            static member inline Max(x : int64, y : int64) = max x y
-
-            static member inline Max(x : byte, y : byte) = max x y
-            static member inline Max(x : uint16, y : uint16) = max x y
-            static member inline Max(x : uint32, y : uint32) = max x y
-            static member inline Max(x : uint64, y : uint64) = max x y
-
             static member inline Max(x : nativeint, y : nativeint) = max x y
-            static member inline Max(x : float, y : float) = max x y
-            static member inline Max(x : float32, y : float32) = max x y
-            static member inline Max(x : decimal, y : decimal) = max x y
+            static member inline Square(x : nativeint) = x * x
 
     [<AutoOpen>]
     module private Aux =
@@ -103,14 +44,20 @@ module Math =
         let inline log2Aux (_ : ^z) (x : ^a) =
             ((^z or ^a) : (static member Log2 : ^a  -> ^a) x)
 
+        let inline squareAux (_ : ^z) (_ : ^w) (x : ^a) =
+            ((^z or ^w or ^a) : (static member Square : ^a -> ^a) x)
+
         let inline cbrtAux (_ : ^z) (x : ^a) =
             ((^z or ^a) : (static member Cbrt : ^a  -> ^a) x)
         
-        let inline minAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b) : (static member Min : ^a * ^b -> ^a) (x, y))
+        let inline minAux (_ : ^z) (_ : ^w) (x : ^a) (y : ^b) =
+            ((^z or ^w or ^a or ^b) : (static member Min : ^a * ^b -> ^a) (x, y))
 
-        let inline maxAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b) : (static member Max : ^a * ^b -> ^a) (x, y))
+        let inline maxAux (_ : ^z) (_ : ^w) (x : ^a) (y : ^b) =
+            ((^z or ^w or ^a or ^b) : (static member Max : ^a * ^b -> ^a) (x, y))
+
+        let inline clampAux (_ : ^z) (a : ^b) (b : ^b) (x : ^a) =
+            ((^z or ^a or ^b) : (static member Clamp : ^a * ^b * ^b -> ^a) (x, a, b))
 
     /// Resolves to the zero value for any scalar or vector type.
     let inline zero< ^T when ^T : (static member Zero : ^T) > : ^T =
@@ -123,12 +70,12 @@ module Math =
     /// Returns -1 if x is less than zero, 0 if x is equal to zero, and 1 if
     /// x is greater than zero. The result has the same type as the input.
     let inline signum x =
-        signumAux Unchecked.defaultof<Helpers.Signum> x
+        signumAux Unchecked.defaultof<Fun> x
 
     /// Returns -1 if x is less than zero, 0 if x is equal to zero, and 1 if
     /// x is greater than zero.
     let inline signumi x =
-        signumiAux Unchecked.defaultof<Helpers.Signumi> x
+        signumiAux Unchecked.defaultof<Fun> x
 
     /// Returns x raised by the power of y.
     // F# variant does not support integers!
@@ -137,27 +84,27 @@ module Math =
 
     /// Returns the base 2 logarithm of x.
     let inline log2 x =
-        log2Aux Unchecked.defaultof<Helpers.Log2> x
+        log2Aux Unchecked.defaultof<Fun> x
 
     /// Returns x raised by the power of 2.
-    let inline sqr x =
-        x * x
+    let inline sqr (x : ^a) =
+        squareAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.NativeInt> x
 
     /// Returns the cubic root of x.
     let inline cbrt x =
-        cbrtAux Unchecked.defaultof<Helpers.Cbrt> x
+        cbrtAux Unchecked.defaultof<Fun> x
 
     /// Returns the smaller of x and y.
     let inline min (y : ^b) (x : ^a) : ^a =
-        minAux Unchecked.defaultof<Helpers.Min> x y
+        minAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.NativeInt> x y
 
     /// Returns the larger of x and y.
     let inline max (y : ^b) (x : ^a) : ^a =
-        maxAux Unchecked.defaultof<Helpers.Max> x y
+        maxAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.NativeInt> x y
 
     /// Clamps x to the interval [a, b].
     let inline clamp (a : ^b) (b : ^b) (x : ^a) : ^a =
-        x |> max a |> min b
+        clampAux Unchecked.defaultof<Fun> a b x
 
     /// Clamps x to the interval [0, 1].
     let inline saturate (x : ^a) =
@@ -168,8 +115,8 @@ module Math =
         (one - t) * x + t * y
 
     /// Performs Hermite interpolation between a and b.
-    let inline smoothstep (a : ^a) (b : ^a) (x : ^b) =
+    let inline smoothstep (edge0 : ^a) (edge1 : ^a) (x : ^b) =
         let two : ^b = one + one
         let three : ^b = two + one
-        let t = saturate ((x - a) / (b - a))
+        let t = saturate ((x - edge0) / (edge1 - edge0))
         t * t * (three - two * t)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -21,7 +22,8 @@ namespace Aardvark.Base
     //# Action xor = () => Out(" ^ ");
     //# string f0 = Meta.VecFields[0], f1 = Meta.VecFields[1];
     //# string f2 = Meta.VecFields[2], f3 = Meta.VecFields[3];
-    //#
+    //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
+
     //# foreach (var vt in Meta.VecTypes) {
     //#     int d = vt.Len;
     //#     var ft = vt.FieldType;
@@ -116,14 +118,13 @@ namespace Aardvark.Base
         //# } }
 
         //# if (d > 3) { for (int i = 0; i < 3; i++) {
-        //# var types = new Meta.SimpleType[3];
-        //# for (int j = 0; j < types.Length; j++) {
-        //#     types[j] = (i == j) ? Meta.VecTypeOf(2, ft1) : ft1;
-        //# }
+        //# var t0 = (i == 0) ? Meta.VecTypeOf(2, ft1).Name : ft1.Name;
+        //# var t1 = (i == 1) ? Meta.VecTypeOf(2, ft1).Name : ft1.Name;
+        //# var t2 = (i == 2) ? Meta.VecTypeOf(2, ft1).Name : ft1.Name;
         /// <summary>
-        /// Creates a new vector from the given __types[0].Name__, __types[1].Name__, and __types[2].Name__.
+        /// Creates a new vector from the given __t0__, __t1__, and __t2__.
         /// </summary>
-        public __vtype__(__types[0].Name__ a, __types[1].Name__ b, __types[2].Name__ c)
+        public __vtype__(__t0__ a, __t1__ b, __t2__ c)
         {
             //# if (i != 0) {
             __f0__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/a;
@@ -988,32 +989,26 @@ namespace Aardvark.Base
         //# } // ft.IsReal   
         #endregion
 
-        #region Operations
+        #region Static methods for F# core library support
 
-        //# foreach (var ft1 in Meta.VecFieldTypes) {
-        //#     var vt1 = Meta.VecTypeOf(d, ft1);
-        //#     var ftype1 = ft1.Name;
         /// <summary>
-        /// Sets the elements of a vector to the given __ftype1__ elements.
+        /// Returns a copy of the given vector with all elements set to their absolute value.
         /// </summary>
-        public void Set(/*# args.ForEach(a => { */__ftype1__ __a__/*# }, comma); */)
+        public static __vtype__ Abs(__vtype__ v)
         {
-            //# fields.ForEach(args, (f, a) => {
-            __f__ = /*# if (ft != ft1) { */(__ftype__)/*# } */__a__;
-            //# });
+            return v.Abs();
         }
 
-        //# }
+        /// <summary>
+        /// Returns a vector, with each element being the result of pow() applied
+        /// to each element pair of the given vectors.
+        /// </summary>
+        public static __vtype__ Power(__vtype__ a, __vtype__ b)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */Math.Pow(a.__f__, b.__f__)/*# }, comma); */);
+        }
+
         //# if (ft.IsReal) {
-        /// <summary>
-        /// Returns a copy of this vector, with each element set to the largest integer
-        /// less than or equal to the element's current value.
-        /// </summary>
-        public __vtype__ Floor()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */System.Math.Floor(__f__)/*# }, comma); */);
-        }
-
         /// <summary>
         /// Returns a copy of the given vector, with each element set to the largest integer
         /// less than or equal to the element's current value.
@@ -1021,15 +1016,6 @@ namespace Aardvark.Base
         public static __vtype__ Floor(__vtype__ v)
         {
             return v.Floor();
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element set to the smallest integer
-        /// greater than or equal to the element's current value.
-        /// </summary>
-        public __vtype__ Ceiling()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */System.Math.Ceiling(__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1042,14 +1028,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer.
-        /// </summary>
-        public __vtype__ Round()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
         /// Returns a copy of the given vector, with each element rounded to the nearest integer.
         /// </summary>
         public static __vtype__ Round(__vtype__ v)
@@ -1058,173 +1036,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer.
-        /// </summary>
-        public __vtype__ Round(MidpointRounding mode)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, mode)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer
-        /// to the given number of fractional digits.
-        /// </summary>
-        public __vtype__ Round(int digits)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, digits)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer
-        /// to the given number of fractional digits.
-        /// </summary>
-        public __vtype__ Round(int digits, MidpointRounding mode)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, digits, mode)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer towards zero.
-        /// </summary>
-        public __vtype__ Truncate()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Truncate(__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
         /// Returns a copy of the given vector, with each element rounded to the nearest integer towards zero.
         /// </summary>
         public static __vtype__ Truncate(__vtype__ v)
         {
             return v.Truncate();
-        }
-        //# }
-
-        /// <summary>
-        /// Returns a copy of this vector with all elements set to their absolute value.
-        /// </summary>
-        public __vtype__ Abs()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */__f__.Abs()/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of the given vector with all elements set to their absolute value.
-        /// </summary>
-        public static __vtype__ Abs(__vtype__ v)
-        {
-            return v.Abs();
-        }
-
-        /// <summary>
-        /// Negates this vector and returns this.
-        /// </summary>
-        public void Negate()
-        {
-            //# fields.ForEach(f => {
-            __f__ = -__f__;
-            //# });
-        }
-
-        /// <summary>
-        /// Returns a negated copy of the specified vector.
-        /// </summary>
-        public static __vtype__ operator -(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */-v.__f__/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns the dot product of two vectors.
-        /// </summary>
-        public static __ftype__ Dot(__vtype__ a, __vtype__ b)
-        {
-            return /*# fields.ForEach(f => { */a.__f__ * b.__f__/*# }, add); */;
-        }
-
-        /// <summary>
-        /// Returns the dot product with the specified vector.
-        /// </summary>
-        public __ftype__ Dot(__vtype__ v)
-        {
-            return /*# fields.ForEach(f => { */__f__ * v.__f__/*# }, add); */;
-        }
-
-        //# if (ft.IsInteger) {
-        public Vec.DirFlags DirFlags()
-        {
-            Vec.DirFlags flags = Vec.DirFlags.None;
-            //# fields.ForEach(f => {
-            if (__f__ > 0) flags |= Vec.DirFlags.Positive__f__;
-            if (__f__ < 0) flags |= Vec.DirFlags.Negative__f__;
-            //# });
-            return flags;
-        }
-
-        //# }
-        //# if (ft.IsReal) {
-        /// <summary>
-        /// Returns the reflection direction for the given normal.
-        /// </summary>
-        /// <param name="normal">Normal vector (should be normalized)</param>
-        /// <returns></returns>
-        public __vtype__ Reflected(__vtype__ normal)
-        {
-            return 2 * Dot(normal) * normal - this;
-        }
-
-        /// <summary>
-        /// Returns the reflection direction for the given incident vector and normal.
-        /// </summary>
-        /// <param name="v">Incident vector</param>
-        /// <param name="normal">Normal vector (should be normalized)</param>
-        /// <returns></returns>
-        public static __vtype__ Reflect(__vtype__ v, __vtype__ normal)
-        {
-            return v.Reflected(normal);
-        }
-
-        /// <summary>
-        /// Returns the refraction direction for the given normal and ratio of refraction indices.
-        /// </summary>
-        /// <param name="normal">Normal vector (should be normalized)</param>
-        /// <param name="eta">Ratio of refraction indices</param>
-        /// <returns></returns>
-        public __vtype__ Refracted(__vtype__ normal, __ftype__ eta)
-        {
-            var t = Dot(normal);
-            var k = ((__ftype__) 1.0) - eta * eta * (((__ftype__)1.0) - t * t);
-
-            if (k < (__ftype__) 0.0)
-            {
-                return Zero;
-            }
-            else
-            {
-                return eta * this - (eta * t + ((__ftype__) Math.Sqrt(k))) * normal;
-            }
-        }
-
-        /// <summary>
-        /// Returns the refraction direction for the given incident vector, normal, and ratio of refraction indices.
-        /// </summary>
-        /// <param name="v">Incident vector</param>
-        /// <param name="normal">Normal vector (should be normalized)</param>
-        /// <param name="eta">Ratio of refraction indices</param>
-        /// <returns></returns>
-        public static __vtype__ Refract(__vtype__ v, __vtype__ normal, __ftype__ eta)
-        {
-            return v.Refracted(normal, eta);
-        }
-
-        public Vec.DirFlags DirFlags()
-        {
-            Vec.DirFlags flags = Vec.DirFlags.None;
-            //# fields.ForEach(f => {
-            if (__f__ > Constant<__ftype__>.PositiveTinyValue) flags |= Vec.DirFlags.Positive__f__;
-            if (__f__ < Constant<__ftype__>.NegativeTinyValue) flags |= Vec.DirFlags.Negative__f__;
-            //# });
-            return flags;
         }
 
         /// <summary>
@@ -1317,14 +1133,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a copy of the given vector, taking the cubic root of each element.
-        /// </summary>
-        public static __vtype__ Cbrt(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Cbrt(v.__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
         /// Returns a copy of the given vector, with exp() applied to each element.
         /// </summary>
         public static __vtype__ Exp(__vtype__ v)
@@ -1341,14 +1149,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a copy of the given vector, with log2() applied to each element.
-        /// </summary>
-        public static __vtype__ Log2(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Log2(v.__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
         /// Returns a copy of the given vector, with log10() applied to each element.
         /// </summary>
         public static __vtype__ Log10(__vtype__ v)
@@ -1356,32 +1156,183 @@ namespace Aardvark.Base
             return new __vtype__(/*# fields.ForEach(f => { */Math.Log10(v.__f__)/*# }, comma); */);
         }
         //# } // ft.IsReal
+        #endregion
 
+        #region Operations
+
+        //# foreach (var ft1 in Meta.VecFieldTypes) {
+        //#     var vt1 = Meta.VecTypeOf(d, ft1);
+        //#     var ftype1 = ft1.Name;
         /// <summary>
-        /// Returns a copy of the given vector, with sign() applied to each element.
+        /// Sets the elements of a vector to the given __ftype1__ elements.
         /// </summary>
-        public static __vtype__ Signum(__vtype__ v)
+        public void Set(/*# args.ForEach(a => { */__ftype1__ __a__/*# }, comma); */)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Sign(v.__f__)/*# }, comma); */);
+            //# fields.ForEach(args, (f, a) => {
+            __f__ = /*# if (ft != ft1) { */(__ftype__)/*# } */__a__;
+            //# });
+        }
+
+        //# }
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// Returns a copy of this vector, with each element set to the largest integer
+        /// less than or equal to the element's current value.
+        /// </summary>
+        public __vtype__ Floor()
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */System.Math.Floor(__f__)/*# }, comma); */);
         }
 
         /// <summary>
-        /// Returns a copy of the given vector, with sign() applied to each element.
+        /// Returns a copy of this vector, with each element set to the smallest integer
+        /// greater than or equal to the element's current value.
         /// </summary>
-        public static V__d__i Signumi(__vtype__ v)
+        public __vtype__ Ceiling()
         {
-            return new V__d__i(/*# fields.ForEach(f => { */(int) Math.Sign(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */System.Math.Ceiling(__f__)/*# }, comma); */);
         }
 
         /// <summary>
-        /// Returns a vector, with each element being the result of pow() applied
-        /// to each element pair of the given vectors.
+        /// Returns a copy of this vector, with each element rounded to the nearest integer.
         /// </summary>
-        public static __vtype__ Power(__vtype__ a, __vtype__ b)
+        public __vtype__ Round()
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Pow(a.__f__, b.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__)/*# }, comma); */);
         }
 
+        /// <summary>
+        /// Returns a copy of this vector, with each element rounded to the nearest integer.
+        /// </summary>
+        public __vtype__ Round(MidpointRounding mode)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, mode)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns a copy of this vector, with each element rounded to the nearest integer
+        /// to the given number of fractional digits.
+        /// </summary>
+        public __vtype__ Round(int digits)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, digits)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns a copy of this vector, with each element rounded to the nearest integer
+        /// to the given number of fractional digits.
+        /// </summary>
+        public __vtype__ Round(int digits, MidpointRounding mode)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, digits, mode)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns a copy of this vector, with each element rounded to the nearest integer towards zero.
+        /// </summary>
+        public __vtype__ Truncate()
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Truncate(__f__)/*# }, comma); */);
+        }
+        //# }
+
+        /// <summary>
+        /// Returns a copy of this vector with all elements set to their absolute value.
+        /// </summary>
+        public __vtype__ Abs()
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */__f__.Abs()/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Negates this vector and returns this.
+        /// </summary>
+        public void Negate()
+        {
+            //# fields.ForEach(f => {
+            __f__ = -__f__;
+            //# });
+        }
+
+        /// <summary>
+        /// Returns a negated copy of the specified vector.
+        /// </summary>
+        public static __vtype__ operator -(__vtype__ v)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */-v.__f__/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns the dot product of two vectors.
+        /// </summary>
+        public static __ftype__ Dot(__vtype__ a, __vtype__ b)
+        {
+            return /*# fields.ForEach(f => { */a.__f__ * b.__f__/*# }, add); */;
+        }
+
+        /// <summary>
+        /// Returns the dot product with the specified vector.
+        /// </summary>
+        public __ftype__ Dot(__vtype__ v)
+        {
+            return /*# fields.ForEach(f => { */__f__ * v.__f__/*# }, add); */;
+        }
+
+        //# if (ft.IsInteger) {
+        public Vec.DirFlags DirFlags()
+        {
+            Vec.DirFlags flags = Vec.DirFlags.None;
+            //# fields.ForEach(f => {
+            if (__f__ > 0) flags |= Vec.DirFlags.Positive__f__;
+            if (__f__ < 0) flags |= Vec.DirFlags.Negative__f__;
+            //# });
+            return flags;
+        }
+
+        //# }
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// Returns the reflection direction for the given normal.
+        /// </summary>
+        /// <param name="normal">Normal vector (should be normalized)</param>
+        /// <returns></returns>
+        public __vtype__ Reflected(__vtype__ normal)
+        {
+            return 2 * Dot(normal) * normal - this;
+        }
+
+        /// <summary>
+        /// Returns the refraction direction for the given normal and ratio of refraction indices.
+        /// </summary>
+        /// <param name="normal">Normal vector (should be normalized)</param>
+        /// <param name="eta">Ratio of refraction indices</param>
+        /// <returns></returns>
+        public __vtype__ Refracted(__vtype__ normal, __ftype__ eta)
+        {
+            var t = Dot(normal);
+            var k = ((__ftype__) 1.0) - eta * eta * (((__ftype__)1.0) - t * t);
+
+            if (k < (__ftype__) 0.0)
+            {
+                return Zero;
+            }
+            else
+            {
+                return eta * this - (eta * t + ((__ftype__) Math.Sqrt(k))) * normal;
+            }
+        }
+
+        public Vec.DirFlags DirFlags()
+        {
+            Vec.DirFlags flags = Vec.DirFlags.None;
+            //# fields.ForEach(f => {
+            if (__f__ > Constant<__ftype__>.PositiveTinyValue) flags |= Vec.DirFlags.Positive__f__;
+            if (__f__ < Constant<__ftype__>.NegativeTinyValue) flags |= Vec.DirFlags.Negative__f__;
+            //# });
+            return flags;
+        }
+
+        //# } // ft.IsReal
         //# if (d == 3) {
         /// <summary>
         /// Returns the cross product of two vectors.
@@ -1521,36 +1472,6 @@ namespace Aardvark.Base
             return /*# fields.ForEach(f => { */s != v.__f__/*# }, oror); */;
         }
 
-        /// <summary>
-        /// Returns whether the given vectors are equal within the given tolerance.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ApproxEqual(__vtype__ a, __vtype__ b, __ftype__ tolerance)
-        {
-            return /*# fields.ForEach(f => { */(a.__f__ - b.__f__).Abs() <= tolerance/*# }, andand); */;
-        }
-
-        /// <summary>
-        /// Returns whether this vector is equal to the specified vector within the given tolerance.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool ApproxEqual(__vtype__ v, __ftype__ tolerance)
-        {
-            return /*# fields.ForEach(f => { */(__f__ - v.__f__).Abs() <= tolerance/*# }, andand); */;
-        }
-
-        //# if (ft.IsReal) {       
-        /// <summary>
-        /// Returns whether the given vectors are equal within
-        /// Constant{__ftype__}.PositiveTinyValue.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ApproxEqual(__vtype__ a, __vtype__ b)
-        {
-            return ApproxEqual(a, b, Constant<__ftype__>.PositiveTinyValue);
-        }
-
-        //# }
         //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
         //#                     { "<=", "SmallerOrEqual" }, { ">=", "GreaterOrEqual"},
         //#                     { "==", "Equal" },          { "!=", "Different" } };
@@ -1959,6 +1880,65 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Fun
+    {
+        //# Func<Meta.ElementwiseFun.Parameter, Meta.SimpleType> getParamType =
+        //#    (p) =>
+        //#    {
+        //#        var elemType = p.ElementType ?? ft;
+        //#        return (p.IsScalar()) ? elemType : Meta.VecTypeOf(d, elemType);
+        //#    };
+        //# foreach (var group in Meta.ElementwiseFuns.Keys) {
+        #region __group__
+        //# foreach (var fun in Meta.ElementwiseFuns[group]) {
+        //# if (!fun.Domain.Contains(ft)) continue;
+        //# var retType = Meta.VecTypeOf(d, fun.ReturnType ?? ft).Name;
+
+        /// <summary>
+        /// Applies Fun.__fun.Name__ to each element of the given vector(s).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __retType__ __fun.Name__(/*# fun.Parameters.ForEach(p => {
+        var name = p.Name;
+        var ptype = getParamType(p).Name;
+        var ext = fun.IsExtension && (fun.Parameters[0] == p);
+        if (ext) { */this /*# } */__ptype__ __name__/*#}, comma); */)
+        {
+            return new __retType__(/*# fields.ForEach(f => {*/__fun.Name__(/*# fun.Parameters.ForEach(p => { 
+            */__p.Name__/*#if (!p.IsScalar()) {*/.__f__/*#} }, comma); */)/*#}, comma); */);
+        }
+        //# }
+        #endregion
+
+        //# }
+        #region ApproximateEquals
+
+        /// <summary>
+        /// Returns whether the given vectors are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __vtype__ a, __vtype__ b, __ftype__ tolerance)
+        {
+            return /*# fields.ForEach(f => { */ApproximateEquals(a.__f__, b.__f__, tolerance)/*# }, andand); */;
+        }
+
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// Returns whether the given vectors are equal within
+        /// Constant{__ftype__}.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __vtype__ a, __vtype__ b)
+        {
+            return ApproximateEquals(a, b, Constant<__ftype__>.PositiveTinyValue);
+        }
+
+        //# }
+
+        #endregion
+    }
+
     /// <summary>
     /// This static class for extension functions for __vtype__ has a non-
     /// standard name ending in "Fun" in order to shorten the function name
@@ -2074,24 +2054,6 @@ namespace Aardvark.Base
         //# } // hasT
         #endregion
 
-        #region Interpolation
-
-        /// <summary>
-        /// Returns the linearly interpolated vector between a and b.
-        /// </summary>
-        public static __vtype__ Lerp(this __ftype__ t, __vtype__ a, __vtype__ b)
-        { return a + (b - a) * t; }
-
-        //# if (ft != ht) {
-        /// <summary>
-        /// Returns the linearly interpolated vector between a and b.
-        /// </summary>
-        public static __vtype__ Lerp(this __htype__ t, __vtype__ a, __vtype__ b)
-        { return a + (b - a) * (__ftype__)t; }
-
-        //# }
-        #endregion
-
         #region Linear Combination
 
         //# if (ft.IsReal) {
@@ -2105,88 +2067,7 @@ namespace Aardvark.Base
         //# } // isreal
         #endregion
 
-        #region Elementwise Fun
-
-        /// <summary>
-        /// Returns element-wise pow of vector and value.
-        /// </summary>
-        public static __vtype__ Pow(__vtype__ x, __htype__ y)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */
-                        Fun.Pow(x.__f__, y)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns element-wise pow of given vectors.
-        /// </summary>
-        public static __vtype__ Pow(__vtype__ x, __vtype__ y)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */
-                        Fun.Pow(x.__f__, y.__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns element-wise exp of given vector.
-        /// </summary>
-        public static __vtype__ Exp(__vtype__ x)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */
-                        Fun.Exp(x.__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns element-wise natural log of given vector.
-        /// </summary>
-        public static __vtype__ Log(__vtype__ x)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */
-                        Fun.Log(x.__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns element-wise clamped vector.
-        /// </summary>
-        public static __vtype__ Clamp(__vtype__ x, __ftype__ a, __ftype__ b)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */
-                        Fun.Clamp(x.__f__, a, b)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns element-wise clamped vector.
-        /// </summary>
-        public static __vtype__ Clamp(__vtype__ x, __vtype__ a, __vtype__ b)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */
-                        Fun.Clamp(x.__f__, a.__f__, b.__f__)/*# }, comma); */);
-        }
-
-        #endregion
-
         //# } // ft.IsReal
-        #region Elementwise Extrema
-
-        //# for (int k = 2; k < 5; k++) {
-        /// <summary>
-        /// Returns element-wise minimum of given vectors.
-        /// </summary>
-        public static __vtype__ Min(/*# k.ForEach(i => {*/__vtype__ v__i__/*#}, comma);*/)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */
-                        Fun.Min(/*# k.ForEach(i => {*/v__i__.__f__/*#}, comma);*/)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns element-wise maximum of given vectors.
-        /// </summary>
-        public static __vtype__ Max(/*# k.ForEach(i => {*/__vtype__ v__i__/*#}, comma);*/)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */
-                        Fun.Max(/*# k.ForEach(i => {*/v__i__.__f__/*#}, comma);*/)/*# }, comma); */);
-        }
-
-        //# }
-        #endregion
         
         #region ArrayExtensions
 

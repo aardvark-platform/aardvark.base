@@ -111,6 +111,7 @@ public static class SourceGenerator
                     "System.Xml.dll",
                     "System.Xml.Linq.dll",
                     "Aardvark.Base.dll",
+                    "System.ValueTuple.dll"
                 },
                 ".", out CompilerResults results);
             if (results.Errors.Count > 0)
