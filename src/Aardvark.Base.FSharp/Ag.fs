@@ -16,8 +16,6 @@ module Ag =
     type Semantic() =
         inherit System.Attribute()
 
-    let mutable unpack : obj -> obj = id
-    
     #if DEBUGSCOPES
     let allScopes = HashSet<obj>()
     #endif
@@ -141,21 +139,33 @@ module Ag =
     let mutable currentScope = new ThreadLocal<Scope>(fun () -> rootScope.Value)
 
     //temporary storage for inherited values
+
+    let private unpack (o : obj) =
+        match o with
+        | :? FSharp.Data.Adaptive.IAdaptiveValue as o -> o.GetValueUntyped(FSharp.Data.Adaptive.AdaptiveToken.Top)
+        | o -> o
+
     let internal anyObject = obj()
     let private valueStore = new ThreadLocal<Dictionary<obj * string, obj>>(fun () -> Dictionary<obj * string, obj>())
-    let private setValueStore (node : obj) (name : string) (value : obj) = let node = unpack node
-                                                                           valueStore.Value.[(node,name)] <- value
-    let private getValueStore (node : obj) (name : string) = let node = unpack node
-                                                             match valueStore.Value.TryGetValue((node, name)) with
-                                                                | (true,v) -> Some v
-                                                                | _ -> match valueStore.Value.TryGetValue((anyObject, name)) with
-                                                                        | (true, v) -> Some v
-                                                                        | _ -> 
-                                                                            match rootScope.Value.TryGetChildScope(node) with
-                                                                                | Some s -> match s.TryFindCacheValue name with
-                                                                                                | Some v -> v
-                                                                                                | _ -> None
-                                                                                | None -> None
+    let private setValueStore (node : obj) (name : string) (value : obj) = 
+        let node = unpack node
+        valueStore.Value.[(node,name)] <- value
+    let private getValueStore (node : obj) (name : string) = 
+        let node = unpack node
+        match valueStore.Value.TryGetValue((node, name)) with
+        | (true,v) -> Some v
+        | _ -> 
+            match valueStore.Value.TryGetValue((anyObject, name)) with
+            | (true, v) -> Some v
+            | _ -> 
+                match rootScope.Value.TryGetChildScope(node) with
+                | Some s -> 
+                    match s.TryFindCacheValue name with
+                    | Some v -> v
+                    | _ -> None
+                | None -> 
+                    None
+
     let private clearValueStore() = valueStore.Value.Clear()
     
     type System.Object with
@@ -163,7 +173,8 @@ module Ag =
 
 
     [<OnAardvarkInit>]
-    let initialize () : unit =  AgHelpers.initializeAg<Semantic>()
+    let initialize () : unit =  
+        AgHelpers.initializeAg<Semantic>()
 
     let reinitialize () : unit =  
         AgHelpers.reIninitializeAg<Semantic>()

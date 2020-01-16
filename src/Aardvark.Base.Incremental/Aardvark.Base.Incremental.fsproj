@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>Aardvark.Base.Incremental</AssemblyName>
     <OutputType>Library</OutputType>
@@ -28,6 +28,7 @@
     <Compile Include="Proc/Proc.fs" />
     <Compile Include="Proc/ProcList.fs" />
     <Compile Include="Proc/ThreadPool.fs" />
+    <Compile Include="AgInterop.fs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>
