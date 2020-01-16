@@ -14,14 +14,36 @@ namespace Aardvark.Tests
         public MatrixTests(TestSuite.Options options) : base(options) { }
 
         [Test]
-        public void TestMatrix()
+        public void InverseTest()
         {
             MatrixInverseTest(1, 1 << 16);
         }
 
+        [Test]
+        public void MultiplicationTest()
+        {
+            MatrixMultiplicationTest();
+        }
+
         public void Run()
         {
+            MatrixMultiplicationTest();
             MatrixInverseTest(16, 1 << 20);
+        }
+
+        public void MatrixMultiplicationTest()
+        {
+            using (Report.JobTimed("Matrix multiplication tests"))
+            {
+                var rand = new RandomSystem();
+
+                Test.Begin("Row vector with matrix");
+                var m = new M44d(rand.CreateUniformDoubleArray(16));
+                var v = new V4d(rand.CreateUniformDoubleArray(4));
+
+                Test.IsTrue(v * m == m.Transposed * v);
+                Test.End();
+            }
         }
 
         public void MatrixInverseTest(int rounds, int count,
@@ -251,7 +273,7 @@ namespace Aardvark.Tests
 
             if (showWorst)
             {
-                using (Report.Job("worst matrix"))  WriteMat(luiHistoStats.Stats.MaxData);
+                using (Report.Job("worst matrix")) WriteMat(luiHistoStats.Stats.MaxData);
                 using (Report.Job("worst inverse")) WriteMat(luiHistoStats.Stats.MaxData.LuInverse());
                 using (Report.Job("worst result")) WriteMat(luiHistoStats.Stats.MaxData
                                                             * luiHistoStats.Stats.MaxData.LuInverse());
