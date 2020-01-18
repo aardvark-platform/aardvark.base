@@ -801,12 +801,12 @@ module Path =
         let boundaryCoords = List<V4d>()
 
         let start (p : V2d) =
-            if not (V2d.ApproxEqual(current, p, 1E-8)) then
+            if not (Fun.ApproximateEquals(current, p, 1E-8)) then
                 innerPoints.Add(List())
                 current <- V2d.NaN
                 
         let add (p : V2d) =
-            if not (V2d.ApproxEqual(current, p, 1E-8)) then 
+            if not (Fun.ApproximateEquals(current, p, 1E-8)) then 
                 innerPoints.[innerPoints.Count-1].Add p
                 current <- p
                 

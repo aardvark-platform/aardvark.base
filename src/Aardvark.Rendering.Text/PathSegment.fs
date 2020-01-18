@@ -218,7 +218,7 @@ module PathSegment =
     let tryArc (alpha0 : float) (alpha1 : float) (ellipse : Ellipse2d) =
         let p0 = ellipse.GetPoint alpha0
         let p1 = ellipse.GetPoint alpha1
-        if V2d.ApproxEqual(p0, p1, 1E-9) then
+        if Fun.ApproximateEquals(p0, p1, 1E-9) then
             None
         else
             // check if the spline is actually a line
