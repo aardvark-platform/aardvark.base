@@ -1387,14 +1387,39 @@ namespace Aardvark.Base
             }
             
         }
+
+        private static string ArchitectureString(Architecture arch)
+        {
+            switch (arch)
+            {
+                case Architecture.X86: return "x86";
+                case Architecture.X64: return "x64";
+                case Architecture.Arm: return "arm";
+                case Architecture.Arm64: return "arm64";
+                default: return arch.ToString();
+            }
+        }
+
         public static void Init(string basePath)
         {
             Report.BeginTimed("initializing aardvark");
 
             Report.Begin("System Information:");
-            Report.Line("OSVersion: {0}", System.Environment.OSVersion);
-            Report.Line("SystemArchitecture: {0}-bit", IntPtr.Size << 3);
-            Report.Line("Environment.Version: {0}", Environment.Version);
+            Report.Line("System:      {0} ({1})", RuntimeInformation.OSDescription, ArchitectureString(RuntimeInformation.OSArchitecture));
+            Report.Line("Processor:   {0} core {1}", Environment.ProcessorCount, ArchitectureString(RuntimeInformation.ProcessArchitecture));
+            Report.Line("Framework:   {0}", RuntimeInformation.FrameworkDescription);
+
+            if (RuntimeInformation.OSDescription.StartsWith("Darwin"))
+            {
+                Report.Error("Sorry, MacOS is not supported yet!");
+                Environment.Exit(1);
+            }
+
+            if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
+            {
+                Report.Error("{0} is not officially supported yet: some features may not work correctly", ArchitectureString(RuntimeInformation.ProcessArchitecture));
+            }
+
             Report.End();
 
 #if NETCOREAPP3_0

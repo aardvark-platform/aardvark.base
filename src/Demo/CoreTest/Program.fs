@@ -1,46 +1,34 @@
 ﻿// Learn more about F# at http://fsharp.org
 
-open System
 open Aardvark.Base
+open FSharp.Data.Traceable
+open FSharp.Data.Adaptive
+open MBrace.FsPickler
+open MBrace.FsPickler.Json
 
-let svdtest() =
-    let szx = 9
-    let szy = 5
+let pickler = FsPickler.CreateJsonSerializer(true, true)
 
-    let rand = Random()
-    let vals = 
-        [|
-            for x in 0..szx-1 do
-                yield [| for y in 0..szy-1 do yield (rand.NextDouble() - 0.5) * 0.1 |]
-        |]
+let picklerTest (input : 'a) =
+    Log.start "%s" typeof<'a>.Name
 
-    let M = Array2D.init szx szy (fun i j -> vals.[i].[j])
-    let U = Array2D.zeroCreate szx szx
-    let Vt = Array2D.zeroCreate szy szy
+    let str = pickler.PickleToString input
+    Log.line "%s" str
 
-    if SVD.decomposeInPlace U M Vt then
-        Log.line "original: \n%A\n\n" vals
-        Log.line "eigenvalues:\n"
-        for i in 0..(min szx szy)-1 do 
-            Log.line "(%d) %f" i M.[i,i]
-    else
-        Log.error "bad"
-
-    
-    
-    
-    Log.line "\ndone"
-
-    Console.ReadLine() |> ignore
-
-
-
+    let output = str |> pickler.UnPickleOfString
+    if input = output then Log.line "success %A" output
+    else Log.warn "error: %A vs %A" input output
+    Log.stop()
 
 [<EntryPoint>]
 let main argv =
     Aardvark.Init()
-
-    svdtest()
-    //let pi = PixImage.Create @"image.jpg"
-    //pi.SaveAsImage @"sepp.png"
+    picklerTest (HashSet.ofList [1;2;3;2])
+    picklerTest (CountingHashSet.ofList [1;2;3;2])
+    picklerTest (HashSetDelta.ofList [Add 1; Rem 2; Add 3; Rem 2])
+    picklerTest (Map.ofList [1,2; 3,4; 5,6])
+    picklerTest (HashMap.ofList [1,2; 3,4; 5,6])
+    picklerTest (HashMapDelta.ofList [1, Set 2; 2, Remove; 3, Set 4])
+    picklerTest (IndexList.ofList [1;2;3;2])
+    picklerTest (MapExt.ofList [1,2; 3,4; 5,6])
+    
     0 

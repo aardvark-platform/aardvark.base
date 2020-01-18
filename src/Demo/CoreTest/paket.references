@@ -1,5 +1,6 @@
 DevILSharp
 FSharp.Core
 FsPickler
+FsPickler.Json
 Aardvark.Base.TypeProviders
 FSharp.Data.Adaptive
