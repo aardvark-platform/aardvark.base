@@ -236,14 +236,14 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproxEqual(Similarity3f t0, Similarity3f t1)
+        public static bool ApproximateEquals(Similarity3f t0, Similarity3f t1)
         {
-            return ApproxEqual(t0, t1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
+            return ApproximateEquals(t0, t1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
         }
 
-        public static bool ApproxEqual(Similarity3f t0, Similarity3f t1, float angleTol, float posTol, float scaleTol)
+        public static bool ApproximateEquals(Similarity3f t0, Similarity3f t1, float angleTol, float posTol, float scaleTol)
         {
-            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && Euclidean3f.ApproxEqual(t0.EuclideanTransformation, t1.EuclideanTransformation, angleTol, posTol);
+            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && Euclidean3f.ApproximateEquals(t0.EuclideanTransformation, t1.EuclideanTransformation, angleTol, posTol);
         }
 
         #endregion
@@ -600,14 +600,14 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproxEqual(Similarity3d t0, Similarity3d t1)
+        public static bool ApproximateEquals(Similarity3d t0, Similarity3d t1)
         {
-            return ApproxEqual(t0, t1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
+            return ApproximateEquals(t0, t1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
         }
 
-        public static bool ApproxEqual(Similarity3d t0, Similarity3d t1, double angleTol, double posTol, double scaleTol)
+        public static bool ApproximateEquals(Similarity3d t0, Similarity3d t1, double angleTol, double posTol, double scaleTol)
         {
-            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && Euclidean3d.ApproxEqual(t0.EuclideanTransformation, t1.EuclideanTransformation, angleTol, posTol);
+            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && Euclidean3d.ApproximateEquals(t0.EuclideanTransformation, t1.EuclideanTransformation, angleTol, posTol);
         }
 
         #endregion

@@ -79,7 +79,7 @@ namespace Aardvark.Base
         public double GetT(V3d p)
         {
             var v = p - Origin;
-            var d = Direction.Abs;
+            var d = Direction.Abs();
 
             if (d.X > d.Y)
                 return (d.X > d.Z) ? (v.X / Direction.X) : (v.Z / Direction.Z);

@@ -232,43 +232,6 @@ module Prelude =
 
     let inline constF v = fun _ -> v
 
-    let private BinaryDynamicImpl mn : ('T -> 'U -> 'V) =
-        let aty = typeof<'T>
-        let bty = typeof<'U>
-        let minfo = aty.GetMethod(mn,[| aty;bty |])
-        (fun x y -> unbox<_>(minfo.Invoke(null,[| box x; box y|])))
-
-    type private PowDynamicImplTable<'T>() = 
-        static let result : ('T -> 'T -> 'T) = 
-            let aty = typeof<'T>
-            if   aty.Equals(typeof<sbyte>)      then unbox<_>(fun (x:sbyte) (y:sbyte)           -> Fun.Pow(int x, float y) |> sbyte)
-            elif aty.Equals(typeof<int16>)      then unbox<_>(fun (x:int16) (y:int16)           -> Fun.Pow(int x, float y) |> int16)
-            elif aty.Equals(typeof<int32>)      then unbox<_>(fun (x:int32) (y:int32)           -> Fun.Pow(x, float y) |> int)
-            elif aty.Equals(typeof<int64>)      then unbox<_>(fun (x:int64) (y:int64)           -> Fun.Pow(x, float y) |> int64)
-
-            elif aty.Equals(typeof<byte>)        then unbox<_>(fun (x:byte) (y:byte)             -> Fun.Pow(int x, float y) |> byte)
-            elif aty.Equals(typeof<uint16>)      then unbox<_>(fun (x:uint16) (y:uint16)         -> Fun.Pow(int x, float y) |> uint16)
-            elif aty.Equals(typeof<uint32>)      then unbox<_>(fun (x:uint32) (y:uint32)         -> Fun.Pow(int x, float y) |> uint32)
-            elif aty.Equals(typeof<uint64>)      then unbox<_>(fun (x:uint64) (y:uint64)         -> Fun.Pow(int64 x, float y) |> uint64)
-
-            elif aty.Equals(typeof<nativeint>)  then unbox<_>(fun (x:nativeint) (y:nativeint)   -> Fun.Pow(int64 x, float y) |> nativeint)
-            elif aty.Equals(typeof<float>)      then unbox<_>(fun (x:float) (y:float)           -> Fun.Pow(x, y) )
-            elif aty.Equals(typeof<float32>)    then unbox<_>(fun (x:float32) (y:float32)       -> Fun.Pow(x, y))
-            elif aty.Equals(typeof<decimal>)    then unbox<_>(fun (x:decimal) (y:decimal)       -> Fun.Pow(float x, float y) |> decimal)
-            else BinaryDynamicImpl "Pow" 
-        static member Result : ('T -> 'T -> 'T) = result
-
-    let PowDynamic (x : 'T) (y : 'T) = PowDynamicImplTable<'T>.Result x y
-
-    let inline pow< ^T when ^T : (static member (*) : ^T -> ^T -> ^T)> (x: ^T) (y : ^T) : ^T = 
-        PowDynamic x y
-
-    let inline clamp (min : ^a) (max : ^a) (x : ^a) =
-        if x < min then min
-        elif x > max then max
-        else x
-
-
 [<AutoOpen>]
 module CSharpInterop =
 

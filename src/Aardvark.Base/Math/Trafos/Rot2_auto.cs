@@ -550,15 +550,15 @@ namespace Aardvark.Base
         }
 
 
-        public static bool ApproxEqual(Rot2f r0, Rot2f r1)
+        public static bool ApproximateEquals(Rot2f r0, Rot2f r1)
         {
-            return ApproxEqual(r0, r1, Constant<float>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue);
         }
 
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes ber�cksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add Rot3f.ApproxEqual(Rot3f other);
-        public static bool ApproxEqual(Rot2f r0, Rot2f r1, float tolerance)
+        // [todo ISSUE 20090427 andi : andi] add Rot3f.ApproximateEquals(Rot3f other);
+        public static bool ApproximateEquals(Rot2f r0, Rot2f r1, float tolerance)
         {
             return (r0.Angle - r1.Angle).Abs() <= tolerance;
         }
@@ -1197,15 +1197,15 @@ namespace Aardvark.Base
         }
 
 
-        public static bool ApproxEqual(Rot2d r0, Rot2d r1)
+        public static bool ApproximateEquals(Rot2d r0, Rot2d r1)
         {
-            return ApproxEqual(r0, r1, Constant<double>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue);
         }
 
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes ber�cksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add Rot3d.ApproxEqual(Rot3d other);
-        public static bool ApproxEqual(Rot2d r0, Rot2d r1, double tolerance)
+        // [todo ISSUE 20090427 andi : andi] add Rot3d.ApproximateEquals(Rot3d other);
+        public static bool ApproximateEquals(Rot2d r0, Rot2d r1, double tolerance)
         {
             return (r0.Angle - r1.Angle).Abs() <= tolerance;
         }

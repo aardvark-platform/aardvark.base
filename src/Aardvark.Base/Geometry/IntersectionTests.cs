@@ -799,7 +799,7 @@ namespace Aardvark.Base
         {
             V2d a = r0.Origin - r1.Origin;
 
-            if (r0.Origin.ApproxEqual(r1.Origin, Constant<double>.PositiveTinyValue))
+            if (r0.Origin.ApproximateEquals(r1.Origin, Constant<double>.PositiveTinyValue))
             {
                 t0 = 0.0;
                 t1 = 0.0;
@@ -836,7 +836,7 @@ namespace Aardvark.Base
         public static bool Intersects(this Ray2d r0, Ray2d r1, out double t)
         {
             V2d a = r1.Origin - r0.Origin;
-            if (a.Abs.AllSmaller(Constant<double>.PositiveTinyValue))
+            if (a.Abs().AllSmaller(Constant<double>.PositiveTinyValue))
             {
                 t = 0;
                 return true; // Early exit when rays have same origin

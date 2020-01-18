@@ -179,10 +179,10 @@ namespace Aardvark.Tests
         {
             var i = trafo.Forward * trafo.Backward;
             // i should be Identity
-            return i.C0.ApproxEqual(V4d.IOOO, 1e-1)
-                && i.C1.ApproxEqual(V4d.OIOO, 1e-1)
-                && i.C2.ApproxEqual(V4d.OOIO, 1e-1)
-                && i.C3.ApproxEqual(V4d.OOOI, 1e-1);
+            return i.C0.ApproximateEquals(V4d.IOOO, 1e-1)
+                && i.C1.ApproximateEquals(V4d.OIOO, 1e-1)
+                && i.C2.ApproximateEquals(V4d.OOIO, 1e-1)
+                && i.C3.ApproximateEquals(V4d.OOOI, 1e-1);
         }
 
         [Test]

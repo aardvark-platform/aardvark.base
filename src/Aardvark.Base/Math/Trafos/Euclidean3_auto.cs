@@ -207,14 +207,14 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproxEqual(Euclidean3f r0, Euclidean3f r1)
+        public static bool ApproximateEquals(Euclidean3f r0, Euclidean3f r1)
         {
-            return ApproxEqual(r0, r1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
         }
 
-        public static bool ApproxEqual(Euclidean3f r0, Euclidean3f r1, float angleTol, float posTol)
+        public static bool ApproximateEquals(Euclidean3f r0, Euclidean3f r1, float angleTol, float posTol)
         {
-            return V3f.ApproxEqual(r0.Trans, r1.Trans, posTol) && Rot3f.ApproxEqual(r0.Rot, r1.Rot, angleTol);
+            return Fun.ApproximateEquals(r0.Trans, r1.Trans, posTol) && Rot3f.ApproximateEquals(r0.Rot, r1.Rot, angleTol);
         }
 
         #endregion
@@ -593,14 +593,14 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproxEqual(Euclidean3d r0, Euclidean3d r1)
+        public static bool ApproximateEquals(Euclidean3d r0, Euclidean3d r1)
         {
-            return ApproxEqual(r0, r1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
         }
 
-        public static bool ApproxEqual(Euclidean3d r0, Euclidean3d r1, double angleTol, double posTol)
+        public static bool ApproximateEquals(Euclidean3d r0, Euclidean3d r1, double angleTol, double posTol)
         {
-            return V3d.ApproxEqual(r0.Trans, r1.Trans, posTol) && Rot3d.ApproxEqual(r0.Rot, r1.Rot, angleTol);
+            return Fun.ApproximateEquals(r0.Trans, r1.Trans, posTol) && Rot3d.ApproximateEquals(r0.Rot, r1.Rot, angleTol);
         }
 
         #endregion

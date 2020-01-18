@@ -1281,20 +1281,6 @@ namespace Aardvark.Base
         #endregion
     }
 
-    public static partial class ColFun
-    {
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b.
-        /// </summary>
-        public static C3f LerpC3f(this double x, C3b a, C3b b)
-        {
-            return new C3f(
-                        (float)a.R + (float)(x * (double)((int)b.R - (int)a.R)),
-                        (float)a.G + (float)(x * (double)((int)b.G - (int)a.G)),
-                        (float)a.B + (float)(x * (double)((int)b.B - (int)a.B)));
-        }
-    }
-
     #endregion
 
     #region PixFormat

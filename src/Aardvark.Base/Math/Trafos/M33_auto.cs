@@ -264,33 +264,6 @@ namespace Aardvark.Base
             return TransposedTransform(this, v);
         }
 
-        /// <summary>
-        /// Transforms direction vector v (p.w is presumed 0)
-        /// with the inverse of this transform.
-        /// </summary>
-        public V2f InvTransformDir(V2f v)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// No projective transform is performed.
-        /// </summary>
-        public V2f InvTransformPos(V2f p)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// Projective transform is performed.
-        /// </summary>
-        public V2f InvTransformPosProj(V2f p)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
         #region V3f Extensions
@@ -603,33 +576,6 @@ namespace Aardvark.Base
         public V3d TransposedTransform(V3d v)
         {
             return TransposedTransform(this, v);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (p.w is presumed 0)
-        /// with the inverse of this transform.
-        /// </summary>
-        public V2d InvTransformDir(V2d v)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// No projective transform is performed.
-        /// </summary>
-        public V2d InvTransformPos(V2d p)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) with the inverse of this transform.
-        /// Projective transform is performed.
-        /// </summary>
-        public V2d InvTransformPosProj(V2d p)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

@@ -30,7 +30,7 @@ namespace Aardvark.Base
 
         public Ray3d Ray3d => new Ray3d(P0, P1 - P0);
 
-        public bool IsDegenerated => !Direction.Abs.AnyGreater(Constant<double>.PositiveTinyValue);
+        public bool IsDegenerated => !Direction.Abs().AnyGreater(Constant<double>.PositiveTinyValue);
 
         #endregion
 

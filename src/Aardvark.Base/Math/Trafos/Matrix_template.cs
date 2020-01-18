@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
@@ -491,13 +492,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a __nmtype__ matrix with a __vmtype__ column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vntype__ Multiply(__nmtype__ m, __vmtype__ v)
         {
-            return new __vntype__(/*# n.ForEach(r => { */
-                /*# m.ForEach(q => { var f = fields[q]; */m.M__r____q__ * v.__f__/*# },
-                    add); }, comma); */);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a __nmtype__ matrix with a __vmtype__ column vector.
+        /// </summary>
         public static __vntype__ operator *(__nmtype__ m, __vmtype__ v)
         {
             return new __vntype__(/*# n.ForEach(r => { */
@@ -506,7 +512,19 @@ namespace Aardvark.Base
         }
 
         //# if (m == n) {
-        public static __vmtype__ TransposedMultiply(__vntype__ v, __nmtype__ m)
+        /// <summary>
+        /// Multiplies a __vntype__ row vector with a __nmtype__ matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmtype__ Multiply(__vntype__ v, __nmtype__ m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a __vntype__ row vector with a __nmtype__ matrix.
+        /// </summary>
+        public static __vmtype__ operator *(__vmtype__ v, __nmtype__ m)
         {
             return new __vmtype__(/*# m.ForEach(q => { */
                 /*# n.ForEach(r => { var f = fields[r]; */v.__f__ * m.M__r____q__/*# },
@@ -609,7 +627,7 @@ namespace Aardvark.Base
 
         //# if (m == 2) {
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
         /// </summary>
         public static __ftype__ TransformDir(__nmtype__ m, __ftype__ v)
         {
@@ -617,7 +635,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static __ftype__ TransformPos(__nmtype__ m, __ftype__ p)
@@ -626,7 +644,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static __ftype__ TransformPosProj(__nmtype__ m, __ftype__ p)
@@ -637,7 +655,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static __vmtype__ TransformPosProjFull(__nmtype__ m, __ftype__ p)
@@ -646,7 +664,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by this matrix.
         /// </summary>
         public __ftype__ TransformDir(__ftype__ v)
         {
@@ -670,7 +688,7 @@ namespace Aardvark.Base
 
         //# } else { // m != 2
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.__fields[m-1]__ is presumed 0.0) by matrix m.
         /// </summary>
         public static __vmsub1type__ TransformDir(__nmtype__ m, __vmsub1type__ v)
         {
@@ -680,7 +698,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static __vmsub1type__ TransformPos(__nmtype__ m, __vmsub1type__ p)
@@ -691,7 +709,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.__fields[m-1]__ is presumed 0.0) by this matrix.
         /// </summary>
         public __vmsub1type__ TransformDir(__vmsub1type__ v)
         {
@@ -701,7 +719,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public __vmsub1type__ TransformPos(__vmsub1type__ p)
@@ -713,7 +731,7 @@ namespace Aardvark.Base
 
         //# if (n == m) {
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.__fields[m-1]__ is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static __vmsub1type__ TransposedTransformDir(__nmtype__ m, __vmsub1type__ v)
         {
@@ -723,7 +741,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static __vmsub1type__ TransposedTransformPos(__nmtype__ m, __vmsub1type__ p)
@@ -734,7 +752,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.__fields[m-1]__ is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public __vmsub1type__ TransposedTransformDir(__vmsub1type__ v)
         {
@@ -744,7 +762,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public __vmsub1type__ TransposedTransformPos(__vmsub1type__ p)
@@ -755,7 +773,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static __vmsub1type__ TransformPosProj(__nmtype__ m, __vmsub1type__ p)
@@ -766,7 +784,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static __vmtype__ TransformPosProjFull(__nmtype__ m, __vmsub1type__ p)
@@ -777,7 +795,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public __vmsub1type__ TransformPosProj(__vmsub1type__ p)
@@ -786,7 +804,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public __vmtype__ TransformPosProjFull(__vmsub1type__ p)
@@ -796,7 +814,7 @@ namespace Aardvark.Base
 
         //# } else { // n != m
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static __vmsub1type__ TransformPosProj(__nmtype__ m, __vmsub1type__ p)
@@ -804,7 +822,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public __vmsub1type__ TransformPosProj(__vmsub1type__ p)
@@ -989,19 +1007,11 @@ namespace Aardvark.Base
         public __nmtype__ Inverse { get { return LuInverse(); } }
 
         /// <summary>
-        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
-        /// </summary>
-        public static bool ApproximatelyEquals(__nmtype__ a, __nmtype__ b, __ftype__ epsilon)
-        {
-            return DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
-        }
-
-        /// <summary>
         /// Returns if the matrix is the identity matrix I.
         /// </summary>
         public bool IsIdentity(__ftype__ epsilon)
         {
-            return ApproximatelyEquals(this, Identity, epsilon);
+            return Fun.ApproximateEquals(this, Identity, epsilon);
         }
 
         /// <summary>
@@ -1144,6 +1154,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(__nmtype__ a, __nmtype__ b, __ftype__ epsilon)
+        {
+            return __nmtype__.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     //# } // t
     //# } // m

@@ -182,14 +182,14 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproxEqual(__e2t__ r0, __e2t__ r1)
+        public static bool ApproximateEquals(__e2t__ r0, __e2t__ r1)
         {
-            return ApproxEqual(r0, r1, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue);
         }
 
-        public static bool ApproxEqual(__e2t__ r0, __e2t__ r1, __ft__ angleTol, __ft__ posTol)
+        public static bool ApproximateEquals(__e2t__ r0, __e2t__ r1, __ft__ angleTol, __ft__ posTol)
         {
-            return __v2t__.ApproxEqual(r0.Trans, r1.Trans, posTol) && __r2t__.ApproxEqual(r0.Rot, r1.Rot, angleTol);
+            return Fun.ApproximateEquals(r0.Trans, r1.Trans, posTol) && __r2t__.ApproximateEquals(r0.Rot, r1.Rot, angleTol);
         }
 
         #endregion

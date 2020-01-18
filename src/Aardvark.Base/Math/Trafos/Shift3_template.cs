@@ -101,7 +101,7 @@ namespace Aardvark.Base
 
         public Shift__x3t__ Inverse
         {
-            get { return new Shift__x3t__(V.Negated); }
+            get { return new Shift__x3t__(-V); }
         }
 
         #endregion

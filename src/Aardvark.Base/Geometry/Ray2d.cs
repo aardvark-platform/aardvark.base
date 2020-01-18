@@ -111,7 +111,7 @@ namespace Aardvark.Base
         public V2d Intersect(Ray2d r)
         {
             V2d a = r.Origin - Origin;
-            if (a.Abs.AllSmaller(Constant<double>.PositiveTinyValue))
+            if (a.Abs().AllSmaller(Constant<double>.PositiveTinyValue))
                 return Origin; // Early exit when rays have same origin
 
             double cross = Direction.Dot270(r.Direction);
@@ -123,7 +123,7 @@ namespace Aardvark.Base
 
         public V2d Intersect(V2d dirVector)
         {
-            if (Origin.Abs.AllSmaller(Constant<double>.PositiveTinyValue))
+            if (Origin.Abs().AllSmaller(Constant<double>.PositiveTinyValue))
                 return Origin; // Early exit when rays have same origin
 
             double cross = Direction.Dot270(dirVector);

@@ -95,7 +95,7 @@ namespace Aardvark.Base
 
         public Shift3f Inverse
         {
-            get { return new Shift3f(V.Negated); }
+            get { return new Shift3f(-V); }
         }
 
         #endregion
@@ -597,7 +597,7 @@ namespace Aardvark.Base
 
         public Shift3d Inverse
         {
-            get { return new Shift3d(V.Negated); }
+            get { return new Shift3d(-V); }
         }
 
         #endregion

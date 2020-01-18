@@ -15,6 +15,7 @@
   <ItemGroup>
     <Compile Include="Prelude\Logging.fs" />
     <Compile Include="Prelude\FSLibExtensions.fs" />
+    <Compile Include="Prelude\Math.fs" />
     <Compile Include="Prelude\Measures.fs" />
     <Compile Include="Prelude\Lens.fs" />
     <Compile Include="Prelude\Monoid.fs" />

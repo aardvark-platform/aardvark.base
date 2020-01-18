@@ -1469,41 +1469,24 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
         /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C3f.
+        /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3f LerpRawC3f(this double x, C3b a, C3b b)
+        public static C3f Lerp(this float x, C3b a, C3b b)
         {
-            return new C3f(
-                        (float)a.R + ((float)x * (float)((int)b.R - (int)a.R)), 
-                        (float)a.G + ((float)x * (float)((int)b.G - (int)a.G)), 
-                        (float)a.B + ((float)x * (float)((int)b.B - (int)a.B)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C3d.
-        /// </summary>
-        public static C3d LerpRawC3d(this double x, C3b a, C3b b)
-        {
-            return new C3d(
-                        (double)a.R + (x * (double)((int)b.R - (int)a.R)), 
-                        (double)a.G + (x * (double)((int)b.G - (int)a.G)), 
-                        (double)a.B + (x * (double)((int)b.B - (int)a.B)));
+            return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3b Lerp(this double x, C3b a, C3b b)
+        public static C3d Lerp(this double x, C3b a, C3b b)
         {
-            return new C3b(
-                        (byte)((int)a.R + (int)(x * (double)((int)b.R - (int)a.R))), 
-                        (byte)((int)a.G + (int)(x * (double)((int)b.G - (int)a.G))), 
-                        (byte)((int)a.B + (int)(x * (double)((int)b.B - (int)a.B))));
+            return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         #endregion
@@ -2974,41 +2957,24 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
         /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C3f.
+        /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3f LerpRawC3f(this double x, C3us a, C3us b)
+        public static C3f Lerp(this float x, C3us a, C3us b)
         {
-            return new C3f(
-                        (float)a.R + ((float)x * (float)((int)b.R - (int)a.R)), 
-                        (float)a.G + ((float)x * (float)((int)b.G - (int)a.G)), 
-                        (float)a.B + ((float)x * (float)((int)b.B - (int)a.B)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C3d.
-        /// </summary>
-        public static C3d LerpRawC3d(this double x, C3us a, C3us b)
-        {
-            return new C3d(
-                        (double)a.R + (x * (double)((int)b.R - (int)a.R)), 
-                        (double)a.G + (x * (double)((int)b.G - (int)a.G)), 
-                        (double)a.B + (x * (double)((int)b.B - (int)a.B)));
+            return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3us Lerp(this double x, C3us a, C3us b)
+        public static C3d Lerp(this double x, C3us a, C3us b)
         {
-            return new C3us(
-                        (ushort)((int)a.R + (int)(x * (double)((int)b.R - (int)a.R))), 
-                        (ushort)((int)a.G + (int)(x * (double)((int)b.G - (int)a.G))), 
-                        (ushort)((int)a.B + (int)(x * (double)((int)b.B - (int)a.B))));
+            return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         #endregion
@@ -4403,41 +4369,24 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
         /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C3f.
+        /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3f LerpRawC3f(this double x, C3ui a, C3ui b)
+        public static C3f Lerp(this float x, C3ui a, C3ui b)
         {
-            return new C3f(
-                        (float)a.R + ((float)x * (float)((long)b.R - (long)a.R)), 
-                        (float)a.G + ((float)x * (float)((long)b.G - (long)a.G)), 
-                        (float)a.B + ((float)x * (float)((long)b.B - (long)a.B)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C3d.
-        /// </summary>
-        public static C3d LerpRawC3d(this double x, C3ui a, C3ui b)
-        {
-            return new C3d(
-                        (double)a.R + (x * (double)((long)b.R - (long)a.R)), 
-                        (double)a.G + (x * (double)((long)b.G - (long)a.G)), 
-                        (double)a.B + (x * (double)((long)b.B - (long)a.B)));
+            return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3ui Lerp(this double x, C3ui a, C3ui b)
+        public static C3d Lerp(this double x, C3ui a, C3ui b)
         {
-            return new C3ui(
-                        (uint)((long)a.R + (long)(x * (double)((long)b.R - (long)a.R))), 
-                        (uint)((long)a.G + (long)(x * (double)((long)b.G - (long)a.G))), 
-                        (uint)((long)a.B + (long)(x * (double)((long)b.B - (long)a.B))));
+            return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         #endregion
@@ -5965,43 +5914,17 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
         /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C3f.
-        /// </summary>
-        public static C3f LerpRawC3f(this double x, C3f a, C3f b)
-        {
-            return new C3f(
-                        (float)a.R + ((float)x * (float)((double)b.R - (double)a.R)), 
-                        (float)a.G + ((float)x * (float)((double)b.G - (double)a.G)), 
-                        (float)a.B + ((float)x * (float)((double)b.B - (double)a.B)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C3d.
-        /// </summary>
-        public static C3d LerpRawC3d(this double x, C3f a, C3f b)
-        {
-            return new C3d(
-                        (double)a.R + (x * (double)((double)b.R - (double)a.R)), 
-                        (double)a.G + (x * (double)((double)b.G - (double)a.G)), 
-                        (double)a.B + (x * (double)((double)b.B - (double)a.B)));
-        }
-
-        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3f Lerp(this double x, C3f a, C3f b)
+        public static C3f Lerp(this float x, C3f a, C3f b)
         {
-            return new C3f(
-                        (float)((double)a.R + (x * ((double)b.R - (double)a.R))), 
-                        (float)((double)a.G + (x * ((double)b.G - (double)a.G))), 
-                        (float)((double)a.B + (x * ((double)b.B - (double)a.B))));
+            return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
-
         #endregion
     }
 
@@ -7413,43 +7336,17 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C3f.
-        /// </summary>
-        public static C3f LerpRawC3f(this double x, C3d a, C3d b)
-        {
-            return new C3f(
-                        (float)a.R + ((float)x * (float)((double)b.R - (double)a.R)), 
-                        (float)a.G + ((float)x * (float)((double)b.G - (double)a.G)), 
-                        (float)a.B + ((float)x * (float)((double)b.B - (double)a.B)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C3d.
-        /// </summary>
-        public static C3d LerpRawC3d(this double x, C3d a, C3d b)
-        {
-            return new C3d(
-                        (double)a.R + (x * (double)((double)b.R - (double)a.R)), 
-                        (double)a.G + (x * (double)((double)b.G - (double)a.G)), 
-                        (double)a.B + (x * (double)((double)b.B - (double)a.B)));
-        }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C3d Lerp(this double x, C3d a, C3d b)
         {
-            return new C3d(
-                        (double)((double)a.R + (x * ((double)b.R - (double)a.R))), 
-                        (double)((double)a.G + (x * ((double)b.G - (double)a.G))), 
-                        (double)((double)a.B + (x * ((double)b.B - (double)a.B))));
+            return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
-
         #endregion
     }
 
@@ -9047,44 +8944,24 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
         /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C4f.
+        /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4f LerpRawC4f(this double x, C4b a, C4b b)
+        public static C4f Lerp(this float x, C4b a, C4b b)
         {
-            return new C4f(
-                        (float)a.R + ((float)x * (float)((int)b.R - (int)a.R)), 
-                        (float)a.G + ((float)x * (float)((int)b.G - (int)a.G)), 
-                        (float)a.B + ((float)x * (float)((int)b.B - (int)a.B)), 
-                        (float)a.A + ((float)x * (float)((int)b.A - (int)a.A)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C4d.
-        /// </summary>
-        public static C4d LerpRawC4d(this double x, C4b a, C4b b)
-        {
-            return new C4d(
-                        (double)a.R + (x * (double)((int)b.R - (int)a.R)), 
-                        (double)a.G + (x * (double)((int)b.G - (int)a.G)), 
-                        (double)a.B + (x * (double)((int)b.B - (int)a.B)), 
-                        (double)a.A + (x * (double)((int)b.A - (int)a.A)));
+            return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4b Lerp(this double x, C4b a, C4b b)
+        public static C4d Lerp(this double x, C4b a, C4b b)
         {
-            return new C4b(
-                        (byte)((int)a.R + (int)(x * (double)((int)b.R - (int)a.R))), 
-                        (byte)((int)a.G + (int)(x * (double)((int)b.G - (int)a.G))), 
-                        (byte)((int)a.B + (int)(x * (double)((int)b.B - (int)a.B))), 
-                        (byte)((int)a.A + (int)(x * (double)((int)b.A - (int)a.A))));
+            return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         #endregion
@@ -10684,44 +10561,24 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
         /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C4f.
+        /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4f LerpRawC4f(this double x, C4us a, C4us b)
+        public static C4f Lerp(this float x, C4us a, C4us b)
         {
-            return new C4f(
-                        (float)a.R + ((float)x * (float)((int)b.R - (int)a.R)), 
-                        (float)a.G + ((float)x * (float)((int)b.G - (int)a.G)), 
-                        (float)a.B + ((float)x * (float)((int)b.B - (int)a.B)), 
-                        (float)a.A + ((float)x * (float)((int)b.A - (int)a.A)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C4d.
-        /// </summary>
-        public static C4d LerpRawC4d(this double x, C4us a, C4us b)
-        {
-            return new C4d(
-                        (double)a.R + (x * (double)((int)b.R - (int)a.R)), 
-                        (double)a.G + (x * (double)((int)b.G - (int)a.G)), 
-                        (double)a.B + (x * (double)((int)b.B - (int)a.B)), 
-                        (double)a.A + (x * (double)((int)b.A - (int)a.A)));
+            return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4us Lerp(this double x, C4us a, C4us b)
+        public static C4d Lerp(this double x, C4us a, C4us b)
         {
-            return new C4us(
-                        (ushort)((int)a.R + (int)(x * (double)((int)b.R - (int)a.R))), 
-                        (ushort)((int)a.G + (int)(x * (double)((int)b.G - (int)a.G))), 
-                        (ushort)((int)a.B + (int)(x * (double)((int)b.B - (int)a.B))), 
-                        (ushort)((int)a.A + (int)(x * (double)((int)b.A - (int)a.A))));
+            return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         #endregion
@@ -12235,44 +12092,24 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
         /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C4f.
+        /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4f LerpRawC4f(this double x, C4ui a, C4ui b)
+        public static C4f Lerp(this float x, C4ui a, C4ui b)
         {
-            return new C4f(
-                        (float)a.R + ((float)x * (float)((long)b.R - (long)a.R)), 
-                        (float)a.G + ((float)x * (float)((long)b.G - (long)a.G)), 
-                        (float)a.B + ((float)x * (float)((long)b.B - (long)a.B)), 
-                        (float)a.A + ((float)x * (float)((long)b.A - (long)a.A)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C4d.
-        /// </summary>
-        public static C4d LerpRawC4d(this double x, C4ui a, C4ui b)
-        {
-            return new C4d(
-                        (double)a.R + (x * (double)((long)b.R - (long)a.R)), 
-                        (double)a.G + (x * (double)((long)b.G - (long)a.G)), 
-                        (double)a.B + (x * (double)((long)b.B - (long)a.B)), 
-                        (double)a.A + (x * (double)((long)b.A - (long)a.A)));
+            return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4ui Lerp(this double x, C4ui a, C4ui b)
+        public static C4d Lerp(this double x, C4ui a, C4ui b)
         {
-            return new C4ui(
-                        (uint)((long)a.R + (long)(x * (double)((long)b.R - (long)a.R))), 
-                        (uint)((long)a.G + (long)(x * (double)((long)b.G - (long)a.G))), 
-                        (uint)((long)a.B + (long)(x * (double)((long)b.B - (long)a.B))), 
-                        (uint)((long)a.A + (long)(x * (double)((long)b.A - (long)a.A))));
+            return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         #endregion
@@ -13935,46 +13772,17 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
         /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C4f.
-        /// </summary>
-        public static C4f LerpRawC4f(this double x, C4f a, C4f b)
-        {
-            return new C4f(
-                        (float)a.R + ((float)x * (float)((double)b.R - (double)a.R)), 
-                        (float)a.G + ((float)x * (float)((double)b.G - (double)a.G)), 
-                        (float)a.B + ((float)x * (float)((double)b.B - (double)a.B)), 
-                        (float)a.A + ((float)x * (float)((double)b.A - (double)a.A)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C4d.
-        /// </summary>
-        public static C4d LerpRawC4d(this double x, C4f a, C4f b)
-        {
-            return new C4d(
-                        (double)a.R + (x * (double)((double)b.R - (double)a.R)), 
-                        (double)a.G + (x * (double)((double)b.G - (double)a.G)), 
-                        (double)a.B + (x * (double)((double)b.B - (double)a.B)), 
-                        (double)a.A + (x * (double)((double)b.A - (double)a.A)));
-        }
-
-        /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4f Lerp(this double x, C4f a, C4f b)
+        public static C4f Lerp(this float x, C4f a, C4f b)
         {
-            return new C4f(
-                        (float)((double)a.R + (x * ((double)b.R - (double)a.R))), 
-                        (float)((double)a.G + (x * ((double)b.G - (double)a.G))), 
-                        (float)((double)a.B + (x * ((double)b.B - (double)a.B))), 
-                        (float)((double)a.A + (x * ((double)b.A - (double)a.A))));
+            return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
-
         #endregion
     }
 
@@ -15504,46 +15312,17 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  C4f.
-        /// </summary>
-        public static C4f LerpRawC4f(this double x, C4d a, C4d b)
-        {
-            return new C4f(
-                        (float)a.R + ((float)x * (float)((double)b.R - (double)a.R)), 
-                        (float)a.G + ((float)x * (float)((double)b.G - (double)a.G)), 
-                        (float)a.B + ((float)x * (float)((double)b.B - (double)a.B)), 
-                        (float)a.A + ((float)x * (float)((double)b.A - (double)a.A)));
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a C4d.
-        /// </summary>
-        public static C4d LerpRawC4d(this double x, C4d a, C4d b)
-        {
-            return new C4d(
-                        (double)a.R + (x * (double)((double)b.R - (double)a.R)), 
-                        (double)a.G + (x * (double)((double)b.G - (double)a.G)), 
-                        (double)a.B + (x * (double)((double)b.B - (double)a.B)), 
-                        (double)a.A + (x * (double)((double)b.A - (double)a.A)));
-        }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
         public static C4d Lerp(this double x, C4d a, C4d b)
         {
-            return new C4d(
-                        (double)((double)a.R + (x * ((double)b.R - (double)a.R))), 
-                        (double)((double)a.G + (x * ((double)b.G - (double)a.G))), 
-                        (double)((double)a.B + (x * ((double)b.B - (double)a.B))), 
-                        (double)((double)a.A + (x * ((double)b.A - (double)a.A))));
+            return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
-
         #endregion
     }
 

@@ -25,6 +25,7 @@ namespace Aardvark.Base
     //#   var rotIntoEps = isDouble ? "1e-7" : "1e-3f";
     //#   var eulerAnglesEps = isDouble ? "0.49999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
+    //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
     /// <summary>
     /// Represents an arbitrary rotation in three dimensions. Implemented as
     /// a normalized quaternion.
@@ -580,41 +581,41 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Euler-Angles from the quatarnion.
         /// </summary>
-        public V3d GetEulerAngles()
+        public __v3t__ GetEulerAngles()
         {
             var test = W * Y - X * Z;
             if (test > __eulerAnglesEps__) // singularity at north pole
             {
-                return new V3d(
+                return new __v3t__(
                     2 * Fun.Atan2(X, W),
-                    Constant.PiHalf,
+                    __piHalf__,
                     0);
             }
             if (test < -__eulerAnglesEps__) // singularity at south pole
             {
-                return new V3d(
+                return new __v3t__(
                     2 * Fun.Atan2(X, W),
-                    -Constant.PiHalf,
+                    -__piHalf__,
                     0);
             }
             // From Wikipedia, conversion between quaternions and Euler angles.
-            return new V3d(
+            return new __v3t__(
                         Fun.Atan2(2 * (W * X + Y * Z),
                                   1 - 2 * (X * X + Y * Y)),
-                        Fun.AsinC(2 * test),
+                        Fun.AsinClamped(2 * test),
                         Fun.Atan2(2 * (W * Z + X * Y),
                                   1 - 2 * (Y * Y + Z * Z)));
         }
 
-        public static bool ApproxEqual(__rot3t__ r0, __rot3t__ r1)
+        public static bool ApproximateEquals(__rot3t__ r0, __rot3t__ r1)
         {
-            return ApproxEqual(r0, r1, Constant<__ft__>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue);
         }
 
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproxEqual(__rot3t__ other);
-        public static bool ApproxEqual(__rot3t__ r0, __rot3t__ r1, __ft__ tolerance)
+        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproximateEquals(__rot3t__ other);
+        public static bool ApproximateEquals(__rot3t__ r0, __rot3t__ r1, __ft__ tolerance)
         {
             return (r0.W - r1.W).Abs() <= tolerance &&
                    (r0.X - r1.X).Abs() <= tolerance &&

@@ -322,7 +322,7 @@ namespace Aardvark.Base
         /// <returns>Stitched image</returns>
         public static PixImage StitchSquare(this PixImage[] images)
         {
-            var squareSize = (int)Fun.Ceiling(images.Length.Sqrt());
+            var squareSize = (int)Fun.Ceiling(Fun.Sqrt(images.Length));
             var array = new PixImage[squareSize][].SetByIndex(
                             row => new PixImage[squareSize].SetByIndex(
                                 col => { var ii = squareSize * row + col; return ii < images.Length ? images[ii] : null; }));

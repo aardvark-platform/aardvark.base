@@ -101,7 +101,9 @@ namespace Aardvark.Base.Coder
         public void CodeScale3d(ref Scale3d v) { throw new NotImplementedException(); }
         public void CodeShift3f(ref Shift3f v) { throw new NotImplementedException(); }
         public void CodeShift3d(ref Shift3d v) { throw new NotImplementedException(); }
+        public void CodeTrafo2f(ref Trafo2f v) { throw new NotImplementedException(); }
         public void CodeTrafo2d(ref Trafo2d v) { throw new NotImplementedException(); }
+        public void CodeTrafo3f(ref Trafo3f v) { throw new NotImplementedException(); }
         public void CodeTrafo3d(ref Trafo3d v) { throw new NotImplementedException(); }
 
         #endregion
@@ -513,7 +515,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVector_of_Trafo2f_(ref Vector<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeVector_of_Trafo2d_(ref Vector<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Trafo3f_(ref Vector<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -614,16 +626,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeVector_of_Triangle3d_(ref Vector<Triangle3d> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVector_of_CameraExtrinsics_(ref Vector<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVector_of_CameraIntrinsics_(ref Vector<CameraIntrinsics> value)
         {
             throw new NotImplementedException();
         }
@@ -1033,7 +1035,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeMatrix_of_Trafo2f_(ref Matrix<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeMatrix_of_Trafo2d_(ref Matrix<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Trafo3f_(ref Matrix<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -1134,16 +1146,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeMatrix_of_Triangle3d_(ref Matrix<Triangle3d> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeMatrix_of_CameraExtrinsics_(ref Matrix<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeMatrix_of_CameraIntrinsics_(ref Matrix<CameraIntrinsics> value)
         {
             throw new NotImplementedException();
         }
@@ -1553,7 +1555,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVolume_of_Trafo2f_(ref Volume<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeVolume_of_Trafo2d_(ref Volume<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Trafo3f_(ref Volume<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -1654,16 +1666,6 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeVolume_of_Triangle3d_(ref Volume<Triangle3d> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVolume_of_CameraExtrinsics_(ref Volume<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeVolume_of_CameraIntrinsics_(ref Volume<CameraIntrinsics> value)
         {
             throw new NotImplementedException();
         }
@@ -2073,7 +2075,17 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeTensor_of_Trafo2f_(ref Tensor<Trafo2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeTensor_of_Trafo2d_(ref Tensor<Trafo2d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Trafo3f_(ref Tensor<Trafo3f> value)
         {
             throw new NotImplementedException();
         }
@@ -2178,16 +2190,6 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
-        public void CodeTensor_of_CameraExtrinsics_(ref Tensor<CameraExtrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CodeTensor_of_CameraIntrinsics_(ref Tensor<CameraIntrinsics> value)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
         #region Arrays
@@ -2262,7 +2264,9 @@ namespace Aardvark.Base.Coder
         public void CodeScale3dArray(ref Scale3d[] v) { throw new NotImplementedException(); }
         public void CodeShift3fArray(ref Shift3f[] v) { throw new NotImplementedException(); }
         public void CodeShift3dArray(ref Shift3d[] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArray(ref Trafo2f[] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArray(ref Trafo2d[] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArray(ref Trafo3f[] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArray(ref Trafo3d[] v) { throw new NotImplementedException(); }
         public void CodeCircle2dArray(ref Circle2d[] v) { throw new NotImplementedException(); }
         public void CodeLine2dArray(ref Line2d[] v) { throw new NotImplementedException(); }
@@ -2277,8 +2281,6 @@ namespace Aardvark.Base.Coder
         public void CodeSphere3dArray(ref Sphere3d[] v) { throw new NotImplementedException(); }
         public void CodeTriangle2dArray(ref Triangle2d[] v) { throw new NotImplementedException(); }
         public void CodeTriangle3dArray(ref Triangle3d[] v) { throw new NotImplementedException(); }
-        public void CodeCameraExtrinsicsArray(ref CameraExtrinsics[] v) { throw new NotImplementedException(); }
-        public void CodeCameraIntrinsicsArray(ref CameraIntrinsics[] v) { throw new NotImplementedException(); }
 
         #endregion
 
@@ -2446,8 +2448,12 @@ namespace Aardvark.Base.Coder
         public void CodeShift3fArray3d(ref Shift3f[, ,] v) { throw new NotImplementedException(); }
         public void CodeShift3dArray2d(ref Shift3d[,] v) { throw new NotImplementedException(); }
         public void CodeShift3dArray3d(ref Shift3d[, ,] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArray2d(ref Trafo2f[,] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArray3d(ref Trafo2f[, ,] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArray2d(ref Trafo2d[,] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArray3d(ref Trafo2d[, ,] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArray2d(ref Trafo3f[,] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArray3d(ref Trafo3f[, ,] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArray2d(ref Trafo3d[,] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArray3d(ref Trafo3d[, ,] v) { throw new NotImplementedException(); }
 
@@ -2617,8 +2623,12 @@ namespace Aardvark.Base.Coder
         public void CodeShift3fArrayArrayArray(ref Shift3f[][][] v) { throw new NotImplementedException(); }
         public void CodeShift3dArrayArray(ref Shift3d[][] v) { throw new NotImplementedException(); }
         public void CodeShift3dArrayArrayArray(ref Shift3d[][][] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArrayArray(ref Trafo2f[][] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArrayArrayArray(ref Trafo2f[][][] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArrayArray(ref Trafo2d[][] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArrayArrayArray(ref Trafo2d[][][] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArrayArray(ref Trafo3f[][] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArrayArrayArray(ref Trafo3f[][][] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArrayArray(ref Trafo3d[][] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArrayArrayArray(ref Trafo3d[][][] v) { throw new NotImplementedException(); }
 
@@ -2696,7 +2706,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Scale3d_(ref List<Scale3d> v) { throw new NotImplementedException(); }
         public void CodeList_of_Shift3f_(ref List<Shift3f> v) { throw new NotImplementedException(); }
         public void CodeList_of_Shift3d_(ref List<Shift3d> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Trafo2f_(ref List<Trafo2f> v) { throw new NotImplementedException(); }
         public void CodeList_of_Trafo2d_(ref List<Trafo2d> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Trafo3f_(ref List<Trafo3f> v) { throw new NotImplementedException(); }
         public void CodeList_of_Trafo3d_(ref List<Trafo3d> v) { throw new NotImplementedException(); }
         public void CodeList_of_Circle2d_(ref List<Circle2d> v) { throw new NotImplementedException(); }
         public void CodeList_of_Line2d_(ref List<Line2d> v) { throw new NotImplementedException(); }
@@ -2711,8 +2723,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Sphere3d_(ref List<Sphere3d> v) { throw new NotImplementedException(); }
         public void CodeList_of_Triangle2d_(ref List<Triangle2d> v) { throw new NotImplementedException(); }
         public void CodeList_of_Triangle3d_(ref List<Triangle3d> v) { throw new NotImplementedException(); }
-        public void CodeList_of_CameraExtrinsics_(ref List<CameraExtrinsics> v) { throw new NotImplementedException(); }
-        public void CodeList_of_CameraIntrinsics_(ref List<CameraIntrinsics> v) { throw new NotImplementedException(); }
 
         #endregion
 
@@ -2799,7 +2809,9 @@ namespace Aardvark.Base.Coder
         public void CodeVector_of_Scale3d_Array(ref Vector<Scale3d>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Shift3f_Array(ref Vector<Shift3f>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Shift3d_Array(ref Vector<Shift3d>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Trafo2f_Array(ref Vector<Trafo2f>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Trafo2d_Array(ref Vector<Trafo2d>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Trafo3f_Array(ref Vector<Trafo3f>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Trafo3d_Array(ref Vector<Trafo3d>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Bool_Array(ref Vector<bool>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Char_Array(ref Vector<char>[] v) { throw new NotImplementedException(); }
@@ -2820,8 +2832,6 @@ namespace Aardvark.Base.Coder
         public void CodeVector_of_Sphere3d_Array(ref Vector<Sphere3d>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Triangle2d_Array(ref Vector<Triangle2d>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Triangle3d_Array(ref Vector<Triangle3d>[] v) { throw new NotImplementedException(); }
-        public void CodeVector_of_CameraExtrinsics_Array(ref Vector<CameraExtrinsics>[] v) { throw new NotImplementedException(); }
-        public void CodeVector_of_CameraIntrinsics_Array(ref Vector<CameraIntrinsics>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Byte_Array(ref Matrix<byte>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_SByte_Array(ref Matrix<sbyte>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Short_Array(ref Matrix<short>[] v) { throw new NotImplementedException(); }
@@ -2903,7 +2913,9 @@ namespace Aardvark.Base.Coder
         public void CodeMatrix_of_Scale3d_Array(ref Matrix<Scale3d>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Shift3f_Array(ref Matrix<Shift3f>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Shift3d_Array(ref Matrix<Shift3d>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Trafo2f_Array(ref Matrix<Trafo2f>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Trafo2d_Array(ref Matrix<Trafo2d>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Trafo3f_Array(ref Matrix<Trafo3f>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Trafo3d_Array(ref Matrix<Trafo3d>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Bool_Array(ref Matrix<bool>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Char_Array(ref Matrix<char>[] v) { throw new NotImplementedException(); }
@@ -2924,8 +2936,6 @@ namespace Aardvark.Base.Coder
         public void CodeMatrix_of_Sphere3d_Array(ref Matrix<Sphere3d>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Triangle2d_Array(ref Matrix<Triangle2d>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Triangle3d_Array(ref Matrix<Triangle3d>[] v) { throw new NotImplementedException(); }
-        public void CodeMatrix_of_CameraExtrinsics_Array(ref Matrix<CameraExtrinsics>[] v) { throw new NotImplementedException(); }
-        public void CodeMatrix_of_CameraIntrinsics_Array(ref Matrix<CameraIntrinsics>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Byte_Array(ref Volume<byte>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_SByte_Array(ref Volume<sbyte>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Short_Array(ref Volume<short>[] v) { throw new NotImplementedException(); }
@@ -3007,7 +3017,9 @@ namespace Aardvark.Base.Coder
         public void CodeVolume_of_Scale3d_Array(ref Volume<Scale3d>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Shift3f_Array(ref Volume<Shift3f>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Shift3d_Array(ref Volume<Shift3d>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Trafo2f_Array(ref Volume<Trafo2f>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Trafo2d_Array(ref Volume<Trafo2d>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Trafo3f_Array(ref Volume<Trafo3f>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Trafo3d_Array(ref Volume<Trafo3d>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Bool_Array(ref Volume<bool>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Char_Array(ref Volume<char>[] v) { throw new NotImplementedException(); }
@@ -3028,8 +3040,6 @@ namespace Aardvark.Base.Coder
         public void CodeVolume_of_Sphere3d_Array(ref Volume<Sphere3d>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Triangle2d_Array(ref Volume<Triangle2d>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Triangle3d_Array(ref Volume<Triangle3d>[] v) { throw new NotImplementedException(); }
-        public void CodeVolume_of_CameraExtrinsics_Array(ref Volume<CameraExtrinsics>[] v) { throw new NotImplementedException(); }
-        public void CodeVolume_of_CameraIntrinsics_Array(ref Volume<CameraIntrinsics>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Byte_Array(ref Tensor<byte>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_SByte_Array(ref Tensor<sbyte>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Short_Array(ref Tensor<short>[] v) { throw new NotImplementedException(); }
@@ -3111,7 +3121,9 @@ namespace Aardvark.Base.Coder
         public void CodeTensor_of_Scale3d_Array(ref Tensor<Scale3d>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Shift3f_Array(ref Tensor<Shift3f>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Shift3d_Array(ref Tensor<Shift3d>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Trafo2f_Array(ref Tensor<Trafo2f>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Trafo2d_Array(ref Tensor<Trafo2d>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Trafo3f_Array(ref Tensor<Trafo3f>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Trafo3d_Array(ref Tensor<Trafo3d>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Bool_Array(ref Tensor<bool>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Char_Array(ref Tensor<char>[] v) { throw new NotImplementedException(); }
@@ -3132,8 +3144,6 @@ namespace Aardvark.Base.Coder
         public void CodeTensor_of_Sphere3d_Array(ref Tensor<Sphere3d>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Triangle2d_Array(ref Tensor<Triangle2d>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Triangle3d_Array(ref Tensor<Triangle3d>[] v) { throw new NotImplementedException(); }
-        public void CodeTensor_of_CameraExtrinsics_Array(ref Tensor<CameraExtrinsics>[] v) { throw new NotImplementedException(); }
-        public void CodeTensor_of_CameraIntrinsics_Array(ref Tensor<CameraIntrinsics>[] v) { throw new NotImplementedException(); }
 
         #endregion
 
@@ -3220,7 +3230,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Vector_of_Scale3d__(ref List<Vector<Scale3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Shift3f__(ref List<Vector<Shift3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Shift3d__(ref List<Vector<Shift3d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Trafo2f__(ref List<Vector<Trafo2f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Trafo2d__(ref List<Vector<Trafo2d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Trafo3f__(ref List<Vector<Trafo3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Trafo3d__(ref List<Vector<Trafo3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Bool__(ref List<Vector<bool>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Char__(ref List<Vector<char>> v) { throw new NotImplementedException(); }
@@ -3241,8 +3253,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Vector_of_Sphere3d__(ref List<Vector<Sphere3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Triangle2d__(ref List<Vector<Triangle2d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Triangle3d__(ref List<Vector<Triangle3d>> v) { throw new NotImplementedException(); }
-        public void CodeList_of_Vector_of_CameraExtrinsics__(ref List<Vector<CameraExtrinsics>> v) { throw new NotImplementedException(); }
-        public void CodeList_of_Vector_of_CameraIntrinsics__(ref List<Vector<CameraIntrinsics>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Byte__(ref List<Matrix<byte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_SByte__(ref List<Matrix<sbyte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Short__(ref List<Matrix<short>> v) { throw new NotImplementedException(); }
@@ -3324,7 +3334,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Matrix_of_Scale3d__(ref List<Matrix<Scale3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Shift3f__(ref List<Matrix<Shift3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Shift3d__(ref List<Matrix<Shift3d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Trafo2f__(ref List<Matrix<Trafo2f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Trafo2d__(ref List<Matrix<Trafo2d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Trafo3f__(ref List<Matrix<Trafo3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Trafo3d__(ref List<Matrix<Trafo3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Bool__(ref List<Matrix<bool>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Char__(ref List<Matrix<char>> v) { throw new NotImplementedException(); }
@@ -3345,8 +3357,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Matrix_of_Sphere3d__(ref List<Matrix<Sphere3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Triangle2d__(ref List<Matrix<Triangle2d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Triangle3d__(ref List<Matrix<Triangle3d>> v) { throw new NotImplementedException(); }
-        public void CodeList_of_Matrix_of_CameraExtrinsics__(ref List<Matrix<CameraExtrinsics>> v) { throw new NotImplementedException(); }
-        public void CodeList_of_Matrix_of_CameraIntrinsics__(ref List<Matrix<CameraIntrinsics>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Byte__(ref List<Volume<byte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_SByte__(ref List<Volume<sbyte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Short__(ref List<Volume<short>> v) { throw new NotImplementedException(); }
@@ -3428,7 +3438,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Volume_of_Scale3d__(ref List<Volume<Scale3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Shift3f__(ref List<Volume<Shift3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Shift3d__(ref List<Volume<Shift3d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Trafo2f__(ref List<Volume<Trafo2f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Trafo2d__(ref List<Volume<Trafo2d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Trafo3f__(ref List<Volume<Trafo3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Trafo3d__(ref List<Volume<Trafo3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Bool__(ref List<Volume<bool>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Char__(ref List<Volume<char>> v) { throw new NotImplementedException(); }
@@ -3449,8 +3461,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Volume_of_Sphere3d__(ref List<Volume<Sphere3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Triangle2d__(ref List<Volume<Triangle2d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Triangle3d__(ref List<Volume<Triangle3d>> v) { throw new NotImplementedException(); }
-        public void CodeList_of_Volume_of_CameraExtrinsics__(ref List<Volume<CameraExtrinsics>> v) { throw new NotImplementedException(); }
-        public void CodeList_of_Volume_of_CameraIntrinsics__(ref List<Volume<CameraIntrinsics>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Byte__(ref List<Tensor<byte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_SByte__(ref List<Tensor<sbyte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Short__(ref List<Tensor<short>> v) { throw new NotImplementedException(); }
@@ -3532,7 +3542,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Tensor_of_Scale3d__(ref List<Tensor<Scale3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Shift3f__(ref List<Tensor<Shift3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Shift3d__(ref List<Tensor<Shift3d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Trafo2f__(ref List<Tensor<Trafo2f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Trafo2d__(ref List<Tensor<Trafo2d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Trafo3f__(ref List<Tensor<Trafo3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Trafo3d__(ref List<Tensor<Trafo3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Bool__(ref List<Tensor<bool>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Char__(ref List<Tensor<char>> v) { throw new NotImplementedException(); }
@@ -3553,8 +3565,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Tensor_of_Sphere3d__(ref List<Tensor<Sphere3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Triangle2d__(ref List<Tensor<Triangle2d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Triangle3d__(ref List<Tensor<Triangle3d>> v) { throw new NotImplementedException(); }
-        public void CodeList_of_Tensor_of_CameraExtrinsics__(ref List<Tensor<CameraExtrinsics>> v) { throw new NotImplementedException(); }
-        public void CodeList_of_Tensor_of_CameraIntrinsics__(ref List<Tensor<CameraIntrinsics>> v) { throw new NotImplementedException(); }
 
         #endregion
     }
@@ -3653,7 +3663,9 @@ namespace Aardvark.Base.Coder
         public void CodeScale3d(ref Scale3d v) { AddValue(v.ToString()); }
         public void CodeShift3f(ref Shift3f v) { AddValue(v.ToString()); }
         public void CodeShift3d(ref Shift3d v) { AddValue(v.ToString()); }
+        public void CodeTrafo2f(ref Trafo2f v) { AddValue(v.ToString()); }
         public void CodeTrafo2d(ref Trafo2d v) { AddValue(v.ToString()); }
+        public void CodeTrafo3f(ref Trafo3f v) { AddValue(v.ToString()); }
         public void CodeTrafo3d(ref Trafo3d v) { AddValue(v.ToString()); }
 
         #endregion
@@ -7386,6 +7398,52 @@ namespace Aardvark.Base.Coder
             AddValue(item);
         }
 
+        public void CodeVector_of_Trafo2f_(ref Vector<Trafo2f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTrafo2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
         public void CodeVector_of_Trafo2d_(ref Vector<Trafo2d> value)
         {
             var item = new XElement("Vector");
@@ -7397,6 +7455,52 @@ namespace Aardvark.Base.Coder
             m_element = element;
 
             var data = value.Data; CodeTrafo2dArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Trafo3f_(ref Vector<Trafo3f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTrafo3fArray(ref data);
 
             m_element = m_elementStack.Pop();
             m_element.Add(element);
@@ -8317,98 +8421,6 @@ namespace Aardvark.Base.Coder
             m_element = element;
 
             var data = value.Data; CodeTriangle3dArray(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; CodeLong(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; CodeLong(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
-        public void CodeVector_of_CameraExtrinsics_(ref Vector<CameraExtrinsics> value)
-        {
-            var item = new XElement("Vector");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; CodeCameraExtrinsicsArray(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; CodeLong(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; CodeLong(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
-        public void CodeVector_of_CameraIntrinsics_(ref Vector<CameraIntrinsics> value)
-        {
-            var item = new XElement("Vector");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; CodeCameraIntrinsicsArray(ref data);
 
             m_element = m_elementStack.Pop();
             m_element.Add(element);
@@ -12170,6 +12182,52 @@ namespace Aardvark.Base.Coder
             AddValue(item);
         }
 
+        public void CodeMatrix_of_Trafo2f_(ref Matrix<Trafo2f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTrafo2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
         public void CodeMatrix_of_Trafo2d_(ref Matrix<Trafo2d> value)
         {
             var item = new XElement("Matrix");
@@ -12181,6 +12239,52 @@ namespace Aardvark.Base.Coder
             m_element = element;
 
             var data = value.Data; CodeTrafo2dArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Trafo3f_(ref Matrix<Trafo3f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTrafo3fArray(ref data);
 
             m_element = m_elementStack.Pop();
             m_element.Add(element);
@@ -13101,98 +13205,6 @@ namespace Aardvark.Base.Coder
             m_element = element;
 
             var data = value.Data; CodeTriangle3dArray(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; CodeV2l(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; CodeV2l(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
-        public void CodeMatrix_of_CameraExtrinsics_(ref Matrix<CameraExtrinsics> value)
-        {
-            var item = new XElement("Matrix");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; CodeCameraExtrinsicsArray(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; CodeV2l(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; CodeV2l(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
-        public void CodeMatrix_of_CameraIntrinsics_(ref Matrix<CameraIntrinsics> value)
-        {
-            var item = new XElement("Matrix");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; CodeCameraIntrinsicsArray(ref data);
 
             m_element = m_elementStack.Pop();
             m_element.Add(element);
@@ -16954,6 +16966,52 @@ namespace Aardvark.Base.Coder
             AddValue(item);
         }
 
+        public void CodeVolume_of_Trafo2f_(ref Volume<Trafo2f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTrafo2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
         public void CodeVolume_of_Trafo2d_(ref Volume<Trafo2d> value)
         {
             var item = new XElement("Volume");
@@ -16965,6 +17023,52 @@ namespace Aardvark.Base.Coder
             m_element = element;
 
             var data = value.Data; CodeTrafo2dArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Trafo3f_(ref Volume<Trafo3f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTrafo3fArray(ref data);
 
             m_element = m_elementStack.Pop();
             m_element.Add(element);
@@ -17885,98 +17989,6 @@ namespace Aardvark.Base.Coder
             m_element = element;
 
             var data = value.Data; CodeTriangle3dArray(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; CodeV3l(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; CodeV3l(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
-        public void CodeVolume_of_CameraExtrinsics_(ref Volume<CameraExtrinsics> value)
-        {
-            var item = new XElement("Volume");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; CodeCameraExtrinsicsArray(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; CodeV3l(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; CodeV3l(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
-        public void CodeVolume_of_CameraIntrinsics_(ref Volume<CameraIntrinsics> value)
-        {
-            var item = new XElement("Volume");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; CodeCameraIntrinsicsArray(ref data);
 
             m_element = m_elementStack.Pop();
             m_element.Add(element);
@@ -21738,6 +21750,52 @@ namespace Aardvark.Base.Coder
             AddValue(item);
         }
 
+        public void CodeTensor_of_Trafo2f_(ref Tensor<Trafo2f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTrafo2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
         public void CodeTensor_of_Trafo2d_(ref Tensor<Trafo2d> value)
         {
             var item = new XElement("Tensor");
@@ -21749,6 +21807,52 @@ namespace Aardvark.Base.Coder
             m_element = element;
 
             var data = value.Data; CodeTrafo2dArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Trafo3f_(ref Tensor<Trafo3f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTrafo3fArray(ref data);
 
             m_element = m_elementStack.Pop();
             m_element.Add(element);
@@ -22704,98 +22808,6 @@ namespace Aardvark.Base.Coder
             AddValue(item);
         }
 
-        public void CodeTensor_of_CameraExtrinsics_(ref Tensor<CameraExtrinsics> value)
-        {
-            var item = new XElement("Tensor");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; CodeCameraExtrinsicsArray(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; CodeLongArray(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; CodeLongArray(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
-        public void CodeTensor_of_CameraIntrinsics_(ref Tensor<CameraIntrinsics> value)
-        {
-            var item = new XElement("Tensor");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; CodeCameraIntrinsicsArray(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; CodeLongArray(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; CodeLongArray(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
         #endregion
 
         #region Arrays
@@ -22870,7 +22882,9 @@ namespace Aardvark.Base.Coder
         public void CodeScale3dArray(ref Scale3d[] v) { CodeArrayOfStruct(v); }
         public void CodeShift3fArray(ref Shift3f[] v) { CodeArrayOfStruct(v); }
         public void CodeShift3dArray(ref Shift3d[] v) { CodeArrayOfStruct(v); }
+        public void CodeTrafo2fArray(ref Trafo2f[] v) { CodeArrayOfStruct(v); }
         public void CodeTrafo2dArray(ref Trafo2d[] v) { CodeArrayOfStruct(v); }
+        public void CodeTrafo3fArray(ref Trafo3f[] v) { CodeArrayOfStruct(v); }
         public void CodeTrafo3dArray(ref Trafo3d[] v) { CodeArrayOfStruct(v); }
         public void CodeCircle2dArray(ref Circle2d[] v) { CodeArrayOfStruct(v); }
         public void CodeLine2dArray(ref Line2d[] v) { CodeArrayOfStruct(v); }
@@ -22885,8 +22899,6 @@ namespace Aardvark.Base.Coder
         public void CodeSphere3dArray(ref Sphere3d[] v) { CodeArrayOfStruct(v); }
         public void CodeTriangle2dArray(ref Triangle2d[] v) { CodeArrayOfStruct(v); }
         public void CodeTriangle3dArray(ref Triangle3d[] v) { CodeArrayOfStruct(v); }
-        public void CodeCameraExtrinsicsArray(ref CameraExtrinsics[] v) { CodeArrayOfStruct(v); }
-        public void CodeCameraIntrinsicsArray(ref CameraIntrinsics[] v) { CodeArrayOfStruct(v); }
 
         #endregion
 
@@ -23054,8 +23066,12 @@ namespace Aardvark.Base.Coder
         public void CodeShift3fArray3d(ref Shift3f[, ,] v) { throw new NotImplementedException(); }
         public void CodeShift3dArray2d(ref Shift3d[,] v) { throw new NotImplementedException(); }
         public void CodeShift3dArray3d(ref Shift3d[, ,] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArray2d(ref Trafo2f[,] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArray3d(ref Trafo2f[, ,] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArray2d(ref Trafo2d[,] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArray3d(ref Trafo2d[, ,] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArray2d(ref Trafo3f[,] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArray3d(ref Trafo3f[, ,] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArray2d(ref Trafo3d[,] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArray3d(ref Trafo3d[, ,] v) { throw new NotImplementedException(); }
 
@@ -23225,8 +23241,12 @@ namespace Aardvark.Base.Coder
         public void CodeShift3fArrayArrayArray(ref Shift3f[][][] v) { throw new NotImplementedException(); }
         public void CodeShift3dArrayArray(ref Shift3d[][] v) { throw new NotImplementedException(); }
         public void CodeShift3dArrayArrayArray(ref Shift3d[][][] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArrayArray(ref Trafo2f[][] v) { throw new NotImplementedException(); }
+        public void CodeTrafo2fArrayArrayArray(ref Trafo2f[][][] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArrayArray(ref Trafo2d[][] v) { throw new NotImplementedException(); }
         public void CodeTrafo2dArrayArrayArray(ref Trafo2d[][][] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArrayArray(ref Trafo3f[][] v) { throw new NotImplementedException(); }
+        public void CodeTrafo3fArrayArrayArray(ref Trafo3f[][][] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArrayArray(ref Trafo3d[][] v) { throw new NotImplementedException(); }
         public void CodeTrafo3dArrayArrayArray(ref Trafo3d[][][] v) { throw new NotImplementedException(); }
 
@@ -23304,7 +23324,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Scale3d_(ref List<Scale3d> v) { CodeListOfStruct(v); }
         public void CodeList_of_Shift3f_(ref List<Shift3f> v) { CodeListOfStruct(v); }
         public void CodeList_of_Shift3d_(ref List<Shift3d> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Trafo2f_(ref List<Trafo2f> v) { CodeListOfStruct(v); }
         public void CodeList_of_Trafo2d_(ref List<Trafo2d> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Trafo3f_(ref List<Trafo3f> v) { CodeListOfStruct(v); }
         public void CodeList_of_Trafo3d_(ref List<Trafo3d> v) { CodeListOfStruct(v); }
         public void CodeList_of_Circle2d_(ref List<Circle2d> v) { CodeListOfStruct(v); }
         public void CodeList_of_Line2d_(ref List<Line2d> v) { CodeListOfStruct(v); }
@@ -23319,8 +23341,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Sphere3d_(ref List<Sphere3d> v) { CodeListOfStruct(v); }
         public void CodeList_of_Triangle2d_(ref List<Triangle2d> v) { CodeListOfStruct(v); }
         public void CodeList_of_Triangle3d_(ref List<Triangle3d> v) { CodeListOfStruct(v); }
-        public void CodeList_of_CameraExtrinsics_(ref List<CameraExtrinsics> v) { CodeListOfStruct(v); }
-        public void CodeList_of_CameraIntrinsics_(ref List<CameraIntrinsics> v) { CodeListOfStruct(v); }
 
         #endregion
 
@@ -23407,7 +23427,9 @@ namespace Aardvark.Base.Coder
         public void CodeVector_of_Scale3d_Array(ref Vector<Scale3d>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Shift3f_Array(ref Vector<Shift3f>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Shift3d_Array(ref Vector<Shift3d>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Trafo2f_Array(ref Vector<Trafo2f>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Trafo2d_Array(ref Vector<Trafo2d>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Trafo3f_Array(ref Vector<Trafo3f>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Trafo3d_Array(ref Vector<Trafo3d>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Bool_Array(ref Vector<bool>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Char_Array(ref Vector<char>[] v) { CodeArrayOf(v); }
@@ -23428,8 +23450,6 @@ namespace Aardvark.Base.Coder
         public void CodeVector_of_Sphere3d_Array(ref Vector<Sphere3d>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Triangle2d_Array(ref Vector<Triangle2d>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Triangle3d_Array(ref Vector<Triangle3d>[] v) { CodeArrayOf(v); }
-        public void CodeVector_of_CameraExtrinsics_Array(ref Vector<CameraExtrinsics>[] v) { CodeArrayOf(v); }
-        public void CodeVector_of_CameraIntrinsics_Array(ref Vector<CameraIntrinsics>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Byte_Array(ref Matrix<byte>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_SByte_Array(ref Matrix<sbyte>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Short_Array(ref Matrix<short>[] v) { CodeArrayOf(v); }
@@ -23511,7 +23531,9 @@ namespace Aardvark.Base.Coder
         public void CodeMatrix_of_Scale3d_Array(ref Matrix<Scale3d>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Shift3f_Array(ref Matrix<Shift3f>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Shift3d_Array(ref Matrix<Shift3d>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Trafo2f_Array(ref Matrix<Trafo2f>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Trafo2d_Array(ref Matrix<Trafo2d>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Trafo3f_Array(ref Matrix<Trafo3f>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Trafo3d_Array(ref Matrix<Trafo3d>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Bool_Array(ref Matrix<bool>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Char_Array(ref Matrix<char>[] v) { CodeArrayOf(v); }
@@ -23532,8 +23554,6 @@ namespace Aardvark.Base.Coder
         public void CodeMatrix_of_Sphere3d_Array(ref Matrix<Sphere3d>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Triangle2d_Array(ref Matrix<Triangle2d>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Triangle3d_Array(ref Matrix<Triangle3d>[] v) { CodeArrayOf(v); }
-        public void CodeMatrix_of_CameraExtrinsics_Array(ref Matrix<CameraExtrinsics>[] v) { CodeArrayOf(v); }
-        public void CodeMatrix_of_CameraIntrinsics_Array(ref Matrix<CameraIntrinsics>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Byte_Array(ref Volume<byte>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_SByte_Array(ref Volume<sbyte>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Short_Array(ref Volume<short>[] v) { CodeArrayOf(v); }
@@ -23615,7 +23635,9 @@ namespace Aardvark.Base.Coder
         public void CodeVolume_of_Scale3d_Array(ref Volume<Scale3d>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Shift3f_Array(ref Volume<Shift3f>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Shift3d_Array(ref Volume<Shift3d>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Trafo2f_Array(ref Volume<Trafo2f>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Trafo2d_Array(ref Volume<Trafo2d>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Trafo3f_Array(ref Volume<Trafo3f>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Trafo3d_Array(ref Volume<Trafo3d>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Bool_Array(ref Volume<bool>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Char_Array(ref Volume<char>[] v) { CodeArrayOf(v); }
@@ -23636,8 +23658,6 @@ namespace Aardvark.Base.Coder
         public void CodeVolume_of_Sphere3d_Array(ref Volume<Sphere3d>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Triangle2d_Array(ref Volume<Triangle2d>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Triangle3d_Array(ref Volume<Triangle3d>[] v) { CodeArrayOf(v); }
-        public void CodeVolume_of_CameraExtrinsics_Array(ref Volume<CameraExtrinsics>[] v) { CodeArrayOf(v); }
-        public void CodeVolume_of_CameraIntrinsics_Array(ref Volume<CameraIntrinsics>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Byte_Array(ref Tensor<byte>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_SByte_Array(ref Tensor<sbyte>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Short_Array(ref Tensor<short>[] v) { CodeArrayOf(v); }
@@ -23719,7 +23739,9 @@ namespace Aardvark.Base.Coder
         public void CodeTensor_of_Scale3d_Array(ref Tensor<Scale3d>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Shift3f_Array(ref Tensor<Shift3f>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Shift3d_Array(ref Tensor<Shift3d>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Trafo2f_Array(ref Tensor<Trafo2f>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Trafo2d_Array(ref Tensor<Trafo2d>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Trafo3f_Array(ref Tensor<Trafo3f>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Trafo3d_Array(ref Tensor<Trafo3d>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Bool_Array(ref Tensor<bool>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Char_Array(ref Tensor<char>[] v) { CodeArrayOf(v); }
@@ -23740,8 +23762,6 @@ namespace Aardvark.Base.Coder
         public void CodeTensor_of_Sphere3d_Array(ref Tensor<Sphere3d>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Triangle2d_Array(ref Tensor<Triangle2d>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Triangle3d_Array(ref Tensor<Triangle3d>[] v) { CodeArrayOf(v); }
-        public void CodeTensor_of_CameraExtrinsics_Array(ref Tensor<CameraExtrinsics>[] v) { CodeArrayOf(v); }
-        public void CodeTensor_of_CameraIntrinsics_Array(ref Tensor<CameraIntrinsics>[] v) { CodeArrayOf(v); }
 
         #endregion
 
@@ -23828,7 +23848,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Vector_of_Scale3d__(ref List<Vector<Scale3d>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Shift3f__(ref List<Vector<Shift3f>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Shift3d__(ref List<Vector<Shift3d>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Trafo2f__(ref List<Vector<Trafo2f>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Trafo2d__(ref List<Vector<Trafo2d>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Trafo3f__(ref List<Vector<Trafo3f>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Trafo3d__(ref List<Vector<Trafo3d>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Bool__(ref List<Vector<bool>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Char__(ref List<Vector<char>> v) { CodeListOf(v); }
@@ -23849,8 +23871,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Vector_of_Sphere3d__(ref List<Vector<Sphere3d>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Triangle2d__(ref List<Vector<Triangle2d>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Triangle3d__(ref List<Vector<Triangle3d>> v) { CodeListOf(v); }
-        public void CodeList_of_Vector_of_CameraExtrinsics__(ref List<Vector<CameraExtrinsics>> v) { CodeListOf(v); }
-        public void CodeList_of_Vector_of_CameraIntrinsics__(ref List<Vector<CameraIntrinsics>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Byte__(ref List<Matrix<byte>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_SByte__(ref List<Matrix<sbyte>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Short__(ref List<Matrix<short>> v) { CodeListOf(v); }
@@ -23932,7 +23952,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Matrix_of_Scale3d__(ref List<Matrix<Scale3d>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Shift3f__(ref List<Matrix<Shift3f>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Shift3d__(ref List<Matrix<Shift3d>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Trafo2f__(ref List<Matrix<Trafo2f>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Trafo2d__(ref List<Matrix<Trafo2d>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Trafo3f__(ref List<Matrix<Trafo3f>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Trafo3d__(ref List<Matrix<Trafo3d>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Bool__(ref List<Matrix<bool>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Char__(ref List<Matrix<char>> v) { CodeListOf(v); }
@@ -23953,8 +23975,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Matrix_of_Sphere3d__(ref List<Matrix<Sphere3d>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Triangle2d__(ref List<Matrix<Triangle2d>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Triangle3d__(ref List<Matrix<Triangle3d>> v) { CodeListOf(v); }
-        public void CodeList_of_Matrix_of_CameraExtrinsics__(ref List<Matrix<CameraExtrinsics>> v) { CodeListOf(v); }
-        public void CodeList_of_Matrix_of_CameraIntrinsics__(ref List<Matrix<CameraIntrinsics>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Byte__(ref List<Volume<byte>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_SByte__(ref List<Volume<sbyte>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Short__(ref List<Volume<short>> v) { CodeListOf(v); }
@@ -24036,7 +24056,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Volume_of_Scale3d__(ref List<Volume<Scale3d>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Shift3f__(ref List<Volume<Shift3f>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Shift3d__(ref List<Volume<Shift3d>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Trafo2f__(ref List<Volume<Trafo2f>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Trafo2d__(ref List<Volume<Trafo2d>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Trafo3f__(ref List<Volume<Trafo3f>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Trafo3d__(ref List<Volume<Trafo3d>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Bool__(ref List<Volume<bool>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Char__(ref List<Volume<char>> v) { CodeListOf(v); }
@@ -24057,8 +24079,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Volume_of_Sphere3d__(ref List<Volume<Sphere3d>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Triangle2d__(ref List<Volume<Triangle2d>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Triangle3d__(ref List<Volume<Triangle3d>> v) { CodeListOf(v); }
-        public void CodeList_of_Volume_of_CameraExtrinsics__(ref List<Volume<CameraExtrinsics>> v) { CodeListOf(v); }
-        public void CodeList_of_Volume_of_CameraIntrinsics__(ref List<Volume<CameraIntrinsics>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Byte__(ref List<Tensor<byte>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_SByte__(ref List<Tensor<sbyte>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Short__(ref List<Tensor<short>> v) { CodeListOf(v); }
@@ -24140,7 +24160,9 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Tensor_of_Scale3d__(ref List<Tensor<Scale3d>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Shift3f__(ref List<Tensor<Shift3f>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Shift3d__(ref List<Tensor<Shift3d>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Trafo2f__(ref List<Tensor<Trafo2f>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Trafo2d__(ref List<Tensor<Trafo2d>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Trafo3f__(ref List<Tensor<Trafo3f>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Trafo3d__(ref List<Tensor<Trafo3d>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Bool__(ref List<Tensor<bool>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Char__(ref List<Tensor<char>> v) { CodeListOf(v); }
@@ -24161,8 +24183,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Tensor_of_Sphere3d__(ref List<Tensor<Sphere3d>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Triangle2d__(ref List<Tensor<Triangle2d>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Triangle3d__(ref List<Tensor<Triangle3d>> v) { CodeListOf(v); }
-        public void CodeList_of_Tensor_of_CameraExtrinsics__(ref List<Tensor<CameraExtrinsics>> v) { CodeListOf(v); }
-        public void CodeList_of_Tensor_of_CameraIntrinsics__(ref List<Tensor<CameraIntrinsics>> v) { CodeListOf(v); }
 
         #endregion
     }

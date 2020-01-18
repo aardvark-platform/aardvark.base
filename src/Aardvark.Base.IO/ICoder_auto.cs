@@ -98,7 +98,9 @@ namespace Aardvark.Base.Coder
         void CodeScale3d(ref Scale3d value);
         void CodeShift3f(ref Shift3f value);
         void CodeShift3d(ref Shift3d value);
+        void CodeTrafo2f(ref Trafo2f value);
         void CodeTrafo2d(ref Trafo2d value);
+        void CodeTrafo3f(ref Trafo3f value);
         void CodeTrafo3d(ref Trafo3d value);
 
         #endregion
@@ -186,7 +188,9 @@ namespace Aardvark.Base.Coder
         void CodeVector_of_Scale3d_(ref Vector<Scale3d> value);
         void CodeVector_of_Shift3f_(ref Vector<Shift3f> value);
         void CodeVector_of_Shift3d_(ref Vector<Shift3d> value);
+        void CodeVector_of_Trafo2f_(ref Vector<Trafo2f> value);
         void CodeVector_of_Trafo2d_(ref Vector<Trafo2d> value);
+        void CodeVector_of_Trafo3f_(ref Vector<Trafo3f> value);
         void CodeVector_of_Trafo3d_(ref Vector<Trafo3d> value);
         void CodeVector_of_Bool_(ref Vector<bool> value);
         void CodeVector_of_Char_(ref Vector<char> value);
@@ -207,8 +211,6 @@ namespace Aardvark.Base.Coder
         void CodeVector_of_Sphere3d_(ref Vector<Sphere3d> value);
         void CodeVector_of_Triangle2d_(ref Vector<Triangle2d> value);
         void CodeVector_of_Triangle3d_(ref Vector<Triangle3d> value);
-        void CodeVector_of_CameraExtrinsics_(ref Vector<CameraExtrinsics> value);
-        void CodeVector_of_CameraIntrinsics_(ref Vector<CameraIntrinsics> value);
         void CodeMatrix_of_Byte_(ref Matrix<byte> value);
         void CodeMatrix_of_SByte_(ref Matrix<sbyte> value);
         void CodeMatrix_of_Short_(ref Matrix<short> value);
@@ -290,7 +292,9 @@ namespace Aardvark.Base.Coder
         void CodeMatrix_of_Scale3d_(ref Matrix<Scale3d> value);
         void CodeMatrix_of_Shift3f_(ref Matrix<Shift3f> value);
         void CodeMatrix_of_Shift3d_(ref Matrix<Shift3d> value);
+        void CodeMatrix_of_Trafo2f_(ref Matrix<Trafo2f> value);
         void CodeMatrix_of_Trafo2d_(ref Matrix<Trafo2d> value);
+        void CodeMatrix_of_Trafo3f_(ref Matrix<Trafo3f> value);
         void CodeMatrix_of_Trafo3d_(ref Matrix<Trafo3d> value);
         void CodeMatrix_of_Bool_(ref Matrix<bool> value);
         void CodeMatrix_of_Char_(ref Matrix<char> value);
@@ -311,8 +315,6 @@ namespace Aardvark.Base.Coder
         void CodeMatrix_of_Sphere3d_(ref Matrix<Sphere3d> value);
         void CodeMatrix_of_Triangle2d_(ref Matrix<Triangle2d> value);
         void CodeMatrix_of_Triangle3d_(ref Matrix<Triangle3d> value);
-        void CodeMatrix_of_CameraExtrinsics_(ref Matrix<CameraExtrinsics> value);
-        void CodeMatrix_of_CameraIntrinsics_(ref Matrix<CameraIntrinsics> value);
         void CodeVolume_of_Byte_(ref Volume<byte> value);
         void CodeVolume_of_SByte_(ref Volume<sbyte> value);
         void CodeVolume_of_Short_(ref Volume<short> value);
@@ -394,7 +396,9 @@ namespace Aardvark.Base.Coder
         void CodeVolume_of_Scale3d_(ref Volume<Scale3d> value);
         void CodeVolume_of_Shift3f_(ref Volume<Shift3f> value);
         void CodeVolume_of_Shift3d_(ref Volume<Shift3d> value);
+        void CodeVolume_of_Trafo2f_(ref Volume<Trafo2f> value);
         void CodeVolume_of_Trafo2d_(ref Volume<Trafo2d> value);
+        void CodeVolume_of_Trafo3f_(ref Volume<Trafo3f> value);
         void CodeVolume_of_Trafo3d_(ref Volume<Trafo3d> value);
         void CodeVolume_of_Bool_(ref Volume<bool> value);
         void CodeVolume_of_Char_(ref Volume<char> value);
@@ -415,8 +419,6 @@ namespace Aardvark.Base.Coder
         void CodeVolume_of_Sphere3d_(ref Volume<Sphere3d> value);
         void CodeVolume_of_Triangle2d_(ref Volume<Triangle2d> value);
         void CodeVolume_of_Triangle3d_(ref Volume<Triangle3d> value);
-        void CodeVolume_of_CameraExtrinsics_(ref Volume<CameraExtrinsics> value);
-        void CodeVolume_of_CameraIntrinsics_(ref Volume<CameraIntrinsics> value);
         void CodeTensor_of_Byte_(ref Tensor<byte> value);
         void CodeTensor_of_SByte_(ref Tensor<sbyte> value);
         void CodeTensor_of_Short_(ref Tensor<short> value);
@@ -498,7 +500,9 @@ namespace Aardvark.Base.Coder
         void CodeTensor_of_Scale3d_(ref Tensor<Scale3d> value);
         void CodeTensor_of_Shift3f_(ref Tensor<Shift3f> value);
         void CodeTensor_of_Shift3d_(ref Tensor<Shift3d> value);
+        void CodeTensor_of_Trafo2f_(ref Tensor<Trafo2f> value);
         void CodeTensor_of_Trafo2d_(ref Tensor<Trafo2d> value);
+        void CodeTensor_of_Trafo3f_(ref Tensor<Trafo3f> value);
         void CodeTensor_of_Trafo3d_(ref Tensor<Trafo3d> value);
         void CodeTensor_of_Bool_(ref Tensor<bool> value);
         void CodeTensor_of_Char_(ref Tensor<char> value);
@@ -519,8 +523,6 @@ namespace Aardvark.Base.Coder
         void CodeTensor_of_Sphere3d_(ref Tensor<Sphere3d> value);
         void CodeTensor_of_Triangle2d_(ref Tensor<Triangle2d> value);
         void CodeTensor_of_Triangle3d_(ref Tensor<Triangle3d> value);
-        void CodeTensor_of_CameraExtrinsics_(ref Tensor<CameraExtrinsics> value);
-        void CodeTensor_of_CameraIntrinsics_(ref Tensor<CameraIntrinsics> value);
 
         #endregion
 
@@ -613,7 +615,9 @@ namespace Aardvark.Base.Coder
         void CodeScale3dArray(ref Scale3d[] value);
         void CodeShift3fArray(ref Shift3f[] value);
         void CodeShift3dArray(ref Shift3d[] value);
+        void CodeTrafo2fArray(ref Trafo2f[] value);
         void CodeTrafo2dArray(ref Trafo2d[] value);
+        void CodeTrafo3fArray(ref Trafo3f[] value);
         void CodeTrafo3dArray(ref Trafo3d[] value);
         void CodeCircle2dArray(ref Circle2d[] value);
         void CodeLine2dArray(ref Line2d[] value);
@@ -628,8 +632,6 @@ namespace Aardvark.Base.Coder
         void CodeSphere3dArray(ref Sphere3d[] value);
         void CodeTriangle2dArray(ref Triangle2d[] value);
         void CodeTriangle3dArray(ref Triangle3d[] value);
-        void CodeCameraExtrinsicsArray(ref CameraExtrinsics[] value);
-        void CodeCameraIntrinsicsArray(ref CameraIntrinsics[] value);
         void CodeVector_of_Byte_Array(ref Vector<byte>[] value);
         void CodeVector_of_SByte_Array(ref Vector<sbyte>[] value);
         void CodeVector_of_Short_Array(ref Vector<short>[] value);
@@ -711,7 +713,9 @@ namespace Aardvark.Base.Coder
         void CodeVector_of_Scale3d_Array(ref Vector<Scale3d>[] value);
         void CodeVector_of_Shift3f_Array(ref Vector<Shift3f>[] value);
         void CodeVector_of_Shift3d_Array(ref Vector<Shift3d>[] value);
+        void CodeVector_of_Trafo2f_Array(ref Vector<Trafo2f>[] value);
         void CodeVector_of_Trafo2d_Array(ref Vector<Trafo2d>[] value);
+        void CodeVector_of_Trafo3f_Array(ref Vector<Trafo3f>[] value);
         void CodeVector_of_Trafo3d_Array(ref Vector<Trafo3d>[] value);
         void CodeVector_of_Bool_Array(ref Vector<bool>[] value);
         void CodeVector_of_Char_Array(ref Vector<char>[] value);
@@ -732,8 +736,6 @@ namespace Aardvark.Base.Coder
         void CodeVector_of_Sphere3d_Array(ref Vector<Sphere3d>[] value);
         void CodeVector_of_Triangle2d_Array(ref Vector<Triangle2d>[] value);
         void CodeVector_of_Triangle3d_Array(ref Vector<Triangle3d>[] value);
-        void CodeVector_of_CameraExtrinsics_Array(ref Vector<CameraExtrinsics>[] value);
-        void CodeVector_of_CameraIntrinsics_Array(ref Vector<CameraIntrinsics>[] value);
         void CodeMatrix_of_Byte_Array(ref Matrix<byte>[] value);
         void CodeMatrix_of_SByte_Array(ref Matrix<sbyte>[] value);
         void CodeMatrix_of_Short_Array(ref Matrix<short>[] value);
@@ -815,7 +817,9 @@ namespace Aardvark.Base.Coder
         void CodeMatrix_of_Scale3d_Array(ref Matrix<Scale3d>[] value);
         void CodeMatrix_of_Shift3f_Array(ref Matrix<Shift3f>[] value);
         void CodeMatrix_of_Shift3d_Array(ref Matrix<Shift3d>[] value);
+        void CodeMatrix_of_Trafo2f_Array(ref Matrix<Trafo2f>[] value);
         void CodeMatrix_of_Trafo2d_Array(ref Matrix<Trafo2d>[] value);
+        void CodeMatrix_of_Trafo3f_Array(ref Matrix<Trafo3f>[] value);
         void CodeMatrix_of_Trafo3d_Array(ref Matrix<Trafo3d>[] value);
         void CodeMatrix_of_Bool_Array(ref Matrix<bool>[] value);
         void CodeMatrix_of_Char_Array(ref Matrix<char>[] value);
@@ -836,8 +840,6 @@ namespace Aardvark.Base.Coder
         void CodeMatrix_of_Sphere3d_Array(ref Matrix<Sphere3d>[] value);
         void CodeMatrix_of_Triangle2d_Array(ref Matrix<Triangle2d>[] value);
         void CodeMatrix_of_Triangle3d_Array(ref Matrix<Triangle3d>[] value);
-        void CodeMatrix_of_CameraExtrinsics_Array(ref Matrix<CameraExtrinsics>[] value);
-        void CodeMatrix_of_CameraIntrinsics_Array(ref Matrix<CameraIntrinsics>[] value);
         void CodeVolume_of_Byte_Array(ref Volume<byte>[] value);
         void CodeVolume_of_SByte_Array(ref Volume<sbyte>[] value);
         void CodeVolume_of_Short_Array(ref Volume<short>[] value);
@@ -919,7 +921,9 @@ namespace Aardvark.Base.Coder
         void CodeVolume_of_Scale3d_Array(ref Volume<Scale3d>[] value);
         void CodeVolume_of_Shift3f_Array(ref Volume<Shift3f>[] value);
         void CodeVolume_of_Shift3d_Array(ref Volume<Shift3d>[] value);
+        void CodeVolume_of_Trafo2f_Array(ref Volume<Trafo2f>[] value);
         void CodeVolume_of_Trafo2d_Array(ref Volume<Trafo2d>[] value);
+        void CodeVolume_of_Trafo3f_Array(ref Volume<Trafo3f>[] value);
         void CodeVolume_of_Trafo3d_Array(ref Volume<Trafo3d>[] value);
         void CodeVolume_of_Bool_Array(ref Volume<bool>[] value);
         void CodeVolume_of_Char_Array(ref Volume<char>[] value);
@@ -940,8 +944,6 @@ namespace Aardvark.Base.Coder
         void CodeVolume_of_Sphere3d_Array(ref Volume<Sphere3d>[] value);
         void CodeVolume_of_Triangle2d_Array(ref Volume<Triangle2d>[] value);
         void CodeVolume_of_Triangle3d_Array(ref Volume<Triangle3d>[] value);
-        void CodeVolume_of_CameraExtrinsics_Array(ref Volume<CameraExtrinsics>[] value);
-        void CodeVolume_of_CameraIntrinsics_Array(ref Volume<CameraIntrinsics>[] value);
         void CodeTensor_of_Byte_Array(ref Tensor<byte>[] value);
         void CodeTensor_of_SByte_Array(ref Tensor<sbyte>[] value);
         void CodeTensor_of_Short_Array(ref Tensor<short>[] value);
@@ -1023,7 +1025,9 @@ namespace Aardvark.Base.Coder
         void CodeTensor_of_Scale3d_Array(ref Tensor<Scale3d>[] value);
         void CodeTensor_of_Shift3f_Array(ref Tensor<Shift3f>[] value);
         void CodeTensor_of_Shift3d_Array(ref Tensor<Shift3d>[] value);
+        void CodeTensor_of_Trafo2f_Array(ref Tensor<Trafo2f>[] value);
         void CodeTensor_of_Trafo2d_Array(ref Tensor<Trafo2d>[] value);
+        void CodeTensor_of_Trafo3f_Array(ref Tensor<Trafo3f>[] value);
         void CodeTensor_of_Trafo3d_Array(ref Tensor<Trafo3d>[] value);
         void CodeTensor_of_Bool_Array(ref Tensor<bool>[] value);
         void CodeTensor_of_Char_Array(ref Tensor<char>[] value);
@@ -1044,8 +1048,6 @@ namespace Aardvark.Base.Coder
         void CodeTensor_of_Sphere3d_Array(ref Tensor<Sphere3d>[] value);
         void CodeTensor_of_Triangle2d_Array(ref Tensor<Triangle2d>[] value);
         void CodeTensor_of_Triangle3d_Array(ref Tensor<Triangle3d>[] value);
-        void CodeTensor_of_CameraExtrinsics_Array(ref Tensor<CameraExtrinsics>[] value);
-        void CodeTensor_of_CameraIntrinsics_Array(ref Tensor<CameraIntrinsics>[] value);
 
         #endregion
 
@@ -1213,8 +1215,12 @@ namespace Aardvark.Base.Coder
         void CodeShift3fArray3d(ref Shift3f[, ,] value);
         void CodeShift3dArray2d(ref Shift3d[,] value);
         void CodeShift3dArray3d(ref Shift3d[, ,] value);
+        void CodeTrafo2fArray2d(ref Trafo2f[,] value);
+        void CodeTrafo2fArray3d(ref Trafo2f[, ,] value);
         void CodeTrafo2dArray2d(ref Trafo2d[,] value);
         void CodeTrafo2dArray3d(ref Trafo2d[, ,] value);
+        void CodeTrafo3fArray2d(ref Trafo3f[,] value);
+        void CodeTrafo3fArray3d(ref Trafo3f[, ,] value);
         void CodeTrafo3dArray2d(ref Trafo3d[,] value);
         void CodeTrafo3dArray3d(ref Trafo3d[, ,] value);
 
@@ -1384,8 +1390,12 @@ namespace Aardvark.Base.Coder
         void CodeShift3fArrayArrayArray(ref Shift3f[][][] value);
         void CodeShift3dArrayArray(ref Shift3d[][] value);
         void CodeShift3dArrayArrayArray(ref Shift3d[][][] value);
+        void CodeTrafo2fArrayArray(ref Trafo2f[][] value);
+        void CodeTrafo2fArrayArrayArray(ref Trafo2f[][][] value);
         void CodeTrafo2dArrayArray(ref Trafo2d[][] value);
         void CodeTrafo2dArrayArrayArray(ref Trafo2d[][][] value);
+        void CodeTrafo3fArrayArray(ref Trafo3f[][] value);
+        void CodeTrafo3fArrayArrayArray(ref Trafo3f[][][] value);
         void CodeTrafo3dArrayArray(ref Trafo3d[][] value);
         void CodeTrafo3dArrayArrayArray(ref Trafo3d[][][] value);
 
@@ -1480,7 +1490,9 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Scale3d_(ref List<Scale3d> value);
         void CodeList_of_Shift3f_(ref List<Shift3f> value);
         void CodeList_of_Shift3d_(ref List<Shift3d> value);
+        void CodeList_of_Trafo2f_(ref List<Trafo2f> value);
         void CodeList_of_Trafo2d_(ref List<Trafo2d> value);
+        void CodeList_of_Trafo3f_(ref List<Trafo3f> value);
         void CodeList_of_Trafo3d_(ref List<Trafo3d> value);
         void CodeList_of_Circle2d_(ref List<Circle2d> value);
         void CodeList_of_Line2d_(ref List<Line2d> value);
@@ -1495,8 +1507,6 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Sphere3d_(ref List<Sphere3d> value);
         void CodeList_of_Triangle2d_(ref List<Triangle2d> value);
         void CodeList_of_Triangle3d_(ref List<Triangle3d> value);
-        void CodeList_of_CameraExtrinsics_(ref List<CameraExtrinsics> value);
-        void CodeList_of_CameraIntrinsics_(ref List<CameraIntrinsics> value);
         void CodeList_of_Vector_of_Byte__(ref List<Vector<byte>> value);
         void CodeList_of_Vector_of_SByte__(ref List<Vector<sbyte>> value);
         void CodeList_of_Vector_of_Short__(ref List<Vector<short>> value);
@@ -1578,7 +1588,9 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Vector_of_Scale3d__(ref List<Vector<Scale3d>> value);
         void CodeList_of_Vector_of_Shift3f__(ref List<Vector<Shift3f>> value);
         void CodeList_of_Vector_of_Shift3d__(ref List<Vector<Shift3d>> value);
+        void CodeList_of_Vector_of_Trafo2f__(ref List<Vector<Trafo2f>> value);
         void CodeList_of_Vector_of_Trafo2d__(ref List<Vector<Trafo2d>> value);
+        void CodeList_of_Vector_of_Trafo3f__(ref List<Vector<Trafo3f>> value);
         void CodeList_of_Vector_of_Trafo3d__(ref List<Vector<Trafo3d>> value);
         void CodeList_of_Vector_of_Bool__(ref List<Vector<bool>> value);
         void CodeList_of_Vector_of_Char__(ref List<Vector<char>> value);
@@ -1599,8 +1611,6 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Vector_of_Sphere3d__(ref List<Vector<Sphere3d>> value);
         void CodeList_of_Vector_of_Triangle2d__(ref List<Vector<Triangle2d>> value);
         void CodeList_of_Vector_of_Triangle3d__(ref List<Vector<Triangle3d>> value);
-        void CodeList_of_Vector_of_CameraExtrinsics__(ref List<Vector<CameraExtrinsics>> value);
-        void CodeList_of_Vector_of_CameraIntrinsics__(ref List<Vector<CameraIntrinsics>> value);
         void CodeList_of_Matrix_of_Byte__(ref List<Matrix<byte>> value);
         void CodeList_of_Matrix_of_SByte__(ref List<Matrix<sbyte>> value);
         void CodeList_of_Matrix_of_Short__(ref List<Matrix<short>> value);
@@ -1682,7 +1692,9 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Matrix_of_Scale3d__(ref List<Matrix<Scale3d>> value);
         void CodeList_of_Matrix_of_Shift3f__(ref List<Matrix<Shift3f>> value);
         void CodeList_of_Matrix_of_Shift3d__(ref List<Matrix<Shift3d>> value);
+        void CodeList_of_Matrix_of_Trafo2f__(ref List<Matrix<Trafo2f>> value);
         void CodeList_of_Matrix_of_Trafo2d__(ref List<Matrix<Trafo2d>> value);
+        void CodeList_of_Matrix_of_Trafo3f__(ref List<Matrix<Trafo3f>> value);
         void CodeList_of_Matrix_of_Trafo3d__(ref List<Matrix<Trafo3d>> value);
         void CodeList_of_Matrix_of_Bool__(ref List<Matrix<bool>> value);
         void CodeList_of_Matrix_of_Char__(ref List<Matrix<char>> value);
@@ -1703,8 +1715,6 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Matrix_of_Sphere3d__(ref List<Matrix<Sphere3d>> value);
         void CodeList_of_Matrix_of_Triangle2d__(ref List<Matrix<Triangle2d>> value);
         void CodeList_of_Matrix_of_Triangle3d__(ref List<Matrix<Triangle3d>> value);
-        void CodeList_of_Matrix_of_CameraExtrinsics__(ref List<Matrix<CameraExtrinsics>> value);
-        void CodeList_of_Matrix_of_CameraIntrinsics__(ref List<Matrix<CameraIntrinsics>> value);
         void CodeList_of_Volume_of_Byte__(ref List<Volume<byte>> value);
         void CodeList_of_Volume_of_SByte__(ref List<Volume<sbyte>> value);
         void CodeList_of_Volume_of_Short__(ref List<Volume<short>> value);
@@ -1786,7 +1796,9 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Volume_of_Scale3d__(ref List<Volume<Scale3d>> value);
         void CodeList_of_Volume_of_Shift3f__(ref List<Volume<Shift3f>> value);
         void CodeList_of_Volume_of_Shift3d__(ref List<Volume<Shift3d>> value);
+        void CodeList_of_Volume_of_Trafo2f__(ref List<Volume<Trafo2f>> value);
         void CodeList_of_Volume_of_Trafo2d__(ref List<Volume<Trafo2d>> value);
+        void CodeList_of_Volume_of_Trafo3f__(ref List<Volume<Trafo3f>> value);
         void CodeList_of_Volume_of_Trafo3d__(ref List<Volume<Trafo3d>> value);
         void CodeList_of_Volume_of_Bool__(ref List<Volume<bool>> value);
         void CodeList_of_Volume_of_Char__(ref List<Volume<char>> value);
@@ -1807,8 +1819,6 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Volume_of_Sphere3d__(ref List<Volume<Sphere3d>> value);
         void CodeList_of_Volume_of_Triangle2d__(ref List<Volume<Triangle2d>> value);
         void CodeList_of_Volume_of_Triangle3d__(ref List<Volume<Triangle3d>> value);
-        void CodeList_of_Volume_of_CameraExtrinsics__(ref List<Volume<CameraExtrinsics>> value);
-        void CodeList_of_Volume_of_CameraIntrinsics__(ref List<Volume<CameraIntrinsics>> value);
         void CodeList_of_Tensor_of_Byte__(ref List<Tensor<byte>> value);
         void CodeList_of_Tensor_of_SByte__(ref List<Tensor<sbyte>> value);
         void CodeList_of_Tensor_of_Short__(ref List<Tensor<short>> value);
@@ -1890,7 +1900,9 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Tensor_of_Scale3d__(ref List<Tensor<Scale3d>> value);
         void CodeList_of_Tensor_of_Shift3f__(ref List<Tensor<Shift3f>> value);
         void CodeList_of_Tensor_of_Shift3d__(ref List<Tensor<Shift3d>> value);
+        void CodeList_of_Tensor_of_Trafo2f__(ref List<Tensor<Trafo2f>> value);
         void CodeList_of_Tensor_of_Trafo2d__(ref List<Tensor<Trafo2d>> value);
+        void CodeList_of_Tensor_of_Trafo3f__(ref List<Tensor<Trafo3f>> value);
         void CodeList_of_Tensor_of_Trafo3d__(ref List<Tensor<Trafo3d>> value);
         void CodeList_of_Tensor_of_Bool__(ref List<Tensor<bool>> value);
         void CodeList_of_Tensor_of_Char__(ref List<Tensor<char>> value);
@@ -1911,8 +1923,6 @@ namespace Aardvark.Base.Coder
         void CodeList_of_Tensor_of_Sphere3d__(ref List<Tensor<Sphere3d>> value);
         void CodeList_of_Tensor_of_Triangle2d__(ref List<Tensor<Triangle2d>> value);
         void CodeList_of_Tensor_of_Triangle3d__(ref List<Tensor<Triangle3d>> value);
-        void CodeList_of_Tensor_of_CameraExtrinsics__(ref List<Tensor<CameraExtrinsics>> value);
-        void CodeList_of_Tensor_of_CameraIntrinsics__(ref List<Tensor<CameraIntrinsics>> value);
 
         #endregion
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
@@ -1564,13 +1565,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M22i matrix with a V2i column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2i Multiply(M22i m, V2i v)
         {
-            return new V2i(
-                m.M00 * v.X + m.M01 * v.Y, 
-                m.M10 * v.X + m.M11 * v.Y);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M22i matrix with a V2i column vector.
+        /// </summary>
         public static V2i operator *(M22i m, V2i v)
         {
             return new V2i(
@@ -1578,7 +1584,19 @@ namespace Aardvark.Base
                 m.M10 * v.X + m.M11 * v.Y);
         }
 
-        public static V2i TransposedMultiply(V2i v, M22i m)
+        /// <summary>
+        /// Multiplies a V2i row vector with a M22i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2i Multiply(V2i v, M22i m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V2i row vector with a M22i matrix.
+        /// </summary>
+        public static V2i operator *(V2i v, M22i m)
         {
             return new V2i(
                 v.X * m.M00 + v.Y * m.M10, 
@@ -1796,7 +1814,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
         /// </summary>
         public static int TransformDir(M22i m, int v)
         {
@@ -1804,7 +1822,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static int TransformPos(M22i m, int p)
@@ -1813,7 +1831,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static int TransformPosProj(M22i m, int p)
@@ -1824,7 +1842,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V2i TransformPosProjFull(M22i m, int p)
@@ -1833,7 +1851,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by this matrix.
         /// </summary>
         public int TransformDir(int v)
         {
@@ -2063,6 +2081,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M22i a, M22i b, int epsilon)
+        {
+            return M22i.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M22l
 
@@ -3423,13 +3452,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M22l matrix with a V2l column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2l Multiply(M22l m, V2l v)
         {
-            return new V2l(
-                m.M00 * v.X + m.M01 * v.Y, 
-                m.M10 * v.X + m.M11 * v.Y);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M22l matrix with a V2l column vector.
+        /// </summary>
         public static V2l operator *(M22l m, V2l v)
         {
             return new V2l(
@@ -3437,7 +3471,19 @@ namespace Aardvark.Base
                 m.M10 * v.X + m.M11 * v.Y);
         }
 
-        public static V2l TransposedMultiply(V2l v, M22l m)
+        /// <summary>
+        /// Multiplies a V2l row vector with a M22l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2l Multiply(V2l v, M22l m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V2l row vector with a M22l matrix.
+        /// </summary>
+        public static V2l operator *(V2l v, M22l m)
         {
             return new V2l(
                 v.X * m.M00 + v.Y * m.M10, 
@@ -3655,7 +3701,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
         /// </summary>
         public static long TransformDir(M22l m, long v)
         {
@@ -3663,7 +3709,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static long TransformPos(M22l m, long p)
@@ -3672,7 +3718,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static long TransformPosProj(M22l m, long p)
@@ -3683,7 +3729,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V2l TransformPosProjFull(M22l m, long p)
@@ -3692,7 +3738,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by this matrix.
         /// </summary>
         public long TransformDir(long v)
         {
@@ -3922,6 +3968,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M22l a, M22l b, long epsilon)
+        {
+            return M22l.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M22f
 
@@ -5086,13 +5143,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M22f matrix with a V2f column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f Multiply(M22f m, V2f v)
         {
-            return new V2f(
-                m.M00 * v.X + m.M01 * v.Y, 
-                m.M10 * v.X + m.M11 * v.Y);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M22f matrix with a V2f column vector.
+        /// </summary>
         public static V2f operator *(M22f m, V2f v)
         {
             return new V2f(
@@ -5100,7 +5162,19 @@ namespace Aardvark.Base
                 m.M10 * v.X + m.M11 * v.Y);
         }
 
-        public static V2f TransposedMultiply(V2f v, M22f m)
+        /// <summary>
+        /// Multiplies a V2f row vector with a M22f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f Multiply(V2f v, M22f m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V2f row vector with a M22f matrix.
+        /// </summary>
+        public static V2f operator *(V2f v, M22f m)
         {
             return new V2f(
                 v.X * m.M00 + v.Y * m.M10, 
@@ -5318,7 +5392,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
         /// </summary>
         public static float TransformDir(M22f m, float v)
         {
@@ -5326,7 +5400,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static float TransformPos(M22f m, float p)
@@ -5335,7 +5409,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static float TransformPosProj(M22f m, float p)
@@ -5346,7 +5420,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V2f TransformPosProjFull(M22f m, float p)
@@ -5355,7 +5429,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by this matrix.
         /// </summary>
         public float TransformDir(float v)
         {
@@ -5513,19 +5587,11 @@ namespace Aardvark.Base
         public M22f Inverse { get { return LuInverse(); } }
 
         /// <summary>
-        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
-        /// </summary>
-        public static bool ApproximatelyEquals(M22f a, M22f b, float epsilon)
-        {
-            return DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
-        }
-
-        /// <summary>
         /// Returns if the matrix is the identity matrix I.
         /// </summary>
         public bool IsIdentity(float epsilon)
         {
-            return ApproximatelyEquals(this, Identity, epsilon);
+            return Fun.ApproximateEquals(this, Identity, epsilon);
         }
 
         /// <summary>
@@ -5660,6 +5726,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M22f a, M22f b, float epsilon)
+        {
+            return M22f.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M22d
 
@@ -6628,13 +6705,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M22d matrix with a V2d column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d Multiply(M22d m, V2d v)
         {
-            return new V2d(
-                m.M00 * v.X + m.M01 * v.Y, 
-                m.M10 * v.X + m.M11 * v.Y);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M22d matrix with a V2d column vector.
+        /// </summary>
         public static V2d operator *(M22d m, V2d v)
         {
             return new V2d(
@@ -6642,7 +6724,19 @@ namespace Aardvark.Base
                 m.M10 * v.X + m.M11 * v.Y);
         }
 
-        public static V2d TransposedMultiply(V2d v, M22d m)
+        /// <summary>
+        /// Multiplies a V2d row vector with a M22d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d Multiply(V2d v, M22d m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V2d row vector with a M22d matrix.
+        /// </summary>
+        public static V2d operator *(V2d v, M22d m)
         {
             return new V2d(
                 v.X * m.M00 + v.Y * m.M10, 
@@ -6860,7 +6954,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
         /// </summary>
         public static double TransformDir(M22d m, double v)
         {
@@ -6868,7 +6962,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static double TransformPos(M22d m, double p)
@@ -6877,7 +6971,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static double TransformPosProj(M22d m, double p)
@@ -6888,7 +6982,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
+        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V2d TransformPosProjFull(M22d m, double p)
@@ -6897,7 +6991,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Y is presumed 0.0) by this matrix.
         /// </summary>
         public double TransformDir(double v)
         {
@@ -7055,19 +7149,11 @@ namespace Aardvark.Base
         public M22d Inverse { get { return LuInverse(); } }
 
         /// <summary>
-        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
-        /// </summary>
-        public static bool ApproximatelyEquals(M22d a, M22d b, double epsilon)
-        {
-            return DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
-        }
-
-        /// <summary>
         /// Returns if the matrix is the identity matrix I.
         /// </summary>
         public bool IsIdentity(double epsilon)
         {
-            return ApproximatelyEquals(this, Identity, epsilon);
+            return Fun.ApproximateEquals(this, Identity, epsilon);
         }
 
         /// <summary>
@@ -7202,6 +7288,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M22d a, M22d b, double epsilon)
+        {
+            return M22d.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M23i
 
@@ -8811,13 +8908,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M23i matrix with a V3i column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2i Multiply(M23i m, V3i v)
         {
-            return new V2i(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M23i matrix with a V3i column vector.
+        /// </summary>
         public static V2i operator *(M23i m, V3i v)
         {
             return new V2i(
@@ -9066,7 +9168,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
         /// </summary>
         public static V2i TransformDir(M23i m, V2i v)
         {
@@ -9077,7 +9179,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2i TransformPos(M23i m, V2i p)
@@ -9089,7 +9191,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by this matrix.
         /// </summary>
         public V2i TransformDir(V2i v)
         {
@@ -9100,7 +9202,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2i TransformPos(V2i p)
@@ -9112,7 +9214,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V2i TransformPosProj(M23i m, V2i p)
@@ -9120,7 +9222,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V2i TransformPosProj(V2i p)
@@ -9300,6 +9402,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M23i a, M23i b, int epsilon)
+        {
+            return M23i.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M23l
 
@@ -10713,13 +10826,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M23l matrix with a V3l column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2l Multiply(M23l m, V3l v)
         {
-            return new V2l(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M23l matrix with a V3l column vector.
+        /// </summary>
         public static V2l operator *(M23l m, V3l v)
         {
             return new V2l(
@@ -10968,7 +11086,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
         /// </summary>
         public static V2l TransformDir(M23l m, V2l v)
         {
@@ -10979,7 +11097,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2l TransformPos(M23l m, V2l p)
@@ -10991,7 +11109,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by this matrix.
         /// </summary>
         public V2l TransformDir(V2l v)
         {
@@ -11002,7 +11120,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2l TransformPos(V2l p)
@@ -11014,7 +11132,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V2l TransformPosProj(M23l m, V2l p)
@@ -11022,7 +11140,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V2l TransformPosProj(V2l p)
@@ -11202,6 +11320,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M23l a, M23l b, long epsilon)
+        {
+            return M23l.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M23f
 
@@ -12419,13 +12548,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M23f matrix with a V3f column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f Multiply(M23f m, V3f v)
         {
-            return new V2f(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M23f matrix with a V3f column vector.
+        /// </summary>
         public static V2f operator *(M23f m, V3f v)
         {
             return new V2f(
@@ -12674,7 +12808,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
         /// </summary>
         public static V2f TransformDir(M23f m, V2f v)
         {
@@ -12685,7 +12819,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2f TransformPos(M23f m, V2f p)
@@ -12697,7 +12831,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by this matrix.
         /// </summary>
         public V2f TransformDir(V2f v)
         {
@@ -12708,7 +12842,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2f TransformPos(V2f p)
@@ -12720,7 +12854,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V2f TransformPosProj(M23f m, V2f p)
@@ -12728,7 +12862,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V2f TransformPosProj(V2f p)
@@ -12908,6 +13042,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M23f a, M23f b, float epsilon)
+        {
+            return M23f.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M23d
 
@@ -13929,13 +14074,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M23d matrix with a V3d column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d Multiply(M23d m, V3d v)
         {
-            return new V2d(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M23d matrix with a V3d column vector.
+        /// </summary>
         public static V2d operator *(M23d m, V3d v)
         {
             return new V2d(
@@ -14184,7 +14334,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
         /// </summary>
         public static V2d TransformDir(M23d m, V2d v)
         {
@@ -14195,7 +14345,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2d TransformPos(M23d m, V2d p)
@@ -14207,7 +14357,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by this matrix.
         /// </summary>
         public V2d TransformDir(V2d v)
         {
@@ -14218,7 +14368,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2d TransformPos(V2d p)
@@ -14230,7 +14380,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V2d TransformPosProj(M23d m, V2d p)
@@ -14238,7 +14388,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V2d TransformPosProj(V2d p)
@@ -14418,6 +14568,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M23d a, M23d b, double epsilon)
+        {
+            return M23d.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M33i
 
@@ -16285,14 +16446,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M33i matrix with a V3i column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3i Multiply(M33i m, V3i v)
         {
-            return new V3i(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M33i matrix with a V3i column vector.
+        /// </summary>
         public static V3i operator *(M33i m, V3i v)
         {
             return new V3i(
@@ -16301,7 +16466,19 @@ namespace Aardvark.Base
                 m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z);
         }
 
-        public static V3i TransposedMultiply(V3i v, M33i m)
+        /// <summary>
+        /// Multiplies a V3i row vector with a M33i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3i Multiply(V3i v, M33i m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V3i row vector with a M33i matrix.
+        /// </summary>
+        public static V3i operator *(V3i v, M33i m)
         {
             return new V3i(
                 v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20, 
@@ -16598,7 +16775,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
         /// </summary>
         public static V2i TransformDir(M33i m, V2i v)
         {
@@ -16609,7 +16786,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2i TransformPos(M33i m, V2i p)
@@ -16621,7 +16798,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by this matrix.
         /// </summary>
         public V2i TransformDir(V2i v)
         {
@@ -16632,7 +16809,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2i TransformPos(V2i p)
@@ -16644,7 +16821,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static V2i TransposedTransformDir(M33i m, V2i v)
         {
@@ -16655,7 +16832,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2i TransposedTransformPos(M33i m, V2i p)
@@ -16667,7 +16844,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public V2i TransposedTransformDir(V2i v)
         {
@@ -16678,7 +16855,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2i TransposedTransformPos(V2i p)
@@ -16690,7 +16867,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static V2i TransformPosProj(M33i m, V2i p)
@@ -16701,7 +16878,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V3i TransformPosProjFull(M33i m, V2i p)
@@ -16714,7 +16891,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public V2i TransformPosProj(V2i p)
@@ -16723,7 +16900,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V3i TransformPosProjFull(V2i p)
@@ -16961,6 +17138,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M33i a, M33i b, int epsilon)
+        {
+            return M33i.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M33l
 
@@ -18604,14 +18792,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M33l matrix with a V3l column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3l Multiply(M33l m, V3l v)
         {
-            return new V3l(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M33l matrix with a V3l column vector.
+        /// </summary>
         public static V3l operator *(M33l m, V3l v)
         {
             return new V3l(
@@ -18620,7 +18812,19 @@ namespace Aardvark.Base
                 m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z);
         }
 
-        public static V3l TransposedMultiply(V3l v, M33l m)
+        /// <summary>
+        /// Multiplies a V3l row vector with a M33l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3l Multiply(V3l v, M33l m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V3l row vector with a M33l matrix.
+        /// </summary>
+        public static V3l operator *(V3l v, M33l m)
         {
             return new V3l(
                 v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20, 
@@ -18917,7 +19121,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
         /// </summary>
         public static V2l TransformDir(M33l m, V2l v)
         {
@@ -18928,7 +19132,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2l TransformPos(M33l m, V2l p)
@@ -18940,7 +19144,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by this matrix.
         /// </summary>
         public V2l TransformDir(V2l v)
         {
@@ -18951,7 +19155,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2l TransformPos(V2l p)
@@ -18963,7 +19167,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static V2l TransposedTransformDir(M33l m, V2l v)
         {
@@ -18974,7 +19178,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2l TransposedTransformPos(M33l m, V2l p)
@@ -18986,7 +19190,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public V2l TransposedTransformDir(V2l v)
         {
@@ -18997,7 +19201,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2l TransposedTransformPos(V2l p)
@@ -19009,7 +19213,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static V2l TransformPosProj(M33l m, V2l p)
@@ -19020,7 +19224,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V3l TransformPosProjFull(M33l m, V2l p)
@@ -19033,7 +19237,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public V2l TransformPosProj(V2l p)
@@ -19042,7 +19246,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V3l TransformPosProjFull(V2l p)
@@ -19280,6 +19484,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M33l a, M33l b, long epsilon)
+        {
+            return M33l.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M33f
 
@@ -20699,14 +20914,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M33f matrix with a V3f column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f Multiply(M33f m, V3f v)
         {
-            return new V3f(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M33f matrix with a V3f column vector.
+        /// </summary>
         public static V3f operator *(M33f m, V3f v)
         {
             return new V3f(
@@ -20715,7 +20934,19 @@ namespace Aardvark.Base
                 m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z);
         }
 
-        public static V3f TransposedMultiply(V3f v, M33f m)
+        /// <summary>
+        /// Multiplies a V3f row vector with a M33f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f Multiply(V3f v, M33f m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V3f row vector with a M33f matrix.
+        /// </summary>
+        public static V3f operator *(V3f v, M33f m)
         {
             return new V3f(
                 v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20, 
@@ -21012,7 +21243,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
         /// </summary>
         public static V2f TransformDir(M33f m, V2f v)
         {
@@ -21023,7 +21254,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2f TransformPos(M33f m, V2f p)
@@ -21035,7 +21266,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by this matrix.
         /// </summary>
         public V2f TransformDir(V2f v)
         {
@@ -21046,7 +21277,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2f TransformPos(V2f p)
@@ -21058,7 +21289,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static V2f TransposedTransformDir(M33f m, V2f v)
         {
@@ -21069,7 +21300,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2f TransposedTransformPos(M33f m, V2f p)
@@ -21081,7 +21312,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public V2f TransposedTransformDir(V2f v)
         {
@@ -21092,7 +21323,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2f TransposedTransformPos(V2f p)
@@ -21104,7 +21335,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static V2f TransformPosProj(M33f m, V2f p)
@@ -21115,7 +21346,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V3f TransformPosProjFull(M33f m, V2f p)
@@ -21128,7 +21359,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public V2f TransformPosProj(V2f p)
@@ -21137,7 +21368,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V3f TransformPosProjFull(V2f p)
@@ -21293,19 +21524,11 @@ namespace Aardvark.Base
         public M33f Inverse { get { return LuInverse(); } }
 
         /// <summary>
-        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
-        /// </summary>
-        public static bool ApproximatelyEquals(M33f a, M33f b, float epsilon)
-        {
-            return DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
-        }
-
-        /// <summary>
         /// Returns if the matrix is the identity matrix I.
         /// </summary>
         public bool IsIdentity(float epsilon)
         {
-            return ApproximatelyEquals(this, Identity, epsilon);
+            return Fun.ApproximateEquals(this, Identity, epsilon);
         }
 
         /// <summary>
@@ -21450,6 +21673,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M33f a, M33f b, float epsilon)
+        {
+            return M33f.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M33d
 
@@ -22645,14 +22879,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M33d matrix with a V3d column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d Multiply(M33d m, V3d v)
         {
-            return new V3d(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M33d matrix with a V3d column vector.
+        /// </summary>
         public static V3d operator *(M33d m, V3d v)
         {
             return new V3d(
@@ -22661,7 +22899,19 @@ namespace Aardvark.Base
                 m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z);
         }
 
-        public static V3d TransposedMultiply(V3d v, M33d m)
+        /// <summary>
+        /// Multiplies a V3d row vector with a M33d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d Multiply(V3d v, M33d m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V3d row vector with a M33d matrix.
+        /// </summary>
+        public static V3d operator *(V3d v, M33d m)
         {
             return new V3d(
                 v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20, 
@@ -22958,7 +23208,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
         /// </summary>
         public static V2d TransformDir(M33d m, V2d v)
         {
@@ -22969,7 +23219,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2d TransformPos(M33d m, V2d p)
@@ -22981,7 +23231,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by this matrix.
         /// </summary>
         public V2d TransformDir(V2d v)
         {
@@ -22992,7 +23242,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2d TransformPos(V2d p)
@@ -23004,7 +23254,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static V2d TransposedTransformDir(M33d m, V2d v)
         {
@@ -23015,7 +23265,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V2d TransposedTransformPos(M33d m, V2d p)
@@ -23027,7 +23277,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.Z is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public V2d TransposedTransformDir(V2d v)
         {
@@ -23038,7 +23288,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V2d TransposedTransformPos(V2d p)
@@ -23050,7 +23300,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static V2d TransformPosProj(M33d m, V2d p)
@@ -23061,7 +23311,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.Z is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V3d TransformPosProjFull(M33d m, V2d p)
@@ -23074,7 +23324,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public V2d TransformPosProj(V2d p)
@@ -23083,7 +23333,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.Z is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V3d TransformPosProjFull(V2d p)
@@ -23239,19 +23489,11 @@ namespace Aardvark.Base
         public M33d Inverse { get { return LuInverse(); } }
 
         /// <summary>
-        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
-        /// </summary>
-        public static bool ApproximatelyEquals(M33d a, M33d b, double epsilon)
-        {
-            return DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
-        }
-
-        /// <summary>
         /// Returns if the matrix is the identity matrix I.
         /// </summary>
         public bool IsIdentity(double epsilon)
         {
-            return ApproximatelyEquals(this, Identity, epsilon);
+            return Fun.ApproximateEquals(this, Identity, epsilon);
         }
 
         /// <summary>
@@ -23396,6 +23638,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M33d a, M33d b, double epsilon)
+        {
+            return M33d.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M34i
 
@@ -25330,14 +25583,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M34i matrix with a V4i column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3i Multiply(M34i m, V4i v)
         {
-            return new V3i(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M34i matrix with a V4i column vector.
+        /// </summary>
         public static V3i operator *(M34i m, V4i v)
         {
             return new V3i(
@@ -25680,7 +25937,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
         /// </summary>
         public static V3i TransformDir(M34i m, V3i v)
         {
@@ -25692,7 +25949,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3i TransformPos(M34i m, V3i p)
@@ -25705,7 +25962,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by this matrix.
         /// </summary>
         public V3i TransformDir(V3i v)
         {
@@ -25717,7 +25974,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3i TransformPos(V3i p)
@@ -25730,7 +25987,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V3i TransformPosProj(M34i m, V3i p)
@@ -25738,7 +25995,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V3i TransformPosProj(V3i p)
@@ -25944,6 +26201,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M34i a, M34i b, int epsilon)
+        {
+            return M34i.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M34l
 
@@ -27654,14 +27922,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M34l matrix with a V4l column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3l Multiply(M34l m, V4l v)
         {
-            return new V3l(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M34l matrix with a V4l column vector.
+        /// </summary>
         public static V3l operator *(M34l m, V4l v)
         {
             return new V3l(
@@ -28004,7 +28276,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
         /// </summary>
         public static V3l TransformDir(M34l m, V3l v)
         {
@@ -28016,7 +28288,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3l TransformPos(M34l m, V3l p)
@@ -28029,7 +28301,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by this matrix.
         /// </summary>
         public V3l TransformDir(V3l v)
         {
@@ -28041,7 +28313,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3l TransformPos(V3l p)
@@ -28054,7 +28326,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V3l TransformPosProj(M34l m, V3l p)
@@ -28062,7 +28334,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V3l TransformPosProj(V3l p)
@@ -28268,6 +28540,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M34l a, M34l b, long epsilon)
+        {
+            return M34l.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M34f
 
@@ -29754,14 +30037,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M34f matrix with a V4f column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f Multiply(M34f m, V4f v)
         {
-            return new V3f(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M34f matrix with a V4f column vector.
+        /// </summary>
         public static V3f operator *(M34f m, V4f v)
         {
             return new V3f(
@@ -30104,7 +30391,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
         /// </summary>
         public static V3f TransformDir(M34f m, V3f v)
         {
@@ -30116,7 +30403,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3f TransformPos(M34f m, V3f p)
@@ -30129,7 +30416,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by this matrix.
         /// </summary>
         public V3f TransformDir(V3f v)
         {
@@ -30141,7 +30428,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3f TransformPos(V3f p)
@@ -30154,7 +30441,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V3f TransformPosProj(M34f m, V3f p)
@@ -30162,7 +30449,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V3f TransformPosProj(V3f p)
@@ -30368,6 +30655,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M34f a, M34f b, float epsilon)
+        {
+            return M34f.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M34d
 
@@ -31630,14 +31928,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M34d matrix with a V4d column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d Multiply(M34d m, V4d v)
         {
-            return new V3d(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M34d matrix with a V4d column vector.
+        /// </summary>
         public static V3d operator *(M34d m, V4d v)
         {
             return new V3d(
@@ -31980,7 +32282,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
         /// </summary>
         public static V3d TransformDir(M34d m, V3d v)
         {
@@ -31992,7 +32294,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3d TransformPos(M34d m, V3d p)
@@ -32005,7 +32307,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by this matrix.
         /// </summary>
         public V3d TransformDir(V3d v)
         {
@@ -32017,7 +32319,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3d TransformPos(V3d p)
@@ -32030,7 +32332,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V3d TransformPosProj(M34d m, V3d p)
@@ -32038,7 +32340,7 @@ namespace Aardvark.Base
             return TransformDir(m, p);
         }
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V3d TransformPosProj(V3d p)
@@ -32244,6 +32546,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M34d a, M34d b, double epsilon)
+        {
+            return M34d.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M44i
 
@@ -34458,15 +34771,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M44i matrix with a V4i column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4i Multiply(M44i m, V4i v)
         {
-            return new V4i(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W, 
-                m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M44i matrix with a V4i column vector.
+        /// </summary>
         public static V4i operator *(M44i m, V4i v)
         {
             return new V4i(
@@ -34476,7 +34792,19 @@ namespace Aardvark.Base
                 m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
         }
 
-        public static V4i TransposedMultiply(V4i v, M44i m)
+        /// <summary>
+        /// Multiplies a V4i row vector with a M44i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4i Multiply(V4i v, M44i m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V4i row vector with a M44i matrix.
+        /// </summary>
+        public static V4i operator *(V4i v, M44i m)
         {
             return new V4i(
                 v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20 + v.W * m.M30, 
@@ -34882,7 +35210,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
         /// </summary>
         public static V3i TransformDir(M44i m, V3i v)
         {
@@ -34894,7 +35222,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3i TransformPos(M44i m, V3i p)
@@ -34907,7 +35235,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by this matrix.
         /// </summary>
         public V3i TransformDir(V3i v)
         {
@@ -34919,7 +35247,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3i TransformPos(V3i p)
@@ -34932,7 +35260,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static V3i TransposedTransformDir(M44i m, V3i v)
         {
@@ -34944,7 +35272,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3i TransposedTransformPos(M44i m, V3i p)
@@ -34957,7 +35285,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public V3i TransposedTransformDir(V3i v)
         {
@@ -34969,7 +35297,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3i TransposedTransformPos(V3i p)
@@ -34982,7 +35310,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static V3i TransformPosProj(M44i m, V3i p)
@@ -34993,7 +35321,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V4i TransformPosProjFull(M44i m, V3i p)
@@ -35007,7 +35335,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public V3i TransformPosProj(V3i p)
@@ -35016,7 +35344,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V4i TransformPosProjFull(V3i p)
@@ -35286,6 +35614,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M44i a, M44i b, int epsilon)
+        {
+            return M44i.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M44l
 
@@ -37248,15 +37587,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M44l matrix with a V4l column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4l Multiply(M44l m, V4l v)
         {
-            return new V4l(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W, 
-                m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M44l matrix with a V4l column vector.
+        /// </summary>
         public static V4l operator *(M44l m, V4l v)
         {
             return new V4l(
@@ -37266,7 +37608,19 @@ namespace Aardvark.Base
                 m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
         }
 
-        public static V4l TransposedMultiply(V4l v, M44l m)
+        /// <summary>
+        /// Multiplies a V4l row vector with a M44l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4l Multiply(V4l v, M44l m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V4l row vector with a M44l matrix.
+        /// </summary>
+        public static V4l operator *(V4l v, M44l m)
         {
             return new V4l(
                 v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20 + v.W * m.M30, 
@@ -37672,7 +38026,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
         /// </summary>
         public static V3l TransformDir(M44l m, V3l v)
         {
@@ -37684,7 +38038,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3l TransformPos(M44l m, V3l p)
@@ -37697,7 +38051,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by this matrix.
         /// </summary>
         public V3l TransformDir(V3l v)
         {
@@ -37709,7 +38063,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3l TransformPos(V3l p)
@@ -37722,7 +38076,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static V3l TransposedTransformDir(M44l m, V3l v)
         {
@@ -37734,7 +38088,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3l TransposedTransformPos(M44l m, V3l p)
@@ -37747,7 +38101,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public V3l TransposedTransformDir(V3l v)
         {
@@ -37759,7 +38113,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3l TransposedTransformPos(V3l p)
@@ -37772,7 +38126,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static V3l TransformPosProj(M44l m, V3l p)
@@ -37783,7 +38137,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V4l TransformPosProjFull(M44l m, V3l p)
@@ -37797,7 +38151,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public V3l TransformPosProj(V3l p)
@@ -37806,7 +38160,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V4l TransformPosProjFull(V3l p)
@@ -38076,6 +38430,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M44l a, M44l b, long epsilon)
+        {
+            return M44l.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M44f
 
@@ -39786,15 +40151,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M44f matrix with a V4f column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4f Multiply(M44f m, V4f v)
         {
-            return new V4f(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W, 
-                m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M44f matrix with a V4f column vector.
+        /// </summary>
         public static V4f operator *(M44f m, V4f v)
         {
             return new V4f(
@@ -39804,7 +40172,19 @@ namespace Aardvark.Base
                 m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
         }
 
-        public static V4f TransposedMultiply(V4f v, M44f m)
+        /// <summary>
+        /// Multiplies a V4f row vector with a M44f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f Multiply(V4f v, M44f m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V4f row vector with a M44f matrix.
+        /// </summary>
+        public static V4f operator *(V4f v, M44f m)
         {
             return new V4f(
                 v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20 + v.W * m.M30, 
@@ -40210,7 +40590,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
         /// </summary>
         public static V3f TransformDir(M44f m, V3f v)
         {
@@ -40222,7 +40602,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3f TransformPos(M44f m, V3f p)
@@ -40235,7 +40615,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by this matrix.
         /// </summary>
         public V3f TransformDir(V3f v)
         {
@@ -40247,7 +40627,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3f TransformPos(V3f p)
@@ -40260,7 +40640,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static V3f TransposedTransformDir(M44f m, V3f v)
         {
@@ -40272,7 +40652,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3f TransposedTransformPos(M44f m, V3f p)
@@ -40285,7 +40665,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public V3f TransposedTransformDir(V3f v)
         {
@@ -40297,7 +40677,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3f TransposedTransformPos(V3f p)
@@ -40310,7 +40690,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static V3f TransformPosProj(M44f m, V3f p)
@@ -40321,7 +40701,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V4f TransformPosProjFull(M44f m, V3f p)
@@ -40335,7 +40715,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public V3f TransformPosProj(V3f p)
@@ -40344,7 +40724,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V4f TransformPosProjFull(V3f p)
@@ -40518,19 +40898,11 @@ namespace Aardvark.Base
         public M44f Inverse { get { return LuInverse(); } }
 
         /// <summary>
-        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
-        /// </summary>
-        public static bool ApproximatelyEquals(M44f a, M44f b, float epsilon)
-        {
-            return DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
-        }
-
-        /// <summary>
         /// Returns if the matrix is the identity matrix I.
         /// </summary>
         public bool IsIdentity(float epsilon)
         {
-            return ApproximatelyEquals(this, Identity, epsilon);
+            return Fun.ApproximateEquals(this, Identity, epsilon);
         }
 
         /// <summary>
@@ -40689,6 +41061,17 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M44f a, M44f b, float epsilon)
+        {
+            return M44f.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
     #region M44d
 
@@ -42147,15 +42530,18 @@ namespace Aardvark.Base
 
         #region Matrix/Vector Multiplication
 
+        /// <summary>
+        /// Multiplies a M44d matrix with a V4d column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4d Multiply(M44d m, V4d v)
         {
-            return new V4d(
-                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z + m.M03 * v.W, 
-                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z + m.M13 * v.W, 
-                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z + m.M23 * v.W, 
-                m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
+            return m * v;
         }
 
+        /// <summary>
+        /// Multiplies a M44d matrix with a V4d column vector.
+        /// </summary>
         public static V4d operator *(M44d m, V4d v)
         {
             return new V4d(
@@ -42165,7 +42551,19 @@ namespace Aardvark.Base
                 m.M30 * v.X + m.M31 * v.Y + m.M32 * v.Z + m.M33 * v.W);
         }
 
-        public static V4d TransposedMultiply(V4d v, M44d m)
+        /// <summary>
+        /// Multiplies a V4d row vector with a M44d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d Multiply(V4d v, M44d m)
+        {
+            return v * m;
+        }
+
+        /// <summary>
+        /// Multiplies a V4d row vector with a M44d matrix.
+        /// </summary>
+        public static V4d operator *(V4d v, M44d m)
         {
             return new V4d(
                 v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20 + v.W * m.M30, 
@@ -42571,7 +42969,7 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
         /// </summary>
         public static V3d TransformDir(M44d m, V3d v)
         {
@@ -42583,7 +42981,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3d TransformPos(M44d m, V3d p)
@@ -42596,7 +42994,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by this matrix.
         /// </summary>
         public V3d TransformDir(V3d v)
         {
@@ -42608,7 +43006,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3d TransformPos(V3d p)
@@ -42621,7 +43019,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
+        /// Transforms direction vector v (v.W is presumed 0.0) by transposed version of matrix m.
         /// </summary>
         public static V3d TransposedTransformDir(M44d m, V3d v)
         {
@@ -42633,7 +43031,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
+        /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
         /// No projective transform is performed.
         /// </summary>
         public static V3d TransposedTransformPos(M44d m, V3d p)
@@ -42646,7 +43044,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
+        /// Transforms direction vector v (v.W is presumed 0.0) by transposed version of this matrix.
         /// </summary>
         public V3d TransposedTransformDir(V3d v)
         {
@@ -42658,7 +43056,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by transposed version of this matrix.
         /// No projective transform is performed.
         /// </summary>
         public V3d TransposedTransformPos(V3d p)
@@ -42671,7 +43069,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public static V3d TransformPosProj(M44d m, V3d p)
@@ -42682,7 +43080,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
+        /// Transforms point p (p.W is presumed 1.0) by matrix m.
         /// Projective transform is performed.
         /// </summary>
         public static V4d TransformPosProjFull(M44d m, V3d p)
@@ -42696,7 +43094,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
         public V3d TransformPosProj(V3d p)
@@ -42705,7 +43103,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
+        /// Transforms point p (p.W is presumed 1.0) by this matrix.
         /// Projective transform is performed.
         /// </summary>
         public V4d TransformPosProjFull(V3d p)
@@ -42879,19 +43277,11 @@ namespace Aardvark.Base
         public M44d Inverse { get { return LuInverse(); } }
 
         /// <summary>
-        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
-        /// </summary>
-        public static bool ApproximatelyEquals(M44d a, M44d b, double epsilon)
-        {
-            return DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
-        }
-
-        /// <summary>
         /// Returns if the matrix is the identity matrix I.
         /// </summary>
         public bool IsIdentity(double epsilon)
         {
-            return ApproximatelyEquals(this, Identity, epsilon);
+            return Fun.ApproximateEquals(this, Identity, epsilon);
         }
 
         /// <summary>
@@ -43050,5 +43440,16 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        public static bool ApproximateEquals(M44d a, M44d b, double epsilon)
+        {
+            return M44d.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+    }
 
 }

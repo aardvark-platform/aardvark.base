@@ -95,7 +95,7 @@ namespace Aardvark.Tests.Geometry
             Assert.True(hRef.ApproximateEquals(1.0, 1e-7) && hRef.ApproximateEquals(hNew, 1e-7));
             
             for (int i = 0; i < 6; i++)
-                Assert.True(newHull.PlaneArray[i].Coefficients.ApproxEqual(refHull.PlaneArray[i].Coefficients, 1e-7));
+                Assert.True(newHull.PlaneArray[i].Coefficients.ApproximateEquals(refHull.PlaneArray[i].Coefficients, 1e-7));
         }
     }
 }
