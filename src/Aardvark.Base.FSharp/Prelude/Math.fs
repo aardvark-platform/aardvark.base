@@ -13,17 +13,30 @@ module Math =
             static member inline Power(x : sbyte, y : sbyte) = pown x (int y)
             static member inline Power(x : int16, y : int16) = pown x (int y)
             static member inline Power(x : int32, y : int32) = pown x y
-            static member inline Power(x : int64, y : int64) = pown x (int y)
+            static member inline Power(x : int64, y : int64) = 
+                // TODO: wrong!!
+                pown x (int y)
 
             static member inline Power(x : byte, y : byte) = pown x (int y)
             static member inline Power(x : uint16, y : uint16) = pown x (int y)
-            static member inline Power(x : uint32, y : uint32) = pown x (int y)
-            static member inline Power(x : uint64, y : uint64) = pown x (int y)
+            static member inline Power(x : uint32, y : uint32) = 
+                // TODO: wrong!!
+                pown x (int y)
 
-            static member inline Power(x : nativeint, y : nativeint) = pown x (int y)
+            static member inline Power(x : uint64, y : uint64) = 
+                // TODO: wrong!!
+                pown x (int y)
+
+            static member inline Power(x : nativeint, y : nativeint) =  
+                // TODO: wrong on 64bit!!
+                pown x (int y)
+
             static member inline Power(x : float, y : float) = x ** y
             static member inline Power(x : float32, y : float32) = x ** y
-            static member inline Power(x : decimal, y : decimal) = Math.Pow(float x, float y) |> decimal
+
+            static member inline Power(x : decimal, y : decimal) = 
+                // TODO: wrong!!
+                Math.Pow(float x, float y) |> decimal
 
         type MinMaxHelpers() =
             static member inline Min<'a when 'a : comparison>(a : 'a, b : 'a) = Operators.min a b
@@ -104,7 +117,7 @@ module Math =
     /// Resolves to the one value for any scalar or vector type.
     let inline one< ^T when ^T : (static member One : ^T) > : ^T =
         LanguagePrimitives.GenericOne
-
+        
     /// Returns -1 if x is less than zero, 0 if x is equal to zero, and 1 if
     /// x is greater than zero. The result has the same type as the input.
     let inline signum x =
