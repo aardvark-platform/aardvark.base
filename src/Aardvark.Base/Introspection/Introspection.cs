@@ -727,9 +727,25 @@ namespace Aardvark.Base
 
             static void Load()
             {
-
-                var myArch = IntPtr.Size == 8 ? "x86-64" : "x86";
-
+                string myArch;
+                switch (RuntimeInformation.ProcessArchitecture)
+                {
+                    case Architecture.X86:
+                        myArch = "x86";
+                        break;
+                    case Architecture.X64:
+                        myArch = "x86-64";
+                        break;
+                    case Architecture.Arm:
+                        myArch = "arm";
+                        break;
+                    case Architecture.Arm64:
+                        myArch = "arm-64";
+                        break;
+                    default:
+                        myArch = "unknown";
+                        break;
+                }
                 var info = new ProcessStartInfo("/bin/sh", "-c \"ldconfig -p\"")
                 {
                     RedirectStandardOutput = true,
@@ -824,13 +840,10 @@ namespace Aardvark.Base
 
         private static OS GetOS()
         {
-            switch(Environment.OSVersion.Platform)
-            {
-                case PlatformID.Unix: return OS.Linux;
-                case PlatformID.MacOSX: return OS.MacOS;
-                default: return OS.Win32;
-            }
-
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return OS.Win32;
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return OS.MacOS;
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return OS.Linux;
+            else return OS.Unknown;
         }
 
         private static Dictionary<string, string> GetSymlinks(XDocument document)
@@ -881,7 +894,8 @@ namespace Aardvark.Base
 
         private static void CreateSymlink(string baseDir, string src, string dst)
         {
-            if (Environment.OSVersion.Platform != PlatformID.Unix) return;
+            var os = GetOS();
+            if (os == OS.Win32 || os == OS.Unknown) return;
 
             string targetName;
             string targetPath;
@@ -921,6 +935,44 @@ namespace Aardvark.Base
 
 #endregion
 
+        private static void GetPlatformAndArch(out string platform, out string arch)
+        {
+            switch (RuntimeInformation.OSArchitecture)
+            {
+                case Architecture.X86:
+                    arch = "x86";
+                    break;
+                case Architecture.X64:
+                    arch = "AMD64";
+                    break;
+                case Architecture.Arm:
+                    arch = "ARM";
+                    break;
+                case Architecture.Arm64:
+                    arch = "ARM64";
+                    break;
+                default:
+                    arch = "unknown";
+                    break;
+            }
+
+            switch (GetOS())
+            {
+                case OS.Win32:
+                    platform = "windows";
+                    break;
+                case OS.Linux:
+                    platform = "linux";
+                    break;
+                case OS.MacOS:
+                    platform = "mac";
+                    break;
+                default:
+                    platform = "unknown";
+                    break;
+            }
+        }
+
         public static void UnpackNativeDependenciesToBaseDir(Assembly a, string baseDir)
         {
             if (a.IsDynamic) return;
@@ -938,14 +990,11 @@ namespace Aardvark.Base
                 {
                     using (var archive = new ZipArchive(s))
                     {
-
-                        var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
-                        var platform = "windows";
-                        if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
-                        else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
+                        string arch;
+                        string platform;
+                        GetPlatformAndArch(out platform, out arch);
 
                         var copyPaths = platform + "/" + arch;
-
                         var remapFile = "remap.xml";
 
 
@@ -1076,12 +1125,14 @@ namespace Aardvark.Base
         public static bool SeparateLibraryDirectories = true;
 
         private static Dictionary<Assembly, string>  s_nativePaths = new Dictionary<Assembly, string>();
+        private static string[] s_allPaths = null;
 
         public static string[] GetNativeLibraryPaths()
         {
             lock(s_nativePaths)
             {
-                return s_nativePaths.Values.Where(p => p != null).ToArray();
+                if(s_allPaths == null) s_allPaths = s_nativePaths.Values.Where(p => p != null).ToArray();
+                return s_allPaths;
             }
         }
 
@@ -1120,6 +1171,7 @@ namespace Aardvark.Base
                             }
 
                             s_nativePaths[assembly] = dstFolder;
+                            s_allPaths = null;
                             path = dstFolder;
                             return true;
                         }
@@ -1130,33 +1182,34 @@ namespace Aardvark.Base
 
         public static IntPtr LoadLibrary(Assembly assembly, string nativeName)
         {
-
-            string[] formats = new string[0];
-            bool windows = true;
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            IntPtr ptr = IntPtr.Zero;
+            string probe = Environment.CurrentDirectory;
+            try
             {
-                windows = false;
-                formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
-            }
-            else formats = new[] { "{0}.dll" };
-            IntPtr ptr;
+                string[] formats = new string[0];
+                var os = GetOS();
 
-            string[] paths;
-            if (assembly != null)
-            {
-                if (TryGetNativeLibraryPath(assembly, out var dstFolder))
+                if (os == OS.Linux) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
+                else if (os == OS.Win32) formats = new[] { "{0}.dll" };
+                else if (os == OS.MacOS) formats = new[] { "{0}.dylib", "lib{0}.dylib" };
+
+
+                string[] paths;
+                if (assembly != null)
                 {
-                    paths = new[] { dstFolder };
+                    if (TryGetNativeLibraryPath(assembly, out var dstFolder))
+                    {
+                        paths = new[] { dstFolder };
+                    }
+                    else
+                    {
+                        paths = GetNativeLibraryPaths();
+                    }
                 }
                 else
                 {
-                    paths = new[] { Environment.CurrentDirectory };
+                    paths = GetNativeLibraryPaths();
                 }
-            }
-            else
-            {
-                paths = GetNativeLibraryPaths();
-            }
 
 #if NETCOREAPP3_0
 
@@ -1172,53 +1225,64 @@ namespace Aardvark.Base
                     var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
                     if (libPath != null)
                     {
+                        probe = libPath;
                         if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
                         else Report.Warn("found native library {0} in {1} but it could not be loaded.", Path.GetFileName(libPath), p);
                     }
                 }
 
                 // try the plain loading mechanism.
+                probe = libName;
                 if (assembly != null && NativeLibrary.TryLoad(libName, assembly, null, out ptr)) return ptr;
                 else if (NativeLibrary.TryLoad(libName, out ptr)) return ptr;
 
             }
+
+            probe = nativeName;
             // try the standard loading mechanism as a last resort.
             if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
             else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
 
-            if (windows) return IntPtr.Zero;
-            else return IntPtr.Zero;
+            return IntPtr.Zero;
 #else
 
-            Func<string, IntPtr> loadLibrary;
-            if (windows) loadLibrary = (a) => Kernel32.LoadLibrary(a);
-            else loadLibrary = (a) => Dl.dlopen(a, 1);
+                Func<string, IntPtr> loadLibrary;
+                if (os == OS.Win32) loadLibrary = (a) => Kernel32.LoadLibrary(a);
+                else loadLibrary = (a) => Dl.dlopen(a, 1);
 
-
-            ptr = loadLibrary(nativeName);
-            if(ptr != IntPtr.Zero) return ptr;
-
-            var realName = Path.GetFileNameWithoutExtension(nativeName);
-            foreach (var fmt in formats)
-            {
-                var libName = string.Format(fmt, realName);
-
-                ptr = loadLibrary(libName);
+                ptr = loadLibrary(nativeName);
                 if (ptr != IntPtr.Zero) return ptr;
 
-                foreach (var p in paths)
+                var realName = Path.GetFileNameWithoutExtension(nativeName);
+                foreach (var fmt in formats)
                 {
-                    var libPath = Path.Combine(p, libName);
-                    if (File.Exists(libPath))
+                    var libName = string.Format(fmt, realName);
+                    probe = libName;
+
+                    ptr = loadLibrary(libName);
+                    if (ptr != IntPtr.Zero) return ptr;
+
+                    foreach (var p in paths)
                     {
-                        ptr = loadLibrary(libPath);
-                        if (ptr != IntPtr.Zero) return ptr;
+                        var libPath = Path.Combine(p, libName);
+
+                        if (File.Exists(libPath))
+                        {
+                            probe = libPath;
+                            ptr = loadLibrary(libPath);
+                            if (ptr != IntPtr.Zero) return ptr;
+                        }
                     }
                 }
-            }
 
-            return IntPtr.Zero;
+                return IntPtr.Zero;
 #endif
+            }
+            finally
+            {
+                if (ptr == IntPtr.Zero) Report.Warn("could not load native library {0}", nativeName);
+                else Report.Line(4, "loaded native library {0} from {1}", nativeName, probe);
+            }
         }
 
         public static IntPtr GetProcAddress(IntPtr handle, string name)
@@ -1230,8 +1294,9 @@ namespace Aardvark.Base
             if (NativeLibrary.TryGetExport(handle, name, out ptr)) return ptr;
             else return IntPtr.Zero;
 #else
-            if (Environment.OSVersion.Platform == PlatformID.Unix) return Dl.dlsym(handle, name);
-            else return Kernel32.GetProcAddress(handle, name);
+            var os = GetOS();
+            if (os == OS.Win32) return Kernel32.GetProcAddress(handle, name);
+            else return Dl.dlsym(handle, name);
 #endif
         }
 
@@ -1246,10 +1311,9 @@ namespace Aardvark.Base
                     Report.BeginTimed(3, "Loading native dependencies for {0}", a.FullName);
                     try
                     {
-                        var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
-                        var platform = "windows";
-                        if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
-                        else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
+                        string arch;
+                        string platform;
+                        GetPlatformAndArch(out platform, out arch);
 
                         var copyPaths = new string[] { platform + "/" + arch + "/", arch + "/" };
                         var toLoad = new List<string>();
@@ -1324,9 +1388,11 @@ namespace Aardvark.Base
 #if NETCOREAPP3_0
 
                         string[] formats = new string[0];
-                        if (Environment.OSVersion.Platform == PlatformID.Unix) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
-                        else formats = new[] { "{0}.dll" };
+                        var os = GetOS();
 
+                        if (os == OS.Linux) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
+                        else if (os == OS.Win32) formats = new[] { "{0}.dll" };
+                        else if (os == OS.MacOS) formats = new[] { "{0}.dylib", "lib{0}.dylib" };
 
                         NativeLibrary.SetDllImportResolver(a, (name, ass, searchPath) =>
                         {
