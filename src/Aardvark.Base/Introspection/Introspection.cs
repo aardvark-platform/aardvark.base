@@ -1280,8 +1280,8 @@ namespace Aardvark.Base
             }
             finally
             {
-                if (ptr == IntPtr.Zero) Report.Warn("could not load native library {0}", nativeName);
-                else Report.Line(4, "loaded native library {0} from {1}", nativeName, probe);
+                if (ptr == IntPtr.Zero) Report.Line(4, "[Introspection] could not load native library {0}", nativeName);
+                else Report.Line(4, "[Introspection] loaded native library {0} from {1}", nativeName, probe);
             }
         }
 
@@ -1491,7 +1491,9 @@ namespace Aardvark.Base
 #if NETCOREAPP3_0
             System.Runtime.Loader.AssemblyLoadContext.Default.ResolvingUnmanagedDll += (ass, name) =>
             {
-                return LoadLibrary(null, name);
+                Report.Line(4, "trying to resolve native library {0}", name);
+                try { return LoadLibrary(null, name); }
+                catch (Exception) { return IntPtr.Zero; }
             };
 #endif
 
