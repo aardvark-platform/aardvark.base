@@ -937,7 +937,7 @@ namespace Aardvark.Base
 
         private static void GetPlatformAndArch(out string platform, out string arch)
         {
-            switch (RuntimeInformation.OSArchitecture)
+            switch (RuntimeInformation.ProcessArchitecture)
             {
                 case Architecture.X86:
                     arch = "x86";
@@ -1180,14 +1180,29 @@ namespace Aardvark.Base
             }
         }
 
+        private static Dictionary<(Assembly, string), string> s_cache = new Dictionary<(Assembly, string), string>();
+
         public static IntPtr LoadLibrary(Assembly assembly, string nativeName)
         {
+            var os = GetOS();
+            lock (s_cache)
+            {
+                if(s_cache.TryGetValue((assembly, nativeName), out var path))
+                {
+#if NETCOREAPP3_0
+                    if (NativeLibrary.TryLoad(path, out var pp)) return pp;
+                    else return IntPtr.Zero;
+#else
+                    if (os == OS.Win32) return Kernel32.LoadLibrary(path);
+                    else Dl.dlopen(path, 1);
+#endif
+                }
+            }
             IntPtr ptr = IntPtr.Zero;
             string probe = Environment.CurrentDirectory;
             try
             {
                 string[] formats = new string[0];
-                var os = GetOS();
 
                 if (os == OS.Linux) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
                 else if (os == OS.Win32) formats = new[] { "{0}.dll" };
@@ -1281,7 +1296,11 @@ namespace Aardvark.Base
             finally
             {
                 if (ptr == IntPtr.Zero) Report.Line(4, "[Introspection] could not load native library {0}", nativeName);
-                else Report.Line(4, "[Introspection] loaded native library {0} from {1}", nativeName, probe);
+                else
+                {
+                    lock(s_cache) { s_cache[(assembly, nativeName)] = probe; }
+                    Report.Line(4, "[Introspection] loaded native library {0} from {1}", nativeName, probe);
+                }
             }
         }
 
@@ -1364,6 +1383,9 @@ namespace Aardvark.Base
                                                 dstFolder,
                                                 localName
                                             );
+
+                                        Report.Line(4, "copy {0} to {1}", localName, file);
+
                                         var dir = Path.GetDirectoryName(file);
                                         if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
@@ -1471,8 +1493,9 @@ namespace Aardvark.Base
             Report.BeginTimed("initializing aardvark");
 
             Report.Begin("System Information:");
-            Report.Line("System:      {0} ({1})", RuntimeInformation.OSDescription, ArchitectureString(RuntimeInformation.OSArchitecture));
-            Report.Line("Processor:   {0} core {1}", Environment.ProcessorCount, ArchitectureString(RuntimeInformation.ProcessArchitecture));
+            Report.Line("System:      {0}", RuntimeInformation.OSDescription);
+            Report.Line("Processor:   {0} core {1}", Environment.ProcessorCount, ArchitectureString(RuntimeInformation.OSArchitecture));
+            Report.Line("Process:     {0}", ArchitectureString(RuntimeInformation.ProcessArchitecture));
             Report.Line("Framework:   {0}", RuntimeInformation.FrameworkDescription);
 
             if (RuntimeInformation.OSDescription.StartsWith("Darwin"))
