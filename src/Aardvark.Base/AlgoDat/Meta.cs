@@ -1082,10 +1082,10 @@ namespace Aardvark.Base
 
             #region Interpolation
             Add("Interpolation",
-                Method("Lerp", FloatType, AllExcept(DoubleType), Scalar("t", FloatType), Tensor("a"), Tensor("b")),
-                Method("Lerp", FloatType, AllExcept(DoubleType), Tensor("t", FloatType), Tensor("a"), Tensor("b")),
-                Method("Lerp", DoubleType, AllExcept(FloatType), Scalar("t", DoubleType), Tensor("a"), Tensor("b")),
-                Method("Lerp", DoubleType, AllExcept(FloatType), Tensor("t", DoubleType), Tensor("a"), Tensor("b")),
+                Method("Lerp", AllExcept(DoubleType), Scalar("t", FloatType), Tensor("a"), Tensor("b")),
+                Method("Lerp", AllExcept(DoubleType), Tensor("t", FloatType), Tensor("a"), Tensor("b")),
+                Method("Lerp", AllExcept(FloatType), Scalar("t", DoubleType), Tensor("a"), Tensor("b")),
+                Method("Lerp", AllExcept(FloatType), Tensor("t", DoubleType), Tensor("a"), Tensor("b")),
                 Method("Smoothstep", RealTypes, Tensor("x"), Tensor("edge0"), Tensor("edge1")),
                 Method("Smoothstep", RealTypes, Tensor("x"), Scalar("edge0"), Scalar("edge1")),
                 Method("InvLerp", Domain(FloatType), Tensor("y"), Tensor("a"), Tensor("b")),

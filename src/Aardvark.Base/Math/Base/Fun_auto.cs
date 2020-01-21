@@ -3445,16 +3445,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, byte a, byte b)
-            => a * (1 - t) + b * t;
+        public static byte Lerp(this float t, byte a, byte b)
+            => (byte)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, byte a, byte b)
-            => a * (1 - t) + b * t;
+        public static byte Lerp(this double t, byte a, byte b)
+            => (byte)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
@@ -3469,16 +3469,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, sbyte a, sbyte b)
-            => a * (1 - t) + b * t;
+        public static sbyte Lerp(this float t, sbyte a, sbyte b)
+            => (sbyte)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, sbyte a, sbyte b)
-            => a * (1 - t) + b * t;
+        public static sbyte Lerp(this double t, sbyte a, sbyte b)
+            => (sbyte)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
@@ -3493,16 +3493,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, short a, short b)
-            => a * (1 - t) + b * t;
+        public static short Lerp(this float t, short a, short b)
+            => (short)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, short a, short b)
-            => a * (1 - t) + b * t;
+        public static short Lerp(this double t, short a, short b)
+            => (short)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
@@ -3517,16 +3517,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, ushort a, ushort b)
-            => a * (1 - t) + b * t;
+        public static ushort Lerp(this float t, ushort a, ushort b)
+            => (ushort)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, ushort a, ushort b)
-            => a * (1 - t) + b * t;
+        public static ushort Lerp(this double t, ushort a, ushort b)
+            => (ushort)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
@@ -3541,16 +3541,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, int a, int b)
-            => a * (1 - t) + b * t;
+        public static int Lerp(this float t, int a, int b)
+            => (int)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, int a, int b)
-            => a * (1 - t) + b * t;
+        public static int Lerp(this double t, int a, int b)
+            => (int)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
@@ -3565,16 +3565,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, uint a, uint b)
-            => a * (1 - t) + b * t;
+        public static uint Lerp(this float t, uint a, uint b)
+            => (uint)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, uint a, uint b)
-            => a * (1 - t) + b * t;
+        public static uint Lerp(this double t, uint a, uint b)
+            => (uint)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
@@ -3589,16 +3589,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, long a, long b)
-            => a * (1 - t) + b * t;
+        public static long Lerp(this float t, long a, long b)
+            => (long)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, long a, long b)
-            => a * (1 - t) + b * t;
+        public static long Lerp(this double t, long a, long b)
+            => (long)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
@@ -3613,16 +3613,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, ulong a, ulong b)
-            => a * (1 - t) + b * t;
+        public static ulong Lerp(this float t, ulong a, ulong b)
+            => (ulong)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, ulong a, ulong b)
-            => a * (1 - t) + b * t;
+        public static ulong Lerp(this double t, ulong a, ulong b)
+            => (ulong)Round(a * (1 - t) + b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
@@ -3689,16 +3689,16 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Lerp(this float t, decimal a, decimal b)
-            => (float)a * (1 - t) + (float)b * t;
+        public static decimal Lerp(this float t, decimal a, decimal b)
+            => (decimal)Round((float)a * (1 - t) + (float)b * t);
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Lerp(this double t, decimal a, decimal b)
-            => (double)a * (1 - t) + (double)b * t;
+        public static decimal Lerp(this double t, decimal a, decimal b)
+            => (decimal)Round((double)a * (1 - t) + (double)b * t);
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.

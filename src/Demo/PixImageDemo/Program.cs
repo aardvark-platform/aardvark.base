@@ -220,9 +220,8 @@ namespace PixImageDemo
                                                C3b.LinCom, C3b.LinCom,
                                                Tensor.Index4SamplesCyclic1, Tensor.Index4SamplesCyclic1);
 
-                    // outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, ColFun.Lerp, ColFun.Lerp);
-                    outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, Fun.Lerp, Fun.Lerp)
-                                            .Map(Col.ByteFromByteInDoubleClamped);
+                    outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, Fun.Lerp, Fun.Lerp);
+                                            //.Map(Col.ByteFromByteInDoubleClamped);
                 });
 
             outImg0.SaveAsImage(Path.Combine(dir, "resample-36clamped.tif"));

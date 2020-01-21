@@ -1476,17 +1476,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3f Lerp(this float x, C3b a, C3b b)
+        public static C3b Lerp(this float x, C3b a, C3b b)
         {
-            return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+            return new C3b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3d Lerp(this double x, C3b a, C3b b)
+        public static C3b Lerp(this double x, C3b a, C3b b)
         {
-            return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+            return new C3b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         #endregion
@@ -2964,17 +2964,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3f Lerp(this float x, C3us a, C3us b)
+        public static C3us Lerp(this float x, C3us a, C3us b)
         {
-            return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+            return new C3us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3d Lerp(this double x, C3us a, C3us b)
+        public static C3us Lerp(this double x, C3us a, C3us b)
         {
-            return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+            return new C3us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         #endregion
@@ -4376,17 +4376,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3f Lerp(this float x, C3ui a, C3ui b)
+        public static C3ui Lerp(this float x, C3ui a, C3ui b)
         {
-            return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+            return new C3ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3d Lerp(this double x, C3ui a, C3ui b)
+        public static C3ui Lerp(this double x, C3ui a, C3ui b)
         {
-            return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+            return new C3ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
 
         #endregion
@@ -8951,17 +8951,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4f Lerp(this float x, C4b a, C4b b)
+        public static C4b Lerp(this float x, C4b a, C4b b)
         {
-            return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+            return new C4b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4d Lerp(this double x, C4b a, C4b b)
+        public static C4b Lerp(this double x, C4b a, C4b b)
         {
-            return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+            return new C4b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         #endregion
@@ -10568,17 +10568,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4f Lerp(this float x, C4us a, C4us b)
+        public static C4us Lerp(this float x, C4us a, C4us b)
         {
-            return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+            return new C4us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4d Lerp(this double x, C4us a, C4us b)
+        public static C4us Lerp(this double x, C4us a, C4us b)
         {
-            return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+            return new C4us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         #endregion
@@ -12099,17 +12099,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4f Lerp(this float x, C4ui a, C4ui b)
+        public static C4ui Lerp(this float x, C4ui a, C4ui b)
         {
-            return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+            return new C4ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4d Lerp(this double x, C4ui a, C4ui b)
+        public static C4ui Lerp(this double x, C4ui a, C4ui b)
         {
-            return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+            return new C4ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
 
         #endregion

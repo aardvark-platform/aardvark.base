@@ -871,13 +871,12 @@ namespace Aardvark.Base
 
         //# if (!fdtypes.Contains(ft)) {
         //# fdtypes.ForEach(rt => {
-        //# var rtype = Meta.ColorTypeOf(t.Len, rt).Name;
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static __rtype__ Lerp(this __rt.Name__ x, __type__ a, __type__ b)
+        public static __type__ Lerp(this __rt.Name__ x, __type__ a, __type__ b)
         {
-            return new __rtype__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
+            return new __type__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
         }
 
         //# });

@@ -855,8 +855,8 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rt.Name__ Lerp(this __rt.Name__ t, __t.Name__ a, __t.Name__ b)
-            => __cast__a * (1 - t) + __cast__b * t;
+        public static __t.Name__ Lerp(this __rt.Name__ t, __t.Name__ a, __t.Name__ b)
+            => (__t.Name__)Round(__cast__a * (1 - t) + __cast__b * t);
 
         //# });
         /// <summary>
