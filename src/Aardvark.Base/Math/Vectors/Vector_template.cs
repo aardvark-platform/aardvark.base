@@ -372,9 +372,18 @@ namespace Aardvark.Base
 
         #endregion
 
-        //# if (d == 3 && ft.IsReal) {
         #region Static Factories
+        //# if (ft.IsReal) {
+        //# if (d == 2) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ FromPolar(__ftype__ angleInRadians, __ftype__ radius)
+            => new __vtype__(Math.Cos(angleInRadians) * radius, Math.Sin(angleInRadians) * radius);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ FromPolar(__ftype__ angleInRadians)
+            => new __vtype__(Math.Cos(angleInRadians), Math.Sin(angleInRadians));
+
+        //# } else if (d == 3) {
         /// <summary>
         /// Returns an arbitrary normal vector, which
         /// is also normal to either the x, y or z-axis.
@@ -404,9 +413,10 @@ namespace Aardvark.Base
             return Cross(vector).Normalized;
         }
 
+        //# } // d == 3
+        //# } // ft.IsReal
         #endregion
 
-        //# }
         #region Properties and Indexers
 
         //# fields.ForEach(f => {
@@ -1377,6 +1387,14 @@ namespace Aardvark.Base
         public __vtype__ Cross()
         {
             return new __vtype__(- __f1__, __f0__);
+        }
+
+        /// <summary>
+        /// Returns a vector that is orthogonal to this one (i.e. {x,y} -> {-y,x}).
+        /// </summary>
+        public __vtype__ Orthogonal
+        {
+            get { return new __vtype__(-__f1__, __f0__); }
         }
 
         //# }
