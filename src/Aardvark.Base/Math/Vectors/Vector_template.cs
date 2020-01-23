@@ -8,6 +8,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+#if NETCOREAPP3_0
+using System.Runtime.Intrinsics.X86;
+using System.Runtime.Intrinsics;
+#endif
 
 namespace Aardvark.Base
 {
@@ -724,12 +728,50 @@ namespace Aardvark.Base
             get { return /*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */; }
         }
 
+        //# if (ft == Meta.FloatType && d == 4) {
+#if NETCOREAPP3_0
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static __ctype__ Length_Sse41(__vtype__ vec)
+        {
+            unsafe
+            {
+                //# if (d == 2) {
+                var vv = Vector128.Create(vec.X, vec.Y, 0.0f, 0.0f);
+                vv = Sse41.DotProduct(vv, vv, 0x31);
+                //# } else if (d == 3) {
+                var vv = Vector128.Create(vec.X, vec.Y, vec.Z, 0.0f);
+                vv = Sse41.DotProduct(vv, vv, 0x71);
+                //# } else { // d == 4
+                var x = (float*)&vec;
+                var vv = Sse.LoadVector128(x);
+                vv = Sse41.DotProduct(vv, vv, 0xF1);
+                //# }
+                var l2 = vv.GetElement(0);
+                return MathF.Sqrt(l2);
+            }
+        }
+#endif
+
+        //# } // end ft == Meta.FloatType
         /// <summary>
         /// Returns the length of the vector.
         /// </summary>
         public __ctype__ Length
         {
-            get { return Fun.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */); }
+            get 
+            {
+                //# if (ft == Meta.FloatType && d == 4) {
+#if NETCOREAPP3_0
+                if (Sse41.IsSupported)
+                    return Length_Sse41(this);
+                return MathF.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */); // TODO: Fun.Sqrt should use MathF.Sqrt if netcoreapp 3.0
+#else
+                return Fun.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */);
+#endif
+                //# } else { // end ft == Meta.FloatType
+                return Fun.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */); 
+                //# }
+            }
         }
         
         /// <summary>

@@ -24,6 +24,8 @@ nuget Microsoft.NET.Test.Sdk       ~> 15.8.0
 nuget FsPickler                    ~> 5.2.2
 nuget FsPickler.Json               ~> 5.2.2
 
+nuget BenchmarkDotNet			   ~> 0.12.0
+
 group Build
 framework: netstandard2.0
 source https://api.nuget.org/v3/index.json
