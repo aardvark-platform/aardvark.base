@@ -923,6 +923,11 @@ namespace Aardvark.Base
             return Method(name, null, domain, parameters);
         }
 
+        private static ElementwiseFun Method(string name, bool isExtension, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, null, isExtension, domain, parameters);
+        }
+
         private static ElementwiseFun Method(string name, SimpleType returnType, params ElementwiseFun.Parameter[] parameters)
         {
             return new ElementwiseFun(name, returnType, true, VecFieldTypes, parameters);
@@ -955,7 +960,11 @@ namespace Aardvark.Base
             Add(
                 "Min and Max",
                 Method("Min", Tensor("a"), Tensor("b")),
+                Method("Min", Tensor("a"), Scalar("b")),
+                Method("Min", Scalar("a"), Tensor("b")),
                 Method("Max", Tensor("a"), Tensor("b")),
+                Method("Max", Tensor("a"), Scalar("b")),
+                Method("Max", Scalar("a"), Tensor("b")),
                 Method("Min", Tensor("a"), Tensor("b"), Tensor("c")),
                 Method("Max", Tensor("a"), Tensor("b"), Tensor("c")),
                 Method("Min", Tensor("a"), Tensor("b"), Tensor("c"), Tensor("d")),
@@ -1069,8 +1078,8 @@ namespace Aardvark.Base
                 Method("Acos", RealTypes, Tensor("x")),
                 Method("AcosClamped", RealTypes, Tensor("x")),
                 Method("Atan", RealTypes, Tensor("x")),
-                Method("Atan2", RealTypes, Tensor("y"), Tensor("x")),
-                Method("FastAtan2", RealTypes, Tensor("y"), Tensor("x")),
+                Method("Atan2", false, RealTypes, Tensor("y"), Tensor("x")),
+                Method("FastAtan2", false, RealTypes, Tensor("y"), Tensor("x")),
                 Method("Sinh", RealTypes, Tensor("x")),
                 Method("Cosh", RealTypes, Tensor("x")),
                 Method("Tanh", RealTypes, Tensor("x")),

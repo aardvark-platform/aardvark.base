@@ -151,8 +151,8 @@ namespace Aardvark.Tests
             var zb = trafo.C2.XYZ * box.Max.Z;
 
             return new Box3d(
-                V3d.Min(xa, xb) + V3d.Min(ya, yb) + V3d.Min(za, zb) + trafo.C3.XYZ,
-                V3d.Max(xa, xb) + V3d.Max(ya, yb) + V3d.Max(za, zb) + trafo.C3.XYZ);
+                Fun.Min(xa, xb) + Fun.Min(ya, yb) + Fun.Min(za, zb) + trafo.C3.XYZ,
+                Fun.Max(xa, xb) + Fun.Max(ya, yb) + Fun.Max(za, zb) + trafo.C3.XYZ);
         }
 
         static Box3d Transform3(Box3d box, M44d trafo)

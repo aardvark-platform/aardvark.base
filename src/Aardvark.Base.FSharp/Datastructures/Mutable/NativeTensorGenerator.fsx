@@ -733,7 +733,7 @@ module Generator =
 
             start "member x.SampleLinear(coord : %s, lerp : float -> 'a -> 'a -> 'a) : %s = " coordType resType
             line "let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)"
-            line "let coord = %s.Min(%s.Max(coord, %s.Zero), %s.One)" coordType coordType coordType coordType
+            line "let coord = Fun.Min(Fun.Max(coord, %s.Zero), %s.One)" coordType coordType
 
 
             let lv, iv = 
@@ -848,9 +848,9 @@ module Generator =
 
                 let offset = 
                     if offset |> List.forall ((=) 0) then
-                        System.String.Format(idot, "x.Delta", sprintf "%s.Min(%s.Max(%s.Zero, p0), max)" lv lv lv)
+                        System.String.Format(idot, "x.Delta", sprintf "Fun.Min(Fun.Max(%s.Zero, p0), max)" lv)
                     else
-                        System.String.Format(idot, "x.Delta", sprintf "%s.Min(%s.Max(%s.Zero, p0 + %s), max)" lv lv lv offsetVec)
+                        System.String.Format(idot, "x.Delta", sprintf "Fun.Min(Fun.Max(%s.Zero, p0 + %s), max)" lv offsetVec)
                         
                 //line "let %s : nativeptr<'a> = NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(%s) * sa)" ptrName offset
                 line "let %s : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(%s) * sa))" valueName offset

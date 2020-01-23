@@ -13,33 +13,26 @@ module Math =
             static member inline Power(x : sbyte, y : sbyte) = pown x (int y)
             static member inline Power(x : int16, y : int16) = pown x (int y)
             static member inline Power(x : int32, y : int32) = pown x y
-            static member inline Power(x : int64, y : int64) = 
+            static member inline Power(x : int64, y : int64) =
                 // TODO: wrong!!
-                pown x (int y)
+                Fun.Pow(x, float y) |> int64
 
             static member inline Power(x : byte, y : byte) = pown x (int y)
             static member inline Power(x : uint16, y : uint16) = pown x (int y)
-            static member inline Power(x : uint32, y : uint32) = 
+            static member inline Power(x : uint32, y : uint32) = Fun.Pow(x, float y) |> uint32
+            static member inline Power(x : uint64, y : uint64) =
                 // TODO: wrong!!
-                pown x (int y)
+                Fun.Pow(x, float y) |> uint64
 
-            static member inline Power(x : uint64, y : uint64) = 
-                // TODO: wrong!!
-                pown x (int y)
-
-            static member inline Power(x : nativeint, y : nativeint) =  
-                // TODO: wrong on 64bit!!
-                pown x (int y)
-
+            static member inline Power(x : nativeint, y : nativeint) = Fun.Pow(int64 x, float y) |> nativeint
             static member inline Power(x : float, y : float) = x ** y
             static member inline Power(x : float32, y : float32) = x ** y
-
             static member inline Power(x : decimal, y : decimal) = 
                 // TODO: wrong!!
                 Math.Pow(float x, float y) |> decimal
 
-        type MinMaxHelpers() =
-            static member inline Min<'a when 'a : comparison>(a : 'a, b : 'a) = Operators.min a b
+        type Comparison() =
+            static member inline Min< ^a when ^a : comparison>(a : ^a, b : ^a) = Operators.min a b
 
             static member inline Min(a : float, b : V2d) = V2d.Min(b, a)
             static member inline Min(a : float, b : V3d) = V3d.Min(b, a)
@@ -53,11 +46,8 @@ module Math =
             static member inline Min(a : int64, b : V2l) = V2l.Min(b, a)
             static member inline Min(a : int64, b : V3l) = V3l.Min(b, a)
             static member inline Min(a : int64, b : V4l) = V4l.Min(b, a)
-
-
-
             
-            static member inline Max<'a when 'a : comparison>(a : 'a, b : 'a) = Operators.max a b
+            static member inline Max< ^a when ^a : comparison>(a : ^a, b : ^a) = Operators.max a b
 
             static member inline Max(a : float, b : V2d) = V2d.Max(b, a)
             static member inline Max(a : float, b : V3d) = V3d.Max(b, a)
@@ -72,17 +62,21 @@ module Math =
             static member inline Max(a : int64, b : V3l) = V3l.Max(b, a)
             static member inline Max(a : int64, b : V4l) = V4l.Max(b, a)
 
+        type Saturate() =
+            static member inline Saturate(x : sbyte) = x |> max 0y |> min 1y
+            static member inline Saturate(x : int16) = x |> max 0s |> min 1s
+            static member inline Saturate(x : int32) = x |> max 0 |> min 1
+            static member inline Saturate(x : int64) = x |> max 0L |> min 1L
 
-            static member inline Clamp(x : int, a : int, b : int) = Fun.Clamp(x, a, b)
-            static member inline Clamp(x : float, a : float, b : float) = Fun.Clamp(x, a, b)
+            static member inline Saturate(x : byte) = x |> max 0uy |> min 1uy
+            static member inline Saturate(x : uint16) = x |> max 0us |> min 1us
+            static member inline Saturate(x : uint32) = x |> max 0u |> min 1u
+            static member inline Saturate(x : uint64) = x |> max 0UL |> min 1UL
 
-            static member inline Clamp< ^a when ^a : comparison>(x : ^a, min : ^a, max : ^a) =
-                if x > max then max
-                elif x < min then min
-                else x
-
-
-
+            static member inline Saturate(x : nativeint) = x |> max 0n |> min 1n
+            static member inline Saturate(x : float) = x |> max 0.0 |> min 1.0
+            static member inline Saturate(x : float32) = x |> max 0.0f |> min 1.0f
+            static member inline Saturate(x : decimal) = x |> max 0m |> min 1m
 
     [<AutoOpen>]
     module private Aux =
@@ -106,15 +100,29 @@ module Math =
 
         let inline maxAux (_ : ^z) (x : ^a) (y : ^b) =
             ((^z or ^a or ^b or ^c) : (static member Max : ^a * ^b -> ^c) (x, y))
+            
+        let inline clampAux (_ : ^z) (min : ^a) (max : ^b) (v : ^c) =
+            let v1 = ((^z or ^a or ^b or ^c or ^d or ^e) : (static member Max : ^a * ^c -> ^d) (min, v))
+            ((^z or ^a or ^b or ^c or ^d or ^e) : (static member Min : ^b * ^d -> ^e) (max, v1))    
+            
+        // Simply using min and mix directly will resolve to the comparison overload for some reason.
+        // Therefore we need to do it the dumb (incomplete) way. E.g. won't work for Version.
+        let inline saturateAux (_ : ^z) (x : ^a) =
+            ((^z or ^a) : (static member Saturate : ^a -> ^a) (x))
 
-        let inline clampAux (_ : ^z) (a : ^a) (b : ^b) (x : ^c) =
-            ((^z or ^a or ^b or ^c or ^d) : (static member Clamp : ^c * ^a * ^b -> ^d) (x, a, b))
+        let inline lerpAux (_ : ^z) (x : ^a) (y : ^a) (t : ^b) =
+            ((^z or ^a or ^b) : (static member Lerp : ^b * ^a * ^a -> ^a) (t, x, y))
+
+        let inline smoothstepAux (_ : ^z) (edge0 : ^a) (edge1 : ^a) (x : ^b) =
+            ((^z or ^a or ^b) : (static member Smoothstep : ^b * ^a * ^a -> ^b) (x, edge0, edge1))
 
     /// Resolves to the zero value for any scalar or vector type.
+    [<GeneralizableValue>]
     let inline zero< ^T when ^T : (static member Zero : ^T) > : ^T =
         LanguagePrimitives.GenericZero
 
     /// Resolves to the one value for any scalar or vector type.
+    [<GeneralizableValue>]
     let inline one< ^T when ^T : (static member One : ^T) > : ^T =
         LanguagePrimitives.GenericOne
         
@@ -138,38 +146,139 @@ module Math =
         log2Aux Unchecked.defaultof<Fun> x
 
     /// Returns x^2
-    let inline sqr (x : ^a) = x * x
-        //squareAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.NativeInt> x
+    let inline sqr x = x * x
 
     /// Returns the cubic root of x.
     let inline cbrt x =
         cbrtAux Unchecked.defaultof<Fun> x
 
     /// Returns the smaller of x and y.
-    let inline min x y = minAux Unchecked.defaultof<Helpers.MinMaxHelpers> x y
+    let inline min x y = minAux Unchecked.defaultof<Helpers.Comparison> x y
 
     /// Returns the larger of x and y.
-    let inline max x y = maxAux Unchecked.defaultof<Helpers.MinMaxHelpers> x y
+    let inline max x y = maxAux Unchecked.defaultof<Helpers.Comparison> x y
 
     /// Clamps x to the interval [a, b].
-    let inline clamp a b x = clampAux Unchecked.defaultof<Helpers.MinMaxHelpers> a b x
+    let inline clamp a b x =
+        clampAux Unchecked.defaultof<Helpers.Comparison> a b x
 
     /// Clamps x to the interval [0, 1].
     let inline saturate (x : ^a) =
-        x |> clamp zero<'a> one<'a>
+        saturateAux Unchecked.defaultof<Helpers.Saturate> x
 
     /// Linearly interpolates between x and y.
-    let inline lerp (x : ^a) (y : ^a) (t : ^b) =
-        (one - t) * x + t * y
+    let inline lerp x y t =
+        lerpAux Unchecked.defaultof<Fun> x y t
 
     /// Performs Hermite interpolation between a and b.
     let inline smoothstep (edge0 : ^a) (edge1 : ^a) (x : ^b) =
-        let two : ^b = one + one
-        let three : ^b = two + one
-        let t = saturate ((x - edge0) / (edge1 - edge0))
-        t * t * (three - two * t)
+        smoothstepAux Unchecked.defaultof<Fun> edge0 edge1 x
 
     module private CompilerTests =
+
+        let fsharpCoreWorking() =
+
+            let absWorking() = 
+                let a : V2i = abs V2i.One
+                let a : V3f = abs V3f.One
+                ()
+
+            let acosWorking() =
+                let a : V2f = acos V2f.One
+                let a : V3d = acos V3d.One
+                ()
+
+            let asinWorking() =
+                let a : V2f = asin V2f.One
+                let a : V3d = asin V3d.One
+                ()
+
+            let atanWorking() =
+                let a : V2f = atan V2f.One
+                let a : V3d = atan V3d.One
+                ()
+
+            let atan2Working() =
+                let a : V2f = atan2 V2f.One V2f.Zero
+                let a : V3d = atan2 V3d.One V3d.Zero
+                ()
+
+            let ceilWorking() =
+                let a : V2f = ceil V2f.One
+                let a : V3d = ceil V3d.One
+                ()
+
+            let expWorking() =
+                let a : V2f = exp V2f.One
+                let a : V3d = exp V3d.One
+                ()
+
+            let floorWorking() =
+                let a : V2f = floor V2f.One
+                let a : V3d = floor V3d.One
+                ()
+
+            let truncateWorking() =
+                let a : V2f = truncate V2f.One
+                let a : V3d = truncate V3d.One
+                ()
+
+            let roundWorking() =
+                let a : V2f = round V2f.One
+                let a : V3d = round V3d.One
+                ()
+
+            let logWorking() =
+                let a : V2f = log V2f.One
+                let a : V3d = log V3d.One
+                ()
+
+            let log10Working() =
+                let a : V2f = log10 V2f.One
+                let a : V3d = log10 V3d.One
+                ()
+
+            let sqrtWorking() =
+                let a : V2f = sqrt V2f.One
+                let a : V3d = sqrt V3d.One
+                ()
+
+            let cosWorking() =
+                let a : V2f = cos V2f.One
+                let a : V3d = cos V3d.One
+                ()
+
+            let coshWorking() =
+                let a : V2f = cosh V2f.One
+                let a : V3d = cosh V3d.One
+                ()
+
+            let sinWorking() =
+                let a : V2f = sin V2f.One
+                let a : V3d = sin V3d.One
+                ()
+
+            let sinhWorking() =
+                let a : V2f = sinh V2f.One
+                let a : V3d = sinh V3d.One
+                ()
+
+            let tanWorking() =
+                let a : V2f = tan V2f.One
+                let a : V3d = tan V3d.One
+                ()
+
+            let tanhWorking() =
+                let a : V2f = tanh V2f.One
+                let a : V3d = tanh V3d.One
+                ()
+
+            let powOpWorking() =
+                let a : V2f = V2f.One ** V2f.Zero
+                let a : V3d = V3d.One ** V3d.Zero
+                ()
+
+            ()
 
         let zeroWorking() =
             let a : int = zero
@@ -200,6 +309,10 @@ module Math =
             let a : float = pow 1.0 2.0
             let a : decimal = pow 1.0m 2.0m
             let a : V2d = pow V2d.II V2d.II
+            let a : int = pow 1 2
+            let a : V2i = pow V2i.II V2i.II
+            let a : int64 = pow 1L 2L
+            let a : V3l = pow V3l.III V3l.III
             ()
             
         let log2Working() =
@@ -213,16 +326,19 @@ module Math =
             ()
             
         let sqrWorking() =
+            let a : byte = sqr 4uy
             let a : float = sqr 10.0
-            let a : V2d =  sqr V2d.II
+            let a : V2d = sqr V2d.II
+            let a : V2i = sqr V2i.II
             ()
-
 
         let clampWorking() =
             let a : int = clamp 1 2 3
             let a : Version = clamp (Version(1,2,3)) (Version(3,2,3)) (Version(4,5,6))
             let a : V2d = clamp V2d.Zero V2d.One V2d.Half
+            let a : V3f = clamp V3f.Zero 0.5f 1.5f
             ()
+
         let minWorking() =
             let a : V2d = min V2d.II V2d.OO
             let a : V2d = min V2d.II 0.0
@@ -232,6 +348,7 @@ module Math =
             let a : nativeint = min 1n 2n
             let a : Version = min (Version(1,2,3)) (Version(3,2,3))
             ()
+
         let maxWorking() =
             let a : V2d = max V2d.II V2d.OO
             let a : V2d = max V2d.II 0.0
@@ -240,4 +357,31 @@ module Math =
             let a : uint32 = max 1u 2u
             let a : nativeint = max 1n 2n
             let a : Version = max (Version(1,2,3)) (Version(3,2,3))
+            ()
+
+        let saturateWorking() =
+            let a : int = saturate 3
+            let a : float = saturate 3.0
+            let a : uint32 = saturate 3u
+            let a : nativeint = saturate 3n
+            let a : V2d = saturate V2d.One
+            let a : V4i = saturate V4i.One
+            ()
+
+        let lerpWorking() =
+            let a : int = lerp 1 10 0.5
+            let a : int = lerp 1 10 0.5f
+            let a : float = lerp 1.0 10.0 0.5
+            let a : float32 = lerp 1.0f 10.0f 0.5f
+            let a : V2i = lerp V2i.Zero V2i.One 0.5
+            let a : V4i = lerp V4i.Zero V4i.One V4d.Half
+            let a : V2i = lerp V2i.Zero V2i.One 0.5f
+            let a : V4i = lerp V4i.Zero V4i.One V4f.Half
+            ()
+
+        let smoothstepWorking() =
+            let a : float = smoothstep 0.0 1.0 0.5
+            let a : float32 = smoothstep 0.0f 1.0f 0.5f
+            let a : V2f = smoothstep 0.0f 1.0f V2f.Half
+            let a : V4d = smoothstep V4d.Zero V4d.One V4d.Half
             ()
