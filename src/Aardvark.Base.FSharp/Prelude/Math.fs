@@ -99,13 +99,9 @@ module Math =
             ((^z or ^a or ^b or ^c) : (static member Min : ^a * ^b -> ^c) (x, y))
 
         let inline maxAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b or ^c) : (static member Max : ^a * ^b -> ^c) (x, y))
+            ((^z or ^a or ^b or ^c) : (static member Max : ^a * ^b -> ^c) (x, y)) 
             
-        let inline clampAux (_ : ^z) (min : ^a) (max : ^b) (v : ^c) =
-            let v1 = ((^z or ^a or ^b or ^c or ^d or ^e) : (static member Max : ^a * ^c -> ^d) (min, v))
-            ((^z or ^a or ^b or ^c or ^d or ^e) : (static member Min : ^b * ^d -> ^e) (max, v1))    
-            
-        // Simply using min and mix directly will resolve to the comparison overload for some reason.
+        // Simply using min and max directly will resolve to the comparison overload for some reason.
         // Therefore we need to do it the dumb (incomplete) way. E.g. won't work for Version.
         let inline saturateAux (_ : ^z) (x : ^a) =
             ((^z or ^a) : (static member Saturate : ^a -> ^a) (x))
@@ -160,7 +156,8 @@ module Math =
 
     /// Clamps x to the interval [a, b].
     let inline clamp a b x =
-        clampAux Unchecked.defaultof<Helpers.Comparison> a b x
+        x |> max a |> min b
+        //clampAux Unchecked.defaultof<Helpers.Comparison> a b x
 
     /// Clamps x to the interval [0, 1].
     let inline saturate (x : ^a) =
