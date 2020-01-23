@@ -319,19 +319,6 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Gets centroid of this polygon's vertices.
-        /// </summary>
-        [Obsolete("Use VectorIEnumerableExtensions.ComputeCentroid instead.")]
-        public static V2d ComputeCentroid(this V2d[] points)
-        {
-            var sum = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) sum += points[i];
-            double d = 1.0 / count;
-            return sum * d;
-        }
-
-        /// <summary>
         /// Returns a version of the point array scaled by a factor of s about
         /// the supplied center.
         /// </summary>

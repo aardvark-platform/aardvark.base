@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Aardvark.Base
 {
     public static class VectorIEnumerableExtensions
     {
-        #region Centroid
-
         //# foreach(var scalar in Meta.VecFieldTypes)
         //# {
         //# foreach(var dim in Meta.VecTypeDimensions)
@@ -17,6 +12,42 @@ namespace Aardvark.Base
         //#     var outputVecType = scalar.IsReal ? inputVecType : Meta.VecTypeOf(dim, Meta.DoubleType).Name;
         //#     var scalarType = scalar.IsReal ? scalar.Name :  Meta.DoubleType.Name;
         //#     var cast = scalar.IsReal ? "" : "(" + outputVecType + ")";
+        #region __inputVecType__
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of __inputVecType__s.
+        /// </summary>
+        public static __inputVecType__ Sum(this IEnumerable<__inputVecType__> vectors)
+        {
+            __inputVecType__ sum = __inputVecType__.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of __inputVecType__s.
+        /// </summary>
+        public static __inputVecType__ Sum(this __inputVecType__[] vectors)
+        {
+            __inputVecType__ sum = __inputVecType__.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of __inputVecType__s.
         /// </summary>
@@ -100,9 +131,11 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
-        //# } ///foreach(Meta.VecTypeDimensions);
-        //# } ///foreach(Meta.VecTypes)
+        #endregion
 
         #endregion
+
+        //# } ///foreach(Meta.VecTypeDimensions);
+        //# } ///foreach(Meta.VecTypes)
     }
 }
