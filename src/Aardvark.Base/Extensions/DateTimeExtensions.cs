@@ -43,7 +43,7 @@ namespace Aardvark.Base
             // the following calculates the day of the month of a JD
             int p = (int)Fun.Floor(J + 0.5);
             int s1 = p + 68569;
-            int n = (int)Fun.Floor(4 * s1 / 146097);
+            int n = (int)Fun.Floor(4 * s1 / (double)146097);
             int s2 = s1 - (int)Fun.Floor(((double)146097 * n + 3) / 4);
             int i = (int)Fun.Floor((double)4000 * (s2 + 1) / 1461001);
             int s3 = s2 - (int)Fun.Floor((double)1461 * i / 4) + 31;

@@ -410,49 +410,74 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static sbyte Abs(this sbyte x) => Math.Abs(x);
+        public static sbyte Abs(this sbyte x)
+        {
+            return Math.Abs(x);
+        }
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static short Abs(this short x) => Math.Abs(x);
+        public static short Abs(this short x)
+        {
+            return Math.Abs(x);
+        }
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int Abs(this int x) => Math.Abs(x);
+        public static int Abs(this int x)
+        {
+            return Math.Abs(x);
+        }
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long Abs(this long x) => Math.Abs(x);
+        public static long Abs(this long x)
+        {
+            return Math.Abs(x);
+        }
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Abs(this float x) => Math.Abs(x);
+        public static float Abs(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Abs(x);
+            #else
+                return Math.Abs(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Abs(this double x) => Math.Abs(x);
+        public static double Abs(this double x)
+        {
+            return Math.Abs(x);
+        }
 
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static decimal Abs(this decimal x) => Math.Abs(x);
+        public static decimal Abs(this decimal x)
+        {
+            return Math.Abs(x);
+        }
 
         #endregion
 
@@ -542,7 +567,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Floor(this float x)
-            => (float)Math.Floor(x);
+        {
+            #if NETCOREAPP3_0
+                return MathF.Floor(x);
+            #else
+                return (float) Math.Floor(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the largest integer less than or equal to the specified number.
@@ -550,7 +581,19 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Floor(this double x)
-            => Math.Floor(x);
+        {
+            return Math.Floor(x);
+        }
+
+        /// <summary>
+        /// Returns the largest integer less than or equal to the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Floor(this decimal x)
+        {
+            return Decimal.Floor(x);
+        }
 
         #endregion
 
@@ -562,7 +605,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Ceiling(this float x)
-            => (float)System.Math.Ceiling(x);
+        {
+            #if NETCOREAPP3_0
+                return MathF.Ceiling(x);
+            #else
+                return (float) Math.Ceiling(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the smallest integer greater than or equal to the specified number.
@@ -570,7 +619,19 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Ceiling(this double x)
-            => System.Math.Ceiling(x);
+        {
+            return Math.Ceiling(x);
+        }
+
+        /// <summary>
+        /// Returns the smallest integer greater than or equal to the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Ceiling(this decimal x)
+        {
+            return Decimal.Ceiling(x);
+        }
 
         #endregion
 
@@ -582,7 +643,55 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Round(this float x)
-            => (float)System.Math.Round(x);
+        {
+            #if NETCOREAPP3_0
+                return MathF.Round(x);
+            #else
+                return (float) Math.Round(x);
+            #endif
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Round(this float x, MidpointRounding mode)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Round(x, mode);
+            #else
+                return (float) Math.Round(x, mode);
+            #endif
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Round(this float x, int digits)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Round(x, digits);
+            #else
+                return (float) Math.Round(x, digits);
+            #endif
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Round(this float x, int digits, MidpointRounding mode)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Round(x, digits, mode);
+            #else
+                return (float) Math.Round(x, digits, mode);
+            #endif
+        }
 
         /// <summary>
         /// Rounds a floating-point value to the nearest integral value.
@@ -590,7 +699,79 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Round(this double x)
-            => System.Math.Round(x);
+        {
+            return Math.Round(x);
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Round(this double x, MidpointRounding mode)
+        {
+            return Math.Round(x, mode);
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Round(this double x, int digits)
+        {
+            return Math.Round(x, digits);
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Round(this double x, int digits, MidpointRounding mode)
+        {
+            return Math.Round(x, digits, mode);
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Round(this decimal x)
+        {
+            return Decimal.Round(x);
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Round(this decimal x, MidpointRounding mode)
+        {
+            return Decimal.Round(x, mode);
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Round(this decimal x, int digits)
+        {
+            return Decimal.Round(x, digits);
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Round(this decimal x, int digits, MidpointRounding mode)
+        {
+            return Decimal.Round(x, digits, mode);
+        }
 
         #endregion
 
@@ -602,7 +783,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Truncate(this float x)
-            => (float)Math.Truncate(x);
+        {
+            #if NETCOREAPP3_0
+                return MathF.Truncate(x);
+            #else
+                return (float) Math.Truncate(x);
+            #endif
+        }
 
         /// <summary>
         /// Rounds a floating-point value to the nearest integar towards zero.
@@ -610,7 +797,19 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Truncate(this double x)
-            => Math.Truncate(x);
+        {
+            return Math.Truncate(x);
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integar towards zero.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Truncate(this decimal x)
+        {
+            return Decimal.Truncate(x);
+        }
 
         #endregion
 
@@ -629,6 +828,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Frac(this double t) => t - Floor(t);
+
+        /// <summary>
+        /// Returns fractional part of t. Calculated as t - floor(t).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Frac(this decimal t) => t - Floor(t);
 
         #endregion
 
@@ -1320,7 +1526,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this sbyte x)
-            => Math.Sign(x);
+        {
+            return Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1337,7 +1545,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Signum(this sbyte x)
-            => (sbyte) Math.Sign(x);
+        {
+            return (sbyte) Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1345,7 +1555,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this short x)
-            => Math.Sign(x);
+        {
+            return Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1362,7 +1574,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Signum(this short x)
-            => (short) Math.Sign(x);
+        {
+            return (short) Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1370,7 +1584,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this int x)
-            => Math.Sign(x);
+        {
+            return Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1387,7 +1603,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Signum(this int x)
-            => (int) Math.Sign(x);
+        {
+            return (int) Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1395,7 +1613,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this long x)
-            => Math.Sign(x);
+        {
+            return Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1412,7 +1632,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Signum(this long x)
-            => (long) Math.Sign(x);
+        {
+            return (long) Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1420,7 +1642,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this float x)
-            => Math.Sign(x);
+        {
+            #if NETCOREAPP3_0
+                return MathF.Sign(x);
+            #else
+                return Math.Sign(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1437,7 +1665,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Signum(this float x)
-            => (float) Math.Sign(x);
+        {
+            #if NETCOREAPP3_0
+                return MathF.Sign(x);
+            #else
+                return Math.Sign(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1445,7 +1679,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this double x)
-            => Math.Sign(x);
+        {
+            return Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1462,7 +1698,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Signum(this double x)
-            => (double) Math.Sign(x);
+        {
+            return (double) Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1470,7 +1708,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this decimal x)
-            => Math.Sign(x);
+        {
+            return Math.Sign(x);
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -1487,7 +1727,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Signum(this decimal x)
-            => (decimal) Math.Sign(x);
+        {
+            return (decimal) Math.Sign(x);
+        }
 
         #endregion
 
@@ -1619,151 +1861,106 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this byte x) =>
-            Math.Sqrt(x);
+        public static double Sqrt(this byte x)
+        {
+            return Math.Sqrt(x);
+        }
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this sbyte x) =>
-            Math.Sqrt(x);
+        public static double Sqrt(this sbyte x)
+        {
+            return Math.Sqrt(x);
+        }
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this short x) =>
-            Math.Sqrt(x);
+        public static double Sqrt(this short x)
+        {
+            return Math.Sqrt(x);
+        }
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this ushort x) =>
-            Math.Sqrt(x);
+        public static double Sqrt(this ushort x)
+        {
+            return Math.Sqrt(x);
+        }
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this int x) =>
-            Math.Sqrt(x);
+        public static double Sqrt(this int x)
+        {
+            return Math.Sqrt(x);
+        }
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this uint x) =>
-            Math.Sqrt(x);
+        public static double Sqrt(this uint x)
+        {
+            return Math.Sqrt(x);
+        }
+
+        /// <summary>
+        /// Returns the square root of the specified number.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this long x)
+        {
+            return Math.Sqrt(x);
+        }
+
+        /// <summary>
+        /// Returns the square root of the specified number.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sqrt(this ulong x)
+        {
+            return Math.Sqrt(x);
+        }
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this long x) =>
-            Math.Sqrt(x);
+        public static float Sqrt(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Sqrt(x);
+            #else
+                return (float)Math.Sqrt(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this ulong x) =>
-            Math.Sqrt(x);
-
-        /// <summary>
-        /// Returns the square root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Sqrt(this float x) =>
-            (float)Math.Sqrt(x);
-
-        /// <summary>
-        /// Returns the square root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this double x) =>
-            Math.Sqrt(x);
-
-        /// <summary>
-        /// Returns the square root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sqrt(this decimal x) =>
-            Math.Sqrt((double)x);
-
-        /// <summary>
-        /// Returns the cubic root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cbrt(this sbyte x)
-            => x < 0 ? -Math.Pow(-(x), Constant.OneThird)
-                         : Math.Pow(x, Constant.OneThird);
-
-        /// <summary>
-        /// Returns the cubic root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cbrt(this short x)
-            => x < 0 ? -Math.Pow(-(x), Constant.OneThird)
-                         : Math.Pow(x, Constant.OneThird);
-
-        /// <summary>
-        /// Returns the cubic root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cbrt(this int x)
-            => x < 0 ? -Math.Pow(-(x), Constant.OneThird)
-                         : Math.Pow(x, Constant.OneThird);
-
-        /// <summary>
-        /// Returns the cubic root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cbrt(this long x)
-            => x < 0 ? -Math.Pow(-(x), Constant.OneThird)
-                         : Math.Pow(x, Constant.OneThird);
-
-        /// <summary>
-        /// Returns the cubic root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Cbrt(this float x)
-            => x < 0 ? (float)-Math.Pow(-(x), Constant.OneThird)
-                         : (float)Math.Pow(x, Constant.OneThird);
-
-        /// <summary>
-        /// Returns the cubic root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cbrt(this double x)
-            => x < 0 ? -Math.Pow(-(x), Constant.OneThird)
-                         : Math.Pow(x, Constant.OneThird);
-
-        /// <summary>
-        /// Returns the cubic root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cbrt(this decimal x)
-            => x < 0 ? -Math.Pow(-((double)x), Constant.OneThird)
-                         : Math.Pow((double)x, Constant.OneThird);
+        public static double Sqrt(this double x)
+        {
+            return Math.Sqrt(x);
+        }
 
         /// <summary>
         /// Returns the cubic root of the specified number.
@@ -1771,7 +1968,43 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this byte x)
-            => Math.Pow(x, Constant.OneThird);
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return Math.Pow(x, Constant.OneThird);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the cubic root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cbrt(this sbyte x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return x < 0 ? -Math.Pow(-x, Constant.OneThird)
+                             :  Math.Pow( x, Constant.OneThird);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the cubic root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cbrt(this short x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return x < 0 ? -Math.Pow(-x, Constant.OneThird)
+                             :  Math.Pow( x, Constant.OneThird);
+            #endif
+        }
 
         /// <summary>
         /// Returns the cubic root of the specified number.
@@ -1779,7 +2012,28 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this ushort x)
-            => Math.Pow(x, Constant.OneThird);
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return Math.Pow(x, Constant.OneThird);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the cubic root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cbrt(this int x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return x < 0 ? -Math.Pow(-x, Constant.OneThird)
+                             :  Math.Pow( x, Constant.OneThird);
+            #endif
+        }
 
         /// <summary>
         /// Returns the cubic root of the specified number.
@@ -1787,15 +2041,74 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this uint x)
-            => Math.Pow(x, Constant.OneThird);
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return Math.Pow(x, Constant.OneThird);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the cubic root of the specified number.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cbrt(this long x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return x < 0 ? -Math.Pow(-x, Constant.OneThird)
+                             :  Math.Pow( x, Constant.OneThird);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the cubic root of the specified number.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cbrt(this ulong x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return Math.Pow(x, Constant.OneThird);
+            #endif
+        }
 
         /// <summary>
         /// Returns the cubic root of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cbrt(this ulong x)
-            => Math.Pow(x, Constant.OneThird);
+        public static float Cbrt(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Cbrt(x);
+            #else
+                return x < 0 ? (float)-Math.Pow(-x, Constant.OneThird)
+                             :  (float)Math.Pow( x, Constant.OneThird);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the cubic root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Cbrt(this double x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Cbrt(x);
+            #else
+                return x < 0 ? -Math.Pow(-x, Constant.OneThird)
+                             :  Math.Pow( x, Constant.OneThird);
+            #endif
+        }
 
         #endregion
 
@@ -1814,40 +2127,8 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this byte x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this byte x, double y)
-            => Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Square(this sbyte x)
             => (sbyte)(x * x);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this sbyte x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this sbyte x, double y)
-            => Math.Pow(x, y);
 
         /// <summary>
         /// Returns the square of the specified number.
@@ -1862,40 +2143,8 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this short x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this short x, double y)
-            => Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Square(this ushort x)
             => (ushort)(x * x);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this ushort x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this ushort x, double y)
-            => Math.Pow(x, y);
 
         /// <summary>
         /// Returns the square of the specified number.
@@ -1910,40 +2159,8 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this int x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this int x, double y)
-            => Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Square(this uint x)
             => (uint)(x * x);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this uint x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this uint x, double y)
-            => Math.Pow(x, y);
 
         /// <summary>
         /// Returns the square of the specified number.
@@ -1958,40 +2175,8 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this long x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this long x, double y)
-            => Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Square(this ulong x)
             => (ulong)(x * x);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this ulong x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this ulong x, double y)
-            => Math.Pow(x, y);
 
         /// <summary>
         /// Returns the square of the specified number.
@@ -2006,24 +2191,8 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this float x, float y)
-            => (float)Math.Pow(x, y);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Square(this double x)
             => (double)(x * x);
-
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this double x, double y)
-            => Math.Pow(x, y);
 
         /// <summary>
         /// Returns the square of the specified number.
@@ -2034,48 +2203,240 @@ namespace Aardvark.Base
             => (decimal)(x * x);
 
         /// <summary>
-        /// Returns the square of the specified number.
+        /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this decimal x, float y)
-            => (float)Math.Pow((double)x, y);
+        public static float Pow(this byte x, float y)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(x, y);
+            #else
+                return (float)Math.Pow(x, y);
+            #endif
+        }
 
         /// <summary>
-        /// Returns the square of the specified number.
+        /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this decimal x, double y)
-            => Math.Pow((double)x, y);
+        public static double Pow(this byte x, double y)
+        {
+            return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this sbyte x, float y)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(x, y);
+            #else
+                return (float)Math.Pow(x, y);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this sbyte x, double y)
+        {
+            return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this short x, float y)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(x, y);
+            #else
+                return (float)Math.Pow(x, y);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this short x, double y)
+        {
+            return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this ushort x, float y)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(x, y);
+            #else
+                return (float)Math.Pow(x, y);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this ushort x, double y)
+        {
+            return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this int x, float y)
+        {
+            return (float)Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this int x, double y)
+        {
+            return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this uint x, float y)
+        {
+            return (float)Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this uint x, double y)
+        {
+            return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this long x, float y)
+        {
+            return (float)Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double. 
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this long x, double y)
+        {
+            return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this ulong x, float y)
+        {
+            return (float)Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double. 
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this ulong x, double y)
+        {
+            return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this float x, float y)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(x, y);
+            #else
+                return (float)Math.Pow(x, y);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this double x, double y)
+        {
+            return Math.Pow(x, y);
+        }
 
         #endregion
 
         #region Exp and Log
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this byte x) =>
-            Math.Exp(x);
+        public static double Exp(this byte x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this byte x) =>
-            Math.Log(x);
+        public static double Log(this byte x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this byte x) =>
-            Math.Log10(x);
+        public static double Log10(this byte x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
@@ -2094,28 +2455,34 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this sbyte x) =>
-            Math.Exp(x);
+        public static double Exp(this sbyte x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this sbyte x) =>
-            Math.Log(x);
+        public static double Log(this sbyte x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this sbyte x) =>
-            Math.Log10(x);
+        public static double Log10(this sbyte x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
@@ -2134,28 +2501,34 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this short x) =>
-            Math.Exp(x);
+        public static double Exp(this short x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this short x) =>
-            Math.Log(x);
+        public static double Log(this short x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this short x) =>
-            Math.Log10(x);
+        public static double Log10(this short x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
@@ -2174,28 +2547,34 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this ushort x) =>
-            Math.Exp(x);
+        public static double Exp(this ushort x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this ushort x) =>
-            Math.Log(x);
+        public static double Log(this ushort x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this ushort x) =>
-            Math.Log10(x);
+        public static double Log10(this ushort x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
@@ -2214,28 +2593,34 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this int x) =>
-            Math.Exp(x);
+        public static double Exp(this int x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this int x) =>
-            Math.Log(x);
+        public static double Log(this int x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this int x) =>
-            Math.Log10(x);
+        public static double Log10(this int x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
@@ -2254,28 +2639,34 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this uint x) =>
-            Math.Exp(x);
+        public static double Exp(this uint x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this uint x) =>
-            Math.Log(x);
+        public static double Log(this uint x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this uint x) =>
-            Math.Log10(x);
+        public static double Log10(this uint x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
@@ -2294,31 +2685,41 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this long x) =>
-            Math.Exp(x);
+        public static double Exp(this long x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this long x) =>
-            Math.Log(x);
+        public static double Log(this long x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this long x) =>
-            Math.Log10(x);
+        public static double Log10(this long x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2327,6 +2728,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2334,31 +2736,41 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this ulong x) =>
-            Math.Exp(x);
+        public static double Exp(this ulong x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this ulong x) =>
-            Math.Log(x);
+        public static double Log(this ulong x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this ulong x) =>
-            Math.Log10(x);
+        public static double Log10(this ulong x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2367,6 +2779,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2374,28 +2787,46 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Exp(this float x) =>
-            (float)Math.Exp(x);
+        public static float Exp(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Exp(x);
+            #else
+                return (float)Math.Exp(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Log(this float x) =>
-            (float)Math.Log(x);
+        public static float Log(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Log(x);
+            #else
+                return (float)Math.Log(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Log10(this float x) =>
-            (float)Math.Log10(x);
+        public static float Log10(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Log10(x);
+            #else
+                return (float)Math.Log10(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
@@ -2414,28 +2845,34 @@ namespace Aardvark.Base
             x.Log() / basis.Log();
 
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this double x) =>
-            Math.Exp(x);
+        public static double Exp(this double x)
+        {
+            return Math.Exp(x);
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this double x) =>
-            Math.Log(x);
+        public static double Log(this double x)
+        {
+            return Math.Log(x);
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this double x) =>
-            Math.Log10(x);
+        public static double Log10(this double x)
+        {
+            return Math.Log10(x);
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
@@ -2451,46 +2888,6 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log(this double x, double basis) =>
-            x.Log() / basis.Log();
-
-        /// <summary>
-        /// Returns the square root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Exp(this decimal x) =>
-            Math.Exp((double)x);
-
-        /// <summary>
-        /// Returns the natural (base e) logarithm of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this decimal x) =>
-            Math.Log((double)x);
-
-        /// <summary>
-        /// Returns the base 10 logarithm of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log10(this decimal x) =>
-            Math.Log10((double)x);
-
-        /// <summary>
-        /// Returns the base 2 logarithm of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this decimal x) =>
-            x.Log() * Constant.Ln2Inv;
-
-        /// <summary>
-        /// Returns the values logarithm of the specified basis.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this decimal x, double basis) =>
             x.Log() / basis.Log();
 
         #endregion
@@ -3076,7 +3473,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float PowerOfTwo(this float x)
-            => (float)System.Math.Pow(2, x);
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(2, x);
+            #else
+                return (float)Math.Pow(2, x);
+            #endif
+        }
 
         /// <summary>
         /// Returns 2 raised to the power of the value.
@@ -3084,7 +3487,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double PowerOfTwo(this double x)
-            => System.Math.Pow(2, x);
+        {
+            return Math.Pow(2, x);
+        }
 
         /// <summary>
         /// Returns the nearest superior power of two of the value.
@@ -3163,60 +3568,116 @@ namespace Aardvark.Base
         #region Trigonometry
 
         /// <summary>
-        /// Returns the cosine of the specified angle in radians.
+        /// Returns the sine of the specified angle in radians.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Sin(this float x) => (float)System.Math.Sin(x);
+        public static float Sin(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Sin(x);
+            #else
+                return (float)Math.Sin(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Cos(this float x) => (float)System.Math.Cos(x);
+        public static float Cos(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Cos(x);
+            #else
+                return (float)Math.Cos(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the tangent of the specified angle in radians.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Tan(this float x) => (float)System.Math.Tan(x);
+        public static float Tan(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Tan(x);
+            #else
+                return (float)Math.Tan(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Asin(this float x) => (float)System.Math.Asin(x);
+        public static float Asin(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Asin(x);
+            #else
+                return (float)Math.Asin(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float AsinClamped(this float x) => (float)System.Math.Asin(Clamp(x, -1, 1));
+        public static float AsinClamped(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Asin(Clamp(x, -1, 1));
+            #else
+                return (float)Math.Asin(Clamp(x, -1, 1));
+            #endif
+        }
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Acos(this float x) => (float)System.Math.Acos(x);
+        public static float Acos(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Acos(x);
+            #else
+                return (float)Math.Acos(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float AcosClamped(this float x) => (float)System.Math.Acos(Clamp(x, -1, 1));
+        public static float AcosClamped(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Acos(Clamp(x, -1, 1));
+            #else
+                return (float)Math.Acos(Clamp(x, -1, 1));
+            #endif
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Atan(this float x) => (float)System.Math.Atan(x);
+        public static float Atan(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Atan(x);
+            #else
+                return (float)Math.Atan(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
@@ -3224,7 +3685,14 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Atan2(float y, float x) => (float)System.Math.Atan2(y, x);
+        public static float Atan2(float y, float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Atan2(y, x);
+            #else
+                return (float)Math.Atan2(y, x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
@@ -3257,21 +3725,42 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Sinh(this float x) => (float)System.Math.Sinh(x);
+        public static float Sinh(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Sinh(x);
+            #else
+                return (float)Math.Sinh(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the hyperbolic cosine of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Cosh(this float x) => (float)System.Math.Cosh(x);
+        public static float Cosh(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Cosh(x);
+            #else
+                return (float)Math.Cosh(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the hyperbolic tangent of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Tanh(this float x) => (float)System.Math.Tanh(x);
+        public static float Tanh(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Tanh(x);
+            #else
+                return (float)Math.Tanh(x);
+            #endif
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic sine of the specified number.
@@ -3279,7 +3768,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Asinh(this float x)
-            => (float)System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
+        {
+            #if NETCOREAPP3_0
+                return MathF.Asinh(x);
+            #else
+                return Log(x + Sqrt(x * x + 1));
+            #endif
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic cosine of the specified number.
@@ -3287,7 +3782,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Acosh(this float x)
-            => (float)System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
+        {
+            #if NETCOREAPP3_0
+                return MathF.Acosh(x);
+            #else
+                return Log(x + Sqrt(x * x - 1));
+            #endif
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic tangent of the specified number.
@@ -3296,63 +3797,93 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atanh(this float x)
-            => (float)(0.5 * System.Math.Log((1.0 + x) / (1.0 - x)));
+        {
+            #if NETCOREAPP3_0
+                return MathF.Atanh(x);
+            #else
+                return 0.5f * Log((1 + x) / (1 - x));
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the sine of the specified angle in radians.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sin(this double x)
+        {
+            return Math.Sin(x);
+        }
 
         /// <summary>
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sin(this double x) => System.Math.Sin(x);
-
-        /// <summary>
-        /// Returns the cosine of the specified angle in radians.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cos(this double x) => System.Math.Cos(x);
+        public static double Cos(this double x)
+        {
+            return Math.Cos(x);
+        }
 
         /// <summary>
         /// Returns the tangent of the specified angle in radians.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Tan(this double x) => System.Math.Tan(x);
+        public static double Tan(this double x)
+        {
+            return Math.Tan(x);
+        }
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Asin(this double x) => System.Math.Asin(x);
+        public static double Asin(this double x)
+        {
+            return Math.Asin(x);
+        }
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double AsinClamped(this double x) => System.Math.Asin(Clamp(x, -1, 1));
+        public static double AsinClamped(this double x)
+        {
+            return Math.Asin(Clamp(x, -1, 1));
+        }
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Acos(this double x) => System.Math.Acos(x);
+        public static double Acos(this double x)
+        {
+            return Math.Acos(x);
+        }
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double AcosClamped(this double x) => System.Math.Acos(Clamp(x, -1, 1));
+        public static double AcosClamped(this double x)
+        {
+            return Math.Acos(Clamp(x, -1, 1));
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Atan(this double x) => System.Math.Atan(x);
+        public static double Atan(this double x)
+        {
+            return Math.Atan(x);
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
@@ -3360,7 +3891,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Atan2(double y, double x) => System.Math.Atan2(y, x);
+        public static double Atan2(double y, double x)
+        {
+            return Math.Atan2(y, x);
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
@@ -3393,21 +3927,30 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Sinh(this double x) => System.Math.Sinh(x);
+        public static double Sinh(this double x)
+        {
+            return Math.Sinh(x);
+        }
 
         /// <summary>
         /// Returns the hyperbolic cosine of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cosh(this double x) => System.Math.Cosh(x);
+        public static double Cosh(this double x)
+        {
+            return Math.Cosh(x);
+        }
 
         /// <summary>
         /// Returns the hyperbolic tangent of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Tanh(this double x) => System.Math.Tanh(x);
+        public static double Tanh(this double x)
+        {
+            return Math.Tanh(x);
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic sine of the specified number.
@@ -3415,7 +3958,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Asinh(this double x)
-            => System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
+        {
+            #if NETCOREAPP3_0
+                return Math.Asinh(x);
+            #else
+                return Log(x + Sqrt(x * x + 1));
+            #endif
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic cosine of the specified number.
@@ -3423,7 +3972,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Acosh(this double x)
-            => System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
+        {
+            #if NETCOREAPP3_0
+                return Math.Acosh(x);
+            #else
+                return Log(x + Sqrt(x * x - 1));
+            #endif
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic tangent of the specified number.
@@ -3432,7 +3987,13 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Atanh(this double x)
-            => (0.5 * System.Math.Log((1.0 + x) / (1.0 - x)));
+        {
+            #if NETCOREAPP3_0
+                return Math.Atanh(x);
+            #else
+                return 0.5 * Log((1 + x) / (1 - x));
+            #endif
+        }
 
         #endregion
 
@@ -4161,7 +4722,7 @@ namespace Aardvark.Base
         [Pure]
         public static bool IsPrime(this int value)
         {
-            int imax = (int)System.Math.Sqrt(value);
+            int imax = (int)Sqrt(value);
 
             for (int i = 2; i <= imax; i++)
                 if (value % i == 0) return false;
@@ -4177,7 +4738,7 @@ namespace Aardvark.Base
         [Pure]
         public static bool IsPrime(this long value)
         {
-            long imax = (long)System.Math.Sqrt(value);
+            long imax = (long)Sqrt(value);
 
             for (long i = 2; i <= imax; i++)
                 if (value % i == 0) return false;

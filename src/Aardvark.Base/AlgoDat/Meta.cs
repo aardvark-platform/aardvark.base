@@ -394,6 +394,21 @@ namespace Aardvark.Base
             ByteType, UShortType, UIntType, ULongType,
         };
 
+        public static readonly SimpleType[] FloatRepresentableTypes = new SimpleType[]
+{
+            ByteType, SByteType,
+            ShortType, UShortType,
+            FloatType
+};
+
+        public static readonly SimpleType[] DoubleRepresentableTypes = new SimpleType[]
+        {
+            ByteType, SByteType,
+            ShortType, UShortType,
+            IntType, UIntType,
+            FloatType, DoubleType
+        };
+
         public static readonly SimpleType[] TrafoTypes = new SimpleType[]
         {
             Euclidean3fType, Euclidean3dType,

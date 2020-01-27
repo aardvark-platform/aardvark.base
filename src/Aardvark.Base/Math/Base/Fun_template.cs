@@ -13,10 +13,13 @@ namespace Aardvark.Base
     //# var unsignedtypes = Meta.UnsignedTypes;
     //# var numtypes = Meta.StandardNumericTypes;
     //# var numdectypes = Meta.BuiltInNumericTypes;
+    //# var freptypes = Meta.FloatRepresentableTypes;
+    //# var dreptypes = Meta.DoubleRepresentableTypes;
     //# var modtypes = new [] { Meta.IntType, Meta.LongType, Meta.UIntType, Meta.ULongType };
     //# var smalltypes = new [] { Meta.SByteType, Meta.ShortType, Meta.ByteType, Meta.UShortType };
     //# var iltypes = new[] { Meta.IntType, Meta.LongType };
     //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
+    //# var fddectypes = new [] { Meta.FloatType, Meta.DoubleType, Meta.DecimalType };
     //# var ilfdtypes = Meta.VecFieldTypes;
     public static partial class Fun
     {
@@ -59,12 +62,24 @@ namespace Aardvark.Base
         #region Abs
 
         //# signedtypes.ForEach(t => {
+        //# var fname = "Abs";
         /// <summary>
         /// Returns the absolute value of the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Abs(this __t.Name__ x) => Math.Abs(x);
+        public static __t.Name__ Abs(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         //# });
         #endregion
@@ -96,63 +111,175 @@ namespace Aardvark.Base
 
         #region Floor
 
-        //# fdtypes.ForEach(t => {
+        //# fddectypes.ForEach(t => {
+        //# var fname = "Floor";
         /// <summary>
         /// Returns the largest integer less than or equal to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Floor(this __t.Name__ x)
-            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */Math.Floor(x);
+        {
+            //# if (t == Meta.DecimalType) {
+            return Decimal.__fname__(x);
+            //# } else if (t == Meta.DoubleType) {
+            return Math.__fname__(x);
+            //# } else if (t == Meta.FloatType) {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float) Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         //# });
         #endregion
 
         #region Ceiling
 
-        //# fdtypes.ForEach(t => {
+        //# fddectypes.ForEach(t => {
+        //# var fname = "Ceiling";
         /// <summary>
         /// Returns the smallest integer greater than or equal to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Ceiling(this __t.Name__ x)
-            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Ceiling(x);
+        {
+            //# if (t == Meta.DecimalType) {
+            return Decimal.__fname__(x);
+            //# } else if (t == Meta.DoubleType) {
+            return Math.__fname__(x);
+            //# } else if (t == Meta.FloatType) {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float) Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         //# });
         #endregion
 
         #region Round
 
-        //# fdtypes.ForEach(t => {
+        //# fddectypes.ForEach(t => {
+        //# var fname = "Round";
         /// <summary>
         /// Rounds a floating-point value to the nearest integral value.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Round(this __t.Name__ x)
-            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Round(x);
+        {
+            //# if (t == Meta.DecimalType) {
+            return Decimal.__fname__(x);
+            //# } else if (t == Meta.DoubleType) {
+            return Math.__fname__(x);
+            //# } else if (t == Meta.FloatType) {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float) Math.__fname__(x);
+            #endif
+            //# }
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Round(this __t.Name__ x, MidpointRounding mode)
+        {
+            //# if (t == Meta.DecimalType) {
+            return Decimal.__fname__(x, mode);
+            //# } else if (t == Meta.DoubleType) {
+            return Math.__fname__(x, mode);
+            //# } else if (t == Meta.FloatType) {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x, mode);
+            #else
+                return (float) Math.__fname__(x, mode);
+            #endif
+            //# }
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Round(this __t.Name__ x, int digits)
+        {
+            //# if (t == Meta.DecimalType) {
+            return Decimal.__fname__(x, digits);
+            //# } else if (t == Meta.DoubleType) {
+            return Math.__fname__(x, digits);
+            //# } else if (t == Meta.FloatType) {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x, digits);
+            #else
+                return (float) Math.__fname__(x, digits);
+            #endif
+            //# }
+        }
+
+        /// <summary>
+        /// Rounds a floating-point value to the nearest integral value.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Round(this __t.Name__ x, int digits, MidpointRounding mode)
+        {
+            //# if (t == Meta.DecimalType) {
+            return Decimal.__fname__(x, digits, mode);
+            //# } else if (t == Meta.DoubleType) {
+            return Math.__fname__(x, digits, mode);
+            //# } else if (t == Meta.FloatType) {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x, digits, mode);
+            #else
+                return (float) Math.__fname__(x, digits, mode);
+            #endif
+            //# }
+        }
 
         //# });
         #endregion
 
         #region Truncate
 
-        //# fdtypes.ForEach(t => {
+        //# fddectypes.ForEach(t => {
+        //# var fname = "Truncate";
         /// <summary>
         /// Rounds a floating-point value to the nearest integar towards zero.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Truncate(this __t.Name__ x)
-            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */Math.Truncate(x);
+        {
+            //# if (t == Meta.DecimalType) {
+            return Decimal.__fname__(x);
+            //# } else if (t == Meta.DoubleType) {
+            return Math.__fname__(x);
+            //# } else if (t == Meta.FloatType) {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float) Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         //# });
         #endregion
 
         #region Frac
 
-        //# fdtypes.ForEach(t => {
+        //# fddectypes.ForEach(t => {
         /// <summary>
         /// Returns fractional part of t. Calculated as t - floor(t).
         /// </summary>
@@ -350,13 +477,24 @@ namespace Aardvark.Base
         #region Sign
 
         //# signedtypes.ForEach(t => {
+        //# var fname = "Sign";
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this __t.Name__ x)
-            => Math.Sign(x);
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns either -1, 0, or +1, indicating the sign of the specified value.
@@ -373,7 +511,17 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Signum(this __t.Name__ x)
-            => (__t.Name__) Math.Sign(x);
+        {
+            //# if (t != Meta.FloatType) {
+            return (__t.Name__) Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         //# });
         #endregion
@@ -421,41 +569,60 @@ namespace Aardvark.Base
 
         #region Roots
 
-        //# numdectypes.ForEach(t => {
-        //# var cast = (t == Meta.DecimalType) ? "(double)" : "";
+        //# numtypes.ForEach(t => {
+        //# var fname = "Sqrt";
         //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
-        //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
         /// <summary>
         /// Returns the square root of the specified number.
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rtype.Name__ Sqrt(this __t.Name__ x) =>
-            __rcast__Math.Sqrt(__cast__x);
+        public static __rtype.Name__ Sqrt(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         //# });
-        //# signedtypes.ForEach(t => {
-        //# var cast = (t == Meta.DecimalType) ? "(double)" : "";
+        //# numtypes.ForEach(t => {
+        //# var fname = "Cbrt";
         //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
         //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
         /// <summary>
         /// Returns the cubic root of the specified number.
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype.Name__ Cbrt(this __t.Name__ x)
-            => x < 0 ? __rcast__-Math.Pow(-(__cast__x), Constant.OneThird)
-                         : __rcast__Math.Pow(__cast__x, Constant.OneThird);
-
-        //# });
-        //# unsignedtypes.ForEach(t => {
-        /// <summary>
-        /// Returns the cubic root of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Cbrt(this __t.Name__ x)
-            => Math.Pow(x, Constant.OneThird);
+        {
+            #if NETCOREAPP3_0
+                //# if (t != Meta.FloatType) {
+                return Math.__fname__(x);
+                //# } else {
+                return MathF.__fname__(x);
+                //# }
+            #else
+                //# if (signedtypes.Contains(t)) {
+                return x < 0 ? __rcast__-Math.Pow(-x, Constant.OneThird)
+                             :  __rcast__Math.Pow( x, Constant.OneThird);
+                //# } else {
+                return __rcast__Math.Pow(x, Constant.OneThird);
+                //# }
+            #endif
+        }
 
         //# });
         #endregion
@@ -471,65 +638,112 @@ namespace Aardvark.Base
         public static __t.Name__ Square(this __t.Name__ x)
             => (__t.Name__)(x * x);
 
-        //# if (fdtypes.Contains(t)) { 
-        //# var rcast = (t != Meta.DoubleType) ? "(" + t.Name + ")" : "";
-        /// <summary>
-        /// Returns the square of the specified number.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Pow(this __t.Name__ x, __t.Name__ y)
-            => __rcast__Math.Pow(x, y);
-
-        //# } else {
+        //# });
+        //# numtypes.ForEach(t => {
+        //# var fname = "Pow";
         //# fdtypes.ForEach(rt => {
         //# var rcast = (rt != Meta.DoubleType) ? "(" + rt.Name + ")" : "";
-        //# var cast = (t == Meta.DecimalType) ? "(double)" : "";
+        //# if (!fdtypes.Contains(t) || t == rt) {
         /// <summary>
-        /// Returns the square of the specified number.
+        /// Returns the number raised to the specified power.
+        //# if (rt == Meta.DoubleType && !dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double. 
+        //# }
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rt.Name__ Pow(this __t.Name__ x, __rt.Name__ y)
-            => __rcast__Math.Pow(__cast__x, y);
+        {
+            //# if (rt != Meta.FloatType || !freptypes.Contains(t)) {
+            return __rcast__Math.__fname__(x, y);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x, y);
+            #else
+                return __rcast__Math.__fname__(x, y);
+            #endif
+            //# }
+        }
 
-        //# });
-        //# }
-        //# });
+        //# } }); });
         #endregion
 
         #region Exp and Log
 
-        //# numdectypes.ForEach(t => {
-        //# var cast = (t == Meta.DecimalType) ? "(double)" : "";
+        //# numtypes.ForEach(t => {
         //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
         //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
         /// <summary>
-        /// Returns the square root of the specified number.
+        /// Returns e raised to the specified number. 
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
         /// </summary>
+        //# var fname = "Exp";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rtype.Name__ Exp(this __t.Name__ x) =>
-            __rcast__Math.Exp(__cast__x);
+        public static __rtype.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the natural (base e) logarithm of the specified number.
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
         /// </summary>
+        //# fname = "Log";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rtype.Name__ Log(this __t.Name__ x) =>
-            __rcast__Math.Log(__cast__x);
+        public static __rtype.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the base 10 logarithm of the specified number.
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
         /// </summary>
+        //# fname = "Log10";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rtype.Name__ Log10(this __t.Name__ x) =>
-            __rcast__Math.Log10(__cast__x);
+        public static __rtype.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the base 2 logarithm of the specified number.
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -538,6 +752,9 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -624,7 +841,17 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ PowerOfTwo(this __t.Name__ x)
-            => /*# if (t != Meta.DoubleType) { */(__t.Name__)/*# } */System.Math.Pow(2, x);
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.Pow(2, x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.Pow(2, x);
+            #else
+                return (float)Math.Pow(2, x);
+            #endif
+            //# }
+        }
 
         //# });
         //# iltypes.ForEach(t => {
@@ -674,70 +901,180 @@ namespace Aardvark.Base
 
         #region Trigonometry
 
-        //# fdtypes.ForEach(t => { var cast = t != Meta.DoubleType ? "(" + t.Name + ")" : "";
+        //# fdtypes.ForEach(t => {
+        //# var cast = t != Meta.DoubleType ? "(" + t.Name + ")" : "";
+        //# var half = (t == Meta.DoubleType) ? "0.5" : "0.5f";
         /// <summary>
-        /// Returns the cosine of the specified angle in radians.
+        /// Returns the sine of the specified angle in radians.
         /// </summary>
+        //# var fname = "Sin";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Sin(this __t.Name__ x) => __cast__System.Math.Sin(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the cosine of the specified angle in radians.
         /// </summary>
+        //# fname = "Cos";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Cos(this __t.Name__ x) => __cast__System.Math.Cos(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the tangent of the specified angle in radians.
         /// </summary>
+        //# fname = "Tan";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Tan(this __t.Name__ x) => __cast__System.Math.Tan(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number.
         /// </summary>
+        //# fname = "Asin";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Asin(this __t.Name__ x) => __cast__System.Math.Asin(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the angle in radians whose sine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
+        //# fname = "Asin";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ AsinClamped(this __t.Name__ x) => __cast__System.Math.Asin(Clamp(x, -1, 1));
+        public static __t.Name__ __fname__Clamped(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(Clamp(x, -1, 1));
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(Clamp(x, -1, 1));
+            #else
+                return (float)Math.__fname__(Clamp(x, -1, 1));
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number.
         /// </summary>
+        //# fname = "Acos";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Acos(this __t.Name__ x) => __cast__System.Math.Acos(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the angle in radians whose cosine is the specified number while clamping the input to [-1, 1] in order to avoid numerical problems.
         /// </summary>
+        //# fname = "Acos";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ AcosClamped(this __t.Name__ x) => __cast__System.Math.Acos(Clamp(x, -1, 1));
+        public static __t.Name__ __fname__Clamped(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(Clamp(x, -1, 1));
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(Clamp(x, -1, 1));
+            #else
+                return (float)Math.__fname__(Clamp(x, -1, 1));
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is the specified number.
         /// </summary>
+        //# fname = "Atan";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Atan(this __t.Name__ x) => __cast__System.Math.Atan(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
         /// the quotient of the two specified number.
         /// </summary>
+        //# fname = "Atan2";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Atan2(__t.Name__ y, __t.Name__ x) => __cast__System.Math.Atan2(y, x);
+        public static __t.Name__ __fname__(__t.Name__ y, __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(y, x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(y, x);
+            #else
+                return (float)Math.__fname__(y, x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
@@ -768,48 +1105,117 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic sine of the specified number.
         /// </summary>
+        //# fname = "Sinh";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Sinh(this __t.Name__ x) => __cast__System.Math.Sinh(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the hyperbolic cosine of the specified number.
         /// </summary>
+        //# fname = "Cosh";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Cosh(this __t.Name__ x) => __cast__System.Math.Cosh(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the hyperbolic tangent of the specified number.
         /// </summary>
+        //# fname = "Tanh";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Tanh(this __t.Name__ x) => __cast__System.Math.Tanh(x);
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x);
+            #else
+                return (float)Math.__fname__(x);
+            #endif
+            //# }
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic sine of the specified number.
         /// </summary>
+        //# fname = "Asinh";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Asinh(this __t.Name__ x)
-            => __cast__System.Math.Log(x + System.Math.Sqrt(x * x + 1.0));
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            #if NETCOREAPP3_0
+            //# if (t != Meta.FloatType) {
+                return Math.__fname__(x);
+            //# } else {
+                return MathF.__fname__(x);
+            //# }
+            #else
+                return Log(x + Sqrt(x * x + 1));
+            #endif
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic cosine of the specified number.
         /// </summary>
+        //# fname = "Acosh";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Acosh(this __t.Name__ x)
-            => __cast__System.Math.Log(x + System.Math.Sqrt(x * x - 1.0));
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            #if NETCOREAPP3_0
+            //# if (t != Meta.FloatType) {
+                return Math.__fname__(x);
+            //# } else {
+                return MathF.__fname__(x);
+            //# }
+            #else
+                return Log(x + Sqrt(x * x - 1));
+            #endif
+        }
 
         /// <summary>
         /// Returns the inverse hyperbolic tangent of the specified number.
         /// Note that the absolute value of the argument must be smaller than 1.
         /// </summary>
+        //# fname = "Atanh";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Atanh(this __t.Name__ x)
-            => __cast__(0.5 * System.Math.Log((1.0 + x) / (1.0 - x)));
+        public static __t.Name__ __fname__(this __t.Name__ x)
+        {
+            #if NETCOREAPP3_0
+            //# if (t != Meta.FloatType) {
+                return Math.__fname__(x);
+            //# } else {
+                return MathF.__fname__(x);
+            //# }
+            #else
+                return __half__ * Log((1 + x) / (1 - x));
+            #endif
+        }
 
         //# });
         #endregion
@@ -1016,7 +1422,7 @@ namespace Aardvark.Base
         [Pure]
         public static bool IsPrime(this __t.Name__ value)
         {
-            __t.Name__ imax = (__t.Name__)System.Math.Sqrt(value);
+            __t.Name__ imax = (__t.Name__)Sqrt(value);
 
             for (__t.Name__ i = 2; i <= imax; i++)
                 if (value % i == 0) return false;
