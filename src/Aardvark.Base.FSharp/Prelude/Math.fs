@@ -13,23 +13,13 @@ module Math =
             static member inline Power(x : sbyte, y : sbyte) = pown x (int y)
             static member inline Power(x : int16, y : int16) = pown x (int y)
             static member inline Power(x : int32, y : int32) = pown x y
-            static member inline Power(x : int64, y : int64) =
-                // TODO: wrong!!
-                Fun.Pow(x, float y) |> int64
 
             static member inline Power(x : byte, y : byte) = pown x (int y)
             static member inline Power(x : uint16, y : uint16) = pown x (int y)
             static member inline Power(x : uint32, y : uint32) = Fun.Pow(x, float y) |> uint32
-            static member inline Power(x : uint64, y : uint64) =
-                // TODO: wrong!!
-                Fun.Pow(x, float y) |> uint64
 
-            static member inline Power(x : nativeint, y : nativeint) = Fun.Pow(int64 x, float y) |> nativeint
             static member inline Power(x : float, y : float) = x ** y
             static member inline Power(x : float32, y : float32) = x ** y
-            static member inline Power(x : decimal, y : decimal) = 
-                // TODO: wrong!!
-                Math.Pow(float x, float y) |> decimal
 
         type Comparison() =
             static member inline Min< ^a when ^a : comparison>(a : ^a, b : ^a) = Operators.min a b
@@ -304,11 +294,9 @@ module Math =
 
         let powerWorking() =
             let a : float = pow 1.0 2.0
-            let a : decimal = pow 1.0m 2.0m
             let a : V2d = pow V2d.II V2d.II
             let a : int = pow 1 2
             let a : V2i = pow V2i.II V2i.II
-            let a : int64 = pow 1L 2L
             let a : V3l = pow V3l.III V3l.III
             ()
             
