@@ -885,8 +885,8 @@ namespace Aardvark.Base
         {
             if (!Fun.ApproximateEquals(NormSquared, 1, 0.001))
                 throw new ArgumentException("Quaternion needs to be normalized to represent a rotation.");
-            angleInRadians = 2 * (__ft__)System.Math.Acos(W);
-            var s = (__ft__)System.Math.Sqrt(1 - W * W); // assuming quaternion normalised then w is less than 1, so term always positive.
+            angleInRadians = 2 * Fun.Acos(W);
+            var s = Fun.Sqrt(1 - W * W); // assuming quaternion normalised then w is less than 1, so term always positive.
             if (s < 0.001)
             { // test to avoid divide by zero, s is always positive due to sqrt
                 // if s close to zero then direction of axis not important

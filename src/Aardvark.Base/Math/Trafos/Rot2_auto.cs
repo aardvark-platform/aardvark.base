@@ -94,8 +94,8 @@ namespace Aardvark.Base
         public static V2f Multiply(Rot2f rot, V2f vec)
         {
 
-            float a = (float)System.Math.Cos(rot.Angle);
-            float b = (float)System.Math.Sin(rot.Angle);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
 
             return new V2f(a * vec.X + b * vec.Y,
                               -b * vec.X + a * vec.Y);
@@ -103,8 +103,8 @@ namespace Aardvark.Base
 
         public static V3f Multiply(Rot2f rot, V3f vec)
         {
-            float ca = (float)System.Math.Cos(rot.Angle);
-            float sa = (float)System.Math.Sin(rot.Angle);
+            float ca = Fun.Cos(rot.Angle);
+            float sa = Fun.Sin(rot.Angle);
 
             return new V3f(ca * vec.X + sa * vec.Y,
                            -sa * vec.X + ca * vec.Y,
@@ -113,8 +113,8 @@ namespace Aardvark.Base
 
         public static V4f Multiply(Rot2f rot, V4f vec)
         {
-            float a = (float)System.Math.Cos(rot.Angle);
-            float b = (float)System.Math.Sin(rot.Angle);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
 
             return new V4f(a * vec.X +
                             b * vec.Y,
@@ -134,8 +134,8 @@ namespace Aardvark.Base
 
         public static M33f Multiply(Rot2f rot, M33f mat)
         {
-            float a = (float)System.Math.Cos(rot.Angle);
-            float b = (float)System.Math.Sin(rot.Angle);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
 
             return new M33f(a * mat.M00 +
                              b * mat.M10,
@@ -164,8 +164,8 @@ namespace Aardvark.Base
 
         public static M34f Multiply(Rot2f rot, M34f mat)
         {
-            float a = (float)System.Math.Cos(rot.Angle);
-            float b = (float)System.Math.Sin(rot.Angle);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
 
             return new M34f(a * mat.M00 +
                              b * mat.M10,
@@ -202,8 +202,8 @@ namespace Aardvark.Base
 
         public static M44f Multiply(Rot2f rot, M44f mat)
         {
-            float a = (float)System.Math.Cos(rot.Angle);
-            float b = (float)System.Math.Sin(rot.Angle);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
 
             return new M44f(a * mat.M00 +
                              b * mat.M10,
@@ -261,8 +261,8 @@ namespace Aardvark.Base
 
         public static M33f Multiply(Rot2f rot, Scale3f scale)
         {
-            float a = (float)System.Math.Cos(rot.Angle);
-            float b = (float)System.Math.Sin(rot.Angle);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
 
             return new M33f(a * scale.X,
                              b * scale.Y,
@@ -279,8 +279,8 @@ namespace Aardvark.Base
 
         public static M34f Multiply(Rot2f rot, Shift3f shift)
         {
-            float a = (float)System.Math.Cos(rot.Angle);
-            float b = (float)System.Math.Sin(rot.Angle);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
 
             return new M34f(a, b, 0, a * shift.X + b * shift.Y,
                             -b, a, 0, -b * shift.X + a * shift.Y,
@@ -576,7 +576,7 @@ namespace Aardvark.Base
 
             if (m.M00 >= -1.0 && m.M00 <= 1.0)
             {
-                return new Rot2f((float)System.Math.Acos(m.M00));
+                return new Rot2f(Fun.Acos(m.M00));
             }
             else throw new ArgumentException("Given M22f is not a Rotation-Matrix");
         }
@@ -587,24 +587,24 @@ namespace Aardvark.Base
 
         public static explicit operator M22f(Rot2f r)
         {
-            var ca = (float)System.Math.Cos(r.Angle);
-            var sa = (float)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new M22f(ca, sa, -sa, ca);
         }
 
         public static explicit operator M23f(Rot2f r)
         {
-            var ca = (float)System.Math.Cos(r.Angle);
-            var sa = (float)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new M23f(ca, sa, 0.0f, -sa, ca, 0.0f);
         }
 
         public static explicit operator M33f(Rot2f r)
         {
-            var ca = (float)System.Math.Cos(r.Angle);
-            var sa = (float)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new M33f(ca, sa, 0,
                             -sa, ca, 0,
@@ -741,8 +741,8 @@ namespace Aardvark.Base
         public static V2d Multiply(Rot2d rot, V2d vec)
         {
 
-            double a = (double)System.Math.Cos(rot.Angle);
-            double b = (double)System.Math.Sin(rot.Angle);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
 
             return new V2d(a * vec.X + b * vec.Y,
                               -b * vec.X + a * vec.Y);
@@ -750,8 +750,8 @@ namespace Aardvark.Base
 
         public static V3d Multiply(Rot2d rot, V3d vec)
         {
-            double ca = (double)System.Math.Cos(rot.Angle);
-            double sa = (double)System.Math.Sin(rot.Angle);
+            double ca = Fun.Cos(rot.Angle);
+            double sa = Fun.Sin(rot.Angle);
 
             return new V3d(ca * vec.X + sa * vec.Y,
                            -sa * vec.X + ca * vec.Y,
@@ -760,8 +760,8 @@ namespace Aardvark.Base
 
         public static V4d Multiply(Rot2d rot, V4d vec)
         {
-            double a = (double)System.Math.Cos(rot.Angle);
-            double b = (double)System.Math.Sin(rot.Angle);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
 
             return new V4d(a * vec.X +
                             b * vec.Y,
@@ -781,8 +781,8 @@ namespace Aardvark.Base
 
         public static M33d Multiply(Rot2d rot, M33d mat)
         {
-            double a = (double)System.Math.Cos(rot.Angle);
-            double b = (double)System.Math.Sin(rot.Angle);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
 
             return new M33d(a * mat.M00 +
                              b * mat.M10,
@@ -811,8 +811,8 @@ namespace Aardvark.Base
 
         public static M34d Multiply(Rot2d rot, M34d mat)
         {
-            double a = (double)System.Math.Cos(rot.Angle);
-            double b = (double)System.Math.Sin(rot.Angle);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
 
             return new M34d(a * mat.M00 +
                              b * mat.M10,
@@ -849,8 +849,8 @@ namespace Aardvark.Base
 
         public static M44d Multiply(Rot2d rot, M44d mat)
         {
-            double a = (double)System.Math.Cos(rot.Angle);
-            double b = (double)System.Math.Sin(rot.Angle);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
 
             return new M44d(a * mat.M00 +
                              b * mat.M10,
@@ -908,8 +908,8 @@ namespace Aardvark.Base
 
         public static M33d Multiply(Rot2d rot, Scale3d scale)
         {
-            double a = (double)System.Math.Cos(rot.Angle);
-            double b = (double)System.Math.Sin(rot.Angle);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
 
             return new M33d(a * scale.X,
                              b * scale.Y,
@@ -926,8 +926,8 @@ namespace Aardvark.Base
 
         public static M34d Multiply(Rot2d rot, Shift3d shift)
         {
-            double a = (double)System.Math.Cos(rot.Angle);
-            double b = (double)System.Math.Sin(rot.Angle);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
 
             return new M34d(a, b, 0, a * shift.X + b * shift.Y,
                             -b, a, 0, -b * shift.X + a * shift.Y,
@@ -1223,7 +1223,7 @@ namespace Aardvark.Base
 
             if (m.M00 >= -1.0 && m.M00 <= 1.0)
             {
-                return new Rot2d((double)System.Math.Acos(m.M00));
+                return new Rot2d(Fun.Acos(m.M00));
             }
             else throw new ArgumentException("Given M22d is not a Rotation-Matrix");
         }
@@ -1234,24 +1234,24 @@ namespace Aardvark.Base
 
         public static explicit operator M22d(Rot2d r)
         {
-            var ca = (double)System.Math.Cos(r.Angle);
-            var sa = (double)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new M22d(ca, sa, -sa, ca);
         }
 
         public static explicit operator M23d(Rot2d r)
         {
-            var ca = (double)System.Math.Cos(r.Angle);
-            var sa = (double)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new M23d(ca, sa, 0.0f, -sa, ca, 0.0f);
         }
 
         public static explicit operator M33d(Rot2d r)
         {
-            var ca = (double)System.Math.Cos(r.Angle);
-            var sa = (double)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new M33d(ca, sa, 0,
                             -sa, ca, 0,

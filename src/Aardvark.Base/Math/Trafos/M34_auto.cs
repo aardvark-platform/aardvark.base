@@ -299,8 +299,8 @@ namespace Aardvark.Base
 
         public static M34f RotationX(float angleRadians)
         {
-            float cos = (float)System.Math.Cos(angleRadians);
-            float sin = (float)System.Math.Sin(angleRadians);
+            float cos = Fun.Cos(angleRadians);
+            float sin = Fun.Sin(angleRadians);
 
             return new M34f(1, 0, 0, 0,
                             0, cos, -sin, 0,
@@ -309,8 +309,8 @@ namespace Aardvark.Base
 
         public static M34f RotationY(float angleRadians)
         {
-            float cos = (float)System.Math.Cos(angleRadians);
-            float sin = (float)System.Math.Sin(angleRadians);
+            float cos = Fun.Cos(angleRadians);
+            float sin = Fun.Sin(angleRadians);
 
             return new M34f(cos, 0, -sin, 0,
                             0, 1, 0, 0,
@@ -319,8 +319,8 @@ namespace Aardvark.Base
 
         public static M34f RotationZ(float angleRadians)
         {
-            float cos = (float)System.Math.Cos(angleRadians);
-            float sin = (float)System.Math.Sin(angleRadians);
+            float cos = Fun.Cos(angleRadians);
+            float sin = Fun.Sin(angleRadians);
 
             return new M34f(cos, -sin, 0, 0,
                             sin, cos, 0, 0,
@@ -749,8 +749,8 @@ namespace Aardvark.Base
 
         public static M34d RotationX(double angleRadians)
         {
-            double cos = (double)System.Math.Cos(angleRadians);
-            double sin = (double)System.Math.Sin(angleRadians);
+            double cos = Fun.Cos(angleRadians);
+            double sin = Fun.Sin(angleRadians);
 
             return new M34d(1, 0, 0, 0,
                             0, cos, -sin, 0,
@@ -759,8 +759,8 @@ namespace Aardvark.Base
 
         public static M34d RotationY(double angleRadians)
         {
-            double cos = (double)System.Math.Cos(angleRadians);
-            double sin = (double)System.Math.Sin(angleRadians);
+            double cos = Fun.Cos(angleRadians);
+            double sin = Fun.Sin(angleRadians);
 
             return new M34d(cos, 0, -sin, 0,
                             0, 1, 0, 0,
@@ -769,8 +769,8 @@ namespace Aardvark.Base
 
         public static M34d RotationZ(double angleRadians)
         {
-            double cos = (double)System.Math.Cos(angleRadians);
-            double sin = (double)System.Math.Sin(angleRadians);
+            double cos = Fun.Cos(angleRadians);
+            double sin = Fun.Sin(angleRadians);
 
             return new M34d(cos, -sin, 0, 0,
                             sin, cos, 0, 0,

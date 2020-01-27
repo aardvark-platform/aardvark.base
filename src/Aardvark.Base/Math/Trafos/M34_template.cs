@@ -303,8 +303,8 @@ namespace Aardvark.Base
 
         public static M3__x4t__ RotationX(__ft__ angleRadians)
         {
-            __ft__ cos = (__ft__)System.Math.Cos(angleRadians);
-            __ft__ sin = (__ft__)System.Math.Sin(angleRadians);
+            __ft__ cos = Fun.Cos(angleRadians);
+            __ft__ sin = Fun.Sin(angleRadians);
 
             return new M3__x4t__(1, 0, 0, 0,
                             0, cos, -sin, 0,
@@ -313,8 +313,8 @@ namespace Aardvark.Base
 
         public static M3__x4t__ RotationY(__ft__ angleRadians)
         {
-            __ft__ cos = (__ft__)System.Math.Cos(angleRadians);
-            __ft__ sin = (__ft__)System.Math.Sin(angleRadians);
+            __ft__ cos = Fun.Cos(angleRadians);
+            __ft__ sin = Fun.Sin(angleRadians);
 
             return new M3__x4t__(cos, 0, -sin, 0,
                             0, 1, 0, 0,
@@ -323,8 +323,8 @@ namespace Aardvark.Base
 
         public static M3__x4t__ RotationZ(__ft__ angleRadians)
         {
-            __ft__ cos = (__ft__)System.Math.Cos(angleRadians);
-            __ft__ sin = (__ft__)System.Math.Sin(angleRadians);
+            __ft__ cos = Fun.Cos(angleRadians);
+            __ft__ sin = Fun.Sin(angleRadians);
 
             return new M3__x4t__(cos, -sin, 0, 0,
                             sin, cos, 0, 0,

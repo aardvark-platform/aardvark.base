@@ -381,11 +381,11 @@ namespace Aardvark.Base
         //# if (d == 2) {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ FromPolar(__ftype__ angleInRadians, __ftype__ radius)
-            => new __vtype__(Math.Cos(angleInRadians) * radius, Math.Sin(angleInRadians) * radius);
+            => new __vtype__(Fun.Cos(angleInRadians) * radius, Fun.Sin(angleInRadians) * radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ FromPolar(__ftype__ angleInRadians)
-            => new __vtype__(Math.Cos(angleInRadians), Math.Sin(angleInRadians));
+            => new __vtype__(Fun.Cos(angleInRadians), Fun.Sin(angleInRadians));
 
         //# } else if (d == 3) {
         /// <summary>
@@ -764,13 +764,9 @@ namespace Aardvark.Base
 #if NETCOREAPP3_0
                 if (Sse41.IsSupported)
                     return Length_Sse41(this);
-                return MathF.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */); // TODO: Fun.Sqrt should use MathF.Sqrt if netcoreapp 3.0
-#else
-                return Fun.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */);
 #endif
-                //# } else { // end ft == Meta.FloatType
-                return Fun.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */); 
                 //# }
+                return Fun.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */);
             }
         }
         
@@ -1004,9 +1000,9 @@ namespace Aardvark.Base
         {
             get
             {
-                double x = System.Math.Abs(X);
-                double y = System.Math.Abs(Y);
-                double z = System.Math.Abs(Z);
+                double x = Fun.Abs(X);
+                double y = Fun.Abs(Y);
+                double z = Fun.Abs(Z);
                 int c;
                 double v;
                 if (x > y)
@@ -1058,7 +1054,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __vtype__ Power(__vtype__ a, __vtype__ b)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Pow(a.__f__, b.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Pow(a.__f__, b.__f__)/*# }, comma); */);
         }
 
         //# if (ft.IsReal) {
@@ -1106,7 +1102,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Acos(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Acos(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Acos(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1115,7 +1111,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Cos(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Cos(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Cos(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1124,7 +1120,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Cosh(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Cosh(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Cosh(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1133,7 +1129,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Asin(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Asin(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Asin(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1142,7 +1138,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sin(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Sin(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Sin(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1151,7 +1147,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sinh(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Sinh(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Sinh(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1160,7 +1156,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Atan(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Atan(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Atan(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1170,7 +1166,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Atan2(__vtype__ a, __vtype__ b)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Atan2(a.__f__, b.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Atan2(a.__f__, b.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1179,7 +1175,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Tan(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Tan(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Tan(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1188,7 +1184,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Tanh(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Tanh(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Tanh(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1197,7 +1193,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sqrt(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Sqrt(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Sqrt(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1207,7 +1203,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Pow(__vtype__ a, __vtype__ b)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Pow(a.__f__, b.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Pow(a.__f__, b.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1216,7 +1212,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Exp(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Exp(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Exp(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1225,7 +1221,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Log(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Log(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Log(v.__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1234,7 +1230,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Log10(__vtype__ v)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */Math.Log10(v.__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Log10(v.__f__)/*# }, comma); */);
         }
 
         //# } // ft.IsReal
@@ -1308,7 +1304,7 @@ namespace Aardvark.Base
         /// </summary>
         public __vtype__ Floor()
         {
-            return new __vtype__(/*# fields.ForEach(f => { */System.Math.Floor(__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Floor(__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1317,7 +1313,7 @@ namespace Aardvark.Base
         /// </summary>
         public __vtype__ Ceiling()
         {
-            return new __vtype__(/*# fields.ForEach(f => { */System.Math.Ceiling(__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */Fun.Ceiling(__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1325,7 +1321,7 @@ namespace Aardvark.Base
         /// </summary>
         public __vtype__ Round()
         {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Round(__f__)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1333,7 +1329,7 @@ namespace Aardvark.Base
         /// </summary>
         public __vtype__ Round(MidpointRounding mode)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, mode)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Round(__f__, mode)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1342,7 +1338,7 @@ namespace Aardvark.Base
         /// </summary>
         public __vtype__ Round(int digits)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, digits)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Round(__f__, digits)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1351,7 +1347,7 @@ namespace Aardvark.Base
         /// </summary>
         public __vtype__ Round(int digits, MidpointRounding mode)
         {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Round(__f__, digits, mode)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Round(__f__, digits, mode)/*# }, comma); */);
         }
 
         /// <summary>
@@ -1359,7 +1355,7 @@ namespace Aardvark.Base
         /// </summary>
         public __vtype__ Truncate()
         {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)System.Math.Truncate(__f__)/*# }, comma); */);
+            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Truncate(__f__)/*# }, comma); */);
         }
         //# }
 
@@ -1445,7 +1441,7 @@ namespace Aardvark.Base
             }
             else
             {
-                return eta * this - (eta * t + ((__ftype__) Math.Sqrt(k))) * normal;
+                return eta * this - (eta * t + ((__ftype__) Fun.Sqrt(k))) * normal;
             }
         }
 

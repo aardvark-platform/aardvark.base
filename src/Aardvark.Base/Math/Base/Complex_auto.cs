@@ -56,7 +56,7 @@ namespace Aardvark.Base
         /// </summary>
         public float Norm
         {
-            get { return (float)System.Math.Sqrt(Real * Real + Imag * Imag); }
+            get { return Fun.Sqrt(Real * Real + Imag * Imag); }
             set
             {
                 float r = Norm;
@@ -70,13 +70,13 @@ namespace Aardvark.Base
         /// </summary>
         public float Argument
         {
-            get { return (float)System.Math.Atan2(Imag, Real); }
+            get { return Fun.Atan2(Imag, Real); }
             set
             {
                 float r = Norm;
 
-                Real = r * (float)System.Math.Cos(value);
-                Imag = r * (float)System.Math.Sin(value);
+                Real = r * Fun.Cos(value);
+                Imag = r * Fun.Sin(value);
             }
         }
 
@@ -224,13 +224,13 @@ namespace Aardvark.Base
         public void Pow(float scalar)
         {
             float r = NormSquared;
-            float phi = (float)System.Math.Atan2(Imag, Real);
+            float phi = Fun.Atan2(Imag, Real);
 
-            r = (float)System.Math.Pow(r, scalar);
+            r = Fun.Pow(r, scalar);
             phi *= scalar;
 
-            Real = r * (float)System.Math.Cos(phi);
-            Imag = r * (float)System.Math.Sin(phi);
+            Real = r * Fun.Cos(phi);
+            Imag = r * Fun.Sin(phi);
         }
 
         #endregion
@@ -245,7 +245,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         public static ComplexF CreateRadial(float r, float phi)
         {
-            return new ComplexF(r * (float)System.Math.Cos(phi), r * (float)System.Math.Sin(phi));
+            return new ComplexF(r * Fun.Cos(phi), r * Fun.Sin(phi));
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace Aardvark.Base
             float a = exponent.Real;
             float b = exponent.Imag;
 
-            return ComplexF.CreateRadial((float)System.Math.Exp(System.Math.Log(r) * a - b * phi), a * phi + b * (float)System.Math.Log(r));
+            return ComplexF.CreateRadial(Fun.Exp(Fun.Log(r) * a - b * phi), a * phi + b * Fun.Log(r));
         }
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         public static ComplexF Log(ComplexF number)
         {
-            return ComplexF.CreateOrthogonal((float)System.Math.Log(number.Norm), number.Argument);
+            return ComplexF.CreateOrthogonal(Fun.Log(number.Norm), number.Argument);
         }
 
         /// <summary>
@@ -303,11 +303,11 @@ namespace Aardvark.Base
         {
             if (number >= 0)
             {
-                return new ComplexF((float)System.Math.Sqrt(number), 0.0f);
+                return new ComplexF(Fun.Sqrt(number), 0.0f);
             }
             else
             {
-                return new ComplexF(0.0f, (float)System.Math.Sqrt(-1.0f * number));
+                return new ComplexF(0.0f, Fun.Sqrt(-1.0f * number));
             }
         }
 
@@ -318,8 +318,8 @@ namespace Aardvark.Base
         /// <returns></returns>
         public ComplexF[] Sqrt(ComplexF number)
         {
-            ComplexF res0 = ComplexF.CreateRadial((float)System.Math.Sqrt(number.Norm), number.Argument / 2.0f);
-            ComplexF res1 = ComplexF.CreateRadial((float)System.Math.Sqrt(number.Norm), number.Argument / 2.0f + (float)Constant.Pi);
+            ComplexF res0 = ComplexF.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f);
+            ComplexF res1 = ComplexF.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f + (float)Constant.Pi);
 
             return new ComplexF[2] { res0, res1 };
         }
@@ -336,7 +336,7 @@ namespace Aardvark.Base
 
             float phi = number.Argument / 2.0f;
             float dphi = (float)Constant.PiTimesTwo / (float)order;
-            float r = (float)System.Math.Pow(number.Norm, 1.0f / order);
+            float r = Fun.Pow(number.Norm, 1.0f / order);
 
             for (int i = 1; i < order; i++)
             {
@@ -355,10 +355,10 @@ namespace Aardvark.Base
         {
             ComplexF c = ComplexF.Zero;
 
-            float factor = (float)System.Math.Pow(Constant.E, number.Real);
+            float factor = Fun.Pow((float)Constant.E, number.Real);
 
-            c.Real = factor * (float)System.Math.Cos(number.Imag);
-            c.Imag = factor * (float)System.Math.Sin(number.Imag);
+            c.Real = factor * Fun.Cos(number.Imag);
+            c.Imag = factor * Fun.Sin(number.Imag);
 
             return c;
         }
@@ -386,7 +386,7 @@ namespace Aardvark.Base
                 }
                 else
                 {
-                    return Real.ToString(format) + " - i" + System.Math.Abs(Imag).ToString(format);
+                    return Real.ToString(format) + " - i" + Fun.Abs(Imag).ToString(format);
                 }
             }
             else
@@ -572,7 +572,7 @@ namespace Aardvark.Base
         /// </summary>
         public double Norm
         {
-            get { return (double)System.Math.Sqrt(Real * Real + Imag * Imag); }
+            get { return Fun.Sqrt(Real * Real + Imag * Imag); }
             set
             {
                 double r = Norm;
@@ -586,13 +586,13 @@ namespace Aardvark.Base
         /// </summary>
         public double Argument
         {
-            get { return (double)System.Math.Atan2(Imag, Real); }
+            get { return Fun.Atan2(Imag, Real); }
             set
             {
                 double r = Norm;
 
-                Real = r * (double)System.Math.Cos(value);
-                Imag = r * (double)System.Math.Sin(value);
+                Real = r * Fun.Cos(value);
+                Imag = r * Fun.Sin(value);
             }
         }
 
@@ -740,13 +740,13 @@ namespace Aardvark.Base
         public void Pow(double scalar)
         {
             double r = NormSquared;
-            double phi = (double)System.Math.Atan2(Imag, Real);
+            double phi = Fun.Atan2(Imag, Real);
 
-            r = (double)System.Math.Pow(r, scalar);
+            r = Fun.Pow(r, scalar);
             phi *= scalar;
 
-            Real = r * (double)System.Math.Cos(phi);
-            Imag = r * (double)System.Math.Sin(phi);
+            Real = r * Fun.Cos(phi);
+            Imag = r * Fun.Sin(phi);
         }
 
         #endregion
@@ -761,7 +761,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         public static ComplexD CreateRadial(double r, double phi)
         {
-            return new ComplexD(r * (double)System.Math.Cos(phi), r * (double)System.Math.Sin(phi));
+            return new ComplexD(r * Fun.Cos(phi), r * Fun.Sin(phi));
         }
 
         /// <summary>
@@ -797,7 +797,7 @@ namespace Aardvark.Base
             double a = exponent.Real;
             double b = exponent.Imag;
 
-            return ComplexD.CreateRadial((double)System.Math.Exp(System.Math.Log(r) * a - b * phi), a * phi + b * (double)System.Math.Log(r));
+            return ComplexD.CreateRadial(Fun.Exp(Fun.Log(r) * a - b * phi), a * phi + b * Fun.Log(r));
         }
 
         /// <summary>
@@ -807,7 +807,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         public static ComplexD Log(ComplexD number)
         {
-            return ComplexD.CreateOrthogonal((double)System.Math.Log(number.Norm), number.Argument);
+            return ComplexD.CreateOrthogonal(Fun.Log(number.Norm), number.Argument);
         }
 
         /// <summary>
@@ -819,11 +819,11 @@ namespace Aardvark.Base
         {
             if (number >= 0)
             {
-                return new ComplexD((double)System.Math.Sqrt(number), 0.0f);
+                return new ComplexD(Fun.Sqrt(number), 0.0f);
             }
             else
             {
-                return new ComplexD(0.0f, (double)System.Math.Sqrt(-1.0f * number));
+                return new ComplexD(0.0f, Fun.Sqrt(-1.0f * number));
             }
         }
 
@@ -834,8 +834,8 @@ namespace Aardvark.Base
         /// <returns></returns>
         public ComplexD[] Sqrt(ComplexD number)
         {
-            ComplexD res0 = ComplexD.CreateRadial((double)System.Math.Sqrt(number.Norm), number.Argument / 2.0f);
-            ComplexD res1 = ComplexD.CreateRadial((double)System.Math.Sqrt(number.Norm), number.Argument / 2.0f + (double)Constant.Pi);
+            ComplexD res0 = ComplexD.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f);
+            ComplexD res1 = ComplexD.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f + (double)Constant.Pi);
 
             return new ComplexD[2] { res0, res1 };
         }
@@ -852,7 +852,7 @@ namespace Aardvark.Base
 
             double phi = number.Argument / 2.0f;
             double dphi = (double)Constant.PiTimesTwo / (double)order;
-            double r = (double)System.Math.Pow(number.Norm, 1.0f / order);
+            double r = Fun.Pow(number.Norm, 1.0f / order);
 
             for (int i = 1; i < order; i++)
             {
@@ -871,10 +871,10 @@ namespace Aardvark.Base
         {
             ComplexD c = ComplexD.Zero;
 
-            double factor = (double)System.Math.Pow(Constant.E, number.Real);
+            double factor = Fun.Pow((double)Constant.E, number.Real);
 
-            c.Real = factor * (double)System.Math.Cos(number.Imag);
-            c.Imag = factor * (double)System.Math.Sin(number.Imag);
+            c.Real = factor * Fun.Cos(number.Imag);
+            c.Imag = factor * Fun.Sin(number.Imag);
 
             return c;
         }
@@ -902,7 +902,7 @@ namespace Aardvark.Base
                 }
                 else
                 {
-                    return Real.ToString(format) + " - i" + System.Math.Abs(Imag).ToString(format);
+                    return Real.ToString(format) + " - i" + Fun.Abs(Imag).ToString(format);
                 }
             }
             else

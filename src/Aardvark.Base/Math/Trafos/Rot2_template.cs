@@ -109,8 +109,8 @@ namespace Aardvark.Base
         public static __v2t__ Multiply(__rot2t__ rot, __v2t__ vec)
         {
 
-            __ft__ a = (__ft__)System.Math.Cos(rot.Angle);
-            __ft__ b = (__ft__)System.Math.Sin(rot.Angle);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
 
             return new __v2t__(a * vec.X + b * vec.Y,
                               -b * vec.X + a * vec.Y);
@@ -118,8 +118,8 @@ namespace Aardvark.Base
 
         public static __v3t__ Multiply(__rot2t__ rot, __v3t__ vec)
         {
-            __ft__ ca = (__ft__)System.Math.Cos(rot.Angle);
-            __ft__ sa = (__ft__)System.Math.Sin(rot.Angle);
+            __ft__ ca = Fun.Cos(rot.Angle);
+            __ft__ sa = Fun.Sin(rot.Angle);
 
             return new __v3t__(ca * vec.X + sa * vec.Y,
                            -sa * vec.X + ca * vec.Y,
@@ -128,8 +128,8 @@ namespace Aardvark.Base
 
         public static __v4t__ Multiply(__rot2t__ rot, __v4t__ vec)
         {
-            __ft__ a = (__ft__)System.Math.Cos(rot.Angle);
-            __ft__ b = (__ft__)System.Math.Sin(rot.Angle);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
 
             return new __v4t__(a * vec.X +
                             b * vec.Y,
@@ -149,8 +149,8 @@ namespace Aardvark.Base
 
         public static __m33t__ Multiply(__rot2t__ rot, __m33t__ mat)
         {
-            __ft__ a = (__ft__)System.Math.Cos(rot.Angle);
-            __ft__ b = (__ft__)System.Math.Sin(rot.Angle);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
 
             return new __m33t__(a * mat.M00 +
                              b * mat.M10,
@@ -179,8 +179,8 @@ namespace Aardvark.Base
 
         public static __m34t__ Multiply(__rot2t__ rot, __m34t__ mat)
         {
-            __ft__ a = (__ft__)System.Math.Cos(rot.Angle);
-            __ft__ b = (__ft__)System.Math.Sin(rot.Angle);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
 
             return new __m34t__(a * mat.M00 +
                              b * mat.M10,
@@ -217,8 +217,8 @@ namespace Aardvark.Base
 
         public static __m44t__ Multiply(__rot2t__ rot, __m44t__ mat)
         {
-            __ft__ a = (__ft__)System.Math.Cos(rot.Angle);
-            __ft__ b = (__ft__)System.Math.Sin(rot.Angle);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
 
             return new __m44t__(a * mat.M00 +
                              b * mat.M10,
@@ -276,8 +276,8 @@ namespace Aardvark.Base
 
         public static __m33t__ Multiply(__rot2t__ rot, __scale3t__ scale)
         {
-            __ft__ a = (__ft__)System.Math.Cos(rot.Angle);
-            __ft__ b = (__ft__)System.Math.Sin(rot.Angle);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
 
             return new __m33t__(a * scale.X,
                              b * scale.Y,
@@ -294,8 +294,8 @@ namespace Aardvark.Base
 
         public static __m34t__ Multiply(__rot2t__ rot, __shift3t__ shift)
         {
-            __ft__ a = (__ft__)System.Math.Cos(rot.Angle);
-            __ft__ b = (__ft__)System.Math.Sin(rot.Angle);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
 
             return new __m34t__(a, b, 0, a * shift.X + b * shift.Y,
                             -b, a, 0, -b * shift.X + a * shift.Y,
@@ -591,7 +591,7 @@ namespace Aardvark.Base
 
             if (m.M00 >= -1.0 && m.M00 <= 1.0)
             {
-                return new __rot2t__((__ft__)System.Math.Acos(m.M00));
+                return new __rot2t__(Fun.Acos(m.M00));
             }
             else throw new ArgumentException("Given __m22t__ is not a Rotation-Matrix");
         }
@@ -602,24 +602,24 @@ namespace Aardvark.Base
 
         public static explicit operator __m22t__(__rot2t__ r)
         {
-            var ca = (__ft__)System.Math.Cos(r.Angle);
-            var sa = (__ft__)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new __m22t__(ca, sa, -sa, ca);
         }
 
         public static explicit operator __m23t__(__rot2t__ r)
         {
-            var ca = (__ft__)System.Math.Cos(r.Angle);
-            var sa = (__ft__)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new __m23t__(ca, sa, 0.0f, -sa, ca, 0.0f);
         }
 
         public static explicit operator __m33t__(__rot2t__ r)
         {
-            var ca = (__ft__)System.Math.Cos(r.Angle);
-            var sa = (__ft__)System.Math.Sin(r.Angle);
+            var ca = Fun.Cos(r.Angle);
+            var sa = Fun.Sin(r.Angle);
 
             return new __m33t__(ca, sa, 0,
                             -sa, ca, 0,

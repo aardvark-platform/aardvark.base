@@ -59,7 +59,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ Norm
         {
-            get { return (__ft__)System.Math.Sqrt(Real * Real + Imag * Imag); }
+            get { return Fun.Sqrt(Real * Real + Imag * Imag); }
             set
             {
                 __ft__ r = Norm;
@@ -73,13 +73,13 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ Argument
         {
-            get { return (__ft__)System.Math.Atan2(Imag, Real); }
+            get { return Fun.Atan2(Imag, Real); }
             set
             {
                 __ft__ r = Norm;
 
-                Real = r * (__ft__)System.Math.Cos(value);
-                Imag = r * (__ft__)System.Math.Sin(value);
+                Real = r * Fun.Cos(value);
+                Imag = r * Fun.Sin(value);
             }
         }
 
@@ -227,13 +227,13 @@ namespace Aardvark.Base
         public void Pow(__ft__ scalar)
         {
             __ft__ r = NormSquared;
-            __ft__ phi = (__ft__)System.Math.Atan2(Imag, Real);
+            __ft__ phi = Fun.Atan2(Imag, Real);
 
-            r = (__ft__)System.Math.Pow(r, scalar);
+            r = Fun.Pow(r, scalar);
             phi *= scalar;
 
-            Real = r * (__ft__)System.Math.Cos(phi);
-            Imag = r * (__ft__)System.Math.Sin(phi);
+            Real = r * Fun.Cos(phi);
+            Imag = r * Fun.Sin(phi);
         }
 
         #endregion
@@ -248,7 +248,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         public static __ct__ CreateRadial(__ft__ r, __ft__ phi)
         {
-            return new __ct__(r * (__ft__)System.Math.Cos(phi), r * (__ft__)System.Math.Sin(phi));
+            return new __ct__(r * Fun.Cos(phi), r * Fun.Sin(phi));
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace Aardvark.Base
             __ft__ a = exponent.Real;
             __ft__ b = exponent.Imag;
 
-            return __ct__.CreateRadial((__ft__)System.Math.Exp(System.Math.Log(r) * a - b * phi), a * phi + b * (__ft__)System.Math.Log(r));
+            return __ct__.CreateRadial(Fun.Exp(Fun.Log(r) * a - b * phi), a * phi + b * Fun.Log(r));
         }
 
         /// <summary>
@@ -294,7 +294,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         public static __ct__ Log(__ct__ number)
         {
-            return __ct__.CreateOrthogonal((__ft__)System.Math.Log(number.Norm), number.Argument);
+            return __ct__.CreateOrthogonal(Fun.Log(number.Norm), number.Argument);
         }
 
         /// <summary>
@@ -306,11 +306,11 @@ namespace Aardvark.Base
         {
             if (number >= 0)
             {
-                return new __ct__((__ft__)System.Math.Sqrt(number), 0.0f);
+                return new __ct__(Fun.Sqrt(number), 0.0f);
             }
             else
             {
-                return new __ct__(0.0f, (__ft__)System.Math.Sqrt(-1.0f * number));
+                return new __ct__(0.0f, Fun.Sqrt(-1.0f * number));
             }
         }
 
@@ -321,8 +321,8 @@ namespace Aardvark.Base
         /// <returns></returns>
         public __ct__[] Sqrt(__ct__ number)
         {
-            __ct__ res0 = __ct__.CreateRadial((__ft__)System.Math.Sqrt(number.Norm), number.Argument / 2.0f);
-            __ct__ res1 = __ct__.CreateRadial((__ft__)System.Math.Sqrt(number.Norm), number.Argument / 2.0f + (__ft__)Constant.Pi);
+            __ct__ res0 = __ct__.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f);
+            __ct__ res1 = __ct__.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f + (__ft__)Constant.Pi);
 
             return new __ct__[2] { res0, res1 };
         }
@@ -339,7 +339,7 @@ namespace Aardvark.Base
 
             __ft__ phi = number.Argument / 2.0f;
             __ft__ dphi = (__ft__)Constant.PiTimesTwo / (__ft__)order;
-            __ft__ r = (__ft__)System.Math.Pow(number.Norm, 1.0f / order);
+            __ft__ r = Fun.Pow(number.Norm, 1.0f / order);
 
             for (int i = 1; i < order; i++)
             {
@@ -358,10 +358,10 @@ namespace Aardvark.Base
         {
             __ct__ c = __ct__.Zero;
 
-            __ft__ factor = (__ft__)System.Math.Pow(Constant.E, number.Real);
+            __ft__ factor = Fun.Pow((__ft__)Constant.E, number.Real);
 
-            c.Real = factor * (__ft__)System.Math.Cos(number.Imag);
-            c.Imag = factor * (__ft__)System.Math.Sin(number.Imag);
+            c.Real = factor * Fun.Cos(number.Imag);
+            c.Imag = factor * Fun.Sin(number.Imag);
 
             return c;
         }
@@ -389,7 +389,7 @@ namespace Aardvark.Base
                 }
                 else
                 {
-                    return Real.ToString(format) + " - i" + System.Math.Abs(Imag).ToString(format);
+                    return Real.ToString(format) + " - i" + Fun.Abs(Imag).ToString(format);
                 }
             }
             else
