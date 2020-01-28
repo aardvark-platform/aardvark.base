@@ -75,16 +75,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates quaternion from euler angles [yaw, pitch, roll].
+        /// The rotation order is yaw (X), pitch (Y), roll (Z).
         /// </summary>
         /// <param name="yawInRadians">Rotation around X</param>
         /// <param name="pitchInRadians">Rotation around Y</param>
         /// <param name="rollInRadians">Rotation around Z</param>
         public Rot3f(float yawInRadians, float pitchInRadians, float rollInRadians)
         {
-            var qx = new Rot3f(V3f.XAxis, yawInRadians);
-            var qy = new Rot3f(V3f.YAxis, pitchInRadians);
-            var qz = new Rot3f(V3f.ZAxis, rollInRadians);
-            this = qz * qy * qx;
+            float yawHalf = yawInRadians / 2;
+            float cy = Fun.Cos(yawHalf);
+            float sy = Fun.Sin(yawHalf);
+            float pitchHalf = pitchInRadians / 2;
+            float cp = Fun.Cos(pitchHalf);
+            float sp = Fun.Sin(pitchHalf);
+            float rollHalf = rollInRadians / 2;
+            float cr = Fun.Cos(rollHalf);
+            float sr = Fun.Sin(rollHalf);
+            W = cy * cp * cr + sy * sp * sr;
+            V = new V3f(
+                        cr * cp * sy - sr * sp * cy,
+                        sr * cp * sy + cr * sp * cy,
+                        sr * cp * cy - cr * sp * sy);
         }
 
         /// <summary>
@@ -835,6 +846,46 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Create rotation around the X-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static Rot3f RotationX(float angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new Rot3f(halfAngle.Cos(), new V3f(halfAngle.Sin(), 0, 0));
+        }
+
+        /// <summary>
+        /// Create rotation around the Y-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static Rot3f RotationY(float angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new Rot3f(halfAngle.Cos(), new V3f(0, halfAngle.Sin(), 0));
+        }
+
+        /// <summary>
+        /// Create rotation around the Z-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static Rot3f RotationZ(float angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new Rot3f(halfAngle.Cos(), new V3f(0, 0, halfAngle.Sin()));
+        }
+
+        /// <summary>
+        /// Create rotation from euler angles as vector [yaw, pitch, roll].
+        /// The rotation order is yaw (X), pitch (Y), roll (Z).
+        /// <param name="yawPitchRollInRadians">[yaw, pitch, roll] in radians</param>
+        /// </summary>
+        public static Rot3f FromEulerAngles(V3f yawPitchRollInRadians)
+        {
+            return new Rot3f(yawPitchRollInRadians.X, yawPitchRollInRadians.Y, yawPitchRollInRadians.Z);
+        }
+
         #endregion
 
         #region Conversion
@@ -1081,16 +1132,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates quaternion from euler angles [yaw, pitch, roll].
+        /// The rotation order is yaw (X), pitch (Y), roll (Z).
         /// </summary>
         /// <param name="yawInRadians">Rotation around X</param>
         /// <param name="pitchInRadians">Rotation around Y</param>
         /// <param name="rollInRadians">Rotation around Z</param>
         public Rot3d(double yawInRadians, double pitchInRadians, double rollInRadians)
         {
-            var qx = new Rot3d(V3d.XAxis, yawInRadians);
-            var qy = new Rot3d(V3d.YAxis, pitchInRadians);
-            var qz = new Rot3d(V3d.ZAxis, rollInRadians);
-            this = qz * qy * qx;
+            double yawHalf = yawInRadians / 2;
+            double cy = Fun.Cos(yawHalf);
+            double sy = Fun.Sin(yawHalf);
+            double pitchHalf = pitchInRadians / 2;
+            double cp = Fun.Cos(pitchHalf);
+            double sp = Fun.Sin(pitchHalf);
+            double rollHalf = rollInRadians / 2;
+            double cr = Fun.Cos(rollHalf);
+            double sr = Fun.Sin(rollHalf);
+            W = cy * cp * cr + sy * sp * sr;
+            V = new V3d(
+                        cr * cp * sy - sr * sp * cy,
+                        sr * cp * sy + cr * sp * cy,
+                        sr * cp * cy - cr * sp * sy);
         }
 
         /// <summary>
@@ -1839,6 +1901,46 @@ namespace Aardvark.Base
                     return new Rot3d(w, x, y, z).Normalized;
                 }
             }
+        }
+
+        /// <summary>
+        /// Create rotation around the X-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static Rot3d RotationX(double angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new Rot3d(halfAngle.Cos(), new V3d(halfAngle.Sin(), 0, 0));
+        }
+
+        /// <summary>
+        /// Create rotation around the Y-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static Rot3d RotationY(double angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new Rot3d(halfAngle.Cos(), new V3d(0, halfAngle.Sin(), 0));
+        }
+
+        /// <summary>
+        /// Create rotation around the Z-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static Rot3d RotationZ(double angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new Rot3d(halfAngle.Cos(), new V3d(0, 0, halfAngle.Sin()));
+        }
+
+        /// <summary>
+        /// Create rotation from euler angles as vector [yaw, pitch, roll].
+        /// The rotation order is yaw (X), pitch (Y), roll (Z).
+        /// <param name="yawPitchRollInRadians">[yaw, pitch, roll] in radians</param>
+        /// </summary>
+        public static Rot3d FromEulerAngles(V3d yawPitchRollInRadians)
+        {
+            return new Rot3d(yawPitchRollInRadians.X, yawPitchRollInRadians.Y, yawPitchRollInRadians.Z);
         }
 
         #endregion

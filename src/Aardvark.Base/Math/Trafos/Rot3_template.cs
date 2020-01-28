@@ -94,16 +94,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates quaternion from euler angles [yaw, pitch, roll].
+        /// The rotation order is yaw (X), pitch (Y), roll (Z).
         /// </summary>
         /// <param name="yawInRadians">Rotation around X</param>
         /// <param name="pitchInRadians">Rotation around Y</param>
         /// <param name="rollInRadians">Rotation around Z</param>
         public __rot3t__(__ft__ yawInRadians, __ft__ pitchInRadians, __ft__ rollInRadians)
         {
-            var qx = new __rot3t__(__v3t__.XAxis, yawInRadians);
-            var qy = new __rot3t__(__v3t__.YAxis, pitchInRadians);
-            var qz = new __rot3t__(__v3t__.ZAxis, rollInRadians);
-            this = qz * qy * qx;
+            __ft__ yawHalf = yawInRadians / 2;
+            __ft__ cy = Fun.Cos(yawHalf);
+            __ft__ sy = Fun.Sin(yawHalf);
+            __ft__ pitchHalf = pitchInRadians / 2;
+            __ft__ cp = Fun.Cos(pitchHalf);
+            __ft__ sp = Fun.Sin(pitchHalf);
+            __ft__ rollHalf = rollInRadians / 2;
+            __ft__ cr = Fun.Cos(rollHalf);
+            __ft__ sr = Fun.Sin(rollHalf);
+            W = cy * cp * cr + sy * sp * sr;
+            V = new __v3t__(
+                        cr * cp * sy - sr * sp * cy,
+                        sr * cp * sy + cr * sp * cy,
+                        sr * cp * cy - cr * sp * sy);
         }
 
         /// <summary>
@@ -852,6 +863,46 @@ namespace Aardvark.Base
                     return new __rot3t__(w, x, y, z).Normalized;
                 }
             }
+        }
+
+        /// <summary>
+        /// Create rotation around the X-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static __rot3t__ RotationX(__ft__ angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new __rot3t__(halfAngle.Cos(), new __v3t__(halfAngle.Sin(), 0, 0));
+        }
+
+        /// <summary>
+        /// Create rotation around the Y-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static __rot3t__ RotationY(__ft__ angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new __rot3t__(halfAngle.Cos(), new __v3t__(0, halfAngle.Sin(), 0));
+        }
+
+        /// <summary>
+        /// Create rotation around the Z-axis.
+        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// </summary>
+        public static __rot3t__ RotationZ(__ft__ angleInRadians)
+        {
+            var halfAngle = angleInRadians / 2;
+            return new __rot3t__(halfAngle.Cos(), new __v3t__(0, 0, halfAngle.Sin()));
+        }
+
+        /// <summary>
+        /// Create rotation from euler angles as vector [yaw, pitch, roll].
+        /// The rotation order is yaw (X), pitch (Y), roll (Z).
+        /// <param name="yawPitchRollInRadians">[yaw, pitch, roll] in radians</param>
+        /// </summary>
+        public static __rot3t__ FromEulerAngles(__v3t__ yawPitchRollInRadians)
+        {
+            return new __rot3t__(yawPitchRollInRadians.X, yawPitchRollInRadians.Y, yawPitchRollInRadians.Z);
         }
 
         #endregion

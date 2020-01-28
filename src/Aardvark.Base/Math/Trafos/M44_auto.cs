@@ -448,7 +448,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates rotation matrix from yaw, pitch, and roll. 
+        /// Creates rotation matrix from yaw (X), pitch (Y), and roll (Z). 
+        /// The rotation order is: X, Y, Z.
         /// </summary>
         public static M44f Rotation(
             float yawInRadians, float pitchInRadians, float rollInRadians
@@ -460,7 +461,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates rotation matrix from yaw, pitch, and roll Vector.
+        /// Creates rotation matrix from yaw (X), pitch (Y), and roll (Z) Vector.
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         public static M44f Rotation(V3f yaw_pitch_roll_inRadians)
         {
@@ -1096,7 +1098,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates rotation matrix from yaw, pitch, and roll. 
+        /// Creates rotation matrix from yaw (X), pitch (Y), and roll (Z). 
+        /// The rotation order is: X, Y, Z.
         /// </summary>
         public static M44d Rotation(
             double yawInRadians, double pitchInRadians, double rollInRadians
@@ -1108,7 +1111,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates rotation matrix from yaw, pitch, and roll Vector.
+        /// Creates rotation matrix from yaw (X), pitch (Y), and roll (Z) Vector.
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         public static M44d Rotation(V3d yaw_pitch_roll_inRadians)
         {
