@@ -10,7 +10,10 @@ namespace Aardvark.Tests
         public static void Main(string[] args)
         {
             //new DictTests().Run();
-            new Aardvark.Tests.Images.PixImageTests().MipMapCreate1x1();
+            //Aardvark.Tests.Extensions.DateTimeTests.JulianDay();
+            //new Aardvark.Tests.TrafoTests().TrafoDecomposeTest();
+            Aardvark.Tests.Rot3dTests.FromM33d();
+            //new Aardvark.Tests.Images.PixImageTests().MipMapCreate1x1();
         }
     }
 }
