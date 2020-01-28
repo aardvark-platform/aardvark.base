@@ -2062,6 +2062,7 @@ namespace Aardvark.Base
         /// Computes the angle between two given vectors in radians using a numerically stable algorithm.
         /// The input vectors have to be normalized.
         /// </summary>
+        // https://scicomp.stackexchange.com/a/27769
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ctype__ AngleBetween(this __vtype__ x, __vtype__ y)
         {

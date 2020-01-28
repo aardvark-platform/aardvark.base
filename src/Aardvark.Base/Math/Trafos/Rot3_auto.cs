@@ -599,22 +599,6 @@ namespace Aardvark.Base
                                   1 - 2 * (Y * Y + Z * Z)));
         }
 
-        public static bool ApproximateEquals(Rot3f r0, Rot3f r1)
-        {
-            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue);
-        }
-
-        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
-        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add Rot3f.ApproximateEquals(Rot3f other);
-        public static bool ApproximateEquals(Rot3f r0, Rot3f r1, float tolerance)
-        {
-            return (r0.W - r1.W).Abs() <= tolerance &&
-                   (r0.X - r1.X).Abs() <= tolerance &&
-                   (r0.Y - r1.Y).Abs() <= tolerance &&
-                   (r0.Z - r1.Z).Abs() <= tolerance;
-        }
-
         #endregion
 
         #region Arithmetic Operators
@@ -1064,6 +1048,26 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    public static partial class Fun
+    {
+        public static bool ApproximateEquals(this Rot3f r0, Rot3f r1)
+        {
+            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue);
+        }
+
+        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
+        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
+        // [todo ISSUE 20090427 andi : andi] add Rot3f.ApproximateEquals(Rot3f other);
+        public static bool ApproximateEquals(this Rot3f r0, Rot3f r1, float tolerance)
+        {
+            return (r0.W - r1.W).Abs() <= tolerance &&
+                   (r0.X - r1.X).Abs() <= tolerance &&
+                   (r0.Y - r1.Y).Abs() <= tolerance &&
+                   (r0.Z - r1.Z).Abs() <= tolerance;
+        }
+    }
+
     /// <summary>
     /// Represents an arbitrary rotation in three dimensions. Implemented as
     /// a normalized quaternion.
@@ -1656,22 +1660,6 @@ namespace Aardvark.Base
                                   1 - 2 * (Y * Y + Z * Z)));
         }
 
-        public static bool ApproximateEquals(Rot3d r0, Rot3d r1)
-        {
-            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue);
-        }
-
-        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
-        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add Rot3d.ApproximateEquals(Rot3d other);
-        public static bool ApproximateEquals(Rot3d r0, Rot3d r1, double tolerance)
-        {
-            return (r0.W - r1.W).Abs() <= tolerance &&
-                   (r0.X - r1.X).Abs() <= tolerance &&
-                   (r0.Y - r1.Y).Abs() <= tolerance &&
-                   (r0.Z - r1.Z).Abs() <= tolerance;
-        }
-
         #endregion
 
         #region Arithmetic Operators
@@ -2121,4 +2109,24 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    public static partial class Fun
+    {
+        public static bool ApproximateEquals(this Rot3d r0, Rot3d r1)
+        {
+            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue);
+        }
+
+        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
+        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
+        // [todo ISSUE 20090427 andi : andi] add Rot3d.ApproximateEquals(Rot3d other);
+        public static bool ApproximateEquals(this Rot3d r0, Rot3d r1, double tolerance)
+        {
+            return (r0.W - r1.W).Abs() <= tolerance &&
+                   (r0.X - r1.X).Abs() <= tolerance &&
+                   (r0.Y - r1.Y).Abs() <= tolerance &&
+                   (r0.Z - r1.Z).Abs() <= tolerance;
+        }
+    }
+
 }

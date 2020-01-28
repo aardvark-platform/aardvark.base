@@ -236,16 +236,6 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproximateEquals(Similarity3f t0, Similarity3f t1)
-        {
-            return ApproximateEquals(t0, t1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
-        }
-
-        public static bool ApproximateEquals(Similarity3f t0, Similarity3f t1, float angleTol, float posTol, float scaleTol)
-        {
-            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && Euclidean3f.ApproximateEquals(t0.EuclideanTransformation, t1.EuclideanTransformation, angleTol, posTol);
-        }
-
         #endregion
 
         #region Arithmetic Operators
@@ -370,6 +360,20 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    public static partial class Fun
+    {
+        public static bool ApproximateEquals(this Similarity3f t0, Similarity3f t1)
+        {
+            return ApproximateEquals(t0, t1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
+        }
+
+        public static bool ApproximateEquals(this Similarity3f t0, Similarity3f t1, float angleTol, float posTol, float scaleTol)
+        {
+            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && t0.EuclideanTransformation.ApproximateEquals(t1.EuclideanTransformation, angleTol, posTol);
+        }
+    }
+
     // [todo ISSUE 20090427 andi : andi] define Similarity2*
     /// <summary>
     /// Represents a Similarity Transformation in 3D that is composed of a 
@@ -600,16 +604,6 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproximateEquals(Similarity3d t0, Similarity3d t1)
-        {
-            return ApproximateEquals(t0, t1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
-        }
-
-        public static bool ApproximateEquals(Similarity3d t0, Similarity3d t1, double angleTol, double posTol, double scaleTol)
-        {
-            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && Euclidean3d.ApproximateEquals(t0.EuclideanTransformation, t1.EuclideanTransformation, angleTol, posTol);
-        }
-
         #endregion
 
         #region Arithmetic Operators
@@ -734,4 +728,18 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    public static partial class Fun
+    {
+        public static bool ApproximateEquals(this Similarity3d t0, Similarity3d t1)
+        {
+            return ApproximateEquals(t0, t1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
+        }
+
+        public static bool ApproximateEquals(this Similarity3d t0, Similarity3d t1, double angleTol, double posTol, double scaleTol)
+        {
+            return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && t0.EuclideanTransformation.ApproximateEquals(t1.EuclideanTransformation, angleTol, posTol);
+        }
+    }
+
 }

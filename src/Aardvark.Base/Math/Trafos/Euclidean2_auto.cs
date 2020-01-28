@@ -175,16 +175,6 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproximateEquals(Euclidean2f r0, Euclidean2f r1)
-        {
-            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
-        }
-
-        public static bool ApproximateEquals(Euclidean2f r0, Euclidean2f r1, float angleTol, float posTol)
-        {
-            return Fun.ApproximateEquals(r0.Trans, r1.Trans, posTol) && Rot2f.ApproximateEquals(r0.Rot, r1.Rot, angleTol);
-        }
-
         #endregion
 
         #region Arithmetic Operators
@@ -323,6 +313,23 @@ namespace Aardvark.Base
 
         #endregion
 
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        public static bool ApproximateEquals(this Euclidean2f r0, Euclidean2f r1)
+        {
+            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
+        }
+
+        public static bool ApproximateEquals(this Euclidean2f r0, Euclidean2f r1, float angleTol, float posTol)
+        {
+            return ApproximateEquals(r0.Trans, r1.Trans, posTol) && r0.Rot.ApproximateEquals(r1.Rot, angleTol);
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -495,16 +502,6 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproximateEquals(Euclidean2d r0, Euclidean2d r1)
-        {
-            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
-        }
-
-        public static bool ApproximateEquals(Euclidean2d r0, Euclidean2d r1, double angleTol, double posTol)
-        {
-            return Fun.ApproximateEquals(r0.Trans, r1.Trans, posTol) && Rot2d.ApproximateEquals(r0.Rot, r1.Rot, angleTol);
-        }
-
         #endregion
 
         #region Arithmetic Operators
@@ -645,5 +642,21 @@ namespace Aardvark.Base
 
     }
 
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        public static bool ApproximateEquals(this Euclidean2d r0, Euclidean2d r1)
+        {
+            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
+        }
+
+        public static bool ApproximateEquals(this Euclidean2d r0, Euclidean2d r1, double angleTol, double posTol)
+        {
+            return ApproximateEquals(r0.Trans, r1.Trans, posTol) && r0.Rot.ApproximateEquals(r1.Rot, angleTol);
+        }
+
+        #endregion
+    }
 
 }

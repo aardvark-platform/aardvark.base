@@ -215,16 +215,6 @@ namespace Aardvark.Base
             }
         }
 
-        public static bool ApproximateEquals(__e3t__ r0, __e3t__ r1)
-        {
-            return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue);
-        }
-
-        public static bool ApproximateEquals(__e3t__ r0, __e3t__ r1, __ft__ angleTol, __ft__ posTol)
-        {
-            return Fun.ApproximateEquals(r0.Trans, r1.Trans, posTol) && __r3t__.ApproximateEquals(r0.Rot, r1.Rot, angleTol);
-        }
-
         #endregion
 
         #region Arithmetic Operators
@@ -401,5 +391,22 @@ namespace Aardvark.Base
 
     }
 
-    //# } // isDouble
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        public static bool ApproximateEquals(this __e3t__ r0, __e3t__ r1)
+        {
+            return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue);
+        }
+
+        public static bool ApproximateEquals(this __e3t__ r0, __e3t__ r1, __ft__ angleTol, __ft__ posTol)
+        {
+            return ApproximateEquals(r0.Trans, r1.Trans, posTol) && r0.Rot.ApproximateEquals(r1.Rot, angleTol);
+        }
+
+        #endregion
+    }
+
+    //# }
 }

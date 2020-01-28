@@ -564,20 +564,6 @@ namespace Aardvark.Base
             return !(rotation1.Angle == rotation2.Angle);
         }
 
-
-        public static bool ApproximateEquals(__rot2t__ r0, __rot2t__ r1)
-        {
-            return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue);
-        }
-
-        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes ber�cksichtigen -q == q, weil es die selbe rotation definiert.
-        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproximateEquals(__rot3t__ other);
-        public static bool ApproximateEquals(__rot2t__ r0, __rot2t__ r1, __ft__ tolerance)
-        {
-            return (r0.Angle - r1.Angle).Abs() <= tolerance;
-        }
-
         #endregion
 
         #region Creator Function
@@ -668,5 +654,26 @@ namespace Aardvark.Base
 
         #endregion
     }
-    //# } // isDouble
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        public static bool ApproximateEquals(this __rot2t__ r0, __rot2t__ r1)
+        {
+            return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue);
+        }
+
+        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes ber�cksichtigen -q == q, weil es die selbe rotation definiert.
+        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
+        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproximateEquals(__rot3t__ other);
+        public static bool ApproximateEquals(this __rot2t__ r0, __rot2t__ r1, __ft__ tolerance)
+        {
+            return (r0.Angle - r1.Angle).Abs() <= tolerance;
+        }
+
+        #endregion
+    }
+
+    //# }
 }
