@@ -41,19 +41,18 @@ namespace Aardvark.Base
         public static double GregorianDayOfMonthFromJulianDay(double J)
         {
             // the following calculates the day of the month of a JD
-            int p = (int)Fun.Floor(J + 0.5);
-            int s1 = p + 68569;
-            int n = (int)Fun.Floor(4 * s1 / (double)146097);
-            int s2 = s1 - (int)Fun.Floor(((double)146097 * n + 3) / 4);
-            int i = (int)Fun.Floor((double)4000 * (s2 + 1) / 1461001);
-            int s3 = s2 - (int)Fun.Floor((double)1461 * i / 4) + 31;
-            int q = (int)Fun.Floor((double)80 * s3 / 2447);
-            int e = s3 - (int)Fun.Floor((double)2447 * q / 80);
-            // int s4 = (int)System.Math.Floor((double)q / 11);
+            var p = Fun.Floor(J + 0.5);
+            var s1 = p + 68569;
+            var n = Fun.Floor(4 * s1 / 146097);
+            var s2 = s1 - Fun.Floor((146097 * n + 3) / 4);
+            var i = Fun.Floor(4000 * (s2 + 1) / 1461001);
+            var s3 = s2 - Fun.Floor(1461 * i / 4) + 31;
+            var q = Fun.Floor(80 * s3 / 2447);
+            var e = s3 - Fun.Floor(2447 * q / 80);
+            // int s4 = System.Math.Floor(q / 11);
             // int m = q + 2 - 12 * s4;
             // int y = 100 * (n - 49) + i + s4;
-            double d = e + J - p + 0.5;
-            return d;
+            return e + J - p + 0.5;
         }
         
         /// <summary>

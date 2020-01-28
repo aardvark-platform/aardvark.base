@@ -91,8 +91,8 @@ namespace Aardvark.Tests
         [Test]
         public void TrafoDecomposeTest()
         {
-            var rnd = new RandomSystem();
-            for (int i = 0; i < 100000; i ++)
+            var rnd = new RandomSystem(3);
+            for (int i = 0; i < 1000000; i ++)
             {
                 var rot = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
                 var trans = rnd.UniformV3dFull() * 10 - 5;
@@ -111,6 +111,11 @@ namespace Aardvark.Tests
             var recomposed = Trafo3d.FromComponents(s_d, r_d, t_d);
 
             Assert.IsFalse(s_d.AnyNaN || r_d.AnyNaN || t_d.AnyNaN, "something NaN");
+
+            var e_scale = (s_d.Abs() - scale.Abs()).LengthSquared;
+            var e_trans = (t_d - translation).LengthSquared;
+            Assert.True(e_scale < 1e-5, "Scale");
+            Assert.True(e_trans < 1e-5, "Translation");
 
             ValidateTrafos(trafo, recomposed);
         }
@@ -178,11 +183,11 @@ namespace Aardvark.Tests
         bool CheckForwardBackwardConsistency(Trafo3d trafo)
         {
             var i = trafo.Forward * trafo.Backward;
-            // i should be Identity
-            return i.C0.ApproximateEquals(V4d.IOOO, 1e-1)
-                && i.C1.ApproximateEquals(V4d.OIOO, 1e-1)
-                && i.C2.ApproximateEquals(V4d.OOIO, 1e-1)
-                && i.C3.ApproximateEquals(V4d.OOOI, 1e-1);
+            // i should be Identity // TODO: numerical robustness not acceptable
+            return i.C0.ApproximateEquals(V4d.IOOO, 1e-4)
+                && i.C1.ApproximateEquals(V4d.OIOO, 1e-4)
+                && i.C2.ApproximateEquals(V4d.OOIO, 1e-4)
+                && i.C3.ApproximateEquals(V4d.OOOI, 1e-4);
         }
 
         [Test]
