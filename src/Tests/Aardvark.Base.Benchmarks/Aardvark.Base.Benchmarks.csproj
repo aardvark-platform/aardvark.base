@@ -20,6 +20,13 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="AngleBetween_generator.cs" />
+    <Compile Remove="AngleBetween_template.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AngleBetween_template.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

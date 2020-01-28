@@ -33,11 +33,13 @@ namespace Aardvark.Base
     //#     var ft = vt.FieldType;
     //#     var ct = Meta.ComputationTypeOf(ft);
     //#     var ht = Meta.HighPrecisionTypeOf(ft);
+    //#     var vct = Meta.VecTypeOf(d, ct);
     //#     var vtype = vt.Name;
     //#     var fcaps = ft.Caps;
     //#     var ftype = ft.Name;
     //#     var ctype = ct.Name;
     //#     var htype = ht.Name;
+    //#     var vctype = vct.Name;
     //#     var v2type = Meta.VecTypeOf(2, ft).Name;
     //#     var v3type = Meta.VecTypeOf(3, ft).Name;
     //#     var v4type = Meta.VecTypeOf(4, ft).Name;
@@ -377,6 +379,7 @@ namespace Aardvark.Base
         #endregion
 
         #region Static Factories
+
         //# if (ft.IsReal) {
         //# if (d == 2) {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -725,6 +728,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ctype__ LengthSquared
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return /*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */; }
         }
 
@@ -758,6 +762,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ctype__ Length
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get 
             {
                 //# if (ft == Meta.FloatType && d == 4) {
@@ -776,6 +781,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ftype__ Norm1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return /*# fields.ForEach(f => { */Fun.Abs(__f__)/*# }, add); */; }
         }
 
@@ -785,6 +791,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ctype__ Norm2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__/*# }, add); */); }
         }
 
@@ -794,6 +801,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ftype__ NormMax
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(/*# fields.ForEach(f => { */Fun.Abs(__f__)/*# }, comma); */); }
         }
 
@@ -803,12 +811,14 @@ namespace Aardvark.Base
         /// </summary>
         public __ftype__ NormMin
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(/*# fields.ForEach(f => { */Fun.Abs(__f__)/*# }, comma); */); }
         }
 
         /// <summary>
         /// Gets the p-norm. This is calculated as the p-th root of (|x|^n + |y|^n + ...).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __ctype__ Norm(__ctype__ p)
         {
             return (/*# fields.ForEach(f => { */
@@ -818,6 +828,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the squared distance between the given points.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double DistanceSquared(__vtype__ a, __vtype__ b)
         {
             return /*# fields.ForEach(f => { */
@@ -827,6 +838,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the distance between the given points.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ctype__ Distance(__vtype__ a, __vtype__ b)
         {
             return /*# if (ctype != "double") {*/(__ctype__)/*# } */Fun.Sqrt(/*# fields.ForEach(f => { */
@@ -836,6 +848,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Manhatten (or 1-) distance between two vectors.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ctype__ Distance1(__vtype__ a, __vtype__ b)
         {
             return /*# fields.ForEach(f => { */
@@ -845,6 +858,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the p-distance between two vectors.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ctype__ Distance(__vtype__ a, __vtype__ b, __ctype__ p)
         {
             return (/*# fields.ForEach(f => { */
@@ -855,6 +869,7 @@ namespace Aardvark.Base
         /// Returns the maximal absolute distance between the components of
         /// the two vectors.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DistanceMax(__vtype__ a, __vtype__ b)
         {
             return Fun.Max(/*# fields.ForEach(f => { */
@@ -865,34 +880,66 @@ namespace Aardvark.Base
         /// Returns the minimal absolute distance between the components of
         /// the two vectors.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DistanceMin(__vtype__ a, __vtype__ b)
         {
             return Fun.Min(/*# fields.ForEach(f => { */
                         Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
         }
 
+        /// <summary>
+        /// Returns a normalized copy of this vector.
+        /// </summary>
+        public __vctype__ Normalized
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                var s = Length; if (s == 0) return __vctype__.Zero;
+                s = 1 / s;
+                return new __vctype__(/*# fields.ForEach(f => { */__f__ * s/*# }, comma); */);
+            }
+        }
+
+        //# if (d == 2) {
+        /// <summary>
+        /// Vector rotated 90° counter clockwise: (-Y, X)
+        /// </summary>
+        public __vtype__ Rot90 
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return new __vtype__(-Y, X); }
+        }
+
+        /// <summary>
+        /// Vector rotated 180° counter clockwise: (-X, -Y)
+        /// </summary>
+        public __vtype__ Rot180
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return new __vtype__(-X, -Y); }
+        }
+
+        /// <summary>
+        /// Vector rotated 270° counter clockwise: (Y, -X)
+        /// </summary>
+        public __vtype__ Rot270
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return new __vtype__(Y, -X); }
+        }
+
+        //# } // d == 2
         //# if (ft.IsReal) {
         /// <summary>
         /// Normalizes the vector.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Normalize()
         {
             var s = Length; if (s == 0) return;
             s = 1 / s;
             /*# fields.ForEach(f => { */__f__ *= s; /*# }); */
-        }
-
-        /// <summary>
-        /// Returns a normalized copy of this vector.
-        /// </summary>
-        public __vtype__ Normalized
-        {
-            get
-            {
-                var s = Length; if (s == 0) return __vtype__.Zero;
-                s = 1 / s;
-                return new __vtype__(/*# fields.ForEach(f => { */__f__ * s/*# }, comma); */);
-            }
         }
 
         //# if (d == 2) {
@@ -912,21 +959,6 @@ namespace Aardvark.Base
                         : new __vtype__(X / y, Fun.Sign(Y));
             }
         }
-
-        /// <summary>
-        /// Vector rotated 90° counter clockwise: (-Y, X)
-        /// </summary>
-        public __vtype__ Rot90 { get { return new __vtype__(-Y, X); } }
-
-        /// <summary>
-        /// Vector rotated 180° counter clockwise: (-X, -Y)
-        /// </summary>
-        public __vtype__ Rot180 { get { return new __vtype__(-X, -Y); } }
-
-        /// <summary>
-        /// Vector rotated 270° counter clockwise: (Y, -X)
-        /// </summary>
-        public __vtype__ Rot270 { get { return new __vtype__(Y, -X); } }
 
         //# } // d == 2
         //# else if (d == 3) {
@@ -2015,6 +2047,31 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class VecFun
     {
+        #region Angle between two vectors
+
+        /// <summary>
+        /// Computes the angle between two given vectors in radians. The input vectors have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ AngleBetweenFast(this __vtype__ x, __vtype__ y)
+        {
+            return Fun.AcosClamped(x.Dot(y));
+        }
+
+        /// <summary>
+        /// Computes the angle between two given vectors in radians using a numerically stable algorithm.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ AngleBetween(this __vtype__ x, __vtype__ y)
+        {
+            var a = x + y;
+            var b = x - y;
+            return 2 * Fun.Atan2(b.Length, a.Length);
+        }
+
+        #endregion
+
         //# if (ft.IsReal) {
         //# if (d == 2) {
         #region 2D Vector Arithmetics
