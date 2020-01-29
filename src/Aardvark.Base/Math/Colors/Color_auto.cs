@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -4392,6 +4393,22 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformC3uiExtensions
+    {
+        #region IRandomUniform extensions for C3ui
+
+        /// <summary>
+        /// Uses UniformUInt() to generate the elements of a C3ui color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui UniformC3ui(this IRandomUniform rnd)
+        {
+            return new C3ui(rnd.UniformUInt(), rnd.UniformUInt(), rnd.UniformUInt());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region C3f
@@ -5928,6 +5945,40 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformC3fExtensions
+    {
+        #region IRandomUniform extensions for C3f
+
+        /// <summary>
+        /// Uses UniformFloat() to generate the elements of a C3f color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f UniformC3f(this IRandomUniform rnd)
+        {
+            return new C3f(rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatClosed() to generate the elements of a C3f color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f UniformC3fClosed(this IRandomUniform rnd)
+        {
+            return new C3f(rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatOpen() to generate the elements of a C3f color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f UniformC3fOpen(this IRandomUniform rnd)
+        {
+            return new C3f(rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region C3d
@@ -7347,6 +7398,67 @@ namespace Aardvark.Base
         {
             return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
+        #endregion
+    }
+
+    public static class IRandomUniformC3dExtensions
+    {
+        #region IRandomUniform extensions for C3d
+
+        /// <summary>
+        /// Uses UniformDouble() to generate the elements of a C3d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d UniformC3d(this IRandomUniform rnd)
+        {
+            return new C3d(rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleClosed() to generate the elements of a C3d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d UniformC3dClosed(this IRandomUniform rnd)
+        {
+            return new C3d(rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleOpen() to generate the elements of a C3d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d UniformC3dOpen(this IRandomUniform rnd)
+        {
+            return new C3d(rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFull() to generate the elements of a C3d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d UniformC3dFull(this IRandomUniform rnd)
+        {
+            return new C3d(rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullClosed() to generate the elements of a C3d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d UniformC3dFullClosed(this IRandomUniform rnd)
+        {
+            return new C3d(rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullOpen() to generate the elements of a C3d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d UniformC3dFullOpen(this IRandomUniform rnd)
+        {
+            return new C3d(rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen());
+        }
+
         #endregion
     }
 
@@ -12115,6 +12227,22 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformC4uiExtensions
+    {
+        #region IRandomUniform extensions for C4ui
+
+        /// <summary>
+        /// Uses UniformUInt() to generate the elements of a C4ui color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui UniformC4ui(this IRandomUniform rnd)
+        {
+            return new C4ui(rnd.UniformUInt(), rnd.UniformUInt(), rnd.UniformUInt(), rnd.UniformUInt());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region C4f
@@ -13786,6 +13914,40 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformC4fExtensions
+    {
+        #region IRandomUniform extensions for C4f
+
+        /// <summary>
+        /// Uses UniformFloat() to generate the elements of a C4f color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f UniformC4f(this IRandomUniform rnd)
+        {
+            return new C4f(rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatClosed() to generate the elements of a C4f color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f UniformC4fClosed(this IRandomUniform rnd)
+        {
+            return new C4f(rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatOpen() to generate the elements of a C4f color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f UniformC4fOpen(this IRandomUniform rnd)
+        {
+            return new C4f(rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region C4d
@@ -15323,6 +15485,67 @@ namespace Aardvark.Base
         {
             return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
+        #endregion
+    }
+
+    public static class IRandomUniformC4dExtensions
+    {
+        #region IRandomUniform extensions for C4d
+
+        /// <summary>
+        /// Uses UniformDouble() to generate the elements of a C4d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d UniformC4d(this IRandomUniform rnd)
+        {
+            return new C4d(rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleClosed() to generate the elements of a C4d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d UniformC4dClosed(this IRandomUniform rnd)
+        {
+            return new C4d(rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleOpen() to generate the elements of a C4d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d UniformC4dOpen(this IRandomUniform rnd)
+        {
+            return new C4d(rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFull() to generate the elements of a C4d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d UniformC4dFull(this IRandomUniform rnd)
+        {
+            return new C4d(rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullClosed() to generate the elements of a C4d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d UniformC4dFullClosed(this IRandomUniform rnd)
+        {
+            return new C4d(rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullOpen() to generate the elements of a C4d color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d UniformC4dFullOpen(this IRandomUniform rnd)
+        {
+            return new C4d(rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen());
+        }
+
         #endregion
     }
 

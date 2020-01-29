@@ -30,12 +30,12 @@ namespace Aardvark.Base.Benchmarks
         public AngleBetween__Rtype__()
         {
             var rnd = new RandomSystem(1);
-            A.SetByIndex(i => new __v3rt__(rnd.UniformV3dDirection()));
+            A.SetByIndex(i => rnd.Uniform__v3rt__Direction());
             angles.SetByIndex(i => rnd.Uniform__Rtype__() * (__rtype__)Constant.Pi);
             B.SetByIndex(i =>
             {
                 __v3rt__ v;
-                do { v = new __v3rt__(rnd.UniformV3dDirection()); } 
+                do { v = rnd.Uniform__v3rt__Direction(); } 
                 while (v.Dot(A[i]).IsTiny());
 
                 __v3rt__ axis = v.Cross(A[i]).Normalized;

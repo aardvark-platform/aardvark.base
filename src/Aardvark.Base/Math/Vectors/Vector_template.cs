@@ -37,6 +37,7 @@ namespace Aardvark.Base
     //#     var vtype = vt.Name;
     //#     var fcaps = ft.Caps;
     //#     var ftype = ft.Name;
+    //#     var fchar = ft.Char;
     //#     var ctype = ct.Name;
     //#     var htype = ht.Name;
     //#     var vctype = vct.Name;
@@ -2195,7 +2196,6 @@ namespace Aardvark.Base
         #endregion
 
         //# } // ft.IsReal
-        
         #region ArrayExtensions
 
         //# foreach (var it in Meta.IndexTypes) { var itype = it.Name;
@@ -2300,6 +2300,118 @@ namespace Aardvark.Base
         }
 
         //# } // ft.IsReal
+        #endregion
+    }
+
+    public static class IRandomUniform__vtype__Extensions
+    {
+        #region IRandomUniform extensions for __vtype__
+
+        //# string[] variants;
+        //# if (ft == Meta.FloatType) {
+        //#     variants = new string[] { "", "Closed", "Open" };
+        //# } else if (ft == Meta.DoubleType) {
+        //#     variants = new string[] { "", "Closed", "Open", "Full", "FullClosed", "FullOpen" };
+        //# } else {
+        //#     variants = new string[] { "", "NonZero" };
+        //# }
+        //# foreach (var v in variants) {
+        /// <summary>
+        /// Uses Uniform__fcaps____v__() to generate the elements of a __vtype__ vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Uniform__vtype____v__(this IRandomUniform rnd)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */rnd.Uniform__fcaps____v__()/*#  }, comma); */);
+        }
+
+        //# if (ft.IsReal && d < 4) {
+        /// <summary>
+        /// Uses Uniform__fcaps____v__() to generate the elements of a __vtype__
+        /// vector within the given Box__d____fchar__.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Uniform__vtype____v__(this IRandomUniform rnd, Box__d____fchar__ box)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */box.Min.__f__ + rnd.Uniform__fcaps____v__() * (box.Max.__f__ - box.Min.__f__)/*#  }, comma); */);
+        }
+
+        //# }
+        //# }
+        //# if (ft.IsReal) {
+        //# var cast = (ft != Meta.DoubleType) ? "(" + ftype + ") " : ""; 
+        //# variants = (ft == Meta.FloatType) ? new string[] { "" } : new string[] { "", "Full" };
+        //# foreach (var v in variants) {
+        //# if (d == 2) {
+        /// <summary>
+        /// Returns a uniformly distributed vector (corresponds to a
+        /// uniformly distributed point on the unit circle). Uses Uniform__fcaps____v__() internally.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Uniform__vtype____v__Direction(this IRandomUniform rnd)
+        {
+            __ftype__ phi = rnd.Uniform__fcaps____v__() * __cast__Constant.PiTimesTwo;
+            return new __vtype__(Fun.Cos(phi), Fun.Sin(phi));
+        }
+
+        //# } else if (d == 3) {
+        /// <summary>
+        /// Returns a uniformly distributed vector (corresponds to a
+        /// uniformly distributed point on the surface of the unit sphere).
+        /// Note however, that the returned vector will never be equal to
+        /// [0, 0, -1]. Uses Uniform__fcaps____v__() internally.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Uniform__vtype____v__Direction(this IRandomUniform rnd)
+        {
+            __ftype__ phi = rnd.Uniform__fcaps____v__() * __cast__Constant.PiTimesTwo;
+            __ftype__ z = 1 - rnd.Uniform__fcaps____v__() * 2;
+            __ftype__ s = Fun.Sqrt(1 - z * z);
+            return new __vtype__(Fun.Cos(phi) * s, Fun.Sin(phi) * s, z);
+        }
+
+        //# var sphereVariants = new string[] { "Closed", "Open" };
+        //# foreach (var sv in sphereVariants) {
+        //# if (sv == "Closed") {
+        /// <summary>
+        /// Uniform vector in the closed unit sphere (i.e vectors to
+        /// the surface of the sphere may be generated). Uses Uniform__vtype____sv__() internally.
+        /// </summary>
+        //# } else {
+        /// <summary>
+        /// Uniform vector inside the open unit sphere (i.e. no vector
+        /// ends on the surface of the sphere). Uses Uniform__vtype____sv__() internally.
+        /// </summary>
+        //# }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Uniform__vtype____v____sv__Sphere(this IRandomUniform rnd)
+        {
+            __ftype__ r2;
+            __vtype__ p;
+            __vtype__ c_shift = -__vtype__.Half;
+            do
+            {
+                p = (rnd.Uniform__vtype____sv__() + c_shift) * 2;
+                r2 = p.LengthSquared;
+            }
+            while (r2 >= 1);
+            return p;
+        }
+
+        //# }
+        //# } //d
+        //# }
+        //# } else { //ft.Real
+        /// <summary>
+        /// Uses Uniform__fcaps__(__ftype__) to generate the elements of a __vtype__ vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Uniform__vtype__(this IRandomUniform rnd, __ftype__ size)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */rnd.Uniform__fcaps__(size)/*#  }, comma); */);
+        }
+
+        //# }
         #endregion
     }
 

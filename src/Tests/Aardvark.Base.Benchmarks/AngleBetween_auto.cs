@@ -24,12 +24,12 @@ namespace Aardvark.Base.Benchmarks
         public AngleBetweenFloat()
         {
             var rnd = new RandomSystem(1);
-            A.SetByIndex(i => new V3f(rnd.UniformV3dDirection()));
+            A.SetByIndex(i => rnd.UniformV3fDirection());
             angles.SetByIndex(i => rnd.UniformFloat() * (float)Constant.Pi);
             B.SetByIndex(i =>
             {
                 V3f v;
-                do { v = new V3f(rnd.UniformV3dDirection()); } 
+                do { v = rnd.UniformV3fDirection(); } 
                 while (v.Dot(A[i]).IsTiny());
 
                 V3f axis = v.Cross(A[i]).Normalized;
@@ -150,12 +150,12 @@ namespace Aardvark.Base.Benchmarks
         public AngleBetweenDouble()
         {
             var rnd = new RandomSystem(1);
-            A.SetByIndex(i => new V3d(rnd.UniformV3dDirection()));
+            A.SetByIndex(i => rnd.UniformV3dDirection());
             angles.SetByIndex(i => rnd.UniformDouble() * (double)Constant.Pi);
             B.SetByIndex(i =>
             {
                 V3d v;
-                do { v = new V3d(rnd.UniformV3dDirection()); } 
+                do { v = rnd.UniformV3dDirection(); } 
                 while (v.Dot(A[i]).IsTiny());
 
                 V3d axis = v.Cross(A[i]).Normalized;

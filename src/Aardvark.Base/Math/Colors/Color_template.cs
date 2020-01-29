@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -71,6 +72,7 @@ namespace Aardvark.Base
     //#     var isDouble = ft == Meta.DoubleType;
     //#     var isReal = ft.IsReal;
     //#     var ftype = ft.Name;
+    //#     var fcaps = ft.Caps;
     //#     var fields = t.Fields;
     //#     var channels = t.Channels;
     //#     var args = fields.ToLower();
@@ -892,6 +894,34 @@ namespace Aardvark.Base
         #endregion
     }
 
+    //# if (ft != Meta.ByteType && ft != Meta.UShortType) {
+    public static class IRandomUniform__type__Extensions
+    {
+        #region IRandomUniform extensions for __type__
+
+        //# string[] variants;
+        //# if (ft == Meta.FloatType) {
+        //#     variants = new string[] { "", "Closed", "Open" };
+        //# } else if (ft == Meta.DoubleType) {
+        //#     variants = new string[] { "", "Closed", "Open", "Full", "FullClosed", "FullOpen" };
+        //# } else {
+        //#     variants = new string[] { "" };
+        //# }
+        //# foreach (var v in variants) {
+        /// <summary>
+        /// Uses Uniform__fcaps____v__() to generate the elements of a __type__ color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Uniform__type____v__(this IRandomUniform rnd)
+        {
+            return new __type__(/*# fields.ForEach(f => { */rnd.Uniform__fcaps____v__()/*#  }, comma); */);
+        }
+
+        //# }
+        #endregion
+    }
+
+    //# }
     #endregion
 
     //# }
