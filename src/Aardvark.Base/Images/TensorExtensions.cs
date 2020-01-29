@@ -424,7 +424,7 @@ namespace Aardvark.Base
             long dx = matrix.Delta.X, dy = matrix.Delta.Y;
             switch (rotation)
             {
-                case ImageTrafo.Rot0: return matrix;
+                case ImageTrafo.Identity: return matrix;
                 case ImageTrafo.Rot90: return matrix.SubMatrix(sx - 1, 0, sy, sx, dy, -dx);
                 case ImageTrafo.Rot180: return matrix.SubMatrix(sx - 1, sy - 1, sx, sy, -dx, -dy);
                 case ImageTrafo.Rot270: return matrix.SubMatrix(0, sy - 1, sy, sx, -dy, dx);
@@ -443,7 +443,7 @@ namespace Aardvark.Base
             long dx = volume.Delta.X, dy = volume.Delta.Y, dz = volume.Delta.Z;
             switch (rotation)
             {
-                case ImageTrafo.Rot0: return volume;
+                case ImageTrafo.Identity: return volume;
                 case ImageTrafo.Rot90: return volume.SubVolume(sx - 1, 0, 0, sy, sx, sz, dy, -dx, dz);
                 case ImageTrafo.Rot180: return volume.SubVolume(sx - 1, sy - 1, 0, sx, sy, sz, -dx, -dy, dz);
                 case ImageTrafo.Rot270: return volume.SubVolume(0, sy - 1, 0, sy, sx, sz, -dy, dx, dz);
