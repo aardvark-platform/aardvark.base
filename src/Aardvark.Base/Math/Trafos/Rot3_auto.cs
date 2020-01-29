@@ -787,46 +787,43 @@ namespace Aardvark.Base
         public static Rot3f FromM33f(M33f m, float epsilon = (float)1e-6)
         {
             if (!m.IsOrthonormal(epsilon)) throw new ArgumentException("Matrix is not orthonormal.");
-            var t = 1 + m.M00 + m.M11 + m.M22;
+            var tr = m.M00 + m.M11 + m.M22;
 
-            if (t > epsilon)
+            if (tr > 0)
             {
-                float s = t.Sqrt() * 2;
+                float s = (tr + 1).Sqrt() * 2;
                 float x = (m.M21 - m.M12) / s;
                 float y = (m.M02 - m.M20) / s;
                 float z = (m.M10 - m.M01) / s;
                 float w = s / 4;
                 return new Rot3f(w, x, y, z).Normalized;
             }
+            else if (m.M00 > m.M11 && m.M00 > m.M22)
+            {
+                float s = Fun.Sqrt(1 + m.M00 - m.M11 - m.M22) * 2;
+                float x = s / 4;
+                float y = (m.M01 + m.M10) / s;
+                float z = (m.M02 + m.M20) / s;
+                float w = (m.M21 - m.M12) / s;
+                return new Rot3f(w, x, y, z).Normalized;
+            }
+            else if (m.M11 > m.M22)
+            {
+                float s = Fun.Sqrt(1 + m.M11 - m.M00 - m.M22) * 2;
+                float x = (m.M01 + m.M10) / s;
+                float y = s / 4;
+                float z = (m.M12 + m.M21) / s;
+                float w = (m.M02 - m.M20) / s;
+                return new Rot3f(w, x, y, z).Normalized;
+            }
             else
             {
-                if (m.M00 > m.M11 && m.M00 > m.M22)
-                {
-                    float s = Fun.Sqrt(1 + m.M00 - m.M11 - m.M22) * 2;
-                    float x = s / 4;
-                    float y = (m.M01 + m.M10) / s;
-                    float z = (m.M02 + m.M20) / s;
-                    float w = (m.M21 - m.M12) / s;
-                    return new Rot3f(w, x, y, z).Normalized;
-                }
-                else if (m.M11 > m.M22)
-                {
-                    float s = Fun.Sqrt(1 + m.M11 - m.M00 - m.M22) * 2;
-                    float x = (m.M01 + m.M10) / s;
-                    float y = s / 4;
-                    float z = (m.M12 + m.M21) / s;
-                    float w = (m.M20 - m.M02) / s;
-                    return new Rot3f(w, x, y, z).Normalized;
-                }
-                else
-                {
-                    float s = Fun.Sqrt(1 + m.M22 - m.M00 - m.M11) * 2;
-                    float x = (m.M20 + m.M02) / s;
-                    float y = (m.M12 + m.M21) / s;
-                    float z = s / 4;
-                    float w = (m.M01 - m.M10) / s;
-                    return new Rot3f(w, x, y, z).Normalized;
-                }
+                float s = Fun.Sqrt(1 + m.M22 - m.M00 - m.M11) * 2;
+                float x = (m.M02 + m.M20) / s;
+                float y = (m.M12 + m.M21) / s;
+                float z = s / 4;
+                float w = (m.M10 - m.M01) / s;
+                return new Rot3f(w, x, y, z).Normalized;
             }
         }
 
@@ -1637,14 +1634,14 @@ namespace Aardvark.Base
         public V3d GetEulerAngles()
         {
             var test = W * Y - X * Z;
-            if (test > 0.49999999) // singularity at north pole
+            if (test > 0.49999999999999) // singularity at north pole
             {
                 return new V3d(
                     2 * Fun.Atan2(X, W),
                     Constant.PiHalf,
                     0);
             }
-            if (test < -0.49999999) // singularity at south pole
+            if (test < -0.49999999999999) // singularity at south pole
             {
                 return new V3d(
                     2 * Fun.Atan2(X, W),
@@ -1848,46 +1845,43 @@ namespace Aardvark.Base
         public static Rot3d FromM33d(M33d m, double epsilon = (double)1e-6)
         {
             if (!m.IsOrthonormal(epsilon)) throw new ArgumentException("Matrix is not orthonormal.");
-            var t = 1 + m.M00 + m.M11 + m.M22;
+            var tr = m.M00 + m.M11 + m.M22;
 
-            if (t > epsilon)
+            if (tr > 0)
             {
-                double s = t.Sqrt() * 2;
+                double s = (tr + 1).Sqrt() * 2;
                 double x = (m.M21 - m.M12) / s;
                 double y = (m.M02 - m.M20) / s;
                 double z = (m.M10 - m.M01) / s;
                 double w = s / 4;
                 return new Rot3d(w, x, y, z).Normalized;
             }
+            else if (m.M00 > m.M11 && m.M00 > m.M22)
+            {
+                double s = Fun.Sqrt(1 + m.M00 - m.M11 - m.M22) * 2;
+                double x = s / 4;
+                double y = (m.M01 + m.M10) / s;
+                double z = (m.M02 + m.M20) / s;
+                double w = (m.M21 - m.M12) / s;
+                return new Rot3d(w, x, y, z).Normalized;
+            }
+            else if (m.M11 > m.M22)
+            {
+                double s = Fun.Sqrt(1 + m.M11 - m.M00 - m.M22) * 2;
+                double x = (m.M01 + m.M10) / s;
+                double y = s / 4;
+                double z = (m.M12 + m.M21) / s;
+                double w = (m.M02 - m.M20) / s;
+                return new Rot3d(w, x, y, z).Normalized;
+            }
             else
             {
-                if (m.M00 > m.M11 && m.M00 > m.M22)
-                {
-                    double s = Fun.Sqrt(1 + m.M00 - m.M11 - m.M22) * 2;
-                    double x = s / 4;
-                    double y = (m.M01 + m.M10) / s;
-                    double z = (m.M02 + m.M20) / s;
-                    double w = (m.M21 - m.M12) / s;
-                    return new Rot3d(w, x, y, z).Normalized;
-                }
-                else if (m.M11 > m.M22)
-                {
-                    double s = Fun.Sqrt(1 + m.M11 - m.M00 - m.M22) * 2;
-                    double x = (m.M01 + m.M10) / s;
-                    double y = s / 4;
-                    double z = (m.M12 + m.M21) / s;
-                    double w = (m.M20 - m.M02) / s;
-                    return new Rot3d(w, x, y, z).Normalized;
-                }
-                else
-                {
-                    double s = Fun.Sqrt(1 + m.M22 - m.M00 - m.M11) * 2;
-                    double x = (m.M20 + m.M02) / s;
-                    double y = (m.M12 + m.M21) / s;
-                    double z = s / 4;
-                    double w = (m.M01 - m.M10) / s;
-                    return new Rot3d(w, x, y, z).Normalized;
-                }
+                double s = Fun.Sqrt(1 + m.M22 - m.M00 - m.M11) * 2;
+                double x = (m.M02 + m.M20) / s;
+                double y = (m.M12 + m.M21) / s;
+                double z = s / 4;
+                double w = (m.M10 - m.M01) / s;
+                return new Rot3d(w, x, y, z).Normalized;
             }
         }
 

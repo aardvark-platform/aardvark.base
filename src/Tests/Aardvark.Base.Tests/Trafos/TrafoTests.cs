@@ -14,66 +14,72 @@ namespace Aardvark.Tests
         [Test]
         public void TrafoDecomposeCornerCasesTest()
         {
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.YAxis, V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.ZAxis, V3d.YAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.XAxis, V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.ZAxis, V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.YAxis, V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.XAxis, V3d.YAxis));
-            
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.YAxis, V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.ZAxis, V3d.YAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.XAxis, V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.ZAxis, V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.YAxis, V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.XAxis, V3d.YAxis));
+            var rnd = new RandomSystem(1123);
+            for (int i = 0; i < 10000; i++)
+            {
+                var jitter = (i / 100) * 1e-15;
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.YAxis, V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.ZAxis, V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.XAxis, V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.ZAxis, V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.YAxis, V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.XAxis, V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
 
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.YAxis, V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.ZAxis, V3d.YAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.XAxis, V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.ZAxis, V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.YAxis, V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.XAxis, V3d.YAxis));
-            
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.YAxis, -V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.ZAxis, -V3d.YAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.XAxis, -V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.ZAxis, -V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.YAxis, -V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.XAxis, -V3d.YAxis));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.YAxis, V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.ZAxis, V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.XAxis, V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.ZAxis, V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.YAxis, V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.XAxis, V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
 
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.YAxis, V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.ZAxis, V3d.YAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.XAxis, V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.ZAxis, V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.YAxis, V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.XAxis, V3d.YAxis));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.YAxis, V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.ZAxis, V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.XAxis, V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.ZAxis, V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.YAxis, V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.XAxis, V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
 
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.YAxis, -V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.ZAxis, -V3d.YAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.XAxis, -V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.ZAxis, -V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.YAxis, -V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.XAxis, -V3d.YAxis));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.YAxis, -V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.ZAxis, -V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.XAxis, -V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, V3d.ZAxis, -V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.YAxis, -V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, V3d.XAxis, -V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
 
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.YAxis, -V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.ZAxis, -V3d.YAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.XAxis, -V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.ZAxis, -V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.YAxis, -V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.XAxis, -V3d.YAxis));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.YAxis, V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.ZAxis, V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.XAxis, V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.ZAxis, V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.YAxis, V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.XAxis, V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
 
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.YAxis, -V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.ZAxis, -V3d.YAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.XAxis, -V3d.ZAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.ZAxis, -V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.YAxis, -V3d.XAxis));
-            TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.XAxis, -V3d.YAxis));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.YAxis, -V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, V3d.ZAxis, -V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.XAxis, -V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, V3d.ZAxis, -V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.YAxis, -V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, V3d.XAxis, -V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.YAxis, -V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, -V3d.ZAxis, -V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.XAxis, -V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.YAxis, -V3d.ZAxis, -V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.YAxis, -V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.ZAxis, -V3d.XAxis, -V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.YAxis, -V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.XAxis, -V3d.ZAxis, -V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.XAxis, -V3d.ZAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.ZAxis, -V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.YAxis, -V3d.XAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+                TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.XAxis, -V3d.YAxis), new Rot3d(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
+            }
         }
 
-        void TestDecompose(Trafo3d trafo)
+        void TestDecompose(Trafo3d trafo, Rot3d jitter)
         {
-            trafo = trafo * Trafo3d.RotationXInDegrees(0.000000000000000001);
+            var x = (M44d)jitter;
+            trafo = trafo * new Trafo3d(x, x.Inverse);
 
             V3d r_d, s_d, t_d;
             trafo.Decompose(out s_d, out r_d, out t_d);
@@ -82,8 +88,14 @@ namespace Aardvark.Tests
 
             Assert.IsFalse(s_d.AnyNaN || r_d.AnyNaN || t_d.AnyNaN, "something NaN");
 
+            var dt = trafo.Forward - recomposed.Forward;
+            var e = dt.NormMax.Abs();
+            Assert.IsTrue(e < 1e-9, "DIFF");
+
             var eq = CheckForwardBackwardConsistency(new Trafo3d(trafo.Forward, recomposed.Backward))
                 && CheckForwardBackwardConsistency(new Trafo3d(recomposed.Forward, trafo.Backward));
+
+
 
             Assert.True(eq, "trafo not consistent");
         }
@@ -174,6 +186,9 @@ namespace Aardvark.Tests
         
         void ValidateTrafos(Trafo3d a, Trafo3d b)
         {
+            var e = M44d.DistanceMax(a.Forward, b.Forward);
+            Assert.IsTrue(e.Abs() < 1e-8, "not equal");
+
             var eq = CheckForwardBackwardConsistency(new Trafo3d(a.Forward, b.Backward))
                   && CheckForwardBackwardConsistency(new Trafo3d(b.Forward, a.Backward));
 
@@ -183,11 +198,11 @@ namespace Aardvark.Tests
         bool CheckForwardBackwardConsistency(Trafo3d trafo)
         {
             var i = trafo.Forward * trafo.Backward;
-            // i should be Identity // TODO: numerical robustness not acceptable
-            return i.C0.ApproximateEquals(V4d.IOOO, 1e-4)
-                && i.C1.ApproximateEquals(V4d.OIOO, 1e-4)
-                && i.C2.ApproximateEquals(V4d.OOIO, 1e-4)
-                && i.C3.ApproximateEquals(V4d.OOOI, 1e-4);
+            // i should be Identity
+            return i.C0.ApproximateEquals(V4d.IOOO, 1e-7)
+                && i.C1.ApproximateEquals(V4d.OIOO, 1e-7)
+                && i.C2.ApproximateEquals(V4d.OOIO, 1e-7)
+                && i.C3.ApproximateEquals(V4d.OOOI, 1e-7);
         }
 
         [Test]
