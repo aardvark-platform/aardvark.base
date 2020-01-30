@@ -23,7 +23,7 @@ namespace Aardvark.Base
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
     //#   var rotIntoEps = isDouble ? "1e-7" : "1e-3f";
-    //#   var eulerAnglesEps = isDouble ? "0.49999999" : "0.49999f";
+    //#   var eulerAnglesEps = isDouble ? "0.49999999999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
     /// <summary>
@@ -806,46 +806,43 @@ namespace Aardvark.Base
         public static __rot3t__ From__m33t__(__m33t__ m, __ft__ epsilon = (__ft__)1e-6)
         {
             if (!m.IsOrthonormal(epsilon)) throw new ArgumentException("Matrix is not orthonormal.");
-            var t = 1 + m.M00 + m.M11 + m.M22;
+            var tr = m.M00 + m.M11 + m.M22;
 
-            if (t > epsilon)
+            if (tr > 0)
             {
-                __ft__ s = t.Sqrt() * 2;
+                __ft__ s = (tr + 1).Sqrt() * 2;
                 __ft__ x = (m.M21 - m.M12) / s;
                 __ft__ y = (m.M02 - m.M20) / s;
                 __ft__ z = (m.M10 - m.M01) / s;
                 __ft__ w = s / 4;
                 return new __rot3t__(w, x, y, z).Normalized;
             }
+            else if (m.M00 > m.M11 && m.M00 > m.M22)
+            {
+                __ft__ s = Fun.Sqrt(1 + m.M00 - m.M11 - m.M22) * 2;
+                __ft__ x = s / 4;
+                __ft__ y = (m.M01 + m.M10) / s;
+                __ft__ z = (m.M02 + m.M20) / s;
+                __ft__ w = (m.M21 - m.M12) / s;
+                return new __rot3t__(w, x, y, z).Normalized;
+            }
+            else if (m.M11 > m.M22)
+            {
+                __ft__ s = Fun.Sqrt(1 + m.M11 - m.M00 - m.M22) * 2;
+                __ft__ x = (m.M01 + m.M10) / s;
+                __ft__ y = s / 4;
+                __ft__ z = (m.M12 + m.M21) / s;
+                __ft__ w = (m.M02 - m.M20) / s;
+                return new __rot3t__(w, x, y, z).Normalized;
+            }
             else
             {
-                if (m.M00 > m.M11 && m.M00 > m.M22)
-                {
-                    __ft__ s = Fun.Sqrt(1 + m.M00 - m.M11 - m.M22) * 2;
-                    __ft__ x = s / 4;
-                    __ft__ y = (m.M01 + m.M10) / s;
-                    __ft__ z = (m.M02 + m.M20) / s;
-                    __ft__ w = (m.M21 - m.M12) / s;
-                    return new __rot3t__(w, x, y, z).Normalized;
-                }
-                else if (m.M11 > m.M22)
-                {
-                    __ft__ s = Fun.Sqrt(1 + m.M11 - m.M00 - m.M22) * 2;
-                    __ft__ x = (m.M01 + m.M10) / s;
-                    __ft__ y = s / 4;
-                    __ft__ z = (m.M12 + m.M21) / s;
-                    __ft__ w = (m.M20 - m.M02) / s;
-                    return new __rot3t__(w, x, y, z).Normalized;
-                }
-                else
-                {
-                    __ft__ s = Fun.Sqrt(1 + m.M22 - m.M00 - m.M11) * 2;
-                    __ft__ x = (m.M20 + m.M02) / s;
-                    __ft__ y = (m.M12 + m.M21) / s;
-                    __ft__ z = s / 4;
-                    __ft__ w = (m.M01 - m.M10) / s;
-                    return new __rot3t__(w, x, y, z).Normalized;
-                }
+                __ft__ s = Fun.Sqrt(1 + m.M22 - m.M00 - m.M11) * 2;
+                __ft__ x = (m.M02 + m.M20) / s;
+                __ft__ y = (m.M12 + m.M21) / s;
+                __ft__ z = s / 4;
+                __ft__ w = (m.M10 - m.M01) / s;
+                return new __rot3t__(w, x, y, z).Normalized;
             }
         }
 

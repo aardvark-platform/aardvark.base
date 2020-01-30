@@ -11,8 +11,9 @@ namespace Aardvark.Tests
         {
             //new DictTests().Run();
             //Aardvark.Tests.Extensions.DateTimeTests.JulianDay();
-            //new Aardvark.Tests.TrafoTests().TrafoDecomposeTest();
-            Aardvark.Tests.Rot3dTests.FromM33d();
+            new Aardvark.Tests.TrafoTests().TrafoDecomposeTest();
+            //Aardvark.Tests.Rot3dTests.FromM33d();
+            //Aardvark.Tests.Rot3dTests.FromEuler();
             //new Aardvark.Tests.Images.PixImageTests().MipMapCreate1x1();
         }
     }
