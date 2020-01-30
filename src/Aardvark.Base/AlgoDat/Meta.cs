@@ -395,11 +395,11 @@ namespace Aardvark.Base
         };
 
         public static readonly SimpleType[] FloatRepresentableTypes = new SimpleType[]
-{
+        {
             ByteType, SByteType,
             ShortType, UShortType,
             FloatType
-};
+        };
 
         public static readonly SimpleType[] DoubleRepresentableTypes = new SimpleType[]
         {

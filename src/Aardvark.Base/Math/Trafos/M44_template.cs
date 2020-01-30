@@ -445,40 +445,42 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates rotation matrix from axis and angle.
+        /// Creates rotation matrix from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
         /// </summary>
-        public static M4__x4t__ Rotation(V__x3t__ axis, __ft__ angleInRadians)
+        public static M4__x4t__ Rotation(V__x3t__ normalizedAxis, __ft__ angleInRadians)
         {
-            return (M4__x4t__)(new Rot__x3t__(axis, angleInRadians));
+            return (M4__x4t__)(new Rot__x3t__(normalizedAxis, angleInRadians));
         }
 
         /// <summary>
-        /// Creates rotation matrix from yaw (X), pitch (Y), and roll (Z). 
-        /// The rotation order is: X, Y, Z.
+        /// Creates rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         public static M4__x4t__ Rotation(
-            __ft__ yawInRadians, __ft__ pitchInRadians, __ft__ rollInRadians
+            __ft__ rollInRadians, __ft__ pitchInRadians, __ft__ yawInRadians
             )
         {
             return (M4__x4t__)(new Rot__x3t__(
-                yawInRadians, pitchInRadians, rollInRadians
+                rollInRadians, pitchInRadians, yawInRadians
                 ));
         }
 
         /// <summary>
-        /// Creates rotation matrix from yaw (X), pitch (Y), and roll (Z) Vector.
+        /// Creates rotation matrix from roll (X), pitch (Y), and pitch (Z) Vector.
         /// The rotation order is: Z, Y, X.
         /// </summary>
-        public static M4__x4t__ Rotation(V__x3t__ yaw_pitch_roll_inRadians)
+        public static M4__x4t__ Rotation(V__x3t__ roll_pitch_yaw_inRadians)
         {
             return (M4__x4t__)(new Rot__x3t__(
-                yaw_pitch_roll_inRadians.X,
-                yaw_pitch_roll_inRadians.Y,
-                yaw_pitch_roll_inRadians.Z));
+                roll_pitch_yaw_inRadians.X,
+                roll_pitch_yaw_inRadians.Y,
+                roll_pitch_yaw_inRadians.Z));
         }
 
         /// <summary>
         /// Creates rotation matrix which rotates one vector into another.
+        /// The input vectors have to be normalized.
         /// </summary>
         public static M4__x4t__ Rotation(V__x3t__ from, V__x3t__ into)
         {

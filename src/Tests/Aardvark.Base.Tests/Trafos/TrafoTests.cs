@@ -146,9 +146,9 @@ namespace Aardvark.Tests
                 // equal cases
                 var req = new[]
                 {
-                    Trafo3d.RotateInto(V3d.XAxis, V3d.XAxis + ry),
-                    Trafo3d.RotateInto(V3d.YAxis, V3d.YAxis + rz),
-                    Trafo3d.RotateInto(V3d.ZAxis, V3d.ZAxis + rx),
+                    Trafo3d.RotateInto(V3d.XAxis, (V3d.XAxis + ry).Normalized),
+                    Trafo3d.RotateInto(V3d.YAxis, (V3d.YAxis + rz).Normalized),
+                    Trafo3d.RotateInto(V3d.ZAxis, (V3d.ZAxis + rx).Normalized),
                 };
                 foreach (var r in req)
                     Assert.True(CheckForwardBackwardConsistency(r));
@@ -156,12 +156,12 @@ namespace Aardvark.Tests
                 // 180° cases
                 var r180 = new[]
                 {
-                    Trafo3d.RotateInto(-V3d.XAxis,  V3d.XAxis + ry),
-                    Trafo3d.RotateInto( V3d.XAxis, -V3d.XAxis + rz),
-                    Trafo3d.RotateInto(-V3d.YAxis,  V3d.YAxis + rz),
-                    Trafo3d.RotateInto( V3d.YAxis, -V3d.YAxis + rx),
-                    Trafo3d.RotateInto(-V3d.ZAxis,  V3d.ZAxis + rx),
-                    Trafo3d.RotateInto( V3d.ZAxis, -V3d.ZAxis + ry)
+                    Trafo3d.RotateInto(-V3d.XAxis, ( V3d.XAxis + ry).Normalized),
+                    Trafo3d.RotateInto( V3d.XAxis, (-V3d.XAxis + rz).Normalized),
+                    Trafo3d.RotateInto(-V3d.YAxis, ( V3d.YAxis + rz).Normalized),
+                    Trafo3d.RotateInto( V3d.YAxis, (-V3d.YAxis + rx).Normalized),
+                    Trafo3d.RotateInto(-V3d.ZAxis, ( V3d.ZAxis + rx).Normalized),
+                    Trafo3d.RotateInto( V3d.ZAxis, (-V3d.ZAxis + ry).Normalized)
                 };
                 foreach (var r in r180)
                     Assert.True(CheckForwardBackwardConsistency(r));
@@ -169,15 +169,15 @@ namespace Aardvark.Tests
                 // 90° cases
                 var r90 = new[]
                 {
-                    Trafo3d.RotateInto(-V3d.XAxis + rz, V3d.ZAxis),
-                    Trafo3d.RotateInto( V3d.XAxis + ry, V3d.ZAxis),
-                    Trafo3d.RotateInto(-V3d.YAxis + rx, V3d.ZAxis),
-                    Trafo3d.RotateInto( V3d.YAxis + rz, V3d.ZAxis),
+                    Trafo3d.RotateInto((-V3d.XAxis + rz).Normalized, V3d.ZAxis),
+                    Trafo3d.RotateInto(( V3d.XAxis + ry).Normalized, V3d.ZAxis),
+                    Trafo3d.RotateInto((-V3d.YAxis + rx).Normalized, V3d.ZAxis),
+                    Trafo3d.RotateInto(( V3d.YAxis + rz).Normalized, V3d.ZAxis),
 
-                    Trafo3d.RotateInto(-V3d.XAxis, -V3d.ZAxis + rx),
-                    Trafo3d.RotateInto( V3d.XAxis, -V3d.ZAxis + rx),
-                    Trafo3d.RotateInto(-V3d.YAxis, -V3d.ZAxis + ry),
-                    Trafo3d.RotateInto( V3d.YAxis, -V3d.ZAxis + ry),
+                    Trafo3d.RotateInto(-V3d.XAxis, (-V3d.ZAxis + rx).Normalized),
+                    Trafo3d.RotateInto( V3d.XAxis, (-V3d.ZAxis + rx).Normalized),
+                    Trafo3d.RotateInto(-V3d.YAxis, (-V3d.ZAxis + ry).Normalized),
+                    Trafo3d.RotateInto( V3d.YAxis, (-V3d.ZAxis + ry).Normalized),
                 };
                 foreach (var r in r90)
                     Assert.True(CheckForwardBackwardConsistency(r));
@@ -204,26 +204,7 @@ namespace Aardvark.Tests
                 && i.C2.ApproximateEquals(V4d.OOIO, 1e-7)
                 && i.C3.ApproximateEquals(V4d.OOOI, 1e-7);
         }
-
-        [Test]
-        public void TrafoRotIntoCornerCase()
-        {
-            var rnd = new Random();
-            for (int i = 0; i < 1000; i++)
-            {
-                // some vectors will not normalize to 1.0 -> provoke numerical issues in Rot3d
-                var vecd = new V3d(0, 0, -rnd.NextDouble()); 
-                var rotd = new Rot3d(V3d.OOI, vecd);
-                var testd = rotd.TransformDir(V3d.OOI);
-                Assert.True((testd + V3d.OOI).Length < 1e-7);
-
-                var vecf = new V3f(0, 0, -rnd.NextDouble());
-                var rotf = new Rot3f(V3f.OOI, vecf);
-                var testf = rotf.TransformDir(V3f.OOI);
-                Assert.True((testf + V3f.OOI).Length < 1e-3);
-            }
-        }
-
+        
         [Test]
         public void CoordsystemTransformTest()
         {

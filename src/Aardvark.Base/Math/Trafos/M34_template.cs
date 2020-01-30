@@ -291,9 +291,13 @@ namespace Aardvark.Base
                             0, 0, scale.Z, 0);
         }
 
-        public static M3__x4t__ Rotation(V__x3t__ axis, __ft__ angleRadians)
+        /// <summary>
+        /// Creates rotation matrix from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        public static M3__x4t__ Rotation(V__x3t__ normalizedAxis, __ft__ angleRadians)
         {
-            return (M3__x4t__)(new Rot__x3t__(axis, angleRadians));
+            return (M3__x4t__)(new Rot__x3t__(normalizedAxis, angleRadians));
         }
 
         public static M3__x4t__ Rotation(Rot__x3t__ q)

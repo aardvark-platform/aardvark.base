@@ -109,5 +109,76 @@ namespace Aardvark.Tests
                 Assert.IsTrue(Fun.ApproximateEquals(mat, mat4, 1e-7));
             }
         }
+
+        [Test]
+        public static void RotIntoCornerCase()
+        {
+            var rnd = new Random(2);
+            for (int i = 0; i < 100000; i++)
+            {
+                // some vectors will not normalize to 1.0 -> provoke numerical issues in Rot3d
+                var vecd = new V3d(0, 0, -rnd.NextDouble());
+                var rotd = new Rot3d(V3d.OOI, vecd.Normalized);
+                var testd = rotd.TransformDir(V3d.OOI);
+                Assert.True((testd + V3d.OOI).Length < 1e-8);
+
+                //var vecf = new V3f(0, 0, -rnd.NextDouble());
+                //var rotf = new Rot3f(V3f.OOI, vecf.Normalized);
+                //var testf = rotf.TransformDir(V3f.OOI);
+                //Assert.True((testf + V3f.OOI).Length < 1e-5);
+            }
+        }
+
+        [Test]
+        public static void FromInto()
+        {
+            var rnd = new RandomSystem(1337);
+            for (int i = 0; i < 1000000; i++)
+            {
+                var dir = rnd.UniformV3d().Normalized;
+                var rotId = new Rot3d(dir, dir);
+                var matId = (M33d)rotId;
+
+                Assert.IsTrue(matId.IsIdentity(0));
+
+                var rot = new Rot3d(dir, -dir);
+                var invDir = rot.TransformDir(dir);
+
+                Assert.IsTrue(invDir.ApproximateEquals(-dir, 1e-14));
+
+                var dirF = rnd.UniformV3f().Normalized;
+                var rotIdF = new Rot3f(dirF, dirF);
+                var matIdF = (M33f)rotIdF;
+
+                Assert.IsTrue(matIdF.IsIdentity(0));
+
+                var rotF = new Rot3f(dirF, -dirF);
+                var invDirF = rotF.TransformDir(dirF);
+
+                Assert.IsTrue(invDirF.ApproximateEquals(-dirF, 1e-6f));
+            }
+        }
+
+        [Test]
+        public static void FromIntoEpislon()
+        {
+            var rnd = new RandomSystem(1337);
+            for (int i = 0; i < 1000000; i++)
+            {
+                var dir = rnd.UniformV3d().Normalized;
+                var eps = rnd.UniformV3d() * (i / 100) * 1e-22;
+                var rotId = new Rot3d(dir, (dir + eps).Normalized);
+                var matId = (M33d)rotId;
+
+                Assert.IsTrue(matId.IsIdentity(1e-10));
+
+                var dirF = rnd.UniformV3f().Normalized;
+                var epsF = rnd.UniformV3f() * (i / 100) * 1e-12f;
+                var rotIdF = new Rot3f(dirF, (dirF + epsF).Normalized);
+                var matIdF = (M33f)rotIdF;
+
+                Assert.IsTrue(matIdF.IsIdentity(1e-7f));
+            }
+        }
     }
 }

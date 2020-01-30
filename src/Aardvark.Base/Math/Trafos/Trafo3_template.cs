@@ -118,12 +118,12 @@ namespace Aardvark.Base
         public static __type__ Scale(__rtype__ s)
             => new __type__(__m44t__.Scale(s), __m44t__.Scale(1 / s));
 
-        public static __type__ Rotation(__v3t__ axis, __rtype__ angleInRadians)
-            => new __type__(__m44t__.Rotation(axis, angleInRadians),
-                           __m44t__.Rotation(axis, -angleInRadians));
+        public static __type__ Rotation(__v3t__ normalizedAxis, __rtype__ angleInRadians)
+            => new __type__(__m44t__.Rotation(normalizedAxis, angleInRadians),
+                           __m44t__.Rotation(normalizedAxis, -angleInRadians));
 
-        public static __type__ RotationInDegrees(__v3t__ axis, __rtype__ angleInDegrees)
-            => Rotation(axis, Conversion.RadiansFromDegrees(angleInDegrees));
+        public static __type__ RotationInDegrees(__v3t__ normalizedAxis, __rtype__ angleInDegrees)
+            => Rotation(normalizedAxis, Conversion.RadiansFromDegrees(angleInDegrees));
 
         public static __type__ RotationX(__rtype__ angleInRadians)
             => new __type__(__m44t__.RotationX(angleInRadians),
@@ -146,20 +146,20 @@ namespace Aardvark.Base
         public static __type__ RotationZInDegrees(__rtype__ angleInDegrees)
             => RotationZ(Conversion.RadiansFromDegrees(angleInDegrees));
 
-        public static __type__ Rotation(__rtype__ yawInRadians, __rtype__ pitchInRadians, __rtype__ rollInRadians)
+        public static __type__ Rotation(__rtype__ rollInRadians, __rtype__ pitchInRadians, __rtype__ yawInRadians)
         {
-            var m = __m44t__.Rotation(yawInRadians, pitchInRadians, rollInRadians);
+            var m = __m44t__.Rotation(rollInRadians, pitchInRadians, yawInRadians);
             return new __type__(m, m.Transposed); //transposed is equal but faster to inverted on orthonormal matrices like rotations.
         }
 
-        public static __type__ RotationInDegrees(__rtype__ yawInDegrees, __rtype__ pitchInDegrees, __rtype__ rollInDegrees)
-            => Rotation(yawInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), rollInDegrees.RadiansFromDegrees());
+        public static __type__ RotationInDegrees(__rtype__ rollInDegrees, __rtype__ pitchInDegrees, __rtype__ yawInDegrees)
+            => Rotation(rollInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), yawInDegrees.RadiansFromDegrees());
 
-        public static __type__ Rotation(__v3t__ yaw_pitch_roll_inRadians)
-            => Rotation(yaw_pitch_roll_inRadians.X, yaw_pitch_roll_inRadians.Y, yaw_pitch_roll_inRadians.Z);
+        public static __type__ Rotation(__v3t__ roll_pitch_yaw_inRadians)
+            => Rotation(roll_pitch_yaw_inRadians.X, roll_pitch_yaw_inRadians.Y, roll_pitch_yaw_inRadians.Z);
 
-        public static __type__ RotationInDegrees(__v3t__ yaw_pitch_roll_inDegrees)
-            => RotationInDegrees(yaw_pitch_roll_inDegrees.X, yaw_pitch_roll_inDegrees.Y, yaw_pitch_roll_inDegrees.Z);
+        public static __type__ RotationInDegrees(__v3t__ roll_pitch_yaw_inDegrees)
+            => RotationInDegrees(roll_pitch_yaw_inDegrees.X, roll_pitch_yaw_inDegrees.Y, roll_pitch_yaw_inDegrees.Z);
 
         public static __type__ RotateInto(__v3t__ from, __v3t__ into)
         {
@@ -512,7 +512,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Decomposes a transformation into a scale, rotation and translation component.
         /// NOTE: The input is assumed to be a valid affine transformation.
-        ///       The rotation output is in Euler-Angles (yaw, pitch, roll).
+        ///       The rotation output is a vector with Euler-Angles [roll (X), pitch (Y), yaw (Z)] of rotation order Z, Y, X.
         /// </summary>
         public static void Decompose(this __type__ trafo, out __v3t__ scale, out __v3t__ rotation, out __v3t__ translation)
         {

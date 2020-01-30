@@ -287,9 +287,13 @@ namespace Aardvark.Base
                             0, 0, scale.Z, 0);
         }
 
-        public static M34f Rotation(V3f axis, float angleRadians)
+        /// <summary>
+        /// Creates rotation matrix from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        public static M34f Rotation(V3f normalizedAxis, float angleRadians)
         {
-            return (M34f)(new Rot3f(axis, angleRadians));
+            return (M34f)(new Rot3f(normalizedAxis, angleRadians));
         }
 
         public static M34f Rotation(Rot3f q)
@@ -737,9 +741,13 @@ namespace Aardvark.Base
                             0, 0, scale.Z, 0);
         }
 
-        public static M34d Rotation(V3d axis, double angleRadians)
+        /// <summary>
+        /// Creates rotation matrix from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        public static M34d Rotation(V3d normalizedAxis, double angleRadians)
         {
-            return (M34d)(new Rot3d(axis, angleRadians));
+            return (M34d)(new Rot3d(normalizedAxis, angleRadians));
         }
 
         public static M34d Rotation(Rot3d q)

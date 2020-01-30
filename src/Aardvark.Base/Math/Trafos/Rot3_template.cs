@@ -22,7 +22,7 @@ namespace Aardvark.Base
     //#   var m33t = "M33" + tc;
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
-    //#   var rotIntoEps = isDouble ? "1e-7" : "1e-3f";
+    //#   var rotIntoEps = isDouble ? "1e-16" : "1e-6f";
     //#   var eulerAnglesEps = isDouble ? "0.49999999999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
@@ -81,70 +81,68 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates quaternion representing a rotation around
-        /// an axis by an angle.
+        /// Creates quaternion representing a rotation around an axis by an angle.
+        /// The axis vector has to be normalized.
         /// </summary>
-        // todo ISSUE 20090420 andi : sm, rft: What about adding an AxisAngle struct?.
-        public __rot3t__(__v3t__ axis, __ft__ angleInRadians)
+        public __rot3t__(__v3t__ normalizedAxis, __ft__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
             W = halfAngle.Cos();
-            V = axis.Normalized * halfAngle.Sin();
+            V = normalizedAxis * halfAngle.Sin();
         }
 
         /// <summary>
-        /// Creates quaternion from euler angles [yaw, pitch, roll].
-        /// The rotation order is yaw (X), pitch (Y), roll (Z).
+        /// Creates quaternion from euler angles [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
         /// </summary>
-        /// <param name="yawInRadians">Rotation around X</param>
+        /// <param name="rollInRadians">Rotation around X</param>
         /// <param name="pitchInRadians">Rotation around Y</param>
-        /// <param name="rollInRadians">Rotation around Z</param>
-        public __rot3t__(__ft__ yawInRadians, __ft__ pitchInRadians, __ft__ rollInRadians)
+        /// <param name="yawInRadians">Rotation around Z</param>
+        public __rot3t__(__ft__ rollInRadians, __ft__ pitchInRadians, __ft__ yawInRadians)
         {
-            __ft__ yawHalf = yawInRadians / 2;
-            __ft__ cy = Fun.Cos(yawHalf);
-            __ft__ sy = Fun.Sin(yawHalf);
-            __ft__ pitchHalf = pitchInRadians / 2;
-            __ft__ cp = Fun.Cos(pitchHalf);
-            __ft__ sp = Fun.Sin(pitchHalf);
             __ft__ rollHalf = rollInRadians / 2;
             __ft__ cr = Fun.Cos(rollHalf);
             __ft__ sr = Fun.Sin(rollHalf);
+            __ft__ pitchHalf = pitchInRadians / 2;
+            __ft__ cp = Fun.Cos(pitchHalf);
+            __ft__ sp = Fun.Sin(pitchHalf);
+            __ft__ yawHalf = yawInRadians / 2;
+            __ft__ cy = Fun.Cos(yawHalf);
+            __ft__ sy = Fun.Sin(yawHalf);
             W = cy * cp * cr + sy * sp * sr;
             V = new __v3t__(
-                        cr * cp * sy - sr * sp * cy,
-                        sr * cp * sy + cr * sp * cy,
-                        sr * cp * cy - cr * sp * sy);
+                        cy * cp * sr - sy * sp * cr,
+                        sy * cp * sr + cy * sp * cr,
+                        sy * cp * cr - cy * sp * sr);
         }
 
         /// <summary>
-        /// Creates a quaternion representing a rotation from one
-        /// vector into another.
+        /// Creates a quaternion representing a rotation from one vector into another.
+        /// The input vectors have to be normalized.
         /// </summary>
         public __rot3t__(__v3t__ from, __v3t__ into)
         {
-            var a = from.Normalized;
-            var b = into.Normalized;
-            var angle = Fun.Clamp(__v3t__.Dot(a, b), -1, 1).Acos();
-            var angleAbs = angle.Abs();
-            __v3t__ axis;
+            var angle = from.AngleBetween(into);
 
             // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
             // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
             if (angle < __rotIntoEps__)
             {
-                axis = a;
-                angle = 0;
+                // axis = a; angle = 0;
+                W = 1;
+                V = __v3t__.OOO;
             }
-            else if (__pi__ - angleAbs < __rotIntoEps__)
+            else if (__pi__ - angle.Abs() < __rotIntoEps__)
             {
-                axis = a.AxisAlignedNormal();
-                angle = __pi__;
+                //axis = a.AxisAlignedNormal(); //angle = PI;
+                W = 0;
+                V = from.AxisAlignedNormal();
             }
             else
-                axis = __v3t__.Cross(a, b).Normalized;
-
-            this = new __rot3t__(axis, angle);
+            {
+                __v3t__ axis = __v3t__.Cross(from, into).Normalized;
+                this = new __rot3t__(axis, angle);
+            }
         }
 
         #endregion
@@ -590,7 +588,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Euler-Angles from the quatarnion.
+        /// Returns the Euler-Angles from the quatarnion as vector.
+        /// The vector components represent [roll (X), pitch (Y), yaw (Z)] with rotation order is Z, Y, X.
         /// </summary>
         public __v3t__ GetEulerAngles()
         {
@@ -877,13 +876,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Create rotation from euler angles as vector [yaw, pitch, roll].
-        /// The rotation order is yaw (X), pitch (Y), roll (Z).
-        /// <param name="yawPitchRollInRadians">[yaw, pitch, roll] in radians</param>
+        /// Create rotation from euler angles as vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[yaw, pitch, roll] in radians</param>
         /// </summary>
-        public static __rot3t__ FromEulerAngles(__v3t__ yawPitchRollInRadians)
+        public static __rot3t__ FromEulerAngles(__v3t__ rollPitchYawInRadians)
         {
-            return new __rot3t__(yawPitchRollInRadians.X, yawPitchRollInRadians.Y, yawPitchRollInRadians.Z);
+            return new __rot3t__(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
         }
 
         #endregion

@@ -62,70 +62,68 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates quaternion representing a rotation around
-        /// an axis by an angle.
+        /// Creates quaternion representing a rotation around an axis by an angle.
+        /// The axis vector has to be normalized.
         /// </summary>
-        // todo ISSUE 20090420 andi : sm, rft: What about adding an AxisAngle struct?.
-        public Rot3f(V3f axis, float angleInRadians)
+        public Rot3f(V3f normalizedAxis, float angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
             W = halfAngle.Cos();
-            V = axis.Normalized * halfAngle.Sin();
+            V = normalizedAxis * halfAngle.Sin();
         }
 
         /// <summary>
-        /// Creates quaternion from euler angles [yaw, pitch, roll].
-        /// The rotation order is yaw (X), pitch (Y), roll (Z).
+        /// Creates quaternion from euler angles [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
         /// </summary>
-        /// <param name="yawInRadians">Rotation around X</param>
+        /// <param name="rollInRadians">Rotation around X</param>
         /// <param name="pitchInRadians">Rotation around Y</param>
-        /// <param name="rollInRadians">Rotation around Z</param>
-        public Rot3f(float yawInRadians, float pitchInRadians, float rollInRadians)
+        /// <param name="yawInRadians">Rotation around Z</param>
+        public Rot3f(float rollInRadians, float pitchInRadians, float yawInRadians)
         {
-            float yawHalf = yawInRadians / 2;
-            float cy = Fun.Cos(yawHalf);
-            float sy = Fun.Sin(yawHalf);
-            float pitchHalf = pitchInRadians / 2;
-            float cp = Fun.Cos(pitchHalf);
-            float sp = Fun.Sin(pitchHalf);
             float rollHalf = rollInRadians / 2;
             float cr = Fun.Cos(rollHalf);
             float sr = Fun.Sin(rollHalf);
+            float pitchHalf = pitchInRadians / 2;
+            float cp = Fun.Cos(pitchHalf);
+            float sp = Fun.Sin(pitchHalf);
+            float yawHalf = yawInRadians / 2;
+            float cy = Fun.Cos(yawHalf);
+            float sy = Fun.Sin(yawHalf);
             W = cy * cp * cr + sy * sp * sr;
             V = new V3f(
-                        cr * cp * sy - sr * sp * cy,
-                        sr * cp * sy + cr * sp * cy,
-                        sr * cp * cy - cr * sp * sy);
+                        cy * cp * sr - sy * sp * cr,
+                        sy * cp * sr + cy * sp * cr,
+                        sy * cp * cr - cy * sp * sr);
         }
 
         /// <summary>
-        /// Creates a quaternion representing a rotation from one
-        /// vector into another.
+        /// Creates a quaternion representing a rotation from one vector into another.
+        /// The input vectors have to be normalized.
         /// </summary>
         public Rot3f(V3f from, V3f into)
         {
-            var a = from.Normalized;
-            var b = into.Normalized;
-            var angle = Fun.Clamp(V3f.Dot(a, b), -1, 1).Acos();
-            var angleAbs = angle.Abs();
-            V3f axis;
+            var angle = from.AngleBetween(into);
 
             // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
             // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
-            if (angle < 1e-3f)
+            if (angle < 1e-6f)
             {
-                axis = a;
-                angle = 0;
+                // axis = a; angle = 0;
+                W = 1;
+                V = V3f.OOO;
             }
-            else if (Constant.PiF - angleAbs < 1e-3f)
+            else if (Constant.PiF - angle.Abs() < 1e-6f)
             {
-                axis = a.AxisAlignedNormal();
-                angle = Constant.PiF;
+                //axis = a.AxisAlignedNormal(); //angle = PI;
+                W = 0;
+                V = from.AxisAlignedNormal();
             }
             else
-                axis = V3f.Cross(a, b).Normalized;
-
-            this = new Rot3f(axis, angle);
+            {
+                V3f axis = V3f.Cross(from, into).Normalized;
+                this = new Rot3f(axis, angle);
+            }
         }
 
         #endregion
@@ -571,7 +569,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Euler-Angles from the quatarnion.
+        /// Returns the Euler-Angles from the quatarnion as vector.
+        /// The vector components represent [roll (X), pitch (Y), yaw (Z)] with rotation order is Z, Y, X.
         /// </summary>
         public V3f GetEulerAngles()
         {
@@ -858,13 +857,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Create rotation from euler angles as vector [yaw, pitch, roll].
-        /// The rotation order is yaw (X), pitch (Y), roll (Z).
-        /// <param name="yawPitchRollInRadians">[yaw, pitch, roll] in radians</param>
+        /// Create rotation from euler angles as vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[yaw, pitch, roll] in radians</param>
         /// </summary>
-        public static Rot3f FromEulerAngles(V3f yawPitchRollInRadians)
+        public static Rot3f FromEulerAngles(V3f rollPitchYawInRadians)
         {
-            return new Rot3f(yawPitchRollInRadians.X, yawPitchRollInRadians.Y, yawPitchRollInRadians.Z);
+            return new Rot3f(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
         }
 
         #endregion
@@ -1120,70 +1119,68 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates quaternion representing a rotation around
-        /// an axis by an angle.
+        /// Creates quaternion representing a rotation around an axis by an angle.
+        /// The axis vector has to be normalized.
         /// </summary>
-        // todo ISSUE 20090420 andi : sm, rft: What about adding an AxisAngle struct?.
-        public Rot3d(V3d axis, double angleInRadians)
+        public Rot3d(V3d normalizedAxis, double angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
             W = halfAngle.Cos();
-            V = axis.Normalized * halfAngle.Sin();
+            V = normalizedAxis * halfAngle.Sin();
         }
 
         /// <summary>
-        /// Creates quaternion from euler angles [yaw, pitch, roll].
-        /// The rotation order is yaw (X), pitch (Y), roll (Z).
+        /// Creates quaternion from euler angles [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
         /// </summary>
-        /// <param name="yawInRadians">Rotation around X</param>
+        /// <param name="rollInRadians">Rotation around X</param>
         /// <param name="pitchInRadians">Rotation around Y</param>
-        /// <param name="rollInRadians">Rotation around Z</param>
-        public Rot3d(double yawInRadians, double pitchInRadians, double rollInRadians)
+        /// <param name="yawInRadians">Rotation around Z</param>
+        public Rot3d(double rollInRadians, double pitchInRadians, double yawInRadians)
         {
-            double yawHalf = yawInRadians / 2;
-            double cy = Fun.Cos(yawHalf);
-            double sy = Fun.Sin(yawHalf);
-            double pitchHalf = pitchInRadians / 2;
-            double cp = Fun.Cos(pitchHalf);
-            double sp = Fun.Sin(pitchHalf);
             double rollHalf = rollInRadians / 2;
             double cr = Fun.Cos(rollHalf);
             double sr = Fun.Sin(rollHalf);
+            double pitchHalf = pitchInRadians / 2;
+            double cp = Fun.Cos(pitchHalf);
+            double sp = Fun.Sin(pitchHalf);
+            double yawHalf = yawInRadians / 2;
+            double cy = Fun.Cos(yawHalf);
+            double sy = Fun.Sin(yawHalf);
             W = cy * cp * cr + sy * sp * sr;
             V = new V3d(
-                        cr * cp * sy - sr * sp * cy,
-                        sr * cp * sy + cr * sp * cy,
-                        sr * cp * cy - cr * sp * sy);
+                        cy * cp * sr - sy * sp * cr,
+                        sy * cp * sr + cy * sp * cr,
+                        sy * cp * cr - cy * sp * sr);
         }
 
         /// <summary>
-        /// Creates a quaternion representing a rotation from one
-        /// vector into another.
+        /// Creates a quaternion representing a rotation from one vector into another.
+        /// The input vectors have to be normalized.
         /// </summary>
         public Rot3d(V3d from, V3d into)
         {
-            var a = from.Normalized;
-            var b = into.Normalized;
-            var angle = Fun.Clamp(V3d.Dot(a, b), -1, 1).Acos();
-            var angleAbs = angle.Abs();
-            V3d axis;
+            var angle = from.AngleBetween(into);
 
             // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
             // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
-            if (angle < 1e-7)
+            if (angle < 1e-16)
             {
-                axis = a;
-                angle = 0;
+                // axis = a; angle = 0;
+                W = 1;
+                V = V3d.OOO;
             }
-            else if (Constant.Pi - angleAbs < 1e-7)
+            else if (Constant.Pi - angle.Abs() < 1e-16)
             {
-                axis = a.AxisAlignedNormal();
-                angle = Constant.Pi;
+                //axis = a.AxisAlignedNormal(); //angle = PI;
+                W = 0;
+                V = from.AxisAlignedNormal();
             }
             else
-                axis = V3d.Cross(a, b).Normalized;
-
-            this = new Rot3d(axis, angle);
+            {
+                V3d axis = V3d.Cross(from, into).Normalized;
+                this = new Rot3d(axis, angle);
+            }
         }
 
         #endregion
@@ -1629,7 +1626,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Euler-Angles from the quatarnion.
+        /// Returns the Euler-Angles from the quatarnion as vector.
+        /// The vector components represent [roll (X), pitch (Y), yaw (Z)] with rotation order is Z, Y, X.
         /// </summary>
         public V3d GetEulerAngles()
         {
@@ -1916,13 +1914,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Create rotation from euler angles as vector [yaw, pitch, roll].
-        /// The rotation order is yaw (X), pitch (Y), roll (Z).
-        /// <param name="yawPitchRollInRadians">[yaw, pitch, roll] in radians</param>
+        /// Create rotation from euler angles as vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[yaw, pitch, roll] in radians</param>
         /// </summary>
-        public static Rot3d FromEulerAngles(V3d yawPitchRollInRadians)
+        public static Rot3d FromEulerAngles(V3d rollPitchYawInRadians)
         {
-            return new Rot3d(yawPitchRollInRadians.X, yawPitchRollInRadians.Y, yawPitchRollInRadians.Z);
+            return new Rot3d(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
         }
 
         #endregion
