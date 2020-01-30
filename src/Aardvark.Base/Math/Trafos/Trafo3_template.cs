@@ -244,9 +244,9 @@ namespace Aardvark.Base
         {
             return new __type__(
                 new __m44t__(
-                    u.X, u.Y, u.Z, -__v3t__.Dot(u, location),
-                    v.X, v.Y, v.Z, -__v3t__.Dot(v, location),
-                    z.X, z.Y, z.Z, -__v3t__.Dot(z, location),
+                    u.X, u.Y, u.Z, -Vec.Dot(u, location),
+                    v.X, v.Y, v.Z, -Vec.Dot(v, location),
+                    z.X, z.Y, z.Z, -Vec.Dot(z, location),
                     0, 0, 0, 1
                 ),
                 new __m44t__(

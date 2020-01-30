@@ -12,6 +12,6 @@ namespace Aardvark.Base
         public bool IsValid => Normal != V3d.Zero;
         public bool IsInvalid => Normal == V3d.Zero;
 
-        public double Area => V3d.Cross(Axis0, Axis1).Length * Constant.Pi;
+        public double Area => Vec.Cross(Axis0, Axis1).Length * Constant.Pi;
     }
 }

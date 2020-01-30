@@ -125,7 +125,7 @@ namespace Aardvark.Base
             var angle = from.AngleBetween(into);
 
             // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
-            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
+            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3 -> using AngleBetween allows higher precision again
             if (angle < __rotIntoEps__)
             {
                 // axis = a; angle = 0;
@@ -140,7 +140,7 @@ namespace Aardvark.Base
             }
             else
             {
-                __v3t__ axis = __v3t__.Cross(from, into).Normalized;
+                __v3t__ axis = Vec.Cross(from, into).Normalized;
                 this = new __rot3t__(axis, angle);
             }
         }

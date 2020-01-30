@@ -444,7 +444,7 @@ namespace Aardvark.Base
             for (int i = 0; i < pc; i++)
             {
                 var p1 = polygon[i];
-                r += V2d.Distance(p0, p1);
+                r += Vec.Distance(p0, p1);
                 p0 = p1;
             }
             return r;
@@ -511,9 +511,9 @@ namespace Aardvark.Base
             var pc = 0;
             pa[0] = polygon[0];
             for (int pi = 1; pi < opc; pi++)
-                if (V2d.DistanceSquared(pa[pc], polygon[pi]) > eps)
+                if (Vec.DistanceSquared(pa[pc], polygon[pi]) > eps)
                     pa[++pc] = polygon[pi];
-            if (V2d.DistanceSquared(pa[pc], polygon[0]) > eps)
+            if (Vec.DistanceSquared(pa[pc], polygon[0]) > eps)
                 ++pc;
             return new Polygon2d(pa, pc);
         }
@@ -765,7 +765,7 @@ namespace Aardvark.Base
             for (int i = 0; i < pc; i++)
             {
                 var p1 = polygon[i];
-                r += V2d.Distance(p0, p1);
+                r += Vec.Distance(p0, p1);
                 p0 = p1;
             }
             return r;
@@ -1900,7 +1900,7 @@ namespace Aardvark.Base
             for (int i = 0; i < pc; i++)
             {
                 var p1 = polygon[i];
-                r += V3d.Distance(p0, p1);
+                r += Vec.Distance(p0, p1);
                 p0 = p1;
             }
             return r;
@@ -1967,9 +1967,9 @@ namespace Aardvark.Base
             var pc = 0;
             pa[0] = polygon[0];
             for (int pi = 1; pi < opc; pi++)
-                if (V3d.DistanceSquared(pa[pc], polygon[pi]) > eps)
+                if (Vec.DistanceSquared(pa[pc], polygon[pi]) > eps)
                     pa[++pc] = polygon[pi];
-            if (V3d.DistanceSquared(pa[pc], polygon[0]) > eps)
+            if (Vec.DistanceSquared(pa[pc], polygon[0]) > eps)
                 ++pc;
             return new Polygon3d(pa, pc);
         }
@@ -2222,7 +2222,7 @@ namespace Aardvark.Base
             for (int i = 0; i < pc; i++)
             {
                 var p1 = polygon[i];
-                r += V3d.Distance(p0, p1);
+                r += Vec.Distance(p0, p1);
                 p0 = p1;
             }
             return r;
@@ -2954,7 +2954,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Ellipse2d FromConjugateDiameters(V2d center, V2d a, V2d b)
         {
-            var ab = V2d.Dot(a, b);
+            var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
             if (ab.IsTiny())
             {
@@ -2981,7 +2981,7 @@ namespace Aardvark.Base
         public static Ellipse2d FromConjugateDiameters(V2d center, V2d a, V2d b,
                 out double major2, out double minor2)
         {
-            var ab = V2d.Dot(a, b);
+            var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
             if (ab.IsTiny())
             {
@@ -3090,7 +3090,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Ellipse3d FromConjugateDiameters(V3d center, V3d normal, V3d a, V3d b)
         {
-            var ab = V3d.Dot(a, b);
+            var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
             if (ab.IsTiny())
             {
@@ -3117,7 +3117,7 @@ namespace Aardvark.Base
         public static Ellipse3d FromConjugateDiameters(V3d center, V3d normal, V3d a, V3d b,
                 out double major2, out double minor2)
         {
-            var ab = V3d.Dot(a, b);
+            var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
             if (ab.IsTiny())
             {

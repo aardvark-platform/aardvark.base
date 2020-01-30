@@ -13,10 +13,29 @@ using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics;
 #endif
 
+using aardbase = Aardvark.Base;
+
 namespace Aardvark.Base
 {
     // AUTO GENERATED CODE - DO NOT CHANGE!
 
+    [Flags]
+    public enum DirFlags
+    {
+        None = 0x00,
+        NegativeX = 0x01,
+        PositiveX = 0x02,
+        NegativeY = 0x04,
+        PositiveY = 0x08,
+        NegativeZ = 0x10,
+        PositiveZ = 0x20,
+        NegativeW = 0x40,
+        PositiveW = 0x80,
+
+        X = NegativeX | PositiveX,
+        Y = NegativeY | PositiveY,
+        Z = NegativeZ | PositiveZ,
+    };
     //# Action comma = () => Out(", ");
     //# Action add = () => Out(" + ");
     //# Action addqcommaspace = () => Out(" + \", \" ");
@@ -379,52 +398,6 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Static Factories
-
-        //# if (ft.IsReal) {
-        //# if (d == 2) {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ FromPolar(__ftype__ angleInRadians, __ftype__ radius)
-            => new __vtype__(Fun.Cos(angleInRadians) * radius, Fun.Sin(angleInRadians) * radius);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ FromPolar(__ftype__ angleInRadians)
-            => new __vtype__(Fun.Cos(angleInRadians), Fun.Sin(angleInRadians));
-
-        //# } else if (d == 3) {
-        /// <summary>
-        /// Returns an arbitrary normal vector, which
-        /// is also normal to either the x, y or z-axis.
-        /// </summary>
-        public __vtype__ AxisAlignedNormal()
-        {
-            __vtype__ vector;
-            __ftype__ x = X.Abs();
-            __ftype__ y = Y.Abs();
-            __ftype__ z = Z.Abs();
-
-            if (x < y)
-            {
-                if (x < z)
-                    vector = __vtype__.XAxis;
-                else
-                    vector = __vtype__.ZAxis;
-            }
-            else
-            {
-                if (y < z)
-                    vector = __vtype__.YAxis;
-                else
-                    vector = __vtype__.ZAxis;
-            }
-
-            return Cross(vector).Normalized;
-        }
-
-        //# } // d == 3
-        //# } // ft.IsReal
-        #endregion
-
         #region Properties and Indexers
 
         //# fields.ForEach(f => {
@@ -636,24 +609,6 @@ namespace Aardvark.Base
         }
 
         //# });
-        //# foreach (var ft1 in Meta.VecFieldTypes) {
-        //#     var vt1 = Meta.VecTypeOf(d, ft1);
-        //#     var vtype1 = vt1.Name;
-        //#     if (ft != ft1) {
-        public static readonly Func<__vtype1__, __vtype__> From__vtype1__ = v => new __vtype__(v);
-        //#     }
-        //# }
-
-        //# if (d == 3 || d == 4) {
-        //#     foreach (var t1 in Meta.ColorTypes) {
-        //#         var ft1 = t1.FieldType;
-        //#         if (ft.IsInteger != ft1.IsInteger) continue;
-        //#         if (ft == Meta.IntType && ft1 == Meta.UIntType) continue;
-        //#         var type1 = t1.Name;
-        public static readonly Func<__type1__, __vtype__> From__type1__ = c => new __vtype__(c);
-        //#     }
-        //# }
-
         /// <summary>
         /// An array of accessor functions for the coordinates of the vector.
         /// </summary>
@@ -721,6 +676,56 @@ namespace Aardvark.Base
             };
 
         #endregion
+
+        #region Static factories
+
+        //# foreach (var ft1 in Meta.VecFieldTypes) {
+        //#     var vt1 = Meta.VecTypeOf(d, ft1);
+        //#     var vtype1 = vt1.Name;
+        //#     if (ft != ft1) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ From__vtype1__(__vtype1__ v)
+            => new __vtype__(v);
+
+        //#     }
+        //# }
+        //# if (d == 3 || d == 4) {
+        //#     foreach (var t1 in Meta.ColorTypes) {
+        //#         var ft1 = t1.FieldType;
+        //#         if (ft.IsInteger != ft1.IsInteger) continue;
+        //#         if (ft == Meta.IntType && ft1 == Meta.UIntType) continue;
+        //#         var type1 = t1.Name;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ From__type1__(__type1__ c)
+            => new __vtype__(c);
+
+        //#     }
+        //# }
+        //# if (ft.IsReal) {
+        //# if (d == 2) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ FromPolar(__ftype__ angleInRadians, __ftype__ radius)
+            => new __vtype__(Fun.Cos(angleInRadians) * radius, Fun.Sin(angleInRadians) * radius);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ FromPolar(__ftype__ angleInRadians)
+            => new __vtype__(Fun.Cos(angleInRadians), Fun.Sin(angleInRadians));
+
+        //# } else if (d == 3) {
+        private static readonly __vtype__[] s_fromCubeCode =
+            new __vtype__[] { -__vtype__.XAxis, -__vtype__.YAxis, -__vtype__.ZAxis,
+                        __vtype__.XAxis, __vtype__.YAxis, __vtype__.ZAxis };
+
+        /// <summary>
+        /// Return the vector for the supplied cube face code.
+        /// 0 ... -XAxis, 1 ... -YAxis, 2 ... -ZAsix, 3 ... XAxis, 4 ... YAxis, 5 ... ZAxis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ FromCubeFaceCode(int i) { return s_fromCubeCode[i]; }
+
+        //# } // d = 3
+        //# } // ft.IsReal
+        #endregion  
 
         #region Norms
 
@@ -817,78 +822,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the p-norm. This is calculated as the p-th root of (|x|^n + |y|^n + ...).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __ctype__ Norm(__ctype__ p)
-        {
-            return (/*# fields.ForEach(f => { */
-                Fun.Abs(__f__).Pow(p)/*# }, add); */).Pow(1 / p);
-        }
-
-        /// <summary>
-        /// Returns the squared distance between the given points.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double DistanceSquared(__vtype__ a, __vtype__ b)
-        {
-            return /*# fields.ForEach(f => { */
-                (b.__f__ - a.__f__) * (b.__f__ - a.__f__)/*# }, add); */;
-        }
-
-        /// <summary>
-        /// Returns the distance between the given points.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ctype__ Distance(__vtype__ a, __vtype__ b)
-        {
-            return /*# if (ctype != "double") {*/(__ctype__)/*# } */Fun.Sqrt(/*# fields.ForEach(f => { */
-                        (b.__f__ - a.__f__) * (b.__f__ - a.__f__)/*# }, add); */);
-        }
-
-        /// <summary>
-        /// Returns the Manhatten (or 1-) distance between two vectors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ctype__ Distance1(__vtype__ a, __vtype__ b)
-        {
-            return /*# fields.ForEach(f => { */
-                Fun.Abs(b.__f__ - a.__f__)/*# }, add); */;
-        }
-
-        /// <summary>
-        /// Returns the p-distance between two vectors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ctype__ Distance(__vtype__ a, __vtype__ b, __ctype__ p)
-        {
-            return (/*# fields.ForEach(f => { */
-                        Fun.Abs(b.__f__ - a.__f__).Pow(p)/*# }, add); */).Pow(1 / p);
-        }
-
-        /// <summary>
-        /// Returns the maximal absolute distance between the components of
-        /// the two vectors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ftype__ DistanceMax(__vtype__ a, __vtype__ b)
-        {
-            return Fun.Max(/*# fields.ForEach(f => { */
-                        Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns the minimal absolute distance between the components of
-        /// the two vectors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ftype__ DistanceMin(__vtype__ a, __vtype__ b)
-        {
-            return Fun.Min(/*# fields.ForEach(f => { */
-                        Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
         /// Returns a normalized copy of this vector.
         /// </summary>
         public __vctype__ Normalized
@@ -932,17 +865,6 @@ namespace Aardvark.Base
 
         //# } // d == 2
         //# if (ft.IsReal) {
-        /// <summary>
-        /// Normalizes the vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Normalize()
-        {
-            var s = Length; if (s == 0) return;
-            s = 1 / s;
-            /*# fields.ForEach(f => { */__f__ *= s; /*# }); */
-        }
-
         //# if (d == 2) {
         /// <summary>
         /// Returns a copy of the vector with the maximum component length of
@@ -1015,16 +937,6 @@ namespace Aardvark.Base
         }
 
         //# } // face
-        private static readonly __vtype__[] s_fromCubeCode =
-            new __vtype__[] { -__vtype__.XAxis, -__vtype__.YAxis, -__vtype__.ZAxis,
-                        __vtype__.XAxis, __vtype__.YAxis, __vtype__.ZAxis };
-
-        /// <summary>
-        /// Return the vector for the supplied cube face code.
-        /// 0 ... -XAxis, 1 ... -YAxis, 2 ... -ZAsix, 3 ... XAxis, 4 ... YAxis, 5 ... ZAxis.
-        /// </summary>
-        public static __vtype__ FromCubeFaceCode(int i) { return s_fromCubeCode[i]; }
-
         /// <summary>
         /// Return an index for the cube face onto which the vector points.
         /// 0 ... -XAxis, 1 ... -YAxis, 2 ... -ZAsix, 3 ... XAxis, 4 ... YAxis, 5 ... ZAxis.
@@ -1322,6 +1234,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Sets the elements of a vector to the given __ftype1__ elements.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(/*# args.ForEach(a => { */__ftype1__ __a__/*# }, comma); */)
         {
             //# fields.ForEach(args, (f, a) => {
@@ -1330,216 +1243,22 @@ namespace Aardvark.Base
         }
 
         //# }
-        //# if (ft.IsReal) {
-        /// <summary>
-        /// Returns a copy of this vector, with each element set to the largest integer
-        /// less than or equal to the element's current value.
-        /// </summary>
-        public __vtype__ Floor()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Floor(__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element set to the smallest integer
-        /// greater than or equal to the element's current value.
-        /// </summary>
-        public __vtype__ Ceiling()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Ceiling(__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer.
-        /// </summary>
-        public __vtype__ Round()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Round(__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer.
-        /// </summary>
-        public __vtype__ Round(MidpointRounding mode)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Round(__f__, mode)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer
-        /// to the given number of fractional digits.
-        /// </summary>
-        public __vtype__ Round(int digits)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Round(__f__, digits)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer
-        /// to the given number of fractional digits.
-        /// </summary>
-        public __vtype__ Round(int digits, MidpointRounding mode)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Round(__f__, digits, mode)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a copy of this vector, with each element rounded to the nearest integer towards zero.
-        /// </summary>
-        public __vtype__ Truncate()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)Fun.Truncate(__f__)/*# }, comma); */);
-        }
-        //# }
-
-        /// <summary>
-        /// Returns a copy of this vector with all elements set to their absolute value.
-        /// </summary>
-        public __vtype__ Abs()
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */__f__.Abs()/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Negates this vector and returns this.
-        /// </summary>
-        public void Negate()
-        {
-            //# fields.ForEach(f => {
-            __f__ = -__f__;
-            //# });
-        }
-
         /// <summary>
         /// Returns a negated copy of the specified vector.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ operator -(__vtype__ v)
         {
             return new __vtype__(/*# fields.ForEach(f => { */-v.__f__/*# }, comma); */);
         }
 
-        /// <summary>
-        /// Returns the dot product of two vectors.
-        /// </summary>
-        public static __ftype__ Dot(__vtype__ a, __vtype__ b)
-        {
-            return /*# fields.ForEach(f => { */a.__f__ * b.__f__/*# }, add); */;
-        }
-
-        /// <summary>
-        /// Returns the dot product with the specified vector.
-        /// </summary>
-        public __ftype__ Dot(__vtype__ v)
-        {
-            return /*# fields.ForEach(f => { */__f__ * v.__f__/*# }, add); */;
-        }
-
-        //# if (ft.IsInteger) {
-        public Vec.DirFlags DirFlags()
-        {
-            Vec.DirFlags flags = Vec.DirFlags.None;
-            //# fields.ForEach(f => {
-            if (__f__ > 0) flags |= Vec.DirFlags.Positive__f__;
-            if (__f__ < 0) flags |= Vec.DirFlags.Negative__f__;
-            //# });
-            return flags;
-        }
-
-        //# }
-        //# if (ft.IsReal) {
-        /// <summary>
-        /// Returns the reflection direction for the given normal.
-        /// </summary>
-        /// <param name="normal">Normal vector (should be normalized)</param>
-        /// <returns></returns>
-        public __vtype__ Reflected(__vtype__ normal)
-        {
-            return 2 * Dot(normal) * normal - this;
-        }
-
-        /// <summary>
-        /// Returns the refraction direction for the given normal and ratio of refraction indices.
-        /// </summary>
-        /// <param name="normal">Normal vector (should be normalized)</param>
-        /// <param name="eta">Ratio of refraction indices</param>
-        /// <returns></returns>
-        public __vtype__ Refracted(__vtype__ normal, __ftype__ eta)
-        {
-            var t = Dot(normal);
-            var k = ((__ftype__) 1.0) - eta * eta * (((__ftype__)1.0) - t * t);
-
-            if (k < (__ftype__) 0.0)
-            {
-                return Zero;
-            }
-            else
-            {
-                return eta * this - (eta * t + ((__ftype__) Fun.Sqrt(k))) * normal;
-            }
-        }
-
-        public Vec.DirFlags DirFlags()
-        {
-            Vec.DirFlags flags = Vec.DirFlags.None;
-            //# fields.ForEach(f => {
-            if (__f__ > Constant<__ftype__>.PositiveTinyValue) flags |= Vec.DirFlags.Positive__f__;
-            if (__f__ < Constant<__ftype__>.NegativeTinyValue) flags |= Vec.DirFlags.Negative__f__;
-            //# });
-            return flags;
-        }
-
-        //# } // ft.IsReal
-        //# if (d == 3) {
-        /// <summary>
-        /// Returns the cross product of two vectors.
-        /// </summary>
-        public static __vtype__ Cross(__vtype__ a, __vtype__ b)
-        {
-            return new __vtype__(
-            a.__f1__ * b.__f2__ - a.__f2__ * b.__f1__,
-            a.__f2__ * b.__f0__ - a.__f0__ * b.__f2__,
-            a.__f0__ * b.__f1__ - a.__f1__ * b.__f0__
-            );
-        }
-
-        /// <summary>
-        /// Returns the cross product with the specified vector.
-        /// </summary>
-        public __vtype__ Cross(__vtype__ v)
-        {
-            return new __vtype__(
-            __f1__ * v.__f2__ - __f2__ * v.__f1__,
-            __f2__ * v.__f0__ - __f0__ * v.__f2__,
-            __f0__ * v.__f1__ - __f1__ * v.__f0__
-            );
-        }
-        //# }
         //# if (d == 2) {
-        /// <summary>
-        /// Returns the cross product of vector a.
-        /// In 2D the cross product is simply a vector that is normal 
-        /// to the given vector (i.e. {x,y} -> {-y,x})
-        /// </summary>
-        public static __vtype__ Cross(__vtype__ a)
-        {
-            return new __vtype__(- a.__f1__, a.__f0__);
-        }
-
-        /// <summary>
-        /// Returns the cross product of this vector.
-        /// In 2D the cross product is simply a vector that is normal 
-        /// to the given vector (i.e. {x,y} -> {-y,x})
-        /// </summary>
-        public __vtype__ Cross()
-        {
-            return new __vtype__(- __f1__, __f0__);
-        }
-
         /// <summary>
         /// Returns a vector that is orthogonal to this one (i.e. {x,y} -> {-y,x}).
         /// </summary>
         public __vtype__ Orthogonal
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new __vtype__(-__f1__, __f0__); }
         }
 
@@ -1550,6 +1269,7 @@ namespace Aardvark.Base
         /// </summary>
         public __vtype__ Reciprocal
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new __vtype__(/*# fields.ForEach(f => { */1 / __f__/*# }, comma); */); }
         }
 
@@ -1566,6 +1286,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns component-wise __opname__ of two vectors.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ __opaction__(__vtype__ a, __vtype__ b)
         {
             return new __vtype__(/*# fields.ForEach(f => { */a.__f____op__b.__f__/*# }, comma); */);
@@ -1574,6 +1295,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns component-wise __opname__ of vector and scalar.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ __opaction__(__vtype__ v, __ftype__ s)
         {
             return new __vtype__(/*# fields.ForEach(f => { */v.__f____op__s/*#  }, comma); */);
@@ -1582,6 +1304,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns component-wise __opname__ of scalar and vector.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ __opaction__(__ftype__ s, __vtype__ v)
         {
             return new __vtype__(/*# fields.ForEach(f => { */s__op__v.__f__/*# }, comma); */);
@@ -1634,141 +1357,6 @@ namespace Aardvark.Base
         public static bool operator !=(__ftype__ s, __vtype__ v)
         {
             return /*# fields.ForEach(f => { */s != v.__f__/*# }, oror); */;
-        }
-
-        //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
-        //#                     { "<=", "SmallerOrEqual" }, { ">=", "GreaterOrEqual"},
-        //#                     { "==", "Equal" },          { "!=", "Different" } };
-        //# var attention1 = "ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).";
-        //# var attention2 = "ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).";
-        //# for(int o = 0; o < bops.GetLength(0); o++) {
-        //#     string bop = " " + bops[o,0] + " ", opName = bops[o,1];
-        /// <summary>
-        /// Returns whether ALL elements of a are __opName__ the corresponding element of b.
-        /// __attention1__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool All__opName__(__vtype__ a, __vtype__ b)
-        {
-            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are __opName__ the corresponding element of v.
-        /// __attention2__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool All__opName__(__vtype__ v)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__v.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of v are __opName__ s.
-        /// __attention1__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool All__opName__(__vtype__ v, __ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */v.__f____bop__s/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of v are __opName__ s.
-        /// __attention2__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool All__opName__(__ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__s/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether a is __opName__ ALL elements of v.
-        /// __attention1__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool All__opName__(__ftype__ s, __vtype__ v)
-        {
-            return (/*# fields.ForEach(f => { */s__bop__v.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
-        /// __attention1__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Any__opName__(__vtype__ a, __vtype__ b)
-        {
-            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
-        /// __attention2__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Any__opName__(__vtype__ v)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__v.__f__/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of v is __opName__ s.
-        /// __attention1__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Any__opName__(__vtype__ v, __ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */v.__f____bop__s/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of v is __opName__ s.
-        /// __attention1__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Any__opName__(__ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__s/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether a is __opName__ AT LEAST ONE element of v.
-        /// __attention1__
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Any__opName__(__ftype__ s, __vtype__ v)
-        {
-            return (/*# fields.ForEach(f => { */s__bop__v.__f__/*# }, oror); */);
-        }
-
-        //# }
-
-        /// <summary>
-        /// Compare x-coordinate before y-coordinate, aso.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int LexicalCompare(__vtype__ v0, __vtype__ v1)
-        {
-            //# fields.ForEach(f => {
-            if (v0.__f__ < v1.__f__) return -1;
-            if (v0.__f__ > v1.__f__) return +1;
-            //# });
-            return 0;
-        }
-
-        /// <summary>
-        /// Compare x-coordinate before y-coordinate, aso.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int LexicalCompare(__vtype__ v1)
-        {
-            //# fields.ForEach(f => {
-            if (__f__ < v1.__f__) return -1;
-            if (__f__ > v1.__f__) return +1;
-            //# });
-            return 0;
         }
 
         #endregion
@@ -2001,10 +1589,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __retType__ __fun.Name__(/*# fun.Parameters.ForEach(p => {
+        public static __retType__ __fun.Name__(/*# fun.Parameters.ForEach((p, i) => {
         var name = p.Name;
         var ptype = getParamType(p).Name;
-        var ext = fun.IsExtension && (fun.Parameters[0] == p);
+        var ext = fun.IsExtension && (i == 0);
         if (ext) { */this /*# } */__ptype__ __name__/*#}, comma); */)
         {
             return new __retType__(/*# fields.ForEach(f => {*/__fun.Name__(/*# fun.Parameters.ForEach(p => { 
@@ -2042,12 +1630,446 @@ namespace Aardvark.Base
     }
 
     /// <summary>
-    /// This static class for extension functions for __vtype__ has a non-
-    /// standard name ending in "Fun" in order to shorten the function name
-    /// when used as function parameters.
+    /// Contains static methods 
     /// </summary>
-    public static partial class VecFun
+    public static partial class Vec
     {
+        #region Length
+
+        /// <summary>
+        /// Returns the squared length of the vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ LengthSquared(__vtype__ v)
+            => v.LengthSquared;
+
+        /// <summary>
+        /// Returns the length of the vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ Length(__vtype__ v)
+            => v.Length;
+
+        #endregion
+
+        #region Normalize
+
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// Normalizes the vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Normalize(this ref __vtype__ v)
+        {
+            var s = v.Length; if (s == 0) return;
+            s = 1 / s;
+            /*# fields.ForEach(f => { */
+            v.__f__ *= s; /*# }); */
+        }
+
+        //# } // ft.IsReal
+        /// <summary>
+        /// Returns a normalized copy of this vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vctype__ Normalized(__vtype__ v)
+            => v.Normalized;
+
+        #endregion
+
+        #region Norms
+
+        /// <summary>
+        /// Returns the Manhattan (or 1-) norm of the vector. This is
+        /// calculated as |x| + |y| + ...
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Norm1(__vtype__ v)
+            => v.Norm1;
+
+        /// <summary>
+        /// Returns the Euclidean (or 2-) norm of the vector. This is the
+        /// length of the vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ Norm2(__vtype__ v)
+            => v.Norm2;
+
+        /// <summary>
+        /// Returns the infinite (or maximum) norm of the vector. This is
+        /// calculated as max(|x|, |y|, ...).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ NormMax(__vtype__ v)
+            => v.NormMax;
+
+        /// <summary>
+        /// Returns the minimum norm of the vector. This is calculated as
+        /// min(|x|, |y|, ...).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ NormMin(__vtype__ v)
+            => v.NormMin;
+
+        /// <summary>
+        /// Gets the p-norm. This is calculated as the p-th root of (|x|^n + |y|^n + ...).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ Norm(this __vtype__ v, __ctype__ p)
+        {
+            return (/*# fields.ForEach(f => { */
+                Fun.Abs(v.__f__).Pow(p)/*# }, add); */).Pow(1 / p);
+        }
+
+        #endregion
+
+        #region Distance functions
+
+        /// <summary>
+        /// Returns the squared distance between the given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ DistanceSquared(this __vtype__ a, __vtype__ b)
+        {
+            return /*# fields.ForEach(f => { */
+                (b.__f__ - a.__f__) * (b.__f__ - a.__f__)/*# }, add); */;
+        }
+
+        /// <summary>
+        /// Returns the distance between the given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ Distance(this __vtype__ a, __vtype__ b)
+        {
+            return /*# if (ctype != "double") {*/(__ctype__)/*# } */Fun.Sqrt(/*# fields.ForEach(f => { */
+                        (b.__f__ - a.__f__) * (b.__f__ - a.__f__)/*# }, add); */);
+        }
+
+        /// <summary>
+        /// Returns the Manhatten (or 1-) distance between two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ Distance1(this __vtype__ a, __vtype__ b)
+        {
+            return /*# fields.ForEach(f => { */
+                Fun.Abs(b.__f__ - a.__f__)/*# }, add); */;
+        }
+
+        /// <summary>
+        /// Returns the p-distance between two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ Distance(this __vtype__ a, __vtype__ b, __ctype__ p)
+        {
+            return (/*# fields.ForEach(f => { */
+                        Fun.Abs(b.__f__ - a.__f__).Pow(p)/*# }, add); */).Pow(1 / p);
+        }
+
+        /// <summary>
+        /// Returns the maximal absolute distance between the components of
+        /// the two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ DistanceMax(this __vtype__ a, __vtype__ b)
+        {
+            return Fun.Max(/*# fields.ForEach(f => { */
+                        Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns the minimal absolute distance between the components of
+        /// the two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ DistanceMin(this __vtype__ a, __vtype__ b)
+        {
+            return Fun.Min(/*# fields.ForEach(f => { */
+                        Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
+        }
+
+        //# foreach (var hasT in new[] { false, true }) {
+        //# var cast = (ft != ct) ? "(" + vctype + ") " : "";
+        /// <summary>
+        /// Returns the minimal euclidean distance between the supplied query
+        /// point and the line segment defined by the two supplied line end
+        /// points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ DistanceToLine(
+                this __vtype__ query, __vtype__ p0, __vtype__ p1/*# if (hasT) { */, out __ctype__ t/*# } */)
+        {
+            //# if (ft.IsReal) {
+            var p0p1 = p1 - p0;
+            var p0q = query - p0;
+            /*# if (!hasT) { */
+            var /*# } */t = Dot(p0q, p0p1);
+            if (t <= 0) { /*# if (hasT) { */t = 0; /*# } */return Distance(query, p0); }
+            var denom = p0p1.LengthSquared;
+            if (t >= denom) { /*# if (hasT) { */t = 1; /*# } */return Distance(query, p1); }
+            t /= denom;
+            return Distance(query, p0 + t * p0p1);
+            //# } else {
+            return DistanceToLine(__cast__query, __cast__p0, __cast__p1/*# if (hasT) { */, out t/*# } */);
+            //# }
+        }
+
+        /// <summary>
+        /// Returns the minimal euclidean distance between the supplied query
+        /// point and the infinite line defined by two points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ DistanceToInfiniteLine(
+                this __vtype__ query, __vtype__ p0, __vtype__ p1/*# if (hasT) { */, out __ctype__ t/*# } */)
+        {
+            //# if (ft.IsReal) {
+            var p0p1 = p1 - p0;
+            var p0q = query - p0;
+            /*# if (!hasT) { */
+            var /*# } */t = Dot(p0q, p0p1);
+            var denom = p0p1.LengthSquared;
+            t /= denom;
+            return Distance(query, p0 + t * p0p1);
+            //# } else {
+            return DistanceToInfiniteLine(__cast__query, __cast__p0, __cast__p1/*# if (hasT) { */, out t/*# } */);
+            //# }
+        }
+
+        //# } // hasT
+        #endregion
+
+        #region Operations
+
+        //# if (d == 2) {
+        /// <summary>
+        /// Returns a vector that is orthogonal to the given one (i.e. {x,y} -> {-y,x}).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Orthogonal(__vtype__ v)
+            => v.Orthogonal;
+
+        //# }
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// Gets a copy of the given vector containing the reciprocal (1/x) of each element.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Reciprocal(__vtype__ v)
+            => v.Reciprocal;
+
+        //# }
+        /// <summary>
+        /// Negates the vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Negate(this ref __vtype__ v)
+        {
+            //# fields.ForEach(f => {
+            v.__f__ = -v.__f__;
+            //# });
+        }
+
+        /// <summary>
+        /// Returns the dot product of two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Dot(this __vtype__ a, __vtype__ b)
+        {
+            return /*# fields.ForEach(f => { */a.__f__ * b.__f__/*# }, add); */;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DirFlags DirFlags(this __vtype__ v)
+        {
+            //# var posTiny = ft.IsReal ? "Constant<" + ftype + ">.PositiveTinyValue" : "0";
+            //# var negTiny = ft.IsReal ? "Constant<" + ftype + ">.NegativeTinyValue" : "0";
+            DirFlags flags = aardbase.DirFlags.None;
+            //# fields.ForEach(f => {
+            if (v.__f__ > __posTiny__) flags |= aardbase.DirFlags.Positive__f__;
+            if (v.__f__ < __negTiny__) flags |= aardbase.DirFlags.Negative__f__;
+            //# });
+            return flags;
+        }
+
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// Returns the reflection direction of the given vector for the given normal (should be normalized).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Reflect(this __vtype__ v, __vtype__ normal)
+        {
+            return v - 2 * v.Dot(normal) * normal;
+        }
+
+        /// <summary>
+        /// Returns the refraction direction of the given vector for the given normal and ratio of refraction indices.
+        /// Both the input vectors should be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Refract(this __vtype__ v, __vtype__ normal, __ftype__ eta)
+        {
+            var t = v.Dot(normal);
+            var k = 1 - eta * eta * (1 - t * t);
+
+            if (k < 0)
+            {
+                return __vtype__.Zero;
+            }
+            else
+            {
+                return eta * v - (eta * t + Fun.Sqrt(k)) * normal;
+            }
+        }
+
+        //# } // ft.IsReal
+        //# if (d == 3) {
+        /// <summary>
+        /// Returns the cross product of two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Cross(this __vtype__ a, __vtype__ b)
+        {
+            return new __vtype__(
+            a.__f1__ * b.__f2__ - a.__f2__ * b.__f1__,
+            a.__f2__ * b.__f0__ - a.__f0__ * b.__f2__,
+            a.__f0__ * b.__f1__ - a.__f1__ * b.__f0__
+            );
+        }
+
+        //# }
+        //# if (d == 2) {
+        /// <summary>
+        /// Returns the cross product of vector a.
+        /// In 2D the cross product is simply a vector that is normal 
+        /// to the given vector (i.e. {x,y} -> {-y,x})
+        /// </summary>
+        public static __vtype__ Cross(this __vtype__ a)
+        {
+            return new __vtype__(-a.__f1__, a.__f0__);
+        }
+
+        //# }
+        #endregion
+
+        #region Comparisons
+
+        //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
+        //#                     { "<=", "SmallerOrEqual" }, { ">=", "GreaterOrEqual"},
+        //#                     { "==", "Equal" },          { "!=", "Different" } };
+        //# var attention = "ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).";
+        //# for(int o = 0; o < bops.GetLength(0); o++) {
+        //#     string bop = " " + bops[o,0] + " ", opName = bops[o,1];
+        /// <summary>
+        /// Returns whether ALL elements of a are __opName__ the corresponding element of b.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(this __vtype__ a, __vtype__ b)
+        {
+            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of v are __opName__ s.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(this __vtype__ v, __ftype__ s)
+        {
+            return (/*# fields.ForEach(f => { */v.__f____bop__s/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether a is __opName__ ALL elements of v.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(__ftype__ s, __vtype__ v)
+        {
+            return (/*# fields.ForEach(f => { */s__bop__v.__f__/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(this __vtype__ a, __vtype__ b)
+        {
+            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, oror); */);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of v is __opName__ s.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(this __vtype__ v, __ftype__ s)
+        {
+            return (/*# fields.ForEach(f => { */v.__f____bop__s/*# }, oror); */);
+        }
+
+        /// <summary>
+        /// Returns whether a is __opName__ AT LEAST ONE element of v.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(__ftype__ s, __vtype__ v)
+        {
+            return (/*# fields.ForEach(f => { */s__bop__v.__f__/*# }, oror); */);
+        }
+
+        //# }
+
+        /// <summary>
+        /// Compare x-coordinate before y-coordinate, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this __vtype__ v0, __vtype__ v1)
+        {
+            //# fields.ForEach(f => {
+            if (v0.__f__ < v1.__f__) return -1;
+            if (v0.__f__ > v1.__f__) return +1;
+            //# });
+            return 0;
+        }
+
+        #endregion
+
+        //# if (d == 3 && ft.IsReal) {
+        #region Axis aligned normal
+
+        /// <summary>
+        /// Returns an arbitrary normal vector, which
+        /// is also normal to either the x, y or z-axis.
+        /// </summary>
+        public static __vtype__ AxisAlignedNormal(this __vtype__ v)
+        {
+            __vtype__ vector;
+            __ftype__ x = v.X.Abs();
+            __ftype__ y = v.Y.Abs();
+            __ftype__ z = v.Z.Abs();
+
+            if (x < y)
+            {
+                if (x < z)
+                    vector = __vtype__.XAxis;
+                else
+                    vector = __vtype__.ZAxis;
+            }
+            else
+            {
+                if (y < z)
+                    vector = __vtype__.YAxis;
+                else
+                    vector = __vtype__.ZAxis;
+            }
+
+            return v.Cross(vector).Normalized;
+        }
+
+        #endregion
+
+        //# }
         #region Angle between two vectors
 
         /// <summary>
@@ -2081,6 +2103,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Dot product of vector with dir rotated by 90 degrees counterclockwise.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Dot90(this __vtype__ v, __vtype__ dir)
         {
             return v.Y * dir.X - v.X * dir.Y;
@@ -2089,6 +2112,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Dot product of vector with dir rotated by 180 degrees.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Dot180(this __vtype__ v, __vtype__ dir)
         {
             return -(v.X * dir.X + v.Y * dir.Y);
@@ -2097,6 +2121,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Dot product of vector with dir rotated by 270 degrees counterclockwise.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Dot270(this __vtype__ v, __vtype__ dir)
         {
             return v.X * dir.Y - v.Y * dir.X;
@@ -2106,6 +2131,7 @@ namespace Aardvark.Base
         /// Returns the left value of the direction v with respect to the
         /// line from p0 to p1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DirLeftOfLineValue(this __vtype__ v, __vtype__ p0, __vtype__ p1)
         {
             return v.X * (p0.Y - p1.Y) + v.Y * (p1.X - p0.X);
@@ -2115,6 +2141,7 @@ namespace Aardvark.Base
         /// Returns the right value of the direction v with respect to the
         /// line from p0 to p1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DirRightOfLineValue(this __vtype__ v, __vtype__ p0, __vtype__ p1)
         {
             return v.X * (p1.Y - p0.Y) + v.Y * (p0.X - p1.X);
@@ -2124,6 +2151,7 @@ namespace Aardvark.Base
         /// Returns the left value of the point p with respect to the
         /// line from p0 to p1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ PosLeftOfLineValue(this __vtype__ p, __vtype__ p0, __vtype__ p1)
         {
             return (p.X - p0.X) * (p0.Y - p1.Y) + (p.Y - p0.Y) * (p1.X - p0.X);
@@ -2133,6 +2161,7 @@ namespace Aardvark.Base
         /// Returns the right value of the point p with respect to the
         /// line from p0 to p1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ PosRightOfLineValue(this __vtype__ p, __vtype__ p0, __vtype__ p1)
         {
             return (p.X - p0.X) * (p1.Y - p0.Y) + (p.Y - p0.Y) * (p0.X - p1.X);
@@ -2141,51 +2170,11 @@ namespace Aardvark.Base
         #endregion
 
         //# } // d == 2
-        #region Distance Functions
-
-        //# foreach (var hasT in new[] { false, true }) {
-        /// <summary>
-        /// Returns the minimal euclidean distance between the supplied query
-        /// point and the line segment defined by the two supplied line end
-        /// points.
-        /// </summary>
-        public static __ftype__ DistanceToLine(
-                this __vtype__ query, __vtype__ p0, __vtype__ p1/*# if (hasT) { */, out __ftype__ t/*# } */)
-        {
-            var p0p1 = p1 - p0;
-            var p0q = query - p0;
-            /*# if (!hasT) { */
-            var /*# } */t = __vtype__.Dot(p0q, p0p1);
-            if (t <= 0) { /*# if (hasT) { */t = 0; /*# } */return __vtype__.Distance(query, p0); }
-            var denom = p0p1.LengthSquared;
-            if (t >= denom) { /*# if (hasT) { */t = 1; /*# } */return __vtype__.Distance(query, p1); }
-            t /= denom;
-            return __vtype__.Distance(query, p0 + t * p0p1);
-        }
-
-        /// <summary>
-        /// Returns the minimal euclidean distance between the supplied query
-        /// point and the infinite line defined by two points.
-        /// </summary>
-        public static __ftype__ DistanceToInfiniteLine(
-                this __vtype__ query, __vtype__ p0, __vtype__ p1/*# if (hasT) { */, out __ftype__ t/*# } */)
-        {
-            var p0p1 = p1 - p0;
-            var p0q = query - p0;
-            /*# if (!hasT) { */
-            var /*# } */t = __vtype__.Dot(p0q, p0p1);
-            var denom = p0p1.LengthSquared;
-            t /= denom;
-            return __vtype__.Distance(query, p0 + t * p0p1);
-        }
-
-        //# } // hasT
-        #endregion
-
         #region Linear Combination
 
         //# if (ft.IsReal) {
         //# for (int tpc = 2; tpc < 8; tpc++ ) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ LinCom(/*# tpc.ForEach(i => { */__vtype__ p__i__/*# }, comma); */, ref Tup__tpc__<__ftype__> w)
         {
             return /*# tpc.ForEach(i => { */p__i__ * w.E__i__/*# }, add); */;
@@ -2202,12 +2191,12 @@ namespace Aardvark.Base
         //#     var prefix = it == Meta.LongType ? "Long" : "";
         public static __itype__ __prefix__IndexOfClosestPoint(this __vtype__[] pointArray, __vtype__ point)
         {
-            var bestDist = __vtype__.DistanceSquared(point, pointArray[0]);
+            var bestDist = DistanceSquared(point, pointArray[0]);
             __itype__ bestIndex = 0;
             __itype__ count = pointArray.__prefix__Length;
             for (__itype__ i = 1; i < count; i++)
             {
-                var dist = __vtype__.DistanceSquared(point, pointArray[i]);
+                var dist = DistanceSquared(point, pointArray[i]);
                 if (dist < bestDist) { bestDist = dist; bestIndex = i; }
             }
             return bestIndex;
@@ -2217,11 +2206,11 @@ namespace Aardvark.Base
                 this __vtype__[] array, __itype__ start, __itype__ count,
                 __vtype__ point)
         {
-            var bestDist = __vtype__.DistanceSquared(point, array[start]);
+            var bestDist = DistanceSquared(point, array[start]);
             __itype__ bestIndex = 0;
             for (__itype__ i = start + 1, e = start + count; i < e; i++)
             {
-                var dist = __vtype__.DistanceSquared(point, array[i]);
+                var dist = DistanceSquared(point, array[i]);
                 if (dist < bestDist) { bestDist = dist; bestIndex = i; }
             }
             return bestIndex;
@@ -2231,11 +2220,11 @@ namespace Aardvark.Base
                 this T[] array, __itype__ start, __itype__ count,
                 Func<T, __vtype__> pointSelector, __vtype__ point)
         {
-            var bestDist = __vtype__.DistanceSquared(point, pointSelector(array[start]));
+            var bestDist = DistanceSquared(point, pointSelector(array[start]));
             __itype__ bestIndex = 0;
             for (__itype__ i = start + 1, e = start + count; i < e; i++)
             {
-                var dist = __vtype__.DistanceSquared(point, pointSelector(array[i]));
+                var dist = DistanceSquared(point, pointSelector(array[i]));
                 if (dist < bestDist) { bestDist = dist; bestIndex = i; }
             }
             return bestIndex;

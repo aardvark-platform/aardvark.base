@@ -2145,18 +2145,18 @@ namespace Aardvark.Base
         {
             var edge01 = p1 - p0;
             var edge02 = p2 - p0;
-            var plane = V3d.Cross(ray.Direction, edge02);
-            var det = V3d.Dot(edge01, plane);
+            var plane = Vec.Cross(ray.Direction, edge02);
+            var det = Vec.Dot(edge01, plane);
             if (det > -0.0000001 && det < 0.0000001) { t = double.NaN; return false; }
             //ray ~= parallel / Triangle
             var tv = ray.Origin - p0;
             det = 1.0 / det;  // det is now inverse det
-            var u = V3d.Dot(tv, plane) * det;
+            var u = Vec.Dot(tv, plane) * det;
             if (u < 0.0 || u > 1.0) { t = double.NaN; return false; }
-            plane = V3d.Cross(tv, edge01); // plane is now qv
-            var v = V3d.Dot(ray.Direction, plane) * det;
+            plane = Vec.Cross(tv, edge01); // plane is now qv
+            var v = Vec.Dot(ray.Direction, plane) * det;
             if (v < 0.0 || u + v > 1.0) { t = double.NaN; return false; }
-            var temp_t = V3d.Dot(edge02, plane) * det;
+            var temp_t = Vec.Dot(edge02, plane) * det;
             if (temp_t < tmin || temp_t >= tmax) { t = double.NaN; return false; }
 
             t = temp_t;
@@ -2180,18 +2180,18 @@ namespace Aardvark.Base
         /// </summary>
         public static bool IntersectsTrianglePointAndEdges(this Ray3d ray, V3d p0, V3d edge01, V3d edge02, double tmin, double tmax, out double t)
         {
-            var plane = V3d.Cross(ray.Direction, edge02);
-            var det = V3d.Dot(edge01, plane);
+            var plane = Vec.Cross(ray.Direction, edge02);
+            var det = Vec.Dot(edge01, plane);
             if (det > -0.0000001 && det < 0.0000001) { t = double.NaN; return false; }
             //ray ~= parallel / Triangle
             var tv = ray.Origin - p0;
             det = 1.0 / det;  // det is now inverse det
-            var u = V3d.Dot(tv, plane) * det;
+            var u = Vec.Dot(tv, plane) * det;
             if (u < 0.0 || u > 1.0) { t = double.NaN; return false; }
-            plane = V3d.Cross(tv, edge01); // plane is now qv
-            var v = V3d.Dot(ray.Direction, plane) * det;
+            plane = Vec.Cross(tv, edge01); // plane is now qv
+            var v = Vec.Dot(ray.Direction, plane) * det;
             if (v < 0.0 || u + v > 1.0) { t = double.NaN; return false; }
-            var temp_t = V3d.Dot(edge02, plane) * det;
+            var temp_t = Vec.Dot(edge02, plane) * det;
             if (temp_t < tmin || temp_t >= tmax) { t = double.NaN; return false; }
 
             t = temp_t;
@@ -2405,24 +2405,24 @@ namespace Aardvark.Base
             V3d edge02 = tri.Edge02;
             V3d dir = p1 - p0;
 
-            V3d plane = V3d.Cross(dir, edge02);
-            double det = V3d.Dot(edge01, plane);
+            V3d plane = Vec.Cross(dir, edge02);
+            double det = Vec.Dot(edge01, plane);
             if (det > -0.0000001 && det < 0.0000001)return false;
             //ray ~= parallel / Triangle
             V3d tv = p0 - tri.P0;
             det = 1.0 / det;  // det is now inverse det
-            double u = V3d.Dot(tv, plane) * det;
+            double u = Vec.Dot(tv, plane) * det;
             if (u < 0.0 || u > 1.0)
             {
                 return false;
             }
-            plane = V3d.Cross(tv, edge01); // plane is now qv
-            double v = V3d.Dot(dir, plane) * det;
+            plane = Vec.Cross(tv, edge01); // plane is now qv
+            double v = Vec.Dot(dir, plane) * det;
             if (v < 0.0 || u + v > 1.0)
             {
                 return false;
             }
-            double temp_t = V3d.Dot(edge02, plane) * det;
+            double temp_t = Vec.Dot(edge02, plane) * det;
             if (temp_t < 0.0 || temp_t >= 1.0)
             {
                 return false;
@@ -2445,26 +2445,26 @@ namespace Aardvark.Base
             V3d edge02 = tri.Edge02;
             V3d dir = p1 - p0;
 
-            V3d plane = V3d.Cross(dir, edge02);
-            double det = V3d.Dot(edge01, plane);
+            V3d plane = Vec.Cross(dir, edge02);
+            double det = Vec.Dot(edge01, plane);
             if (det > -0.0000001 && det < 0.0000001) { point = V3d.NaN; return false; }
             //ray ~= parallel / Triangle
             V3d tv = p0 - tri.P0;
             det = 1.0 / det;  // det is now inverse det
-            double u = V3d.Dot(tv, plane) * det;
+            double u = Vec.Dot(tv, plane) * det;
             if (u < 0.0 || u > 1.0) 
             {
                 point = V3d.NaN;
                 return false; 
             }
-            plane = V3d.Cross(tv, edge01); // plane is now qv
-            double v = V3d.Dot(dir, plane) * det;
+            plane = Vec.Cross(tv, edge01); // plane is now qv
+            double v = Vec.Dot(dir, plane) * det;
             if (v < 0.0 || u + v > 1.0)
             {
                 point = V3d.NaN;
                 return false;
             }
-            double temp_t = V3d.Dot(edge02, plane) * det;
+            double temp_t = Vec.Dot(edge02, plane) * det;
             if (temp_t < 0.0 || temp_t >= 1.0) 
             {
                 point = V3d.NaN;
@@ -2865,7 +2865,7 @@ namespace Aardvark.Base
              this Ray3d ray, Plane3d plane, out double t
              )
         {
-            double dot = V3d.Dot(ray.Direction, plane.Normal);
+            double dot = Vec.Dot(ray.Direction, plane.Normal);
             if (Fun.IsTiny(dot))
             {
                 t = double.PositiveInfinity;
@@ -2882,7 +2882,7 @@ namespace Aardvark.Base
              this Ray3d ray, Plane3d plane
              )
         {
-            double dot = V3d.Dot(ray.Direction, plane.Normal);
+            double dot = Vec.Dot(ray.Direction, plane.Normal);
             if (Fun.IsTiny(dot)) return V3d.PositiveInfinity;
             return ray.GetPointOnRay(-plane.Height(ray.Origin) / dot);
         }
@@ -4306,7 +4306,7 @@ namespace Aardvark.Base
 
 
 
-            Plane3d plane_tri_1 = new Plane3d(V3d.Cross(AB, AC), triangle1.P0);
+            Plane3d plane_tri_1 = new Plane3d(Vec.Cross(AB, AC), triangle1.P0);
 
             int sign_dir_A = ClosestPoints.DistancePointToPlane(triangle2.P0, plane_tri_1).Sign();
             int sign_dir_B = ClosestPoints.DistancePointToPlane(triangle2.P1, plane_tri_1).Sign();
@@ -4320,7 +4320,7 @@ namespace Aardvark.Base
             AB = triangle2.P0 - triangle2.P1;
             AC = triangle2.P0 - triangle2.P2;
 
-            Plane3d plane_tri_2 = new Plane3d(V3d.Cross(AB, AC), triangle2.P0);
+            Plane3d plane_tri_2 = new Plane3d(Vec.Cross(AB, AC), triangle2.P0);
 
             sign_dir_A = ClosestPoints.DistancePointToPlane(triangle1.P0, plane_tri_2).Sign();
             sign_dir_B = ClosestPoints.DistancePointToPlane(triangle1.P1, plane_tri_2).Sign();
@@ -4420,9 +4420,9 @@ namespace Aardvark.Base
              )
         {
             V2d o = ray.Origin - circle.Center;
-            double a = V2d.Dot(ray.Direction, ray.Direction);
-            double b = V2d.Dot(o, ray.Direction);
-            double c = V2d.Dot(o, o) - circle.RadiusSquared;
+            double a = Vec.Dot(ray.Direction, ray.Direction);
+            double b = Vec.Dot(o, ray.Direction);
+            double c = Vec.Dot(o, o) - circle.RadiusSquared;
             double descr = b * b - a * c;
             if (descr < 0) { t = double.NaN; return false; }
             if (b < 0)
@@ -4441,9 +4441,9 @@ namespace Aardvark.Base
         {
             // Implementation: sm, 2007-04-30
             V2d o = ray.Origin - circle.Center;
-            double a = V2d.Dot(ray.Direction, ray.Direction);
-            double b = V2d.Dot(o, ray.Direction);
-            double c = V2d.Dot(o, o) - circle.RadiusSquared;
+            double a = Vec.Dot(ray.Direction, ray.Direction);
+            double b = Vec.Dot(o, ray.Direction);
+            double c = Vec.Dot(o, o) - circle.RadiusSquared;
             double descr = b * b - a * c;
             if (descr < 0) { t1 = double.NaN; t2 = double.NaN; return false; }
             // numerically stable solution by rft 2008-08-05
@@ -4486,9 +4486,9 @@ namespace Aardvark.Base
             // Implementation: sm, 2007-04-30
             V2d o = line.Origin - circle.Center;
             V2d d = line.P1 - line.P0;
-            double a = V2d.Dot(d, d);
-            double b = V2d.Dot(o, d);
-            double c = V2d.Dot(o, o) - circle.RadiusSquared;
+            double a = Vec.Dot(d, d);
+            double b = Vec.Dot(o, d);
+            double c = Vec.Dot(o, o) - circle.RadiusSquared;
             double descr = b * b - a * c;
             if (descr < 0) { t = double.NaN; return false; }
             if (b < 0)
@@ -4525,9 +4525,9 @@ namespace Aardvark.Base
              )
         {
             var o = ray.Origin - sphere.Center;
-            double a = V3d.Dot(ray.Direction, ray.Direction);
-            double b = V3d.Dot(o, ray.Direction);
-            double c = V3d.Dot(o, o) - sphere.RadiusSquared;
+            double a = Vec.Dot(ray.Direction, ray.Direction);
+            double b = Vec.Dot(o, ray.Direction);
+            double c = Vec.Dot(o, o) - sphere.RadiusSquared;
             double descr = b * b - a * c;
             if (descr < 0) { t = double.NaN; return false; }
             if (b < 0)
@@ -4545,9 +4545,9 @@ namespace Aardvark.Base
              )
         {
             var o = ray.Origin - sphere.Center;
-            double a = V3d.Dot(ray.Direction, ray.Direction);
-            double b = V3d.Dot(o, ray.Direction);
-            double c = V3d.Dot(o, o) - sphere.RadiusSquared;
+            double a = Vec.Dot(ray.Direction, ray.Direction);
+            double b = Vec.Dot(o, ray.Direction);
+            double c = Vec.Dot(o, o) - sphere.RadiusSquared;
             double descr = b * b - a * c;
             if (descr < 0) { t1 = double.NaN; t2 = double.NaN; return false; }
             if (b < 0)
@@ -4588,9 +4588,9 @@ namespace Aardvark.Base
         {
             var o = line.Origin - sphere.Center;
             var d = line.P1 - line.P0;
-            double a = V3d.Dot(d, d);
-            double b = V3d.Dot(o, d);
-            double c = V3d.Dot(o, o) - sphere.RadiusSquared;
+            double a = Vec.Dot(d, d);
+            double b = Vec.Dot(o, d);
+            double c = Vec.Dot(o, o) - sphere.RadiusSquared;
             double descr = b * b - a * c;
             if (descr < 0) { t = double.NaN; return false; }
             if (b < 0)
@@ -4743,9 +4743,9 @@ namespace Aardvark.Base
             )
         {
             line = new Ray3d(V3d.Zero, V3d.Zero);
-            line.Direction = V3d.Cross(plane1.Normal, plane2.Normal);
+            line.Direction = Vec.Cross(plane1.Normal, plane2.Normal);
             if (line.Direction.LengthSquared < double.Epsilon) return false;
-            line.Origin = V3d.Cross(plane1.Distance * plane2.Normal - 
+            line.Origin = Vec.Cross(plane1.Distance * plane2.Normal - 
                                            plane2.Distance * plane1.Normal,
                                            line.Direction);
             return true;

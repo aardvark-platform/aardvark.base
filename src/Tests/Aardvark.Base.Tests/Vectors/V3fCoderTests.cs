@@ -93,7 +93,7 @@ namespace Aardvark.Tests
                             uint code = coder.Encode(n);
                             V3f newN = coder.Decode(code);
 
-                            double newDot = V3f.Dot(n, newN);
+                            double newDot = Vec.Dot(n, newN);
                             if (newDot < minDot) minDot = newDot;
                         }
                     }

@@ -425,7 +425,7 @@ namespace Aardvark.Base
 
             int start0 = i0, start1 = i1;
             var dir = V2d.XAxis;
-            var d = V2d.Distance(p0, p1);
+            var d = Vec.Distance(p0, p1);
 
             var bestValue = double.MaxValue;
             int bpi0 = -1, bpi1 = -1;
@@ -439,7 +439,7 @@ namespace Aardvark.Base
                 {
                     dir = e0a[i0];
                     int i0n = (i0 + 1) % p0c; var p0n = p0a[i0];
-                    var dn = V2d.Distance(p0n, p1);
+                    var dn = Vec.Distance(p0n, p1);
                     var dist = DistanceToLine(p1, p0, p0n, d, dn);
                     if (dist < bestValue)
                     {
@@ -452,7 +452,7 @@ namespace Aardvark.Base
                 {
                     dir = e0a[i1].Rot180;
                     int i1n = (i1 + 1) % p1c; var p1n = p1a[i1];
-                    var dn = V2d.Distance(p0, p1n);
+                    var dn = Vec.Distance(p0, p1n);
                     var dist = DistanceToLine(p0, p1, p1n, d, dn);
                     if (dist < bestValue)
                     {
@@ -471,12 +471,12 @@ namespace Aardvark.Base
         {
             var p0p1 = p1 - p0;
             var p0q = query - p0;
-            var t = V2d.Dot(p0q, p0p1);
+            var t = Vec.Dot(p0q, p0p1);
             if (t <= 0) { return d0; }
             var denom = p0p1.LengthSquared;
             if (t >= denom) { return d1; }
             t /= denom;
-            return V2d.Distance(query, p0 + t * p0p1);
+            return Vec.Distance(query, p0 + t * p0p1);
         }
 
         #endregion

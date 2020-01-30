@@ -257,20 +257,46 @@ namespace Aardvark.Base
         public V4i ToV4i() { return (V4i)this; }
         public V4l ToV4l() { return (V4l)this; }
 
-        public static readonly Func<C3us, C3b> FromC3us = c => new C3b(c);
-        public static readonly Func<C3ui, C3b> FromC3ui = c => new C3b(c);
-        public static readonly Func<C3f, C3b> FromC3f = c => new C3b(c);
-        public static readonly Func<C3d, C3b> FromC3d = c => new C3b(c);
-        public static readonly Func<C4b, C3b> FromC4b = c => new C3b(c);
-        public static readonly Func<C4us, C3b> FromC4us = c => new C3b(c);
-        public static readonly Func<C4ui, C3b> FromC4ui = c => new C3b(c);
-        public static readonly Func<C4f, C3b> FromC4f = c => new C3b(c);
-        public static readonly Func<C4d, C3b> FromC4d = c => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC3us(C3us c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC3ui(C3ui c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC3f(C3f c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC3d(C3d c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC4b(C4b c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC4us(C4us c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC4ui(C4ui c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC4f(C4f c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromC4d(C4d c)
+            => new C3b(c);
 
-        public static readonly Func<V3i, C3b> FromV3i = c => new C3b(c);
-        public static readonly Func<V3l, C3b> FromV3l = c => new C3b(c);
-        public static readonly Func<V4i, C3b> FromV4i = c => new C3b(c);
-        public static readonly Func<V4l, C3b> FromV4l = c => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromV3i(V3i c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromV3l(V3l c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromV4i(V4i c)
+            => new C3b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromV4l(V4l c)
+            => new C3b(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -447,545 +473,6 @@ namespace Aardvark.Base
         public static bool operator !=(C3b a, C3b b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3b a, C3b b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C3b col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3b col, byte s)
-        {
-            return (col.R < s && col.G < s && col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(byte s)
-        {
-            return (this.R < s && this.G < s && this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(byte s, C3b col)
-        {
-            return (s < col.R && s < col.G && s < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3b a, C3b b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C3b col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3b col, byte s)
-        {
-            return (col.R < s || col.G < s || col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(byte s)
-        {
-            return (this.R < s || this.G < s || this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(byte s, C3b col)
-        {
-            return (s < col.R || s < col.G || s < col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3b a, C3b b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C3b col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3b col, byte s)
-        {
-            return (col.R > s && col.G > s && col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(byte s)
-        {
-            return (this.R > s && this.G > s && this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(byte s, C3b col)
-        {
-            return (s > col.R && s > col.G && s > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3b a, C3b b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C3b col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3b col, byte s)
-        {
-            return (col.R > s || col.G > s || col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(byte s)
-        {
-            return (this.R > s || this.G > s || this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(byte s, C3b col)
-        {
-            return (s > col.R || s > col.G || s > col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3b a, C3b b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C3b col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3b col, byte s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(byte s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(byte s, C3b col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3b a, C3b b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C3b col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3b col, byte s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(byte s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(byte s, C3b col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3b a, C3b b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C3b col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3b col, byte s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(byte s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(byte s, C3b col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3b a, C3b b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C3b col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3b col, byte s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(byte s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(byte s, C3b col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3b a, C3b b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C3b col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3b col, byte s)
-        {
-            return (col.R == s && col.G == s && col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(byte s)
-        {
-            return (this.R == s && this.G == s && this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(byte s, C3b col)
-        {
-            return (s == col.R && s == col.G && s == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3b a, C3b b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C3b col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3b col, byte s)
-        {
-            return (col.R == s || col.G == s || col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(byte s)
-        {
-            return (this.R == s || this.G == s || this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(byte s, C3b col)
-        {
-            return (s == col.R || s == col.G || s == col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3b a, C3b b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C3b col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3b col, byte s)
-        {
-            return (col.R != s && col.G != s && col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(byte s)
-        {
-            return (this.R != s && this.G != s && this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(byte s, C3b col)
-        {
-            return (s != col.R && s != col.G && s != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3b a, C3b b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C3b col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3b col, byte s)
-        {
-            return (col.R != s || col.G != s || col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(byte s)
-        {
-            return (this.R != s || this.G != s || this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(byte s, C3b col)
-        {
-            return (s != col.R || s != col.G || s != col.B);
         }
 
         #endregion
@@ -1295,94 +782,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3b LinCom(
-            C3b p0, C3b p1, C3b p2, C3b p3, ref Tup4<float> w)
-        {
-            return new C3b(
-                Col.ByteFromByteInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.ByteFromByteInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.ByteFromByteInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3f LinComRawC3f(
-            C3b p0, C3b p1, C3b p2, C3b p3, ref Tup4<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3b LinCom(
-            C3b p0, C3b p1, C3b p2, C3b p3, ref Tup4<double> w)
-        {
-            return new C3b(
-                Col.ByteFromByteInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.ByteFromByteInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.ByteFromByteInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3d LinComRawC3d(
-            C3b p0, C3b p1, C3b p2, C3b p3, ref Tup4<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3b LinCom(
-            C3b p0, C3b p1, C3b p2, C3b p3, C3b p4, C3b p5, ref Tup6<float> w)
-        {
-            return new C3b(
-                Col.ByteFromByteInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.ByteFromByteInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.ByteFromByteInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3f LinComRawC3f(
-            C3b p0, C3b p1, C3b p2, C3b p3, C3b p4, C3b p5, ref Tup6<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3b LinCom(
-            C3b p0, C3b p1, C3b p2, C3b p3, C3b p4, C3b p5, ref Tup6<double> w)
-        {
-            return new C3b(
-                Col.ByteFromByteInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.ByteFromByteInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.ByteFromByteInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3d LinComRawC3d(
-            C3b p0, C3b p1, C3b p2, C3b p3, C3b p4, C3b p5, ref Tup6<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -1488,6 +887,468 @@ namespace Aardvark.Base
         public static C3b Lerp(this double x, C3b a, C3b b)
         {
             return new C3b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+        }
+
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3b a, C3b b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3b col, byte s)
+        {
+            return (col.R < s && col.G < s && col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(byte s, C3b col)
+        {
+            return (s < col.R && s < col.G && s < col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3b a, C3b b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3b col, byte s)
+        {
+            return (col.R < s || col.G < s || col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(byte s, C3b col)
+        {
+            return (s < col.R || s < col.G || s < col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3b a, C3b b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3b col, byte s)
+        {
+            return (col.R > s && col.G > s && col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(byte s, C3b col)
+        {
+            return (s > col.R && s > col.G && s > col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3b a, C3b b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3b col, byte s)
+        {
+            return (col.R > s || col.G > s || col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(byte s, C3b col)
+        {
+            return (s > col.R || s > col.G || s > col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3b a, C3b b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3b col, byte s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(byte s, C3b col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3b a, C3b b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3b col, byte s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(byte s, C3b col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3b a, C3b b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3b col, byte s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(byte s, C3b col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3b a, C3b b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3b col, byte s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(byte s, C3b col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3b a, C3b b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3b col, byte s)
+        {
+            return (col.R == s && col.G == s && col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(byte s, C3b col)
+        {
+            return (s == col.R && s == col.G && s == col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3b a, C3b b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3b col, byte s)
+        {
+            return (col.R == s || col.G == s || col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(byte s, C3b col)
+        {
+            return (s == col.R || s == col.G || s == col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3b a, C3b b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3b col, byte s)
+        {
+            return (col.R != s && col.G != s && col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(byte s, C3b col)
+        {
+            return (s != col.R && s != col.G && s != col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3b a, C3b b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3b col, byte s)
+        {
+            return (col.R != s || col.G != s || col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(byte s, C3b col)
+        {
+            return (s != col.R || s != col.G || s != col.B);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b LinCom(
+            C3b p0, C3b p1, C3b p2, C3b p3, ref Tup4<float> w)
+        {
+            return new C3b(
+                Col.ByteFromByteInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.ByteFromByteInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.ByteFromByteInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3b p0, C3b p1, C3b p2, C3b p3, ref Tup4<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b LinCom(
+            C3b p0, C3b p1, C3b p2, C3b p3, ref Tup4<double> w)
+        {
+            return new C3b(
+                Col.ByteFromByteInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.ByteFromByteInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.ByteFromByteInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3b p0, C3b p1, C3b p2, C3b p3, ref Tup4<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b LinCom(
+            C3b p0, C3b p1, C3b p2, C3b p3, C3b p4, C3b p5, ref Tup6<float> w)
+        {
+            return new C3b(
+                Col.ByteFromByteInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.ByteFromByteInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.ByteFromByteInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3b p0, C3b p1, C3b p2, C3b p3, C3b p4, C3b p5, ref Tup6<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b LinCom(
+            C3b p0, C3b p1, C3b p2, C3b p3, C3b p4, C3b p5, ref Tup6<double> w)
+        {
+            return new C3b(
+                Col.ByteFromByteInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.ByteFromByteInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.ByteFromByteInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3b p0, C3b p1, C3b p2, C3b p3, C3b p4, C3b p5, ref Tup6<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
 
         #endregion
@@ -1745,20 +1606,46 @@ namespace Aardvark.Base
         public V4i ToV4i() { return (V4i)this; }
         public V4l ToV4l() { return (V4l)this; }
 
-        public static readonly Func<C3b, C3us> FromC3b = c => new C3us(c);
-        public static readonly Func<C3ui, C3us> FromC3ui = c => new C3us(c);
-        public static readonly Func<C3f, C3us> FromC3f = c => new C3us(c);
-        public static readonly Func<C3d, C3us> FromC3d = c => new C3us(c);
-        public static readonly Func<C4b, C3us> FromC4b = c => new C3us(c);
-        public static readonly Func<C4us, C3us> FromC4us = c => new C3us(c);
-        public static readonly Func<C4ui, C3us> FromC4ui = c => new C3us(c);
-        public static readonly Func<C4f, C3us> FromC4f = c => new C3us(c);
-        public static readonly Func<C4d, C3us> FromC4d = c => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC3b(C3b c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC3ui(C3ui c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC3f(C3f c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC3d(C3d c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC4b(C4b c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC4us(C4us c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC4ui(C4ui c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC4f(C4f c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromC4d(C4d c)
+            => new C3us(c);
 
-        public static readonly Func<V3i, C3us> FromV3i = c => new C3us(c);
-        public static readonly Func<V3l, C3us> FromV3l = c => new C3us(c);
-        public static readonly Func<V4i, C3us> FromV4i = c => new C3us(c);
-        public static readonly Func<V4l, C3us> FromV4l = c => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromV3i(V3i c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromV3l(V3l c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromV4i(V4i c)
+            => new C3us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromV4l(V4l c)
+            => new C3us(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -1935,545 +1822,6 @@ namespace Aardvark.Base
         public static bool operator !=(C3us a, C3us b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3us a, C3us b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C3us col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3us col, ushort s)
-        {
-            return (col.R < s && col.G < s && col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(ushort s)
-        {
-            return (this.R < s && this.G < s && this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(ushort s, C3us col)
-        {
-            return (s < col.R && s < col.G && s < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3us a, C3us b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C3us col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3us col, ushort s)
-        {
-            return (col.R < s || col.G < s || col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(ushort s)
-        {
-            return (this.R < s || this.G < s || this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(ushort s, C3us col)
-        {
-            return (s < col.R || s < col.G || s < col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3us a, C3us b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C3us col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3us col, ushort s)
-        {
-            return (col.R > s && col.G > s && col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(ushort s)
-        {
-            return (this.R > s && this.G > s && this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(ushort s, C3us col)
-        {
-            return (s > col.R && s > col.G && s > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3us a, C3us b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C3us col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3us col, ushort s)
-        {
-            return (col.R > s || col.G > s || col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(ushort s)
-        {
-            return (this.R > s || this.G > s || this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(ushort s, C3us col)
-        {
-            return (s > col.R || s > col.G || s > col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3us a, C3us b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C3us col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3us col, ushort s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(ushort s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(ushort s, C3us col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3us a, C3us b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C3us col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3us col, ushort s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(ushort s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(ushort s, C3us col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3us a, C3us b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C3us col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3us col, ushort s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(ushort s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(ushort s, C3us col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3us a, C3us b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C3us col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3us col, ushort s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(ushort s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(ushort s, C3us col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3us a, C3us b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C3us col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3us col, ushort s)
-        {
-            return (col.R == s && col.G == s && col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(ushort s)
-        {
-            return (this.R == s && this.G == s && this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(ushort s, C3us col)
-        {
-            return (s == col.R && s == col.G && s == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3us a, C3us b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C3us col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3us col, ushort s)
-        {
-            return (col.R == s || col.G == s || col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(ushort s)
-        {
-            return (this.R == s || this.G == s || this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(ushort s, C3us col)
-        {
-            return (s == col.R || s == col.G || s == col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3us a, C3us b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C3us col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3us col, ushort s)
-        {
-            return (col.R != s && col.G != s && col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(ushort s)
-        {
-            return (this.R != s && this.G != s && this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(ushort s, C3us col)
-        {
-            return (s != col.R && s != col.G && s != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3us a, C3us b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C3us col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3us col, ushort s)
-        {
-            return (col.R != s || col.G != s || col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(ushort s)
-        {
-            return (this.R != s || this.G != s || this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(ushort s, C3us col)
-        {
-            return (s != col.R || s != col.G || s != col.B);
         }
 
         #endregion
@@ -2783,94 +2131,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3us LinCom(
-            C3us p0, C3us p1, C3us p2, C3us p3, ref Tup4<float> w)
-        {
-            return new C3us(
-                Col.UShortFromUShortInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.UShortFromUShortInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.UShortFromUShortInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3f LinComRawC3f(
-            C3us p0, C3us p1, C3us p2, C3us p3, ref Tup4<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3us LinCom(
-            C3us p0, C3us p1, C3us p2, C3us p3, ref Tup4<double> w)
-        {
-            return new C3us(
-                Col.UShortFromUShortInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.UShortFromUShortInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.UShortFromUShortInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3d LinComRawC3d(
-            C3us p0, C3us p1, C3us p2, C3us p3, ref Tup4<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3us LinCom(
-            C3us p0, C3us p1, C3us p2, C3us p3, C3us p4, C3us p5, ref Tup6<float> w)
-        {
-            return new C3us(
-                Col.UShortFromUShortInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.UShortFromUShortInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.UShortFromUShortInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3f LinComRawC3f(
-            C3us p0, C3us p1, C3us p2, C3us p3, C3us p4, C3us p5, ref Tup6<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3us LinCom(
-            C3us p0, C3us p1, C3us p2, C3us p3, C3us p4, C3us p5, ref Tup6<double> w)
-        {
-            return new C3us(
-                Col.UShortFromUShortInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.UShortFromUShortInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.UShortFromUShortInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3d LinComRawC3d(
-            C3us p0, C3us p1, C3us p2, C3us p3, C3us p4, C3us p5, ref Tup6<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -2976,6 +2236,468 @@ namespace Aardvark.Base
         public static C3us Lerp(this double x, C3us a, C3us b)
         {
             return new C3us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+        }
+
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3us a, C3us b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3us col, ushort s)
+        {
+            return (col.R < s && col.G < s && col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(ushort s, C3us col)
+        {
+            return (s < col.R && s < col.G && s < col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3us a, C3us b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3us col, ushort s)
+        {
+            return (col.R < s || col.G < s || col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(ushort s, C3us col)
+        {
+            return (s < col.R || s < col.G || s < col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3us a, C3us b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3us col, ushort s)
+        {
+            return (col.R > s && col.G > s && col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(ushort s, C3us col)
+        {
+            return (s > col.R && s > col.G && s > col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3us a, C3us b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3us col, ushort s)
+        {
+            return (col.R > s || col.G > s || col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(ushort s, C3us col)
+        {
+            return (s > col.R || s > col.G || s > col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3us a, C3us b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3us col, ushort s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(ushort s, C3us col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3us a, C3us b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3us col, ushort s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(ushort s, C3us col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3us a, C3us b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3us col, ushort s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(ushort s, C3us col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3us a, C3us b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3us col, ushort s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(ushort s, C3us col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3us a, C3us b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3us col, ushort s)
+        {
+            return (col.R == s && col.G == s && col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(ushort s, C3us col)
+        {
+            return (s == col.R && s == col.G && s == col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3us a, C3us b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3us col, ushort s)
+        {
+            return (col.R == s || col.G == s || col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(ushort s, C3us col)
+        {
+            return (s == col.R || s == col.G || s == col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3us a, C3us b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3us col, ushort s)
+        {
+            return (col.R != s && col.G != s && col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(ushort s, C3us col)
+        {
+            return (s != col.R && s != col.G && s != col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3us a, C3us b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3us col, ushort s)
+        {
+            return (col.R != s || col.G != s || col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(ushort s, C3us col)
+        {
+            return (s != col.R || s != col.G || s != col.B);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us LinCom(
+            C3us p0, C3us p1, C3us p2, C3us p3, ref Tup4<float> w)
+        {
+            return new C3us(
+                Col.UShortFromUShortInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.UShortFromUShortInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.UShortFromUShortInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3us p0, C3us p1, C3us p2, C3us p3, ref Tup4<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us LinCom(
+            C3us p0, C3us p1, C3us p2, C3us p3, ref Tup4<double> w)
+        {
+            return new C3us(
+                Col.UShortFromUShortInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.UShortFromUShortInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.UShortFromUShortInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3us p0, C3us p1, C3us p2, C3us p3, ref Tup4<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us LinCom(
+            C3us p0, C3us p1, C3us p2, C3us p3, C3us p4, C3us p5, ref Tup6<float> w)
+        {
+            return new C3us(
+                Col.UShortFromUShortInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.UShortFromUShortInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.UShortFromUShortInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3us p0, C3us p1, C3us p2, C3us p3, C3us p4, C3us p5, ref Tup6<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us LinCom(
+            C3us p0, C3us p1, C3us p2, C3us p3, C3us p4, C3us p5, ref Tup6<double> w)
+        {
+            return new C3us(
+                Col.UShortFromUShortInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.UShortFromUShortInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.UShortFromUShortInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3us p0, C3us p1, C3us p2, C3us p3, C3us p4, C3us p5, ref Tup6<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
 
         #endregion
@@ -3198,18 +2920,40 @@ namespace Aardvark.Base
         public V3l ToV3l() { return (V3l)this; }
         public V4l ToV4l() { return (V4l)this; }
 
-        public static readonly Func<C3b, C3ui> FromC3b = c => new C3ui(c);
-        public static readonly Func<C3us, C3ui> FromC3us = c => new C3ui(c);
-        public static readonly Func<C3f, C3ui> FromC3f = c => new C3ui(c);
-        public static readonly Func<C3d, C3ui> FromC3d = c => new C3ui(c);
-        public static readonly Func<C4b, C3ui> FromC4b = c => new C3ui(c);
-        public static readonly Func<C4us, C3ui> FromC4us = c => new C3ui(c);
-        public static readonly Func<C4ui, C3ui> FromC4ui = c => new C3ui(c);
-        public static readonly Func<C4f, C3ui> FromC4f = c => new C3ui(c);
-        public static readonly Func<C4d, C3ui> FromC4d = c => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC3b(C3b c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC3us(C3us c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC3f(C3f c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC3d(C3d c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC4b(C4b c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC4us(C4us c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC4ui(C4ui c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC4f(C4f c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromC4d(C4d c)
+            => new C3ui(c);
 
-        public static readonly Func<V3l, C3ui> FromV3l = c => new C3ui(c);
-        public static readonly Func<V4l, C3ui> FromV4l = c => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromV3l(V3l c)
+            => new C3ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromV4l(V4l c)
+            => new C3ui(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -3385,545 +3129,6 @@ namespace Aardvark.Base
         public static bool operator !=(C3ui a, C3ui b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3ui a, C3ui b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C3ui col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3ui col, uint s)
-        {
-            return (col.R < s && col.G < s && col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(uint s)
-        {
-            return (this.R < s && this.G < s && this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(uint s, C3ui col)
-        {
-            return (s < col.R && s < col.G && s < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3ui a, C3ui b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C3ui col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3ui col, uint s)
-        {
-            return (col.R < s || col.G < s || col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(uint s)
-        {
-            return (this.R < s || this.G < s || this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(uint s, C3ui col)
-        {
-            return (s < col.R || s < col.G || s < col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3ui a, C3ui b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C3ui col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3ui col, uint s)
-        {
-            return (col.R > s && col.G > s && col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(uint s)
-        {
-            return (this.R > s && this.G > s && this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(uint s, C3ui col)
-        {
-            return (s > col.R && s > col.G && s > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3ui a, C3ui b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C3ui col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3ui col, uint s)
-        {
-            return (col.R > s || col.G > s || col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(uint s)
-        {
-            return (this.R > s || this.G > s || this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(uint s, C3ui col)
-        {
-            return (s > col.R || s > col.G || s > col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3ui a, C3ui b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C3ui col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3ui col, uint s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(uint s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(uint s, C3ui col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3ui a, C3ui b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C3ui col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3ui col, uint s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(uint s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(uint s, C3ui col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3ui a, C3ui b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C3ui col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3ui col, uint s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(uint s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(uint s, C3ui col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3ui a, C3ui b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C3ui col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3ui col, uint s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(uint s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(uint s, C3ui col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3ui a, C3ui b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C3ui col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3ui col, uint s)
-        {
-            return (col.R == s && col.G == s && col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(uint s)
-        {
-            return (this.R == s && this.G == s && this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(uint s, C3ui col)
-        {
-            return (s == col.R && s == col.G && s == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3ui a, C3ui b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C3ui col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3ui col, uint s)
-        {
-            return (col.R == s || col.G == s || col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(uint s)
-        {
-            return (this.R == s || this.G == s || this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(uint s, C3ui col)
-        {
-            return (s == col.R || s == col.G || s == col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3ui a, C3ui b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C3ui col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3ui col, uint s)
-        {
-            return (col.R != s && col.G != s && col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(uint s)
-        {
-            return (this.R != s && this.G != s && this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(uint s, C3ui col)
-        {
-            return (s != col.R && s != col.G && s != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3ui a, C3ui b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C3ui col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3ui col, uint s)
-        {
-            return (col.R != s || col.G != s || col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(uint s)
-        {
-            return (this.R != s || this.G != s || this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(uint s, C3ui col)
-        {
-            return (s != col.R || s != col.G || s != col.B);
         }
 
         #endregion
@@ -4195,94 +3400,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3ui LinCom(
-            C3ui p0, C3ui p1, C3ui p2, C3ui p3, ref Tup4<float> w)
-        {
-            return new C3ui(
-                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3f LinComRawC3f(
-            C3ui p0, C3ui p1, C3ui p2, C3ui p3, ref Tup4<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3ui LinCom(
-            C3ui p0, C3ui p1, C3ui p2, C3ui p3, ref Tup4<double> w)
-        {
-            return new C3ui(
-                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3d LinComRawC3d(
-            C3ui p0, C3ui p1, C3ui p2, C3ui p3, ref Tup4<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3ui LinCom(
-            C3ui p0, C3ui p1, C3ui p2, C3ui p3, C3ui p4, C3ui p5, ref Tup6<float> w)
-        {
-            return new C3ui(
-                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3f LinComRawC3f(
-            C3ui p0, C3ui p1, C3ui p2, C3ui p3, C3ui p4, C3ui p5, ref Tup6<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3ui LinCom(
-            C3ui p0, C3ui p1, C3ui p2, C3ui p3, C3ui p4, C3ui p5, ref Tup6<double> w)
-        {
-            return new C3ui(
-                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3d LinComRawC3d(
-            C3ui p0, C3ui p1, C3ui p2, C3ui p3, C3ui p4, C3ui p5, ref Tup6<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -4388,6 +3505,468 @@ namespace Aardvark.Base
         public static C3ui Lerp(this double x, C3ui a, C3ui b)
         {
             return new C3ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+        }
+
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3ui a, C3ui b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3ui col, uint s)
+        {
+            return (col.R < s && col.G < s && col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(uint s, C3ui col)
+        {
+            return (s < col.R && s < col.G && s < col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3ui a, C3ui b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3ui col, uint s)
+        {
+            return (col.R < s || col.G < s || col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(uint s, C3ui col)
+        {
+            return (s < col.R || s < col.G || s < col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3ui a, C3ui b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3ui col, uint s)
+        {
+            return (col.R > s && col.G > s && col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(uint s, C3ui col)
+        {
+            return (s > col.R && s > col.G && s > col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3ui a, C3ui b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3ui col, uint s)
+        {
+            return (col.R > s || col.G > s || col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(uint s, C3ui col)
+        {
+            return (s > col.R || s > col.G || s > col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3ui a, C3ui b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3ui col, uint s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(uint s, C3ui col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3ui a, C3ui b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3ui col, uint s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(uint s, C3ui col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3ui a, C3ui b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3ui col, uint s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(uint s, C3ui col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3ui a, C3ui b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3ui col, uint s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(uint s, C3ui col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3ui a, C3ui b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3ui col, uint s)
+        {
+            return (col.R == s && col.G == s && col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(uint s, C3ui col)
+        {
+            return (s == col.R && s == col.G && s == col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3ui a, C3ui b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3ui col, uint s)
+        {
+            return (col.R == s || col.G == s || col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(uint s, C3ui col)
+        {
+            return (s == col.R || s == col.G || s == col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3ui a, C3ui b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3ui col, uint s)
+        {
+            return (col.R != s && col.G != s && col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(uint s, C3ui col)
+        {
+            return (s != col.R && s != col.G && s != col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3ui a, C3ui b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3ui col, uint s)
+        {
+            return (col.R != s || col.G != s || col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(uint s, C3ui col)
+        {
+            return (s != col.R || s != col.G || s != col.B);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui LinCom(
+            C3ui p0, C3ui p1, C3ui p2, C3ui p3, ref Tup4<float> w)
+        {
+            return new C3ui(
+                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3ui p0, C3ui p1, C3ui p2, C3ui p3, ref Tup4<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui LinCom(
+            C3ui p0, C3ui p1, C3ui p2, C3ui p3, ref Tup4<double> w)
+        {
+            return new C3ui(
+                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3ui p0, C3ui p1, C3ui p2, C3ui p3, ref Tup4<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui LinCom(
+            C3ui p0, C3ui p1, C3ui p2, C3ui p3, C3ui p4, C3ui p5, ref Tup6<float> w)
+        {
+            return new C3ui(
+                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3ui p0, C3ui p1, C3ui p2, C3ui p3, C3ui p4, C3ui p5, ref Tup6<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui LinCom(
+            C3ui p0, C3ui p1, C3ui p2, C3ui p3, C3ui p4, C3ui p5, ref Tup6<double> w)
+        {
+            return new C3ui(
+                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3ui p0, C3ui p1, C3ui p2, C3ui p3, C3ui p4, C3ui p5, ref Tup6<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
 
         #endregion
@@ -4661,20 +4240,46 @@ namespace Aardvark.Base
         public V4f ToV4f() { return (V4f)this; }
         public V4d ToV4d() { return (V4d)this; }
 
-        public static readonly Func<C3b, C3f> FromC3b = c => new C3f(c);
-        public static readonly Func<C3us, C3f> FromC3us = c => new C3f(c);
-        public static readonly Func<C3ui, C3f> FromC3ui = c => new C3f(c);
-        public static readonly Func<C3d, C3f> FromC3d = c => new C3f(c);
-        public static readonly Func<C4b, C3f> FromC4b = c => new C3f(c);
-        public static readonly Func<C4us, C3f> FromC4us = c => new C3f(c);
-        public static readonly Func<C4ui, C3f> FromC4ui = c => new C3f(c);
-        public static readonly Func<C4f, C3f> FromC4f = c => new C3f(c);
-        public static readonly Func<C4d, C3f> FromC4d = c => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC3b(C3b c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC3us(C3us c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC3ui(C3ui c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC3d(C3d c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC4b(C4b c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC4us(C4us c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC4ui(C4ui c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC4f(C4f c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromC4d(C4d c)
+            => new C3f(c);
 
-        public static readonly Func<V3f, C3f> FromV3f = c => new C3f(c);
-        public static readonly Func<V3d, C3f> FromV3d = c => new C3f(c);
-        public static readonly Func<V4f, C3f> FromV4f = c => new C3f(c);
-        public static readonly Func<V4d, C3f> FromV4d = c => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromV3f(V3f c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromV3d(V3d c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromV4f(V4f c)
+            => new C3f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f FromV4d(V4d c)
+            => new C3f(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -4860,545 +4465,6 @@ namespace Aardvark.Base
         public static bool operator !=(C3f a, C3f b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3f a, C3f b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C3f col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3f col, float s)
-        {
-            return (col.R < s && col.G < s && col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(float s)
-        {
-            return (this.R < s && this.G < s && this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(float s, C3f col)
-        {
-            return (s < col.R && s < col.G && s < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3f a, C3f b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C3f col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3f col, float s)
-        {
-            return (col.R < s || col.G < s || col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(float s)
-        {
-            return (this.R < s || this.G < s || this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(float s, C3f col)
-        {
-            return (s < col.R || s < col.G || s < col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3f a, C3f b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C3f col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3f col, float s)
-        {
-            return (col.R > s && col.G > s && col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(float s)
-        {
-            return (this.R > s && this.G > s && this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(float s, C3f col)
-        {
-            return (s > col.R && s > col.G && s > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3f a, C3f b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C3f col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3f col, float s)
-        {
-            return (col.R > s || col.G > s || col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(float s)
-        {
-            return (this.R > s || this.G > s || this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(float s, C3f col)
-        {
-            return (s > col.R || s > col.G || s > col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3f a, C3f b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C3f col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3f col, float s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(float s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(float s, C3f col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3f a, C3f b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C3f col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3f col, float s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(float s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(float s, C3f col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3f a, C3f b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C3f col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3f col, float s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(float s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(float s, C3f col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3f a, C3f b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C3f col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3f col, float s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(float s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(float s, C3f col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3f a, C3f b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C3f col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3f col, float s)
-        {
-            return (col.R == s && col.G == s && col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(float s)
-        {
-            return (this.R == s && this.G == s && this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(float s, C3f col)
-        {
-            return (s == col.R && s == col.G && s == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3f a, C3f b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C3f col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3f col, float s)
-        {
-            return (col.R == s || col.G == s || col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(float s)
-        {
-            return (this.R == s || this.G == s || this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(float s, C3f col)
-        {
-            return (s == col.R || s == col.G || s == col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3f a, C3f b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C3f col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3f col, float s)
-        {
-            return (col.R != s && col.G != s && col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(float s)
-        {
-            return (this.R != s && this.G != s && this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(float s, C3f col)
-        {
-            return (s != col.R && s != col.G && s != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3f a, C3f b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C3f col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3f col, float s)
-        {
-            return (col.R != s || col.G != s || col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(float s)
-        {
-            return (this.R != s || this.G != s || this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(float s, C3f col)
-        {
-            return (s != col.R || s != col.G || s != col.B);
         }
 
         #endregion
@@ -5756,94 +4822,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3f LinCom(
-            C3f p0, C3f p1, C3f p2, C3f p3, ref Tup4<float> w)
-        {
-            return new C3f(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3f LinComRawC3f(
-            C3f p0, C3f p1, C3f p2, C3f p3, ref Tup4<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3f LinCom(
-            C3f p0, C3f p1, C3f p2, C3f p3, ref Tup4<double> w)
-        {
-            return new C3f(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3d LinComRawC3d(
-            C3f p0, C3f p1, C3f p2, C3f p3, ref Tup4<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3f LinCom(
-            C3f p0, C3f p1, C3f p2, C3f p3, C3f p4, C3f p5, ref Tup6<float> w)
-        {
-            return new C3f(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3f LinComRawC3f(
-            C3f p0, C3f p1, C3f p2, C3f p3, C3f p4, C3f p5, ref Tup6<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3f LinCom(
-            C3f p0, C3f p1, C3f p2, C3f p3, C3f p4, C3f p5, ref Tup6<double> w)
-        {
-            return new C3f(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3d LinComRawC3d(
-            C3f p0, C3f p1, C3f p2, C3f p3, C3f p4, C3f p5, ref Tup6<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -5942,6 +4920,468 @@ namespace Aardvark.Base
         {
             return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3f a, C3f b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3f col, float s)
+        {
+            return (col.R < s && col.G < s && col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(float s, C3f col)
+        {
+            return (s < col.R && s < col.G && s < col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3f a, C3f b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3f col, float s)
+        {
+            return (col.R < s || col.G < s || col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(float s, C3f col)
+        {
+            return (s < col.R || s < col.G || s < col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3f a, C3f b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3f col, float s)
+        {
+            return (col.R > s && col.G > s && col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(float s, C3f col)
+        {
+            return (s > col.R && s > col.G && s > col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3f a, C3f b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3f col, float s)
+        {
+            return (col.R > s || col.G > s || col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(float s, C3f col)
+        {
+            return (s > col.R || s > col.G || s > col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3f a, C3f b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3f col, float s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(float s, C3f col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3f a, C3f b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3f col, float s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(float s, C3f col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3f a, C3f b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3f col, float s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(float s, C3f col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3f a, C3f b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3f col, float s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(float s, C3f col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3f a, C3f b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3f col, float s)
+        {
+            return (col.R == s && col.G == s && col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(float s, C3f col)
+        {
+            return (s == col.R && s == col.G && s == col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3f a, C3f b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3f col, float s)
+        {
+            return (col.R == s || col.G == s || col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(float s, C3f col)
+        {
+            return (s == col.R || s == col.G || s == col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3f a, C3f b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3f col, float s)
+        {
+            return (col.R != s && col.G != s && col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(float s, C3f col)
+        {
+            return (s != col.R && s != col.G && s != col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3f a, C3f b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3f col, float s)
+        {
+            return (col.R != s || col.G != s || col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(float s, C3f col)
+        {
+            return (s != col.R || s != col.G || s != col.B);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinCom(
+            C3f p0, C3f p1, C3f p2, C3f p3, ref Tup4<float> w)
+        {
+            return new C3f(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3f p0, C3f p1, C3f p2, C3f p3, ref Tup4<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinCom(
+            C3f p0, C3f p1, C3f p2, C3f p3, ref Tup4<double> w)
+        {
+            return new C3f(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3f p0, C3f p1, C3f p2, C3f p3, ref Tup4<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinCom(
+            C3f p0, C3f p1, C3f p2, C3f p3, C3f p4, C3f p5, ref Tup6<float> w)
+        {
+            return new C3f(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3f p0, C3f p1, C3f p2, C3f p3, C3f p4, C3f p5, ref Tup6<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinCom(
+            C3f p0, C3f p1, C3f p2, C3f p3, C3f p4, C3f p5, ref Tup6<double> w)
+        {
+            return new C3f(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3f p0, C3f p1, C3f p2, C3f p3, C3f p4, C3f p5, ref Tup6<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
         #endregion
     }
 
@@ -6183,18 +5623,40 @@ namespace Aardvark.Base
         public V3d ToV3d() { return (V3d)this; }
         public V4d ToV4d() { return (V4d)this; }
 
-        public static readonly Func<C3b, C3d> FromC3b = c => new C3d(c);
-        public static readonly Func<C3us, C3d> FromC3us = c => new C3d(c);
-        public static readonly Func<C3ui, C3d> FromC3ui = c => new C3d(c);
-        public static readonly Func<C3f, C3d> FromC3f = c => new C3d(c);
-        public static readonly Func<C4b, C3d> FromC4b = c => new C3d(c);
-        public static readonly Func<C4us, C3d> FromC4us = c => new C3d(c);
-        public static readonly Func<C4ui, C3d> FromC4ui = c => new C3d(c);
-        public static readonly Func<C4f, C3d> FromC4f = c => new C3d(c);
-        public static readonly Func<C4d, C3d> FromC4d = c => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC3b(C3b c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC3us(C3us c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC3ui(C3ui c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC3f(C3f c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC4b(C4b c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC4us(C4us c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC4ui(C4ui c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC4f(C4f c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromC4d(C4d c)
+            => new C3d(c);
 
-        public static readonly Func<V3d, C3d> FromV3d = c => new C3d(c);
-        public static readonly Func<V4d, C3d> FromV4d = c => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromV3d(V3d c)
+            => new C3d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d FromV4d(V4d c)
+            => new C3d(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -6370,545 +5832,6 @@ namespace Aardvark.Base
         public static bool operator !=(C3d a, C3d b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3d a, C3d b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C3d col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C3d col, double s)
-        {
-            return (col.R < s && col.G < s && col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(double s)
-        {
-            return (this.R < s && this.G < s && this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(double s, C3d col)
-        {
-            return (s < col.R && s < col.G && s < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3d a, C3d b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C3d col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C3d col, double s)
-        {
-            return (col.R < s || col.G < s || col.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(double s)
-        {
-            return (this.R < s || this.G < s || this.B < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(double s, C3d col)
-        {
-            return (s < col.R || s < col.G || s < col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3d a, C3d b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C3d col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C3d col, double s)
-        {
-            return (col.R > s && col.G > s && col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(double s)
-        {
-            return (this.R > s && this.G > s && this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(double s, C3d col)
-        {
-            return (s > col.R && s > col.G && s > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3d a, C3d b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C3d col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C3d col, double s)
-        {
-            return (col.R > s || col.G > s || col.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(double s)
-        {
-            return (this.R > s || this.G > s || this.B > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(double s, C3d col)
-        {
-            return (s > col.R || s > col.G || s > col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3d a, C3d b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C3d col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C3d col, double s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(double s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(double s, C3d col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3d a, C3d b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C3d col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C3d col, double s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(double s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(double s, C3d col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3d a, C3d b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C3d col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C3d col, double s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(double s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(double s, C3d col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3d a, C3d b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C3d col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C3d col, double s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(double s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(double s, C3d col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3d a, C3d b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C3d col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C3d col, double s)
-        {
-            return (col.R == s && col.G == s && col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(double s)
-        {
-            return (this.R == s && this.G == s && this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(double s, C3d col)
-        {
-            return (s == col.R && s == col.G && s == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3d a, C3d b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C3d col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C3d col, double s)
-        {
-            return (col.R == s || col.G == s || col.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(double s)
-        {
-            return (this.R == s || this.G == s || this.B == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(double s, C3d col)
-        {
-            return (s == col.R || s == col.G || s == col.B);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3d a, C3d b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C3d col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C3d col, double s)
-        {
-            return (col.R != s && col.G != s && col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(double s)
-        {
-            return (this.R != s && this.G != s && this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(double s, C3d col)
-        {
-            return (s != col.R && s != col.G && s != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3d a, C3d b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C3d col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C3d col, double s)
-        {
-            return (col.R != s || col.G != s || col.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(double s)
-        {
-            return (this.R != s || this.G != s || this.B != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(double s, C3d col)
-        {
-            return (s != col.R || s != col.G || s != col.B);
         }
 
         #endregion
@@ -7212,94 +6135,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3d LinCom(
-            C3d p0, C3d p1, C3d p2, C3d p3, ref Tup4<float> w)
-        {
-            return new C3d(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3f LinComRawC3f(
-            C3d p0, C3d p1, C3d p2, C3d p3, ref Tup4<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3d LinCom(
-            C3d p0, C3d p1, C3d p2, C3d p3, ref Tup4<double> w)
-        {
-            return new C3d(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C3d LinComRawC3d(
-            C3d p0, C3d p1, C3d p2, C3d p3, ref Tup4<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3d LinCom(
-            C3d p0, C3d p1, C3d p2, C3d p3, C3d p4, C3d p5, ref Tup6<float> w)
-        {
-            return new C3d(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3f LinComRawC3f(
-            C3d p0, C3d p1, C3d p2, C3d p3, C3d p4, C3d p5, ref Tup6<float> w)
-        {
-            return new C3f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C3d LinCom(
-            C3d p0, C3d p1, C3d p2, C3d p3, C3d p4, C3d p5, ref Tup6<double> w)
-        {
-            return new C3d(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C3d LinComRawC3d(
-            C3d p0, C3d p1, C3d p2, C3d p3, C3d p4, C3d p5, ref Tup6<double> w)
-        {
-            return new C3d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -7398,6 +6233,468 @@ namespace Aardvark.Base
         {
             return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3d a, C3d b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C3d col, double s)
+        {
+            return (col.R < s && col.G < s && col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(double s, C3d col)
+        {
+            return (s < col.R && s < col.G && s < col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3d a, C3d b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C3d col, double s)
+        {
+            return (col.R < s || col.G < s || col.B < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(double s, C3d col)
+        {
+            return (s < col.R || s < col.G || s < col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3d a, C3d b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C3d col, double s)
+        {
+            return (col.R > s && col.G > s && col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(double s, C3d col)
+        {
+            return (s > col.R && s > col.G && s > col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3d a, C3d b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C3d col, double s)
+        {
+            return (col.R > s || col.G > s || col.B > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(double s, C3d col)
+        {
+            return (s > col.R || s > col.G || s > col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3d a, C3d b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C3d col, double s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(double s, C3d col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3d a, C3d b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C3d col, double s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(double s, C3d col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3d a, C3d b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C3d col, double s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(double s, C3d col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3d a, C3d b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C3d col, double s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(double s, C3d col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3d a, C3d b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C3d col, double s)
+        {
+            return (col.R == s && col.G == s && col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(double s, C3d col)
+        {
+            return (s == col.R && s == col.G && s == col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3d a, C3d b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C3d col, double s)
+        {
+            return (col.R == s || col.G == s || col.B == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(double s, C3d col)
+        {
+            return (s == col.R || s == col.G || s == col.B);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3d a, C3d b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C3d col, double s)
+        {
+            return (col.R != s && col.G != s && col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(double s, C3d col)
+        {
+            return (s != col.R && s != col.G && s != col.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3d a, C3d b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C3d col, double s)
+        {
+            return (col.R != s || col.G != s || col.B != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(double s, C3d col)
+        {
+            return (s != col.R || s != col.G || s != col.B);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinCom(
+            C3d p0, C3d p1, C3d p2, C3d p3, ref Tup4<float> w)
+        {
+            return new C3d(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3d p0, C3d p1, C3d p2, C3d p3, ref Tup4<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinCom(
+            C3d p0, C3d p1, C3d p2, C3d p3, ref Tup4<double> w)
+        {
+            return new C3d(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3d p0, C3d p1, C3d p2, C3d p3, ref Tup4<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinCom(
+            C3d p0, C3d p1, C3d p2, C3d p3, C3d p4, C3d p5, ref Tup6<float> w)
+        {
+            return new C3d(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinComRawF(
+            C3d p0, C3d p1, C3d p2, C3d p3, C3d p4, C3d p5, ref Tup6<float> w)
+        {
+            return new C3f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinCom(
+            C3d p0, C3d p1, C3d p2, C3d p3, C3d p4, C3d p5, ref Tup6<double> w)
+        {
+            return new C3d(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinComRawD(
+            C3d p0, C3d p1, C3d p2, C3d p3, C3d p4, C3d p5, ref Tup6<double> w)
+        {
+            return new C3d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
         #endregion
     }
 
@@ -7810,20 +7107,46 @@ namespace Aardvark.Base
         public V4i ToV4i() { return (V4i)this; }
         public V4l ToV4l() { return (V4l)this; }
 
-        public static readonly Func<C3b, C4b> FromC3b = c => new C4b(c);
-        public static readonly Func<C3us, C4b> FromC3us = c => new C4b(c);
-        public static readonly Func<C3ui, C4b> FromC3ui = c => new C4b(c);
-        public static readonly Func<C3f, C4b> FromC3f = c => new C4b(c);
-        public static readonly Func<C3d, C4b> FromC3d = c => new C4b(c);
-        public static readonly Func<C4us, C4b> FromC4us = c => new C4b(c);
-        public static readonly Func<C4ui, C4b> FromC4ui = c => new C4b(c);
-        public static readonly Func<C4f, C4b> FromC4f = c => new C4b(c);
-        public static readonly Func<C4d, C4b> FromC4d = c => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC3b(C3b c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC3us(C3us c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC3ui(C3ui c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC3f(C3f c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC3d(C3d c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC4us(C4us c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC4ui(C4ui c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC4f(C4f c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromC4d(C4d c)
+            => new C4b(c);
 
-        public static readonly Func<V3i, C4b> FromV3i = c => new C4b(c);
-        public static readonly Func<V3l, C4b> FromV3l = c => new C4b(c);
-        public static readonly Func<V4i, C4b> FromV4i = c => new C4b(c);
-        public static readonly Func<V4l, C4b> FromV4l = c => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromV3i(V3i c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromV3l(V3l c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromV4i(V4i c)
+            => new C4b(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromV4l(V4l c)
+            => new C4b(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -8007,545 +7330,6 @@ namespace Aardvark.Base
         public static bool operator !=(C4b a, C4b b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4b a, C4b b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C4b col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B && this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4b col, byte s)
-        {
-            return (col.R < s && col.G < s && col.B < s && col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(byte s)
-        {
-            return (this.R < s && this.G < s && this.B < s && this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(byte s, C4b col)
-        {
-            return (s < col.R && s < col.G && s < col.B && s < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4b a, C4b b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C4b col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B || this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4b col, byte s)
-        {
-            return (col.R < s || col.G < s || col.B < s || col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(byte s)
-        {
-            return (this.R < s || this.G < s || this.B < s || this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(byte s, C4b col)
-        {
-            return (s < col.R || s < col.G || s < col.B || s < col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4b a, C4b b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C4b col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B && this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4b col, byte s)
-        {
-            return (col.R > s && col.G > s && col.B > s && col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(byte s)
-        {
-            return (this.R > s && this.G > s && this.B > s && this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(byte s, C4b col)
-        {
-            return (s > col.R && s > col.G && s > col.B && s > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4b a, C4b b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C4b col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B || this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4b col, byte s)
-        {
-            return (col.R > s || col.G > s || col.B > s || col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(byte s)
-        {
-            return (this.R > s || this.G > s || this.B > s || this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(byte s, C4b col)
-        {
-            return (s > col.R || s > col.G || s > col.B || s > col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4b a, C4b b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C4b col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B && this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4b col, byte s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(byte s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s && this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(byte s, C4b col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4b a, C4b b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C4b col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B || this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4b col, byte s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(byte s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s || this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(byte s, C4b col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4b a, C4b b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C4b col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B && this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4b col, byte s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(byte s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s && this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(byte s, C4b col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4b a, C4b b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C4b col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B || this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4b col, byte s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(byte s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s || this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(byte s, C4b col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4b a, C4b b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C4b col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B && this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4b col, byte s)
-        {
-            return (col.R == s && col.G == s && col.B == s && col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(byte s)
-        {
-            return (this.R == s && this.G == s && this.B == s && this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(byte s, C4b col)
-        {
-            return (s == col.R && s == col.G && s == col.B && s == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4b a, C4b b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C4b col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B || this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4b col, byte s)
-        {
-            return (col.R == s || col.G == s || col.B == s || col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(byte s)
-        {
-            return (this.R == s || this.G == s || this.B == s || this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(byte s, C4b col)
-        {
-            return (s == col.R || s == col.G || s == col.B || s == col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4b a, C4b b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C4b col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B && this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4b col, byte s)
-        {
-            return (col.R != s && col.G != s && col.B != s && col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(byte s)
-        {
-            return (this.R != s && this.G != s && this.B != s && this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(byte s, C4b col)
-        {
-            return (s != col.R && s != col.G && s != col.B && s != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4b a, C4b b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C4b col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B || this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4b col, byte s)
-        {
-            return (col.R != s || col.G != s || col.B != s || col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(byte s)
-        {
-            return (this.R != s || this.G != s || this.B != s || this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(byte s, C4b col)
-        {
-            return (s != col.R || s != col.G || s != col.B || s != col.A);
         }
 
         #endregion
@@ -8870,94 +7654,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4b LinCom(
-            C4b p0, C4b p1, C4b p2, C4b p3, ref Tup4<float> w)
-        {
-            return new C4b(
-                Col.ByteFromByteInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.ByteFromByteInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.ByteFromByteInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4f LinComRawC4f(
-            C4b p0, C4b p1, C4b p2, C4b p3, ref Tup4<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4b LinCom(
-            C4b p0, C4b p1, C4b p2, C4b p3, ref Tup4<double> w)
-        {
-            return new C4b(
-                Col.ByteFromByteInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.ByteFromByteInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.ByteFromByteInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4d LinComRawC4d(
-            C4b p0, C4b p1, C4b p2, C4b p3, ref Tup4<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4b LinCom(
-            C4b p0, C4b p1, C4b p2, C4b p3, C4b p4, C4b p5, ref Tup6<float> w)
-        {
-            return new C4b(
-                Col.ByteFromByteInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.ByteFromByteInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.ByteFromByteInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4f LinComRawC4f(
-            C4b p0, C4b p1, C4b p2, C4b p3, C4b p4, C4b p5, ref Tup6<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4b LinCom(
-            C4b p0, C4b p1, C4b p2, C4b p3, C4b p4, C4b p5, ref Tup6<double> w)
-        {
-            return new C4b(
-                Col.ByteFromByteInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.ByteFromByteInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.ByteFromByteInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4d LinComRawC4d(
-            C4b p0, C4b p1, C4b p2, C4b p3, C4b p4, C4b p5, ref Tup6<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -9074,6 +7770,468 @@ namespace Aardvark.Base
         public static C4b Lerp(this double x, C4b a, C4b b)
         {
             return new C4b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+        }
+
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4b a, C4b b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4b col, byte s)
+        {
+            return (col.R < s && col.G < s && col.B < s && col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(byte s, C4b col)
+        {
+            return (s < col.R && s < col.G && s < col.B && s < col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4b a, C4b b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4b col, byte s)
+        {
+            return (col.R < s || col.G < s || col.B < s || col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(byte s, C4b col)
+        {
+            return (s < col.R || s < col.G || s < col.B || s < col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4b a, C4b b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4b col, byte s)
+        {
+            return (col.R > s && col.G > s && col.B > s && col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(byte s, C4b col)
+        {
+            return (s > col.R && s > col.G && s > col.B && s > col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4b a, C4b b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4b col, byte s)
+        {
+            return (col.R > s || col.G > s || col.B > s || col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(byte s, C4b col)
+        {
+            return (s > col.R || s > col.G || s > col.B || s > col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4b a, C4b b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4b col, byte s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(byte s, C4b col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4b a, C4b b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4b col, byte s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(byte s, C4b col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4b a, C4b b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4b col, byte s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(byte s, C4b col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4b a, C4b b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4b col, byte s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(byte s, C4b col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4b a, C4b b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4b col, byte s)
+        {
+            return (col.R == s && col.G == s && col.B == s && col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(byte s, C4b col)
+        {
+            return (s == col.R && s == col.G && s == col.B && s == col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4b a, C4b b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4b col, byte s)
+        {
+            return (col.R == s || col.G == s || col.B == s || col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(byte s, C4b col)
+        {
+            return (s == col.R || s == col.G || s == col.B || s == col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4b a, C4b b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4b col, byte s)
+        {
+            return (col.R != s && col.G != s && col.B != s && col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(byte s, C4b col)
+        {
+            return (s != col.R && s != col.G && s != col.B && s != col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4b a, C4b b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4b col, byte s)
+        {
+            return (col.R != s || col.G != s || col.B != s || col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(byte s, C4b col)
+        {
+            return (s != col.R || s != col.G || s != col.B || s != col.A);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b LinCom(
+            C4b p0, C4b p1, C4b p2, C4b p3, ref Tup4<float> w)
+        {
+            return new C4b(
+                Col.ByteFromByteInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.ByteFromByteInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.ByteFromByteInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4b p0, C4b p1, C4b p2, C4b p3, ref Tup4<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b LinCom(
+            C4b p0, C4b p1, C4b p2, C4b p3, ref Tup4<double> w)
+        {
+            return new C4b(
+                Col.ByteFromByteInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.ByteFromByteInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.ByteFromByteInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4b p0, C4b p1, C4b p2, C4b p3, ref Tup4<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b LinCom(
+            C4b p0, C4b p1, C4b p2, C4b p3, C4b p4, C4b p5, ref Tup6<float> w)
+        {
+            return new C4b(
+                Col.ByteFromByteInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.ByteFromByteInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.ByteFromByteInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4b p0, C4b p1, C4b p2, C4b p3, C4b p4, C4b p5, ref Tup6<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b LinCom(
+            C4b p0, C4b p1, C4b p2, C4b p3, C4b p4, C4b p5, ref Tup6<double> w)
+        {
+            return new C4b(
+                Col.ByteFromByteInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.ByteFromByteInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.ByteFromByteInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4b p0, C4b p1, C4b p2, C4b p3, C4b p4, C4b p5, ref Tup6<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
 
         #endregion
@@ -9427,20 +8585,46 @@ namespace Aardvark.Base
         public V4i ToV4i() { return (V4i)this; }
         public V4l ToV4l() { return (V4l)this; }
 
-        public static readonly Func<C3b, C4us> FromC3b = c => new C4us(c);
-        public static readonly Func<C3us, C4us> FromC3us = c => new C4us(c);
-        public static readonly Func<C3ui, C4us> FromC3ui = c => new C4us(c);
-        public static readonly Func<C3f, C4us> FromC3f = c => new C4us(c);
-        public static readonly Func<C3d, C4us> FromC3d = c => new C4us(c);
-        public static readonly Func<C4b, C4us> FromC4b = c => new C4us(c);
-        public static readonly Func<C4ui, C4us> FromC4ui = c => new C4us(c);
-        public static readonly Func<C4f, C4us> FromC4f = c => new C4us(c);
-        public static readonly Func<C4d, C4us> FromC4d = c => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC3b(C3b c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC3us(C3us c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC3ui(C3ui c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC3f(C3f c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC3d(C3d c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC4b(C4b c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC4ui(C4ui c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC4f(C4f c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromC4d(C4d c)
+            => new C4us(c);
 
-        public static readonly Func<V3i, C4us> FromV3i = c => new C4us(c);
-        public static readonly Func<V3l, C4us> FromV3l = c => new C4us(c);
-        public static readonly Func<V4i, C4us> FromV4i = c => new C4us(c);
-        public static readonly Func<V4l, C4us> FromV4l = c => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromV3i(V3i c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromV3l(V3l c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromV4i(V4i c)
+            => new C4us(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromV4l(V4l c)
+            => new C4us(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -9624,545 +8808,6 @@ namespace Aardvark.Base
         public static bool operator !=(C4us a, C4us b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4us a, C4us b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C4us col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B && this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4us col, ushort s)
-        {
-            return (col.R < s && col.G < s && col.B < s && col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(ushort s)
-        {
-            return (this.R < s && this.G < s && this.B < s && this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(ushort s, C4us col)
-        {
-            return (s < col.R && s < col.G && s < col.B && s < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4us a, C4us b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C4us col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B || this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4us col, ushort s)
-        {
-            return (col.R < s || col.G < s || col.B < s || col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(ushort s)
-        {
-            return (this.R < s || this.G < s || this.B < s || this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(ushort s, C4us col)
-        {
-            return (s < col.R || s < col.G || s < col.B || s < col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4us a, C4us b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C4us col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B && this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4us col, ushort s)
-        {
-            return (col.R > s && col.G > s && col.B > s && col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(ushort s)
-        {
-            return (this.R > s && this.G > s && this.B > s && this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(ushort s, C4us col)
-        {
-            return (s > col.R && s > col.G && s > col.B && s > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4us a, C4us b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C4us col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B || this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4us col, ushort s)
-        {
-            return (col.R > s || col.G > s || col.B > s || col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(ushort s)
-        {
-            return (this.R > s || this.G > s || this.B > s || this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(ushort s, C4us col)
-        {
-            return (s > col.R || s > col.G || s > col.B || s > col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4us a, C4us b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C4us col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B && this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4us col, ushort s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(ushort s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s && this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(ushort s, C4us col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4us a, C4us b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C4us col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B || this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4us col, ushort s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(ushort s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s || this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(ushort s, C4us col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4us a, C4us b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C4us col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B && this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4us col, ushort s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(ushort s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s && this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(ushort s, C4us col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4us a, C4us b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C4us col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B || this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4us col, ushort s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(ushort s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s || this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(ushort s, C4us col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4us a, C4us b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C4us col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B && this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4us col, ushort s)
-        {
-            return (col.R == s && col.G == s && col.B == s && col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(ushort s)
-        {
-            return (this.R == s && this.G == s && this.B == s && this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(ushort s, C4us col)
-        {
-            return (s == col.R && s == col.G && s == col.B && s == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4us a, C4us b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C4us col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B || this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4us col, ushort s)
-        {
-            return (col.R == s || col.G == s || col.B == s || col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(ushort s)
-        {
-            return (this.R == s || this.G == s || this.B == s || this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(ushort s, C4us col)
-        {
-            return (s == col.R || s == col.G || s == col.B || s == col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4us a, C4us b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C4us col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B && this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4us col, ushort s)
-        {
-            return (col.R != s && col.G != s && col.B != s && col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(ushort s)
-        {
-            return (this.R != s && this.G != s && this.B != s && this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(ushort s, C4us col)
-        {
-            return (s != col.R && s != col.G && s != col.B && s != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4us a, C4us b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C4us col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B || this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4us col, ushort s)
-        {
-            return (col.R != s || col.G != s || col.B != s || col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(ushort s)
-        {
-            return (this.R != s || this.G != s || this.B != s || this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(ushort s, C4us col)
-        {
-            return (s != col.R || s != col.G || s != col.B || s != col.A);
         }
 
         #endregion
@@ -10487,94 +9132,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4us LinCom(
-            C4us p0, C4us p1, C4us p2, C4us p3, ref Tup4<float> w)
-        {
-            return new C4us(
-                Col.UShortFromUShortInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.UShortFromUShortInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.UShortFromUShortInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4f LinComRawC4f(
-            C4us p0, C4us p1, C4us p2, C4us p3, ref Tup4<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4us LinCom(
-            C4us p0, C4us p1, C4us p2, C4us p3, ref Tup4<double> w)
-        {
-            return new C4us(
-                Col.UShortFromUShortInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.UShortFromUShortInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.UShortFromUShortInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4d LinComRawC4d(
-            C4us p0, C4us p1, C4us p2, C4us p3, ref Tup4<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4us LinCom(
-            C4us p0, C4us p1, C4us p2, C4us p3, C4us p4, C4us p5, ref Tup6<float> w)
-        {
-            return new C4us(
-                Col.UShortFromUShortInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.UShortFromUShortInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.UShortFromUShortInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4f LinComRawC4f(
-            C4us p0, C4us p1, C4us p2, C4us p3, C4us p4, C4us p5, ref Tup6<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4us LinCom(
-            C4us p0, C4us p1, C4us p2, C4us p3, C4us p4, C4us p5, ref Tup6<double> w)
-        {
-            return new C4us(
-                Col.UShortFromUShortInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.UShortFromUShortInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.UShortFromUShortInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4d LinComRawC4d(
-            C4us p0, C4us p1, C4us p2, C4us p3, C4us p4, C4us p5, ref Tup6<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -10691,6 +9248,468 @@ namespace Aardvark.Base
         public static C4us Lerp(this double x, C4us a, C4us b)
         {
             return new C4us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+        }
+
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4us a, C4us b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4us col, ushort s)
+        {
+            return (col.R < s && col.G < s && col.B < s && col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(ushort s, C4us col)
+        {
+            return (s < col.R && s < col.G && s < col.B && s < col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4us a, C4us b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4us col, ushort s)
+        {
+            return (col.R < s || col.G < s || col.B < s || col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(ushort s, C4us col)
+        {
+            return (s < col.R || s < col.G || s < col.B || s < col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4us a, C4us b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4us col, ushort s)
+        {
+            return (col.R > s && col.G > s && col.B > s && col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(ushort s, C4us col)
+        {
+            return (s > col.R && s > col.G && s > col.B && s > col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4us a, C4us b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4us col, ushort s)
+        {
+            return (col.R > s || col.G > s || col.B > s || col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(ushort s, C4us col)
+        {
+            return (s > col.R || s > col.G || s > col.B || s > col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4us a, C4us b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4us col, ushort s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(ushort s, C4us col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4us a, C4us b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4us col, ushort s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(ushort s, C4us col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4us a, C4us b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4us col, ushort s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(ushort s, C4us col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4us a, C4us b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4us col, ushort s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(ushort s, C4us col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4us a, C4us b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4us col, ushort s)
+        {
+            return (col.R == s && col.G == s && col.B == s && col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(ushort s, C4us col)
+        {
+            return (s == col.R && s == col.G && s == col.B && s == col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4us a, C4us b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4us col, ushort s)
+        {
+            return (col.R == s || col.G == s || col.B == s || col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(ushort s, C4us col)
+        {
+            return (s == col.R || s == col.G || s == col.B || s == col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4us a, C4us b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4us col, ushort s)
+        {
+            return (col.R != s && col.G != s && col.B != s && col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(ushort s, C4us col)
+        {
+            return (s != col.R && s != col.G && s != col.B && s != col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4us a, C4us b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4us col, ushort s)
+        {
+            return (col.R != s || col.G != s || col.B != s || col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(ushort s, C4us col)
+        {
+            return (s != col.R || s != col.G || s != col.B || s != col.A);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us LinCom(
+            C4us p0, C4us p1, C4us p2, C4us p3, ref Tup4<float> w)
+        {
+            return new C4us(
+                Col.UShortFromUShortInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.UShortFromUShortInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.UShortFromUShortInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4us p0, C4us p1, C4us p2, C4us p3, ref Tup4<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us LinCom(
+            C4us p0, C4us p1, C4us p2, C4us p3, ref Tup4<double> w)
+        {
+            return new C4us(
+                Col.UShortFromUShortInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.UShortFromUShortInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.UShortFromUShortInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4us p0, C4us p1, C4us p2, C4us p3, ref Tup4<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us LinCom(
+            C4us p0, C4us p1, C4us p2, C4us p3, C4us p4, C4us p5, ref Tup6<float> w)
+        {
+            return new C4us(
+                Col.UShortFromUShortInFloatClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.UShortFromUShortInFloatClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.UShortFromUShortInFloatClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4us p0, C4us p1, C4us p2, C4us p3, C4us p4, C4us p5, ref Tup6<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us LinCom(
+            C4us p0, C4us p1, C4us p2, C4us p3, C4us p4, C4us p5, ref Tup6<double> w)
+        {
+            return new C4us(
+                Col.UShortFromUShortInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.UShortFromUShortInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.UShortFromUShortInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4us p0, C4us p1, C4us p2, C4us p3, C4us p4, C4us p5, ref Tup6<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
 
         #endregion
@@ -10999,18 +10018,40 @@ namespace Aardvark.Base
         public V3l ToV3l() { return (V3l)this; }
         public V4l ToV4l() { return (V4l)this; }
 
-        public static readonly Func<C3b, C4ui> FromC3b = c => new C4ui(c);
-        public static readonly Func<C3us, C4ui> FromC3us = c => new C4ui(c);
-        public static readonly Func<C3ui, C4ui> FromC3ui = c => new C4ui(c);
-        public static readonly Func<C3f, C4ui> FromC3f = c => new C4ui(c);
-        public static readonly Func<C3d, C4ui> FromC3d = c => new C4ui(c);
-        public static readonly Func<C4b, C4ui> FromC4b = c => new C4ui(c);
-        public static readonly Func<C4us, C4ui> FromC4us = c => new C4ui(c);
-        public static readonly Func<C4f, C4ui> FromC4f = c => new C4ui(c);
-        public static readonly Func<C4d, C4ui> FromC4d = c => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC3b(C3b c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC3us(C3us c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC3ui(C3ui c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC3f(C3f c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC3d(C3d c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC4b(C4b c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC4us(C4us c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC4f(C4f c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromC4d(C4d c)
+            => new C4ui(c);
 
-        public static readonly Func<V3l, C4ui> FromV3l = c => new C4ui(c);
-        public static readonly Func<V4l, C4ui> FromV4l = c => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromV3l(V3l c)
+            => new C4ui(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromV4l(V4l c)
+            => new C4ui(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -11193,545 +10234,6 @@ namespace Aardvark.Base
         public static bool operator !=(C4ui a, C4ui b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4ui a, C4ui b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C4ui col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B && this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4ui col, uint s)
-        {
-            return (col.R < s && col.G < s && col.B < s && col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(uint s)
-        {
-            return (this.R < s && this.G < s && this.B < s && this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(uint s, C4ui col)
-        {
-            return (s < col.R && s < col.G && s < col.B && s < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4ui a, C4ui b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C4ui col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B || this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4ui col, uint s)
-        {
-            return (col.R < s || col.G < s || col.B < s || col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(uint s)
-        {
-            return (this.R < s || this.G < s || this.B < s || this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(uint s, C4ui col)
-        {
-            return (s < col.R || s < col.G || s < col.B || s < col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4ui a, C4ui b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C4ui col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B && this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4ui col, uint s)
-        {
-            return (col.R > s && col.G > s && col.B > s && col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(uint s)
-        {
-            return (this.R > s && this.G > s && this.B > s && this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(uint s, C4ui col)
-        {
-            return (s > col.R && s > col.G && s > col.B && s > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4ui a, C4ui b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C4ui col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B || this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4ui col, uint s)
-        {
-            return (col.R > s || col.G > s || col.B > s || col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(uint s)
-        {
-            return (this.R > s || this.G > s || this.B > s || this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(uint s, C4ui col)
-        {
-            return (s > col.R || s > col.G || s > col.B || s > col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4ui a, C4ui b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C4ui col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B && this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4ui col, uint s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(uint s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s && this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(uint s, C4ui col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4ui a, C4ui b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C4ui col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B || this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4ui col, uint s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(uint s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s || this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(uint s, C4ui col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4ui a, C4ui b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C4ui col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B && this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4ui col, uint s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(uint s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s && this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(uint s, C4ui col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4ui a, C4ui b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C4ui col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B || this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4ui col, uint s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(uint s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s || this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(uint s, C4ui col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4ui a, C4ui b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C4ui col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B && this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4ui col, uint s)
-        {
-            return (col.R == s && col.G == s && col.B == s && col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(uint s)
-        {
-            return (this.R == s && this.G == s && this.B == s && this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(uint s, C4ui col)
-        {
-            return (s == col.R && s == col.G && s == col.B && s == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4ui a, C4ui b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C4ui col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B || this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4ui col, uint s)
-        {
-            return (col.R == s || col.G == s || col.B == s || col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(uint s)
-        {
-            return (this.R == s || this.G == s || this.B == s || this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(uint s, C4ui col)
-        {
-            return (s == col.R || s == col.G || s == col.B || s == col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4ui a, C4ui b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C4ui col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B && this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4ui col, uint s)
-        {
-            return (col.R != s && col.G != s && col.B != s && col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(uint s)
-        {
-            return (this.R != s && this.G != s && this.B != s && this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(uint s, C4ui col)
-        {
-            return (s != col.R && s != col.G && s != col.B && s != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4ui a, C4ui b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C4ui col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B || this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4ui col, uint s)
-        {
-            return (col.R != s || col.G != s || col.B != s || col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(uint s)
-        {
-            return (this.R != s || this.G != s || this.B != s || this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(uint s, C4ui col)
-        {
-            return (s != col.R || s != col.G || s != col.B || s != col.A);
         }
 
         #endregion
@@ -12018,94 +10520,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4ui LinCom(
-            C4ui p0, C4ui p1, C4ui p2, C4ui p3, ref Tup4<float> w)
-        {
-            return new C4ui(
-                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4f LinComRawC4f(
-            C4ui p0, C4ui p1, C4ui p2, C4ui p3, ref Tup4<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4ui LinCom(
-            C4ui p0, C4ui p1, C4ui p2, C4ui p3, ref Tup4<double> w)
-        {
-            return new C4ui(
-                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4d LinComRawC4d(
-            C4ui p0, C4ui p1, C4ui p2, C4ui p3, ref Tup4<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4ui LinCom(
-            C4ui p0, C4ui p1, C4ui p2, C4ui p3, C4ui p4, C4ui p5, ref Tup6<float> w)
-        {
-            return new C4ui(
-                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4f LinComRawC4f(
-            C4ui p0, C4ui p1, C4ui p2, C4ui p3, C4ui p4, C4ui p5, ref Tup6<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4ui LinCom(
-            C4ui p0, C4ui p1, C4ui p2, C4ui p3, C4ui p4, C4ui p5, ref Tup6<double> w)
-        {
-            return new C4ui(
-                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4d LinComRawC4d(
-            C4ui p0, C4ui p1, C4ui p2, C4ui p3, C4ui p4, C4ui p5, ref Tup6<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -12222,6 +10636,468 @@ namespace Aardvark.Base
         public static C4ui Lerp(this double x, C4ui a, C4ui b)
         {
             return new C4ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+        }
+
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4ui a, C4ui b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4ui col, uint s)
+        {
+            return (col.R < s && col.G < s && col.B < s && col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(uint s, C4ui col)
+        {
+            return (s < col.R && s < col.G && s < col.B && s < col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4ui a, C4ui b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4ui col, uint s)
+        {
+            return (col.R < s || col.G < s || col.B < s || col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(uint s, C4ui col)
+        {
+            return (s < col.R || s < col.G || s < col.B || s < col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4ui a, C4ui b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4ui col, uint s)
+        {
+            return (col.R > s && col.G > s && col.B > s && col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(uint s, C4ui col)
+        {
+            return (s > col.R && s > col.G && s > col.B && s > col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4ui a, C4ui b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4ui col, uint s)
+        {
+            return (col.R > s || col.G > s || col.B > s || col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(uint s, C4ui col)
+        {
+            return (s > col.R || s > col.G || s > col.B || s > col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4ui a, C4ui b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4ui col, uint s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(uint s, C4ui col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4ui a, C4ui b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4ui col, uint s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(uint s, C4ui col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4ui a, C4ui b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4ui col, uint s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(uint s, C4ui col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4ui a, C4ui b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4ui col, uint s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(uint s, C4ui col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4ui a, C4ui b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4ui col, uint s)
+        {
+            return (col.R == s && col.G == s && col.B == s && col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(uint s, C4ui col)
+        {
+            return (s == col.R && s == col.G && s == col.B && s == col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4ui a, C4ui b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4ui col, uint s)
+        {
+            return (col.R == s || col.G == s || col.B == s || col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(uint s, C4ui col)
+        {
+            return (s == col.R || s == col.G || s == col.B || s == col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4ui a, C4ui b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4ui col, uint s)
+        {
+            return (col.R != s && col.G != s && col.B != s && col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(uint s, C4ui col)
+        {
+            return (s != col.R && s != col.G && s != col.B && s != col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4ui a, C4ui b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4ui col, uint s)
+        {
+            return (col.R != s || col.G != s || col.B != s || col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(uint s, C4ui col)
+        {
+            return (s != col.R || s != col.G || s != col.B || s != col.A);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui LinCom(
+            C4ui p0, C4ui p1, C4ui p2, C4ui p3, ref Tup4<float> w)
+        {
+            return new C4ui(
+                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4ui p0, C4ui p1, C4ui p2, C4ui p3, ref Tup4<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui LinCom(
+            C4ui p0, C4ui p1, C4ui p2, C4ui p3, ref Tup4<double> w)
+        {
+            return new C4ui(
+                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4ui p0, C4ui p1, C4ui p2, C4ui p3, ref Tup4<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui LinCom(
+            C4ui p0, C4ui p1, C4ui p2, C4ui p3, C4ui p4, C4ui p5, ref Tup6<float> w)
+        {
+            return new C4ui(
+                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4ui p0, C4ui p1, C4ui p2, C4ui p3, C4ui p4, C4ui p5, ref Tup6<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui LinCom(
+            C4ui p0, C4ui p1, C4ui p2, C4ui p3, C4ui p4, C4ui p5, ref Tup6<double> w)
+        {
+            return new C4ui(
+                Col.UIntFromUIntInDoubleClamped(p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                Col.UIntFromUIntInDoubleClamped(p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                Col.UIntFromUIntInDoubleClamped(p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4ui p0, C4ui p1, C4ui p2, C4ui p3, C4ui p4, C4ui p5, ref Tup6<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
 
         #endregion
@@ -12591,20 +11467,46 @@ namespace Aardvark.Base
         public V4f ToV4f() { return (V4f)this; }
         public V4d ToV4d() { return (V4d)this; }
 
-        public static readonly Func<C3b, C4f> FromC3b = c => new C4f(c);
-        public static readonly Func<C3us, C4f> FromC3us = c => new C4f(c);
-        public static readonly Func<C3ui, C4f> FromC3ui = c => new C4f(c);
-        public static readonly Func<C3f, C4f> FromC3f = c => new C4f(c);
-        public static readonly Func<C3d, C4f> FromC3d = c => new C4f(c);
-        public static readonly Func<C4b, C4f> FromC4b = c => new C4f(c);
-        public static readonly Func<C4us, C4f> FromC4us = c => new C4f(c);
-        public static readonly Func<C4ui, C4f> FromC4ui = c => new C4f(c);
-        public static readonly Func<C4d, C4f> FromC4d = c => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC3b(C3b c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC3us(C3us c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC3ui(C3ui c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC3f(C3f c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC3d(C3d c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC4b(C4b c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC4us(C4us c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC4ui(C4ui c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromC4d(C4d c)
+            => new C4f(c);
 
-        public static readonly Func<V3f, C4f> FromV3f = c => new C4f(c);
-        public static readonly Func<V3d, C4f> FromV3d = c => new C4f(c);
-        public static readonly Func<V4f, C4f> FromV4f = c => new C4f(c);
-        public static readonly Func<V4d, C4f> FromV4d = c => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromV3f(V3f c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromV3d(V3d c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromV4f(V4f c)
+            => new C4f(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f FromV4d(V4d c)
+            => new C4f(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -12797,545 +11699,6 @@ namespace Aardvark.Base
         public static bool operator !=(C4f a, C4f b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4f a, C4f b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C4f col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B && this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4f col, float s)
-        {
-            return (col.R < s && col.G < s && col.B < s && col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(float s)
-        {
-            return (this.R < s && this.G < s && this.B < s && this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(float s, C4f col)
-        {
-            return (s < col.R && s < col.G && s < col.B && s < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4f a, C4f b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C4f col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B || this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4f col, float s)
-        {
-            return (col.R < s || col.G < s || col.B < s || col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(float s)
-        {
-            return (this.R < s || this.G < s || this.B < s || this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(float s, C4f col)
-        {
-            return (s < col.R || s < col.G || s < col.B || s < col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4f a, C4f b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C4f col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B && this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4f col, float s)
-        {
-            return (col.R > s && col.G > s && col.B > s && col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(float s)
-        {
-            return (this.R > s && this.G > s && this.B > s && this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(float s, C4f col)
-        {
-            return (s > col.R && s > col.G && s > col.B && s > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4f a, C4f b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C4f col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B || this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4f col, float s)
-        {
-            return (col.R > s || col.G > s || col.B > s || col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(float s)
-        {
-            return (this.R > s || this.G > s || this.B > s || this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(float s, C4f col)
-        {
-            return (s > col.R || s > col.G || s > col.B || s > col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4f a, C4f b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C4f col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B && this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4f col, float s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(float s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s && this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(float s, C4f col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4f a, C4f b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C4f col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B || this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4f col, float s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(float s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s || this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(float s, C4f col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4f a, C4f b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C4f col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B && this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4f col, float s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(float s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s && this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(float s, C4f col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4f a, C4f b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C4f col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B || this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4f col, float s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(float s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s || this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(float s, C4f col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4f a, C4f b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C4f col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B && this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4f col, float s)
-        {
-            return (col.R == s && col.G == s && col.B == s && col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(float s)
-        {
-            return (this.R == s && this.G == s && this.B == s && this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(float s, C4f col)
-        {
-            return (s == col.R && s == col.G && s == col.B && s == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4f a, C4f b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C4f col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B || this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4f col, float s)
-        {
-            return (col.R == s || col.G == s || col.B == s || col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(float s)
-        {
-            return (this.R == s || this.G == s || this.B == s || this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(float s, C4f col)
-        {
-            return (s == col.R || s == col.G || s == col.B || s == col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4f a, C4f b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C4f col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B && this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4f col, float s)
-        {
-            return (col.R != s && col.G != s && col.B != s && col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(float s)
-        {
-            return (this.R != s && this.G != s && this.B != s && this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(float s, C4f col)
-        {
-            return (s != col.R && s != col.G && s != col.B && s != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4f a, C4f b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C4f col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B || this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4f col, float s)
-        {
-            return (col.R != s || col.G != s || col.B != s || col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(float s)
-        {
-            return (this.R != s || this.G != s || this.B != s || this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(float s, C4f col)
-        {
-            return (s != col.R || s != col.G || s != col.B || s != col.A);
         }
 
         #endregion
@@ -13714,94 +12077,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4f LinCom(
-            C4f p0, C4f p1, C4f p2, C4f p3, ref Tup4<float> w)
-        {
-            return new C4f(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4f LinComRawC4f(
-            C4f p0, C4f p1, C4f p2, C4f p3, ref Tup4<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4f LinCom(
-            C4f p0, C4f p1, C4f p2, C4f p3, ref Tup4<double> w)
-        {
-            return new C4f(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4d LinComRawC4d(
-            C4f p0, C4f p1, C4f p2, C4f p3, ref Tup4<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4f LinCom(
-            C4f p0, C4f p1, C4f p2, C4f p3, C4f p4, C4f p5, ref Tup6<float> w)
-        {
-            return new C4f(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4f LinComRawC4f(
-            C4f p0, C4f p1, C4f p2, C4f p3, C4f p4, C4f p5, ref Tup6<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4f LinCom(
-            C4f p0, C4f p1, C4f p2, C4f p3, C4f p4, C4f p5, ref Tup6<double> w)
-        {
-            return new C4f(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4d LinComRawC4d(
-            C4f p0, C4f p1, C4f p2, C4f p3, C4f p4, C4f p5, ref Tup6<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -13911,6 +12186,468 @@ namespace Aardvark.Base
         {
             return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4f a, C4f b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4f col, float s)
+        {
+            return (col.R < s && col.G < s && col.B < s && col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(float s, C4f col)
+        {
+            return (s < col.R && s < col.G && s < col.B && s < col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4f a, C4f b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4f col, float s)
+        {
+            return (col.R < s || col.G < s || col.B < s || col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(float s, C4f col)
+        {
+            return (s < col.R || s < col.G || s < col.B || s < col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4f a, C4f b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4f col, float s)
+        {
+            return (col.R > s && col.G > s && col.B > s && col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(float s, C4f col)
+        {
+            return (s > col.R && s > col.G && s > col.B && s > col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4f a, C4f b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4f col, float s)
+        {
+            return (col.R > s || col.G > s || col.B > s || col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(float s, C4f col)
+        {
+            return (s > col.R || s > col.G || s > col.B || s > col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4f a, C4f b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4f col, float s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(float s, C4f col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4f a, C4f b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4f col, float s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(float s, C4f col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4f a, C4f b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4f col, float s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(float s, C4f col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4f a, C4f b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4f col, float s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(float s, C4f col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4f a, C4f b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4f col, float s)
+        {
+            return (col.R == s && col.G == s && col.B == s && col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(float s, C4f col)
+        {
+            return (s == col.R && s == col.G && s == col.B && s == col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4f a, C4f b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4f col, float s)
+        {
+            return (col.R == s || col.G == s || col.B == s || col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(float s, C4f col)
+        {
+            return (s == col.R || s == col.G || s == col.B || s == col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4f a, C4f b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4f col, float s)
+        {
+            return (col.R != s && col.G != s && col.B != s && col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(float s, C4f col)
+        {
+            return (s != col.R && s != col.G && s != col.B && s != col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4f a, C4f b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4f col, float s)
+        {
+            return (col.R != s || col.G != s || col.B != s || col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(float s, C4f col)
+        {
+            return (s != col.R || s != col.G || s != col.B || s != col.A);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinCom(
+            C4f p0, C4f p1, C4f p2, C4f p3, ref Tup4<float> w)
+        {
+            return new C4f(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4f p0, C4f p1, C4f p2, C4f p3, ref Tup4<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinCom(
+            C4f p0, C4f p1, C4f p2, C4f p3, ref Tup4<double> w)
+        {
+            return new C4f(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4f p0, C4f p1, C4f p2, C4f p3, ref Tup4<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinCom(
+            C4f p0, C4f p1, C4f p2, C4f p3, C4f p4, C4f p5, ref Tup6<float> w)
+        {
+            return new C4f(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4f p0, C4f p1, C4f p2, C4f p3, C4f p4, C4f p5, ref Tup6<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinCom(
+            C4f p0, C4f p1, C4f p2, C4f p3, C4f p4, C4f p5, ref Tup6<double> w)
+        {
+            return new C4f(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4f p0, C4f p1, C4f p2, C4f p3, C4f p4, C4f p5, ref Tup6<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
         #endregion
     }
 
@@ -14231,18 +12968,40 @@ namespace Aardvark.Base
         public V3d ToV3d() { return (V3d)this; }
         public V4d ToV4d() { return (V4d)this; }
 
-        public static readonly Func<C3b, C4d> FromC3b = c => new C4d(c);
-        public static readonly Func<C3us, C4d> FromC3us = c => new C4d(c);
-        public static readonly Func<C3ui, C4d> FromC3ui = c => new C4d(c);
-        public static readonly Func<C3f, C4d> FromC3f = c => new C4d(c);
-        public static readonly Func<C3d, C4d> FromC3d = c => new C4d(c);
-        public static readonly Func<C4b, C4d> FromC4b = c => new C4d(c);
-        public static readonly Func<C4us, C4d> FromC4us = c => new C4d(c);
-        public static readonly Func<C4ui, C4d> FromC4ui = c => new C4d(c);
-        public static readonly Func<C4f, C4d> FromC4f = c => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC3b(C3b c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC3us(C3us c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC3ui(C3ui c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC3f(C3f c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC3d(C3d c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC4b(C4b c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC4us(C4us c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC4ui(C4ui c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromC4f(C4f c)
+            => new C4d(c);
 
-        public static readonly Func<V3d, C4d> FromV3d = c => new C4d(c);
-        public static readonly Func<V4d, C4d> FromV4d = c => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromV3d(V3d c)
+            => new C4d(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d FromV4d(V4d c)
+            => new C4d(c);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -14425,545 +13184,6 @@ namespace Aardvark.Base
         public static bool operator !=(C4d a, C4d b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
-        }
-
-        #endregion
-
-        #region Comparisons
-
-        /// <summary>
-        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4d a, C4d b)
-        {
-            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Smaller the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(C4d col)
-        {
-            return (this.R < col.R && this.G < col.G && this.B < col.B && this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(C4d col, double s)
-        {
-            return (col.R < s && col.G < s && col.B < s && col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Smaller s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmaller(double s)
-        {
-            return (this.R < s && this.G < s && this.B < s && this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmaller(double s, C4d col)
-        {
-            return (s < col.R && s < col.G && s < col.B && s < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4d a, C4d b)
-        {
-            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmaller(C4d col)
-        {
-            return (this.R < col.R || this.G < col.G || this.B < col.B || this.A < col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(C4d col, double s)
-        {
-            return (col.R < s || col.G < s || col.B < s || col.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Smaller s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmaller(double s)
-        {
-            return (this.R < s || this.G < s || this.B < s || this.A < s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Smaller AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmaller(double s, C4d col)
-        {
-            return (s < col.R || s < col.G || s < col.B || s < col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4d a, C4d b)
-        {
-            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Greater the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(C4d col)
-        {
-            return (this.R > col.R && this.G > col.G && this.B > col.B && this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(C4d col, double s)
-        {
-            return (col.R > s && col.G > s && col.B > s && col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Greater s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreater(double s)
-        {
-            return (this.R > s && this.G > s && this.B > s && this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreater(double s, C4d col)
-        {
-            return (s > col.R && s > col.G && s > col.B && s > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4d a, C4d b)
-        {
-            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreater(C4d col)
-        {
-            return (this.R > col.R || this.G > col.G || this.B > col.B || this.A > col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(C4d col, double s)
-        {
-            return (col.R > s || col.G > s || col.B > s || col.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Greater s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreater(double s)
-        {
-            return (this.R > s || this.G > s || this.B > s || this.A > s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Greater AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreater(double s, C4d col)
-        {
-            return (s > col.R || s > col.G || s > col.B || s > col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4d a, C4d b)
-        {
-            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are SmallerOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(C4d col)
-        {
-            return (this.R <= col.R && this.G <= col.G && this.B <= col.B && this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(C4d col, double s)
-        {
-            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are SmallerOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllSmallerOrEqual(double s)
-        {
-            return (this.R <= s && this.G <= s && this.B <= s && this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllSmallerOrEqual(double s, C4d col)
-        {
-            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4d a, C4d b)
-        {
-            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(C4d col)
-        {
-            return (this.R <= col.R || this.G <= col.G || this.B <= col.B || this.A <= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(C4d col, double s)
-        {
-            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnySmallerOrEqual(double s)
-        {
-            return (this.R <= s || this.G <= s || this.B <= s || this.A <= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnySmallerOrEqual(double s, C4d col)
-        {
-            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4d a, C4d b)
-        {
-            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are GreaterOrEqual the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(C4d col)
-        {
-            return (this.R >= col.R && this.G >= col.G && this.B >= col.B && this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(C4d col, double s)
-        {
-            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are GreaterOrEqual s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllGreaterOrEqual(double s)
-        {
-            return (this.R >= s && this.G >= s && this.B >= s && this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllGreaterOrEqual(double s, C4d col)
-        {
-            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4d a, C4d b)
-        {
-            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(C4d col)
-        {
-            return (this.R >= col.R || this.G >= col.G || this.B >= col.B || this.A >= col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(C4d col, double s)
-        {
-            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyGreaterOrEqual(double s)
-        {
-            return (this.R >= s || this.G >= s || this.B >= s || this.A >= s);
-        }
-
-        /// <summary>
-        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyGreaterOrEqual(double s, C4d col)
-        {
-            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4d a, C4d b)
-        {
-            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Equal the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(C4d col)
-        {
-            return (this.R == col.R && this.G == col.G && this.B == col.B && this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(C4d col, double s)
-        {
-            return (col.R == s && col.G == s && col.B == s && col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Equal s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllEqual(double s)
-        {
-            return (this.R == s && this.G == s && this.B == s && this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllEqual(double s, C4d col)
-        {
-            return (s == col.R && s == col.G && s == col.B && s == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4d a, C4d b)
-        {
-            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyEqual(C4d col)
-        {
-            return (this.R == col.R || this.G == col.G || this.B == col.B || this.A == col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(C4d col, double s)
-        {
-            return (col.R == s || col.G == s || col.B == s || col.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Equal s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyEqual(double s)
-        {
-            return (this.R == s || this.G == s || this.B == s || this.A == s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Equal AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyEqual(double s, C4d col)
-        {
-            return (s == col.R || s == col.G || s == col.B || s == col.A);
-        }
-        /// <summary>
-        /// Returns whether ALL elements of a are Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4d a, C4d b)
-        {
-            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are Different the corresponding element of col.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(C4d col)
-        {
-            return (this.R != col.R && this.G != col.G && this.B != col.B && this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(C4d col, double s)
-        {
-            return (col.R != s && col.G != s && col.B != s && col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are Different s.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AllDifferent(double s)
-        {
-            return (this.R != s && this.G != s && this.B != s && this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different ALL elements of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AllDifferent(double s, C4d col)
-        {
-            return (s != col.R && s != col.G && s != col.B && s != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4d a, C4d b)
-        {
-            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
-        /// ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).
-        /// </summary>
-        public bool AnyDifferent(C4d col)
-        {
-            return (this.R != col.R || this.G != col.G || this.B != col.B || this.A != col.A);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(C4d col, double s)
-        {
-            return (col.R != s || col.G != s || col.B != s || col.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is Different s.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public bool AnyDifferent(double s)
-        {
-            return (this.R != s || this.G != s || this.B != s || this.A != s);
-        }
-
-        /// <summary>
-        /// Returns whether a is Different AT LEAST ONE element of col.
-        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
-        /// </summary>
-        public static bool AnyDifferent(double s, C4d col)
-        {
-            return (s != col.R || s != col.G || s != col.B || s != col.A);
         }
 
         #endregion
@@ -15288,94 +13508,6 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4d LinCom(
-            C4d p0, C4d p1, C4d p2, C4d p3, ref Tup4<float> w)
-        {
-            return new C4d(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4f LinComRawC4f(
-            C4d p0, C4d p1, C4d p2, C4d p3, ref Tup4<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4d LinCom(
-            C4d p0, C4d p1, C4d p2, C4d p3, ref Tup4<double> w)
-        {
-            return new C4d(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
-        }
-
-        public static C4d LinComRawC4d(
-            C4d p0, C4d p1, C4d p2, C4d p3, ref Tup4<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4d LinCom(
-            C4d p0, C4d p1, C4d p2, C4d p3, C4d p4, C4d p5, ref Tup6<float> w)
-        {
-            return new C4d(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4f LinComRawC4f(
-            C4d p0, C4d p1, C4d p2, C4d p3, C4d p4, C4d p5, ref Tup6<float> w)
-        {
-            return new C4f(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static C4d LinCom(
-            C4d p0, C4d p1, C4d p2, C4d p3, C4d p4, C4d p5, ref Tup6<double> w)
-        {
-            return new C4d(
-                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
-                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
-                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
-        }
-
-        public static C4d LinComRawC4d(
-            C4d p0, C4d p1, C4d p2, C4d p3, C4d p4, C4d p5, ref Tup6<double> w)
-        {
-            return new C4d(
-                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
-                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
-                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
-        }
-
         #endregion
 
         #region Parsing
@@ -15485,6 +13617,468 @@ namespace Aardvark.Base
         {
             return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4d a, C4d b)
+        {
+            return (a.R < b.R && a.G < b.G && a.B < b.B && a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this C4d col, double s)
+        {
+            return (col.R < s && col.G < s && col.B < s && col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(double s, C4d col)
+        {
+            return (s < col.R && s < col.G && s < col.B && s < col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4d a, C4d b)
+        {
+            return (a.R < b.R || a.G < b.G || a.B < b.B || a.A < b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this C4d col, double s)
+        {
+            return (col.R < s || col.G < s || col.B < s || col.A < s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(double s, C4d col)
+        {
+            return (s < col.R || s < col.G || s < col.B || s < col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4d a, C4d b)
+        {
+            return (a.R > b.R && a.G > b.G && a.B > b.B && a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this C4d col, double s)
+        {
+            return (col.R > s && col.G > s && col.B > s && col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(double s, C4d col)
+        {
+            return (s > col.R && s > col.G && s > col.B && s > col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4d a, C4d b)
+        {
+            return (a.R > b.R || a.G > b.G || a.B > b.B || a.A > b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this C4d col, double s)
+        {
+            return (col.R > s || col.G > s || col.B > s || col.A > s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(double s, C4d col)
+        {
+            return (s > col.R || s > col.G || s > col.B || s > col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4d a, C4d b)
+        {
+            return (a.R <= b.R && a.G <= b.G && a.B <= b.B && a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this C4d col, double s)
+        {
+            return (col.R <= s && col.G <= s && col.B <= s && col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(double s, C4d col)
+        {
+            return (s <= col.R && s <= col.G && s <= col.B && s <= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4d a, C4d b)
+        {
+            return (a.R <= b.R || a.G <= b.G || a.B <= b.B || a.A <= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this C4d col, double s)
+        {
+            return (col.R <= s || col.G <= s || col.B <= s || col.A <= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(double s, C4d col)
+        {
+            return (s <= col.R || s <= col.G || s <= col.B || s <= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4d a, C4d b)
+        {
+            return (a.R >= b.R && a.G >= b.G && a.B >= b.B && a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this C4d col, double s)
+        {
+            return (col.R >= s && col.G >= s && col.B >= s && col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(double s, C4d col)
+        {
+            return (s >= col.R && s >= col.G && s >= col.B && s >= col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4d a, C4d b)
+        {
+            return (a.R >= b.R || a.G >= b.G || a.B >= b.B || a.A >= b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this C4d col, double s)
+        {
+            return (col.R >= s || col.G >= s || col.B >= s || col.A >= s);
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(double s, C4d col)
+        {
+            return (s >= col.R || s >= col.G || s >= col.B || s >= col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4d a, C4d b)
+        {
+            return (a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this C4d col, double s)
+        {
+            return (col.R == s && col.G == s && col.B == s && col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(double s, C4d col)
+        {
+            return (s == col.R && s == col.G && s == col.B && s == col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4d a, C4d b)
+        {
+            return (a.R == b.R || a.G == b.G || a.B == b.B || a.A == b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this C4d col, double s)
+        {
+            return (col.R == s || col.G == s || col.B == s || col.A == s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(double s, C4d col)
+        {
+            return (s == col.R || s == col.G || s == col.B || s == col.A);
+        }
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4d a, C4d b)
+        {
+            return (a.R != b.R && a.G != b.G && a.B != b.B && a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this C4d col, double s)
+        {
+            return (col.R != s && col.G != s && col.B != s && col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(double s, C4d col)
+        {
+            return (s != col.R && s != col.G && s != col.B && s != col.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4d a, C4d b)
+        {
+            return (a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this C4d col, double s)
+        {
+            return (col.R != s || col.G != s || col.B != s || col.A != s);
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of col.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(double s, C4d col)
+        {
+            return (s != col.R || s != col.G || s != col.B || s != col.A);
+        }
+
+        #endregion
+
+        #region Linear Combination
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinCom(
+            C4d p0, C4d p1, C4d p2, C4d p3, ref Tup4<float> w)
+        {
+            return new C4d(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4d p0, C4d p1, C4d p2, C4d p3, ref Tup4<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinCom(
+            C4d p0, C4d p1, C4d p2, C4d p3, ref Tup4<double> w)
+        {
+            return new C4d(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4d p0, C4d p1, C4d p2, C4d p3, ref Tup4<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinCom(
+            C4d p0, C4d p1, C4d p2, C4d p3, C4d p4, C4d p5, ref Tup6<float> w)
+        {
+            return new C4d(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinComRawF(
+            C4d p0, C4d p1, C4d p2, C4d p3, C4d p4, C4d p5, ref Tup6<float> w)
+        {
+            return new C4f(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinCom(
+            C4d p0, C4d p1, C4d p2, C4d p3, C4d p4, C4d p5, ref Tup6<double> w)
+        {
+            return new C4d(
+                (p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5), 
+                (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
+                (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinComRawD(
+            C4d p0, C4d p1, C4d p2, C4d p3, C4d p4, C4d p5, ref Tup6<double> w)
+        {
+            return new C4d(
+                p0.R * w.E0 + p1.R * w.E1 + p2.R * w.E2 + p3.R * w.E3 + p4.R * w.E4 + p5.R * w.E5, 
+                p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
+                p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
+        }
+
         #endregion
     }
 

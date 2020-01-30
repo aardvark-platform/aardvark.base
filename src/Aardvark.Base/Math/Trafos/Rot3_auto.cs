@@ -106,7 +106,7 @@ namespace Aardvark.Base
             var angle = from.AngleBetween(into);
 
             // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
-            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
+            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3 -> using AngleBetween allows higher precision again
             if (angle < 1e-6f)
             {
                 // axis = a; angle = 0;
@@ -121,7 +121,7 @@ namespace Aardvark.Base
             }
             else
             {
-                V3f axis = V3f.Cross(from, into).Normalized;
+                V3f axis = Vec.Cross(from, into).Normalized;
                 this = new Rot3f(axis, angle);
             }
         }
@@ -1163,7 +1163,7 @@ namespace Aardvark.Base
             var angle = from.AngleBetween(into);
 
             // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
-            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3
+            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3 -> using AngleBetween allows higher precision again
             if (angle < 1e-16)
             {
                 // axis = a; angle = 0;
@@ -1178,7 +1178,7 @@ namespace Aardvark.Base
             }
             else
             {
-                V3d axis = V3d.Cross(from, into).Normalized;
+                V3d axis = Vec.Cross(from, into).Normalized;
                 this = new Rot3d(axis, angle);
             }
         }

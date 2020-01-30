@@ -283,7 +283,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                 interpolator, interpolator, C3b.LinComRawC3f, C3f.LinCom,
+                                 interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
                                   col => col.Map(Col.ByteFromByteInFloatClamped));
         }
@@ -306,7 +306,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                  interpolator, interpolator, C3b.LinComRawC3f, C3f.LinCom,
+                                  interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
                                   col => col.Map(Col.ByteFromByteInFloatClamped));
         }
@@ -359,7 +359,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                 interpolator, interpolator, C3us.LinComRawC3f, C3f.LinCom,
+                                 interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
                                   col => col.Map(Col.UShortFromUShortInFloatClamped));
         }
@@ -382,7 +382,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                  interpolator, interpolator, C3us.LinComRawC3f, C3f.LinCom,
+                                  interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
                                   col => col.Map(Col.UShortFromUShortInFloatClamped));
         }
@@ -435,7 +435,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                 interpolator, interpolator, C3f.LinCom, C3f.LinCom,
+                                 interpolator, interpolator, Col.LinCom, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped);
         }
 
@@ -457,7 +457,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                  interpolator, interpolator, C3f.LinCom, C3f.LinCom,
+                                  interpolator, interpolator, Col.LinCom, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped);
         }
 
@@ -509,7 +509,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                 interpolator, interpolator, C4b.LinComRawC4f, C4f.LinCom,
+                                 interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
                                   col => col.Map(Col.ByteFromByteInFloatClamped));
         }
@@ -532,7 +532,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                  interpolator, interpolator, C4b.LinComRawC4f, C4f.LinCom,
+                                  interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
                                   col => col.Map(Col.ByteFromByteInFloatClamped));
         }
@@ -585,7 +585,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                 interpolator, interpolator, C4us.LinComRawC4f, C4f.LinCom,
+                                 interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
                                   col => col.Map(Col.UShortFromUShortInFloatClamped));
         }
@@ -608,7 +608,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                  interpolator, interpolator, C4us.LinComRawC4f, C4f.LinCom,
+                                  interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
                                   col => col.Map(Col.UShortFromUShortInFloatClamped));
         }
@@ -661,7 +661,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                 interpolator, interpolator, C4f.LinCom, C4f.LinCom,
+                                 interpolator, interpolator, Col.LinCom, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped);
         }
 
@@ -683,7 +683,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                  interpolator, interpolator, C4f.LinCom, C4f.LinCom,
+                                  interpolator, interpolator, Col.LinCom, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped);
         }
 

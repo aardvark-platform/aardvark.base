@@ -48,7 +48,7 @@ namespace Aardvark.Base
         public Plane3d(V3d normalizedNormal, V3d point)
         {
             Normal = normalizedNormal;
-            Distance = V3d.Dot(normalizedNormal, point);
+            Distance = Vec.Dot(normalizedNormal, point);
         }
 
         /// <summary>
@@ -57,8 +57,8 @@ namespace Aardvark.Base
         /// </summary>
         public Plane3d(V3d p0, V3d p1, V3d p2)
         {
-            Normal = V3d.Cross(p1 - p0, p2 - p0).Normalized;
-            Distance = V3d.Dot(Normal, p0);
+            Normal = Vec.Cross(p1 - p0, p2 - p0).Normalized;
+            Distance = Vec.Dot(Normal, p0);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Aardvark.Base
         public V3d Point
         {
             get { return Normal * Distance; }
-            set { Distance = V3d.Dot(Normal, value); }
+            set { Distance = Vec.Dot(Normal, value); }
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V3d p) => V3d.Dot(Normal, p) - Distance;
+        public double Height(V3d p) => Vec.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
@@ -308,7 +308,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V3d p) => V3d.Dot(Normal, p - Point);
+        public double Height(V3d p) => Vec.Dot(Normal, p - Point);
 
         /// <summary>
         /// The sign of the height of the point over the plane.

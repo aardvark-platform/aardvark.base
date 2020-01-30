@@ -2894,445 +2894,521 @@ namespace Aardvark.Base
 
         #region LinCom
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte LinCom(
                 byte p0, byte p1, byte p2, byte p3, ref Tup4<float> w)
         {
             return (byte)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (float)byte.MinValue, (float)byte.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 byte p0, byte p1, byte p2, byte p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte LinCom(
                 byte p0, byte p1, byte p2, byte p3, ref Tup4<double> w)
         {
             return (byte)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (double)byte.MinValue, (double)byte.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 byte p0, byte p1, byte p2, byte p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte LinCom(
                 byte p0, byte p1, byte p2, byte p3, byte p4, byte p5, ref Tup6<float> w)
         {
             return (byte)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (float)byte.MinValue, (float)byte.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 byte p0, byte p1, byte p2, byte p3, byte p4, byte p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte LinCom(
                 byte p0, byte p1, byte p2, byte p3, byte p4, byte p5, ref Tup6<double> w)
         {
             return (byte)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (double)byte.MinValue, (double)byte.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 byte p0, byte p1, byte p2, byte p3, byte p4, byte p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte LinCom(
                 sbyte p0, sbyte p1, sbyte p2, sbyte p3, ref Tup4<float> w)
         {
             return (sbyte)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (float)sbyte.MinValue, (float)sbyte.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 sbyte p0, sbyte p1, sbyte p2, sbyte p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte LinCom(
                 sbyte p0, sbyte p1, sbyte p2, sbyte p3, ref Tup4<double> w)
         {
             return (sbyte)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (double)sbyte.MinValue, (double)sbyte.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 sbyte p0, sbyte p1, sbyte p2, sbyte p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte LinCom(
                 sbyte p0, sbyte p1, sbyte p2, sbyte p3, sbyte p4, sbyte p5, ref Tup6<float> w)
         {
             return (sbyte)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (float)sbyte.MinValue, (float)sbyte.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 sbyte p0, sbyte p1, sbyte p2, sbyte p3, sbyte p4, sbyte p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte LinCom(
                 sbyte p0, sbyte p1, sbyte p2, sbyte p3, sbyte p4, sbyte p5, ref Tup6<double> w)
         {
             return (sbyte)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (double)sbyte.MinValue, (double)sbyte.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 sbyte p0, sbyte p1, sbyte p2, sbyte p3, sbyte p4, sbyte p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short LinCom(
                 short p0, short p1, short p2, short p3, ref Tup4<float> w)
         {
             return (short)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (float)short.MinValue, (float)short.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 short p0, short p1, short p2, short p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short LinCom(
                 short p0, short p1, short p2, short p3, ref Tup4<double> w)
         {
             return (short)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (double)short.MinValue, (double)short.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 short p0, short p1, short p2, short p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short LinCom(
                 short p0, short p1, short p2, short p3, short p4, short p5, ref Tup6<float> w)
         {
             return (short)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (float)short.MinValue, (float)short.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 short p0, short p1, short p2, short p3, short p4, short p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short LinCom(
                 short p0, short p1, short p2, short p3, short p4, short p5, ref Tup6<double> w)
         {
             return (short)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (double)short.MinValue, (double)short.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 short p0, short p1, short p2, short p3, short p4, short p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort LinCom(
                 ushort p0, ushort p1, ushort p2, ushort p3, ref Tup4<float> w)
         {
             return (ushort)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (float)ushort.MinValue, (float)ushort.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 ushort p0, ushort p1, ushort p2, ushort p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort LinCom(
                 ushort p0, ushort p1, ushort p2, ushort p3, ref Tup4<double> w)
         {
             return (ushort)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (double)ushort.MinValue, (double)ushort.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 ushort p0, ushort p1, ushort p2, ushort p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort LinCom(
                 ushort p0, ushort p1, ushort p2, ushort p3, ushort p4, ushort p5, ref Tup6<float> w)
         {
             return (ushort)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (float)ushort.MinValue, (float)ushort.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 ushort p0, ushort p1, ushort p2, ushort p3, ushort p4, ushort p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort LinCom(
                 ushort p0, ushort p1, ushort p2, ushort p3, ushort p4, ushort p5, ref Tup6<double> w)
         {
             return (ushort)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (double)ushort.MinValue, (double)ushort.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 ushort p0, ushort p1, ushort p2, ushort p3, ushort p4, ushort p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int LinCom(
                 int p0, int p1, int p2, int p3, ref Tup4<float> w)
         {
             return (int)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (float)int.MinValue, (float)int.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 int p0, int p1, int p2, int p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int LinCom(
                 int p0, int p1, int p2, int p3, ref Tup4<double> w)
         {
             return (int)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (double)int.MinValue, (double)int.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 int p0, int p1, int p2, int p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int LinCom(
                 int p0, int p1, int p2, int p3, int p4, int p5, ref Tup6<float> w)
         {
             return (int)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (float)int.MinValue, (float)int.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 int p0, int p1, int p2, int p3, int p4, int p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int LinCom(
                 int p0, int p1, int p2, int p3, int p4, int p5, ref Tup6<double> w)
         {
             return (int)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (double)int.MinValue, (double)int.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 int p0, int p1, int p2, int p3, int p4, int p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint LinCom(
                 uint p0, uint p1, uint p2, uint p3, ref Tup4<float> w)
         {
             return (uint)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (float)uint.MinValue, (float)uint.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 uint p0, uint p1, uint p2, uint p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint LinCom(
                 uint p0, uint p1, uint p2, uint p3, ref Tup4<double> w)
         {
             return (uint)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (double)uint.MinValue, (double)uint.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 uint p0, uint p1, uint p2, uint p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint LinCom(
                 uint p0, uint p1, uint p2, uint p3, uint p4, uint p5, ref Tup6<float> w)
         {
             return (uint)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (float)uint.MinValue, (float)uint.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 uint p0, uint p1, uint p2, uint p3, uint p4, uint p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint LinCom(
                 uint p0, uint p1, uint p2, uint p3, uint p4, uint p5, ref Tup6<double> w)
         {
             return (uint)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (double)uint.MinValue, (double)uint.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 uint p0, uint p1, uint p2, uint p3, uint p4, uint p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long LinCom(
                 long p0, long p1, long p2, long p3, ref Tup4<float> w)
         {
             return (long)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (float)long.MinValue, (float)long.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 long p0, long p1, long p2, long p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long LinCom(
                 long p0, long p1, long p2, long p3, ref Tup4<double> w)
         {
             return (long)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (double)long.MinValue, (double)long.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 long p0, long p1, long p2, long p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long LinCom(
                 long p0, long p1, long p2, long p3, long p4, long p5, ref Tup6<float> w)
         {
             return (long)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (float)long.MinValue, (float)long.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 long p0, long p1, long p2, long p3, long p4, long p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long LinCom(
                 long p0, long p1, long p2, long p3, long p4, long p5, ref Tup6<double> w)
         {
             return (long)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (double)long.MinValue, (double)long.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 long p0, long p1, long p2, long p3, long p4, long p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong LinCom(
                 ulong p0, ulong p1, ulong p2, ulong p3, ref Tup4<float> w)
         {
             return (ulong)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (float)ulong.MinValue, (float)ulong.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 ulong p0, ulong p1, ulong p2, ulong p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong LinCom(
                 ulong p0, ulong p1, ulong p2, ulong p3, ref Tup4<double> w)
         {
             return (ulong)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3, (double)ulong.MinValue, (double)ulong.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 ulong p0, ulong p1, ulong p2, ulong p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong LinCom(
                 ulong p0, ulong p1, ulong p2, ulong p3, ulong p4, ulong p5, ref Tup6<float> w)
         {
             return (ulong)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (float)ulong.MinValue, (float)ulong.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinComRawF(
                 ulong p0, ulong p1, ulong p2, ulong p3, ulong p4, ulong p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong LinCom(
                 ulong p0, ulong p1, ulong p2, ulong p3, ulong p4, ulong p5, ref Tup6<double> w)
         {
             return (ulong)Fun.Clamp(p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5, (double)ulong.MinValue, (double)ulong.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinComRawD(
                 ulong p0, ulong p1, ulong p2, ulong p3, ulong p4, ulong p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, ref Tup2<float> w)
         {
             return p0 * w.E0 + p1 * w.E1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinCom(double p0, double p1, ref Tup2<double> w)
         {
             return p0 * w.E0 + p1 * w.E1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, float p2, ref Tup3<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinCom(double p0, double p1, double p2, ref Tup3<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, float p2, float p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinCom(double p0, double p1, double p2, double p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, float p2, float p3, float p4, ref Tup5<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinCom(double p0, double p1, double p2, double p3, double p4, ref Tup5<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, float p2, float p3, float p4, float p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinCom(double p0, double p1, double p2, double p3, double p4, double p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, float p2, float p3, float p4, float p5, float p6, ref Tup7<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5 + p6 * w.E6;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LinCom(double p0, double p1, double p2, double p3, double p4, double p5, double p6, ref Tup7<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5 + p6 * w.E6;

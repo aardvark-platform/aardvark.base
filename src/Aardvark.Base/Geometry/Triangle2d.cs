@@ -95,7 +95,7 @@ namespace Aardvark.Base
                 }
             }
             center = new V2d(xc, yc);
-            radiusSquared = V2d.DistanceSquared(p0, center);
+            radiusSquared = Vec.DistanceSquared(p0, center);
         }
 
         #endregion
@@ -108,9 +108,9 @@ namespace Aardvark.Base
             {
                 var edge01 = P1 - P0;
                 var edge02 = P2 - P0;
-                double dot0101 = V2d.Dot(edge01, edge01);
-                double dot0102 = V2d.Dot(edge01, edge02);
-                double dot0202 = V2d.Dot(edge02, edge02);
+                double dot0101 = Vec.Dot(edge01, edge01);
+                double dot0102 = Vec.Dot(edge01, edge02);
+                double dot0202 = Vec.Dot(edge02, edge02);
                 double d = 2.0 * (dot0101 * dot0202 - dot0102 * dot0102);
                 if (d.Abs() <= 0.000001) return Circle2d.Invalid;
                 double s = (dot0101 * dot0202 - dot0202 * dot0102) / d;

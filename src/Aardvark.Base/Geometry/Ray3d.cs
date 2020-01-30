@@ -191,18 +191,18 @@ namespace Aardvark.Base
         {
             V3d edge01 = p1 - p0;
             V3d edge02 = p2 - p0;
-            V3d plane = V3d.Cross(Direction, edge02);
-            double det = V3d.Dot(edge01, plane);
+            V3d plane = Vec.Cross(Direction, edge02);
+            double det = Vec.Dot(edge01, plane);
             if (det > -0.0000001 && det < 0.0000001) return false;
             // ray ~= paralell / Triangle
             V3d tv = Origin - p0;
             det = 1.0 / det;  // det is now inverse det
-            double u = V3d.Dot(tv, plane) * det;
+            double u = Vec.Dot(tv, plane) * det;
             if (u < 0.0 || u > 1.0) return false;
-            plane = V3d.Cross(tv, edge01); // plane is now qv
-            double v = V3d.Dot(Direction, plane) * det;
+            plane = Vec.Cross(tv, edge01); // plane is now qv
+            double v = Vec.Dot(Direction, plane) * det;
             if (v < 0.0 || u + v > 1.0) return false;
-            double t = V3d.Dot(edge02, plane) * det;
+            double t = Vec.Dot(edge02, plane) * det;
             if (t < tmin || t >= tmax || t >= hit.T) return false;
             hit.T = t;
             hit.Point = Origin + t * Direction;
@@ -224,18 +224,18 @@ namespace Aardvark.Base
             ref RayHit3d hit
             )
         {
-            V3d plane = V3d.Cross(Direction, edge02);
-            double det = V3d.Dot(edge01, plane);
+            V3d plane = Vec.Cross(Direction, edge02);
+            double det = Vec.Dot(edge01, plane);
             if (det > -0.0000001 && det < 0.0000001) return false;
             // ray ~= paralell / Triangle
             V3d tv = Origin - p0;
             det = 1.0 / det;  // det is now inverse det
-            double u = V3d.Dot(tv, plane) * det;
+            double u = Vec.Dot(tv, plane) * det;
             if (u < 0.0 || u > 1.0) return false;
-            plane = V3d.Cross(tv, edge01); // plane is now qv
-            double v = V3d.Dot(Direction, plane) * det;
+            plane = Vec.Cross(tv, edge01); // plane is now qv
+            double v = Vec.Dot(Direction, plane) * det;
             if (v < 0.0 || u + v > 1.0) return false;
-            double t = V3d.Dot(edge02, plane) * det;
+            double t = Vec.Dot(edge02, plane) * det;
             if (t < tmin || t >= tmax || t >= hit.T) return false;
             hit.T = t;
             hit.Point = Origin + t * Direction;
@@ -432,7 +432,7 @@ namespace Aardvark.Base
             if (!ComputeHit(t, tmin, tmax, ref hit))
                 return false;
 
-            if (V3d.Distance(hit.Point, circle.Center) > circle.Radius)
+            if (Vec.Distance(hit.Point, circle.Center) > circle.Radius)
             {
                 hit.Point = V3d.NaN;
                 hit.T = tmax;
@@ -463,7 +463,7 @@ namespace Aardvark.Base
             {   // cylinder gets bigger, the further away it is
                 var pnt = GetPointOnRay(t);
 
-                var dis = V3d.Distance(pnt, this.Origin);
+                var dis = Vec.Distance(pnt, this.Origin);
                 radius = ((cylinder.Radius / cylinder.DistanceScale) * dis) * 2;
             }
 
@@ -624,7 +624,7 @@ namespace Aardvark.Base
     public struct FastRay3d
     {
         public readonly Ray3d Ray;
-        public readonly Vec.DirFlags DirFlags;
+        public readonly DirFlags DirFlags;
         public readonly V3d InvDir;
 
         #region Constructors
@@ -652,7 +652,7 @@ namespace Aardvark.Base
         {
             var dirFlags = DirFlags;
 
-            if ((dirFlags & Vec.DirFlags.PositiveX) != 0)
+            if ((dirFlags & DirFlags.PositiveX) != 0)
             {
                 {
                     double t = (box.Max.X - Ray.Origin.X) * InvDir.X;
@@ -665,7 +665,7 @@ namespace Aardvark.Base
                     if (t > tmin) tmin = t;
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeX) != 0)
+            else if ((dirFlags & DirFlags.NegativeX) != 0)
             {
                 {
                     double t = (box.Min.X - Ray.Origin.X) * InvDir.X;
@@ -684,7 +684,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveY) != 0)
+            if ((dirFlags & DirFlags.PositiveY) != 0)
             {
                 {
                     double t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
@@ -697,7 +697,7 @@ namespace Aardvark.Base
                     if (t > tmin) tmin = t;
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeY) != 0)
+            else if ((dirFlags & DirFlags.NegativeY) != 0)
             {
                 {
                     double t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
@@ -716,7 +716,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveZ) != 0)
+            if ((dirFlags & DirFlags.PositiveZ) != 0)
             {
                 {
                     double t = (box.Max.Z - Ray.Origin.Z) * InvDir.Z;
@@ -729,7 +729,7 @@ namespace Aardvark.Base
                     if (t > tmin) tmin = t;
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeZ) != 0)
+            else if ((dirFlags & DirFlags.NegativeZ) != 0)
             {
                 {
                     double t = (box.Min.Z - Ray.Origin.Z) * InvDir.Z;
@@ -766,7 +766,7 @@ namespace Aardvark.Base
         {
             var dirFlags = DirFlags;
 
-            if ((dirFlags & Vec.DirFlags.PositiveX) != 0)
+            if ((dirFlags & DirFlags.PositiveX) != 0)
             {
                 if ((boxFlags & Box.Flags.MaxX) != 0)
                 {
@@ -781,7 +781,7 @@ namespace Aardvark.Base
                     if (t > tmin) tmin = t;
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeX) != 0)
+            else if ((dirFlags & DirFlags.NegativeX) != 0)
             {
                 if ((boxFlags & Box.Flags.MinX) != 0)
                 {
@@ -803,7 +803,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveY) != 0)
+            if ((dirFlags & DirFlags.PositiveY) != 0)
             {
                 if ((boxFlags & Box.Flags.MaxY) != 0)
                 {
@@ -818,7 +818,7 @@ namespace Aardvark.Base
                     if (t > tmin) tmin = t;
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeY) != 0)
+            else if ((dirFlags & DirFlags.NegativeY) != 0)
             {
                 if ((boxFlags & Box.Flags.MinY) != 0)
                 {
@@ -840,7 +840,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveZ) != 0)
+            if ((dirFlags & DirFlags.PositiveZ) != 0)
             {
                 if ((boxFlags & Box.Flags.MaxZ) != 0)
                 {
@@ -855,7 +855,7 @@ namespace Aardvark.Base
                     if (t > tmin) tmin = t;
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeZ) != 0)
+            else if ((dirFlags & DirFlags.NegativeZ) != 0)
             {
                 if ((boxFlags & Box.Flags.MinZ) != 0)
                 {
@@ -898,7 +898,7 @@ namespace Aardvark.Base
             tminFlags = Box.Flags.None;
             tmaxFlags = Box.Flags.None;
 
-            if ((dirFlags & Vec.DirFlags.PositiveX) != 0)
+            if ((dirFlags & DirFlags.PositiveX) != 0)
             {
                 {
                     double t = (box.Max.X - Ray.Origin.X) * InvDir.X;
@@ -911,7 +911,7 @@ namespace Aardvark.Base
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinX; }
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeX) != 0)
+            else if ((dirFlags & DirFlags.NegativeX) != 0)
             {
                 {
                     double t = (box.Min.X - Ray.Origin.X) * InvDir.X;
@@ -930,7 +930,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveY) != 0)
+            if ((dirFlags & DirFlags.PositiveY) != 0)
             {
                 {
                     double t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
@@ -943,7 +943,7 @@ namespace Aardvark.Base
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinY; }
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeY) != 0)
+            else if ((dirFlags & DirFlags.NegativeY) != 0)
             {
                 {
                     double t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
@@ -962,7 +962,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveZ) != 0)
+            if ((dirFlags & DirFlags.PositiveZ) != 0)
             {
                 {
                     double t = (box.Max.Z - Ray.Origin.Z) * InvDir.Z;
@@ -975,7 +975,7 @@ namespace Aardvark.Base
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinZ; }
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeZ) != 0)
+            else if ((dirFlags & DirFlags.NegativeZ) != 0)
             {
                 {
                     double t = (box.Min.Z - Ray.Origin.Z) * InvDir.Z;
@@ -1017,7 +1017,7 @@ namespace Aardvark.Base
             tminFlags = Box.Flags.None;
             tmaxFlags = Box.Flags.None;
 
-            if ((dirFlags & Vec.DirFlags.PositiveX) != 0)
+            if ((dirFlags & DirFlags.PositiveX) != 0)
             {
                 if ((boxFlags & Box.Flags.MaxX) != 0)
                 {
@@ -1032,7 +1032,7 @@ namespace Aardvark.Base
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinX; }
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeX) != 0)
+            else if ((dirFlags & DirFlags.NegativeX) != 0)
             {
                 if ((boxFlags & Box.Flags.MinX) != 0)
                 {
@@ -1054,7 +1054,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveY) != 0)
+            if ((dirFlags & DirFlags.PositiveY) != 0)
             {
                 if ((boxFlags & Box.Flags.MaxY) != 0)
                 {
@@ -1069,7 +1069,7 @@ namespace Aardvark.Base
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinY; }
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeY) != 0)
+            else if ((dirFlags & DirFlags.NegativeY) != 0)
             {
                 if ((boxFlags & Box.Flags.MinY) != 0)
                 {
@@ -1091,7 +1091,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveZ) != 0)
+            if ((dirFlags & DirFlags.PositiveZ) != 0)
             {
                 if ((boxFlags & Box.Flags.MaxZ) != 0)
                 {
@@ -1106,7 +1106,7 @@ namespace Aardvark.Base
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinZ; }
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeZ) != 0)
+            else if ((dirFlags & DirFlags.NegativeZ) != 0)
             {
                 if ((boxFlags & Box.Flags.MinZ) != 0)
                 {
