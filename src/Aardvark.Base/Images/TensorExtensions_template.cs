@@ -22,9 +22,10 @@ namespace Aardvark.Base
         //#     Tup.Create("float",     "",         "C4f",  "C4f"),
         //# };
         //# intConfigs.ForEach((dt, dtn, ct, fct) => {
+        //#     var fun = ct == "Fun" ? ct : "Col";
         //#     var clampVal = dtn != "" && ct == "Fun";
         //#     var clampMap = dtn != "" && ct != "Fun";
-        //#     var rfct = dtn == "" ? "" : ct == "Fun" ? "RawF" : "Raw" + fct ;
+        //#     var rfct = dtn == "" ? "" : "RawF";
         //#     var dtct = ct == "Fun" ? dt : dt + ", " + ct;
         //#     var it = ct == "Fun" ? dt : ct;
         public static void SetScaledNearest(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
@@ -75,7 +76,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                 interpolator, interpolator, __ct__.LinCom__rfct__, __fct__.LinCom,
+                                 interpolator, interpolator, __fun__.LinCom__rfct__, __fun__.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped/*#
                                   if (clampVal) { */,
                                   Col.__dtn__From__dtn__InFloatClamped/*#
@@ -101,7 +102,7 @@ namespace Aardvark.Base
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
-                                  interpolator, interpolator, __ct__.LinCom__rfct__, __fct__.LinCom,
+                                  interpolator, interpolator, __fun__.LinCom__rfct__, __fun__.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped/*#
                                   if (clampVal) { */,
                                   Col.__dtn__From__dtn__InFloatClamped/*#

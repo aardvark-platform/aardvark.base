@@ -2103,6 +2103,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Dot product of vector with dir rotated by 90 degrees counterclockwise.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Dot90(this __vtype__ v, __vtype__ dir)
         {
             return v.Y * dir.X - v.X * dir.Y;
@@ -2111,6 +2112,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Dot product of vector with dir rotated by 180 degrees.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Dot180(this __vtype__ v, __vtype__ dir)
         {
             return -(v.X * dir.X + v.Y * dir.Y);
@@ -2119,6 +2121,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Dot product of vector with dir rotated by 270 degrees counterclockwise.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Dot270(this __vtype__ v, __vtype__ dir)
         {
             return v.X * dir.Y - v.Y * dir.X;
@@ -2128,6 +2131,7 @@ namespace Aardvark.Base
         /// Returns the left value of the direction v with respect to the
         /// line from p0 to p1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DirLeftOfLineValue(this __vtype__ v, __vtype__ p0, __vtype__ p1)
         {
             return v.X * (p0.Y - p1.Y) + v.Y * (p1.X - p0.X);
@@ -2137,6 +2141,7 @@ namespace Aardvark.Base
         /// Returns the right value of the direction v with respect to the
         /// line from p0 to p1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DirRightOfLineValue(this __vtype__ v, __vtype__ p0, __vtype__ p1)
         {
             return v.X * (p1.Y - p0.Y) + v.Y * (p0.X - p1.X);
@@ -2146,6 +2151,7 @@ namespace Aardvark.Base
         /// Returns the left value of the point p with respect to the
         /// line from p0 to p1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ PosLeftOfLineValue(this __vtype__ p, __vtype__ p0, __vtype__ p1)
         {
             return (p.X - p0.X) * (p0.Y - p1.Y) + (p.Y - p0.Y) * (p1.X - p0.X);
@@ -2155,6 +2161,7 @@ namespace Aardvark.Base
         /// Returns the right value of the point p with respect to the
         /// line from p0 to p1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ PosRightOfLineValue(this __vtype__ p, __vtype__ p0, __vtype__ p1)
         {
             return (p.X - p0.X) * (p1.Y - p0.Y) + (p.Y - p0.Y) * (p0.X - p1.X);
@@ -2167,6 +2174,7 @@ namespace Aardvark.Base
 
         //# if (ft.IsReal) {
         //# for (int tpc = 2; tpc < 8; tpc++ ) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ LinCom(/*# tpc.ForEach(i => { */__vtype__ p__i__/*# }, comma); */, ref Tup__tpc__<__ftype__> w)
         {
             return /*# tpc.ForEach(i => { */p__i__ * w.E__i__/*# }, add); */;

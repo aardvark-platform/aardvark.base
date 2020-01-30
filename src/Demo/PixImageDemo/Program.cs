@@ -154,7 +154,7 @@ namespace PixImageDemo
             }
             targetMat.ForeachIndex((tix, tiy, i) =>
                 targetMat[i] = sourceMat.Sample16(dxa[tix], dya[tiy], wxa[tix], wya[tiy],
-                                                  C3f.LinCom, C3f.LinCom));
+                                                  Col.LinCom, Col.LinCom));
         }
 
         /// <summary>
@@ -186,30 +186,30 @@ namespace PixImageDemo
 
             outMat0.ForeachIndex((x, y, i) =>
                 {
-                    /// Note: LinComRawC3f in x direction results in a byte color (range 0-255) stored
-                    /// in a C3f. The second C3f.LinCom for the y direction does not perform any additional
+                    /// Note: LinComRawF in x direction results in a byte color (range 0-255) stored
+                    /// in a C3f. The second Col.LinCom for the y direction does not perform any additional
                     /// scaling, thus we need to map the "ByteInFloat" color back to a byte color at the
                     /// end (this perfoms clamping). Tensor.Tensor.Index6SamplesClamped clamps to the border
                     /// region and allows any double pixel address.
                     outMat0[i] = inMat.Sample36(x * scale + shift, y * scale + shift,
                                                Fun.Lanczos3f, Fun.Lanczos3f,
-                                               C3b.LinComRawC3f, C3f.LinCom,
+                                               Col.LinComRawF, Col.LinCom,
                                                Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
                                                 .Map(Col.ByteFromByteInFloatClamped);
 
-                    /// Note: LinComRawC3f in x direction results in a byte color (range 0-255) stored
-                    /// in a C3f. The second C3f.LinCom for the y direction does not perform any additional
+                    /// Note: LinComRawF in x direction results in a byte color (range 0-255) stored
+                    /// in a C3f. The second Col.LinCom for the y direction does not perform any additional
                     /// scaling, thus we need to map the "ByteInFloat" color back to a byte color at the
                     /// end (this perfoms clamping). Tensor.Index4SamplesClamped clamps to the border
                     /// region and allows any double pixel address.
                     outMat1[i] = inMat.Sample16(x * scale + shift, y * scale + shift,
                                                hermiteSpline, hermiteSpline,
-                                               C3b.LinComRawC3f, C3f.LinCom,
+                                               Col.LinComRawF, Col.LinCom,
                                                Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
                                                 .Map(Col.ByteFromByteInFloatClamped);
 
 
-                    /// Note here the two C3b.LinCom calls perform the clamping immediately. Thus we have
+                    /// Note here the two Col.LinCom calls perform the clamping immediately. Thus we have
                     /// Five clamping calls on each sample: 4 on each x-line, and one in the final
                     /// y-interpolation.
                     /// Here we have cyclic border handling. Note that Tensor.Index4SamplesCyclic1 only
@@ -217,7 +217,7 @@ namespace PixImageDemo
                     /// range is not quite 3x3 times the size of the original image.
                     outMat2[i] = inMat.Sample16(x * scale + shift, y * scale + shift,
                                                hermiteSpline, hermiteSpline,
-                                               C3b.LinCom, C3b.LinCom,
+                                               Col.LinCom, Col.LinCom,
                                                Tensor.Index4SamplesCyclic1, Tensor.Index4SamplesCyclic1);
 
                     outMat3[i] = inMat.Sample4Clamped(x * scale + shift, y * scale + shift, Fun.Lerp, Fun.Lerp);

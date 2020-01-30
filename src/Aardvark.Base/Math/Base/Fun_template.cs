@@ -769,12 +769,14 @@ namespace Aardvark.Base
         //# foreach (var it in Meta.IntegerTypes) { var itn = it.Name;
         //# for (int tpc = 4; tpc < 7; tpc+=2) {
         //# foreach (var rt in Meta.RealTypes) { var rtn = rt.Name; var rtc = rt.Caps[0];
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __itn__ LinCom(
                 /*# tpc.ForEach(i => { */__itn__ p__i__/*# }, comma); */, ref Tup__tpc__<__rtn__> w)
         {
             return (__itn__)Fun.Clamp(/*# tpc.ForEach(i => { */p__i__ * w.E__i__/*# }, add); */, (__rtn__)__itn__.MinValue, (__rtn__)__itn__.MaxValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtn__ LinComRaw__rtc__(
                 /*# tpc.ForEach(i => { */__itn__ p__i__/*# }, comma); */, ref Tup__tpc__<__rtn__> w)
         {
@@ -786,6 +788,7 @@ namespace Aardvark.Base
         //# } // it
         //# for (int tpc = 2; tpc < 8; tpc++ ) {
         //# foreach (var rt in Meta.RealTypes) { var rtn = rt.Name;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtn__ LinCom(/*# tpc.ForEach(i => { */__rtn__ p__i__/*# }, comma); */, ref Tup__tpc__<__rtn__> w)
         {
             return /*# tpc.ForEach(i => { */p__i__ * w.E__i__/*# }, add); */;

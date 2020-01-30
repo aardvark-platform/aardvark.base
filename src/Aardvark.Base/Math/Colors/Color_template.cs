@@ -279,12 +279,16 @@ namespace Aardvark.Base
 
         //# foreach (var t1 in Meta.ColorTypes) if (t1 != t) {
         //#     var type1 = t1.Name;
-        public static readonly Func<__type1__, __type__> From__type1__ = c => new __type__(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__type1__(__type1__ c)
+            => new __type__(c);
         //# }
 
         //# foreach (var t1 in vecTypes) {
         //#     var type1 = t1.Name;
-        public static readonly Func<__type1__, __type__> From__type1__ = c => new __type__(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__type1__(__type1__ c)
+            => new __type__(c);
         //# }
 
         //# foreach (var t1 in Meta.ColorTypes) {
@@ -403,108 +407,6 @@ namespace Aardvark.Base
         {
             return /*# fields.ForEach(f => { */a.__f__ != b.__f__/*# }, oror); */;
         }
-
-        #endregion
-
-        #region Comparisons
-
-        //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
-        //#                     { "<=", "SmallerOrEqual" }, { ">=", "GreaterOrEqual"},
-        //#                     { "==", "Equal" },          { "!=", "Different" } };
-        //# var attention1 = "ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).";
-        //# var attention2 = "ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).";
-        //# for(int o = 0; o < bops.GetLength(0); o++) {
-        //#     string bop = " " + bops[o,0] + " ", opName = bops[o,1];
-        /// <summary>
-        /// Returns whether ALL elements of a are __opName__ the corresponding element of b.
-        /// __attention1__
-        /// </summary>
-        public static bool All__opName__(__type__ a, __type__ b)
-        {
-            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are __opName__ the corresponding element of col.
-        /// __attention2__
-        /// </summary>
-        public bool All__opName__(__type__ col)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__col.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are __opName__ s.
-        /// __attention1__
-        /// </summary>
-        public static bool All__opName__(__type__ col, __ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */col.__f____bop__s/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are __opName__ s.
-        /// __attention2__
-        /// </summary>
-        public bool All__opName__(__ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__s/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether a is __opName__ ALL elements of col.
-        /// __attention1__
-        /// </summary>
-        public static bool All__opName__(__ftype__ s, __type__ col)
-        {
-            return (/*# fields.ForEach(f => { */s__bop__col.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
-        /// __attention1__
-        /// </summary>
-        public static bool Any__opName__(__type__ a, __type__ b)
-        {
-            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
-        /// __attention2__
-        /// </summary>
-        public bool Any__opName__(__type__ col)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__col.__f__/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is __opName__ s.
-        /// __attention1__
-        /// </summary>
-        public static bool Any__opName__(__type__ col, __ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */col.__f____bop__s/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is __opName__ s.
-        /// __attention1__
-        /// </summary>
-        public bool Any__opName__(__ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__s/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether a is __opName__ AT LEAST ONE element of col.
-        /// __attention1__
-        /// </summary>
-        public static bool Any__opName__(__ftype__ s, __type__ col)
-        {
-            return (/*# fields.ForEach(f => { */s__bop__col.__f__/*# }, oror); */);
-        }
-        //# }
 
         #endregion
 
@@ -745,31 +647,6 @@ namespace Aardvark.Base
                 }
             };
 
-        //# for (int tpc = 4; tpc < 7; tpc+=2) {
-        //# foreach (var rt in new[] { fltt, dblt }) { var rtype = rt.Name; var wtype = rt.FieldType.Name;
-        //#     var convert = ft.IsReal ? ""
-        //#        : "Col." + ft.Caps + "From" + ft.Caps + "In"
-        //#          + (ft.Name == "uint" ? "Double" : rt.FieldType.Caps) + "Clamped";
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static __type__ LinCom(
-            /*# tpc.ForEach(i => { */__type__ p__i__/*# }, comma); */, ref Tup__tpc__<__wtype__> w)
-        {
-            return new __type__(/*# channels.ForEach(ch => { */
-                __convert__(/*# tpc.ForEach(i => { */p__i__.__ch__ * w.E__i__/*# }, add); */)/*# }, comma); */);
-        }
-
-        public static __rtype__ LinComRaw__rtype__(
-            /*# tpc.ForEach(i => { */__type__ p__i__/*# }, comma); */, ref Tup__tpc__<__wtype__> w)
-        {
-            return new __rtype__(/*# channels.ForEach(ch => { */
-                /*# tpc.ForEach(i => { */p__i__.__ch__ * w.E__i__/*# }, add); }, comma); */);
-        }
-
-        //# } // rt
-        //# } // tpc
         #endregion
 
         #region Parsing
@@ -891,6 +768,111 @@ namespace Aardvark.Base
             return new __type__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
         }
         //# }
+        #endregion
+    }
+
+    public static partial class Col
+    {
+        #region Comparisons
+
+        //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
+        //#                     { "<=", "SmallerOrEqual" }, { ">=", "GreaterOrEqual"},
+        //#                     { "==", "Equal" },          { "!=", "Different" } };
+        //# var attention = "ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).";
+        //# for(int o = 0; o < bops.GetLength(0); o++) {
+        //#     string bop = " " + bops[o,0] + " ", opName = bops[o,1];
+        /// <summary>
+        /// Returns whether ALL elements of a are __opName__ the corresponding element of b.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(this __type__ a, __type__ b)
+        {
+            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are __opName__ s.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(this __type__ col, __ftype__ s)
+        {
+            return (/*# fields.ForEach(f => { */col.__f____bop__s/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether a is __opName__ ALL elements of col.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(__ftype__ s, __type__ col)
+        {
+            return (/*# fields.ForEach(f => { */s__bop__col.__f__/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(this __type__ a, __type__ b)
+        {
+            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, oror); */);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is __opName__ s.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(this __type__ col, __ftype__ s)
+        {
+            return (/*# fields.ForEach(f => { */col.__f____bop__s/*# }, oror); */);
+        }
+
+        /// <summary>
+        /// Returns whether a is __opName__ AT LEAST ONE element of col.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(__ftype__ s, __type__ col)
+        {
+            return (/*# fields.ForEach(f => { */s__bop__col.__f__/*# }, oror); */);
+        }
+        //# }
+
+        #endregion
+
+        #region Linear Combination
+
+        //# for (int tpc = 4; tpc < 7; tpc+=2) {
+        //# foreach (var rt in new[] { fltt, dblt }) { var rtype = rt.Name; var wtype = rt.FieldType.Name; var rtc = rt.FieldType.Caps[0];
+        //#     var convert = ft.IsReal ? ""
+        //#        : "Col." + ft.Caps + "From" + ft.Caps + "In"
+        //#          + (ft.Name == "uint" ? "Double" : rt.FieldType.Caps) + "Clamped";
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ LinCom(
+            /*# tpc.ForEach(i => { */__type__ p__i__/*# }, comma); */, ref Tup__tpc__<__wtype__> w)
+        {
+            return new __type__(/*# channels.ForEach(ch => { */
+                __convert__(/*# tpc.ForEach(i => { */p__i__.__ch__ * w.E__i__/*# }, add); */)/*# }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rtype__ LinComRaw__rtc__(
+            /*# tpc.ForEach(i => { */__type__ p__i__/*# }, comma); */, ref Tup__tpc__<__wtype__> w)
+        {
+            return new __rtype__(/*# channels.ForEach(ch => { */
+                /*# tpc.ForEach(i => { */p__i__.__ch__ * w.E__i__/*# }, add); }, comma); */);
+        }
+
+        //# } // rt
+        //# } // tpc
         #endregion
     }
 
