@@ -1034,31 +1034,31 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
     member x.BlitTo(y : NativeMatrix<'a>, lerp : float -> 'a -> 'a -> 'a) = x.BlitTo(y, V2d.Zero, V2d.One, lerp)
     member x.Item
         with get(c0 : V2l) : 'a = 
-            let i = V2l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V2l) (value : 'a) =
-            let i = V2l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : V2i) : 'a = 
-            let i = V2l.Dot(x.Delta, V2l(c0))
+            let i = Vec.Dot(x.Delta, V2l(c0))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V2i) (value : 'a) =
-            let i = V2l.Dot(x.Delta, V2l(c0))
+            let i = Vec.Dot(x.Delta, V2l(c0))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int, c1 : int) : 'a = 
-            let i = V2l.Dot(x.Delta, V2l(c0, c1))
+            let i = Vec.Dot(x.Delta, V2l(c0, c1))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int, c1 : int) (value : 'a) =
-            let i = V2l.Dot(x.Delta, V2l(c0, c1))
+            let i = Vec.Dot(x.Delta, V2l(c0, c1))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int64, c1 : int64) : 'a = 
-            let i = V2l.Dot(x.Delta, V2l(c0, c1))
+            let i = Vec.Dot(x.Delta, V2l(c0, c1))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int64, c1 : int64) (value : 'a) =
-            let i = V2l.Dot(x.Delta, V2l(c0, c1))
+            let i = Vec.Dot(x.Delta, V2l(c0, c1))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member inline private x.CopyToXY(y : NativeMatrix<'a>) = 
         let sa = nativeint (sizeof<'a>)
@@ -1177,7 +1177,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let dX = nativeint x.DX * sa
         let dY = nativeint x.DY * sa
         if p0.X >= 0L && p0.X < x.Size.X - 1L && p0.Y >= 0L && p0.Y < x.Size.Y - 1L then
-            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (V2l.Dot(p0, x.Delta.XY)) * sa
+            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(p0, x.Delta.XY)) * sa
             let v00 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0))
             let v01 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dY))
             let v10 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dX))
@@ -1188,10 +1188,10 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
             vxx
         else
             let max = x.Size - V2l.One
-            let v00 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V2l.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0), max))) * sa))
-            let v01 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V2l.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(0L, 1L)), max))) * sa))
-            let v10 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V2l.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(1L, 0L)), max))) * sa))
-            let v11 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V2l.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(1L, 1L)), max))) * sa))
+            let v00 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0), max))) * sa))
+            let v01 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(0L, 1L)), max))) * sa))
+            let v10 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(1L, 0L)), max))) * sa))
+            let v11 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(1L, 1L)), max))) * sa))
             let vx0 = lerp.Invoke(frac.X, v00, v10)
             let vx1 = lerp.Invoke(frac.X, v01, v11)
             let vxx = lerp.Invoke(frac.Y, vx0, vx1)
@@ -5733,31 +5733,31 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
     member x.BlitTo(y : NativeVolume<'a>, lerp : float -> 'a -> 'a -> 'a) = x.BlitTo(y, V3d.Zero, V3d.One, lerp)
     member x.Item
         with get(c0 : V3l) : 'a = 
-            let i = V3l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V3l) (value : 'a) =
-            let i = V3l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : V3i) : 'a = 
-            let i = V3l.Dot(x.Delta, V3l(c0))
+            let i = Vec.Dot(x.Delta, V3l(c0))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V3i) (value : 'a) =
-            let i = V3l.Dot(x.Delta, V3l(c0))
+            let i = Vec.Dot(x.Delta, V3l(c0))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int, c1 : int, c2 : int) : 'a = 
-            let i = V3l.Dot(x.Delta, V3l(c0, c1, c2))
+            let i = Vec.Dot(x.Delta, V3l(c0, c1, c2))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int, c1 : int, c2 : int) (value : 'a) =
-            let i = V3l.Dot(x.Delta, V3l(c0, c1, c2))
+            let i = Vec.Dot(x.Delta, V3l(c0, c1, c2))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int64, c1 : int64, c2 : int64) : 'a = 
-            let i = V3l.Dot(x.Delta, V3l(c0, c1, c2))
+            let i = Vec.Dot(x.Delta, V3l(c0, c1, c2))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int64, c1 : int64, c2 : int64) (value : 'a) =
-            let i = V3l.Dot(x.Delta, V3l(c0, c1, c2))
+            let i = Vec.Dot(x.Delta, V3l(c0, c1, c2))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member inline private x.CopyToXYZ(y : NativeVolume<'a>) = 
         let sa = nativeint (sizeof<'a>)
@@ -6133,7 +6133,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         if nearest.Y < 0L then nearest.Y <- 0L
         else if nearest.Y >= x.SY then nearest.Y <- x.SY - 1L
         let sa = nativeint sizeof<'a>
-        let ptr = NativePtr.toNativeInt x.Pointer + nativeint (V2l.Dot(nearest, x.Delta.XY)) * sa
+        let ptr = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(nearest, x.Delta.XY)) * sa
         let dZ = nativeint x.DZ * sa
         Array.init (int x.Size.Z) (fun i -> NativePtr.read (NativePtr.ofNativeInt (ptr + nativeint i * dZ)))
     member x.SampleLinear(coord : V3d, lerp : float -> 'a -> 'a -> 'a) : 'a = 
@@ -6147,7 +6147,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let dY = nativeint x.DY * sa
         let dZ = nativeint x.DZ * sa
         if p0.X >= 0L && p0.X < x.Size.X - 1L && p0.Y >= 0L && p0.Y < x.Size.Y - 1L && p0.Z >= 0L && p0.Z < x.Size.Z - 1L then
-            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (V3l.Dot(p0, x.Delta.XYZ)) * sa
+            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(p0, x.Delta.XYZ)) * sa
             let v000 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0))
             let v001 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dZ))
             let v010 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dY))
@@ -6166,14 +6166,14 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
             vxxx
         else
             let max = x.Size - V3l.One
-            let v000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0), max))) * sa))
-            let v001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 0L, 1L)), max))) * sa))
-            let v010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 1L, 0L)), max))) * sa))
-            let v011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 1L, 1L)), max))) * sa))
-            let v100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 0L, 0L)), max))) * sa))
-            let v101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 0L, 1L)), max))) * sa))
-            let v110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 1L, 0L)), max))) * sa))
-            let v111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 1L, 1L)), max))) * sa))
+            let v000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0), max))) * sa))
+            let v001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 0L, 1L)), max))) * sa))
+            let v010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 1L, 0L)), max))) * sa))
+            let v011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 1L, 1L)), max))) * sa))
+            let v100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 0L, 0L)), max))) * sa))
+            let v101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 0L, 1L)), max))) * sa))
+            let v110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 1L, 0L)), max))) * sa))
+            let v111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 1L, 1L)), max))) * sa))
             let vx00 = lerp.Invoke(frac.X, v000, v100)
             let vx01 = lerp.Invoke(frac.X, v001, v101)
             let vx10 = lerp.Invoke(frac.X, v010, v110)
@@ -44079,31 +44079,31 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
     member x.BlitTo(y : NativeTensor4<'a>, lerp : float -> 'a -> 'a -> 'a) = x.BlitTo(y, V4d.Zero, V4d.One, lerp)
     member x.Item
         with get(c0 : V4l) : 'a = 
-            let i = V4l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V4l) (value : 'a) =
-            let i = V4l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : V4i) : 'a = 
-            let i = V4l.Dot(x.Delta, V4l(c0))
+            let i = Vec.Dot(x.Delta, V4l(c0))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V4i) (value : 'a) =
-            let i = V4l.Dot(x.Delta, V4l(c0))
+            let i = Vec.Dot(x.Delta, V4l(c0))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int, c1 : int, c2 : int, c3 : int) : 'a = 
-            let i = V4l.Dot(x.Delta, V4l(c0, c1, c2, c3))
+            let i = Vec.Dot(x.Delta, V4l(c0, c1, c2, c3))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int, c1 : int, c2 : int, c3 : int) (value : 'a) =
-            let i = V4l.Dot(x.Delta, V4l(c0, c1, c2, c3))
+            let i = Vec.Dot(x.Delta, V4l(c0, c1, c2, c3))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int64, c1 : int64, c2 : int64, c3 : int64) : 'a = 
-            let i = V4l.Dot(x.Delta, V4l(c0, c1, c2, c3))
+            let i = Vec.Dot(x.Delta, V4l(c0, c1, c2, c3))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int64, c1 : int64, c2 : int64, c3 : int64) (value : 'a) =
-            let i = V4l.Dot(x.Delta, V4l(c0, c1, c2, c3))
+            let i = Vec.Dot(x.Delta, V4l(c0, c1, c2, c3))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member inline private x.CopyToXYZW(y : NativeTensor4<'a>) = 
         let sa = nativeint (sizeof<'a>)
@@ -45885,7 +45885,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         if nearest.Z < 0L then nearest.Z <- 0L
         else if nearest.Z >= x.SZ then nearest.Z <- x.SZ - 1L
         let sa = nativeint sizeof<'a>
-        let ptr = NativePtr.toNativeInt x.Pointer + nativeint (V3l.Dot(nearest, x.Delta.XYZ)) * sa
+        let ptr = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(nearest, x.Delta.XYZ)) * sa
         let dW = nativeint x.DW * sa
         Array.init (int x.Size.W) (fun i -> NativePtr.read (NativePtr.ofNativeInt (ptr + nativeint i * dW)))
     member x.SampleLinear(coord : V4d, lerp : float -> 'a -> 'a -> 'a) : 'a = 
@@ -45900,7 +45900,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let dZ = nativeint x.DZ * sa
         let dW = nativeint x.DW * sa
         if p0.X >= 0L && p0.X < x.Size.X - 1L && p0.Y >= 0L && p0.Y < x.Size.Y - 1L && p0.Z >= 0L && p0.Z < x.Size.Z - 1L && p0.W >= 0L && p0.W < x.Size.W - 1L then
-            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (V4l.Dot(p0, x.Delta.XYZW)) * sa
+            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(p0, x.Delta.XYZW)) * sa
             let v0000 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0))
             let v0001 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dW))
             let v0010 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dZ))
@@ -45935,22 +45935,22 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
             vxxxx
         else
             let max = x.Size - V4l.One
-            let v0000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0), max))) * sa))
-            let v0001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 0L, 1L)), max))) * sa))
-            let v0010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 1L, 0L)), max))) * sa))
-            let v0011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 1L, 1L)), max))) * sa))
-            let v0100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 0L, 0L)), max))) * sa))
-            let v0101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 0L, 1L)), max))) * sa))
-            let v0110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 1L, 0L)), max))) * sa))
-            let v0111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 1L, 1L)), max))) * sa))
-            let v1000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 0L, 0L)), max))) * sa))
-            let v1001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 0L, 1L)), max))) * sa))
-            let v1010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 1L, 0L)), max))) * sa))
-            let v1011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 1L, 1L)), max))) * sa))
-            let v1100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 0L, 0L)), max))) * sa))
-            let v1101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 0L, 1L)), max))) * sa))
-            let v1110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 1L, 0L)), max))) * sa))
-            let v1111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 1L, 1L)), max))) * sa))
+            let v0000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0), max))) * sa))
+            let v0001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 0L, 1L)), max))) * sa))
+            let v0010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 1L, 0L)), max))) * sa))
+            let v0011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 1L, 1L)), max))) * sa))
+            let v0100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 0L, 0L)), max))) * sa))
+            let v0101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 0L, 1L)), max))) * sa))
+            let v0110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 1L, 0L)), max))) * sa))
+            let v0111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 1L, 1L)), max))) * sa))
+            let v1000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 0L, 0L)), max))) * sa))
+            let v1001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 0L, 1L)), max))) * sa))
+            let v1010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 1L, 0L)), max))) * sa))
+            let v1011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 1L, 1L)), max))) * sa))
+            let v1100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 0L, 0L)), max))) * sa))
+            let v1101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 0L, 1L)), max))) * sa))
+            let v1110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 1L, 0L)), max))) * sa))
+            let v1111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 1L, 1L)), max))) * sa))
             let vx000 = lerp.Invoke(frac.X, v0000, v1000)
             let vx001 = lerp.Invoke(frac.X, v0001, v1001)
             let vx010 = lerp.Invoke(frac.X, v0010, v1010)

@@ -90,7 +90,7 @@ namespace Aardvark.Base
         /// <summary>
         /// if zero, point is located on cone
         /// </summary>
-        public double GetDistance(V3d point) => V3d.Distance(point, GetClosestPoint(point));
+        public double GetDistance(V3d point) => Vec.Distance(point, GetClosestPoint(point));
 
         public Circle3d GetCircle(double height)
         {
@@ -118,7 +118,7 @@ namespace Aardvark.Base
             var p0 = cp + dir;
             var p1 = point.GetClosestPointOn(new Ray3d(Origin, (p0 - Origin).Normalized));
 
-            return (V3d.Distance(point, p1) < V3d.Distance(point, p0)) ? p1 : p0;
+            return (Vec.Distance(point, p1) < Vec.Distance(point, p0)) ? p1 : p0;
         }
 
         #endregion

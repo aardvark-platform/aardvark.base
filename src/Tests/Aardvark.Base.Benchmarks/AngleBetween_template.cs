@@ -63,8 +63,8 @@ namespace Aardvark.Base.Benchmarks
         {
             var methods = new Dictionary<string, Func<__v3rt__, __v3rt__, __rtype__>>()
                 {
-                    { "Stable", VecFun.AngleBetween },
-                    { "Fast", VecFun.AngleBetweenFast }
+                    { "Stable", Vec.AngleBetween },
+                    { "Fast", Vec.AngleBetweenFast }
                 };
 
             Console.WriteLine("Benchmarking numerical stability for AngleBetween__Rtype__");

@@ -57,8 +57,8 @@ namespace Aardvark.Base.Benchmarks
         {
             var methods = new Dictionary<string, Func<V3f, V3f, float>>()
                 {
-                    { "Stable", VecFun.AngleBetween },
-                    { "Fast", VecFun.AngleBetweenFast }
+                    { "Stable", Vec.AngleBetween },
+                    { "Fast", Vec.AngleBetweenFast }
                 };
 
             Console.WriteLine("Benchmarking numerical stability for AngleBetweenFloat");
@@ -183,8 +183,8 @@ namespace Aardvark.Base.Benchmarks
         {
             var methods = new Dictionary<string, Func<V3d, V3d, double>>()
                 {
-                    { "Stable", VecFun.AngleBetween },
-                    { "Fast", VecFun.AngleBetweenFast }
+                    { "Stable", Vec.AngleBetween },
+                    { "Fast", Vec.AngleBetweenFast }
                 };
 
             Console.WriteLine("Benchmarking numerical stability for AngleBetweenDouble");

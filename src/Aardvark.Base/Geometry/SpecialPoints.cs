@@ -81,7 +81,7 @@ namespace Aardvark.Base
         public static V2d GetClosestPointOn(this V2d query, Line2d line, out double t)
         {
             var p0q = query - line.P0;
-            t = V2d.Dot(p0q, line.Direction);
+            t = Vec.Dot(p0q, line.Direction);
             if (t <= 0.0) { t = 0.0; return line.P0; }
             var denom = line.Direction.LengthSquared;
             if (t >= denom) { t = 1.0; return line.P1; }
@@ -108,7 +108,7 @@ namespace Aardvark.Base
         /// <param name="query">Find the closest point on the ray to this point.</param>
         /// <param name="ray">Find the closest point on this ray.</param>
         public static double GetClosestPointTOn(this V2d query, Ray2d ray)
-            => V2d.Dot(query - ray.Origin, ray.Direction) / ray.Direction.LengthSquared;
+            => Vec.Dot(query - ray.Origin, ray.Direction) / ray.Direction.LengthSquared;
 
         public static V2d GetClosestPointOn(this V2d query, Ray2d ray, out double t)
         {
@@ -224,13 +224,13 @@ namespace Aardvark.Base
             var e02 = triangle.Edge02;
 
             var p0q = query - triangle.P0;
-            var d1 = V2d.Dot(e01, p0q);
-            var d2 = V2d.Dot(e02, p0q);
+            var d1 = Vec.Dot(e01, p0q);
+            var d2 = Vec.Dot(e02, p0q);
             if (d1 <= 0.0 && d2 <= 0.0) return triangle.P0; // bary (1,0,0)
 
             var p1q = query - triangle.P1;
-            var d3 = V2d.Dot(e01, p1q);
-            var d4 = V2d.Dot(e02, p1q);
+            var d3 = Vec.Dot(e01, p1q);
+            var d4 = Vec.Dot(e02, p1q);
             if (d3 >= 0.0 && d4 <= d3) return triangle.P1; // bary (0,1,0)
 
             var vc = d1 * d4 - d3 * d2;
@@ -241,8 +241,8 @@ namespace Aardvark.Base
             }
 
             var p2q = query - triangle.P2;
-            var d5 = V2d.Dot(e01, p2q);
-            var d6 = V2d.Dot(e02, p2q);
+            var d5 = Vec.Dot(e01, p2q);
+            var d6 = Vec.Dot(e02, p2q);
             if (d6 >= 0.0 && d5 <= d6) return triangle.P2; // bary (0,0,1)
 
             var vb = d5 * d2 - d1 * d6;
@@ -386,7 +386,7 @@ namespace Aardvark.Base
         {
             var dir = p1 - p0;
             var p0q = query - p0;
-            t = V3d.Dot(p0q, dir);
+            t = Vec.Dot(p0q, dir);
             if (t <= 0.0) { t = 0.0; return p0; }
             var denom = dir.LengthSquared;
             if (t >= denom) { t = 1.0; return p1; }
@@ -416,7 +416,7 @@ namespace Aardvark.Base
 
         public static V3d GetClosestPointOn(this V3d query, Ray3d ray, out double t)
         {
-            t = V3d.Dot(query - ray.Origin, ray.Direction)
+            t = Vec.Dot(query - ray.Origin, ray.Direction)
                         / ray.Direction.LengthSquared;
             return ray.Origin + t * ray.Direction;
         }
@@ -476,13 +476,13 @@ namespace Aardvark.Base
             var e02 = p2 - p0;
 
             var p0q = query - p0;
-            var d1 = V3d.Dot(e01, p0q);
-            var d2 = V3d.Dot(e02, p0q);
+            var d1 = Vec.Dot(e01, p0q);
+            var d2 = Vec.Dot(e02, p0q);
             if (d1 <= 0.0 && d2 <= 0.0) return p0; // bary (1,0,0)
 
             var p1q = query - p1;
-            var d3 = V3d.Dot(e01, p1q);
-            var d4 = V3d.Dot(e02, p1q);
+            var d3 = Vec.Dot(e01, p1q);
+            var d4 = Vec.Dot(e02, p1q);
             if (d3 >= 0.0 && d4 <= d3) return p1; // bary (0,1,0)
 
             var vc = d1 * d4 - d3 * d2;
@@ -493,8 +493,8 @@ namespace Aardvark.Base
             }
 
             var p2q = query - p2;
-            var d5 = V3d.Dot(e01, p2q);
-            var d6 = V3d.Dot(e02, p2q);
+            var d5 = Vec.Dot(e01, p2q);
+            var d6 = Vec.Dot(e02, p2q);
             if (d6 >= 0.0 && d5 <= d6) return p2; // bary (0,0,1)
 
             var vb = d5 * d2 - d1 * d6;
@@ -717,18 +717,18 @@ namespace Aardvark.Base
             var u = line.P1 - line.P0;
 
             var lu2 = u.LengthSquared;
-            var adu = V3d.Dot(a, u);
+            var adu = Vec.Dot(a, u);
 
             if (adu > lu2)
             {
-                var acu2 = V3d.Cross(a, u).LengthSquared;
+                var acu2 = Vec.Cross(a, u).LengthSquared;
                 var s1 = (adu * adu - 2.0 * adu * lu2 + lu2 * lu2);
 
                 return Sqrt((acu2 + s1) / lu2);
             }
             else if (adu >= 0.0)
             {
-                var acu2 = V3d.Cross(a, u).LengthSquared;
+                var acu2 = Vec.Cross(a, u).LengthSquared;
                 return Sqrt(acu2 / lu2);
             }
             else
@@ -764,7 +764,7 @@ namespace Aardvark.Base
         {
             var a = point - ray.Origin;
             double lu2 = ray.Direction.LengthSquared;
-            double acu2 = V3d.Cross(a, ray.Direction).LengthSquared;
+            double acu2 = Vec.Cross(a, ray.Direction).LengthSquared;
 
             return Sqrt(acu2 / lu2);
         }
@@ -783,7 +783,7 @@ namespace Aardvark.Base
         {
             var a = point - ray.Origin;
             var lu2 = ray.Direction.LengthSquared;
-            var acu2 = V3d.Cross(a, ray.Direction).LengthSquared;
+            var acu2 = Vec.Cross(a, ray.Direction).LengthSquared;
 
             var NormalPart2 = acu2 / lu2;
             var ParallelPart2 = lu2 - NormalPart2;
@@ -1069,7 +1069,7 @@ namespace Aardvark.Base
             double check;
             for (int i = 0; i < 8; i++)
             {
-                check = V3d.DistanceSquared(frustum.GetCorners()[i], queryPoint);
+                check = Vec.DistanceSquared(frustum.GetCorners()[i], queryPoint);
                 if (check < dist_3)
                 {
                     dist_3 = check;
@@ -1092,12 +1092,12 @@ namespace Aardvark.Base
             Plane3d compare = new Plane3d(closest_p1, closest_p2, closest_p3);
             compare.Normalize();
             dist_1 = DistancePointToPlane(queryPoint, compare);
-            dist_2 = V3d.Distance(queryPoint, queryPoint.GetClosestPointOn((new Ray3d(closest_p2, (closest_p2 - closest_p1))), out t12));
-            dist_3 = V3d.Distance(queryPoint, queryPoint.GetClosestPointOn((new Ray3d(closest_p3, (closest_p3 - closest_p1))), out t13));
+            dist_2 = Vec.Distance(queryPoint, queryPoint.GetClosestPointOn((new Ray3d(closest_p2, (closest_p2 - closest_p1))), out t12));
+            dist_3 = Vec.Distance(queryPoint, queryPoint.GetClosestPointOn((new Ray3d(closest_p3, (closest_p3 - closest_p1))), out t13));
             if (t12 == 0 && t13 == 0)
             {
                 Point = closest_p1;
-                return V3d.Distance(queryPoint, closest_p1);
+                return Vec.Distance(queryPoint, closest_p1);
             }
             if (t12 == 0)
             {
@@ -1124,11 +1124,11 @@ namespace Aardvark.Base
         {
             V2d r = line1.Origin - line2.Origin;
 
-            double a = V2d.Dot(line1.Direction, line1.Direction);
-            double b = V2d.Dot(line1.Direction, line2.Direction);
-            double c = V2d.Dot(line1.Direction, r);
-            double e = V2d.Dot(line2.Direction, line2.Direction);
-            double f = V2d.Dot(line2.Direction, r);
+            double a = Vec.Dot(line1.Direction, line1.Direction);
+            double b = Vec.Dot(line1.Direction, line2.Direction);
+            double c = Vec.Dot(line1.Direction, r);
+            double e = Vec.Dot(line2.Direction, line2.Direction);
+            double f = Vec.Dot(line2.Direction, r);
 
             double d = (a * e - b * b);
 
@@ -1156,11 +1156,11 @@ namespace Aardvark.Base
         {
             V3d r = line1.Origin - line2.Origin;
 
-            double a = V3d.Dot(line1.Direction, line1.Direction);
-            double b = V3d.Dot(line1.Direction, line2.Direction);
-            double c = V3d.Dot(line1.Direction, r);
-            double e = V3d.Dot(line2.Direction, line2.Direction);
-            double f = V3d.Dot(line2.Direction, r);
+            double a = Vec.Dot(line1.Direction, line1.Direction);
+            double b = Vec.Dot(line1.Direction, line2.Direction);
+            double c = Vec.Dot(line1.Direction, r);
+            double e = Vec.Dot(line2.Direction, line2.Direction);
+            double f = Vec.Dot(line2.Direction, r);
 
             double d = (a * e - b * b);
 
@@ -1188,11 +1188,11 @@ namespace Aardvark.Base
         {
             V2d r = line.Origin - segment.Origin;
 
-            double a = V2d.Dot(line.Direction, line.Direction);
-            double b = V2d.Dot(line.Direction, segment.Direction);
-            double c = V2d.Dot(line.Direction, r);
-            double e = V2d.Dot(segment.Direction, segment.Direction);
-            double f = V2d.Dot(segment.Direction, r);
+            double a = Vec.Dot(line.Direction, line.Direction);
+            double b = Vec.Dot(line.Direction, segment.Direction);
+            double c = Vec.Dot(line.Direction, r);
+            double e = Vec.Dot(segment.Direction, segment.Direction);
+            double f = Vec.Dot(segment.Direction, r);
 
             double d = (a * e - b * b);
 
@@ -1235,11 +1235,11 @@ namespace Aardvark.Base
         {
             V3d r = line.Origin - segment.Origin;
 
-            double a = V3d.Dot(line.Direction, line.Direction);
-            double b = V3d.Dot(line.Direction, segment.Direction);
-            double c = V3d.Dot(line.Direction, r);
-            double e = V3d.Dot(segment.Direction, segment.Direction);
-            double f = V3d.Dot(segment.Direction, r);
+            double a = Vec.Dot(line.Direction, line.Direction);
+            double b = Vec.Dot(line.Direction, segment.Direction);
+            double c = Vec.Dot(line.Direction, r);
+            double e = Vec.Dot(segment.Direction, segment.Direction);
+            double f = Vec.Dot(segment.Direction, r);
 
             double d = (a * e - b * b);
 
@@ -1312,13 +1312,13 @@ namespace Aardvark.Base
             /*-----------------------------------------------------------------
             Compute squared length of the two line segments with dotproduct
             -----------------------------------------------------------------*/
-            double a = V2d.Dot(segment1.Direction, segment1.Direction);
-            double e = V2d.Dot(segment2.Direction, segment2.Direction);
+            double a = Vec.Dot(segment1.Direction, segment1.Direction);
+            double e = Vec.Dot(segment2.Direction, segment2.Direction);
 
             /*-----------------------------------------------------------------
             Compute dotproduct of segment2 and r onto f
             -----------------------------------------------------------------*/
-            double f = V2d.Dot(segment2.Direction, r);
+            double f = Vec.Dot(segment2.Direction, r);
 
             /*-----------------------------------------------------------------
             Check if either or both segments degenerate into points
@@ -1345,7 +1345,7 @@ namespace Aardvark.Base
 
             else
             {
-                double c = V2d.Dot(segment1.Direction, r);
+                double c = Vec.Dot(segment1.Direction, r);
 
                 if (e <= double.Epsilon)
                 {
@@ -1364,7 +1364,7 @@ namespace Aardvark.Base
                     /*-----------------------------------------------------------------
                     General nondegenerate case starts here
                     -----------------------------------------------------------------*/
-                    double b = V2d.Dot(segment1.Direction, segment2.Direction);
+                    double b = Vec.Dot(segment1.Direction, segment2.Direction);
                     double denom = a * e - b * b;       //must be positive
 
                     /*-----------------------------------------------------------------
@@ -1427,13 +1427,13 @@ namespace Aardvark.Base
             /*-----------------------------------------------------------------
             Compute squared length of the two line segments with dotproduct
             -----------------------------------------------------------------*/
-            double a = V3d.Dot(segment1.Direction, segment1.Direction);
-            double e = V3d.Dot(segment2.Direction, segment2.Direction);
+            double a = Vec.Dot(segment1.Direction, segment1.Direction);
+            double e = Vec.Dot(segment2.Direction, segment2.Direction);
 
             /*-----------------------------------------------------------------
             Compute dotproduct of segment2 and r onto f
             -----------------------------------------------------------------*/
-            double f = V3d.Dot(segment2.Direction, r);
+            double f = Vec.Dot(segment2.Direction, r);
 
             /*-----------------------------------------------------------------
             Check if either or both segments degenerate into points
@@ -1460,7 +1460,7 @@ namespace Aardvark.Base
 
             else
             {
-                double c = V3d.Dot(segment1.Direction, r);
+                double c = Vec.Dot(segment1.Direction, r);
 
                 if (e <= double.Epsilon)
                 {
@@ -1479,7 +1479,7 @@ namespace Aardvark.Base
                     /*-----------------------------------------------------------------
                     General nondegenerate case starts here
                     -----------------------------------------------------------------*/
-                    double b = V3d.Dot(segment1.Direction, segment2.Direction);
+                    double b = Vec.Dot(segment1.Direction, segment2.Direction);
                     double denom = a * e - b * b;       //must be positive
                     /*-----------------------------------------------------------------
                     If segments aren't parallel, compute closest point on segment1 to
@@ -1697,7 +1697,7 @@ namespace Aardvark.Base
                     V3d holder = V3d.Zero;
                     bool a = IntersectionTests.Intersect(line, distance, out dist_comp, out holder);
                     dist_comp = dist_comp * dist_comp;
-                    double ho_ca = V3d.DistanceSquared(holder, calc);
+                    double ho_ca = Vec.DistanceSquared(holder, calc);
                     if (holder[j] >= box.Max[j] || holder[j] <= box.Min[j])
                     {
                         outside = outside++;
@@ -2084,7 +2084,7 @@ namespace Aardvark.Base
                         Plane3d distance = new Plane3d(dir, calc);
                         V3d holder = V3d.Zero;
                         bool a = IntersectionTests.Intersect(ray, distance, out dist_comp, out holder);
-                        double ho_ca = V3d.DistanceSquared(holder, calc);
+                        double ho_ca = Vec.DistanceSquared(holder, calc);
                         dist_comp = dist_comp * dist_comp;
                         if (holder[j] > box.Max[j] || holder[j] < box.Min[j])
                         {
@@ -2942,7 +2942,7 @@ namespace Aardvark.Base
                                 calca[i] = box.Min[i];
                             }
                         }
-                        if ((V3d.DistanceSquared(calca, segment.P0)) > (V3d.DistanceSquared(calca, segment.P1)))
+                        if ((Vec.DistanceSquared(calca, segment.P0)) > (Vec.DistanceSquared(calca, segment.P1)))
                         {
                             t = 1.0f;
                         }
@@ -2984,11 +2984,11 @@ namespace Aardvark.Base
 
             line.GetClosestPoints(segment_AB, out t_line, out t_AB);
             point_last = segment_AB.P0 + t_AB * segment_AB.Direction;
-            dist_last = V3d.DistanceSquared((line.Origin + t_line * line.Direction), point_last);
+            dist_last = Vec.DistanceSquared((line.Origin + t_line * line.Direction), point_last);
 
             line.GetClosestPoints(segment_BC, out t_temp, out t_BC);
             point_new = segment_BC.P0 + t_BC * segment_BC.Direction;
-            dist_new = V3d.DistanceSquared((line.Origin + t_temp * line.Direction), point_new);
+            dist_new = Vec.DistanceSquared((line.Origin + t_temp * line.Direction), point_new);
 
             if (dist_last > dist_new)
             {
@@ -2999,7 +2999,7 @@ namespace Aardvark.Base
 
             line.GetClosestPoints(segment_CA, out t_temp, out t_CA);
             point_new = segment_CA.P0 + t_CA * segment_CA.Direction;
-            dist_new = V3d.DistanceSquared((line.Origin + t_temp * line.Direction), point_new);
+            dist_new = Vec.DistanceSquared((line.Origin + t_temp * line.Direction), point_new);
 
             if (dist_last > dist_new)
             {
@@ -3045,11 +3045,11 @@ namespace Aardvark.Base
 
             segment.GetClosestPoints(segment_AB, out t_segment, out t_AB);
             point_last = segment_AB.P0 + t_AB * segment_AB.Direction;
-            dist_last = V3d.DistanceSquared((segment.P0 + t_segment * segment.Direction), point_last);
+            dist_last = Vec.DistanceSquared((segment.P0 + t_segment * segment.Direction), point_last);
 
             segment.GetClosestPoints(segment_BC, out t_temp, out t_BC);
             point_new = segment_BC.P0 + t_BC * segment_BC.Direction;
-            dist_new = V3d.DistanceSquared((segment.P0 + t_temp * segment.Direction), point_new);
+            dist_new = Vec.DistanceSquared((segment.P0 + t_temp * segment.Direction), point_new);
 
             if (dist_last > dist_new)
             {
@@ -3060,7 +3060,7 @@ namespace Aardvark.Base
 
             segment.GetClosestPoints(segment_CA, out t_temp, out t_CA);
             point_new = segment_CA.P0 + t_CA * segment_CA.Direction;
-            dist_new = V3d.DistanceSquared((segment.P0 + t_temp * segment.Direction), point_new);
+            dist_new = Vec.DistanceSquared((segment.P0 + t_temp * segment.Direction), point_new);
 
             if (dist_last > dist_new)
             {
@@ -3070,7 +3070,7 @@ namespace Aardvark.Base
             }
 
             point_new = segment.P0.GetClosestPointOn(triangle);
-            dist_new = V3d.DistanceSquared(point_new, segment.P0);
+            dist_new = Vec.DistanceSquared(point_new, segment.P0);
 
             if (dist_last > dist_new)
             {
@@ -3080,7 +3080,7 @@ namespace Aardvark.Base
             }
 
             point_new = segment.P1.GetClosestPointOn(triangle);
-            dist_new = V3d.DistanceSquared(point_new, segment.P1);
+            dist_new = Vec.DistanceSquared(point_new, segment.P1);
 
             if (dist_last > dist_new)
             {
@@ -3146,7 +3146,7 @@ namespace Aardvark.Base
         {
             V3d temp_point = sphere.Center.GetClosestPointOn(ray, out t_ray);
 
-            if (V3d.DistanceSquared(temp_point, sphere.Center) <= (sphere.Radius * sphere.Radius))
+            if (Vec.DistanceSquared(temp_point, sphere.Center) <= (sphere.Radius * sphere.Radius))
             {
                 ray.Intersect(sphere, out t_ray);
                 return ray.Origin + t_ray * ray.Direction;
@@ -3166,7 +3166,7 @@ namespace Aardvark.Base
         {
             V3d temp_point = sphere.Center.GetClosestPointOn(segment, out t_segment);
 
-            if (V3d.DistanceSquared(temp_point, sphere.Center) <= (sphere.Radius * sphere.Radius))
+            if (Vec.DistanceSquared(temp_point, sphere.Center) <= (sphere.Radius * sphere.Radius))
             {
                 segment.Intersect(sphere, out t_segment);
                 return segment.P0 + t_segment * segment.Direction;

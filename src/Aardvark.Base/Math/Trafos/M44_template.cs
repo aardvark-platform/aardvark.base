@@ -189,9 +189,9 @@ namespace Aardvark.Base
                 if (y < z) { min = V__x3t__.YAxis; } else { min = V__x3t__.ZAxis; }
             }
 
-            V__x3t__ xVec = V__x3t__.Cross(normal, min);
+            V__x3t__ xVec = Vec.Cross(normal, min);
             xVec.Normalize(); // this is now guaranteed to be normal to the input normal
-            V__x3t__ yVec = V__x3t__.Cross(normal, xVec);
+            V__x3t__ yVec = Vec.Cross(normal, xVec);
             yVec.Normalize();
             V__x3t__ zVec = normal;
             zVec.Normalize();

@@ -147,12 +147,12 @@ namespace Aardvark.Base
 
             var cc = 0;
             var pb = polygon[0] - p;
-            var hb = V3d.Dot(pb, n); bool hbp = hb > eps, hbn = hb < -eps;
+            var hb = Vec.Dot(pb, n); bool hbp = hb > eps, hbn = hb < -eps;
             if (hb >= -eps) cpa[cc++] = pb;
             var p0 = pb; var h0 = hb; var h0p = hbp; var h0n = hbn;
             for (int vi = 1; vi < vc; vi++)
             {
-                var p1 = polygon[vi] - p; var h1 = V3d.Dot(p1, n);
+                var p1 = polygon[vi] - p; var h1 = Vec.Dot(p1, n);
                 bool h1p = h1 > eps, h1n = h1 < -eps;
                 if (h0p && h1n || h0n && h1p)
                     cpa[cc++] = p0 + (p1 - p0) * (h0 / (h0 - h1));
@@ -164,17 +164,17 @@ namespace Aardvark.Base
 
             var cpr = cpa.Map(cc, v => v.Length);
 
-            var cv = V3d.Cross(cpa[0], cpa[cc - 1]);
-            double ff = V3d.Dot(n, cv)
-                        * Fun.AcosClamped(V3d.Dot(cpa[0], cpa[cc - 1])
+            var cv = Vec.Cross(cpa[0], cpa[cc - 1]);
+            double ff = Vec.Dot(n, cv)
+                        * Fun.AcosClamped(Vec.Dot(cpa[0], cpa[cc - 1])
                                     / (cpr[0] * cpr[cc - 1]))
                         / cv.Length;
 
             for (int ci = 0; ci < cc - 1; ci++)
             {
-                cv = V3d.Cross(cpa[ci + 1], cpa[ci]);
-                ff += V3d.Dot(n, cv)
-                       * Fun.AcosClamped(V3d.Dot(cpa[ci + 1], cpa[ci])
+                cv = Vec.Cross(cpa[ci + 1], cpa[ci]);
+                ff += Vec.Dot(n, cv)
+                       * Fun.AcosClamped(Vec.Dot(cpa[ci + 1], cpa[ci])
                                     / (cpr[ci + 1] * cpr[ci]))
                         / cv.Length;
             }
@@ -253,10 +253,10 @@ namespace Aardvark.Base
             var edges = self.GetEdgeArray();
             edges.Apply(e => e.Normalized);
             var ec = edges.Length;
-            if (V3d.Dot(-edges[ec - 1], edges[0]) > threshold) yield return 0;
+            if (Vec.Dot(-edges[ec - 1], edges[0]) > threshold) yield return 0;
             for (int i = 1; i < ec; i++)
             {
-                if (V3d.Dot(-edges[i - 1], edges[i]) > threshold) yield return i;
+                if (Vec.Dot(-edges[i - 1], edges[i]) > threshold) yield return i;
             }
         }
 

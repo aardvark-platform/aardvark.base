@@ -234,9 +234,9 @@ namespace Aardvark.Base
         {
             return new Trafo3f(
                 new M44f(
-                    u.X, u.Y, u.Z, -V3f.Dot(u, location),
-                    v.X, v.Y, v.Z, -V3f.Dot(v, location),
-                    z.X, z.Y, z.Z, -V3f.Dot(z, location),
+                    u.X, u.Y, u.Z, -Vec.Dot(u, location),
+                    v.X, v.Y, v.Z, -Vec.Dot(v, location),
+                    z.X, z.Y, z.Z, -Vec.Dot(z, location),
                     0, 0, 0, 1
                 ),
                 new M44f(
@@ -757,9 +757,9 @@ namespace Aardvark.Base
         {
             return new Trafo3d(
                 new M44d(
-                    u.X, u.Y, u.Z, -V3d.Dot(u, location),
-                    v.X, v.Y, v.Z, -V3d.Dot(v, location),
-                    z.X, z.Y, z.Z, -V3d.Dot(z, location),
+                    u.X, u.Y, u.Z, -Vec.Dot(u, location),
+                    v.X, v.Y, v.Z, -Vec.Dot(v, location),
+                    z.X, z.Y, z.Z, -Vec.Dot(z, location),
                     0, 0, 0, 1
                 ),
                 new M44d(

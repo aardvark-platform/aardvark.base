@@ -631,7 +631,7 @@ namespace Aardvark.Base
             for (int i = 0; i < pc; i++)
             {
                 var p1 = polygon[i];
-                r += __tvec__.Distance(p0, p1);
+                r += Vec.Distance(p0, p1);
                 p0 = p1;
             }
             return r;
@@ -699,9 +699,9 @@ namespace Aardvark.Base
             var pc = 0;
             pa[0] = polygon[0];
             for (int pi = 1; pi < opc; pi++)
-                if (__tvec__.DistanceSquared(pa[pc], polygon[pi]) > eps)
+                if (Vec.DistanceSquared(pa[pc], polygon[pi]) > eps)
                     pa[++pc] = polygon[pi];
-            if (__tvec__.DistanceSquared(pa[pc], polygon[0]) > eps)
+            if (Vec.DistanceSquared(pa[pc], polygon[0]) > eps)
                 ++pc;
             return new __tpolygon__(pa, pc);
         }
@@ -1085,7 +1085,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __et__ FromConjugateDiameters(__vt__ center, /*# if (d == 3) { */__vt__ normal, /*# } */__vt__ a, __vt__ b)
         {
-            var ab = __vt__.Dot(a, b);
+            var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
             if (ab.IsTiny())
             {
@@ -1112,7 +1112,7 @@ namespace Aardvark.Base
         public static __et__ FromConjugateDiameters(__vt__ center, /*# if (d == 3) { */__vt__ normal, /*# } */__vt__ a, __vt__ b,
                 out double major2, out double minor2)
         {
-            var ab = __vt__.Dot(a, b);
+            var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
             if (ab.IsTiny())
             {

@@ -106,7 +106,7 @@ namespace Aardvark.Base
         {
             var a = from.Normalized;
             var b = into.Normalized;
-            var angle = Fun.Clamp(V3f.Dot(a, b), -1, 1).Acos();
+            var angle = Fun.Clamp(Vec.Dot(a, b), -1, 1).Acos();
             var angleAbs = angle.Abs();
             V3f axis;
 
@@ -123,7 +123,7 @@ namespace Aardvark.Base
                 angle = Constant.PiF;
             }
             else
-                axis = V3f.Cross(a, b).Normalized;
+                axis = Vec.Cross(a, b).Normalized;
 
             this = new Rot3f(axis, angle);
         }
@@ -1167,7 +1167,7 @@ namespace Aardvark.Base
         {
             var a = from.Normalized;
             var b = into.Normalized;
-            var angle = Fun.Clamp(V3d.Dot(a, b), -1, 1).Acos();
+            var angle = Fun.Clamp(Vec.Dot(a, b), -1, 1).Acos();
             var angleAbs = angle.Abs();
             V3d axis;
 
@@ -1184,7 +1184,7 @@ namespace Aardvark.Base
                 angle = Constant.Pi;
             }
             else
-                axis = V3d.Cross(a, b).Normalized;
+                axis = Vec.Cross(a, b).Normalized;
 
             this = new Rot3d(axis, angle);
         }

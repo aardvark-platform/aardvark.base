@@ -125,7 +125,7 @@ namespace Aardvark.Base
         {
             var a = from.Normalized;
             var b = into.Normalized;
-            var angle = Fun.Clamp(__v3t__.Dot(a, b), -1, 1).Acos();
+            var angle = Fun.Clamp(Vec.Dot(a, b), -1, 1).Acos();
             var angleAbs = angle.Abs();
             __v3t__ axis;
 
@@ -142,7 +142,7 @@ namespace Aardvark.Base
                 angle = __pi__;
             }
             else
-                axis = __v3t__.Cross(a, b).Normalized;
+                axis = Vec.Cross(a, b).Normalized;
 
             this = new __rot3t__(axis, angle);
         }

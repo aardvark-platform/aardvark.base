@@ -858,28 +858,28 @@ namespace Aardvark.Base
 
         public class ElementwiseFun
         {
-            public enum ParamClass
+            public enum ParamType
             {
                 Scalar,
-                Tensor
+                Tensor,
             }
 
             public class Parameter
             {
                 public string Name { get; set; }
 
-                public ParamClass Class { get; set; }
+                public ParamType Type { get; set; }
 
                 // Parameters can specify an element type
-                // If null, it is generic and takes the element type of the current class
+                // If null, it is generic and takes the element type of the current type
                 // E.g. for V2i -> int
                 public SimpleType ElementType { get; set; }
 
-                public Parameter(string name, ParamClass c, SimpleType t)
+                public Parameter(string name, ParamType t, SimpleType et)
                 {
                     Name = name;
-                    Class = c;
-                    ElementType = t;
+                    Type = t;
+                    ElementType = et;
                 }
             }
 
@@ -909,22 +909,27 @@ namespace Aardvark.Base
 
         public static bool IsScalar(this ElementwiseFun.Parameter p)
         {
-            return p.Class == ElementwiseFun.ParamClass.Scalar;
+            return p.Type == ElementwiseFun.ParamType.Scalar;
         }
 
         public static bool IsTensor(this ElementwiseFun.Parameter p)
         {
-            return p.Class == ElementwiseFun.ParamClass.Tensor;
+            return p.Type == ElementwiseFun.ParamType.Tensor;
         }
 
         private static ElementwiseFun.Parameter Scalar(string name, SimpleType t = null)
         {
-            return new ElementwiseFun.Parameter(name, ElementwiseFun.ParamClass.Scalar, t);
+            return new ElementwiseFun.Parameter(name, ElementwiseFun.ParamType.Scalar, t);
         }
 
         private static ElementwiseFun.Parameter Tensor(string name, SimpleType t = null)
         {
-            return new ElementwiseFun.Parameter(name, ElementwiseFun.ParamClass.Tensor, t);
+            return new ElementwiseFun.Parameter(name, ElementwiseFun.ParamType.Tensor, t);
+        }
+
+        private static ElementwiseFun.Parameter Other(string name, string typeName)
+        {
+            return new ElementwiseFun.Parameter(name, ElementwiseFun.ParamType.Scalar, new SimpleType(typeName));
         }
 
         private static ElementwiseFun Method(string name, SimpleType returnType,
@@ -998,6 +1003,9 @@ namespace Aardvark.Base
                 Method("Floor", RealTypes, Tensor("x")),
                 Method("Ceiling", RealTypes, Tensor("x")),
                 Method("Round", RealTypes, Tensor("x")),
+                Method("Round", RealTypes, Tensor("x"), Other("mode", "MidpointRounding")),
+                Method("Round", RealTypes, Tensor("x"), Other("digits", "int")),
+                Method("Round", RealTypes, Tensor("x"), Other("digits", "int"), Other("mode", "MidpointRounding")),
                 Method("Truncate", RealTypes, Tensor("x"))
             );
             #endregion

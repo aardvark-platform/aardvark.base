@@ -20,8 +20,8 @@ namespace Aardvark.Base
                 m_sky = value.Normalized;
                 if (m_sky == V3d.Zero) throw new ArgumentException("Sky direction must not be V3d.Zero.");
 
-                var r = V3d.Cross(Forward, m_sky).Normalized;
-                var u = V3d.Cross(r, Forward);
+                var r = Vec.Cross(Forward, m_sky).Normalized;
+                var u = Vec.Cross(r, Forward);
 
                 m_trafo = Trafo3d.ViewTrafo(Location, r, u, -Forward);
                 m_trafoChanges.Emit(m_trafo);
@@ -69,8 +69,8 @@ namespace Aardvark.Base
             set
             {
                 var r = value.Normalized;
-                var f = V3d.Cross(m_sky, r).Normalized;
-                var u = V3d.Cross(r, f);
+                var f = Vec.Cross(m_sky, r).Normalized;
+                var u = Vec.Cross(r, f);
 
                 m_trafo = Trafo3d.ViewTrafo(Location, r, u, -f);
                 m_trafoChanges.Emit(m_trafo);
@@ -86,8 +86,8 @@ namespace Aardvark.Base
             set
             {
                 var u = value.Normalized;
-                var r = V3d.Cross(u, m_sky).Normalized;
-                var f = V3d.Cross(u, r);
+                var r = Vec.Cross(u, m_sky).Normalized;
+                var f = Vec.Cross(u, r);
 
                 m_trafo = Trafo3d.ViewTrafo(Location, r, u, -f);
                 m_trafoChanges.Emit(m_trafo);
@@ -103,8 +103,8 @@ namespace Aardvark.Base
             set
             {
                 var f = value.Normalized;
-                var r = V3d.Cross(f, m_sky).Normalized;
-                var u = V3d.Cross(r, f);
+                var r = Vec.Cross(f, m_sky).Normalized;
+                var u = Vec.Cross(r, f);
 
                 m_trafo = Trafo3d.ViewTrafo(Location, r, u, -f);
                 m_trafoChanges.Emit(m_trafo);

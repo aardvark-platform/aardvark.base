@@ -424,7 +424,7 @@ module Generator =
             let idot =
                 match dim with
                     | 1 -> "{0} * {1}"
-                    | _ -> sprintf "%s.Dot({0}, {1})" lv
+                    | _ -> "Vec.Dot({0}, {1})"
             
             line "let sa = nativeint sizeof<'a>"
             line "let ptr = NativePtr.toNativeInt x.Pointer + nativeint (%s) * sa" (System.String.Format(idot, "nearest", sprintf "x.Delta.%s" swizzle))
@@ -698,7 +698,7 @@ module Generator =
 
         let idot =
             if dim = 1 then "{0} * {1}"
-            else sprintf "%s.Dot({0}, {1})" lv
+            else "Vec.Dot({0}, {1})"
 
         for (ct, convert) in coordTypes do
             start "member x.Item"
@@ -767,7 +767,7 @@ module Generator =
             let idot =
                 match dim with
                     | 1 -> "{0} * {1}"
-                    | _ -> sprintf "%s.Dot({0}, {1})" lv
+                    | _ -> "Vec.Dot({0}, {1})"
 
 
             line "let sa = nativeint sizeof<'a>"

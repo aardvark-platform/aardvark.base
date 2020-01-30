@@ -184,9 +184,9 @@ namespace Aardvark.Base
                 if (y < z) { min = V3f.YAxis; } else { min = V3f.ZAxis; }
             }
 
-            V3f xVec = V3f.Cross(normal, min);
+            V3f xVec = Vec.Cross(normal, min);
             xVec.Normalize(); // this is now guaranteed to be normal to the input normal
-            V3f yVec = V3f.Cross(normal, xVec);
+            V3f yVec = Vec.Cross(normal, xVec);
             yVec.Normalize();
             V3f zVec = normal;
             zVec.Normalize();
@@ -834,9 +834,9 @@ namespace Aardvark.Base
                 if (y < z) { min = V3d.YAxis; } else { min = V3d.ZAxis; }
             }
 
-            V3d xVec = V3d.Cross(normal, min);
+            V3d xVec = Vec.Cross(normal, min);
             xVec.Normalize(); // this is now guaranteed to be normal to the input normal
-            V3d yVec = V3d.Cross(normal, xVec);
+            V3d yVec = Vec.Cross(normal, xVec);
             yVec.Normalize();
             V3d zVec = normal;
             zVec.Normalize();

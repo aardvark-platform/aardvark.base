@@ -52,8 +52,8 @@ namespace Aardvark.Base
         {
             var plane = new Plane3d(direction, position);
             var planePoint = p.GetClosestPointOn(plane);
-            var distanceOnPlane = (V3d.Distance(planePoint, position) - majorRadius).Abs();
-            var distanceToCircle = (V3d.DistanceSquared(planePoint, p) + distanceOnPlane.Square()).Sqrt();
+            var distanceOnPlane = (Vec.Distance(planePoint, position) - majorRadius).Abs();
+            var distanceToCircle = (Vec.DistanceSquared(planePoint, p) + distanceOnPlane.Square()).Sqrt();
             return (distanceToCircle - minorRadius).Abs();
         }
 

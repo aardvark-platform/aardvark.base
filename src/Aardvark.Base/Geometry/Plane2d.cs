@@ -39,7 +39,7 @@ namespace Aardvark.Base
         public Plane2d(V2d normalizedNormal, V2d point)
         {
             Normal = normalizedNormal;
-            Distance = V2d.Dot(normalizedNormal, point);
+            Distance = Vec.Dot(normalizedNormal, point);
         }
 
         #endregion
@@ -60,7 +60,7 @@ namespace Aardvark.Base
         public V2d Point
         {
             get { return Normal * Distance; }
-            set { Distance = V2d.Dot(Normal, value); }
+            set { Distance = Vec.Dot(Normal, value); }
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V2d p) => V2d.Dot(Normal, p) - Distance;
+        public double Height(V2d p) => Vec.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
