@@ -462,7 +462,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates rotation matrix from roll (X), pitch (Y), and pitch (Z) Vector.
+        /// Creates rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         public static M44f Rotation(V3f roll_pitch_yaw_inRadians)
@@ -1114,7 +1114,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates rotation matrix from roll (X), pitch (Y), and pitch (Z) Vector.
+        /// Creates rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         public static M44d Rotation(V3d roll_pitch_yaw_inRadians)
