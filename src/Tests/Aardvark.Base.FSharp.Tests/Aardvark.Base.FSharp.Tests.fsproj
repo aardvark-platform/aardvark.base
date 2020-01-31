@@ -16,6 +16,7 @@
 	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.0</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="SVDTests.fs" />
     <Compile Include="CachesTest.fs" />
     <Compile Include="TimeTests.fs" />
     <Compile Include="PureAgTests.fs" />
