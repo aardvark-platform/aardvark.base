@@ -258,7 +258,19 @@ type private FontImpl(file : string) =
     let glyphCache = Dict<char, Glyph>()
     
     let lineHeight = float (f.Ascender - f.Descender + f.LineGap) * scale
-    let spacing = float (f.GetAdvanceWidth(f.LookupIndex(int ' ') |> int)) * scale
+    let spacing = 
+        let idx = f.LookupIndex(int ' ') |> int
+        
+        if idx >= 0 && idx < f.Glyphs.Length then
+            let g = f.Glyphs.[idx]
+            if g.HasOriginalAdvancedWidth then
+                float g.OriginalAdvanceWidth  * scale
+            else
+                let a = f.GetHAdvanceWidthFromGlyphIndex(int idx)
+                float a * scale
+        else    
+            float (f.GetAdvanceWidth(idx)) * scale
+                        
     
     // https://docs.microsoft.com/en-us/windows/desktop/gdi/string-widths-and-heights
     let ascent = float f.Ascender * scale

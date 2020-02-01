@@ -12,12 +12,14 @@ module Path =
 
     module Attributes = 
         let KLMKind = Symbol.Create "KLMKind"
-        let PathOffsetAndScale = Symbol.Create "PathOffsetAndScale"
+        let ShapeTrafoR0 = Symbol.Create "ShapeTrafoR0"
+        let ShapeTrafoR1 = Symbol.Create "ShapeTrafoR1"
         let PathColor = Symbol.Create "PathColor"
         let TrafoOffsetAndScale = Symbol.Create "PathTrafoOffsetAndScale"
 
     type KLMKindAttribute() = inherit FShade.SemanticAttribute(Attributes.KLMKind |> string)
-    type PathOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.PathOffsetAndScale |> string)
+    type ShapeTrafoR0Attribute() = inherit FShade.SemanticAttribute(Attributes.ShapeTrafoR0 |> string)
+    type ShapeTrafoR1Attribute() = inherit FShade.SemanticAttribute(Attributes.ShapeTrafoR1 |> string)
     type PathColorAttribute() = inherit FShade.SemanticAttribute(Attributes.PathColor |> string)
     type TrafoOffsetAndScaleAttribute() = inherit FShade.SemanticAttribute(Attributes.TrafoOffsetAndScale |> string)
     type KindAttribute() = inherit FShade.SemanticAttribute("Kind")
@@ -38,7 +40,8 @@ module Path =
             {
                 [<Position>] p : V4d
                 [<Interpolation(InterpolationMode.Sample); KLMKind>] klmKind : V4d
-                [<PathOffsetAndScale>] offset : V4d
+                [<ShapeTrafoR0>] tr0 : V4d
+                [<ShapeTrafoR1>] tr1 : V4d
                 [<PathColor>] color : V4d
 
                 [<SamplePosition>] samplePos : V2d
@@ -68,13 +71,15 @@ module Path =
         let pathVertex (v : Vertex) =
             vertex {
                 let trafo = uniform.ModelViewTrafo
-                let scale = v.offset.ZW
-                let flip = scale.X < 0.0
-                let scale = V2d(abs scale.X, abs scale.Y)
-                let offset = v.offset.XY
 
                 let mutable p = V4d.Zero
-                let pm = offset + v.p.XY * scale
+
+                let flip = v.tr0.W < 0.0
+                let pm = 
+                    V2d(
+                        Vec.dot v.tr0.XYZ (V3d(v.p.XY, 1.0)),
+                        Vec.dot v.tr1.XYZ (V3d(v.p.XY, 1.0))
+                    )
 
                 if flip then
                     if keepsWinding (isOrtho uniform.ProjTrafo) trafo then
@@ -99,13 +104,14 @@ module Path =
                 let instanceTrafo = M44d.op_Explicit v.instanceTrafo //M44d.FromRows(v.instanceTrafo.R0, v.instanceTrafo.R1, v.instanceTrafo.R2, V4d.OOOI)
                 let trafo = uniform.ModelViewTrafo * instanceTrafo
 
-                let scale = v.offset.ZW
-                let flip = scale.X < 0.0
-                let scale = V2d(abs scale.X, abs scale.Y)
-                let offset = v.offset.XY
+                let flip = v.tr0.W < 0.0
+                let pm = 
+                    V2d(
+                        Vec.dot v.tr0.XYZ (V3d(v.p.XY, 1.0)),
+                        Vec.dot v.tr1.XYZ (V3d(v.p.XY, 1.0))
+                    )
 
                 let mutable p = V4d.Zero
-                let pm = offset + v.p.XY * scale
 
                 if flip then
                     if keepsWinding (isOrtho uniform.ProjTrafo) trafo then
@@ -133,13 +139,13 @@ module Path =
                 let right = mvi.C0.XYZ |> Vec.normalize
                 let up = mvi.C1.XYZ |> Vec.normalize
 
-                let scale = v.offset.ZW
-                let flip = scale.X < 0.0
-                let scale = V2d(abs scale.X, abs scale.Y)
-                let offset = v.offset.XY
+                let pm = 
+                    V2d(
+                        Vec.dot v.tr0.XYZ (V3d(v.p.XY, 1.0)),
+                        Vec.dot v.tr1.XYZ (V3d(v.p.XY, 1.0))
+                    )
 
                 let mutable p = V4d.Zero
-                let pm = offset + v.p.XY * scale
 
 
                 let pm = right * pm.X + up * pm.Y + V3d(0.0, 0.0, v.p.Z)
@@ -164,12 +170,13 @@ module Path =
                 let up = mvi.C1.XYZ |> Vec.normalize
 
 
-                let scale = v.offset.ZW
-                let flip = scale.X < 0.0
-                let scale = V2d(abs scale.X, abs scale.Y)
-                let offset = v.offset.XY
                 
-                let pm = offset + v.p.XY * scale
+                let flip = v.tr0.W < 0.0
+                let pm = 
+                    V2d(
+                        Vec.dot v.tr0.XYZ (V3d(v.p.XY, 1.0)),
+                        Vec.dot v.tr1.XYZ (V3d(v.p.XY, 1.0))
+                    )
 
                 let p = trafo * V4d(right * pm.X + up * pm.Y + V3d(0.0, 0.0, v.p.Z), v.p.W)
                 
