@@ -1857,6 +1857,112 @@ namespace Aardvark.Base
         #region Roots
 
         /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this byte x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this sbyte x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this short x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this ushort x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this int x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this uint x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this long x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this ulong x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Root(this float x, int n)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(x, 1.0f / n);
+            #else
+                return (float)Math.Pow(x, 1.0 / n);
+            #endif
+        }
+
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Root(this double x, int n)
+        {
+            return Math.Pow(x, 1.0 / n);
+        }
+
+        /// <summary>
         /// Returns the square root of the specified number.
         /// </summary>
         [Pure]

@@ -1,10 +1,15 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    //# var signedtypes = Meta.SignedTypes;
+    //# var numtypes = Meta.StandardNumericTypes;
+    //# var dreptypes = Meta.DoubleRepresentableTypes;
     //# foreach (var isDouble in new[] { false, true }) {
-    //#   var ft = isDouble ? "double" : "float";
+    //#   var ftype = isDouble ? Meta.DoubleType : Meta.FloatType;
+    //#   var ft = ftype.Name;
     //#   var ct = isDouble ? "ComplexD" : "ComplexF";
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
@@ -33,9 +38,9 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __ct__ Zero = new __ct__(0, 0);
-        public static readonly __ct__ One = new __ct__(1, 0);
-        public static readonly __ct__ I = new __ct__(0, 1);
+        public static __ct__ Zero { get { return new __ct__(0, 0); } }
+        public static __ct__ One { get { return new __ct__(1, 0); } } 
+        public static __ct__ I { get { return new __ct__(0, 1); } }
 
         #endregion
 
@@ -220,25 +225,9 @@ namespace Aardvark.Base
             Imag /= scalar;
         }
 
-        /// <summary>
-        /// Exponentiates this by a real number
-        /// </summary>
-        /// <param name="scalar"></param>
-        public void Pow(__ft__ scalar)
-        {
-            __ft__ r = NormSquared;
-            __ft__ phi = Fun.Atan2(Imag, Real);
-
-            r = Fun.Pow(r, scalar);
-            phi *= scalar;
-
-            Real = r * Fun.Cos(phi);
-            Imag = r * Fun.Sin(phi);
-        }
-
         #endregion
 
-        #region Static Members
+        #region Static factories
 
         /// <summary>
         /// Creates a Radial Complex
@@ -246,6 +235,7 @@ namespace Aardvark.Base
         /// <param name="r">Norm of the complex number</param>
         /// <param name="phi">Argument of the complex number</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ CreateRadial(__ft__ r, __ft__ phi)
         {
             return new __ct__(r * Fun.Cos(phi), r * Fun.Sin(phi));
@@ -257,113 +247,10 @@ namespace Aardvark.Base
         /// <param name="real">Real-Part</param>
         /// <param name="imag">Imaginary-Part</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ CreateOrthogonal(__ft__ real, __ft__ imag)
         {
             return new __ct__(real, imag);
-        }
-
-        /// <summary>
-        /// Exponentiates a complex by a real number
-        /// </summary>
-        /// <returns></returns>
-        public static __ct__ Pow(__ct__ number, __ft__ scalar)
-        {
-            number.Pow(scalar);
-            return number;
-        }
-
-        /// <summary>
-        /// Exponentiates a complex by another
-        /// </summary>
-        /// <returns></returns>
-        public static __ct__ Pow(__ct__ number, __ct__ exponent)
-        {
-            __ft__ r = number.Norm;
-            __ft__ phi = number.Argument;
-
-            __ft__ a = exponent.Real;
-            __ft__ b = exponent.Imag;
-
-            return __ct__.CreateRadial(Fun.Exp(Fun.Log(r) * a - b * phi), a * phi + b * Fun.Log(r));
-        }
-
-        /// <summary>
-        /// Natural Logartihm for complex numbers
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static __ct__ Log(__ct__ number)
-        {
-            return __ct__.CreateOrthogonal(Fun.Log(number.Norm), number.Argument);
-        }
-
-        /// <summary>
-        /// Calculates the Square-Root of a real number and returns a Complex
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static __ct__ Sqrt(__ft__ number)
-        {
-            if (number >= 0)
-            {
-                return new __ct__(Fun.Sqrt(number), 0.0f);
-            }
-            else
-            {
-                return new __ct__(0.0f, Fun.Sqrt(-1.0f * number));
-            }
-        }
-
-        /// <summary>
-        /// Calculates both Square-Roots of a complex number
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public __ct__[] Sqrt(__ct__ number)
-        {
-            __ct__ res0 = __ct__.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f);
-            __ct__ res1 = __ct__.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f + (__ft__)Constant.Pi);
-
-            return new __ct__[2] { res0, res1 };
-        }
-
-        /// <summary>
-        /// Calculates the n-th Root of a Complex number and returns n Solutions
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="order">n</param>
-        /// <returns></returns>
-        public __ct__[] Root(__ct__ number, int order)
-        {
-            __ct__[] values = new __ct__[order];
-
-            __ft__ phi = number.Argument / 2.0f;
-            __ft__ dphi = (__ft__)Constant.PiTimesTwo / (__ft__)order;
-            __ft__ r = Fun.Pow(number.Norm, 1.0f / order);
-
-            for (int i = 1; i < order; i++)
-            {
-                values[i] = __ct__.CreateRadial(r, phi + dphi * i);
-            }
-
-            return values;
-        }
-
-        /// <summary>
-        /// Calculates e^Complex
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static __ct__ Exp(__ct__ number)
-        {
-            __ct__ c = __ct__.Zero;
-
-            __ft__ factor = Fun.Pow((__ft__)Constant.E, number.Real);
-
-            c.Real = factor * Fun.Cos(number.Imag);
-            c.Imag = factor * Fun.Sin(number.Imag);
-
-            return c;
         }
 
         #endregion
@@ -520,6 +407,113 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Exponentiates the given complex number by a real number.
+        /// </summary>
+        public static __ct__ Pow(this __ct__ number, __ft__ exponent)
+        {
+            __ft__ r = number.NormSquared;
+            __ft__ phi = Atan2(number.Imag, number.Real);
+
+            r = Pow(r, exponent);
+            phi *= exponent;
+
+            return new __ct__(r * Cos(phi), r * Sin(phi));
+        }
+
+        /// <summary>
+        /// Exponentiates a complex number by another.
+        /// </summary>
+        public static __ct__ Pow(this __ct__ number, __ct__ exponent)
+        {
+            __ft__ r = number.Norm;
+            __ft__ phi = number.Argument;
+
+            __ft__ a = exponent.Real;
+            __ft__ b = exponent.Imag;
+
+            return __ct__.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+        }
+
+        /// <summary>
+        /// Natural Logartihm for complex numbers
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Log(this __ct__ number)
+        {
+            return __ct__.CreateOrthogonal(Log(number.Norm), number.Argument);
+        }
+
+        //# signedtypes.ForEach(t => { if (t != Meta.DecimalType) {
+        //# if (ftype == Meta.DoubleType ^ t == Meta.FloatType) {
+        /// <summary>
+        /// Returns the square root of the given real number and returns a complex number.
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Csqrt(this __t.Name__ number)
+        {
+            if (number >= 0)
+            {
+                return new __ct__(Sqrt(number), 0);
+            }
+            else
+            {
+                return new __ct__(0, Sqrt(-number));
+            }
+        }
+        //# }}});
+
+        /// <summary>
+        /// Calculates both square roots of a complex number-
+        /// </summary>
+        public static __ct__[] Csqrt(this __ct__ number)
+        {
+            __ct__ res0 = __ct__.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
+            __ct__ res1 = __ct__.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + (__ft__)Constant.Pi);
+
+            return new __ct__[2] { res0, res1 };
+        }
+
+        /// <summary>
+        /// Calculates the n-th root of a complex number and returns n solutions.
+        /// </summary>
+        public static __ct__[] Root(this __ct__ number, int n)
+        {
+            __ct__[] values = new __ct__[n];
+
+            __ft__ phi = number.Argument / 2;
+            __ft__ dphi = (__ft__)Constant.PiTimesTwo / (__ft__)n;
+            __ft__ r = Pow(number.Norm, 1 / n);
+
+            for (int i = 1; i < n; i++)
+            {
+                values[i] = __ct__.CreateRadial(r, phi + dphi * i);
+            }
+
+            return values;
+        }
+
+        /// <summary>
+        /// Calculates e^Complex
+        /// </summary>
+        public static __ct__ Exp(this __ct__ number)
+        {
+            __ct__ c = __ct__.Zero;
+
+            __ft__ factor = Pow((__ft__)Constant.E, number.Real);
+
+            c.Real = factor * Cos(number.Imag);
+            c.Imag = factor * Sin(number.Imag);
+
+            return c;
+        }
     }
 
     //# } // isDouble
