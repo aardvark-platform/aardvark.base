@@ -31,9 +31,9 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static ComplexF Zero { get { return new ComplexF(0, 0); } }
-        public static ComplexF One { get { return new ComplexF(1, 0); } } 
-        public static ComplexF I { get { return new ComplexF(0, 1); } }
+        public static ComplexF Zero => new ComplexF(0, 0);
+        public static ComplexF One => new ComplexF(1, 0);
+        public static ComplexF I => new ComplexF(0, 1);
 
         #endregion
 
@@ -530,9 +530,9 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static ComplexD Zero { get { return new ComplexD(0, 0); } }
-        public static ComplexD One { get { return new ComplexD(1, 0); } } 
-        public static ComplexD I { get { return new ComplexD(0, 1); } }
+        public static ComplexD Zero => new ComplexD(0, 0);
+        public static ComplexD One => new ComplexD(1, 0);
+        public static ComplexD I => new ComplexD(0, 1);
 
         #endregion
 
