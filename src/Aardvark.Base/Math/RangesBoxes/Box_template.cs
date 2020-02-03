@@ -232,9 +232,11 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(__ltype__[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = __maxvalue__;
+            Max = __minvalue__;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>

@@ -9340,9 +9340,11 @@ namespace Aardvark.Base
         /// </summary>
         public Box2i(V2i[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = V2i.MaxValue;
+            Max = V2i.MinValue;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>
@@ -10721,9 +10723,11 @@ namespace Aardvark.Base
         /// </summary>
         public Box2l(V2l[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = V2l.MaxValue;
+            Max = V2l.MinValue;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>
@@ -12102,9 +12106,11 @@ namespace Aardvark.Base
         /// </summary>
         public Box2f(V2f[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = V2f.MaxValue;
+            Max = V2f.MinValue;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>
@@ -13578,9 +13584,11 @@ namespace Aardvark.Base
         /// </summary>
         public Box2d(V2d[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = V2d.MaxValue;
+            Max = V2d.MinValue;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>
@@ -15056,9 +15064,11 @@ namespace Aardvark.Base
         /// </summary>
         public Box3i(V3i[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = V3i.MaxValue;
+            Max = V3i.MinValue;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>
@@ -16783,9 +16793,11 @@ namespace Aardvark.Base
         /// </summary>
         public Box3l(V3l[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = V3l.MaxValue;
+            Max = V3l.MinValue;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>
@@ -18510,9 +18522,11 @@ namespace Aardvark.Base
         /// </summary>
         public Box3f(V3f[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = V3f.MaxValue;
+            Max = V3f.MinValue;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>
@@ -20337,9 +20351,11 @@ namespace Aardvark.Base
         /// </summary>
         public Box3d(V3d[] points)
         {
-            Min = Max = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(points[i]);
+            Min = V3d.MaxValue;
+            Max = V3d.MinValue;
+            if (points == null) return;
+            var count = points.Length;
+            for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
 
         /// <summary>
