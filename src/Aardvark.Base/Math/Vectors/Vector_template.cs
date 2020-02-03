@@ -612,13 +612,13 @@ namespace Aardvark.Base
         /// <summary>
         /// An array of accessor functions for the coordinates of the vector.
         /// </summary>
-        public static readonly Func<__vtype__, __ftype__>[] SelectorArray =
+        public static Func<__vtype__, __ftype__>[] SelectorArray =>
             new Func<__vtype__, __ftype__>[] { /*# fields.ForEach(f => { */v => v.__f__/*# }, comma); */ };
 
         /// <summary>
         /// Element getter function.
         /// </summary>
-        public static readonly Func<__vtype__, int, __ftype__> Getter =
+        public static Func<__vtype__, int, __ftype__> Getter =>
             (v, i) =>
             {
                 switch (i)
@@ -633,7 +633,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<__vtype__, int, __ftype__> Setter =
+        public static ActionRefValVal<__vtype__, int, __ftype__> Setter =>
             (ref __vtype__ v, int i, __ftype__ s) =>
             {
                 switch (i)
@@ -648,7 +648,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element getter function with long index.
         /// </summary>
-        public static readonly Func<__vtype__, long, __ftype__> LongGetter =
+        public static Func<__vtype__, long, __ftype__> LongGetter =>
             (v, i) =>
             {
                 switch (i)
@@ -663,7 +663,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action with long index.
         /// </summary>
-        public static readonly ActionRefValVal<__vtype__, long, __ftype__> LongSetter =
+        public static ActionRefValVal<__vtype__, long, __ftype__> LongSetter =>
             (ref __vtype__ v, long i, __ftype__ s) =>
             {
                 switch (i)
@@ -712,7 +712,7 @@ namespace Aardvark.Base
             => new __vtype__(Fun.Cos(angleInRadians), Fun.Sin(angleInRadians));
 
         //# } else if (d == 3) {
-        private static readonly __vtype__[] s_fromCubeCode =
+        private static __vtype__[] s_fromCubeCode =>
             new __vtype__[] { -__vtype__.XAxis, -__vtype__.YAxis, -__vtype__.ZAxis,
                         __vtype__.XAxis, __vtype__.YAxis, __vtype__.ZAxis };
 
@@ -1452,7 +1452,7 @@ namespace Aardvark.Base
         //#             if (d == 2) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public static readonly __v2type__ __name__ = new __v2type__(__x__, __y__);
+        public static __v2type__ __name__ => new __v2type__(__x__, __y__);
         //#             }
         //#         }
         //#         else {
@@ -1471,7 +1471,7 @@ namespace Aardvark.Base
         //#                 if (d == 3) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public static readonly __v3type__ __name__ = new __v3type__(__x__, __y__, __z__);   
+        public static __v3type__ __name__ => new __v3type__(__x__, __y__, __z__);   
         //#                 } 
         //#             }
         //#             else {
@@ -1493,7 +1493,7 @@ namespace Aardvark.Base
         //#                         if (d == 4) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public static readonly __v4type__ __name__ = new __v4type__(__x__, __y__, __z__, __w__);
+        public static __v4type__ __name__ => new __v4type__(__x__, __y__, __z__, __w__);
         //#                         } 
         //#                     }
         //#                     else {
@@ -1552,8 +1552,8 @@ namespace Aardvark.Base
 
     public class __vtype__EqualityComparer : IEqualityComparer<__vtype__>
     {
-        public static readonly __vtype__EqualityComparer Default
-            = new __vtype__EqualityComparer();
+        public static __vtype__EqualityComparer Default
+            => new __vtype__EqualityComparer();
 
         #region IEqualityComparer<__vtype__> Members
 

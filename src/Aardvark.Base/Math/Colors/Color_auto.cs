@@ -441,25 +441,25 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C3b Black = new C3b(0);
+        public static C3b Black => new C3b(0);
 
-        public static readonly C3b Red = new C3b(255, 0, 0);
-        public static readonly C3b Green = new C3b(0, 255, 0);
-        public static readonly C3b Blue = new C3b(0, 0, 255);
-        public static readonly C3b Cyan = new C3b(0, 255, 255);
-        public static readonly C3b Magenta = new C3b(255, 0, 255);
-        public static readonly C3b Yellow = new C3b(255, 255, 0);
-        public static readonly C3b White = new C3b(255);
+        public static C3b Red => new C3b(255, 0, 0);
+        public static C3b Green => new C3b(0, 255, 0);
+        public static C3b Blue => new C3b(0, 0, 255);
+        public static C3b Cyan => new C3b(0, 255, 255);
+        public static C3b Magenta => new C3b(255, 0, 255);
+        public static C3b Yellow => new C3b(255, 255, 0);
+        public static C3b White => new C3b(255);
 
-        public static readonly C3b DarkRed = new C3b(255 / 2, 0 / 2, 0 / 2);
-        public static readonly C3b DarkGreen = new C3b(0 / 2, 255 / 2, 0 / 2);
-        public static readonly C3b DarkBlue = new C3b(0 / 2, 0 / 2, 255 / 2);
-        public static readonly C3b DarkCyan = new C3b(0 / 2, 255 / 2, 255 / 2);
-        public static readonly C3b DarkMagenta = new C3b(255 / 2, 0 / 2, 255 / 2);
-        public static readonly C3b DarkYellow = new C3b(255 / 2, 255 / 2, 0 / 2);
-        public static readonly C3b Gray = new C3b(255 / 2);
+        public static C3b DarkRed => new C3b(255 / 2, 0 / 2, 0 / 2);
+        public static C3b DarkGreen => new C3b(0 / 2, 255 / 2, 0 / 2);
+        public static C3b DarkBlue => new C3b(0 / 2, 0 / 2, 255 / 2);
+        public static C3b DarkCyan => new C3b(0 / 2, 255 / 2, 255 / 2);
+        public static C3b DarkMagenta => new C3b(255 / 2, 0 / 2, 255 / 2);
+        public static C3b DarkYellow => new C3b(255 / 2, 255 / 2, 0 / 2);
+        public static C3b Gray => new C3b(255 / 2);
         
-        public static readonly C3b VRVisGreen = new C3b(178, 217, 2);
+        public static C3b VRVisGreen => new C3b(178, 217, 2);
 
         #endregion
 
@@ -770,7 +770,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C3b, int, byte> Setter =
+        public static ActionRefValVal<C3b, int, byte> Setter =>
             (ref C3b color, int i, byte value) =>
             {
                 switch (i)
@@ -1790,25 +1790,25 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C3us Black = new C3us(0);
+        public static C3us Black => new C3us(0);
 
-        public static readonly C3us Red = new C3us(65535, 0, 0);
-        public static readonly C3us Green = new C3us(0, 65535, 0);
-        public static readonly C3us Blue = new C3us(0, 0, 65535);
-        public static readonly C3us Cyan = new C3us(0, 65535, 65535);
-        public static readonly C3us Magenta = new C3us(65535, 0, 65535);
-        public static readonly C3us Yellow = new C3us(65535, 65535, 0);
-        public static readonly C3us White = new C3us(65535);
+        public static C3us Red => new C3us(65535, 0, 0);
+        public static C3us Green => new C3us(0, 65535, 0);
+        public static C3us Blue => new C3us(0, 0, 65535);
+        public static C3us Cyan => new C3us(0, 65535, 65535);
+        public static C3us Magenta => new C3us(65535, 0, 65535);
+        public static C3us Yellow => new C3us(65535, 65535, 0);
+        public static C3us White => new C3us(65535);
 
-        public static readonly C3us DarkRed = new C3us(65535 / 2, 0 / 2, 0 / 2);
-        public static readonly C3us DarkGreen = new C3us(0 / 2, 65535 / 2, 0 / 2);
-        public static readonly C3us DarkBlue = new C3us(0 / 2, 0 / 2, 65535 / 2);
-        public static readonly C3us DarkCyan = new C3us(0 / 2, 65535 / 2, 65535 / 2);
-        public static readonly C3us DarkMagenta = new C3us(65535 / 2, 0 / 2, 65535 / 2);
-        public static readonly C3us DarkYellow = new C3us(65535 / 2, 65535 / 2, 0 / 2);
-        public static readonly C3us Gray = new C3us(65535 / 2);
+        public static C3us DarkRed => new C3us(65535 / 2, 0 / 2, 0 / 2);
+        public static C3us DarkGreen => new C3us(0 / 2, 65535 / 2, 0 / 2);
+        public static C3us DarkBlue => new C3us(0 / 2, 0 / 2, 65535 / 2);
+        public static C3us DarkCyan => new C3us(0 / 2, 65535 / 2, 65535 / 2);
+        public static C3us DarkMagenta => new C3us(65535 / 2, 0 / 2, 65535 / 2);
+        public static C3us DarkYellow => new C3us(65535 / 2, 65535 / 2, 0 / 2);
+        public static C3us Gray => new C3us(65535 / 2);
         
-        public static readonly C3us VRVisGreen = new C3us(45743, 53411, 5243);
+        public static C3us VRVisGreen => new C3us(45743, 53411, 5243);
 
         #endregion
 
@@ -2119,7 +2119,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C3us, int, ushort> Setter =
+        public static ActionRefValVal<C3us, int, ushort> Setter =>
             (ref C3us color, int i, ushort value) =>
             {
                 switch (i)
@@ -3098,23 +3098,23 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C3ui Black = new C3ui(0);
+        public static C3ui Black => new C3ui(0);
 
-        public static readonly C3ui Red = new C3ui(UInt32.MaxValue, 0, 0);
-        public static readonly C3ui Green = new C3ui(0, UInt32.MaxValue, 0);
-        public static readonly C3ui Blue = new C3ui(0, 0, UInt32.MaxValue);
-        public static readonly C3ui Cyan = new C3ui(0, UInt32.MaxValue, UInt32.MaxValue);
-        public static readonly C3ui Magenta = new C3ui(UInt32.MaxValue, 0, UInt32.MaxValue);
-        public static readonly C3ui Yellow = new C3ui(UInt32.MaxValue, UInt32.MaxValue, 0);
-        public static readonly C3ui White = new C3ui(UInt32.MaxValue);
+        public static C3ui Red => new C3ui(UInt32.MaxValue, 0, 0);
+        public static C3ui Green => new C3ui(0, UInt32.MaxValue, 0);
+        public static C3ui Blue => new C3ui(0, 0, UInt32.MaxValue);
+        public static C3ui Cyan => new C3ui(0, UInt32.MaxValue, UInt32.MaxValue);
+        public static C3ui Magenta => new C3ui(UInt32.MaxValue, 0, UInt32.MaxValue);
+        public static C3ui Yellow => new C3ui(UInt32.MaxValue, UInt32.MaxValue, 0);
+        public static C3ui White => new C3ui(UInt32.MaxValue);
 
-        public static readonly C3ui DarkRed = new C3ui(UInt32.MaxValue / 2, 0 / 2, 0 / 2);
-        public static readonly C3ui DarkGreen = new C3ui(0 / 2, UInt32.MaxValue / 2, 0 / 2);
-        public static readonly C3ui DarkBlue = new C3ui(0 / 2, 0 / 2, UInt32.MaxValue / 2);
-        public static readonly C3ui DarkCyan = new C3ui(0 / 2, UInt32.MaxValue / 2, UInt32.MaxValue / 2);
-        public static readonly C3ui DarkMagenta = new C3ui(UInt32.MaxValue / 2, 0 / 2, UInt32.MaxValue / 2);
-        public static readonly C3ui DarkYellow = new C3ui(UInt32.MaxValue / 2, UInt32.MaxValue / 2, 0 / 2);
-        public static readonly C3ui Gray = new C3ui(UInt32.MaxValue / 2);
+        public static C3ui DarkRed => new C3ui(UInt32.MaxValue / 2, 0 / 2, 0 / 2);
+        public static C3ui DarkGreen => new C3ui(0 / 2, UInt32.MaxValue / 2, 0 / 2);
+        public static C3ui DarkBlue => new C3ui(0 / 2, 0 / 2, UInt32.MaxValue / 2);
+        public static C3ui DarkCyan => new C3ui(0 / 2, UInt32.MaxValue / 2, UInt32.MaxValue / 2);
+        public static C3ui DarkMagenta => new C3ui(UInt32.MaxValue / 2, 0 / 2, UInt32.MaxValue / 2);
+        public static C3ui DarkYellow => new C3ui(UInt32.MaxValue / 2, UInt32.MaxValue / 2, 0 / 2);
+        public static C3ui Gray => new C3ui(UInt32.MaxValue / 2);
         
 
         #endregion
@@ -3388,7 +3388,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C3ui, int, uint> Setter =
+        public static ActionRefValVal<C3ui, int, uint> Setter =>
             (ref C3ui color, int i, uint value) =>
             {
                 switch (i)
@@ -4424,34 +4424,34 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C3f Black = new C3f(0.0f);
+        public static C3f Black => new C3f(0.0f);
 
-        public static readonly C3f Red = new C3f(1.0f, 0.0f, 0.0f);
-        public static readonly C3f Green = new C3f(0.0f, 1.0f, 0.0f);
-        public static readonly C3f Blue = new C3f(0.0f, 0.0f, 1.0f);
-        public static readonly C3f Cyan = new C3f(0.0f, 1.0f, 1.0f);
-        public static readonly C3f Magenta = new C3f(1.0f, 0.0f, 1.0f);
-        public static readonly C3f Yellow = new C3f(1.0f, 1.0f, 0.0f);
-        public static readonly C3f White = new C3f(1.0f);
+        public static C3f Red => new C3f(1.0f, 0.0f, 0.0f);
+        public static C3f Green => new C3f(0.0f, 1.0f, 0.0f);
+        public static C3f Blue => new C3f(0.0f, 0.0f, 1.0f);
+        public static C3f Cyan => new C3f(0.0f, 1.0f, 1.0f);
+        public static C3f Magenta => new C3f(1.0f, 0.0f, 1.0f);
+        public static C3f Yellow => new C3f(1.0f, 1.0f, 0.0f);
+        public static C3f White => new C3f(1.0f);
 
-        public static readonly C3f DarkRed = new C3f(1.0f / 2, 0.0f / 2, 0.0f / 2);
-        public static readonly C3f DarkGreen = new C3f(0.0f / 2, 1.0f / 2, 0.0f / 2);
-        public static readonly C3f DarkBlue = new C3f(0.0f / 2, 0.0f / 2, 1.0f / 2);
-        public static readonly C3f DarkCyan = new C3f(0.0f / 2, 1.0f / 2, 1.0f / 2);
-        public static readonly C3f DarkMagenta = new C3f(1.0f / 2, 0.0f / 2, 1.0f / 2);
-        public static readonly C3f DarkYellow = new C3f(1.0f / 2, 1.0f / 2, 0.0f / 2);
-        public static readonly C3f Gray = new C3f(1.0f / 2);
+        public static C3f DarkRed => new C3f(1.0f / 2, 0.0f / 2, 0.0f / 2);
+        public static C3f DarkGreen => new C3f(0.0f / 2, 1.0f / 2, 0.0f / 2);
+        public static C3f DarkBlue => new C3f(0.0f / 2, 0.0f / 2, 1.0f / 2);
+        public static C3f DarkCyan => new C3f(0.0f / 2, 1.0f / 2, 1.0f / 2);
+        public static C3f DarkMagenta => new C3f(1.0f / 2, 0.0f / 2, 1.0f / 2);
+        public static C3f DarkYellow => new C3f(1.0f / 2, 1.0f / 2, 0.0f / 2);
+        public static C3f Gray => new C3f(1.0f / 2);
         
-        public static readonly C3f Gray10 = new C3f(0.1f);
-        public static readonly C3f Gray20 = new C3f(0.2f);
-        public static readonly C3f Gray30 = new C3f(0.3f);
-        public static readonly C3f Gray40 = new C3f(0.4f);
-        public static readonly C3f Gray50 = new C3f(0.5f);
-        public static readonly C3f Gray60 = new C3f(0.6f);
-        public static readonly C3f Gray70 = new C3f(0.7f);
-        public static readonly C3f Gray80 = new C3f(0.8f);
-        public static readonly C3f Gray90 = new C3f(0.9f);
-        public static readonly C3f VRVisGreen = new C3f(0.698f, 0.851f, 0.008f);
+        public static C3f Gray10 => new C3f(0.1f);
+        public static C3f Gray20 => new C3f(0.2f);
+        public static C3f Gray30 => new C3f(0.3f);
+        public static C3f Gray40 => new C3f(0.4f);
+        public static C3f Gray50 => new C3f(0.5f);
+        public static C3f Gray60 => new C3f(0.6f);
+        public static C3f Gray70 => new C3f(0.7f);
+        public static C3f Gray80 => new C3f(0.8f);
+        public static C3f Gray90 => new C3f(0.9f);
+        public static C3f VRVisGreen => new C3f(0.698f, 0.851f, 0.008f);
 
         #endregion
 
@@ -4810,7 +4810,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C3f, int, float> Setter =
+        public static ActionRefValVal<C3f, int, float> Setter =>
             (ref C3f color, int i, float value) =>
             {
                 switch (i)
@@ -5801,23 +5801,23 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C3d Black = new C3d(0);
+        public static C3d Black => new C3d(0);
 
-        public static readonly C3d Red = new C3d(1.0, 0, 0);
-        public static readonly C3d Green = new C3d(0, 1.0, 0);
-        public static readonly C3d Blue = new C3d(0, 0, 1.0);
-        public static readonly C3d Cyan = new C3d(0, 1.0, 1.0);
-        public static readonly C3d Magenta = new C3d(1.0, 0, 1.0);
-        public static readonly C3d Yellow = new C3d(1.0, 1.0, 0);
-        public static readonly C3d White = new C3d(1.0);
+        public static C3d Red => new C3d(1.0, 0, 0);
+        public static C3d Green => new C3d(0, 1.0, 0);
+        public static C3d Blue => new C3d(0, 0, 1.0);
+        public static C3d Cyan => new C3d(0, 1.0, 1.0);
+        public static C3d Magenta => new C3d(1.0, 0, 1.0);
+        public static C3d Yellow => new C3d(1.0, 1.0, 0);
+        public static C3d White => new C3d(1.0);
 
-        public static readonly C3d DarkRed = new C3d(1.0 / 2, 0 / 2, 0 / 2);
-        public static readonly C3d DarkGreen = new C3d(0 / 2, 1.0 / 2, 0 / 2);
-        public static readonly C3d DarkBlue = new C3d(0 / 2, 0 / 2, 1.0 / 2);
-        public static readonly C3d DarkCyan = new C3d(0 / 2, 1.0 / 2, 1.0 / 2);
-        public static readonly C3d DarkMagenta = new C3d(1.0 / 2, 0 / 2, 1.0 / 2);
-        public static readonly C3d DarkYellow = new C3d(1.0 / 2, 1.0 / 2, 0 / 2);
-        public static readonly C3d Gray = new C3d(1.0 / 2);
+        public static C3d DarkRed => new C3d(1.0 / 2, 0 / 2, 0 / 2);
+        public static C3d DarkGreen => new C3d(0 / 2, 1.0 / 2, 0 / 2);
+        public static C3d DarkBlue => new C3d(0 / 2, 0 / 2, 1.0 / 2);
+        public static C3d DarkCyan => new C3d(0 / 2, 1.0 / 2, 1.0 / 2);
+        public static C3d DarkMagenta => new C3d(1.0 / 2, 0 / 2, 1.0 / 2);
+        public static C3d DarkYellow => new C3d(1.0 / 2, 1.0 / 2, 0 / 2);
+        public static C3d Gray => new C3d(1.0 / 2);
         
 
         #endregion
@@ -6123,7 +6123,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C3d, int, double> Setter =
+        public static ActionRefValVal<C3d, int, double> Setter =>
             (ref C3d color, int i, double value) =>
             {
                 switch (i)
@@ -7298,25 +7298,25 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C4b Black = new C4b(0);
+        public static C4b Black => new C4b(0);
 
-        public static readonly C4b Red = new C4b(255, 0, 0);
-        public static readonly C4b Green = new C4b(0, 255, 0);
-        public static readonly C4b Blue = new C4b(0, 0, 255);
-        public static readonly C4b Cyan = new C4b(0, 255, 255);
-        public static readonly C4b Magenta = new C4b(255, 0, 255);
-        public static readonly C4b Yellow = new C4b(255, 255, 0);
-        public static readonly C4b White = new C4b(255);
+        public static C4b Red => new C4b(255, 0, 0);
+        public static C4b Green => new C4b(0, 255, 0);
+        public static C4b Blue => new C4b(0, 0, 255);
+        public static C4b Cyan => new C4b(0, 255, 255);
+        public static C4b Magenta => new C4b(255, 0, 255);
+        public static C4b Yellow => new C4b(255, 255, 0);
+        public static C4b White => new C4b(255);
 
-        public static readonly C4b DarkRed = new C4b(255 / 2, 0 / 2, 0 / 2);
-        public static readonly C4b DarkGreen = new C4b(0 / 2, 255 / 2, 0 / 2);
-        public static readonly C4b DarkBlue = new C4b(0 / 2, 0 / 2, 255 / 2);
-        public static readonly C4b DarkCyan = new C4b(0 / 2, 255 / 2, 255 / 2);
-        public static readonly C4b DarkMagenta = new C4b(255 / 2, 0 / 2, 255 / 2);
-        public static readonly C4b DarkYellow = new C4b(255 / 2, 255 / 2, 0 / 2);
-        public static readonly C4b Gray = new C4b(255 / 2);
+        public static C4b DarkRed => new C4b(255 / 2, 0 / 2, 0 / 2);
+        public static C4b DarkGreen => new C4b(0 / 2, 255 / 2, 0 / 2);
+        public static C4b DarkBlue => new C4b(0 / 2, 0 / 2, 255 / 2);
+        public static C4b DarkCyan => new C4b(0 / 2, 255 / 2, 255 / 2);
+        public static C4b DarkMagenta => new C4b(255 / 2, 0 / 2, 255 / 2);
+        public static C4b DarkYellow => new C4b(255 / 2, 255 / 2, 0 / 2);
+        public static C4b Gray => new C4b(255 / 2);
         
-        public static readonly C4b VRVisGreen = new C4b(178, 217, 2);
+        public static C4b VRVisGreen => new C4b(178, 217, 2);
 
         #endregion
 
@@ -7641,7 +7641,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C4b, int, byte> Setter =
+        public static ActionRefValVal<C4b, int, byte> Setter =>
             (ref C4b color, int i, byte value) =>
             {
                 switch (i)
@@ -8776,25 +8776,25 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C4us Black = new C4us(0);
+        public static C4us Black => new C4us(0);
 
-        public static readonly C4us Red = new C4us(65535, 0, 0);
-        public static readonly C4us Green = new C4us(0, 65535, 0);
-        public static readonly C4us Blue = new C4us(0, 0, 65535);
-        public static readonly C4us Cyan = new C4us(0, 65535, 65535);
-        public static readonly C4us Magenta = new C4us(65535, 0, 65535);
-        public static readonly C4us Yellow = new C4us(65535, 65535, 0);
-        public static readonly C4us White = new C4us(65535);
+        public static C4us Red => new C4us(65535, 0, 0);
+        public static C4us Green => new C4us(0, 65535, 0);
+        public static C4us Blue => new C4us(0, 0, 65535);
+        public static C4us Cyan => new C4us(0, 65535, 65535);
+        public static C4us Magenta => new C4us(65535, 0, 65535);
+        public static C4us Yellow => new C4us(65535, 65535, 0);
+        public static C4us White => new C4us(65535);
 
-        public static readonly C4us DarkRed = new C4us(65535 / 2, 0 / 2, 0 / 2);
-        public static readonly C4us DarkGreen = new C4us(0 / 2, 65535 / 2, 0 / 2);
-        public static readonly C4us DarkBlue = new C4us(0 / 2, 0 / 2, 65535 / 2);
-        public static readonly C4us DarkCyan = new C4us(0 / 2, 65535 / 2, 65535 / 2);
-        public static readonly C4us DarkMagenta = new C4us(65535 / 2, 0 / 2, 65535 / 2);
-        public static readonly C4us DarkYellow = new C4us(65535 / 2, 65535 / 2, 0 / 2);
-        public static readonly C4us Gray = new C4us(65535 / 2);
+        public static C4us DarkRed => new C4us(65535 / 2, 0 / 2, 0 / 2);
+        public static C4us DarkGreen => new C4us(0 / 2, 65535 / 2, 0 / 2);
+        public static C4us DarkBlue => new C4us(0 / 2, 0 / 2, 65535 / 2);
+        public static C4us DarkCyan => new C4us(0 / 2, 65535 / 2, 65535 / 2);
+        public static C4us DarkMagenta => new C4us(65535 / 2, 0 / 2, 65535 / 2);
+        public static C4us DarkYellow => new C4us(65535 / 2, 65535 / 2, 0 / 2);
+        public static C4us Gray => new C4us(65535 / 2);
         
-        public static readonly C4us VRVisGreen = new C4us(45743, 53411, 5243);
+        public static C4us VRVisGreen => new C4us(45743, 53411, 5243);
 
         #endregion
 
@@ -9119,7 +9119,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C4us, int, ushort> Setter =
+        public static ActionRefValVal<C4us, int, ushort> Setter =>
             (ref C4us color, int i, ushort value) =>
             {
                 switch (i)
@@ -10203,23 +10203,23 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C4ui Black = new C4ui(0);
+        public static C4ui Black => new C4ui(0);
 
-        public static readonly C4ui Red = new C4ui(UInt32.MaxValue, 0, 0);
-        public static readonly C4ui Green = new C4ui(0, UInt32.MaxValue, 0);
-        public static readonly C4ui Blue = new C4ui(0, 0, UInt32.MaxValue);
-        public static readonly C4ui Cyan = new C4ui(0, UInt32.MaxValue, UInt32.MaxValue);
-        public static readonly C4ui Magenta = new C4ui(UInt32.MaxValue, 0, UInt32.MaxValue);
-        public static readonly C4ui Yellow = new C4ui(UInt32.MaxValue, UInt32.MaxValue, 0);
-        public static readonly C4ui White = new C4ui(UInt32.MaxValue);
+        public static C4ui Red => new C4ui(UInt32.MaxValue, 0, 0);
+        public static C4ui Green => new C4ui(0, UInt32.MaxValue, 0);
+        public static C4ui Blue => new C4ui(0, 0, UInt32.MaxValue);
+        public static C4ui Cyan => new C4ui(0, UInt32.MaxValue, UInt32.MaxValue);
+        public static C4ui Magenta => new C4ui(UInt32.MaxValue, 0, UInt32.MaxValue);
+        public static C4ui Yellow => new C4ui(UInt32.MaxValue, UInt32.MaxValue, 0);
+        public static C4ui White => new C4ui(UInt32.MaxValue);
 
-        public static readonly C4ui DarkRed = new C4ui(UInt32.MaxValue / 2, 0 / 2, 0 / 2);
-        public static readonly C4ui DarkGreen = new C4ui(0 / 2, UInt32.MaxValue / 2, 0 / 2);
-        public static readonly C4ui DarkBlue = new C4ui(0 / 2, 0 / 2, UInt32.MaxValue / 2);
-        public static readonly C4ui DarkCyan = new C4ui(0 / 2, UInt32.MaxValue / 2, UInt32.MaxValue / 2);
-        public static readonly C4ui DarkMagenta = new C4ui(UInt32.MaxValue / 2, 0 / 2, UInt32.MaxValue / 2);
-        public static readonly C4ui DarkYellow = new C4ui(UInt32.MaxValue / 2, UInt32.MaxValue / 2, 0 / 2);
-        public static readonly C4ui Gray = new C4ui(UInt32.MaxValue / 2);
+        public static C4ui DarkRed => new C4ui(UInt32.MaxValue / 2, 0 / 2, 0 / 2);
+        public static C4ui DarkGreen => new C4ui(0 / 2, UInt32.MaxValue / 2, 0 / 2);
+        public static C4ui DarkBlue => new C4ui(0 / 2, 0 / 2, UInt32.MaxValue / 2);
+        public static C4ui DarkCyan => new C4ui(0 / 2, UInt32.MaxValue / 2, UInt32.MaxValue / 2);
+        public static C4ui DarkMagenta => new C4ui(UInt32.MaxValue / 2, 0 / 2, UInt32.MaxValue / 2);
+        public static C4ui DarkYellow => new C4ui(UInt32.MaxValue / 2, UInt32.MaxValue / 2, 0 / 2);
+        public static C4ui Gray => new C4ui(UInt32.MaxValue / 2);
         
 
         #endregion
@@ -10507,7 +10507,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C4ui, int, uint> Setter =
+        public static ActionRefValVal<C4ui, int, uint> Setter =>
             (ref C4ui color, int i, uint value) =>
             {
                 switch (i)
@@ -11658,34 +11658,34 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C4f Black = new C4f(0.0f);
+        public static C4f Black => new C4f(0.0f);
 
-        public static readonly C4f Red = new C4f(1.0f, 0.0f, 0.0f);
-        public static readonly C4f Green = new C4f(0.0f, 1.0f, 0.0f);
-        public static readonly C4f Blue = new C4f(0.0f, 0.0f, 1.0f);
-        public static readonly C4f Cyan = new C4f(0.0f, 1.0f, 1.0f);
-        public static readonly C4f Magenta = new C4f(1.0f, 0.0f, 1.0f);
-        public static readonly C4f Yellow = new C4f(1.0f, 1.0f, 0.0f);
-        public static readonly C4f White = new C4f(1.0f);
+        public static C4f Red => new C4f(1.0f, 0.0f, 0.0f);
+        public static C4f Green => new C4f(0.0f, 1.0f, 0.0f);
+        public static C4f Blue => new C4f(0.0f, 0.0f, 1.0f);
+        public static C4f Cyan => new C4f(0.0f, 1.0f, 1.0f);
+        public static C4f Magenta => new C4f(1.0f, 0.0f, 1.0f);
+        public static C4f Yellow => new C4f(1.0f, 1.0f, 0.0f);
+        public static C4f White => new C4f(1.0f);
 
-        public static readonly C4f DarkRed = new C4f(1.0f / 2, 0.0f / 2, 0.0f / 2);
-        public static readonly C4f DarkGreen = new C4f(0.0f / 2, 1.0f / 2, 0.0f / 2);
-        public static readonly C4f DarkBlue = new C4f(0.0f / 2, 0.0f / 2, 1.0f / 2);
-        public static readonly C4f DarkCyan = new C4f(0.0f / 2, 1.0f / 2, 1.0f / 2);
-        public static readonly C4f DarkMagenta = new C4f(1.0f / 2, 0.0f / 2, 1.0f / 2);
-        public static readonly C4f DarkYellow = new C4f(1.0f / 2, 1.0f / 2, 0.0f / 2);
-        public static readonly C4f Gray = new C4f(1.0f / 2);
+        public static C4f DarkRed => new C4f(1.0f / 2, 0.0f / 2, 0.0f / 2);
+        public static C4f DarkGreen => new C4f(0.0f / 2, 1.0f / 2, 0.0f / 2);
+        public static C4f DarkBlue => new C4f(0.0f / 2, 0.0f / 2, 1.0f / 2);
+        public static C4f DarkCyan => new C4f(0.0f / 2, 1.0f / 2, 1.0f / 2);
+        public static C4f DarkMagenta => new C4f(1.0f / 2, 0.0f / 2, 1.0f / 2);
+        public static C4f DarkYellow => new C4f(1.0f / 2, 1.0f / 2, 0.0f / 2);
+        public static C4f Gray => new C4f(1.0f / 2);
         
-        public static readonly C4f Gray10 = new C4f(0.1f);
-        public static readonly C4f Gray20 = new C4f(0.2f);
-        public static readonly C4f Gray30 = new C4f(0.3f);
-        public static readonly C4f Gray40 = new C4f(0.4f);
-        public static readonly C4f Gray50 = new C4f(0.5f);
-        public static readonly C4f Gray60 = new C4f(0.6f);
-        public static readonly C4f Gray70 = new C4f(0.7f);
-        public static readonly C4f Gray80 = new C4f(0.8f);
-        public static readonly C4f Gray90 = new C4f(0.9f);
-        public static readonly C4f VRVisGreen = new C4f(0.698f, 0.851f, 0.008f);
+        public static C4f Gray10 => new C4f(0.1f);
+        public static C4f Gray20 => new C4f(0.2f);
+        public static C4f Gray30 => new C4f(0.3f);
+        public static C4f Gray40 => new C4f(0.4f);
+        public static C4f Gray50 => new C4f(0.5f);
+        public static C4f Gray60 => new C4f(0.6f);
+        public static C4f Gray70 => new C4f(0.7f);
+        public static C4f Gray80 => new C4f(0.8f);
+        public static C4f Gray90 => new C4f(0.9f);
+        public static C4f VRVisGreen => new C4f(0.698f, 0.851f, 0.008f);
 
         #endregion
 
@@ -12064,7 +12064,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C4f, int, float> Setter =
+        public static ActionRefValVal<C4f, int, float> Setter =>
             (ref C4f color, int i, float value) =>
             {
                 switch (i)
@@ -13153,23 +13153,23 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly C4d Black = new C4d(0);
+        public static C4d Black => new C4d(0);
 
-        public static readonly C4d Red = new C4d(1.0, 0, 0);
-        public static readonly C4d Green = new C4d(0, 1.0, 0);
-        public static readonly C4d Blue = new C4d(0, 0, 1.0);
-        public static readonly C4d Cyan = new C4d(0, 1.0, 1.0);
-        public static readonly C4d Magenta = new C4d(1.0, 0, 1.0);
-        public static readonly C4d Yellow = new C4d(1.0, 1.0, 0);
-        public static readonly C4d White = new C4d(1.0);
+        public static C4d Red => new C4d(1.0, 0, 0);
+        public static C4d Green => new C4d(0, 1.0, 0);
+        public static C4d Blue => new C4d(0, 0, 1.0);
+        public static C4d Cyan => new C4d(0, 1.0, 1.0);
+        public static C4d Magenta => new C4d(1.0, 0, 1.0);
+        public static C4d Yellow => new C4d(1.0, 1.0, 0);
+        public static C4d White => new C4d(1.0);
 
-        public static readonly C4d DarkRed = new C4d(1.0 / 2, 0 / 2, 0 / 2);
-        public static readonly C4d DarkGreen = new C4d(0 / 2, 1.0 / 2, 0 / 2);
-        public static readonly C4d DarkBlue = new C4d(0 / 2, 0 / 2, 1.0 / 2);
-        public static readonly C4d DarkCyan = new C4d(0 / 2, 1.0 / 2, 1.0 / 2);
-        public static readonly C4d DarkMagenta = new C4d(1.0 / 2, 0 / 2, 1.0 / 2);
-        public static readonly C4d DarkYellow = new C4d(1.0 / 2, 1.0 / 2, 0 / 2);
-        public static readonly C4d Gray = new C4d(1.0 / 2);
+        public static C4d DarkRed => new C4d(1.0 / 2, 0 / 2, 0 / 2);
+        public static C4d DarkGreen => new C4d(0 / 2, 1.0 / 2, 0 / 2);
+        public static C4d DarkBlue => new C4d(0 / 2, 0 / 2, 1.0 / 2);
+        public static C4d DarkCyan => new C4d(0 / 2, 1.0 / 2, 1.0 / 2);
+        public static C4d DarkMagenta => new C4d(1.0 / 2, 0 / 2, 1.0 / 2);
+        public static C4d DarkYellow => new C4d(1.0 / 2, 1.0 / 2, 0 / 2);
+        public static C4d Gray => new C4d(1.0 / 2);
         
 
         #endregion
@@ -13495,7 +13495,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<C4d, int, double> Setter =
+        public static ActionRefValVal<C4d, int, double> Setter =>
             (ref C4d color, int i, double value) =>
             {
                 switch (i)

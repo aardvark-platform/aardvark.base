@@ -14,7 +14,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Unit cell (0, 0, 0, 0) -> Box3d[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)]
         /// </summary>
-        public static readonly Cell Unit = new Cell(0, 0, 0, 0);
+        public static Cell Unit => new Cell(0, 0, 0, 0);
 
         /// <summary>
         /// </summary>

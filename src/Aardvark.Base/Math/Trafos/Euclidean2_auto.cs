@@ -55,7 +55,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Identity (Rot2f.Identity, V2f.Zero)
         /// </summary>
-        public static readonly Euclidean2f Identity = new Euclidean2f(Rot2f.Identity, V2f.Zero);
+        public static Euclidean2f Identity => new Euclidean2f(Rot2f.Identity, V2f.Zero);
 
         #endregion
 
@@ -382,7 +382,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Identity (Rot2d.Identity, V2d.Zero)
         /// </summary>
-        public static readonly Euclidean2d Identity = new Euclidean2d(Rot2d.Identity, V2d.Zero);
+        public static Euclidean2d Identity => new Euclidean2d(Rot2d.Identity, V2d.Zero);
 
         #endregion
 

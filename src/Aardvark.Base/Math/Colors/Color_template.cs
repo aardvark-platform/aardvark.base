@@ -363,35 +363,35 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __type__ Black = new __type__(__t.MinValue__);
+        public static __type__ Black => new __type__(__t.MinValue__);
 
-        public static readonly __type__ Red = new __type__(__t.MaxValue__, __t.MinValue__, __t.MinValue__);
-        public static readonly __type__ Green = new __type__(__t.MinValue__, __t.MaxValue__, __t.MinValue__);
-        public static readonly __type__ Blue = new __type__(__t.MinValue__, __t.MinValue__, __t.MaxValue__);
-        public static readonly __type__ Cyan = new __type__(__t.MinValue__, __t.MaxValue__, __t.MaxValue__);
-        public static readonly __type__ Magenta = new __type__(__t.MaxValue__, __t.MinValue__, __t.MaxValue__);
-        public static readonly __type__ Yellow = new __type__(__t.MaxValue__, __t.MaxValue__, __t.MinValue__);
-        public static readonly __type__ White = new __type__(__t.MaxValue__);
+        public static __type__ Red => new __type__(__t.MaxValue__, __t.MinValue__, __t.MinValue__);
+        public static __type__ Green => new __type__(__t.MinValue__, __t.MaxValue__, __t.MinValue__);
+        public static __type__ Blue => new __type__(__t.MinValue__, __t.MinValue__, __t.MaxValue__);
+        public static __type__ Cyan => new __type__(__t.MinValue__, __t.MaxValue__, __t.MaxValue__);
+        public static __type__ Magenta => new __type__(__t.MaxValue__, __t.MinValue__, __t.MaxValue__);
+        public static __type__ Yellow => new __type__(__t.MaxValue__, __t.MaxValue__, __t.MinValue__);
+        public static __type__ White => new __type__(__t.MaxValue__);
 
-        public static readonly __type__ DarkRed = new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MinValue__ / 2);
-        public static readonly __type__ DarkGreen = new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
-        public static readonly __type__ DarkBlue = new __type__(__t.MinValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
-        public static readonly __type__ DarkCyan = new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MaxValue__ / 2);
-        public static readonly __type__ DarkMagenta = new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
-        public static readonly __type__ DarkYellow = new __type__(__t.MaxValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
-        public static readonly __type__ Gray = new __type__(__t.MaxValue__ / 2);
+        public static __type__ DarkRed => new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MinValue__ / 2);
+        public static __type__ DarkGreen => new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
+        public static __type__ DarkBlue => new __type__(__t.MinValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
+        public static __type__ DarkCyan => new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MaxValue__ / 2);
+        public static __type__ DarkMagenta => new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
+        public static __type__ DarkYellow => new __type__(__t.MaxValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
+        public static __type__ Gray => new __type__(__t.MaxValue__ / 2);
         
         //# if (isFloat) {
         //#     for (int i = 1; i < 10; i++) { double val = 0.1 * i; int percent = 10 * i;
-        public static readonly __type__ Gray__percent__ = new __type__(__val__f);
+        public static __type__ Gray__percent__ => new __type__(__val__f);
         //#     }
-        public static readonly __type__ VRVisGreen = new __type__(0.698f, 0.851f, 0.008f);
+        public static __type__ VRVisGreen => new __type__(0.698f, 0.851f, 0.008f);
         //# }
         //# if (isByte) {
-        public static readonly __type__ VRVisGreen = new __type__(178, 217, 2);
+        public static __type__ VRVisGreen => new __type__(178, 217, 2);
         //# }
         //# if (isUShort) {
-        public static readonly __type__ VRVisGreen = new __type__(45743, 53411, 5243);
+        public static __type__ VRVisGreen => new __type__(45743, 53411, 5243);
         //# }
 
         #endregion
@@ -635,7 +635,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static readonly ActionRefValVal<__type__, int, __ftype__> Setter =
+        public static ActionRefValVal<__type__, int, __ftype__> Setter =>
             (ref __type__ color, int i, __ftype__ value) =>
             {
                 switch (i)

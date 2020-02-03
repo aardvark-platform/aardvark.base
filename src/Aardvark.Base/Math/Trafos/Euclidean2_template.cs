@@ -62,7 +62,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Identity (__r2t__.Identity, __v2t__.Zero)
         /// </summary>
-        public static readonly __e2t__ Identity = new __e2t__(__r2t__.Identity, __v2t__.Zero);
+        public static __e2t__ Identity => new __e2t__(__r2t__.Identity, __v2t__.Zero);
 
         #endregion
 
