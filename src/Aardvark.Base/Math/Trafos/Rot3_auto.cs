@@ -18,18 +18,23 @@ namespace Aardvark.Base
         [DataMember]
         public float W;
         [DataMember]
-        public V3f V;
+        public float X;
+        [DataMember]
+        public float Y;
+        [DataMember]
+        public float Z;
 
         #region Constructors
 
         /// <summary>
         /// Creates quaternion (w, (x, y, z)).
         /// </summary>
-        // todo ISSUE 20090420 andi : sm, rft: Add asserts for unit-length constraint
         public Rot3f(float w, float x, float y, float z)
         {
             W = w;
-            V = new V3f(x, y, z);
+            X = x;
+            Y = y;
+            Z = z;
         }
 
         /// <summary>
@@ -38,7 +43,9 @@ namespace Aardvark.Base
         public Rot3f(float w, V3f v)
         {
             W = w;
-            V = v;
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
         }
 
         /// <summary>
@@ -48,7 +55,9 @@ namespace Aardvark.Base
         public Rot3f(float[] a)
         {
             W = a[0];
-            V = new V3f(a[1], a[2], a[3]);
+            X = a[1];
+            Y = a[2];
+            Z = a[3];
         }
 
         /// <summary>
@@ -58,7 +67,9 @@ namespace Aardvark.Base
         public Rot3f(float[] a, int start)
         {
             W = a[start];
-            V = new V3f(a[start + 1], a[start + 2], a[start + 3]);
+            X = a[start + 1];
+            Y = a[start + 2];
+            Z = a[start + 3];
         }
 
         /// <summary>
@@ -69,7 +80,10 @@ namespace Aardvark.Base
         {
             var halfAngle = angleInRadians / 2;
             W = halfAngle.Cos();
-            V = normalizedAxis * halfAngle.Sin();
+            var halfAngleSin = halfAngle.Sin();
+            X = normalizedAxis.X * halfAngleSin;
+            Y = normalizedAxis.Y * halfAngleSin;
+            Z = normalizedAxis.Z * halfAngleSin;
         }
 
         /// <summary>
@@ -91,10 +105,9 @@ namespace Aardvark.Base
             float cy = Fun.Cos(yawHalf);
             float sy = Fun.Sin(yawHalf);
             W = cy * cp * cr + sy * sp * sr;
-            V = new V3f(
-                        cy * cp * sr - sy * sp * cr,
-                        sy * cp * sr + cy * sp * cr,
-                        sy * cp * cr - cy * sp * sr);
+            X = cy * cp * sr - sy * sp * cr;
+            Y = sy * cp * sr + cy * sp * cr;
+            Z = sy * cp * cr - cy * sp * sr;
         }
 
         /// <summary>
@@ -111,13 +124,14 @@ namespace Aardvark.Base
             {
                 // axis = a; angle = 0;
                 W = 1;
-                V = V3f.OOO;
+                X = 0;
+                Y = 0;
+                Z = 0;
             }
             else if (Constant.PiF - angle.Abs() < 1e-6f)
             {
                 //axis = a.AxisAlignedNormal(); //angle = PI;
-                W = 0;
-                V = from.AxisAlignedNormal();
+                this = new Rot3f(0, from.AxisAlignedNormal());
             }
             else
             {
@@ -136,9 +150,9 @@ namespace Aardvark.Base
             {
                 switch (index)
                 {
-                    case 0: return V.X;
-                    case 1: return V.Y;
-                    case 2: return V.Z;
+                    case 0: return X;
+                    case 1: return Y;
+                    case 2: return Z;
                     case 3: return W;
                     default: throw new ArgumentException();
                 }
@@ -148,31 +162,19 @@ namespace Aardvark.Base
             {
                 switch (index)
                 {
-                    case 0: V.X = value; break;
-                    case 1: V.Y = value; break;
-                    case 2: V.Z = value; break;
+                    case 0: X = value; break;
+                    case 1: Y = value; break;
+                    case 2: Z = value; break;
                     case 3: W = value; break;
                     default: throw new ArgumentException();
                 }
             }
         }
 
-        public float X
+        public V3f V
         {
-            get { return V.X; }
-            set { V.X = value; }
-        }
-
-        public float Y
-        {
-            get { return V.Y; }
-            set { V.Y = value; }
-        }
-
-        public float Z
-        {
-            get { return V.Z; }
-            set { V.Z = value; }
+            get { return new V3f(X, Y, Z); }
+            set { X = value.X; Y = value.Y; Z = value.Z; }
         }
 
         #endregion
@@ -187,24 +189,24 @@ namespace Aardvark.Base
 #endif
 
         /// <summary>
-        /// Identity (1,(0,0,0)).
+        /// Identity (1, (0,0,0)).
         /// </summary>
-        public static readonly Rot3f Identity = new Rot3f(1, V3f.Zero);
+        public static Rot3f Identity => new Rot3f(1, 0, 0, 0);
 
         /// <summary>
         /// X-Axis (0, (1,0,0)).
         /// </summary>
-        public static readonly Rot3f XAxis = new Rot3f(0, V3f.XAxis);
+        public static Rot3f XAxis => new Rot3f(0, 1, 0, 0);
 
         /// <summary>
         /// Y-Axis (0, (0,1,0)).
         /// </summary>
-        public static readonly Rot3f YAxis = new Rot3f(0, V3f.YAxis);
+        public static Rot3f YAxis => new Rot3f(0, 0, 1, 0);
 
         /// <summary>
         /// Z-Axis (0, (0,0,1)).
         /// </summary>
-        public static readonly Rot3f ZAxis = new Rot3f(0, V3f.ZAxis);
+        public static Rot3f ZAxis => new Rot3f(0, 0, 0, 1);
 
         #endregion
 
@@ -282,16 +284,69 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Transforms a vector with a quaternion.
+        /// </summary>
+        public static V3f Transform(Rot3f q, V3f v)
+        {
+            // q * v * q'
+
+            // step 1: tmp = q * Quaternion(0, v)
+            var w = -q.X * v.X - q.Y * v.Y - q.Z * v.Z;
+            var x =  q.W * v.X + q.Y * v.Z - q.Z * v.Y;
+            var y =  q.W * v.Y + q.Z * v.X - q.X * v.Z;
+            var z =  q.W * v.Z + q.X * v.Y - q.Y * v.X;
+
+            // step 2: tmp * q.Conjungated (q.W, -q.V)
+            return new V3f(
+                -w * q.X + x * q.W - y * q.Z + z * q.Y,
+                -w * q.Y + y * q.W - z * q.X + x * q.Z,
+                -w * q.Z + z * q.W - x * q.Y + y * q.X
+                );
+        }
+
+        /// <summary>
+        /// Transforms a vector with a quaternion.
+        /// </summary>
+        public static V3f InvTransform(Rot3f q, V3f v)
+        {
+            // q' * v * q
+
+            // step 1: tmp = q.Conungated * Rot3d(0, v)
+            var w = q.X * v.X + q.Y * v.Y + q.Z * v.Z;
+            var x = q.W * v.X - q.Y * v.Z + q.Z * v.Y;
+            var y = q.W * v.Y - q.Z * v.X + q.X * v.Z;
+            var z = q.W * v.Z - q.X * v.Y + q.Y * v.X;
+
+            // step 2: tmp * q
+            return new V3f(
+                w * q.X + x * q.W + y * q.Z - z * q.Y,
+                w * q.Y + y * q.W + z * q.X - x * q.Z,
+                w * q.Z + z * q.W + x * q.Y - y * q.X
+                );
+        }
+
+        /// <summary>
+        /// Transforms the vector v by this quaternion.
+        /// </summary>
+        public V3f Transform(V3f v)
+        {
+            return Transform(this, v);
+        }
+
+        /// <summary>
+        /// Transforms the vector v by the inverse of this quaternion.
+        /// </summary>
+        public V3f InvTransform(V3f v)
+        {
+            return InvTransform(this, v);
+        }
+
+        /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by quaternion q.
         /// </summary>
         public static V3f TransformDir(Rot3f q, V3f v)
         {
-            // first transforming quaternion to M33f is approximately equal in terms of operations ...
-            return ((M33f)q).Transform(v);
-
-            // ... than direct multiplication ...
-            //QuaternionF r = q.Conjugated() * new QuaternionF(0, v) * q;
-            //return new V3f(r.X, r.Y, r.Z);
+            return Transform(q, v);
         }
 
         /// <summary>
@@ -302,7 +357,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3f TransformPos(Rot3f q, V3f p)
         {
-            return TransformDir(q, p);
+            return Transform(q, p);
         }
 
         /// <summary>
@@ -310,8 +365,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3f InvTransformDir(Rot3f q, V3f v)
         {
-            //for Rotation Matrices R^-1 == R^T:
-            return ((M33f)q).TransposedTransform(v);
+            return InvTransform(q, v);
         }
 
         /// <summary>
@@ -322,10 +376,8 @@ namespace Aardvark.Base
         /// </summary>
         public static V3f InvTransformPos(Rot3f q, V3f p)
         {
-            return InvTransformDir(q, p);
+            return InvTransform(q, p);
         }
-
-
 
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by this quaternion.
@@ -351,7 +403,7 @@ namespace Aardvark.Base
         /// </summary>
         public V3f InvTransformDir(V3f v)
         {
-            return InvTransformDir(this, v);
+            return InvTransform(this, v);
         }
 
         /// <summary>
@@ -362,7 +414,7 @@ namespace Aardvark.Base
         /// </summary>
         public V3f InvTransformPos(V3f p)
         {
-            return InvTransformDir(this, p);
+            return InvTransform(this, p);
         }
 
         // todo andi {
@@ -654,6 +706,16 @@ namespace Aardvark.Base
             return Rot3f.Multiply(a, b);
         }
 
+        public static V3f operator *(Rot3f q, V3f v)
+        {
+            return Rot3f.Transform(q, v);
+        }
+
+        public static V3f operator *(V3f v, Rot3f q)
+        {
+            return Rot3f.InvTransform(q, v);
+        }
+
 #if false //// [todo ISSUE 20090421 andi : andi] check if these are really necessary and comment them what they really do.
         /// <summary>
         /// </summary>
@@ -741,7 +803,7 @@ namespace Aardvark.Base
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
         public static bool operator ==(Rot3f r0, Rot3f r1)
         {
-            return r0.W == r1.W && r0.V == r1.V;
+            return r0.W == r1.W && r0.X == r1.X && r0.Y == r1.Y && r0.Z == r1.Z;
         }
 
         public static bool operator !=(Rot3f r0, Rot3f r1)
@@ -1075,18 +1137,23 @@ namespace Aardvark.Base
         [DataMember]
         public double W;
         [DataMember]
-        public V3d V;
+        public double X;
+        [DataMember]
+        public double Y;
+        [DataMember]
+        public double Z;
 
         #region Constructors
 
         /// <summary>
         /// Creates quaternion (w, (x, y, z)).
         /// </summary>
-        // todo ISSUE 20090420 andi : sm, rft: Add asserts for unit-length constraint
         public Rot3d(double w, double x, double y, double z)
         {
             W = w;
-            V = new V3d(x, y, z);
+            X = x;
+            Y = y;
+            Z = z;
         }
 
         /// <summary>
@@ -1095,7 +1162,9 @@ namespace Aardvark.Base
         public Rot3d(double w, V3d v)
         {
             W = w;
-            V = v;
+            X = v.X;
+            Y = v.Y;
+            Z = v.Z;
         }
 
         /// <summary>
@@ -1105,7 +1174,9 @@ namespace Aardvark.Base
         public Rot3d(double[] a)
         {
             W = a[0];
-            V = new V3d(a[1], a[2], a[3]);
+            X = a[1];
+            Y = a[2];
+            Z = a[3];
         }
 
         /// <summary>
@@ -1115,7 +1186,9 @@ namespace Aardvark.Base
         public Rot3d(double[] a, int start)
         {
             W = a[start];
-            V = new V3d(a[start + 1], a[start + 2], a[start + 3]);
+            X = a[start + 1];
+            Y = a[start + 2];
+            Z = a[start + 3];
         }
 
         /// <summary>
@@ -1126,7 +1199,10 @@ namespace Aardvark.Base
         {
             var halfAngle = angleInRadians / 2;
             W = halfAngle.Cos();
-            V = normalizedAxis * halfAngle.Sin();
+            var halfAngleSin = halfAngle.Sin();
+            X = normalizedAxis.X * halfAngleSin;
+            Y = normalizedAxis.Y * halfAngleSin;
+            Z = normalizedAxis.Z * halfAngleSin;
         }
 
         /// <summary>
@@ -1148,10 +1224,9 @@ namespace Aardvark.Base
             double cy = Fun.Cos(yawHalf);
             double sy = Fun.Sin(yawHalf);
             W = cy * cp * cr + sy * sp * sr;
-            V = new V3d(
-                        cy * cp * sr - sy * sp * cr,
-                        sy * cp * sr + cy * sp * cr,
-                        sy * cp * cr - cy * sp * sr);
+            X = cy * cp * sr - sy * sp * cr;
+            Y = sy * cp * sr + cy * sp * cr;
+            Z = sy * cp * cr - cy * sp * sr;
         }
 
         /// <summary>
@@ -1168,13 +1243,14 @@ namespace Aardvark.Base
             {
                 // axis = a; angle = 0;
                 W = 1;
-                V = V3d.OOO;
+                X = 0;
+                Y = 0;
+                Z = 0;
             }
             else if (Constant.Pi - angle.Abs() < 1e-16)
             {
                 //axis = a.AxisAlignedNormal(); //angle = PI;
-                W = 0;
-                V = from.AxisAlignedNormal();
+                this = new Rot3d(0, from.AxisAlignedNormal());
             }
             else
             {
@@ -1193,9 +1269,9 @@ namespace Aardvark.Base
             {
                 switch (index)
                 {
-                    case 0: return V.X;
-                    case 1: return V.Y;
-                    case 2: return V.Z;
+                    case 0: return X;
+                    case 1: return Y;
+                    case 2: return Z;
                     case 3: return W;
                     default: throw new ArgumentException();
                 }
@@ -1205,31 +1281,19 @@ namespace Aardvark.Base
             {
                 switch (index)
                 {
-                    case 0: V.X = value; break;
-                    case 1: V.Y = value; break;
-                    case 2: V.Z = value; break;
+                    case 0: X = value; break;
+                    case 1: Y = value; break;
+                    case 2: Z = value; break;
                     case 3: W = value; break;
                     default: throw new ArgumentException();
                 }
             }
         }
 
-        public double X
+        public V3d V
         {
-            get { return V.X; }
-            set { V.X = value; }
-        }
-
-        public double Y
-        {
-            get { return V.Y; }
-            set { V.Y = value; }
-        }
-
-        public double Z
-        {
-            get { return V.Z; }
-            set { V.Z = value; }
+            get { return new V3d(X, Y, Z); }
+            set { X = value.X; Y = value.Y; Z = value.Z; }
         }
 
         #endregion
@@ -1244,24 +1308,24 @@ namespace Aardvark.Base
 #endif
 
         /// <summary>
-        /// Identity (1,(0,0,0)).
+        /// Identity (1, (0,0,0)).
         /// </summary>
-        public static readonly Rot3d Identity = new Rot3d(1, V3d.Zero);
+        public static Rot3d Identity => new Rot3d(1, 0, 0, 0);
 
         /// <summary>
         /// X-Axis (0, (1,0,0)).
         /// </summary>
-        public static readonly Rot3d XAxis = new Rot3d(0, V3d.XAxis);
+        public static Rot3d XAxis => new Rot3d(0, 1, 0, 0);
 
         /// <summary>
         /// Y-Axis (0, (0,1,0)).
         /// </summary>
-        public static readonly Rot3d YAxis = new Rot3d(0, V3d.YAxis);
+        public static Rot3d YAxis => new Rot3d(0, 0, 1, 0);
 
         /// <summary>
         /// Z-Axis (0, (0,0,1)).
         /// </summary>
-        public static readonly Rot3d ZAxis = new Rot3d(0, V3d.ZAxis);
+        public static Rot3d ZAxis => new Rot3d(0, 0, 0, 1);
 
         #endregion
 
@@ -1339,16 +1403,69 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Transforms a vector with a quaternion.
+        /// </summary>
+        public static V3d Transform(Rot3d q, V3d v)
+        {
+            // q * v * q'
+
+            // step 1: tmp = q * Quaternion(0, v)
+            var w = -q.X * v.X - q.Y * v.Y - q.Z * v.Z;
+            var x =  q.W * v.X + q.Y * v.Z - q.Z * v.Y;
+            var y =  q.W * v.Y + q.Z * v.X - q.X * v.Z;
+            var z =  q.W * v.Z + q.X * v.Y - q.Y * v.X;
+
+            // step 2: tmp * q.Conjungated (q.W, -q.V)
+            return new V3d(
+                -w * q.X + x * q.W - y * q.Z + z * q.Y,
+                -w * q.Y + y * q.W - z * q.X + x * q.Z,
+                -w * q.Z + z * q.W - x * q.Y + y * q.X
+                );
+        }
+
+        /// <summary>
+        /// Transforms a vector with a quaternion.
+        /// </summary>
+        public static V3d InvTransform(Rot3d q, V3d v)
+        {
+            // q' * v * q
+
+            // step 1: tmp = q.Conungated * Rot3d(0, v)
+            var w = q.X * v.X + q.Y * v.Y + q.Z * v.Z;
+            var x = q.W * v.X - q.Y * v.Z + q.Z * v.Y;
+            var y = q.W * v.Y - q.Z * v.X + q.X * v.Z;
+            var z = q.W * v.Z - q.X * v.Y + q.Y * v.X;
+
+            // step 2: tmp * q
+            return new V3d(
+                w * q.X + x * q.W + y * q.Z - z * q.Y,
+                w * q.Y + y * q.W + z * q.X - x * q.Z,
+                w * q.Z + z * q.W + x * q.Y - y * q.X
+                );
+        }
+
+        /// <summary>
+        /// Transforms the vector v by this quaternion.
+        /// </summary>
+        public V3d Transform(V3d v)
+        {
+            return Transform(this, v);
+        }
+
+        /// <summary>
+        /// Transforms the vector v by the inverse of this quaternion.
+        /// </summary>
+        public V3d InvTransform(V3d v)
+        {
+            return InvTransform(this, v);
+        }
+
+        /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by quaternion q.
         /// </summary>
         public static V3d TransformDir(Rot3d q, V3d v)
         {
-            // first transforming quaternion to M33d is approximately equal in terms of operations ...
-            return ((M33d)q).Transform(v);
-
-            // ... than direct multiplication ...
-            //QuaternionF r = q.Conjugated() * new QuaternionF(0, v) * q;
-            //return new V3d(r.X, r.Y, r.Z);
+            return Transform(q, v);
         }
 
         /// <summary>
@@ -1359,7 +1476,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d TransformPos(Rot3d q, V3d p)
         {
-            return TransformDir(q, p);
+            return Transform(q, p);
         }
 
         /// <summary>
@@ -1367,8 +1484,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d InvTransformDir(Rot3d q, V3d v)
         {
-            //for Rotation Matrices R^-1 == R^T:
-            return ((M33d)q).TransposedTransform(v);
+            return InvTransform(q, v);
         }
 
         /// <summary>
@@ -1379,10 +1495,8 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d InvTransformPos(Rot3d q, V3d p)
         {
-            return InvTransformDir(q, p);
+            return InvTransform(q, p);
         }
-
-
 
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by this quaternion.
@@ -1408,7 +1522,7 @@ namespace Aardvark.Base
         /// </summary>
         public V3d InvTransformDir(V3d v)
         {
-            return InvTransformDir(this, v);
+            return InvTransform(this, v);
         }
 
         /// <summary>
@@ -1419,7 +1533,7 @@ namespace Aardvark.Base
         /// </summary>
         public V3d InvTransformPos(V3d p)
         {
-            return InvTransformDir(this, p);
+            return InvTransform(this, p);
         }
 
         // todo andi {
@@ -1711,6 +1825,16 @@ namespace Aardvark.Base
             return Rot3d.Multiply(a, b);
         }
 
+        public static V3d operator *(Rot3d q, V3d v)
+        {
+            return Rot3d.Transform(q, v);
+        }
+
+        public static V3d operator *(V3d v, Rot3d q)
+        {
+            return Rot3d.InvTransform(q, v);
+        }
+
 #if false //// [todo ISSUE 20090421 andi : andi] check if these are really necessary and comment them what they really do.
         /// <summary>
         /// </summary>
@@ -1798,7 +1922,7 @@ namespace Aardvark.Base
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
         public static bool operator ==(Rot3d r0, Rot3d r1)
         {
-            return r0.W == r1.W && r0.V == r1.V;
+            return r0.W == r1.W && r0.X == r1.X && r0.Y == r1.Y && r0.Z == r1.Z;
         }
 
         public static bool operator !=(Rot3d r0, Rot3d r1)

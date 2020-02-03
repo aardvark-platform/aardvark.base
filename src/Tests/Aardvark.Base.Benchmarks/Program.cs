@@ -7,7 +7,7 @@ namespace Aardvark.Base.Benchmarks
     {
         public static void Main(string[] args)
         {
-            BenchmarkRunner.Run<V4fLength>();
+            //BenchmarkRunner.Run<V4fLength>();
             //BenchmarkRunner.Run<V3fLeng
             //BenchmarkRunner.Run<V2fLength>();
             //BenchmarkRunner.Run<CodeGenTests>();
@@ -19,6 +19,8 @@ namespace Aardvark.Base.Benchmarks
 
             //var td = new AngleBetweenDouble();
             //td.BenchmarkNumericalStability();
+
+            BenchmarkRunner.Run<Rot3dTransform>();
         }
     }
 }
