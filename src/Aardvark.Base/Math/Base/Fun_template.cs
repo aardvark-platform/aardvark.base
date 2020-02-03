@@ -570,6 +570,31 @@ namespace Aardvark.Base
         #region Roots
 
         //# numtypes.ForEach(t => {
+        //# var fname = "Pow";
+        //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
+        /// <summary>
+        /// Returns the n-th root of the specified number.
+        //# if (!dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
+        //# }
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rtype.Name__ Root(this __t.Name__ x, int n)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x, 1.0 / n);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x, 1.0f / n);
+            #else
+                return (float)Math.__fname__(x, 1.0 / n);
+            #endif
+            //# }
+        }
+
+        //# });
+        //# numtypes.ForEach(t => {
         //# var fname = "Sqrt";
         //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
         /// <summary>

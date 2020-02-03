@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -30,9 +31,9 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly ComplexF Zero = new ComplexF(0, 0);
-        public static readonly ComplexF One = new ComplexF(1, 0);
-        public static readonly ComplexF I = new ComplexF(0, 1);
+        public static ComplexF Zero { get { return new ComplexF(0, 0); } }
+        public static ComplexF One { get { return new ComplexF(1, 0); } } 
+        public static ComplexF I { get { return new ComplexF(0, 1); } }
 
         #endregion
 
@@ -217,25 +218,9 @@ namespace Aardvark.Base
             Imag /= scalar;
         }
 
-        /// <summary>
-        /// Exponentiates this by a real number
-        /// </summary>
-        /// <param name="scalar"></param>
-        public void Pow(float scalar)
-        {
-            float r = NormSquared;
-            float phi = Fun.Atan2(Imag, Real);
-
-            r = Fun.Pow(r, scalar);
-            phi *= scalar;
-
-            Real = r * Fun.Cos(phi);
-            Imag = r * Fun.Sin(phi);
-        }
-
         #endregion
 
-        #region Static Members
+        #region Static factories
 
         /// <summary>
         /// Creates a Radial Complex
@@ -243,6 +228,7 @@ namespace Aardvark.Base
         /// <param name="r">Norm of the complex number</param>
         /// <param name="phi">Argument of the complex number</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF CreateRadial(float r, float phi)
         {
             return new ComplexF(r * Fun.Cos(phi), r * Fun.Sin(phi));
@@ -254,113 +240,10 @@ namespace Aardvark.Base
         /// <param name="real">Real-Part</param>
         /// <param name="imag">Imaginary-Part</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF CreateOrthogonal(float real, float imag)
         {
             return new ComplexF(real, imag);
-        }
-
-        /// <summary>
-        /// Exponentiates a complex by a real number
-        /// </summary>
-        /// <returns></returns>
-        public static ComplexF Pow(ComplexF number, float scalar)
-        {
-            number.Pow(scalar);
-            return number;
-        }
-
-        /// <summary>
-        /// Exponentiates a complex by another
-        /// </summary>
-        /// <returns></returns>
-        public static ComplexF Pow(ComplexF number, ComplexF exponent)
-        {
-            float r = number.Norm;
-            float phi = number.Argument;
-
-            float a = exponent.Real;
-            float b = exponent.Imag;
-
-            return ComplexF.CreateRadial(Fun.Exp(Fun.Log(r) * a - b * phi), a * phi + b * Fun.Log(r));
-        }
-
-        /// <summary>
-        /// Natural Logartihm for complex numbers
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static ComplexF Log(ComplexF number)
-        {
-            return ComplexF.CreateOrthogonal(Fun.Log(number.Norm), number.Argument);
-        }
-
-        /// <summary>
-        /// Calculates the Square-Root of a real number and returns a Complex
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static ComplexF Sqrt(float number)
-        {
-            if (number >= 0)
-            {
-                return new ComplexF(Fun.Sqrt(number), 0.0f);
-            }
-            else
-            {
-                return new ComplexF(0.0f, Fun.Sqrt(-1.0f * number));
-            }
-        }
-
-        /// <summary>
-        /// Calculates both Square-Roots of a complex number
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public ComplexF[] Sqrt(ComplexF number)
-        {
-            ComplexF res0 = ComplexF.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f);
-            ComplexF res1 = ComplexF.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f + (float)Constant.Pi);
-
-            return new ComplexF[2] { res0, res1 };
-        }
-
-        /// <summary>
-        /// Calculates the n-th Root of a Complex number and returns n Solutions
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="order">n</param>
-        /// <returns></returns>
-        public ComplexF[] Root(ComplexF number, int order)
-        {
-            ComplexF[] values = new ComplexF[order];
-
-            float phi = number.Argument / 2.0f;
-            float dphi = (float)Constant.PiTimesTwo / (float)order;
-            float r = Fun.Pow(number.Norm, 1.0f / order);
-
-            for (int i = 1; i < order; i++)
-            {
-                values[i] = ComplexF.CreateRadial(r, phi + dphi * i);
-            }
-
-            return values;
-        }
-
-        /// <summary>
-        /// Calculates e^Complex
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static ComplexF Exp(ComplexF number)
-        {
-            ComplexF c = ComplexF.Zero;
-
-            float factor = Fun.Pow((float)Constant.E, number.Real);
-
-            c.Real = factor * Fun.Cos(number.Imag);
-            c.Imag = factor * Fun.Sin(number.Imag);
-
-            return c;
         }
 
         #endregion
@@ -519,6 +402,107 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Exponentiates the given complex number by a real number.
+        /// </summary>
+        public static ComplexF Pow(this ComplexF number, float exponent)
+        {
+            float r = number.NormSquared;
+            float phi = Atan2(number.Imag, number.Real);
+
+            r = Pow(r, exponent);
+            phi *= exponent;
+
+            return new ComplexF(r * Cos(phi), r * Sin(phi));
+        }
+
+        /// <summary>
+        /// Exponentiates a complex number by another.
+        /// </summary>
+        public static ComplexF Pow(this ComplexF number, ComplexF exponent)
+        {
+            float r = number.Norm;
+            float phi = number.Argument;
+
+            float a = exponent.Real;
+            float b = exponent.Imag;
+
+            return ComplexF.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+        }
+
+        /// <summary>
+        /// Natural Logartihm for complex numbers
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Log(this ComplexF number)
+        {
+            return ComplexF.CreateOrthogonal(Log(number.Norm), number.Argument);
+        }
+
+        /// <summary>
+        /// Returns the square root of the given real number and returns a complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Csqrt(this float number)
+        {
+            if (number >= 0)
+            {
+                return new ComplexF(Sqrt(number), 0);
+            }
+            else
+            {
+                return new ComplexF(0, Sqrt(-number));
+            }
+        }
+
+        /// <summary>
+        /// Calculates both square roots of a complex number-
+        /// </summary>
+        public static ComplexF[] Csqrt(this ComplexF number)
+        {
+            ComplexF res0 = ComplexF.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
+            ComplexF res1 = ComplexF.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + (float)Constant.Pi);
+
+            return new ComplexF[2] { res0, res1 };
+        }
+
+        /// <summary>
+        /// Calculates the n-th root of a complex number and returns n solutions.
+        /// </summary>
+        public static ComplexF[] Root(this ComplexF number, int n)
+        {
+            ComplexF[] values = new ComplexF[n];
+
+            float phi = number.Argument / 2;
+            float dphi = (float)Constant.PiTimesTwo / (float)n;
+            float r = Pow(number.Norm, 1 / n);
+
+            for (int i = 1; i < n; i++)
+            {
+                values[i] = ComplexF.CreateRadial(r, phi + dphi * i);
+            }
+
+            return values;
+        }
+
+        /// <summary>
+        /// Calculates e^Complex
+        /// </summary>
+        public static ComplexF Exp(this ComplexF number)
+        {
+            ComplexF c = ComplexF.Zero;
+
+            float factor = Pow((float)Constant.E, number.Real);
+
+            c.Real = factor * Cos(number.Imag);
+            c.Imag = factor * Sin(number.Imag);
+
+            return c;
+        }
+    }
+
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct ComplexD
@@ -546,9 +530,9 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly ComplexD Zero = new ComplexD(0, 0);
-        public static readonly ComplexD One = new ComplexD(1, 0);
-        public static readonly ComplexD I = new ComplexD(0, 1);
+        public static ComplexD Zero { get { return new ComplexD(0, 0); } }
+        public static ComplexD One { get { return new ComplexD(1, 0); } } 
+        public static ComplexD I { get { return new ComplexD(0, 1); } }
 
         #endregion
 
@@ -733,25 +717,9 @@ namespace Aardvark.Base
             Imag /= scalar;
         }
 
-        /// <summary>
-        /// Exponentiates this by a real number
-        /// </summary>
-        /// <param name="scalar"></param>
-        public void Pow(double scalar)
-        {
-            double r = NormSquared;
-            double phi = Fun.Atan2(Imag, Real);
-
-            r = Fun.Pow(r, scalar);
-            phi *= scalar;
-
-            Real = r * Fun.Cos(phi);
-            Imag = r * Fun.Sin(phi);
-        }
-
         #endregion
 
-        #region Static Members
+        #region Static factories
 
         /// <summary>
         /// Creates a Radial Complex
@@ -759,6 +727,7 @@ namespace Aardvark.Base
         /// <param name="r">Norm of the complex number</param>
         /// <param name="phi">Argument of the complex number</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD CreateRadial(double r, double phi)
         {
             return new ComplexD(r * Fun.Cos(phi), r * Fun.Sin(phi));
@@ -770,113 +739,10 @@ namespace Aardvark.Base
         /// <param name="real">Real-Part</param>
         /// <param name="imag">Imaginary-Part</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD CreateOrthogonal(double real, double imag)
         {
             return new ComplexD(real, imag);
-        }
-
-        /// <summary>
-        /// Exponentiates a complex by a real number
-        /// </summary>
-        /// <returns></returns>
-        public static ComplexD Pow(ComplexD number, double scalar)
-        {
-            number.Pow(scalar);
-            return number;
-        }
-
-        /// <summary>
-        /// Exponentiates a complex by another
-        /// </summary>
-        /// <returns></returns>
-        public static ComplexD Pow(ComplexD number, ComplexD exponent)
-        {
-            double r = number.Norm;
-            double phi = number.Argument;
-
-            double a = exponent.Real;
-            double b = exponent.Imag;
-
-            return ComplexD.CreateRadial(Fun.Exp(Fun.Log(r) * a - b * phi), a * phi + b * Fun.Log(r));
-        }
-
-        /// <summary>
-        /// Natural Logartihm for complex numbers
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static ComplexD Log(ComplexD number)
-        {
-            return ComplexD.CreateOrthogonal(Fun.Log(number.Norm), number.Argument);
-        }
-
-        /// <summary>
-        /// Calculates the Square-Root of a real number and returns a Complex
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static ComplexD Sqrt(double number)
-        {
-            if (number >= 0)
-            {
-                return new ComplexD(Fun.Sqrt(number), 0.0f);
-            }
-            else
-            {
-                return new ComplexD(0.0f, Fun.Sqrt(-1.0f * number));
-            }
-        }
-
-        /// <summary>
-        /// Calculates both Square-Roots of a complex number
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public ComplexD[] Sqrt(ComplexD number)
-        {
-            ComplexD res0 = ComplexD.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f);
-            ComplexD res1 = ComplexD.CreateRadial(Fun.Sqrt(number.Norm), number.Argument / 2.0f + (double)Constant.Pi);
-
-            return new ComplexD[2] { res0, res1 };
-        }
-
-        /// <summary>
-        /// Calculates the n-th Root of a Complex number and returns n Solutions
-        /// </summary>
-        /// <param name="number"></param>
-        /// <param name="order">n</param>
-        /// <returns></returns>
-        public ComplexD[] Root(ComplexD number, int order)
-        {
-            ComplexD[] values = new ComplexD[order];
-
-            double phi = number.Argument / 2.0f;
-            double dphi = (double)Constant.PiTimesTwo / (double)order;
-            double r = Fun.Pow(number.Norm, 1.0f / order);
-
-            for (int i = 1; i < order; i++)
-            {
-                values[i] = ComplexD.CreateRadial(r, phi + dphi * i);
-            }
-
-            return values;
-        }
-
-        /// <summary>
-        /// Calculates e^Complex
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static ComplexD Exp(ComplexD number)
-        {
-            ComplexD c = ComplexD.Zero;
-
-            double factor = Fun.Pow((double)Constant.E, number.Real);
-
-            c.Real = factor * Fun.Cos(number.Imag);
-            c.Imag = factor * Fun.Sin(number.Imag);
-
-            return c;
         }
 
         #endregion
@@ -1033,6 +899,168 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Exponentiates the given complex number by a real number.
+        /// </summary>
+        public static ComplexD Pow(this ComplexD number, double exponent)
+        {
+            double r = number.NormSquared;
+            double phi = Atan2(number.Imag, number.Real);
+
+            r = Pow(r, exponent);
+            phi *= exponent;
+
+            return new ComplexD(r * Cos(phi), r * Sin(phi));
+        }
+
+        /// <summary>
+        /// Exponentiates a complex number by another.
+        /// </summary>
+        public static ComplexD Pow(this ComplexD number, ComplexD exponent)
+        {
+            double r = number.Norm;
+            double phi = number.Argument;
+
+            double a = exponent.Real;
+            double b = exponent.Imag;
+
+            return ComplexD.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+        }
+
+        /// <summary>
+        /// Natural Logartihm for complex numbers
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Log(this ComplexD number)
+        {
+            return ComplexD.CreateOrthogonal(Log(number.Norm), number.Argument);
+        }
+
+        /// <summary>
+        /// Returns the square root of the given real number and returns a complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Csqrt(this sbyte number)
+        {
+            if (number >= 0)
+            {
+                return new ComplexD(Sqrt(number), 0);
+            }
+            else
+            {
+                return new ComplexD(0, Sqrt(-number));
+            }
+        }
+        /// <summary>
+        /// Returns the square root of the given real number and returns a complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Csqrt(this short number)
+        {
+            if (number >= 0)
+            {
+                return new ComplexD(Sqrt(number), 0);
+            }
+            else
+            {
+                return new ComplexD(0, Sqrt(-number));
+            }
+        }
+        /// <summary>
+        /// Returns the square root of the given real number and returns a complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Csqrt(this int number)
+        {
+            if (number >= 0)
+            {
+                return new ComplexD(Sqrt(number), 0);
+            }
+            else
+            {
+                return new ComplexD(0, Sqrt(-number));
+            }
+        }
+        /// <summary>
+        /// Returns the square root of the given real number and returns a complex number.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Csqrt(this long number)
+        {
+            if (number >= 0)
+            {
+                return new ComplexD(Sqrt(number), 0);
+            }
+            else
+            {
+                return new ComplexD(0, Sqrt(-number));
+            }
+        }
+        /// <summary>
+        /// Returns the square root of the given real number and returns a complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Csqrt(this double number)
+        {
+            if (number >= 0)
+            {
+                return new ComplexD(Sqrt(number), 0);
+            }
+            else
+            {
+                return new ComplexD(0, Sqrt(-number));
+            }
+        }
+
+        /// <summary>
+        /// Calculates both square roots of a complex number-
+        /// </summary>
+        public static ComplexD[] Csqrt(this ComplexD number)
+        {
+            ComplexD res0 = ComplexD.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
+            ComplexD res1 = ComplexD.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + (double)Constant.Pi);
+
+            return new ComplexD[2] { res0, res1 };
+        }
+
+        /// <summary>
+        /// Calculates the n-th root of a complex number and returns n solutions.
+        /// </summary>
+        public static ComplexD[] Root(this ComplexD number, int n)
+        {
+            ComplexD[] values = new ComplexD[n];
+
+            double phi = number.Argument / 2;
+            double dphi = (double)Constant.PiTimesTwo / (double)n;
+            double r = Pow(number.Norm, 1 / n);
+
+            for (int i = 1; i < n; i++)
+            {
+                values[i] = ComplexD.CreateRadial(r, phi + dphi * i);
+            }
+
+            return values;
+        }
+
+        /// <summary>
+        /// Calculates e^Complex
+        /// </summary>
+        public static ComplexD Exp(this ComplexD number)
+        {
+            ComplexD c = ComplexD.Zero;
+
+            double factor = Pow((double)Constant.E, number.Real);
+
+            c.Real = factor * Cos(number.Imag);
+            c.Imag = factor * Sin(number.Imag);
+
+            return c;
+        }
     }
 
 }
