@@ -46,6 +46,24 @@ namespace Aardvark.Base.Benchmarks
                 arr[i] = TransformM33dPrecomputed(mat, arr[i]);
         }
 
+        static V3d TransformM33dPrecomputed_Inline(M33d m, V3d v)
+        {
+            return new V3d(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z,
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z,
+                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z
+                );
+        }
+
+        [Benchmark]
+        public void Rot3d_TransformM33dPrecomputed_Inline()
+        {
+            var local = arr;
+            var mat = matG;
+            for (int i = 0; i < local.Length; i++)
+                arr[i] = TransformM33dPrecomputed_Inline(mat, arr[i]);
+        }
+
         static V3d TransformUsingM33d(Rot3d rot, V3d v)
         {
             return ((M33d)rot).Transform(v);
