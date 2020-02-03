@@ -3,6 +3,7 @@ using BenchmarkDotNet.Jobs;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base.Benchmarks
@@ -46,6 +47,7 @@ namespace Aardvark.Base.Benchmarks
                 arr[i] = TransformM33dPrecomputed(mat, arr[i]);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] // does not fully inline without
         static V3d TransformM33dPrecomputed_Inline(M33d m, V3d v)
         {
             return new V3d(
