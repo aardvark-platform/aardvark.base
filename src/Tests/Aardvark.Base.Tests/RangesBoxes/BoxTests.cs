@@ -21,6 +21,26 @@ namespace Aardvark.Tests
     [TestFixture]
     public class BoxTests
     {
+        #region Construction
+
+        [Test]
+        public void BoxFromEmptyArrayShouldBeInvalid()
+        {
+            var ps = new V3d[0];
+            var bb = new Box3d(ps);
+            Assert.IsTrue(bb.IsInvalid);
+        }
+
+        [Test]
+        public void BoxFromNullArrayShouldBeInvalid()
+        {
+            var ps = (V3d[])null;
+            var bb = new Box3d(ps);
+            Assert.IsTrue(bb.IsInvalid);
+        }
+
+        #endregion
+
         #region contains/intersects
 
         [Test]

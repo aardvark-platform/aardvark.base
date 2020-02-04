@@ -69,7 +69,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly Line1i Invalid = new Line1i { I0 = -1, I1 = -1 };
+        public static Line1i Invalid => new Line1i { I0 = -1, I1 = -1 };
 
         #endregion
 
@@ -190,7 +190,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly Triangle1i Invalid = new Triangle1i { I0 = -1, I1 = -1, I2 = -1 };
+        public static Triangle1i Invalid => new Triangle1i { I0 = -1, I1 = -1, I2 = -1 };
 
         #endregion
 
@@ -376,7 +376,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly Quad1i Invalid = new Quad1i { I0 = -1, I1 = -1, I2 = -1, I3 = -1 };
+        public static Quad1i Invalid => new Quad1i { I0 = -1, I1 = -1, I2 = -1, I3 = -1 };
 
         #endregion
 

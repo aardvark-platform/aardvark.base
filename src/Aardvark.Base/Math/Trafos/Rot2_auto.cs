@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -28,12 +29,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Rotation Arithmetics
-
-        public void Invert()
-        {
-            Angle = -Angle;
-        }
+        #region Properties
 
         public Rot2f Inverse
         {
@@ -41,331 +37,6 @@ namespace Aardvark.Base
             {
                 return new Rot2f(-Angle);
             }
-        }
-
-        /// <summary>
-        /// Adds 2 rotations.
-        /// </summary>
-        public static Rot2f Add(Rot2f r0, Rot2f r1)
-        {
-            return new Rot2f(r0.Angle + r1.Angle);
-        }
-
-        /// <summary>
-        /// Adds scalar to a rotation.
-        /// </summary>
-        public static Rot2f Add(Rot2f rot, float val)
-        {
-            return new Rot2f(rot.Angle + val);
-        }
-
-        /// <summary>
-        /// Subtracts 2 rotations.
-        /// </summary>
-        public static Rot2f Subtract(Rot2f r0, Rot2f r1)
-        {
-            return new Rot2f(r0.Angle - r1.Angle);
-        }
-
-        /// <summary>
-        /// Subtracts scalar from a rotation.
-        /// </summary>
-        public static Rot2f Subtract(Rot2f rot, float angle)
-        {
-            return new Rot2f(rot.Angle - angle);
-        }
-
-        /// <summary>
-        /// Subtracts rotation from a scalar.
-        /// </summary>
-        public static Rot2f Subtract(float angle, Rot2f rot)
-        {
-            return new Rot2f(angle - rot.Angle);
-        }
-
-        /// <summary>
-        /// Multiplies scalar with a rotation.
-        /// </summary>
-        public static Rot2f Multiply(Rot2f rot, float val)
-        {
-            return new Rot2f(rot.Angle * val);
-        }
-
-        public static V2f Multiply(Rot2f rot, V2f vec)
-        {
-
-            float a = Fun.Cos(rot.Angle);
-            float b = Fun.Sin(rot.Angle);
-
-            return new V2f(a * vec.X + b * vec.Y,
-                              -b * vec.X + a * vec.Y);
-        }
-
-        public static V3f Multiply(Rot2f rot, V3f vec)
-        {
-            float ca = Fun.Cos(rot.Angle);
-            float sa = Fun.Sin(rot.Angle);
-
-            return new V3f(ca * vec.X + sa * vec.Y,
-                           -sa * vec.X + ca * vec.Y,
-                           vec.Z);
-        }
-
-        public static V4f Multiply(Rot2f rot, V4f vec)
-        {
-            float a = Fun.Cos(rot.Angle);
-            float b = Fun.Sin(rot.Angle);
-
-            return new V4f(a * vec.X +
-                            b * vec.Y,
-
-                           -b * vec.X +
-                            a * vec.Y,
-
-                            vec.Z,
-
-                            vec.W);
-        }
-
-        public static M22f Multiply(Rot2f rot, M22f mat)
-        {
-            return (M22f)rot * mat;
-        }
-
-        public static M33f Multiply(Rot2f rot, M33f mat)
-        {
-            float a = Fun.Cos(rot.Angle);
-            float b = Fun.Sin(rot.Angle);
-
-            return new M33f(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22);
-        }
-
-        public static M34f Multiply(Rot2f rot, M34f mat)
-        {
-            float a = Fun.Cos(rot.Angle);
-            float b = Fun.Sin(rot.Angle);
-
-            return new M34f(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                             a * mat.M03 +
-                             b * mat.M13,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                            -b * mat.M03 +
-                             a * mat.M13,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22,
-
-                             mat.M23);
-        }
-
-        public static M44f Multiply(Rot2f rot, M44f mat)
-        {
-            float a = Fun.Cos(rot.Angle);
-            float b = Fun.Sin(rot.Angle);
-
-            return new M44f(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                             a * mat.M03 +
-                             b * mat.M13,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                            -b * mat.M03 +
-                             a * mat.M13,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22,
-
-                             mat.M23,
-
-                             mat.M30,
-
-                             mat.M31,
-
-                             mat.M32,
-
-                             mat.M33);
-        }
-
-        public static M33f Multiply(Rot2f rot2, Rot3f rot3)
-        {
-            return Rot2f.Multiply(rot2, (M33f)rot3);
-        }
-
-        /// <summary>
-        /// Multiplies 2 rotations.
-        /// </summary>
-        public static Rot2f Multiply(Rot2f r0, Rot2f r2)
-        {
-            return new Rot2f(r0.Angle * r2.Angle);
-        }
-
-        public static M33f Multiply(Rot2f rot, Scale3f scale)
-        {
-            float a = Fun.Cos(rot.Angle);
-            float b = Fun.Sin(rot.Angle);
-
-            return new M33f(a * scale.X,
-                             b * scale.Y,
-                             0,
-
-                            -b * scale.X,
-                             a * scale.Y,
-                             0,
-
-                             0,
-                             0,
-                             scale.Z);
-        }
-
-        public static M34f Multiply(Rot2f rot, Shift3f shift)
-        {
-            float a = Fun.Cos(rot.Angle);
-            float b = Fun.Sin(rot.Angle);
-
-            return new M34f(a, b, 0, a * shift.X + b * shift.Y,
-                            -b, a, 0, -b * shift.X + a * shift.Y,
-                             0, 0, 1, shift.Z);
-
-        }
-
-        /// <summary>
-        /// Divides scalar by a rotation.
-        /// </summary>
-        public static Rot2f Divide(Rot2f rot, float val)
-        {
-            return new Rot2f(rot.Angle / val);
-        }
-
-        /// <summary>
-        /// Negates rotation.
-        /// </summary>
-        public static Rot2f Negate(Rot2f rot)
-        {
-            return new Rot2f(-rot.Angle);
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public static V2f TransformDir(Rot2f rot, V2f v)
-        {
-            return (M22f)rot * v;
-        }
-
-        /// <summary>
-        /// Inverse transforms a direction vector.
-        /// </summary>
-        public static V2f InvTransformDir(Rot2f rot, V2f v)
-        {
-            return (M22f)Rot2f.Negate(rot) * v;
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public static V2f TransformPos(Rot2f rot, V2f v)
-        {
-            return (M22f)rot * v;
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public static V2f InvTransformPos(Rot2f rot, V2f v)
-        {
-            return (M22f)Rot2f.Negate(rot) * v;
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public V2f TransformDir(V2f v)
-        {
-            return Rot2f.TransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public V2f TransformPos(V2f v)
-        {
-            return Rot2f.TransformPos(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public V2f InvTransformDir(V2f v)
-        {
-            return Rot2f.InvTransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public V2f InvTransformPos(V2f v)
-        {
-            return Rot2f.InvTransformPos(this, v);
         }
 
         #endregion
@@ -377,15 +48,15 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2f operator -(Rot2f rot)
         {
-            return Rot2f.Negate(rot);
+            return new Rot2f(-rot.Angle);
         }
 
         /// <summary>
-        /// Adds 2 rotations.
+        /// Adds two rotations.
         /// </summary>
         public static Rot2f operator +(Rot2f r0, Rot2f r1)
         {
-            return Rot2f.Add(r0, r1);
+            return new Rot2f(r0.Angle + r1.Angle);
         }
 
         /// <summary>
@@ -393,7 +64,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2f operator +(Rot2f rot, float angle)
         {
-            return Rot2f.Add(rot, angle);
+            return new Rot2f(rot.Angle + angle);
         }
 
         /// <summary>
@@ -401,23 +72,23 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2f operator +(float angle, Rot2f rot)
         {
-            return Rot2f.Add(rot, angle);
+            return new Rot2f(rot.Angle + angle);
         }
 
         /// <summary>
-        /// Subtracts 2 rotations.
+        /// Subtracts two rotations.
         /// </summary>
         public static Rot2f operator -(Rot2f r0, Rot2f r1)
         {
-            return Rot2f.Subtract(r0, r1);
+            return new Rot2f(r0.Angle - r1.Angle);
         }
 
         /// <summary>
-        /// Subtracts a rotation from a scalar value.
+        /// Subtracts a scalar value from a rotation.
         /// </summary>
         public static Rot2f operator -(Rot2f rot, float angle)
         {
-            return Rot2f.Subtract(rot, angle);
+            return new Rot2f(rot.Angle - angle);
         }
 
         /// <summary>
@@ -425,98 +96,135 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2f operator -(float angle, Rot2f rot)
         {
-            return Rot2f.Subtract(angle, rot);
+            return new Rot2f(angle - rot.Angle);
         }
 
         /// <summary>
-        /// Multiplies rotation with scalar value.
+        /// Multiplies a rotation with a scalar value.
         /// </summary>
         public static Rot2f operator *(Rot2f rot, float val)
         {
-            return Rot2f.Multiply(rot, val);
+            return new Rot2f(rot.Angle * val);
         }
 
         /// <summary>
-        /// Multiplies rotation with scalar value.
+        /// Multiplies a scalar value with a rotation.
         /// </summary>
         public static Rot2f operator *(float val, Rot2f rot)
         {
-            return Rot2f.Multiply(rot, val);
+            return new Rot2f(rot.Angle * val);
         }
 
-        /// <summary>
-        /// </summary>
         public static V2f operator *(Rot2f rot, V2f vec)
         {
-            return Rot2f.Multiply(rot, vec);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
+
+            return new V2f(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y);
         }
 
-        /// <summary>
-        /// </summary>
         public static V3f operator *(Rot2f rot, V3f vec)
         {
-            return Rot2f.Multiply(rot, vec);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
+
+            return new V3f(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y,
+                               vec.Z);
         }
 
-        /// <summary>
-        /// </summary>
         public static V4f operator *(Rot2f rot, V4f vec)
         {
-            return Rot2f.Multiply(rot, vec);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
+
+            return new V4f(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y,
+                               vec.Z,
+                               vec.W);
         }
 
         public static M22f operator *(Rot2f rot, M22f mat)
         {
-            return Rot2f.Multiply(rot, mat);
+            return (M22f)rot * mat;
         }
 
-        /// <summary>
-        /// </summary>
         public static M33f operator *(Rot2f rot, M33f mat)
         {
-            return Rot2f.Multiply(rot, mat);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
+
+            return new M33f(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                                mat.M20, mat.M21, mat.M22);
         }
 
-        /// <summary>
-        /// </summary>
         public static M34f operator *(Rot2f rot, M34f mat)
         {
-            return Rot2f.Multiply(rot, mat);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
+
+            return new M34f(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                                a * mat.M03 + b * mat.M13,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                               -b * mat.M03 + a * mat.M13,
+                                mat.M20, mat.M21, mat.M22, mat.M23);
         }
 
-        /// <summary>
-        /// </summary>
         public static M44f operator *(Rot2f rot, M44f mat)
         {
-            return Rot2f.Multiply(rot, mat);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
+
+            return new M44f(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                                a * mat.M03 + b * mat.M13,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                               -b * mat.M03 + a * mat.M13,
+                                mat.M20, mat.M21, mat.M22, mat.M23,
+                                mat.M30, mat.M31, mat.M32, mat.M33);
         }
 
-        /// <summary>
-        /// </summary>
         public static M33f operator *(Rot2f rot2, Rot3f rot3)
         {
-            return Rot2f.Multiply(rot2, rot3);
+            return rot2 * (M33f)rot3;
         }
 
-        /// <summary>
-        /// </summary>
         public static Rot2f operator *(Rot2f r0, Rot2f r1)
         {
-            return Rot2f.Multiply(r0, r1);
+            return new Rot2f(r0.Angle * r1.Angle);
         }
 
-        /// <summary>
-        /// </summary>
         public static M33f operator *(Rot2f rot, Scale3f scale)
         {
-            return Rot2f.Multiply(rot, scale);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
+
+            return new M33f(a * scale.X, b * scale.Y, 0,
+                               -b * scale.X, a * scale.Y, 0,
+                                0, 0, scale.Z);
         }
 
-        /// <summary>
-        /// </summary>
         public static M34f operator *(Rot2f rot, Shift3f shift)
         {
-            return Rot2f.Multiply(rot, shift);
+            float a = Fun.Cos(rot.Angle);
+            float b = Fun.Sin(rot.Angle);
+
+            return new M34f(a, b, 0, a * shift.X + b * shift.Y,
+                               -b, a, 0, -b * shift.X + a * shift.Y,
+                                0, 0, 1, shift.Z);
         }
 
         /// <summary>
@@ -524,7 +232,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2f operator /(Rot2f rot, float val)
         {
-            return Rot2f.Divide(rot, val);
+            return new Rot2f(rot.Angle / val);
         }
 
         #endregion
@@ -640,10 +348,41 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Rot
+    {
+        /// <summary>
+        /// Inverts a rotation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Invert(this ref Rot2f rot)
+        {
+            rot.Angle = -rot.Angle;
+        }
+
+        /// <summary>
+        /// Transforms a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f Transform(this Rot2f rot, V2f v)
+        {
+            return rot * v;
+        }
+
+        /// <summary>
+        /// Inverse transforms a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransform(this Rot2f rot, V2f v)
+        {
+            return -rot * v;
+        }
+    }
+
     public static partial class Fun
     {
         #region ApproximateEquals
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot2f r0, Rot2f r1)
         {
             return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue);
@@ -652,6 +391,7 @@ namespace Aardvark.Base
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes ber�cksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
         // [todo ISSUE 20090427 andi : andi] add Rot3f.ApproximateEquals(Rot3f other);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot2f r0, Rot2f r1, float tolerance)
         {
             return (r0.Angle - r1.Angle).Abs() <= tolerance;
@@ -682,12 +422,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Rotation Arithmetics
-
-        public void Invert()
-        {
-            Angle = -Angle;
-        }
+        #region Properties
 
         public Rot2d Inverse
         {
@@ -695,331 +430,6 @@ namespace Aardvark.Base
             {
                 return new Rot2d(-Angle);
             }
-        }
-
-        /// <summary>
-        /// Adds 2 rotations.
-        /// </summary>
-        public static Rot2d Add(Rot2d r0, Rot2d r1)
-        {
-            return new Rot2d(r0.Angle + r1.Angle);
-        }
-
-        /// <summary>
-        /// Adds scalar to a rotation.
-        /// </summary>
-        public static Rot2d Add(Rot2d rot, double val)
-        {
-            return new Rot2d(rot.Angle + val);
-        }
-
-        /// <summary>
-        /// Subtracts 2 rotations.
-        /// </summary>
-        public static Rot2d Subtract(Rot2d r0, Rot2d r1)
-        {
-            return new Rot2d(r0.Angle - r1.Angle);
-        }
-
-        /// <summary>
-        /// Subtracts scalar from a rotation.
-        /// </summary>
-        public static Rot2d Subtract(Rot2d rot, double angle)
-        {
-            return new Rot2d(rot.Angle - angle);
-        }
-
-        /// <summary>
-        /// Subtracts rotation from a scalar.
-        /// </summary>
-        public static Rot2d Subtract(double angle, Rot2d rot)
-        {
-            return new Rot2d(angle - rot.Angle);
-        }
-
-        /// <summary>
-        /// Multiplies scalar with a rotation.
-        /// </summary>
-        public static Rot2d Multiply(Rot2d rot, double val)
-        {
-            return new Rot2d(rot.Angle * val);
-        }
-
-        public static V2d Multiply(Rot2d rot, V2d vec)
-        {
-
-            double a = Fun.Cos(rot.Angle);
-            double b = Fun.Sin(rot.Angle);
-
-            return new V2d(a * vec.X + b * vec.Y,
-                              -b * vec.X + a * vec.Y);
-        }
-
-        public static V3d Multiply(Rot2d rot, V3d vec)
-        {
-            double ca = Fun.Cos(rot.Angle);
-            double sa = Fun.Sin(rot.Angle);
-
-            return new V3d(ca * vec.X + sa * vec.Y,
-                           -sa * vec.X + ca * vec.Y,
-                           vec.Z);
-        }
-
-        public static V4d Multiply(Rot2d rot, V4d vec)
-        {
-            double a = Fun.Cos(rot.Angle);
-            double b = Fun.Sin(rot.Angle);
-
-            return new V4d(a * vec.X +
-                            b * vec.Y,
-
-                           -b * vec.X +
-                            a * vec.Y,
-
-                            vec.Z,
-
-                            vec.W);
-        }
-
-        public static M22d Multiply(Rot2d rot, M22d mat)
-        {
-            return (M22d)rot * mat;
-        }
-
-        public static M33d Multiply(Rot2d rot, M33d mat)
-        {
-            double a = Fun.Cos(rot.Angle);
-            double b = Fun.Sin(rot.Angle);
-
-            return new M33d(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22);
-        }
-
-        public static M34d Multiply(Rot2d rot, M34d mat)
-        {
-            double a = Fun.Cos(rot.Angle);
-            double b = Fun.Sin(rot.Angle);
-
-            return new M34d(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                             a * mat.M03 +
-                             b * mat.M13,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                            -b * mat.M03 +
-                             a * mat.M13,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22,
-
-                             mat.M23);
-        }
-
-        public static M44d Multiply(Rot2d rot, M44d mat)
-        {
-            double a = Fun.Cos(rot.Angle);
-            double b = Fun.Sin(rot.Angle);
-
-            return new M44d(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                             a * mat.M03 +
-                             b * mat.M13,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                            -b * mat.M03 +
-                             a * mat.M13,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22,
-
-                             mat.M23,
-
-                             mat.M30,
-
-                             mat.M31,
-
-                             mat.M32,
-
-                             mat.M33);
-        }
-
-        public static M33d Multiply(Rot2d rot2, Rot3d rot3)
-        {
-            return Rot2d.Multiply(rot2, (M33d)rot3);
-        }
-
-        /// <summary>
-        /// Multiplies 2 rotations.
-        /// </summary>
-        public static Rot2d Multiply(Rot2d r0, Rot2d r2)
-        {
-            return new Rot2d(r0.Angle * r2.Angle);
-        }
-
-        public static M33d Multiply(Rot2d rot, Scale3d scale)
-        {
-            double a = Fun.Cos(rot.Angle);
-            double b = Fun.Sin(rot.Angle);
-
-            return new M33d(a * scale.X,
-                             b * scale.Y,
-                             0,
-
-                            -b * scale.X,
-                             a * scale.Y,
-                             0,
-
-                             0,
-                             0,
-                             scale.Z);
-        }
-
-        public static M34d Multiply(Rot2d rot, Shift3d shift)
-        {
-            double a = Fun.Cos(rot.Angle);
-            double b = Fun.Sin(rot.Angle);
-
-            return new M34d(a, b, 0, a * shift.X + b * shift.Y,
-                            -b, a, 0, -b * shift.X + a * shift.Y,
-                             0, 0, 1, shift.Z);
-
-        }
-
-        /// <summary>
-        /// Divides scalar by a rotation.
-        /// </summary>
-        public static Rot2d Divide(Rot2d rot, double val)
-        {
-            return new Rot2d(rot.Angle / val);
-        }
-
-        /// <summary>
-        /// Negates rotation.
-        /// </summary>
-        public static Rot2d Negate(Rot2d rot)
-        {
-            return new Rot2d(-rot.Angle);
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public static V2d TransformDir(Rot2d rot, V2d v)
-        {
-            return (M22d)rot * v;
-        }
-
-        /// <summary>
-        /// Inverse transforms a direction vector.
-        /// </summary>
-        public static V2d InvTransformDir(Rot2d rot, V2d v)
-        {
-            return (M22d)Rot2d.Negate(rot) * v;
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public static V2d TransformPos(Rot2d rot, V2d v)
-        {
-            return (M22d)rot * v;
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public static V2d InvTransformPos(Rot2d rot, V2d v)
-        {
-            return (M22d)Rot2d.Negate(rot) * v;
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public V2d TransformDir(V2d v)
-        {
-            return Rot2d.TransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public V2d TransformPos(V2d v)
-        {
-            return Rot2d.TransformPos(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public V2d InvTransformDir(V2d v)
-        {
-            return Rot2d.InvTransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public V2d InvTransformPos(V2d v)
-        {
-            return Rot2d.InvTransformPos(this, v);
         }
 
         #endregion
@@ -1031,15 +441,15 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2d operator -(Rot2d rot)
         {
-            return Rot2d.Negate(rot);
+            return new Rot2d(-rot.Angle);
         }
 
         /// <summary>
-        /// Adds 2 rotations.
+        /// Adds two rotations.
         /// </summary>
         public static Rot2d operator +(Rot2d r0, Rot2d r1)
         {
-            return Rot2d.Add(r0, r1);
+            return new Rot2d(r0.Angle + r1.Angle);
         }
 
         /// <summary>
@@ -1047,7 +457,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2d operator +(Rot2d rot, double angle)
         {
-            return Rot2d.Add(rot, angle);
+            return new Rot2d(rot.Angle + angle);
         }
 
         /// <summary>
@@ -1055,23 +465,23 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2d operator +(double angle, Rot2d rot)
         {
-            return Rot2d.Add(rot, angle);
+            return new Rot2d(rot.Angle + angle);
         }
 
         /// <summary>
-        /// Subtracts 2 rotations.
+        /// Subtracts two rotations.
         /// </summary>
         public static Rot2d operator -(Rot2d r0, Rot2d r1)
         {
-            return Rot2d.Subtract(r0, r1);
+            return new Rot2d(r0.Angle - r1.Angle);
         }
 
         /// <summary>
-        /// Subtracts a rotation from a scalar value.
+        /// Subtracts a scalar value from a rotation.
         /// </summary>
         public static Rot2d operator -(Rot2d rot, double angle)
         {
-            return Rot2d.Subtract(rot, angle);
+            return new Rot2d(rot.Angle - angle);
         }
 
         /// <summary>
@@ -1079,98 +489,135 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2d operator -(double angle, Rot2d rot)
         {
-            return Rot2d.Subtract(angle, rot);
+            return new Rot2d(angle - rot.Angle);
         }
 
         /// <summary>
-        /// Multiplies rotation with scalar value.
+        /// Multiplies a rotation with a scalar value.
         /// </summary>
         public static Rot2d operator *(Rot2d rot, double val)
         {
-            return Rot2d.Multiply(rot, val);
+            return new Rot2d(rot.Angle * val);
         }
 
         /// <summary>
-        /// Multiplies rotation with scalar value.
+        /// Multiplies a scalar value with a rotation.
         /// </summary>
         public static Rot2d operator *(double val, Rot2d rot)
         {
-            return Rot2d.Multiply(rot, val);
+            return new Rot2d(rot.Angle * val);
         }
 
-        /// <summary>
-        /// </summary>
         public static V2d operator *(Rot2d rot, V2d vec)
         {
-            return Rot2d.Multiply(rot, vec);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
+
+            return new V2d(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y);
         }
 
-        /// <summary>
-        /// </summary>
         public static V3d operator *(Rot2d rot, V3d vec)
         {
-            return Rot2d.Multiply(rot, vec);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
+
+            return new V3d(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y,
+                               vec.Z);
         }
 
-        /// <summary>
-        /// </summary>
         public static V4d operator *(Rot2d rot, V4d vec)
         {
-            return Rot2d.Multiply(rot, vec);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
+
+            return new V4d(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y,
+                               vec.Z,
+                               vec.W);
         }
 
         public static M22d operator *(Rot2d rot, M22d mat)
         {
-            return Rot2d.Multiply(rot, mat);
+            return (M22d)rot * mat;
         }
 
-        /// <summary>
-        /// </summary>
         public static M33d operator *(Rot2d rot, M33d mat)
         {
-            return Rot2d.Multiply(rot, mat);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
+
+            return new M33d(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                                mat.M20, mat.M21, mat.M22);
         }
 
-        /// <summary>
-        /// </summary>
         public static M34d operator *(Rot2d rot, M34d mat)
         {
-            return Rot2d.Multiply(rot, mat);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
+
+            return new M34d(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                                a * mat.M03 + b * mat.M13,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                               -b * mat.M03 + a * mat.M13,
+                                mat.M20, mat.M21, mat.M22, mat.M23);
         }
 
-        /// <summary>
-        /// </summary>
         public static M44d operator *(Rot2d rot, M44d mat)
         {
-            return Rot2d.Multiply(rot, mat);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
+
+            return new M44d(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                                a * mat.M03 + b * mat.M13,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                               -b * mat.M03 + a * mat.M13,
+                                mat.M20, mat.M21, mat.M22, mat.M23,
+                                mat.M30, mat.M31, mat.M32, mat.M33);
         }
 
-        /// <summary>
-        /// </summary>
         public static M33d operator *(Rot2d rot2, Rot3d rot3)
         {
-            return Rot2d.Multiply(rot2, rot3);
+            return rot2 * (M33d)rot3;
         }
 
-        /// <summary>
-        /// </summary>
         public static Rot2d operator *(Rot2d r0, Rot2d r1)
         {
-            return Rot2d.Multiply(r0, r1);
+            return new Rot2d(r0.Angle * r1.Angle);
         }
 
-        /// <summary>
-        /// </summary>
         public static M33d operator *(Rot2d rot, Scale3d scale)
         {
-            return Rot2d.Multiply(rot, scale);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
+
+            return new M33d(a * scale.X, b * scale.Y, 0,
+                               -b * scale.X, a * scale.Y, 0,
+                                0, 0, scale.Z);
         }
 
-        /// <summary>
-        /// </summary>
         public static M34d operator *(Rot2d rot, Shift3d shift)
         {
-            return Rot2d.Multiply(rot, shift);
+            double a = Fun.Cos(rot.Angle);
+            double b = Fun.Sin(rot.Angle);
+
+            return new M34d(a, b, 0, a * shift.X + b * shift.Y,
+                               -b, a, 0, -b * shift.X + a * shift.Y,
+                                0, 0, 1, shift.Z);
         }
 
         /// <summary>
@@ -1178,7 +625,7 @@ namespace Aardvark.Base
         /// </summary>
         public static Rot2d operator /(Rot2d rot, double val)
         {
-            return Rot2d.Divide(rot, val);
+            return new Rot2d(rot.Angle / val);
         }
 
         #endregion
@@ -1294,10 +741,41 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Rot
+    {
+        /// <summary>
+        /// Inverts a rotation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Invert(this ref Rot2d rot)
+        {
+            rot.Angle = -rot.Angle;
+        }
+
+        /// <summary>
+        /// Transforms a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d Transform(this Rot2d rot, V2d v)
+        {
+            return rot * v;
+        }
+
+        /// <summary>
+        /// Inverse transforms a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransform(this Rot2d rot, V2d v)
+        {
+            return -rot * v;
+        }
+    }
+
     public static partial class Fun
     {
         #region ApproximateEquals
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot2d r0, Rot2d r1)
         {
             return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue);
@@ -1306,6 +784,7 @@ namespace Aardvark.Base
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes ber�cksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
         // [todo ISSUE 20090427 andi : andi] add Rot3d.ApproximateEquals(Rot3d other);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot2d r0, Rot2d r1, double tolerance)
         {
             return (r0.Angle - r1.Angle).Abs() <= tolerance;

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -43,12 +44,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Rotation Arithmetics
-
-        public void Invert()
-        {
-            Angle = -Angle;
-        }
+        #region Properties
 
         public __rot2t__ Inverse
         {
@@ -56,331 +52,6 @@ namespace Aardvark.Base
             {
                 return new __rot2t__(-Angle);
             }
-        }
-
-        /// <summary>
-        /// Adds 2 rotations.
-        /// </summary>
-        public static __rot2t__ Add(__rot2t__ r0, __rot2t__ r1)
-        {
-            return new __rot2t__(r0.Angle + r1.Angle);
-        }
-
-        /// <summary>
-        /// Adds scalar to a rotation.
-        /// </summary>
-        public static __rot2t__ Add(__rot2t__ rot, __ft__ val)
-        {
-            return new __rot2t__(rot.Angle + val);
-        }
-
-        /// <summary>
-        /// Subtracts 2 rotations.
-        /// </summary>
-        public static __rot2t__ Subtract(__rot2t__ r0, __rot2t__ r1)
-        {
-            return new __rot2t__(r0.Angle - r1.Angle);
-        }
-
-        /// <summary>
-        /// Subtracts scalar from a rotation.
-        /// </summary>
-        public static __rot2t__ Subtract(__rot2t__ rot, __ft__ angle)
-        {
-            return new __rot2t__(rot.Angle - angle);
-        }
-
-        /// <summary>
-        /// Subtracts rotation from a scalar.
-        /// </summary>
-        public static __rot2t__ Subtract(__ft__ angle, __rot2t__ rot)
-        {
-            return new __rot2t__(angle - rot.Angle);
-        }
-
-        /// <summary>
-        /// Multiplies scalar with a rotation.
-        /// </summary>
-        public static __rot2t__ Multiply(__rot2t__ rot, __ft__ val)
-        {
-            return new __rot2t__(rot.Angle * val);
-        }
-
-        public static __v2t__ Multiply(__rot2t__ rot, __v2t__ vec)
-        {
-
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __v2t__(a * vec.X + b * vec.Y,
-                              -b * vec.X + a * vec.Y);
-        }
-
-        public static __v3t__ Multiply(__rot2t__ rot, __v3t__ vec)
-        {
-            __ft__ ca = Fun.Cos(rot.Angle);
-            __ft__ sa = Fun.Sin(rot.Angle);
-
-            return new __v3t__(ca * vec.X + sa * vec.Y,
-                           -sa * vec.X + ca * vec.Y,
-                           vec.Z);
-        }
-
-        public static __v4t__ Multiply(__rot2t__ rot, __v4t__ vec)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __v4t__(a * vec.X +
-                            b * vec.Y,
-
-                           -b * vec.X +
-                            a * vec.Y,
-
-                            vec.Z,
-
-                            vec.W);
-        }
-
-        public static __m22t__ Multiply(__rot2t__ rot, __m22t__ mat)
-        {
-            return (__m22t__)rot * mat;
-        }
-
-        public static __m33t__ Multiply(__rot2t__ rot, __m33t__ mat)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m33t__(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22);
-        }
-
-        public static __m34t__ Multiply(__rot2t__ rot, __m34t__ mat)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m34t__(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                             a * mat.M03 +
-                             b * mat.M13,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                            -b * mat.M03 +
-                             a * mat.M13,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22,
-
-                             mat.M23);
-        }
-
-        public static __m44t__ Multiply(__rot2t__ rot, __m44t__ mat)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m44t__(a * mat.M00 +
-                             b * mat.M10,
-
-                             a * mat.M01 +
-                             b * mat.M11,
-
-                             a * mat.M02 +
-                             b * mat.M12,
-
-                             a * mat.M03 +
-                             b * mat.M13,
-
-                            -b * mat.M00 +
-                             a * mat.M10,
-
-                            -b * mat.M01 +
-                             a * mat.M11,
-
-                            -b * mat.M02 +
-                             a * mat.M12,
-
-                            -b * mat.M03 +
-                             a * mat.M13,
-
-                             mat.M20,
-
-                             mat.M21,
-
-                             mat.M22,
-
-                             mat.M23,
-
-                             mat.M30,
-
-                             mat.M31,
-
-                             mat.M32,
-
-                             mat.M33);
-        }
-
-        public static __m33t__ Multiply(__rot2t__ rot2, __rot3t__ rot3)
-        {
-            return __rot2t__.Multiply(rot2, (__m33t__)rot3);
-        }
-
-        /// <summary>
-        /// Multiplies 2 rotations.
-        /// </summary>
-        public static __rot2t__ Multiply(__rot2t__ r0, __rot2t__ r2)
-        {
-            return new __rot2t__(r0.Angle * r2.Angle);
-        }
-
-        public static __m33t__ Multiply(__rot2t__ rot, __scale3t__ scale)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m33t__(a * scale.X,
-                             b * scale.Y,
-                             0,
-
-                            -b * scale.X,
-                             a * scale.Y,
-                             0,
-
-                             0,
-                             0,
-                             scale.Z);
-        }
-
-        public static __m34t__ Multiply(__rot2t__ rot, __shift3t__ shift)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m34t__(a, b, 0, a * shift.X + b * shift.Y,
-                            -b, a, 0, -b * shift.X + a * shift.Y,
-                             0, 0, 1, shift.Z);
-
-        }
-
-        /// <summary>
-        /// Divides scalar by a rotation.
-        /// </summary>
-        public static __rot2t__ Divide(__rot2t__ rot, __ft__ val)
-        {
-            return new __rot2t__(rot.Angle / val);
-        }
-
-        /// <summary>
-        /// Negates rotation.
-        /// </summary>
-        public static __rot2t__ Negate(__rot2t__ rot)
-        {
-            return new __rot2t__(-rot.Angle);
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public static __v2t__ TransformDir(__rot2t__ rot, __v2t__ v)
-        {
-            return (__m22t__)rot * v;
-        }
-
-        /// <summary>
-        /// Inverse transforms a direction vector.
-        /// </summary>
-        public static __v2t__ InvTransformDir(__rot2t__ rot, __v2t__ v)
-        {
-            return (__m22t__)__rot2t__.Negate(rot) * v;
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public static __v2t__ TransformPos(__rot2t__ rot, __v2t__ v)
-        {
-            return (__m22t__)rot * v;
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public static __v2t__ InvTransformPos(__rot2t__ rot, __v2t__ v)
-        {
-            return (__m22t__)__rot2t__.Negate(rot) * v;
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public __v2t__ TransformDir(__v2t__ v)
-        {
-            return __rot2t__.TransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public __v2t__ TransformPos(__v2t__ v)
-        {
-            return __rot2t__.TransformPos(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a direction vector.
-        /// </summary>
-        public __v2t__ InvTransformDir(__v2t__ v)
-        {
-            return __rot2t__.InvTransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms a position vector.
-        /// </summary>
-        public __v2t__ InvTransformPos(__v2t__ v)
-        {
-            return __rot2t__.InvTransformPos(this, v);
         }
 
         #endregion
@@ -392,15 +63,15 @@ namespace Aardvark.Base
         /// </summary>
         public static __rot2t__ operator -(__rot2t__ rot)
         {
-            return __rot2t__.Negate(rot);
+            return new __rot2t__(-rot.Angle);
         }
 
         /// <summary>
-        /// Adds 2 rotations.
+        /// Adds two rotations.
         /// </summary>
         public static __rot2t__ operator +(__rot2t__ r0, __rot2t__ r1)
         {
-            return __rot2t__.Add(r0, r1);
+            return new __rot2t__(r0.Angle + r1.Angle);
         }
 
         /// <summary>
@@ -408,7 +79,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __rot2t__ operator +(__rot2t__ rot, __ft__ angle)
         {
-            return __rot2t__.Add(rot, angle);
+            return new __rot2t__(rot.Angle + angle);
         }
 
         /// <summary>
@@ -416,23 +87,23 @@ namespace Aardvark.Base
         /// </summary>
         public static __rot2t__ operator +(__ft__ angle, __rot2t__ rot)
         {
-            return __rot2t__.Add(rot, angle);
+            return new __rot2t__(rot.Angle + angle);
         }
 
         /// <summary>
-        /// Subtracts 2 rotations.
+        /// Subtracts two rotations.
         /// </summary>
         public static __rot2t__ operator -(__rot2t__ r0, __rot2t__ r1)
         {
-            return __rot2t__.Subtract(r0, r1);
+            return new __rot2t__(r0.Angle - r1.Angle);
         }
 
         /// <summary>
-        /// Subtracts a rotation from a scalar value.
+        /// Subtracts a scalar value from a rotation.
         /// </summary>
         public static __rot2t__ operator -(__rot2t__ rot, __ft__ angle)
         {
-            return __rot2t__.Subtract(rot, angle);
+            return new __rot2t__(rot.Angle - angle);
         }
 
         /// <summary>
@@ -440,98 +111,135 @@ namespace Aardvark.Base
         /// </summary>
         public static __rot2t__ operator -(__ft__ angle, __rot2t__ rot)
         {
-            return __rot2t__.Subtract(angle, rot);
+            return new __rot2t__(angle - rot.Angle);
         }
 
         /// <summary>
-        /// Multiplies rotation with scalar value.
+        /// Multiplies a rotation with a scalar value.
         /// </summary>
         public static __rot2t__ operator *(__rot2t__ rot, __ft__ val)
         {
-            return __rot2t__.Multiply(rot, val);
+            return new __rot2t__(rot.Angle * val);
         }
 
         /// <summary>
-        /// Multiplies rotation with scalar value.
+        /// Multiplies a scalar value with a rotation.
         /// </summary>
         public static __rot2t__ operator *(__ft__ val, __rot2t__ rot)
         {
-            return __rot2t__.Multiply(rot, val);
+            return new __rot2t__(rot.Angle * val);
         }
 
-        /// <summary>
-        /// </summary>
         public static __v2t__ operator *(__rot2t__ rot, __v2t__ vec)
         {
-            return __rot2t__.Multiply(rot, vec);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __v2t__(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y);
         }
 
-        /// <summary>
-        /// </summary>
         public static __v3t__ operator *(__rot2t__ rot, __v3t__ vec)
         {
-            return __rot2t__.Multiply(rot, vec);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __v3t__(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y,
+                               vec.Z);
         }
 
-        /// <summary>
-        /// </summary>
         public static __v4t__ operator *(__rot2t__ rot, __v4t__ vec)
         {
-            return __rot2t__.Multiply(rot, vec);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __v4t__(a * vec.X + b * vec.Y,
+                              -b * vec.X + a * vec.Y,
+                               vec.Z,
+                               vec.W);
         }
 
         public static __m22t__ operator *(__rot2t__ rot, __m22t__ mat)
         {
-            return __rot2t__.Multiply(rot, mat);
+            return (__m22t__)rot * mat;
         }
 
-        /// <summary>
-        /// </summary>
         public static __m33t__ operator *(__rot2t__ rot, __m33t__ mat)
         {
-            return __rot2t__.Multiply(rot, mat);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __m33t__(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                                mat.M20, mat.M21, mat.M22);
         }
 
-        /// <summary>
-        /// </summary>
         public static __m34t__ operator *(__rot2t__ rot, __m34t__ mat)
         {
-            return __rot2t__.Multiply(rot, mat);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __m34t__(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                                a * mat.M03 + b * mat.M13,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                               -b * mat.M03 + a * mat.M13,
+                                mat.M20, mat.M21, mat.M22, mat.M23);
         }
 
-        /// <summary>
-        /// </summary>
         public static __m44t__ operator *(__rot2t__ rot, __m44t__ mat)
         {
-            return __rot2t__.Multiply(rot, mat);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __m44t__(a * mat.M00 + b * mat.M10,
+                                a * mat.M01 + b * mat.M11,
+                                a * mat.M02 + b * mat.M12,
+                                a * mat.M03 + b * mat.M13,
+                               -b * mat.M00 + a * mat.M10,
+                               -b * mat.M01 + a * mat.M11,
+                               -b * mat.M02 + a * mat.M12,
+                               -b * mat.M03 + a * mat.M13,
+                                mat.M20, mat.M21, mat.M22, mat.M23,
+                                mat.M30, mat.M31, mat.M32, mat.M33);
         }
 
-        /// <summary>
-        /// </summary>
         public static __m33t__ operator *(__rot2t__ rot2, __rot3t__ rot3)
         {
-            return __rot2t__.Multiply(rot2, rot3);
+            return rot2 * (__m33t__)rot3;
         }
 
-        /// <summary>
-        /// </summary>
         public static __rot2t__ operator *(__rot2t__ r0, __rot2t__ r1)
         {
-            return __rot2t__.Multiply(r0, r1);
+            return new __rot2t__(r0.Angle * r1.Angle);
         }
 
-        /// <summary>
-        /// </summary>
         public static __m33t__ operator *(__rot2t__ rot, __scale3t__ scale)
         {
-            return __rot2t__.Multiply(rot, scale);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __m33t__(a * scale.X, b * scale.Y, 0,
+                               -b * scale.X, a * scale.Y, 0,
+                                0, 0, scale.Z);
         }
 
-        /// <summary>
-        /// </summary>
         public static __m34t__ operator *(__rot2t__ rot, __shift3t__ shift)
         {
-            return __rot2t__.Multiply(rot, shift);
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __m34t__(a, b, 0, a * shift.X + b * shift.Y,
+                               -b, a, 0, -b * shift.X + a * shift.Y,
+                                0, 0, 1, shift.Z);
         }
 
         /// <summary>
@@ -539,7 +247,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __rot2t__ operator /(__rot2t__ rot, __ft__ val)
         {
-            return __rot2t__.Divide(rot, val);
+            return new __rot2t__(rot.Angle / val);
         }
 
         #endregion
@@ -655,10 +363,41 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Rot
+    {
+        /// <summary>
+        /// Inverts a rotation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Invert(this ref __rot2t__ rot)
+        {
+            rot.Angle = -rot.Angle;
+        }
+
+        /// <summary>
+        /// Transforms a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v2t__ Transform(this __rot2t__ rot, __v2t__ v)
+        {
+            return rot * v;
+        }
+
+        /// <summary>
+        /// Inverse transforms a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v2t__ InvTransform(this __rot2t__ rot, __v2t__ v)
+        {
+            return -rot * v;
+        }
+    }
+
     public static partial class Fun
     {
         #region ApproximateEquals
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __rot2t__ r0, __rot2t__ r1)
         {
             return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue);
@@ -667,6 +406,7 @@ namespace Aardvark.Base
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes ber�cksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
         // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproximateEquals(__rot3t__ other);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __rot2t__ r0, __rot2t__ r1, __ft__ tolerance)
         {
             return (r0.Angle - r1.Angle).Abs() <= tolerance;

@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -39,7 +40,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly Trafo2f Identity =
+        public static Trafo2f Identity =>
             new Trafo2f(M33f.Identity, M33f.Identity);
 
         #endregion
@@ -74,47 +75,6 @@ namespace Aardvark.Base
             );
         }
 
-        public static Trafo2f Translation(V2f v)
-        {
-            return new Trafo2f(M33f.Translation(v),
-                                M33f.Translation(-v));
-        }
-
-        public static Trafo2f Translation(float dx, float dy)
-        {
-            return new Trafo2f(M33f.Translation(dx, dy),
-                                M33f.Translation(-dx, -dy));
-        }
-
-        public static Trafo2f Scale(V2f sv)
-        {
-            return new Trafo2f(M33f.Scale(sv),
-                                M33f.Scale(1 / sv));
-        }
-
-        public static Trafo2f Scale(float sx, float sy)
-        {
-            return new Trafo2f(M33f.Scale(sx, sy),
-                                M33f.Scale(1 / sx, 1 / sy));
-        }
-
-        public static Trafo2f Scale(float s)
-        {
-            return new Trafo2f(M33f.Scale(s),
-                                M33f.Scale(1 / s));
-        }
-
-        public static Trafo2f Rotation(float angleInRadians)
-        {
-            return new Trafo2f(M33f.Rotation(angleInRadians),
-                                M33f.Rotation(-angleInRadians));
-        }
-
-        public static Trafo2f RotationInDegrees(float angleInDegrees)
-        {
-            return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
-        }
-
         #endregion
 
         #region Operators
@@ -132,6 +92,61 @@ namespace Aardvark.Base
         /// </summary>
         public static Trafo2f operator *(Trafo2f t0, Trafo2f t1)
             => new Trafo2f(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
+
+        #endregion
+    }
+
+    public static partial class Trafo
+    {
+        #region Static creator methods
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f Translation(V2f v)
+        {
+            return new Trafo2f(M33f.Translation(v),
+                                M33f.Translation(-v));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f Translation(float dx, float dy)
+        {
+            return new Trafo2f(M33f.Translation(dx, dy),
+                                M33f.Translation(-dx, -dy));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f Scale(V2f sv)
+        {
+            return new Trafo2f(M33f.Scale(sv),
+                                M33f.Scale(1 / sv));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f Scale(float sx, float sy)
+        {
+            return new Trafo2f(M33f.Scale(sx, sy),
+                                M33f.Scale(1 / sx, 1 / sy));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f Scale(float s)
+        {
+            return new Trafo2f(M33f.Scale(s),
+                                M33f.Scale(1 / s));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f Rotation(float angleInRadians)
+        {
+            return new Trafo2f(M33f.Rotation(angleInRadians),
+                                M33f.Rotation(-angleInRadians));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f RotationInDegrees(float angleInDegrees)
+        {
+            return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
+        }
 
         #endregion
     }
@@ -170,7 +185,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly Trafo2d Identity =
+        public static Trafo2d Identity =>
             new Trafo2d(M33d.Identity, M33d.Identity);
 
         #endregion
@@ -205,47 +220,6 @@ namespace Aardvark.Base
             );
         }
 
-        public static Trafo2d Translation(V2d v)
-        {
-            return new Trafo2d(M33d.Translation(v),
-                                M33d.Translation(-v));
-        }
-
-        public static Trafo2d Translation(double dx, double dy)
-        {
-            return new Trafo2d(M33d.Translation(dx, dy),
-                                M33d.Translation(-dx, -dy));
-        }
-
-        public static Trafo2d Scale(V2d sv)
-        {
-            return new Trafo2d(M33d.Scale(sv),
-                                M33d.Scale(1 / sv));
-        }
-
-        public static Trafo2d Scale(double sx, double sy)
-        {
-            return new Trafo2d(M33d.Scale(sx, sy),
-                                M33d.Scale(1 / sx, 1 / sy));
-        }
-
-        public static Trafo2d Scale(double s)
-        {
-            return new Trafo2d(M33d.Scale(s),
-                                M33d.Scale(1 / s));
-        }
-
-        public static Trafo2d Rotation(double angleInRadians)
-        {
-            return new Trafo2d(M33d.Rotation(angleInRadians),
-                                M33d.Rotation(-angleInRadians));
-        }
-
-        public static Trafo2d RotationInDegrees(double angleInDegrees)
-        {
-            return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
-        }
-
         #endregion
 
         #region Operators
@@ -263,6 +237,61 @@ namespace Aardvark.Base
         /// </summary>
         public static Trafo2d operator *(Trafo2d t0, Trafo2d t1)
             => new Trafo2d(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
+
+        #endregion
+    }
+
+    public static partial class Trafo
+    {
+        #region Static creator methods
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d Translation(V2d v)
+        {
+            return new Trafo2d(M33d.Translation(v),
+                                M33d.Translation(-v));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d Translation(double dx, double dy)
+        {
+            return new Trafo2d(M33d.Translation(dx, dy),
+                                M33d.Translation(-dx, -dy));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d Scale(V2d sv)
+        {
+            return new Trafo2d(M33d.Scale(sv),
+                                M33d.Scale(1 / sv));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d Scale(double sx, double sy)
+        {
+            return new Trafo2d(M33d.Scale(sx, sy),
+                                M33d.Scale(1 / sx, 1 / sy));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d Scale(double s)
+        {
+            return new Trafo2d(M33d.Scale(s),
+                                M33d.Scale(1 / s));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d Rotation(double angleInRadians)
+        {
+            return new Trafo2d(M33d.Rotation(angleInRadians),
+                                M33d.Rotation(-angleInRadians));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d RotationInDegrees(double angleInDegrees)
+        {
+            return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
+        }
 
         #endregion
     }

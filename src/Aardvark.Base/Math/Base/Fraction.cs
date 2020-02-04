@@ -136,52 +136,44 @@ namespace Aardvark.Base
         #region Constants
 
         /// <summary>
-        /// Represents a <see cref="Fraction"/> that evaluates to 0.
-        /// This field is constant.
+        /// Gets a <see cref="Fraction"/> that evaluates to 0.
         /// </summary>
-        public static readonly Fraction Zero = new Fraction(0, 1);
+        public static Fraction Zero => new Fraction(0, 1);
 
         /// <summary>
-        /// Represents a <see cref="Fraction"/> that evaluates to 1.
-        /// This field is constant.
+        /// Gets a <see cref="Fraction"/> that evaluates to 1.
         /// </summary>
-        public static readonly Fraction One = new Fraction(1, 1);
+        public static Fraction One => new Fraction(1, 1);
 
         /// <summary>
-        /// Represents the smallest positive <see cref="Fraction"/>
-        /// value greater than zero. This field is constant.
+        /// Gets the smallest positive <see cref="Fraction"/> value greater than zero.
         /// </summary>
-        public static readonly Fraction Epsilon = new Fraction(1, long.MaxValue);
+        public static Fraction Epsilon => new Fraction(1, long.MaxValue);
 
         /// <summary>
-        /// Represents the smallest possible value of a <see cref="Fraction"/>.
-        /// This field is constant.
+        /// Gets the smallest possible value of a <see cref="Fraction"/>.
         /// </summary>
-        public static readonly Fraction MinValue = new Fraction(long.MinValue, 1);
+        public static Fraction MinValue => new Fraction(long.MinValue, 1);
 
         /// <summary>
-        /// Represents the largest possible value of a <see cref="Fraction"/>.
-        /// This field is constant.
+        /// Gets the largest possible value of a <see cref="Fraction"/>.
         /// </summary>
-        public static readonly Fraction MaxValue = new Fraction(long.MaxValue, 1);
+        public static Fraction MaxValue => new Fraction(long.MaxValue, 1);
 
         /// <summary>
-        /// Represents a value that is not a number (NaN).
-        /// This field is constant.
+        /// Gets a value that is not a number (NaN).
         /// </summary>
-        public static readonly Fraction NaN = new Fraction(0, 0);
+        public static Fraction NaN => new Fraction(0, 0);
 
         /// <summary>
         /// Represents negative infinity.
-        /// This field is constant.
         /// </summary>
-        public static readonly Fraction NegativeInfinity = new Fraction(-1, 0);
+        public static Fraction NegativeInfinity => new Fraction(-1, 0);
        
         /// <summary>
         /// Represents positive infinity.
-        /// This field is constant.
         /// </summary>
-        public static readonly Fraction PositiveInfinity = new Fraction(+1, 0);
+        public static Fraction PositiveInfinity => new Fraction(+1, 0);
 
         #endregion
 

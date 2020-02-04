@@ -26,7 +26,7 @@ module BvhNode =
 
 
     let private cost (lBox : Box3d) (rBox : Box3d) (lWeight : float) (rWeight : float) (invBoxArea : float) =
-        let cBox = Box3d.Intersection(lBox, rBox)
+        let cBox = Box.Intersection(lBox, rBox)
         let cSize =
             V3d(
                 (if cBox.Max.X > cBox.Min.X then cBox.Max.X - cBox.Min.X else 0.0),

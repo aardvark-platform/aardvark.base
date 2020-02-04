@@ -38,9 +38,9 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static __ct__ Zero { get { return new __ct__(0, 0); } }
-        public static __ct__ One { get { return new __ct__(1, 0); } } 
-        public static __ct__ I { get { return new __ct__(0, 1); } }
+        public static __ct__ Zero => new __ct__(0, 0);
+        public static __ct__ One => new __ct__(1, 0);
+        public static __ct__ I => new __ct__(0, 1);
 
         #endregion
 

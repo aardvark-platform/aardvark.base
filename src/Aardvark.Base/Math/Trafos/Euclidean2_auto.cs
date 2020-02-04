@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -55,7 +56,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Identity (Rot2f.Identity, V2f.Zero)
         /// </summary>
-        public static readonly Euclidean2f Identity = new Euclidean2f(Rot2f.Identity, V2f.Zero);
+        public static Euclidean2f Identity => new Euclidean2f(Rot2f.Identity, V2f.Zero);
 
         #endregion
 
@@ -66,101 +67,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Euclidean Transformation Arithmetics
-
-        /// <summary>
-        /// Multiplies 2 Euclidean transformations.
-        /// This concatenates the two rigid transformations into a single one, first b is applied, then a.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        public static Euclidean2f Multiply(Euclidean2f a, Euclidean2f b)
-        {
-            //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
-            return new Euclidean2f(Rot2f.Multiply(a.Rot, b.Rot), a.Trans + a.Rot.TransformDir(b.Trans));
-        }
-
-        public static M23f Multiply(M22f m, Euclidean2f r)
-        {
-            return M23f.Multiply(m, (M23f)r);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public static V2f TransformDir(Euclidean2f r, V2f v)
-        {
-            return r.Rot.TransformDir(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
-        /// </summary>
-        public static V2f TransformPos(Euclidean2f r, V2f p)
-        {
-            return r.Rot.TransformPos(p) + r.Trans;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public static V2f InvTransformDir(Euclidean2f r, V2f v)
-        {
-            return r.Rot.InvTransformDir(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        public static V2f InvTransformPos(Euclidean2f r, V2f p)
-        {
-            return r.Rot.InvTransformPos(p - r.Trans);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this rigid transformation.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public V2f TransformDir(V2f v)
-        {
-            return TransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this rigid transformation.
-        /// </summary>
-        public V2f TransformPos(V2f p)
-        {
-            return TransformPos(this, p);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of this rigid transformation.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public V2f InvTransformDir(V2f v)
-        {
-            return InvTransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of this rigid transformation.
-        /// </summary>
-        public V2f InvTransformPos(V2f p)
-        {
-            return InvTransformPos(this, p);
-        }
-
-        /// <summary>
-        /// Inverts this rigid transformation (multiplicative inverse).
-        /// this = [Rot^T,-Rot^T Trans]
-        /// </summary>
-        public void Invert()
-        {
-            Rot.Invert();
-            Trans = -Rot.TransformDir(Trans);
-        }
+        #region Properties
 
         /// <summary>
         /// Gets the (multiplicative) inverse of this Euclidean transformation.
@@ -171,7 +78,7 @@ namespace Aardvark.Base
             get
             {
                 var newR = Rot.Inverse;
-                return new Euclidean2f(newR, -newR.TransformDir(Trans));
+                return new Euclidean2f(newR, -newR.Transform(Trans));
             }
         }
 
@@ -179,9 +86,15 @@ namespace Aardvark.Base
 
         #region Arithmetic Operators
 
+        /// <summary>
+        /// Multiplies two Euclidean transformations.
+        /// This concatenates the two rigid transformations into a single one, first b is applied, then a.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
         public static Euclidean2f operator *(Euclidean2f a, Euclidean2f b)
         {
-            return Euclidean2f.Multiply(a, b);
+            //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
+            return new Euclidean2f(a.Rot * b.Rot, a.Trans + a.Rot.Transform(b.Trans));
         }
 
 #if false //// [todo ISSUE 20090421 andi : andi] check if these are really necessary and comment them what they really do.
@@ -245,7 +158,7 @@ namespace Aardvark.Base
 
         public static M23f operator *(M22f m, Euclidean2f r)
         {
-            return Multiply(m, r);
+            return M23f.Multiply(m, (M23f)r);
         }
         /*
         public static M34f operator *(M33f m, Euclidean3f r)
@@ -315,15 +228,66 @@ namespace Aardvark.Base
 
     }
 
+    public static partial class Euclidean
+    {
+        /// <summary>
+        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f TransformDir(this Euclidean2f r, V2f v)
+        {
+            return r.Rot.Transform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f TransformPos(this Euclidean2f r, V2f p)
+        {
+            return r.Rot.Transform(p) + r.Trans;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransformDir(this Euclidean2f r, V2f v)
+        {
+            return r.Rot.InvTransform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransformPos(this Euclidean2f r, V2f p)
+        {
+            return r.Rot.InvTransform(p - r.Trans);
+        }
+
+        /// <summary>
+        /// Inverts the given rigid transformation (multiplicative inverse), yielding [Rot^T,-Rot^T Trans].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Invert(this ref Euclidean2f r)
+        {
+            r.Rot.Invert();
+            r.Trans = -r.Rot.Transform(r.Trans);
+        }
+    }
+
     public static partial class Fun
     {
         #region ApproximateEquals
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Euclidean2f r0, Euclidean2f r1)
         {
             return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Euclidean2f r0, Euclidean2f r1, float angleTol, float posTol)
         {
             return ApproximateEquals(r0.Trans, r1.Trans, posTol) && r0.Rot.ApproximateEquals(r1.Rot, angleTol);
@@ -382,7 +346,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Identity (Rot2d.Identity, V2d.Zero)
         /// </summary>
-        public static readonly Euclidean2d Identity = new Euclidean2d(Rot2d.Identity, V2d.Zero);
+        public static Euclidean2d Identity => new Euclidean2d(Rot2d.Identity, V2d.Zero);
 
         #endregion
 
@@ -393,101 +357,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Euclidean Transformation Arithmetics
-
-        /// <summary>
-        /// Multiplies 2 Euclidean transformations.
-        /// This concatenates the two rigid transformations into a single one, first b is applied, then a.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        public static Euclidean2d Multiply(Euclidean2d a, Euclidean2d b)
-        {
-            //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
-            return new Euclidean2d(Rot2d.Multiply(a.Rot, b.Rot), a.Trans + a.Rot.TransformDir(b.Trans));
-        }
-
-        public static M23d Multiply(M22d m, Euclidean2d r)
-        {
-            return M23d.Multiply(m, (M23d)r);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public static V2d TransformDir(Euclidean2d r, V2d v)
-        {
-            return r.Rot.TransformDir(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
-        /// </summary>
-        public static V2d TransformPos(Euclidean2d r, V2d p)
-        {
-            return r.Rot.TransformPos(p) + r.Trans;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public static V2d InvTransformDir(Euclidean2d r, V2d v)
-        {
-            return r.Rot.InvTransformDir(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        public static V2d InvTransformPos(Euclidean2d r, V2d p)
-        {
-            return r.Rot.InvTransformPos(p - r.Trans);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this rigid transformation.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public V2d TransformDir(V2d v)
-        {
-            return TransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this rigid transformation.
-        /// </summary>
-        public V2d TransformPos(V2d p)
-        {
-            return TransformPos(this, p);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of this rigid transformation.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public V2d InvTransformDir(V2d v)
-        {
-            return InvTransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of this rigid transformation.
-        /// </summary>
-        public V2d InvTransformPos(V2d p)
-        {
-            return InvTransformPos(this, p);
-        }
-
-        /// <summary>
-        /// Inverts this rigid transformation (multiplicative inverse).
-        /// this = [Rot^T,-Rot^T Trans]
-        /// </summary>
-        public void Invert()
-        {
-            Rot.Invert();
-            Trans = -Rot.TransformDir(Trans);
-        }
+        #region Properties
 
         /// <summary>
         /// Gets the (multiplicative) inverse of this Euclidean transformation.
@@ -498,7 +368,7 @@ namespace Aardvark.Base
             get
             {
                 var newR = Rot.Inverse;
-                return new Euclidean2d(newR, -newR.TransformDir(Trans));
+                return new Euclidean2d(newR, -newR.Transform(Trans));
             }
         }
 
@@ -506,9 +376,15 @@ namespace Aardvark.Base
 
         #region Arithmetic Operators
 
+        /// <summary>
+        /// Multiplies two Euclidean transformations.
+        /// This concatenates the two rigid transformations into a single one, first b is applied, then a.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
         public static Euclidean2d operator *(Euclidean2d a, Euclidean2d b)
         {
-            return Euclidean2d.Multiply(a, b);
+            //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
+            return new Euclidean2d(a.Rot * b.Rot, a.Trans + a.Rot.Transform(b.Trans));
         }
 
 #if false //// [todo ISSUE 20090421 andi : andi] check if these are really necessary and comment them what they really do.
@@ -572,7 +448,7 @@ namespace Aardvark.Base
 
         public static M23d operator *(M22d m, Euclidean2d r)
         {
-            return Multiply(m, r);
+            return M23d.Multiply(m, (M23d)r);
         }
         /*
         public static M34f operator *(M33d m, Euclidean3d r)
@@ -642,15 +518,66 @@ namespace Aardvark.Base
 
     }
 
+    public static partial class Euclidean
+    {
+        /// <summary>
+        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d TransformDir(this Euclidean2d r, V2d v)
+        {
+            return r.Rot.Transform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d TransformPos(this Euclidean2d r, V2d p)
+        {
+            return r.Rot.Transform(p) + r.Trans;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransformDir(this Euclidean2d r, V2d v)
+        {
+            return r.Rot.InvTransform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransformPos(this Euclidean2d r, V2d p)
+        {
+            return r.Rot.InvTransform(p - r.Trans);
+        }
+
+        /// <summary>
+        /// Inverts the given rigid transformation (multiplicative inverse), yielding [Rot^T,-Rot^T Trans].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Invert(this ref Euclidean2d r)
+        {
+            r.Rot.Invert();
+            r.Trans = -r.Rot.Transform(r.Trans);
+        }
+    }
+
     public static partial class Fun
     {
         #region ApproximateEquals
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Euclidean2d r0, Euclidean2d r1)
         {
             return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Euclidean2d r0, Euclidean2d r1, double angleTol, double posTol)
         {
             return ApproximateEquals(r0.Trans, r1.Trans, posTol) && r0.Rot.ApproximateEquals(r1.Rot, angleTol);

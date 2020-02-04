@@ -104,7 +104,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __type__ Invalid = new __type__ { /*# d.ForEach(i => { */I__i__ = -1/*# }, comma); */ };
+        public static __type__ Invalid => new __type__ { /*# d.ForEach(i => { */I__i__ = -1/*# }, comma); */ };
 
         #endregion
 
