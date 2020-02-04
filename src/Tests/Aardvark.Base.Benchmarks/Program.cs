@@ -20,7 +20,8 @@ namespace Aardvark.Base.Benchmarks
             //var td = new AngleBetweenDouble();
             //td.BenchmarkNumericalStability();
 
-            BenchmarkRunner.Run<Rot3dTransform>();
+            //BenchmarkRunner.Run<Rot3dTransform>();
+            BenchmarkRunner.Run<StaticConstants>();
         }
     }
 }
