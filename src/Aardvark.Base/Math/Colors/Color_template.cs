@@ -635,7 +635,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<__type__, int, __ftype__> Setter =>
+        public static readonly ActionRefValVal<__type__, int, __ftype__> Setter =
             (ref __type__ color, int i, __ftype__ value) =>
             {
                 switch (i)
