@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -45,7 +46,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __type__ Identity =
+        public static __type__ Identity =>
             new __type__(__m33t__.Identity, __m33t__.Identity);
 
         #endregion
@@ -80,47 +81,6 @@ namespace Aardvark.Base
             );
         }
 
-        public static __type__ Translation(__v2t__ v)
-        {
-            return new __type__(__m33t__.Translation(v),
-                                __m33t__.Translation(-v));
-        }
-
-        public static __type__ Translation(__rtype__ dx, __rtype__ dy)
-        {
-            return new __type__(__m33t__.Translation(dx, dy),
-                                __m33t__.Translation(-dx, -dy));
-        }
-
-        public static __type__ Scale(__v2t__ sv)
-        {
-            return new __type__(__m33t__.Scale(sv),
-                                __m33t__.Scale(1 / sv));
-        }
-
-        public static __type__ Scale(__rtype__ sx, __rtype__ sy)
-        {
-            return new __type__(__m33t__.Scale(sx, sy),
-                                __m33t__.Scale(1 / sx, 1 / sy));
-        }
-
-        public static __type__ Scale(__rtype__ s)
-        {
-            return new __type__(__m33t__.Scale(s),
-                                __m33t__.Scale(1 / s));
-        }
-
-        public static __type__ Rotation(__rtype__ angleInRadians)
-        {
-            return new __type__(__m33t__.Rotation(angleInRadians),
-                                __m33t__.Rotation(-angleInRadians));
-        }
-
-        public static __type__ RotationInDegrees(__rtype__ angleInDegrees)
-        {
-            return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
-        }
-
         #endregion
 
         #region Operators
@@ -138,6 +98,61 @@ namespace Aardvark.Base
         /// </summary>
         public static __type__ operator *(__type__ t0, __type__ t1)
             => new __type__(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
+
+        #endregion
+    }
+
+    public static partial class Trafo
+    {
+        #region Static creator methods
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Translation(__v2t__ v)
+        {
+            return new __type__(__m33t__.Translation(v),
+                                __m33t__.Translation(-v));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Translation(__rtype__ dx, __rtype__ dy)
+        {
+            return new __type__(__m33t__.Translation(dx, dy),
+                                __m33t__.Translation(-dx, -dy));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Scale(__v2t__ sv)
+        {
+            return new __type__(__m33t__.Scale(sv),
+                                __m33t__.Scale(1 / sv));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Scale(__rtype__ sx, __rtype__ sy)
+        {
+            return new __type__(__m33t__.Scale(sx, sy),
+                                __m33t__.Scale(1 / sx, 1 / sy));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Scale(__rtype__ s)
+        {
+            return new __type__(__m33t__.Scale(s),
+                                __m33t__.Scale(1 / s));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__rtype__ angleInRadians)
+        {
+            return new __type__(__m33t__.Rotation(angleInRadians),
+                                __m33t__.Rotation(-angleInRadians));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationInDegrees(__rtype__ angleInDegrees)
+        {
+            return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
+        }
 
         #endregion
     }
