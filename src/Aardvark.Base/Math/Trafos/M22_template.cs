@@ -181,19 +181,5 @@ namespace Aardvark.Base
         #endregion
     }
 
-    public static partial class M22Extensions
-    {
-        #region V__x2t__ Extensions
-        /// <summary>
-        /// Returns the outer product (tensor-product) of v1 * v2^T as a 3x3 Matrix.
-        /// </summary>
-        public static M2__x2t__ OuterProduct(this V__x2t__ v1, V__x2t__ v2)
-        {
-            return new M2__x2t__(
-                v2.X * v1.X, v2.Y * v1.X,
-                v2.X * v1.Y, v2.Y * v1.Y);
-        }
-        #endregion
-    }
-    //# } // isDouble
+    //# }
 }

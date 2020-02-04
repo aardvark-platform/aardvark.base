@@ -66,40 +66,6 @@ namespace Aardvark.Base
 
         #region Static Creator Functions
 
-        public static Trafo2f Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Trafo2f(
-                M33f.Parse(x[0]),
-                M33f.Parse(x[1])
-            );
-        }
-
-        #endregion
-
-        #region Operators
-
-        public static bool operator ==(Trafo2f a, Trafo2f b)
-            => a.Forward == b.Forward && a.Backward == b.Backward;
-
-        public static bool operator !=(Trafo2f a, Trafo2f b)
-            => a.Forward != b.Forward || a.Backward != b.Backward;
-
-        /// <summary>
-        /// The order of operation of Trafo2f multiplicaition is backward
-        /// with respect to M33f multiplication in order to provide
-        /// natural postfix notation.
-        /// </summary>
-        public static Trafo2f operator *(Trafo2f t0, Trafo2f t1)
-            => new Trafo2f(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
-
-        #endregion
-    }
-
-    public static partial class Trafo
-    {
-        #region Static creator methods
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo2f Translation(V2f v)
         {
@@ -147,6 +113,33 @@ namespace Aardvark.Base
         {
             return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
         }
+
+        public static Trafo2f Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Trafo2f(
+                M33f.Parse(x[0]),
+                M33f.Parse(x[1])
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        public static bool operator ==(Trafo2f a, Trafo2f b)
+            => a.Forward == b.Forward && a.Backward == b.Backward;
+
+        public static bool operator !=(Trafo2f a, Trafo2f b)
+            => a.Forward != b.Forward || a.Backward != b.Backward;
+
+        /// <summary>
+        /// The order of operation of Trafo2f multiplicaition is backward
+        /// with respect to M33f multiplication in order to provide
+        /// natural postfix notation.
+        /// </summary>
+        public static Trafo2f operator *(Trafo2f t0, Trafo2f t1)
+            => new Trafo2f(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
 
         #endregion
     }
@@ -211,40 +204,6 @@ namespace Aardvark.Base
 
         #region Static Creator Functions
 
-        public static Trafo2d Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Trafo2d(
-                M33d.Parse(x[0]),
-                M33d.Parse(x[1])
-            );
-        }
-
-        #endregion
-
-        #region Operators
-
-        public static bool operator ==(Trafo2d a, Trafo2d b)
-            => a.Forward == b.Forward && a.Backward == b.Backward;
-
-        public static bool operator !=(Trafo2d a, Trafo2d b)
-            => a.Forward != b.Forward || a.Backward != b.Backward;
-
-        /// <summary>
-        /// The order of operation of Trafo2d multiplicaition is backward
-        /// with respect to M33d multiplication in order to provide
-        /// natural postfix notation.
-        /// </summary>
-        public static Trafo2d operator *(Trafo2d t0, Trafo2d t1)
-            => new Trafo2d(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
-
-        #endregion
-    }
-
-    public static partial class Trafo
-    {
-        #region Static creator methods
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo2d Translation(V2d v)
         {
@@ -292,6 +251,33 @@ namespace Aardvark.Base
         {
             return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
         }
+
+        public static Trafo2d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Trafo2d(
+                M33d.Parse(x[0]),
+                M33d.Parse(x[1])
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        public static bool operator ==(Trafo2d a, Trafo2d b)
+            => a.Forward == b.Forward && a.Backward == b.Backward;
+
+        public static bool operator !=(Trafo2d a, Trafo2d b)
+            => a.Forward != b.Forward || a.Backward != b.Backward;
+
+        /// <summary>
+        /// The order of operation of Trafo2d multiplicaition is backward
+        /// with respect to M33d multiplication in order to provide
+        /// natural postfix notation.
+        /// </summary>
+        public static Trafo2d operator *(Trafo2d t0, Trafo2d t1)
+            => new Trafo2d(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
 
         #endregion
     }

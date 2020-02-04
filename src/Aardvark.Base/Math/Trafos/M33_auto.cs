@@ -292,32 +292,6 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class M33Extensions
-    {
-        #region V3f Extensions
-        /// <summary>
-        /// Returns the skew-symmetric "cross" matrix (A^T = -A) of the vector v.
-        /// </summary>
-        public static M33f CrossMatrix(this V3f v)
-        {
-            return new M33f(
-                0, -v.Z, +v.Y,
-                +v.Z, 0, -v.X,
-                -v.Y, +v.X, 0);
-        }
-
-        /// <summary>
-        /// Returns the outer product (tensor-product) of v1 * v2^T as a 3x3 Matrix.
-        /// </summary>
-        public static M33f OuterProduct(this V3f v1, V3f v2)
-        {
-            return new M33f(
-                v2.X * v1.X, v2.Y * v1.X, v2.Z * v1.X,
-                v2.X * v1.Y, v2.Y * v1.Y, v2.Z * v1.Y,
-                v2.X * v1.Z, v2.Y * v1.Z, v2.Z * v1.Z);
-        }
-        #endregion
-    }
     public partial struct M33d : ISquareMatrix<M33d, V3d, V2d, double>
     {
 
@@ -606,30 +580,4 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class M33Extensions
-    {
-        #region V3d Extensions
-        /// <summary>
-        /// Returns the skew-symmetric "cross" matrix (A^T = -A) of the vector v.
-        /// </summary>
-        public static M33d CrossMatrix(this V3d v)
-        {
-            return new M33d(
-                0, -v.Z, +v.Y,
-                +v.Z, 0, -v.X,
-                -v.Y, +v.X, 0);
-        }
-
-        /// <summary>
-        /// Returns the outer product (tensor-product) of v1 * v2^T as a 3x3 Matrix.
-        /// </summary>
-        public static M33d OuterProduct(this V3d v1, V3d v2)
-        {
-            return new M33d(
-                v2.X * v1.X, v2.Y * v1.X, v2.Z * v1.X,
-                v2.X * v1.Y, v2.Y * v1.Y, v2.Z * v1.Y,
-                v2.X * v1.Z, v2.Y * v1.Z, v2.Z * v1.Z);
-        }
-        #endregion
-    }
 }

@@ -72,40 +72,6 @@ namespace Aardvark.Base
 
         #region Static Creator Functions
 
-        public static __type__ Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new __type__(
-                __m33t__.Parse(x[0]),
-                __m33t__.Parse(x[1])
-            );
-        }
-
-        #endregion
-
-        #region Operators
-
-        public static bool operator ==(__type__ a, __type__ b)
-            => a.Forward == b.Forward && a.Backward == b.Backward;
-
-        public static bool operator !=(__type__ a, __type__ b)
-            => a.Forward != b.Forward || a.Backward != b.Backward;
-
-        /// <summary>
-        /// The order of operation of __type__ multiplicaition is backward
-        /// with respect to __m33t__ multiplication in order to provide
-        /// natural postfix notation.
-        /// </summary>
-        public static __type__ operator *(__type__ t0, __type__ t1)
-            => new __type__(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
-
-        #endregion
-    }
-
-    public static partial class Trafo
-    {
-        #region Static creator methods
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Translation(__v2t__ v)
         {
@@ -153,6 +119,33 @@ namespace Aardvark.Base
         {
             return Rotation(Conversion.RadiansFromDegrees(angleInDegrees));
         }
+
+        public static __type__ Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new __type__(
+                __m33t__.Parse(x[0]),
+                __m33t__.Parse(x[1])
+            );
+        }
+
+        #endregion
+
+        #region Operators
+
+        public static bool operator ==(__type__ a, __type__ b)
+            => a.Forward == b.Forward && a.Backward == b.Backward;
+
+        public static bool operator !=(__type__ a, __type__ b)
+            => a.Forward != b.Forward || a.Backward != b.Backward;
+
+        /// <summary>
+        /// The order of operation of __type__ multiplicaition is backward
+        /// with respect to __m33t__ multiplication in order to provide
+        /// natural postfix notation.
+        /// </summary>
+        public static __type__ operator *(__type__ t0, __type__ t1)
+            => new __type__(t1.Forward * t0.Forward, t0.Backward * t1.Backward);
 
         #endregion
     }

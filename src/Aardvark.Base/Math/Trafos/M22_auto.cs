@@ -176,20 +176,6 @@ namespace Aardvark.Base
         #endregion
     }
 
-    public static partial class M22Extensions
-    {
-        #region V2f Extensions
-        /// <summary>
-        /// Returns the outer product (tensor-product) of v1 * v2^T as a 3x3 Matrix.
-        /// </summary>
-        public static M22f OuterProduct(this V2f v1, V2f v2)
-        {
-            return new M22f(
-                v2.X * v1.X, v2.Y * v1.X,
-                v2.X * v1.Y, v2.Y * v1.Y);
-        }
-        #endregion
-    }
     public partial struct M22d : ISquareMatrix<M22d, V2d, double, double>
     {
         #region Matrix Arithmetics
@@ -362,18 +348,4 @@ namespace Aardvark.Base
         #endregion
     }
 
-    public static partial class M22Extensions
-    {
-        #region V2d Extensions
-        /// <summary>
-        /// Returns the outer product (tensor-product) of v1 * v2^T as a 3x3 Matrix.
-        /// </summary>
-        public static M22d OuterProduct(this V2d v1, V2d v2)
-        {
-            return new M22d(
-                v2.X * v1.X, v2.Y * v1.X,
-                v2.X * v1.Y, v2.Y * v1.Y);
-        }
-        #endregion
-    }
 }

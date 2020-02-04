@@ -297,31 +297,5 @@ namespace Aardvark.Base
 
     }
 
-    public static partial class M33Extensions
-    {
-        #region V__x3t__ Extensions
-        /// <summary>
-        /// Returns the skew-symmetric "cross" matrix (A^T = -A) of the vector v.
-        /// </summary>
-        public static M3__x3t__ CrossMatrix(this V__x3t__ v)
-        {
-            return new M3__x3t__(
-                0, -v.Z, +v.Y,
-                +v.Z, 0, -v.X,
-                -v.Y, +v.X, 0);
-        }
-
-        /// <summary>
-        /// Returns the outer product (tensor-product) of v1 * v2^T as a 3x3 Matrix.
-        /// </summary>
-        public static M3__x3t__ OuterProduct(this V__x3t__ v1, V__x3t__ v2)
-        {
-            return new M3__x3t__(
-                v2.X * v1.X, v2.Y * v1.X, v2.Z * v1.X,
-                v2.X * v1.Y, v2.Y * v1.Y, v2.Z * v1.Y,
-                v2.X * v1.Z, v2.Y * v1.Z, v2.Z * v1.Z);
-        }
-        #endregion
-    }
-    //# } // isDouble
+    //# }
 }

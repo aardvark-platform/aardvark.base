@@ -770,7 +770,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C3b, int, byte> Setter =>
+        public static readonly ActionRefValVal<C3b, int, byte> Setter =
             (ref C3b color, int i, byte value) =>
             {
                 switch (i)
@@ -2119,7 +2119,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C3us, int, ushort> Setter =>
+        public static readonly ActionRefValVal<C3us, int, ushort> Setter =
             (ref C3us color, int i, ushort value) =>
             {
                 switch (i)
@@ -3388,7 +3388,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C3ui, int, uint> Setter =>
+        public static readonly ActionRefValVal<C3ui, int, uint> Setter =
             (ref C3ui color, int i, uint value) =>
             {
                 switch (i)
@@ -4810,7 +4810,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C3f, int, float> Setter =>
+        public static readonly ActionRefValVal<C3f, int, float> Setter =
             (ref C3f color, int i, float value) =>
             {
                 switch (i)
@@ -6123,7 +6123,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C3d, int, double> Setter =>
+        public static readonly ActionRefValVal<C3d, int, double> Setter =
             (ref C3d color, int i, double value) =>
             {
                 switch (i)
@@ -7641,7 +7641,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C4b, int, byte> Setter =>
+        public static readonly ActionRefValVal<C4b, int, byte> Setter =
             (ref C4b color, int i, byte value) =>
             {
                 switch (i)
@@ -9119,7 +9119,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C4us, int, ushort> Setter =>
+        public static readonly ActionRefValVal<C4us, int, ushort> Setter =
             (ref C4us color, int i, ushort value) =>
             {
                 switch (i)
@@ -10507,7 +10507,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C4ui, int, uint> Setter =>
+        public static readonly ActionRefValVal<C4ui, int, uint> Setter =
             (ref C4ui color, int i, uint value) =>
             {
                 switch (i)
@@ -12064,7 +12064,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C4f, int, float> Setter =>
+        public static readonly ActionRefValVal<C4f, int, float> Setter =
             (ref C4f color, int i, float value) =>
             {
                 switch (i)
@@ -13495,7 +13495,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<C4d, int, double> Setter =>
+        public static readonly ActionRefValVal<C4d, int, double> Setter =
             (ref C4d color, int i, double value) =>
             {
                 switch (i)

@@ -63,6 +63,7 @@ namespace Aardvark.Base
     //#     var v2type = Meta.VecTypeOf(2, ft).Name;
     //#     var v3type = Meta.VecTypeOf(3, ft).Name;
     //#     var v4type = Meta.VecTypeOf(4, ft).Name;
+    //#     var mtype = Meta.MatTypeOf(d, d, ft).Name;
     //#     var fields = vt.Fields;
     //#     var args = fields.ToLower();
     #region __vtype__
@@ -612,13 +613,13 @@ namespace Aardvark.Base
         /// <summary>
         /// An array of accessor functions for the coordinates of the vector.
         /// </summary>
-        public static Func<__vtype__, __ftype__>[] SelectorArray =>
+        public static readonly Func<__vtype__, __ftype__>[] SelectorArray =
             new Func<__vtype__, __ftype__>[] { /*# fields.ForEach(f => { */v => v.__f__/*# }, comma); */ };
 
         /// <summary>
         /// Element getter function.
         /// </summary>
-        public static Func<__vtype__, int, __ftype__> Getter =>
+        public static readonly Func<__vtype__, int, __ftype__> Getter =
             (v, i) =>
             {
                 switch (i)
@@ -633,7 +634,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action.
         /// </summary>
-        public static ActionRefValVal<__vtype__, int, __ftype__> Setter =>
+        public static readonly ActionRefValVal<__vtype__, int, __ftype__> Setter =
             (ref __vtype__ v, int i, __ftype__ s) =>
             {
                 switch (i)
@@ -648,7 +649,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element getter function with long index.
         /// </summary>
-        public static Func<__vtype__, long, __ftype__> LongGetter =>
+        public static readonly Func<__vtype__, long, __ftype__> LongGetter =
             (v, i) =>
             {
                 switch (i)
@@ -663,7 +664,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Element setter action with long index.
         /// </summary>
-        public static ActionRefValVal<__vtype__, long, __ftype__> LongSetter =>
+        public static readonly ActionRefValVal<__vtype__, long, __ftype__> LongSetter =
             (ref __vtype__ v, long i, __ftype__ s) =>
             {
                 switch (i)
@@ -712,7 +713,7 @@ namespace Aardvark.Base
             => new __vtype__(Fun.Cos(angleInRadians), Fun.Sin(angleInRadians));
 
         //# } else if (d == 3) {
-        private static __vtype__[] s_fromCubeCode =>
+        private static readonly __vtype__[] s_fromCubeCode =
             new __vtype__[] { -__vtype__.XAxis, -__vtype__.YAxis, -__vtype__.ZAxis,
                         __vtype__.XAxis, __vtype__.YAxis, __vtype__.ZAxis };
 
@@ -1869,6 +1870,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the outer product (tensor-product) of a * b^T as a __d__x__d__ matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mtype__ Outer(this __vtype__ a, __vtype__ b)
+        {
+            return new __mtype__(/*# d.ForEach(i => { var fi = fields[i]; */
+                        /*# d.ForEach(j => { var fj = fields[j]; */a.__fi__ * b.__fj__/*# }, comma); }, comma); */);
+        }
+
+        /// <summary>
         /// Returns the dot product of two vectors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1877,6 +1888,18 @@ namespace Aardvark.Base
             return /*# fields.ForEach(f => { */a.__f__ * b.__f__/*# }, add); */;
         }
 
+        //# if (d == 3) {
+        /// <summary>
+        /// Returns the skew-symmetric "cross" matrix (A^T = -A) of the vector v.
+        /// </summary>
+        public static __mtype__ CrossMatrix(this __vtype__ v)
+        {
+            return new __mtype__(0, -v.Z, +v.Y,
+                            +v.Z, 0, -v.X,
+                            -v.Y, +v.X, 0);
+        }
+
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DirFlags DirFlags(this __vtype__ v)
         {
