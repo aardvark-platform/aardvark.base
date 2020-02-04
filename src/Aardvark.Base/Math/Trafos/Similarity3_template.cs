@@ -98,8 +98,8 @@ namespace Aardvark.Base
         {
             //a.Scale * b.Scale, a.Rot * b.Rot, a.Trans + a.Rot * a.Scale * b.Trans
             return new Similarity__x3t__(a.Scale * b.Scale, new Euclidean__x3t__(
-                Rot__x3t__.Multiply(a.Rot, b.Rot),
-                a.Trans + a.Rot.TransformDir(a.Scale * b.Trans))
+                a.Rot * b.Rot,
+                a.Trans + a.Rot.Transform(a.Scale * b.Trans))
                 );
         }
 

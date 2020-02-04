@@ -89,7 +89,7 @@ namespace Aardvark.Base
         public static Euclidean3f Multiply(Euclidean3f a, Euclidean3f b)
         {
             //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
-            return new Euclidean3f(Rot3f.Multiply(a.Rot, b.Rot), a.Trans + a.Rot.TransformDir(b.Trans));
+            return new Euclidean3f(a.Rot * b.Rot, a.Trans + a.Rot.Transform(b.Trans));
         }
 
         public static M34f Multiply(M33f m, Euclidean3f r)
@@ -103,7 +103,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3f TransformDir(Euclidean3f r, V3f v)
         {
-            return r.Rot.TransformDir(v);
+            return r.Rot.Transform(v);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3f TransformPos(Euclidean3f r, V3f p)
         {
-            return r.Rot.TransformPos(p) + r.Trans;
+            return r.Rot.Transform(p) + r.Trans;
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3f InvTransformDir(Euclidean3f r, V3f v)
         {
-            return r.Rot.InvTransformDir(v);
+            return r.Rot.InvTransform(v);
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3f InvTransformPos(Euclidean3f r, V3f p)
         {
-            return r.Rot.InvTransformPos(p - r.Trans);
+            return r.Rot.InvTransform(p - r.Trans);
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Aardvark.Base
         public void Invert()
         {
             Rot.Invert();
-            Trans = -Rot.TransformDir(Trans);
+            Trans = -Rot.Transform(Trans);
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace Aardvark.Base
             get
             {
                 var newR = Rot.Inverse;
-                return new Euclidean3f(newR, -newR.TransformDir(Trans));
+                return new Euclidean3f(newR, -newR.Transform(Trans));
             }
         }
 
@@ -482,7 +482,7 @@ namespace Aardvark.Base
         public static Euclidean3d Multiply(Euclidean3d a, Euclidean3d b)
         {
             //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
-            return new Euclidean3d(Rot3d.Multiply(a.Rot, b.Rot), a.Trans + a.Rot.TransformDir(b.Trans));
+            return new Euclidean3d(a.Rot * b.Rot, a.Trans + a.Rot.Transform(b.Trans));
         }
 
         public static M34d Multiply(M33d m, Euclidean3d r)
@@ -496,7 +496,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d TransformDir(Euclidean3d r, V3d v)
         {
-            return r.Rot.TransformDir(v);
+            return r.Rot.Transform(v);
         }
 
         /// <summary>
@@ -504,7 +504,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d TransformPos(Euclidean3d r, V3d p)
         {
-            return r.Rot.TransformPos(p) + r.Trans;
+            return r.Rot.Transform(p) + r.Trans;
         }
 
         /// <summary>
@@ -513,7 +513,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d InvTransformDir(Euclidean3d r, V3d v)
         {
-            return r.Rot.InvTransformDir(v);
+            return r.Rot.InvTransform(v);
         }
 
         /// <summary>
@@ -521,7 +521,7 @@ namespace Aardvark.Base
         /// </summary>
         public static V3d InvTransformPos(Euclidean3d r, V3d p)
         {
-            return r.Rot.InvTransformPos(p - r.Trans);
+            return r.Rot.InvTransform(p - r.Trans);
         }
 
         /// <summary>
@@ -584,7 +584,7 @@ namespace Aardvark.Base
         public void Invert()
         {
             Rot.Invert();
-            Trans = -Rot.TransformDir(Trans);
+            Trans = -Rot.Transform(Trans);
         }
 
         /// <summary>
@@ -596,7 +596,7 @@ namespace Aardvark.Base
             get
             {
                 var newR = Rot.Inverse;
-                return new Euclidean3d(newR, -newR.TransformDir(Trans));
+                return new Euclidean3d(newR, -newR.Transform(Trans));
             }
         }
 

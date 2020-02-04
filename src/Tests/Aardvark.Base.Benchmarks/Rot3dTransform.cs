@@ -82,8 +82,7 @@ namespace Aardvark.Base.Benchmarks
 
         static V3d TransformUsingQuaternion(Rot3d q, V3d v)
         {
-            //var r = q * new Rot3d(0, v) * q.Conjugated;
-            var r = Rot3d.Multiply(Rot3d.Multiply(q, new Rot3d(0, v)), q.Conjugated);
+            var r = q * new Rot3d(0, v) * q.Conjugated;
             return new V3d(r.X, r.Y, r.Z);
         }
 
@@ -184,8 +183,7 @@ namespace Aardvark.Base.Benchmarks
 
         static V3d InvTransformUsingQuaternion(Rot3d rot, V3d v)
         {
-            //var r = rot * new Rot3d(0, v) * rot.Conjugated;
-            var r = Rot3d.Multiply(Rot3d.Multiply(rot.Conjugated, new Rot3d(0, v)), rot);
+            var r = rot * new Rot3d(0, v) * rot.Conjugated;
             return new V3d(r.X, r.Y, r.Z);
         }
 

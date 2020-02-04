@@ -42,7 +42,7 @@ namespace Aardvark.Base
             )
         {
             Rot3d q3 = b;
-            double cosomega = Rot3d.Dot(a, q3);
+            double cosomega = Rot.Dot(a, q3);
 
             if (cosomega < 0.0)
             {
@@ -111,7 +111,7 @@ namespace Aardvark.Base
             )
         {
             Rot3f q3 = q2;
-            float cosomega = Fun.Clamp(Rot3f.Dot(q1, q3), -1, 1);
+            float cosomega = Fun.Clamp(Rot.Dot(q1, q3), -1, 1);
 
             if (cosomega < 0.0)
             {

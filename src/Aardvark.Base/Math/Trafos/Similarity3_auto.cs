@@ -94,8 +94,8 @@ namespace Aardvark.Base
         {
             //a.Scale * b.Scale, a.Rot * b.Rot, a.Trans + a.Rot * a.Scale * b.Trans
             return new Similarity3f(a.Scale * b.Scale, new Euclidean3f(
-                Rot3f.Multiply(a.Rot, b.Rot),
-                a.Trans + a.Rot.TransformDir(a.Scale * b.Trans))
+                a.Rot * b.Rot,
+                a.Trans + a.Rot.Transform(a.Scale * b.Trans))
                 );
         }
 
@@ -462,8 +462,8 @@ namespace Aardvark.Base
         {
             //a.Scale * b.Scale, a.Rot * b.Rot, a.Trans + a.Rot * a.Scale * b.Trans
             return new Similarity3d(a.Scale * b.Scale, new Euclidean3d(
-                Rot3d.Multiply(a.Rot, b.Rot),
-                a.Trans + a.Rot.TransformDir(a.Scale * b.Trans))
+                a.Rot * b.Rot,
+                a.Trans + a.Rot.Transform(a.Scale * b.Trans))
                 );
         }
 

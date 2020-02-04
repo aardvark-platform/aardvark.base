@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -27,8 +28,7 @@ namespace Aardvark.Base
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
     /// <summary>
-    /// Represents an arbitrary rotation in three dimensions. Implemented as
-    /// a normalized quaternion.
+    /// Type for general quaternions, if normalized it represents an arbritrary rotation in three dimensions.
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
@@ -199,13 +199,10 @@ namespace Aardvark.Base
         #endregion
 
         #region Constants
-#if false
-        /// NOTE for developers
-        /// A Zero-quaternion does not represent a Rot3, so it should not be implemented
-        /// <summary>        /// Zero (0,(0,0,0)).
+        /// <summary>
+        /// Zero (0, (0,0,0))
         /// </summary>
-        public static readonly __rot3t__ Zero = new __rot3t__(0, __v3t__.Zero);
-#endif
+        public static __rot3t__ Zero => new __rot3t__(0, __v3t__.Zero);
 
         /// <summary>
         /// Identity (1, (0,0,0)).
@@ -231,328 +228,13 @@ namespace Aardvark.Base
 
         #region Quaternion Arithmetics
 
-        // [todo ISSUE 20090421 andi : andi>
-        // Operations like Add, Subtract and Multiplication with scalar, Divide, Reciprocal
-        // should not be defined in a Rot3*.
-        // These are perfectly valid for a quaternion, but a rotation is defined on a 
-        // NORMALIZED quaternion. This Norm-Constraint would be violated with above operations.
-        // <]
-        // todo andi {
-        /// <summary>
-        /// Returns the sum of 2 quaternions (a.w + b.w, a.v + b.v).
-        /// </summary>
-        public static __rot3t__ Add(__rot3t__ a, __rot3t__ b)
-        {
-            return new __rot3t__(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-        }
-
-        /// <summary>
-        /// Returns (q.w + s, (q.x + s, q.y + s, q.z + s)).
-        /// </summary>
-        public static __rot3t__ Add(__rot3t__ q, __ft__ s)
-        {
-            return new __rot3t__(q.W + s, q.X + s, q.Y + s, q.Z + s);
-        }
-
-        /// <summary>
-        /// Returns (q.w - s, (q.x - s, q.y - s, q.z - s)).
-        /// </summary>
-        public static __rot3t__ Subtract(__rot3t__ q, __ft__ s)
-        {
-            return Add(q, -s);
-        }
-
-        /// <summary>
-        /// Returns (s - q.w, (s - q.x, s- q.y, s- q.z)).
-        /// </summary>
-        public static __rot3t__ Subtract(__ft__ s, __rot3t__ q)
-        {
-            return Add(-q, s);
-        }
-
-        /// <summary>
-        /// Returns (a.w - b.w, a.v - b.v).
-        /// </summary>
-        public static __rot3t__ Subtract(__rot3t__ a, __rot3t__ b)
-        {
-            return Add(a, -b);
-        }
-
-        /// <summary>
-        /// Returns (q.w * s, q.v * s).
-        /// </summary>
-        public static __rot3t__ Multiply(__rot3t__ q, __ft__ s)
-        {
-            return new __rot3t__(q.W * s, q.X * s, q.Y * s, q.Z * s);
-        }
-        // todo andi }
-
-        /// <summary>
-        /// Multiplies 2 quaternions.
-        /// This concatenates the two rotations into a single one.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        public static __rot3t__ Multiply(__rot3t__ a, __rot3t__ b)
-        {
-            return new __rot3t__(
-                a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z,
-                a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
-                a.W * b.Y + a.Y * b.W + a.Z * b.X - a.X * b.Z,
-                a.W * b.Z + a.Z * b.W + a.X * b.Y - a.Y * b.X
-                );
-        }
-
-        /// <summary>
-        /// Transforms a vector with a quaternion.
-        /// </summary>
-        public static __v3t__ Transform(__rot3t__ q, __v3t__ v)
-        {
-            // q * v * q'
-
-            // step 1: tmp = q * Quaternion(0, v)
-            var w = -q.X * v.X - q.Y * v.Y - q.Z * v.Z;
-            var x =  q.W * v.X + q.Y * v.Z - q.Z * v.Y;
-            var y =  q.W * v.Y + q.Z * v.X - q.X * v.Z;
-            var z =  q.W * v.Z + q.X * v.Y - q.Y * v.X;
-
-            // step 2: tmp * q.Conjungated (q.W, -q.V)
-            return new __v3t__(
-                -w * q.X + x * q.W - y * q.Z + z * q.Y,
-                -w * q.Y + y * q.W - z * q.X + x * q.Z,
-                -w * q.Z + z * q.W - x * q.Y + y * q.X
-                );
-        }
-
-        /// <summary>
-        /// Transforms a vector with a quaternion.
-        /// </summary>
-        public static __v3t__ InvTransform(__rot3t__ q, __v3t__ v)
-        {
-            // q' * v * q
-
-            // step 1: tmp = q.Conungated * Rot3d(0, v)
-            var w = q.X * v.X + q.Y * v.Y + q.Z * v.Z;
-            var x = q.W * v.X - q.Y * v.Z + q.Z * v.Y;
-            var y = q.W * v.Y - q.Z * v.X + q.X * v.Z;
-            var z = q.W * v.Z - q.X * v.Y + q.Y * v.X;
-
-            // step 2: tmp * q
-            return new __v3t__(
-                w * q.X + x * q.W + y * q.Z - z * q.Y,
-                w * q.Y + y * q.W + z * q.X - x * q.Z,
-                w * q.Z + z * q.W + x * q.Y - y * q.X
-                );
-        }
-
-        /// <summary>
-        /// Transforms the vector v by this quaternion.
-        /// </summary>
-        public __v3t__ Transform(__v3t__ v)
-        {
-            return Transform(this, v);
-        }
-
-        /// <summary>
-        /// Transforms the vector v by the inverse of this quaternion.
-        /// </summary>
-        public __v3t__ InvTransform(__v3t__ v)
-        {
-            return InvTransform(this, v);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by quaternion q.
-        /// </summary>
-        public static __v3t__ TransformDir(__rot3t__ q, __v3t__ v)
-        {
-            return Transform(q, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by quaternion q.
-        /// For quaternions, this method is equivalent to TransformDir, and
-        /// is made available only to provide a consistent set of operations
-        /// for all transforms.
-        /// </summary>
-        public static __v3t__ TransformPos(__rot3t__ q, __v3t__ p)
-        {
-            return Transform(q, p);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of quaternion q.
-        /// </summary>
-        public static __v3t__ InvTransformDir(__rot3t__ q, __v3t__ v)
-        {
-            return InvTransform(q, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the incerse of quaternion q.
-        /// For quaternions, this method is equivalent to InvTransformDir, and
-        /// is made available only to provide a consistent set of operations
-        /// for all transforms.
-        /// </summary>
-        public static __v3t__ InvTransformPos(__rot3t__ q, __v3t__ p)
-        {
-            return InvTransform(q, p);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this quaternion.
-        /// </summary>
-        public __v3t__ TransformDir(__v3t__ v)
-        {
-            return TransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this quaternion.
-        /// For quaternions, this method is equivalent to TransformDir, and
-        /// is made available only to provide a consistent set of operations
-        /// for all transforms.
-        /// </summary>
-        public __v3t__ TransformPos(__v3t__ p)
-        {
-            return TransformDir(this, p);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of this quaternion.
-        /// </summary>
-        public __v3t__ InvTransformDir(__v3t__ v)
-        {
-            return InvTransform(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of this quaternion.
-        /// For quaternions, this method is equivalent to TransformDir, and
-        /// is made available only to provide a consistent set of operations
-        /// for all transforms.
-        /// </summary>
-        public __v3t__ InvTransformPos(__v3t__ p)
-        {
-            return InvTransform(this, p);
-        }
-
-        // todo andi {
-        public static __rot3t__ Divide(__ft__ s, __rot3t__ q)
-        {
-            return new __rot3t__(
-                s / q.W,
-                s / q.X, s / q.Y, s / q.Z
-                );
-        }
-
-        /// <summary>
-        /// Returns (q.w / s, q.v * (1/s)).
-        /// </summary>
-        public static __rot3t__ Divide(__rot3t__ q, __ft__ s)
-        {
-            return Multiply(q, 1 / s);
-        }
-
-        /// <summary>
-        /// Divides 2 quaternions.
-        /// </summary>
-        public static __rot3t__ Divide(__rot3t__ a, __rot3t__ b)
-        {
-            return Multiply(a, Reciprocal(b));
-        }
-        // todo andi }
-
-        /// <summary>
-        /// Returns the component-wise negation (-q.w, -q.v) of quaternion q.
-        /// This represents the same rotation.
-        /// </summary>
-        public static __rot3t__ Negated(__rot3t__ q)
-        {
-            return new __rot3t__(-q.W, -q.X, -q.Y, -q.Z);
-        }
-
-        // todo andi {
-        /// <summary>
-        /// Returns the component-wise reciprocal (1/q.w, 1/q.x, 1/q.y, 1/q.z)
-        /// of quaternion q.
-        /// </summary>
-        public static __rot3t__ Reciprocal(__rot3t__ q)
-        {
-            return new __rot3t__(1 / q.W, 1 / q.X, 1 / q.Y, 1 / q.Z);
-        }
-
-        /// <summary>
-        /// Returns the component-wise reciprocal (1/w, 1/x, 1/y, 1/z).
-        /// </summary>
-        public __rot3t__ OneDividedBy()
-        {
-            return Reciprocal(this);
-        }
-        // todo andi }
-
-        /// <summary> 
-        /// Returns the dot-product of 2 quaternions.
-        /// </summary>
-        public static __ft__ Dot(__rot3t__ a, __rot3t__ b)
-        {
-            return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
-        }
-
-        // [todo ISSUE 20090225 andi : andi> 
-        // Investigate if we can use power to "scale" the rotation (=enlarging the angle of rotation by a factor.)
-        // If so, reenable the Log and Exp methods if they are useful then.
-        // <]
-#if false
-        /// <summary>
-        /// Calculates the logarithm of the quaternion.
-        /// </summary>
-        public static __rot3t__ Log(__rot3t__ a)
-        {
-            var result = __rot3t__.Zero;
-
-            if (a.W.Abs() < 1)
-            {
-                var angle = a.W.Acos();
-                var sin = angle.Sin();
-                result.V = (sin.Abs() >= 0) ? (a.V * (angle / sin)) : a.V;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Calculates exponent of the quaternion.
-        /// </summary>
-        public __rot3t__ Exp(__rot3t__ a)
-        {
-            var result = __rot3t__.Zero;
-
-            var angle = (a.X * a.X + a.Y * a.Y + a.Z * a.Z).Sqrt();
-            var sin = angle.Sin();
-
-            if (sin.Abs() > 0)
-            {
-                var coeff = angle / sin;
-                result.V = coeff * a.V;
-            }
-            else
-            {
-                result.V = a.V;
-            }
-
-            return result;
-        }
-#endif
-
         /// <summary>
         /// Gets squared norm (or squared length) of this quaternion.
         /// </summary>
         public __ft__ NormSquared
         {
-            get
-            {
-                return W * W + V.LengthSquared;
-            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => W * W + V.LengthSquared;
         }
 
         /// <summary>
@@ -560,24 +242,8 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ Norm
         {
-            get { return NormSquared.Sqrt(); }
-        }
-
-        /// <summary>
-        /// Normalizes this quaternion.
-        /// </summary>
-        /// <returns>This.</returns>
-        public void Normalize()
-        {
-            var norm = Norm;
-            if (norm == 0)
-                this = __rot3t__.Identity;
-            else
-            {
-                var scale = 1 / norm;
-                W *= scale;
-                V *= scale;
-            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => NormSquared.Sqrt();
         }
 
         /// <summary>
@@ -588,23 +254,10 @@ namespace Aardvark.Base
             get
             {
                 var norm = Norm;
-                if (norm == 0) return __rot3t__.Identity;
+                if (norm == 0) return __rot3t__.Zero;
                 var scale = 1 / norm;
                 return new __rot3t__(W * scale, V * scale);
             }
-        }
-
-        /// <summary>
-        /// Inverts this quaternion (multiplicative inverse).
-        /// Returns this.
-        /// </summary>
-        public void Invert()
-        {
-            var norm = NormSquared;
-            if (norm == 0) throw new ArithmeticException("quaternion is not invertible");
-            var scale = 1 / norm;
-            W *= scale;
-            V *= -scale;
         }
 
         /// <summary>
@@ -615,19 +268,10 @@ namespace Aardvark.Base
             get
             {
                 var norm = NormSquared;
-                if (norm == 0) throw new ArithmeticException("quaternion is not invertible");
+                if (norm == 0) return __rot3t__.Zero;
                 var scale = 1 / norm;
                 return new __rot3t__(W * scale, V * (-scale));
             }
-        }
-
-        /// <summary>
-        /// Conjugates this quaternion. Returns this.
-        /// For normalized rotation-quaternions this is the same as Invert().
-        /// </summary>
-        public void Conjugate()
-        {
-            V = -V;
         }
 
         /// <summary>
@@ -636,7 +280,17 @@ namespace Aardvark.Base
         /// </summary>
         public __rot3t__ Conjugated
         {
-            get { return new __rot3t__(W, -V); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __rot3t__(W, -V);
+        }
+
+        /// <summary>
+        /// Returns the component-wise reciprocal (1/W, 1/X, 1/Y, 1/Z).
+        /// </summary>
+        public __rot3t__ Reciprocal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __rot3t__(1 / W, 1 / X, 1 / Y, 1 / Z);
         }
 
         /// <summary>
@@ -673,66 +327,112 @@ namespace Aardvark.Base
 
         #region Arithmetic Operators
 
-        public static __rot3t__ operator -(__rot3t__ rot)
+        /// <summary>
+        /// Returns the component-wise negation (-q.w, -q.v) of quaternion q.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator -(__rot3t__ q)
         {
-            return __rot3t__.Negated(rot);
+            return new __rot3t__(-q.W, -q.X, -q.Y, -q.Z);
         }
 
-        // todo andi {
+        /// <summary>
+        /// Returns the sum of two quaternions (a.w + b.w, a.v + b.v).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ operator +(__rot3t__ a, __rot3t__ b)
         {
-            return __rot3t__.Add(a, b);
+            return new __rot3t__(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
-        public static __rot3t__ operator +(__rot3t__ rot, __ft__ s)
+        /// <summary>
+        /// Returns (q.w + s, (q.x + s, q.y + s, q.z + s)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator +(__rot3t__ q, __ft__ s)
         {
-            return __rot3t__.Add(rot, s);
+            return new __rot3t__(q.W + s, q.X + s, q.Y + s, q.Z + s);
         }
 
-        public static __rot3t__ operator +(__ft__ s, __rot3t__ rot)
+        /// <summary>
+        /// Returns (q.w + s, (q.x + s, q.y + s, q.z + s)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator +(__ft__ s, __rot3t__ q)
         {
-            return __rot3t__.Add(rot, s);
+            return new __rot3t__(q.W + s, q.X + s, q.Y + s, q.Z + s);
         }
 
+        /// <summary>
+        /// Returns (a.w - b.w, a.v - b.v).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ operator -(__rot3t__ a, __rot3t__ b)
         {
-            return __rot3t__.Subtract(a, b);
+            return new __rot3t__(a.W - b.W, a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
 
-        public static __rot3t__ operator -(__rot3t__ rot, __ft__ s)
+        /// <summary>
+        /// Returns (q.w - s, (q.x - s, q.y - s, q.z - s)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator -(__rot3t__ q, __ft__ s)
         {
-            return __rot3t__.Subtract(rot, s);
+            return new __rot3t__(q.W - s, q.X - s, q.Y - s, q.Z - s);
         }
 
-        public static __rot3t__ operator -(__ft__ scalar, __rot3t__ rot)
+        /// <summary>
+        /// Returns (s - q.w, (s - q.x, s- q.y, s- q.z)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator -(__ft__ s, __rot3t__ q)
         {
-            return __rot3t__.Subtract(scalar, rot);
+            return new __rot3t__(s - q.W, s - q.X, s - q.Y, s - q.Z);
         }
 
-        public static __rot3t__ operator *(__rot3t__ rot, __ft__ s)
+        /// <summary>
+        /// Returns (q.w * s, q.v * s).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator *(__rot3t__ q, __ft__ s)
         {
-            return __rot3t__.Multiply(rot, s);
+            return new __rot3t__(q.W * s, q.X * s, q.Y * s, q.Z * s);
         }
 
-        public static __rot3t__ operator *(__ft__ s, __rot3t__ rot)
+        /// <summary>
+        /// Returns (q.w * s, q.v * s).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator *(__ft__ s, __rot3t__ q)
         {
-            return __rot3t__.Multiply(rot, s);
+            return new __rot3t__(q.W * s, q.X * s, q.Y * s, q.Z * s);
         }
-        // todo andi }
 
+        /// <summary>
+        /// Multiplies two quaternions.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ operator *(__rot3t__ a, __rot3t__ b)
         {
-            return __rot3t__.Multiply(a, b);
+            return new __rot3t__(
+                a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z,
+                a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
+                a.W * b.Y + a.Y * b.W + a.Z * b.X - a.X * b.Z,
+                a.W * b.Z + a.Z * b.W + a.X * b.Y - a.Y * b.X
+                );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ operator *(__rot3t__ q, __v3t__ v)
         {
-            return __rot3t__.Transform(q, v);
+            return q.Transform(v);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ operator *(__v3t__ v, __rot3t__ q)
         {
-            return __rot3t__.InvTransform(q, v);
+            return q.InvTransform(v);
         }
 
 #if false //// [todo ISSUE 20090421 andi : andi] check if these are really necessary and comment them what they really do.
@@ -779,41 +479,57 @@ namespace Aardvark.Base
 
         }
 #endif
-        /// <summary>
-        /// </summary>
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m33t__ operator *(__rot3t__ rot, __scale3t__ m)
         {
             return (__m33t__)rot * m;
         }
 
-        /// <summary>
-        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m34t__ operator *(__rot3t__ rot, __shift3t__ m)
         {
             return (__m33t__)rot * m;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m33t__ operator *(__rot3t__ rot, __m33t__ m)
         {
             return (__m33t__)rot * m;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m33t__ operator *(__m33t__ m, __rot3t__ rot)
         {
             return m * (__m33t__)rot;
         }
 
-        // todo andi {
-        public static __rot3t__ operator /(__rot3t__ rot, __ft__ s)
+        /// <summary>
+        /// Divides two quaternions.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator /(__rot3t__ a, __rot3t__ b)
         {
-            return __rot3t__.Divide(rot, s);
+            return a * b.Reciprocal;
         }
 
-        public static __rot3t__ operator /(__ft__ s, __rot3t__ rot)
+        /// <summary>
+        /// Returns (q.w / s, q.v / s).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator /(__rot3t__ q, __ft__ s)
         {
-            return __rot3t__.Divide(s, rot);
+            return new __rot3t__(q.W / s, q.X / s, q.Y / s, q.Z / s);
         }
-        // todo andi }
+
+        /// <summary>
+        /// Returns (s / q.w, s / q.v).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ operator /(__ft__ s, __rot3t__ q)
+        {
+            return new __rot3t__(s / q.W, s / q.X, s / q.Y, s / q.Z);
+        }
 
         #endregion
 
@@ -1128,6 +844,146 @@ namespace Aardvark.Base
 
     public static partial class Fun
     {
+        /// <summary>
+        /// Calculates the logarithm of the given quaternion.
+        /// </summary>
+        public static __rot3t__ Log(this __rot3t__ a)
+        {
+            var result = __rot3t__.Zero;
+
+            if (a.W.Abs() < 1)
+            {
+                var angle = a.W.Acos();
+                var sin = angle.Sin();
+                result.V = (sin.Abs() >= 0) ? (a.V * (angle / sin)) : a.V;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Calculates exponent of the given quaternion.
+        /// </summary>
+        public static __rot3t__ Exp(this __rot3t__ a)
+        {
+            var result = __rot3t__.Zero;
+
+            var angle = (a.X * a.X + a.Y * a.Y + a.Z * a.Z).Sqrt();
+            var sin = angle.Sin();
+
+            if (sin.Abs() > 0)
+            {
+                var coeff = angle / sin;
+                result.V = coeff * a.V;
+            }
+            else
+            {
+                result.V = a.V;
+            }
+
+            return result;
+        }
+    }
+
+    public static partial class Rot
+    {
+        /// <summary>
+        /// Inverts the given quaternion (multiplicative inverse).
+        /// </summary>
+        public static void Invert(this ref __rot3t__ r)
+        {
+            var norm = r.NormSquared;
+            if (norm == 0) return;
+            var scale = 1 / norm;
+            r.W *= scale;
+            r.V *= -scale;
+        }
+
+        /// <summary>
+        /// Conjugates the given quaternion.
+        /// For normalized rotation-quaternions this is the same as Invert().
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Conjugate(this ref __rot3t__ r)
+        {
+            r.V = -r.V;
+        }
+
+        /// <summary>
+        /// Normalizes the given quaternion.
+        /// </summary>
+        public static void Normalize(this ref __rot3t__ r)
+        {
+            var norm = r.Norm;
+            if (norm == 0) return;
+            var scale = 1 / norm;
+            r.W *= scale;
+            r.V *= scale;
+        }
+
+        /// <summary>
+        /// Returns the component-wise reciprocal (1/q.w, 1/q.x, 1/q.y, 1/q.z)
+        /// of quaternion q.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rot3t__ Reciprocal(__rot3t__ q)
+            => q.Reciprocal;
+
+        /// <summary> 
+        /// Returns the dot product of two quaternions.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ft__ Dot(this __rot3t__ a, __rot3t__ b)
+        {
+            return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+        }
+
+        /// <summary>
+        /// Transforms a vector with a quaternion.
+        /// </summary>
+        public static __v3t__ Transform(this __rot3t__ q, __v3t__ v)
+        {
+            // q * v * q'
+
+            // step 1: tmp = q * Quaternion(0, v)
+            var w = -q.X * v.X - q.Y * v.Y - q.Z * v.Z;
+            var x = q.W * v.X + q.Y * v.Z - q.Z * v.Y;
+            var y = q.W * v.Y + q.Z * v.X - q.X * v.Z;
+            var z = q.W * v.Z + q.X * v.Y - q.Y * v.X;
+
+            // step 2: tmp * q.Conjungated (q.W, -q.V)
+            return new __v3t__(
+                -w * q.X + x * q.W - y * q.Z + z * q.Y,
+                -w * q.Y + y * q.W - z * q.X + x * q.Z,
+                -w * q.Z + z * q.W - x * q.Y + y * q.X
+                );
+        }
+
+        /// <summary>
+        /// Transforms a vector with the inverse of a quaternion.
+        /// </summary>
+        public static __v3t__ InvTransform(this __rot3t__ q, __v3t__ v)
+        {
+            // q' * v * q
+
+            // step 1: tmp = q.Conungated * Rot3d(0, v)
+            var w = q.X * v.X + q.Y * v.Y + q.Z * v.Z;
+            var x = q.W * v.X - q.Y * v.Z + q.Z * v.Y;
+            var y = q.W * v.Y - q.Z * v.X + q.X * v.Z;
+            var z = q.W * v.Z - q.X * v.Y + q.Y * v.X;
+
+            // step 2: tmp * q
+            return new __v3t__(
+                w * q.X + x * q.W + y * q.Z - z * q.Y,
+                w * q.Y + y * q.W + z * q.X - x * q.Z,
+                w * q.Z + z * q.W + x * q.Y - y * q.X
+                );
+        }
+    }
+
+    public static partial class Fun
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __rot3t__ r0, __rot3t__ r1)
         {
             return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue);
@@ -1136,6 +992,7 @@ namespace Aardvark.Base
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
         // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproximateEquals(__rot3t__ other);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __rot3t__ r0, __rot3t__ r1, __ft__ tolerance)
         {
             return (r0.W - r1.W).Abs() <= tolerance &&

@@ -97,7 +97,7 @@ namespace Aardvark.Base
         public static __e3t__ Multiply(__e3t__ a, __e3t__ b)
         {
             //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
-            return new __e3t__(__r3t__.Multiply(a.Rot, b.Rot), a.Trans + a.Rot.TransformDir(b.Trans));
+            return new __e3t__(a.Rot * b.Rot, a.Trans + a.Rot.Transform(b.Trans));
         }
 
         public static M3__s4f__ Multiply(M3__s3f__ m, __e3t__ r)
@@ -111,7 +111,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __v3t__ TransformDir(__e3t__ r, __v3t__ v)
         {
-            return r.Rot.TransformDir(v);
+            return r.Rot.Transform(v);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __v3t__ TransformPos(__e3t__ r, __v3t__ p)
         {
-            return r.Rot.TransformPos(p) + r.Trans;
+            return r.Rot.Transform(p) + r.Trans;
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __v3t__ InvTransformDir(__e3t__ r, __v3t__ v)
         {
-            return r.Rot.InvTransformDir(v);
+            return r.Rot.InvTransform(v);
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __v3t__ InvTransformPos(__e3t__ r, __v3t__ p)
         {
-            return r.Rot.InvTransformPos(p - r.Trans);
+            return r.Rot.InvTransform(p - r.Trans);
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace Aardvark.Base
         public void Invert()
         {
             Rot.Invert();
-            Trans = -Rot.TransformDir(Trans);
+            Trans = -Rot.Transform(Trans);
         }
 
         /// <summary>
@@ -211,7 +211,7 @@ namespace Aardvark.Base
             get
             {
                 var newR = Rot.Inverse;
-                return new __e3t__(newR, -newR.TransformDir(Trans));
+                return new __e3t__(newR, -newR.Transform(Trans));
             }
         }
 

@@ -119,7 +119,7 @@ namespace Aardvark.Tests
                 // some vectors will not normalize to 1.0 -> provoke numerical issues in Rot3d
                 var vecd = new V3d(0, 0, -rnd.NextDouble());
                 var rotd = new Rot3d(V3d.OOI, vecd.Normalized);
-                var testd = rotd.TransformDir(V3d.OOI);
+                var testd = rotd.Transform(V3d.OOI);
                 Assert.True((testd + V3d.OOI).Length < 1e-8);
 
                 //var vecf = new V3f(0, 0, -rnd.NextDouble());
@@ -142,7 +142,7 @@ namespace Aardvark.Tests
                 Assert.IsTrue(matId.IsIdentity(0));
 
                 var rot = new Rot3d(dir, -dir);
-                var invDir = rot.TransformDir(dir);
+                var invDir = rot.Transform(dir);
 
                 Assert.IsTrue(invDir.ApproximateEquals(-dir, 1e-14));
 
@@ -153,7 +153,7 @@ namespace Aardvark.Tests
                 Assert.IsTrue(matIdF.IsIdentity(0));
 
                 var rotF = new Rot3f(dirF, -dirF);
-                var invDirF = rotF.TransformDir(dirF);
+                var invDirF = rotF.Transform(dirF);
 
                 Assert.IsTrue(invDirF.ApproximateEquals(-dirF, 1e-6f));
             }
