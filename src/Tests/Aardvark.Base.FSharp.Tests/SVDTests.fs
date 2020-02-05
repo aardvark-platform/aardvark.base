@@ -15,48 +15,103 @@ module SVDTests =
     open System.Runtime.InteropServices
 
     let DecomposeWithArray(m : M33d) =
-        // works:
         let U = [| M33d() |]
-        let S = [| m |] // m.Transposed
+        let S = [| m |]
         let Vt = [| M33d() |]
 
         use pU = fixed U
         use pS = fixed S
         use pVt = fixed Vt
 
-        let floatPtr = NativePtr.cast<M33d,float> pS
-        let ptrp1 = NativePtr.step 1 floatPtr 
-        let m01 = NativePtr.read ptrp1
-
-        let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3))) // 3, 1
-        let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,3), V2l(1, 3))) // 3, 1
-        let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3))) // 3, 1
+        let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
         
         if SVD.DecomposeInPlace(tU, tS, tVt) then 
-            let floatPtr = NativePtr.cast<M33d,float> pU
-            let ptrp1 = NativePtr.step 1 floatPtr 
-            let um01 = NativePtr.read ptrp1
-            sprintf "%f" um01
-            Some (U.[0], S.[0], Vt.[0]) // *.Transpose
+            Some (U.[0], S.[0], Vt.[0])
         else
             None
 
-        //let U = Array.zeroCreate<float> 9 // [| M33d() |]
-        //let S = m.ToArray() //[| m |]
-        //let Vt = Array.zeroCreate<float> 9 // [| M33d() |]
+    let DecomposeWithArrayWeirdTranspose(m : M33d) =
+        // works:
+        let U = [| M33d() |]
+        let S = [| m.Transposed |]
+        let Vt = [| M33d() |]
 
-        //use pU = fixed U
-        //use pS = fixed S
-        //use pVt = fixed Vt
+        use pU = fixed U
+        use pS = fixed S
+        use pVt = fixed Vt
 
-        //let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        //let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        //let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(3, 1)))
+        let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,3), V2l(3, 1)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(3, 1)))
+        
+        if SVD.DecomposeInPlace(tU, tS, tVt) then 
+            Some (U.[0].Transposed, S.[0].Transposed, Vt.[0].Transposed)
+        else
+            None
 
-        //if SVD.DecomposeInPlace(tU, tS, tVt) then
-        //    Some (M33d(U), M33d(S), M33d(Vt))
-        //else
-        //    None
+    let DecomposeWithNative(m : M33d) =
+        let pU : nativeptr<M33d> = NativePtr.alloc 3
+        let pS : nativeptr<M33d> = NativePtr.alloc 3
+        let pVt : nativeptr<M33d> = NativePtr.alloc 3
+
+        try
+            let pU1 = NativePtr.add pU 1
+            let pS1 = NativePtr.add pS 1
+            let pV1 = NativePtr.add pVt 1
+
+            let pU2 = NativePtr.add pU 2
+            let pS2 = NativePtr.add pS 2
+            let pV2 = NativePtr.add pVt 2
+
+            let nanM33d = M33d(Array.create 9 Double.NaN)
+            NativePtr.write pU nanM33d
+            NativePtr.write pS nanM33d
+            NativePtr.write pVt nanM33d
+            NativePtr.write pU2 nanM33d
+            NativePtr.write pS2 nanM33d
+            NativePtr.write pV2 nanM33d
+
+            NativePtr.write pU1 (M33d())
+            NativePtr.write pS1 m
+            NativePtr.write pV1 (M33d())
+
+            let tU  = NativeMatrix<float>(NativePtr.cast pU1, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+            let tS  = NativeMatrix<float>(NativePtr.cast pS1, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+            let tVt = NativeMatrix<float>(NativePtr.cast pV1, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+            let suc = SVD.DecomposeInPlace(tU, tS, tVt)
+
+            let testUl = NativePtr.read (pU)
+            let testUh = NativePtr.read (pU2)
+            let testSl = NativePtr.read (pS)
+            let testSh = NativePtr.read (pS2)
+            let testVl = NativePtr.read (pVt)
+            let testVh = NativePtr.read (pV2)
+            if testUl.Elements |> Seq.exists (fun x -> not (x.IsNaN())) then failwith "not NaN"
+            if testUh.Elements |> Seq.exists (fun x -> not (x.IsNaN())) then failwith "not NaN"
+            if testSl.Elements |> Seq.exists (fun x -> not (x.IsNaN())) then failwith "not NaN"
+            if testSh.Elements |> Seq.exists (fun x -> not (x.IsNaN())) then failwith "not NaN"
+            if testVl.Elements |> Seq.exists (fun x -> not (x.IsNaN())) then failwith "not NaN"
+            if testVh.Elements |> Seq.exists (fun x -> not (x.IsNaN())) then failwith "not NaN"
+
+            let Ures = NativePtr.read pU1
+            let Sres =  NativePtr.read pS1
+            let Vres = NativePtr.read pV1
+
+            if Ures.Elements |> Seq.exists (fun x -> x.IsNaN()) then failwith "any NaN"
+            if Sres.Elements |> Seq.exists (fun x -> x.IsNaN()) then failwith "any NaN"
+            if Vres.Elements |> Seq.exists (fun x -> x.IsNaN()) then failwith "any NaN"
+
+            if suc then 
+                Some (Ures, Sres, Vres)
+            else
+                None
+        finally
+            NativePtr.free pU
+            NativePtr.free pS
+            NativePtr.free pVt
 
     let DecomposeWithBuilder(m : M33d) =
         let mutable S = m
@@ -67,15 +122,7 @@ module SVDTests =
             let! pS = &S
             let! pU = &U
             let! pVt = &Vt
-
-            let ptrp1 = NativePtr.step 1 pS.Pointer
-            let m01 = NativePtr.read ptrp1
-
             suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-
-            let ptrp1 = NativePtr.step 1 pU.Pointer
-            let um01 = NativePtr.read ptrp1
-            sprintf "%f" um01
         }
         if suc then
             Some (U, S, Vt)
@@ -86,7 +133,7 @@ module SVDTests =
     let ``[SVD] DecomposeWithArray``() =
 
         let rnd = new RandomSystem(1)
-        for i in 0..100000 do
+        for i in 0..10000000 do
             let mat = M33d.FromCols(rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d())
 
             let svd = DecomposeWithArray mat
@@ -96,6 +143,36 @@ module SVDTests =
                                 if not (Fun.ApproximateEquals(test, mat, 1e-6)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"
+
+    [<Test>]
+    let ``[SVD] DecomposeWithArrayWeirdTranspose``() =
+
+        let rnd = new RandomSystem(1)
+        for i in 0..1000000 do
+            let mat = M33d.FromCols(rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d())
+
+            let svd = DecomposeWithArrayWeirdTranspose mat
+
+            match svd with
+            | Some (q, s, v) -> let test = q * s * v
+                                if not (Fun.ApproximateEquals(test, mat, 1e-6)) then
+                                    failwithf "Invalid SVD at %d" i
+            | _ -> failwith "NONE"
+
+    [<Test>]
+    let ``[SVD] DecomposeWithNative``() =
+
+        let rnd = new RandomSystem(1)
+        for i in 0..10000000 do
+            let mat = M33d.FromCols(rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d())
+
+            let svd = DecomposeWithNative mat
+
+            match svd with
+            | Some (q, s, v) -> let test = q * s * v
+                                if not (Fun.ApproximateEquals(test, mat, 1e-6)) then
+                                    failwithf "Invalid SVD at %d" i
+            | _ -> failwithf "NONE at %d" i
 
     [<Test>]
     let ``[SVD] DecomposeWithBuilder``() =
@@ -108,29 +185,6 @@ module SVDTests =
 
             match svd with
             | Some (q, s, v) -> let test = q * s * v
-                                if not (Fun.ApproximateEquals(test, mat, 1e-6)) then
-                                    failwithf "Invalid SVD at %d" i
-            | _ -> failwith "NONE"
-
-    [<Test>]
-    let ``[SVD] DecomposeWithCompare``() =
-
-        let rnd = new RandomSystem(1)
-        for i in 0..100000 do
-            let mat = M33d.FromCols(rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d())
-
-            let svd1 = DecomposeWithBuilder mat
-            let svd2 = DecomposeWithArray mat
-
-            match (svd1, svd2) with
-            | (Some (q, s, v), Some(q2, s2, v2)) -> 
-                                if q <> q2 then
-                                    failwithf "Q differs" i
-                                if s <> s2 then
-                                    failwithf "S differs" i
-                                if v <> v2 then
-                                    failwithf "V differs" i
-                                let test = q * s * v
                                 if not (Fun.ApproximateEquals(test, mat, 1e-6)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"
