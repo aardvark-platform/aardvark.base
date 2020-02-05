@@ -33,6 +33,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __rot2t__(__ft__ angleInRadians)
         {
             Angle = angleInRadians;
@@ -42,19 +43,13 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __rot2t__ Identity = new __rot2t__(0);
+        public static __rot2t__ Identity { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot2t__(0); }
 
         #endregion
 
         #region Properties
 
-        public __rot2t__ Inverse
-        {
-            get
-            {
-                return new __rot2t__(-Angle);
-            }
-        }
+        public __rot2t__ Inverse { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot2t__(-Angle); } 
 
         #endregion
 
@@ -63,6 +58,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Negates the rotation.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator -(__rot2t__ rot)
         {
             return new __rot2t__(-rot.Angle);
@@ -71,6 +67,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Adds two rotations.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator +(__rot2t__ r0, __rot2t__ r1)
         {
             return new __rot2t__(r0.Angle + r1.Angle);
@@ -79,6 +76,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Adds a rotation and a scalar value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator +(__rot2t__ rot, __ft__ angle)
         {
             return new __rot2t__(rot.Angle + angle);
@@ -87,6 +85,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Adds a rotation and a scalar value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator +(__ft__ angle, __rot2t__ rot)
         {
             return new __rot2t__(rot.Angle + angle);
@@ -95,6 +94,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Subtracts two rotations.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator -(__rot2t__ r0, __rot2t__ r1)
         {
             return new __rot2t__(r0.Angle - r1.Angle);
@@ -103,6 +103,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Subtracts a scalar value from a rotation.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator -(__rot2t__ rot, __ft__ angle)
         {
             return new __rot2t__(rot.Angle - angle);
@@ -111,6 +112,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Subtracts a rotation from a scalar value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator -(__ft__ angle, __rot2t__ rot)
         {
             return new __rot2t__(angle - rot.Angle);
@@ -119,6 +121,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Multiplies a rotation with a scalar value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator *(__rot2t__ rot, __ft__ val)
         {
             return new __rot2t__(rot.Angle * val);
@@ -127,11 +130,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Multiplies a scalar value with a rotation.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator *(__ft__ val, __rot2t__ rot)
         {
             return new __rot2t__(rot.Angle * val);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ operator *(__rot2t__ rot, __v2t__ vec)
         {
             __ft__ a = Fun.Cos(rot.Angle);
@@ -141,6 +146,7 @@ namespace Aardvark.Base
                               -b * vec.X + a * vec.Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ operator *(__rot2t__ rot, __v3t__ vec)
         {
             __ft__ a = Fun.Cos(rot.Angle);
@@ -151,6 +157,7 @@ namespace Aardvark.Base
                                vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v4t__ operator *(__rot2t__ rot, __v4t__ vec)
         {
             __ft__ a = Fun.Cos(rot.Angle);
@@ -162,11 +169,13 @@ namespace Aardvark.Base
                                vec.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m22t__ operator *(__rot2t__ rot, __m22t__ mat)
         {
             return (__m22t__)rot * mat;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m33t__ operator *(__rot2t__ rot, __m33t__ mat)
         {
             __ft__ a = Fun.Cos(rot.Angle);
@@ -181,6 +190,7 @@ namespace Aardvark.Base
                                 mat.M20, mat.M21, mat.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m34t__ operator *(__rot2t__ rot, __m34t__ mat)
         {
             __ft__ a = Fun.Cos(rot.Angle);
@@ -197,6 +207,7 @@ namespace Aardvark.Base
                                 mat.M20, mat.M21, mat.M22, mat.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m44t__ operator *(__rot2t__ rot, __m44t__ mat)
         {
             __ft__ a = Fun.Cos(rot.Angle);
@@ -214,16 +225,19 @@ namespace Aardvark.Base
                                 mat.M30, mat.M31, mat.M32, mat.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m33t__ operator *(__rot2t__ rot2, __rot3t__ rot3)
         {
             return rot2 * (__m33t__)rot3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator *(__rot2t__ r0, __rot2t__ r1)
         {
             return new __rot2t__(r0.Angle * r1.Angle);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m33t__ operator *(__rot2t__ rot, __scale3t__ scale)
         {
             __ft__ a = Fun.Cos(rot.Angle);
@@ -234,6 +248,7 @@ namespace Aardvark.Base
                                 0, 0, scale.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m34t__ operator *(__rot2t__ rot, __shift3t__ shift)
         {
             __ft__ a = Fun.Cos(rot.Angle);
@@ -247,6 +262,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Divides rotation by scalar value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ operator /(__rot2t__ rot, __ft__ val)
         {
             return new __rot2t__(rot.Angle / val);
@@ -260,6 +276,7 @@ namespace Aardvark.Base
         /// Checks if 2 rotations are equal.
         /// </summary>
         /// <returns>Result of comparison.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__rot2t__ rotation1, __rot2t__ rotation2)
         {
             return (rotation1.Angle == rotation2.Angle);
@@ -269,6 +286,7 @@ namespace Aardvark.Base
         /// Checks if 2 rotations are not equal.
         /// </summary>
         /// <returns>Result of comparison.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__rot2t__ rotation1, __rot2t__ rotation2)
         {
             return !(rotation1.Angle == rotation2.Angle);
@@ -279,7 +297,7 @@ namespace Aardvark.Base
         #region Creator Function
 
         //WARNING: untested
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ From__m22t__(__m22t__ m)
         {
             // cos(a) sin(a)
@@ -296,6 +314,7 @@ namespace Aardvark.Base
 
         #region Conversion Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __m22t__(__rot2t__ r)
         {
             var ca = Fun.Cos(r.Angle);
@@ -304,6 +323,7 @@ namespace Aardvark.Base
             return new __m22t__(ca, sa, -sa, ca);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __m23t__(__rot2t__ r)
         {
             var ca = Fun.Cos(r.Angle);
@@ -312,6 +332,7 @@ namespace Aardvark.Base
             return new __m23t__(ca, sa, 0.0f, -sa, ca, 0.0f);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __m33t__(__rot2t__ r)
         {
             var ca = Fun.Cos(r.Angle);

@@ -50,6 +50,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates quaternion (w, (x, y, z)).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __rot3t__(__ft__ w, __ft__ x, __ft__ y, __ft__ z)
         {
             W = w;
@@ -61,6 +62,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates quaternion (w, (v.x, v.y, v.z)).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __rot3t__(__ft__ w, __v3t__ v)
         {
             W = w;
@@ -73,6 +75,7 @@ namespace Aardvark.Base
         /// Creates quaternion from array.
         /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __rot3t__(__ft__[] a)
         {
             W = a[0];
@@ -85,6 +88,7 @@ namespace Aardvark.Base
         /// Creates quaternion from array starting at specified index.
         /// (w = a[start], (x = a[start+1], y = a[start+2], z = a[start+3])).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __rot3t__(__ft__[] a, int start)
         {
             W = a[start];
@@ -97,6 +101,7 @@ namespace Aardvark.Base
         /// Creates quaternion representing a rotation around an axis by an angle.
         /// The axis vector has to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __rot3t__(__v3t__ normalizedAxis, __ft__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
@@ -114,6 +119,7 @@ namespace Aardvark.Base
         /// <param name="rollInRadians">Rotation around X</param>
         /// <param name="pitchInRadians">Rotation around Y</param>
         /// <param name="yawInRadians">Rotation around Z</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __rot3t__(__ft__ rollInRadians, __ft__ pitchInRadians, __ft__ yawInRadians)
         {
             __ft__ rollHalf = rollInRadians / 2;
@@ -204,27 +210,27 @@ namespace Aardvark.Base
         /// <summary>
         /// Zero (0, (0,0,0))
         /// </summary>
-        public static __rot3t__ Zero => new __rot3t__(0, __v3t__.Zero);
+        public static __rot3t__ Zero { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(0, __v3t__.Zero); }
 
         /// <summary>
         /// Identity (1, (0,0,0)).
         /// </summary>
-        public static __rot3t__ Identity => new __rot3t__(1, 0, 0, 0);
+        public static __rot3t__ Identity { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(1, 0, 0, 0); }
 
         /// <summary>
         /// X-Axis (0, (1,0,0)).
         /// </summary>
-        public static __rot3t__ XAxis => new __rot3t__(0, 1, 0, 0);
+        public static __rot3t__ XAxis { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(0, 1, 0, 0); }
 
         /// <summary>
         /// Y-Axis (0, (0,1,0)).
         /// </summary>
-        public static __rot3t__ YAxis => new __rot3t__(0, 0, 1, 0);
+        public static __rot3t__ YAxis { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(0, 0, 1, 0); }
 
         /// <summary>
         /// Z-Axis (0, (0,0,1)).
         /// </summary>
-        public static __rot3t__ ZAxis => new __rot3t__(0, 0, 0, 1);
+        public static __rot3t__ ZAxis { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(0, 0, 0, 1); }
 
         #endregion
 
@@ -253,6 +259,7 @@ namespace Aardvark.Base
         /// </summary>
         public __rot3t__ Normalized
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 var norm = Norm;
@@ -267,6 +274,7 @@ namespace Aardvark.Base
         /// </summary>
         public __rot3t__ Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 var norm = NormSquared;
@@ -299,6 +307,7 @@ namespace Aardvark.Base
         /// Returns the Euler-Angles from the quatarnion as vector.
         /// The vector components represent [roll (X), pitch (Y), yaw (Z)] with rotation order is Z, Y, X.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __v3t__ GetEulerAngles()
         {
             var test = W * Y - X * Z;
@@ -538,11 +547,13 @@ namespace Aardvark.Base
         #region Comparison Operators
 
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__rot3t__ r0, __rot3t__ r1)
         {
             return r0.W == r1.W && r0.X == r1.X && r0.Y == r1.Y && r0.Z == r1.Z;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__rot3t__ r0, __rot3t__ r1)
         {
             return !(r0 == r1);
@@ -563,6 +574,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Create from Rodrigues axis-angle vactor
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ FromAngleAxis(__v3t__ angleAxis)
         {
             __ft__ theta2 = angleAxis.LengthSquared;
@@ -629,6 +641,7 @@ namespace Aardvark.Base
         /// Create rotation around the X-axis.
         /// <param name="angleInRadians">Rotation angle in radians</param>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ RotationX(__ft__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
@@ -639,6 +652,7 @@ namespace Aardvark.Base
         /// Create rotation around the Y-axis.
         /// <param name="angleInRadians">Rotation angle in radians</param>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ RotationY(__ft__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
@@ -649,6 +663,7 @@ namespace Aardvark.Base
         /// Create rotation around the Z-axis.
         /// <param name="angleInRadians">Rotation angle in radians</param>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ RotationZ(__ft__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
@@ -660,6 +675,7 @@ namespace Aardvark.Base
         /// The rotation order is yaw (Z), pitch (Y), roll (X).
         /// <param name="rollPitchYawInRadians">[yaw, pitch, roll] in radians</param>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ FromEulerAngles(__v3t__ rollPitchYawInRadians)
         {
             return new __rot3t__(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
@@ -672,6 +688,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Rodrigues angle-axis vector of the quaternion.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __v3t__ ToAngleAxis()
         {
             var sinTheta2 = V.LengthSquared;
@@ -692,6 +709,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="axis">Output of normalized axis of rotation.</param>
         /// <param name="angleInRadians">Output of angle of rotation about axis (Right Hand Rule).</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ToAxisAngle(ref __v3t__ axis, ref __ft__ angleInRadians)
         {
             if (!Fun.ApproximateEquals(NormSquared, 1, 0.001))
@@ -717,6 +735,7 @@ namespace Aardvark.Base
         // Implement __rot3t__ as a Matrix-backed Quaternion. Quaternion should be its own class with all Quaternion-operations, 
         // and __rot3t__ only an efficient Rotation (Matrix) that is has its Orthonormalization-Constraint enforced (by a Quaternion).
         //<]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __m33t__(__rot3t__ r)
         {
             //speed up by computing the multiplications only once (each is used 2 times below)
@@ -744,6 +763,7 @@ namespace Aardvark.Base
                 );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __m44t__(__rot3t__ r)
         {
             //speed up by computing the multiplications only once (each is used 2 times below)
@@ -776,6 +796,7 @@ namespace Aardvark.Base
                 );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __m34t__(__rot3t__ r)
         {
             //speed up by computing the multiplications only once (each is used 2 times below)
@@ -806,6 +827,7 @@ namespace Aardvark.Base
                 );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __ft__[](__rot3t__ r)
         {
             __ft__[] array = new __ft__[4];
@@ -851,6 +873,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates the logarithm of the given quaternion.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ Log(this __rot3t__ a)
         {
             var result = __rot3t__.Zero;
@@ -868,6 +891,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates exponent of the given quaternion.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot3t__ Exp(this __rot3t__ a)
         {
             var result = __rot3t__.Zero;
@@ -893,12 +917,12 @@ namespace Aardvark.Base
 
     public static partial class Rot
     {
-
         #region Operations
 
         /// <summary>
         /// Inverts the given quaternion (multiplicative inverse).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref __rot3t__ r)
         {
             var norm = r.NormSquared;
@@ -921,6 +945,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Normalizes the given quaternion.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref __rot3t__ r)
         {
             var norm = r.Norm;
@@ -954,6 +979,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Transforms a vector with a quaternion.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ Transform(this __rot3t__ q, __v3t__ v)
         {
             // q * v * q'
@@ -975,6 +1001,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Transforms a vector with the inverse of a quaternion.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ InvTransform(this __rot3t__ q, __v3t__ v)
         {
             // q' * v * q
