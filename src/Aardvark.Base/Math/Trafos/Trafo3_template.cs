@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -67,14 +68,21 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __type__ Identity =
-            new __type__(__m44t__.Identity, __m44t__.Identity);
+        public static __type__ Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __type__(__m44t__.Identity, __m44t__.Identity);
+        }
 
         #endregion
 
         #region Properties
 
-        public __type__ Inverse => new __type__(Backward, Forward);
+        public __type__ Inverse
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __type__(Backward, Forward);
+        }
 
         #endregion
 
@@ -406,7 +414,7 @@ namespace Aardvark.Base
 
     }
 
-    public static class __type__Extensions
+    public static partial class Trafo
     {
         /// <summary>
         /// Approximates the uniform scale value of the given transformation (average length of basis vectors).

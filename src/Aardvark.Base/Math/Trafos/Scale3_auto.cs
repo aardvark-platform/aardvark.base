@@ -3,9 +3,12 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    #region Scale3f
+
     /// <summary>
     /// A three dimensional scaling transform with different scaling values
     /// in each dimension.
@@ -65,7 +68,9 @@ namespace Aardvark.Base
         /// </summary>
         public float X
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.X; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
 
@@ -74,7 +79,9 @@ namespace Aardvark.Base
         /// </summary>
         public float Y
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Y; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
 
@@ -83,7 +90,9 @@ namespace Aardvark.Base
         /// </summary>
         public float Z
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
 
@@ -92,6 +101,7 @@ namespace Aardvark.Base
         /// </summary>
         public float Length
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
         }
 
@@ -100,238 +110,69 @@ namespace Aardvark.Base
         /// </summary>
         public float LengthSquared
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
         }
 
         public Scale3f Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Scale3f(V.Reciprocal); }
+        }
+
+        /// <summary>
+        /// Calculates the reciprocal of a <see cref="Scale3f"/>.
+        /// </summary>
+        public Scale3f Reciprocal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3f(1 / X, 1 / Y, 1 / Z);
         }
 
         #endregion
 
         #region Constants
 
-        public static readonly Scale3f Identity = new Scale3f(1, 1, 1);
+        public static Scale3f Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3f(1, 1, 1);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> single-precision floating point zero shift vector.
         /// </summary>
-        public static readonly Scale3f Zero = new Scale3f(0, 0, 0);
+        public static Scale3f Zero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3f(0, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> single-precision floating point X-Axis shift vector.
         /// </summary>
-        public static readonly Scale3f XAxis = new Scale3f(1, 0, 0);
+        public static Scale3f XAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3f(1, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> single-precision floating point Y-Axis shift vector.
         /// </summary>
-        public static readonly Scale3f YAxis = new Scale3f(0, 1, 0);
+        public static Scale3f YAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3f(0, 1, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> single-precision floating point Z-Axis shift vector.
         /// </summary>
-        public static readonly Scale3f ZAxis = new Scale3f(0, 0, 1);
-
-        #endregion
-
-        #region Vector Arithmetics
-
-        /// <summary>
-        /// Multiplacation of a float scalar with a <see cref="Scale3f"/>.
-        /// </summary>
-        public static Scale3f Multiply(Scale3f scale, float value)
+        public static Scale3f ZAxis
         {
-            return new Scale3f(scale.X * value, scale.Y * value, scale.Z * value);
-        }
-
-        /// <summary>
-        /// Multiplication of two <see cref="Scale3f"/>s.
-        /// </summary>
-        public static Scale3f Multiply(Scale3f scale0, Scale3f scale1)
-        {
-            return new Scale3f(scale0.X * scale1.X, scale0.Y * scale1.Y, scale0.Z * scale1.Z);
-        }
-
-        public static M33f Multiply(Scale3f scale, Rot3f rot)
-        {
-            return Scale3f.Multiply(scale, (M33f)rot);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3f"/> with a <see cref="V2f"/>.
-        /// </summary>
-        public static V2f Multiply(Scale3f scale, V2f v)
-        {
-            return new V2f(v.X * scale.X, v.Y * scale.Y);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3f"/> with a <see cref="V3f"/>.
-        /// </summary>
-        public static V3f Multiply(Scale3f scale, V3f v)
-        {
-            return new V3f(scale.X * v.X, scale.Y * v.Y, scale.Z * v.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3f"/> with a <see cref="V4f"/>.
-        /// </summary>
-        public static V4f Multiply(Scale3f scale, V4f vec)
-        {
-            return new V4f(scale.X * vec.X,
-                            scale.Y * vec.Y,
-                            scale.Z * vec.Z,
-                            vec.W);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3f"/> with a <see cref="M22f"/>.
-        /// </summary>
-        public static M33f Multiply(Scale3f scale, M22f mat)
-        {
-            return new M33f(scale.X * mat.M00,
-                             scale.X * mat.M01,
-                             0,
-
-                             scale.Y * mat.M10,
-                             scale.Y * mat.M11,
-                             0,
-
-                             0,
-                             0,
-                             scale.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3f"/> with a <see cref="M33f"/>.
-        /// </summary>
-        public static M33f Multiply(Scale3f scale, M33f mat)
-        {
-            return new M33f(scale.X * mat.M00,
-                             scale.X * mat.M01,
-                             scale.X * mat.M02,
-
-                             scale.Y * mat.M10,
-                             scale.Y * mat.M11,
-                             scale.Y * mat.M12,
-
-                             scale.Z * mat.M20,
-                             scale.Z * mat.M21,
-                             scale.Z * mat.M22);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3f"/> with a <see cref="M34f"/>.
-        /// </summary>
-        public static M34f Multiply(Scale3f scale, M34f mat)
-        {
-            return new M34f(
-                    scale.X * mat.M00,
-                    scale.X * mat.M01,
-                    scale.X * mat.M02,
-                    scale.X * mat.M03,
-
-                    scale.Y * mat.M10,
-                    scale.Y * mat.M11,
-                    scale.Y * mat.M12,
-                    scale.Y * mat.M13,
-
-                    scale.Z * mat.M20,
-                    scale.Z * mat.M21,
-                    scale.Z * mat.M22,
-                    scale.Z * mat.M23
-                    );
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3f"/> with a <see cref="M44f"/>.
-        /// </summary>
-        public static M44f Multiply(Scale3f scale, M44f mat)
-        {
-            return new M44f(
-                    scale.X * mat.M00,
-                    scale.X * mat.M01,
-                    scale.X * mat.M02,
-                    scale.X * mat.M03,
-
-                    scale.Y * mat.M10,
-                    scale.Y * mat.M11,
-                    scale.Y * mat.M12,
-                    scale.Y * mat.M13,
-
-                    scale.Z * mat.M20,
-                    scale.Z * mat.M21,
-                    scale.Z * mat.M22,
-                    scale.Z * mat.M23,
-
-                    mat.M30,
-                    mat.M31,
-                    mat.M32,
-                    mat.M33
-                    );
-        }
-
-        public static M33f Multiply(Scale3f scale, Rot2f rot)
-        {
-            return Scale3f.Multiply(scale, (M22f)rot);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3f"/> with a <see cref="Shift3f"/>.
-        /// </summary>
-        public static M34f Multiply(Scale3f scale, Shift3f shift)
-        {
-            return new M34f(
-                    scale.X,
-                    0,
-                    0,
-                    scale.X * shift.X,
-
-                    0,
-                    scale.Y,
-                    0,
-                    scale.Y * shift.Y,
-
-                    0,
-                    0,
-                    scale.Z,
-                    scale.Z * shift.Z
-
-                    );
-        }
-
-        /// <summary>
-        /// Division of a <see cref="Scale3f"/> instance with a float scalar.
-        /// </summary>
-        public static Scale3f Divide(Scale3f scale, float val)
-        {
-            return Multiply(scale, 1 / val);
-        }
-
-        /// <summary>
-        /// Division of a float scalar with a <see cref="Scale3f"/>.
-        /// </summary>
-        public static Scale3f Divide(float val, Scale3f scale)
-        {
-            return Multiply(Reciprocal(scale), val);
-        }
-
-        /// <summary>
-        /// Negates all values of a <see cref="Scale3f"/>.
-        /// </summary>
-        public static Scale3f Negate(Scale3f scale)
-        {
-            return new Scale3f(-scale.X, -scale.Y, -scale.Z);
-        }
-
-        /// <summary>
-        /// Calculates the reciprocal of a <see cref="Scale3f"/>.
-        /// </summary>
-        public static Scale3f Reciprocal(Scale3f scale)
-        {
-            return new Scale3f(1 / scale.X, 1 / scale.Y, 1 / scale.Z);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3f(0, 0, 1);
         }
 
         #endregion
@@ -341,135 +182,219 @@ namespace Aardvark.Base
         /// <summary>
         /// Negates the values of a <see cref="Scale3f"/> instance.
         /// </summary>
-        public static Scale3f operator -(Scale3f scalingVector)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3f operator -(Scale3f scale)
         {
-            return Scale3f.Negate(scalingVector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a float scalar with a <see cref="Scale3f"/>.
-        /// </summary>
-        public static Scale3f operator *(Scale3f scale, float scalar)
-        {
-            return Scale3f.Multiply(scale, scalar);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="V2f"/>.
-        /// </summary>
-        public static V2f operator *(Scale3f scale, V2f vector)
-        {
-            return Scale3f.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="V3f"/>.
-        /// </summary>
-        public static V3f operator *(Scale3f scale, V3f vector)
-        {
-            return Scale3f.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="V4f"/>.
-        /// </summary>
-        public static V4f operator *(Scale3f scale, V4f vector)
-        {
-            return Scale3f.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="M22f"/>.
-        /// </summary>
-        public static M33f operator *(Scale3f scale, M22f matrix)
-        {
-            return Scale3f.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="M33f"/>.
-        /// </summary>
-        public static M33f operator *(Scale3f scale, M33f matrix)
-        {
-            return Scale3f.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="M34f"/>.
-        /// </summary>
-        public static M34f operator *(Scale3f scale, M34f matrix)
-        {
-            return Scale3f.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="M44f"/>.
-        /// </summary>
-        public static M44f operator *(Scale3f scale, M44f matrix)
-        {
-            return Scale3f.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// </summary>
-        public static M33f operator *(Scale3f scale, Rot3f quaternion)
-        {
-            return Scale3f.Multiply(scale, quaternion);
-        }
-
-        /// <summary>
-        /// </summary>
-        public static M33f operator *(Scale3f scale, Rot2f rotation)
-        {
-            return Scale3f.Multiply(scale, rotation);
+            return new Scale3f(-scale.X, -scale.Y, -scale.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Scale3f"/> with a float scalar.
         /// </summary>
-        public static Scale3f operator *(float scalar, Scale3f scale)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3f operator *(Scale3f scale, float scalar)
         {
-            return Scale3f.Multiply(scale, scalar);
+            return new Scale3f(scale.X * scalar, scale.Y * scalar, scale.Z * scalar);
         }
 
         /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="Scale3f"/>.
+        /// Calculates the multiplacation of a float scalar with a <see cref="Scale3f"/>.
         /// </summary>
-        public static Scale3f operator *(Scale3f scale1, Scale3f scale2)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3f operator *(float scalar, Scale3f scale)
         {
-            return Scale3f.Multiply(scale1, scale2);
+            return new Scale3f(scale.X * scalar, scale.Y * scalar, scale.Z * scalar);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="V2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f operator *(Scale3f scale, V2f vector)
+        {
+            return new V2f(vector.X * scale.X, vector.Y * scale.Y);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="V2f"/> with a <see cref="Scale3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f operator *(V2f vector, Scale3f scale)
+        {
+            return new V2f(vector.X * scale.X, vector.Y * scale.Y);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="V3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f operator *(Scale3f scale, V3f vector)
+        {
+            return new V3f(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="V3f"/> with a <see cref="Scale3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f operator *(V3f vector, Scale3f scale)
         {
-            return Scale3f.Multiply(scale, vector);
+            return new V3f(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="V4f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f operator *(Scale3f scale, V4f vector)
+        {
+            return new V4f(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z, vector.W);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="V4f"/> with a <see cref="Scale3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f operator *(V4f vector, Scale3f scale)
+        {
+            return new V4f(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z, vector.W);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="M22f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f operator *(Scale3f scale, M22f matrix)
+        {
+            return new M33f(scale.X * matrix.M00, scale.X * matrix.M01, 0,
+                             scale.Y * matrix.M10, scale.Y * matrix.M11, 0,
+                             0, 0, scale.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="M33f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f operator *(Scale3f scale, M33f matrix)
+        {
+            return new M33f(scale.X * matrix.M00,
+                 scale.X * matrix.M01,
+                 scale.X * matrix.M02,
+
+                 scale.Y * matrix.M10,
+                 scale.Y * matrix.M11,
+                 scale.Y * matrix.M12,
+
+                 scale.Z * matrix.M20,
+                 scale.Z * matrix.M21,
+                 scale.Z * matrix.M22);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="M34f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(Scale3f scale, M34f matrix)
+        {
+            return new M34f(
+                    scale.X * matrix.M00,
+                    scale.X * matrix.M01,
+                    scale.X * matrix.M02,
+                    scale.X * matrix.M03,
+
+                    scale.Y * matrix.M10,
+                    scale.Y * matrix.M11,
+                    scale.Y * matrix.M12,
+                    scale.Y * matrix.M13,
+
+                    scale.Z * matrix.M20,
+                    scale.Z * matrix.M21,
+                    scale.Z * matrix.M22,
+                    scale.Z * matrix.M23
+                    );
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="M44f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f operator *(Scale3f scale, M44f matrix)
+        {
+            return new M44f(
+                    scale.X * matrix.M00,
+                    scale.X * matrix.M01,
+                    scale.X * matrix.M02,
+                    scale.X * matrix.M03,
+
+                    scale.Y * matrix.M10,
+                    scale.Y * matrix.M11,
+                    scale.Y * matrix.M12,
+                    scale.Y * matrix.M13,
+
+                    scale.Z * matrix.M20,
+                    scale.Z * matrix.M21,
+                    scale.Z * matrix.M22,
+                    scale.Z * matrix.M23,
+
+                    matrix.M30,
+                    matrix.M31,
+                    matrix.M32,
+                    matrix.M33
+                    );
+        }
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f operator *(Scale3f scale, Rot3f rotation)
+        {
+            return scale * (M33f)rotation;
+        }
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f operator *(Scale3f scale, Rot2f rotation)
+        {
+            return scale * (M22f)rotation;
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="Scale3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3f operator *(Scale3f scale1, Scale3f scale2)
+        {
+            return new Scale3f(scale1.X * scale2.X, scale1.Y * scale2.Y, scale1.Z * scale2.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Scale3f"/> with a <see cref="Shift3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator *(Scale3f scale, Shift3f shift)
         {
-            return Scale3f.Multiply(scale, shift);
+            return new M34f(scale.X, 0, 0, scale.X * shift.X,
+                    0, scale.Y, 0, scale.Y * shift.Y,
+                    0, 0, scale.Z, scale.Z * shift.Z);
         }
 
         /// <summary>
         /// Calculates the division of a <see cref="Scale3f"/> with a float scalar.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3f operator /(Scale3f scale, float value)
         {
-            return Scale3f.Divide(scale, value);
+            return scale * (1 / value);
         }
 
         /// <summary>
         /// Calculates the division of a float scalar with a <see cref="Scale3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3f operator /(float value, Scale3f scale)
         {
-            return Scale3f.Divide(value, scale);
+            return scale.Reciprocal * value;
         }
 
         #endregion
@@ -631,6 +556,11 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
+
+    #region Scale3d
+
     /// <summary>
     /// A three dimensional scaling transform with different scaling values
     /// in each dimension.
@@ -690,7 +620,9 @@ namespace Aardvark.Base
         /// </summary>
         public double X
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.X; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
 
@@ -699,7 +631,9 @@ namespace Aardvark.Base
         /// </summary>
         public double Y
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Y; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
 
@@ -708,7 +642,9 @@ namespace Aardvark.Base
         /// </summary>
         public double Z
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
 
@@ -717,6 +653,7 @@ namespace Aardvark.Base
         /// </summary>
         public double Length
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
         }
 
@@ -725,238 +662,69 @@ namespace Aardvark.Base
         /// </summary>
         public double LengthSquared
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
         }
 
         public Scale3d Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Scale3d(V.Reciprocal); }
+        }
+
+        /// <summary>
+        /// Calculates the reciprocal of a <see cref="Scale3d"/>.
+        /// </summary>
+        public Scale3d Reciprocal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3d(1 / X, 1 / Y, 1 / Z);
         }
 
         #endregion
 
         #region Constants
 
-        public static readonly Scale3d Identity = new Scale3d(1, 1, 1);
+        public static Scale3d Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3d(1, 1, 1);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> double-precision floating point zero shift vector.
         /// </summary>
-        public static readonly Scale3d Zero = new Scale3d(0, 0, 0);
+        public static Scale3d Zero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3d(0, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> double-precision floating point X-Axis shift vector.
         /// </summary>
-        public static readonly Scale3d XAxis = new Scale3d(1, 0, 0);
+        public static Scale3d XAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3d(1, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> double-precision floating point Y-Axis shift vector.
         /// </summary>
-        public static readonly Scale3d YAxis = new Scale3d(0, 1, 0);
+        public static Scale3d YAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3d(0, 1, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> double-precision floating point Z-Axis shift vector.
         /// </summary>
-        public static readonly Scale3d ZAxis = new Scale3d(0, 0, 1);
-
-        #endregion
-
-        #region Vector Arithmetics
-
-        /// <summary>
-        /// Multiplacation of a double scalar with a <see cref="Scale3d"/>.
-        /// </summary>
-        public static Scale3d Multiply(Scale3d scale, double value)
+        public static Scale3d ZAxis
         {
-            return new Scale3d(scale.X * value, scale.Y * value, scale.Z * value);
-        }
-
-        /// <summary>
-        /// Multiplication of two <see cref="Scale3d"/>s.
-        /// </summary>
-        public static Scale3d Multiply(Scale3d scale0, Scale3d scale1)
-        {
-            return new Scale3d(scale0.X * scale1.X, scale0.Y * scale1.Y, scale0.Z * scale1.Z);
-        }
-
-        public static M33d Multiply(Scale3d scale, Rot3d rot)
-        {
-            return Scale3d.Multiply(scale, (M33d)rot);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3d"/> with a <see cref="V2d"/>.
-        /// </summary>
-        public static V2d Multiply(Scale3d scale, V2d v)
-        {
-            return new V2d(v.X * scale.X, v.Y * scale.Y);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3d"/> with a <see cref="V3d"/>.
-        /// </summary>
-        public static V3d Multiply(Scale3d scale, V3d v)
-        {
-            return new V3d(scale.X * v.X, scale.Y * v.Y, scale.Z * v.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3d"/> with a <see cref="V4d"/>.
-        /// </summary>
-        public static V4d Multiply(Scale3d scale, V4d vec)
-        {
-            return new V4d(scale.X * vec.X,
-                            scale.Y * vec.Y,
-                            scale.Z * vec.Z,
-                            vec.W);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3d"/> with a <see cref="M22d"/>.
-        /// </summary>
-        public static M33d Multiply(Scale3d scale, M22d mat)
-        {
-            return new M33d(scale.X * mat.M00,
-                             scale.X * mat.M01,
-                             0,
-
-                             scale.Y * mat.M10,
-                             scale.Y * mat.M11,
-                             0,
-
-                             0,
-                             0,
-                             scale.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3d"/> with a <see cref="M33d"/>.
-        /// </summary>
-        public static M33d Multiply(Scale3d scale, M33d mat)
-        {
-            return new M33d(scale.X * mat.M00,
-                             scale.X * mat.M01,
-                             scale.X * mat.M02,
-
-                             scale.Y * mat.M10,
-                             scale.Y * mat.M11,
-                             scale.Y * mat.M12,
-
-                             scale.Z * mat.M20,
-                             scale.Z * mat.M21,
-                             scale.Z * mat.M22);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3d"/> with a <see cref="M34d"/>.
-        /// </summary>
-        public static M34d Multiply(Scale3d scale, M34d mat)
-        {
-            return new M34d(
-                    scale.X * mat.M00,
-                    scale.X * mat.M01,
-                    scale.X * mat.M02,
-                    scale.X * mat.M03,
-
-                    scale.Y * mat.M10,
-                    scale.Y * mat.M11,
-                    scale.Y * mat.M12,
-                    scale.Y * mat.M13,
-
-                    scale.Z * mat.M20,
-                    scale.Z * mat.M21,
-                    scale.Z * mat.M22,
-                    scale.Z * mat.M23
-                    );
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3d"/> with a <see cref="M44d"/>.
-        /// </summary>
-        public static M44d Multiply(Scale3d scale, M44d mat)
-        {
-            return new M44d(
-                    scale.X * mat.M00,
-                    scale.X * mat.M01,
-                    scale.X * mat.M02,
-                    scale.X * mat.M03,
-
-                    scale.Y * mat.M10,
-                    scale.Y * mat.M11,
-                    scale.Y * mat.M12,
-                    scale.Y * mat.M13,
-
-                    scale.Z * mat.M20,
-                    scale.Z * mat.M21,
-                    scale.Z * mat.M22,
-                    scale.Z * mat.M23,
-
-                    mat.M30,
-                    mat.M31,
-                    mat.M32,
-                    mat.M33
-                    );
-        }
-
-        public static M33d Multiply(Scale3d scale, Rot2d rot)
-        {
-            return Scale3d.Multiply(scale, (M22d)rot);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale3d"/> with a <see cref="Shift3d"/>.
-        /// </summary>
-        public static M34d Multiply(Scale3d scale, Shift3d shift)
-        {
-            return new M34d(
-                    scale.X,
-                    0,
-                    0,
-                    scale.X * shift.X,
-
-                    0,
-                    scale.Y,
-                    0,
-                    scale.Y * shift.Y,
-
-                    0,
-                    0,
-                    scale.Z,
-                    scale.Z * shift.Z
-
-                    );
-        }
-
-        /// <summary>
-        /// Division of a <see cref="Scale3d"/> instance with a double scalar.
-        /// </summary>
-        public static Scale3d Divide(Scale3d scale, double val)
-        {
-            return Multiply(scale, 1 / val);
-        }
-
-        /// <summary>
-        /// Division of a double scalar with a <see cref="Scale3d"/>.
-        /// </summary>
-        public static Scale3d Divide(double val, Scale3d scale)
-        {
-            return Multiply(Reciprocal(scale), val);
-        }
-
-        /// <summary>
-        /// Negates all values of a <see cref="Scale3d"/>.
-        /// </summary>
-        public static Scale3d Negate(Scale3d scale)
-        {
-            return new Scale3d(-scale.X, -scale.Y, -scale.Z);
-        }
-
-        /// <summary>
-        /// Calculates the reciprocal of a <see cref="Scale3d"/>.
-        /// </summary>
-        public static Scale3d Reciprocal(Scale3d scale)
-        {
-            return new Scale3d(1 / scale.X, 1 / scale.Y, 1 / scale.Z);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale3d(0, 0, 1);
         }
 
         #endregion
@@ -966,135 +734,219 @@ namespace Aardvark.Base
         /// <summary>
         /// Negates the values of a <see cref="Scale3d"/> instance.
         /// </summary>
-        public static Scale3d operator -(Scale3d scalingVector)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3d operator -(Scale3d scale)
         {
-            return Scale3d.Negate(scalingVector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a double scalar with a <see cref="Scale3d"/>.
-        /// </summary>
-        public static Scale3d operator *(Scale3d scale, double scalar)
-        {
-            return Scale3d.Multiply(scale, scalar);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="V2d"/>.
-        /// </summary>
-        public static V2d operator *(Scale3d scale, V2d vector)
-        {
-            return Scale3d.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="V3d"/>.
-        /// </summary>
-        public static V3d operator *(Scale3d scale, V3d vector)
-        {
-            return Scale3d.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="V4d"/>.
-        /// </summary>
-        public static V4d operator *(Scale3d scale, V4d vector)
-        {
-            return Scale3d.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="M22d"/>.
-        /// </summary>
-        public static M33d operator *(Scale3d scale, M22d matrix)
-        {
-            return Scale3d.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="M33d"/>.
-        /// </summary>
-        public static M33d operator *(Scale3d scale, M33d matrix)
-        {
-            return Scale3d.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="M34d"/>.
-        /// </summary>
-        public static M34d operator *(Scale3d scale, M34d matrix)
-        {
-            return Scale3d.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="M44d"/>.
-        /// </summary>
-        public static M44d operator *(Scale3d scale, M44d matrix)
-        {
-            return Scale3d.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// </summary>
-        public static M33d operator *(Scale3d scale, Rot3d quaternion)
-        {
-            return Scale3d.Multiply(scale, quaternion);
-        }
-
-        /// <summary>
-        /// </summary>
-        public static M33d operator *(Scale3d scale, Rot2d rotation)
-        {
-            return Scale3d.Multiply(scale, rotation);
+            return new Scale3d(-scale.X, -scale.Y, -scale.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Scale3d"/> with a double scalar.
         /// </summary>
-        public static Scale3d operator *(double scalar, Scale3d scale)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3d operator *(Scale3d scale, double scalar)
         {
-            return Scale3d.Multiply(scale, scalar);
+            return new Scale3d(scale.X * scalar, scale.Y * scalar, scale.Z * scalar);
         }
 
         /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="Scale3d"/>.
+        /// Calculates the multiplacation of a double scalar with a <see cref="Scale3d"/>.
         /// </summary>
-        public static Scale3d operator *(Scale3d scale1, Scale3d scale2)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3d operator *(double scalar, Scale3d scale)
         {
-            return Scale3d.Multiply(scale1, scale2);
+            return new Scale3d(scale.X * scalar, scale.Y * scalar, scale.Z * scalar);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="V2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d operator *(Scale3d scale, V2d vector)
+        {
+            return new V2d(vector.X * scale.X, vector.Y * scale.Y);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="V2d"/> with a <see cref="Scale3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d operator *(V2d vector, Scale3d scale)
+        {
+            return new V2d(vector.X * scale.X, vector.Y * scale.Y);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="V3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d operator *(Scale3d scale, V3d vector)
+        {
+            return new V3d(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="V3d"/> with a <see cref="Scale3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d operator *(V3d vector, Scale3d scale)
         {
-            return Scale3d.Multiply(scale, vector);
+            return new V3d(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="V4d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d operator *(Scale3d scale, V4d vector)
+        {
+            return new V4d(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z, vector.W);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="V4d"/> with a <see cref="Scale3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d operator *(V4d vector, Scale3d scale)
+        {
+            return new V4d(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z, vector.W);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="M22d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d operator *(Scale3d scale, M22d matrix)
+        {
+            return new M33d(scale.X * matrix.M00, scale.X * matrix.M01, 0,
+                             scale.Y * matrix.M10, scale.Y * matrix.M11, 0,
+                             0, 0, scale.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="M33d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d operator *(Scale3d scale, M33d matrix)
+        {
+            return new M33d(scale.X * matrix.M00,
+                 scale.X * matrix.M01,
+                 scale.X * matrix.M02,
+
+                 scale.Y * matrix.M10,
+                 scale.Y * matrix.M11,
+                 scale.Y * matrix.M12,
+
+                 scale.Z * matrix.M20,
+                 scale.Z * matrix.M21,
+                 scale.Z * matrix.M22);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="M34d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(Scale3d scale, M34d matrix)
+        {
+            return new M34d(
+                    scale.X * matrix.M00,
+                    scale.X * matrix.M01,
+                    scale.X * matrix.M02,
+                    scale.X * matrix.M03,
+
+                    scale.Y * matrix.M10,
+                    scale.Y * matrix.M11,
+                    scale.Y * matrix.M12,
+                    scale.Y * matrix.M13,
+
+                    scale.Z * matrix.M20,
+                    scale.Z * matrix.M21,
+                    scale.Z * matrix.M22,
+                    scale.Z * matrix.M23
+                    );
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="M44d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d operator *(Scale3d scale, M44d matrix)
+        {
+            return new M44d(
+                    scale.X * matrix.M00,
+                    scale.X * matrix.M01,
+                    scale.X * matrix.M02,
+                    scale.X * matrix.M03,
+
+                    scale.Y * matrix.M10,
+                    scale.Y * matrix.M11,
+                    scale.Y * matrix.M12,
+                    scale.Y * matrix.M13,
+
+                    scale.Z * matrix.M20,
+                    scale.Z * matrix.M21,
+                    scale.Z * matrix.M22,
+                    scale.Z * matrix.M23,
+
+                    matrix.M30,
+                    matrix.M31,
+                    matrix.M32,
+                    matrix.M33
+                    );
+        }
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d operator *(Scale3d scale, Rot3d rotation)
+        {
+            return scale * (M33d)rotation;
+        }
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d operator *(Scale3d scale, Rot2d rotation)
+        {
+            return scale * (M22d)rotation;
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="Scale3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3d operator *(Scale3d scale1, Scale3d scale2)
+        {
+            return new Scale3d(scale1.X * scale2.X, scale1.Y * scale2.Y, scale1.Z * scale2.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Scale3d"/> with a <see cref="Shift3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator *(Scale3d scale, Shift3d shift)
         {
-            return Scale3d.Multiply(scale, shift);
+            return new M34d(scale.X, 0, 0, scale.X * shift.X,
+                    0, scale.Y, 0, scale.Y * shift.Y,
+                    0, 0, scale.Z, scale.Z * shift.Z);
         }
 
         /// <summary>
         /// Calculates the division of a <see cref="Scale3d"/> with a double scalar.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3d operator /(Scale3d scale, double value)
         {
-            return Scale3d.Divide(scale, value);
+            return scale * (1 / value);
         }
 
         /// <summary>
         /// Calculates the division of a double scalar with a <see cref="Scale3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3d operator /(double value, Scale3d scale)
         {
-            return Scale3d.Divide(value, scale);
+            return scale.Reciprocal * value;
         }
 
         #endregion
@@ -1256,4 +1108,7 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
+
 }

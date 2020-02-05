@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -57,14 +58,21 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly Trafo3f Identity =
-            new Trafo3f(M44f.Identity, M44f.Identity);
+        public static Trafo3f Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Trafo3f(M44f.Identity, M44f.Identity);
+        }
 
         #endregion
 
         #region Properties
 
-        public Trafo3f Inverse => new Trafo3f(Backward, Forward);
+        public Trafo3f Inverse
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Trafo3f(Backward, Forward);
+        }
 
         #endregion
 
@@ -396,7 +404,7 @@ namespace Aardvark.Base
 
     }
 
-    public static class Trafo3fExtensions
+    public static partial class Trafo
     {
         /// <summary>
         /// Approximates the uniform scale value of the given transformation (average length of basis vectors).
@@ -580,14 +588,21 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly Trafo3d Identity =
-            new Trafo3d(M44d.Identity, M44d.Identity);
+        public static Trafo3d Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Trafo3d(M44d.Identity, M44d.Identity);
+        }
 
         #endregion
 
         #region Properties
 
-        public Trafo3d Inverse => new Trafo3d(Backward, Forward);
+        public Trafo3d Inverse
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Trafo3d(Backward, Forward);
+        }
 
         #endregion
 
@@ -919,7 +934,7 @@ namespace Aardvark.Base
 
     }
 
-    public static class Trafo3dExtensions
+    public static partial class Trafo
     {
         /// <summary>
         /// Approximates the uniform scale value of the given transformation (average length of basis vectors).

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -12,6 +13,8 @@ namespace Aardvark.Base
     //#   var x2t = isDouble ? "2d" : "2f";
     //#   var x3t = isDouble ? "3d" : "3f";
     //#   var x4t = isDouble ? "4d" : "4f";
+    #region Scale__x3t__
+
     /// <summary>
     /// A three dimensional scaling transform with different scaling values
     /// in each dimension.
@@ -71,7 +74,9 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ X
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.X; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
 
@@ -80,7 +85,9 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ Y
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Y; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
 
@@ -89,7 +96,9 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ Z
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
 
@@ -98,6 +107,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ Length
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
         }
 
@@ -106,238 +116,69 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ LengthSquared
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
         }
 
         public Scale__x3t__ Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Scale__x3t__(V.Reciprocal); }
+        }
+
+        /// <summary>
+        /// Calculates the reciprocal of a <see cref="Scale__x3t__"/>.
+        /// </summary>
+        public Scale__x3t__ Reciprocal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale__x3t__(1 / X, 1 / Y, 1 / Z);
         }
 
         #endregion
 
         #region Constants
 
-        public static readonly Scale__x3t__ Identity = new Scale__x3t__(1, 1, 1);
+        public static Scale__x3t__ Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale__x3t__(1, 1, 1);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> __single__-precision floating point zero shift vector.
         /// </summary>
-        public static readonly Scale__x3t__ Zero = new Scale__x3t__(0, 0, 0);
+        public static Scale__x3t__ Zero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale__x3t__(0, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> __single__-precision floating point X-Axis shift vector.
         /// </summary>
-        public static readonly Scale__x3t__ XAxis = new Scale__x3t__(1, 0, 0);
+        public static Scale__x3t__ XAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale__x3t__(1, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> __single__-precision floating point Y-Axis shift vector.
         /// </summary>
-        public static readonly Scale__x3t__ YAxis = new Scale__x3t__(0, 1, 0);
+        public static Scale__x3t__ YAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale__x3t__(0, 1, 0);
+        }
 
         /// <summary>
         /// A <see cref="Scale3d"/> __single__-precision floating point Z-Axis shift vector.
         /// </summary>
-        public static readonly Scale__x3t__ ZAxis = new Scale__x3t__(0, 0, 1);
-
-        #endregion
-
-        #region Vector Arithmetics
-
-        /// <summary>
-        /// Multiplacation of a __ft__ scalar with a <see cref="Scale__x3t__"/>.
-        /// </summary>
-        public static Scale__x3t__ Multiply(Scale__x3t__ scale, __ft__ value)
+        public static Scale__x3t__ ZAxis
         {
-            return new Scale__x3t__(scale.X * value, scale.Y * value, scale.Z * value);
-        }
-
-        /// <summary>
-        /// Multiplication of two <see cref="Scale__x3t__"/>s.
-        /// </summary>
-        public static Scale__x3t__ Multiply(Scale__x3t__ scale0, Scale__x3t__ scale1)
-        {
-            return new Scale__x3t__(scale0.X * scale1.X, scale0.Y * scale1.Y, scale0.Z * scale1.Z);
-        }
-
-        public static M3__x3t__ Multiply(Scale__x3t__ scale, Rot__x3t__ rot)
-        {
-            return Scale__x3t__.Multiply(scale, (M3__x3t__)rot);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x2t__"/>.
-        /// </summary>
-        public static V__x2t__ Multiply(Scale__x3t__ scale, V__x2t__ v)
-        {
-            return new V__x2t__(v.X * scale.X, v.Y * scale.Y);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x3t__"/>.
-        /// </summary>
-        public static V__x3t__ Multiply(Scale__x3t__ scale, V__x3t__ v)
-        {
-            return new V__x3t__(scale.X * v.X, scale.Y * v.Y, scale.Z * v.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x4t__"/>.
-        /// </summary>
-        public static V__x4t__ Multiply(Scale__x3t__ scale, V__x4t__ vec)
-        {
-            return new V__x4t__(scale.X * vec.X,
-                            scale.Y * vec.Y,
-                            scale.Z * vec.Z,
-                            vec.W);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M2__x2t__"/>.
-        /// </summary>
-        public static M3__x3t__ Multiply(Scale__x3t__ scale, M2__x2t__ mat)
-        {
-            return new M3__x3t__(scale.X * mat.M00,
-                             scale.X * mat.M01,
-                             0,
-
-                             scale.Y * mat.M10,
-                             scale.Y * mat.M11,
-                             0,
-
-                             0,
-                             0,
-                             scale.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M3__x3t__"/>.
-        /// </summary>
-        public static M3__x3t__ Multiply(Scale__x3t__ scale, M3__x3t__ mat)
-        {
-            return new M3__x3t__(scale.X * mat.M00,
-                             scale.X * mat.M01,
-                             scale.X * mat.M02,
-
-                             scale.Y * mat.M10,
-                             scale.Y * mat.M11,
-                             scale.Y * mat.M12,
-
-                             scale.Z * mat.M20,
-                             scale.Z * mat.M21,
-                             scale.Z * mat.M22);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M3__x4t__"/>.
-        /// </summary>
-        public static M3__x4t__ Multiply(Scale__x3t__ scale, M3__x4t__ mat)
-        {
-            return new M3__x4t__(
-                    scale.X * mat.M00,
-                    scale.X * mat.M01,
-                    scale.X * mat.M02,
-                    scale.X * mat.M03,
-
-                    scale.Y * mat.M10,
-                    scale.Y * mat.M11,
-                    scale.Y * mat.M12,
-                    scale.Y * mat.M13,
-
-                    scale.Z * mat.M20,
-                    scale.Z * mat.M21,
-                    scale.Z * mat.M22,
-                    scale.Z * mat.M23
-                    );
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M4__x4t__"/>.
-        /// </summary>
-        public static M4__x4t__ Multiply(Scale__x3t__ scale, M4__x4t__ mat)
-        {
-            return new M4__x4t__(
-                    scale.X * mat.M00,
-                    scale.X * mat.M01,
-                    scale.X * mat.M02,
-                    scale.X * mat.M03,
-
-                    scale.Y * mat.M10,
-                    scale.Y * mat.M11,
-                    scale.Y * mat.M12,
-                    scale.Y * mat.M13,
-
-                    scale.Z * mat.M20,
-                    scale.Z * mat.M21,
-                    scale.Z * mat.M22,
-                    scale.Z * mat.M23,
-
-                    mat.M30,
-                    mat.M31,
-                    mat.M32,
-                    mat.M33
-                    );
-        }
-
-        public static M3__x3t__ Multiply(Scale__x3t__ scale, Rot__x2t__ rot)
-        {
-            return Scale__x3t__.Multiply(scale, (M2__x2t__)rot);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="Shift__x3t__"/>.
-        /// </summary>
-        public static M3__x4t__ Multiply(Scale__x3t__ scale, Shift__x3t__ shift)
-        {
-            return new M3__x4t__(
-                    scale.X,
-                    0,
-                    0,
-                    scale.X * shift.X,
-
-                    0,
-                    scale.Y,
-                    0,
-                    scale.Y * shift.Y,
-
-                    0,
-                    0,
-                    scale.Z,
-                    scale.Z * shift.Z
-
-                    );
-        }
-
-        /// <summary>
-        /// Division of a <see cref="Scale__x3t__"/> instance with a __ft__ scalar.
-        /// </summary>
-        public static Scale__x3t__ Divide(Scale__x3t__ scale, __ft__ val)
-        {
-            return Multiply(scale, 1 / val);
-        }
-
-        /// <summary>
-        /// Division of a __ft__ scalar with a <see cref="Scale__x3t__"/>.
-        /// </summary>
-        public static Scale__x3t__ Divide(__ft__ val, Scale__x3t__ scale)
-        {
-            return Multiply(Reciprocal(scale), val);
-        }
-
-        /// <summary>
-        /// Negates all values of a <see cref="Scale__x3t__"/>.
-        /// </summary>
-        public static Scale__x3t__ Negate(Scale__x3t__ scale)
-        {
-            return new Scale__x3t__(-scale.X, -scale.Y, -scale.Z);
-        }
-
-        /// <summary>
-        /// Calculates the reciprocal of a <see cref="Scale__x3t__"/>.
-        /// </summary>
-        public static Scale__x3t__ Reciprocal(Scale__x3t__ scale)
-        {
-            return new Scale__x3t__(1 / scale.X, 1 / scale.Y, 1 / scale.Z);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Scale__x3t__(0, 0, 1);
         }
 
         #endregion
@@ -347,135 +188,219 @@ namespace Aardvark.Base
         /// <summary>
         /// Negates the values of a <see cref="Scale__x3t__"/> instance.
         /// </summary>
-        public static Scale__x3t__ operator -(Scale__x3t__ scalingVector)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale__x3t__ operator -(Scale__x3t__ scale)
         {
-            return Scale__x3t__.Negate(scalingVector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a __ft__ scalar with a <see cref="Scale__x3t__"/>.
-        /// </summary>
-        public static Scale__x3t__ operator *(Scale__x3t__ scale, __ft__ scalar)
-        {
-            return Scale__x3t__.Multiply(scale, scalar);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x2t__"/>.
-        /// </summary>
-        public static V__x2t__ operator *(Scale__x3t__ scale, V__x2t__ vector)
-        {
-            return Scale__x3t__.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x3t__"/>.
-        /// </summary>
-        public static V__x3t__ operator *(Scale__x3t__ scale, V__x3t__ vector)
-        {
-            return Scale__x3t__.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x4t__"/>.
-        /// </summary>
-        public static V__x4t__ operator *(Scale__x3t__ scale, V__x4t__ vector)
-        {
-            return Scale__x3t__.Multiply(scale, vector);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M2__x2t__"/>.
-        /// </summary>
-        public static M3__x3t__ operator *(Scale__x3t__ scale, M2__x2t__ matrix)
-        {
-            return Scale__x3t__.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M3__x3t__"/>.
-        /// </summary>
-        public static M3__x3t__ operator *(Scale__x3t__ scale, M3__x3t__ matrix)
-        {
-            return Scale__x3t__.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M3__x4t__"/>.
-        /// </summary>
-        public static M3__x4t__ operator *(Scale__x3t__ scale, M3__x4t__ matrix)
-        {
-            return Scale__x3t__.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M4__x4t__"/>.
-        /// </summary>
-        public static M4__x4t__ operator *(Scale__x3t__ scale, M4__x4t__ matrix)
-        {
-            return Scale__x3t__.Multiply(scale, matrix);
-        }
-
-        /// <summary>
-        /// </summary>
-        public static M3__x3t__ operator *(Scale__x3t__ scale, Rot__x3t__ quaternion)
-        {
-            return Scale__x3t__.Multiply(scale, quaternion);
-        }
-
-        /// <summary>
-        /// </summary>
-        public static M3__x3t__ operator *(Scale__x3t__ scale, Rot__x2t__ rotation)
-        {
-            return Scale__x3t__.Multiply(scale, rotation);
+            return new Scale__x3t__(-scale.X, -scale.Y, -scale.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a __ft__ scalar.
         /// </summary>
-        public static Scale__x3t__ operator *(__ft__ scalar, Scale__x3t__ scale)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale__x3t__ operator *(Scale__x3t__ scale, __ft__ scalar)
         {
-            return Scale__x3t__.Multiply(scale, scalar);
+            return new Scale__x3t__(scale.X * scalar, scale.Y * scalar, scale.Z * scalar);
         }
 
         /// <summary>
-        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="Scale__x3t__"/>.
+        /// Calculates the multiplacation of a __ft__ scalar with a <see cref="Scale__x3t__"/>.
         /// </summary>
-        public static Scale__x3t__ operator *(Scale__x3t__ scale1, Scale__x3t__ scale2)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale__x3t__ operator *(__ft__ scalar, Scale__x3t__ scale)
         {
-            return Scale__x3t__.Multiply(scale1, scale2);
+            return new Scale__x3t__(scale.X * scalar, scale.Y * scalar, scale.Z * scalar);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x2t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x2t__ operator *(Scale__x3t__ scale, V__x2t__ vector)
+        {
+            return new V__x2t__(vector.X * scale.X, vector.Y * scale.Y);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="V__x2t__"/> with a <see cref="Scale__x3t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x2t__ operator *(V__x2t__ vector, Scale__x3t__ scale)
+        {
+            return new V__x2t__(vector.X * scale.X, vector.Y * scale.Y);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x3t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x3t__ operator *(Scale__x3t__ scale, V__x3t__ vector)
+        {
+            return new V__x3t__(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="V__x3t__"/> with a <see cref="Scale__x3t__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V__x3t__ operator *(V__x3t__ vector, Scale__x3t__ scale)
         {
-            return Scale__x3t__.Multiply(scale, vector);
+            return new V__x3t__(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="V__x4t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x4t__ operator *(Scale__x3t__ scale, V__x4t__ vector)
+        {
+            return new V__x4t__(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z, vector.W);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="V__x4t__"/> with a <see cref="Scale__x3t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x4t__ operator *(V__x4t__ vector, Scale__x3t__ scale)
+        {
+            return new V__x4t__(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z, vector.W);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M2__x2t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x3t__ operator *(Scale__x3t__ scale, M2__x2t__ matrix)
+        {
+            return new M3__x3t__(scale.X * matrix.M00, scale.X * matrix.M01, 0,
+                             scale.Y * matrix.M10, scale.Y * matrix.M11, 0,
+                             0, 0, scale.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M3__x3t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x3t__ operator *(Scale__x3t__ scale, M3__x3t__ matrix)
+        {
+            return new M3__x3t__(scale.X * matrix.M00,
+                 scale.X * matrix.M01,
+                 scale.X * matrix.M02,
+
+                 scale.Y * matrix.M10,
+                 scale.Y * matrix.M11,
+                 scale.Y * matrix.M12,
+
+                 scale.Z * matrix.M20,
+                 scale.Z * matrix.M21,
+                 scale.Z * matrix.M22);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M3__x4t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x4t__ operator *(Scale__x3t__ scale, M3__x4t__ matrix)
+        {
+            return new M3__x4t__(
+                    scale.X * matrix.M00,
+                    scale.X * matrix.M01,
+                    scale.X * matrix.M02,
+                    scale.X * matrix.M03,
+
+                    scale.Y * matrix.M10,
+                    scale.Y * matrix.M11,
+                    scale.Y * matrix.M12,
+                    scale.Y * matrix.M13,
+
+                    scale.Z * matrix.M20,
+                    scale.Z * matrix.M21,
+                    scale.Z * matrix.M22,
+                    scale.Z * matrix.M23
+                    );
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="M4__x4t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M4__x4t__ operator *(Scale__x3t__ scale, M4__x4t__ matrix)
+        {
+            return new M4__x4t__(
+                    scale.X * matrix.M00,
+                    scale.X * matrix.M01,
+                    scale.X * matrix.M02,
+                    scale.X * matrix.M03,
+
+                    scale.Y * matrix.M10,
+                    scale.Y * matrix.M11,
+                    scale.Y * matrix.M12,
+                    scale.Y * matrix.M13,
+
+                    scale.Z * matrix.M20,
+                    scale.Z * matrix.M21,
+                    scale.Z * matrix.M22,
+                    scale.Z * matrix.M23,
+
+                    matrix.M30,
+                    matrix.M31,
+                    matrix.M32,
+                    matrix.M33
+                    );
+        }
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x3t__ operator *(Scale__x3t__ scale, Rot__x3t__ rotation)
+        {
+            return scale * (M3__x3t__)rotation;
+        }
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x3t__ operator *(Scale__x3t__ scale, Rot__x2t__ rotation)
+        {
+            return scale * (M2__x2t__)rotation;
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="Scale__x3t__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale__x3t__ operator *(Scale__x3t__ scale1, Scale__x3t__ scale2)
+        {
+            return new Scale__x3t__(scale1.X * scale2.X, scale1.Y * scale2.Y, scale1.Z * scale2.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Scale__x3t__"/> with a <see cref="Shift__x3t__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M3__x4t__ operator *(Scale__x3t__ scale, Shift__x3t__ shift)
         {
-            return Scale__x3t__.Multiply(scale, shift);
+            return new M3__x4t__(scale.X, 0, 0, scale.X * shift.X,
+                    0, scale.Y, 0, scale.Y * shift.Y,
+                    0, 0, scale.Z, scale.Z * shift.Z);
         }
 
         /// <summary>
         /// Calculates the division of a <see cref="Scale__x3t__"/> with a __ft__ scalar.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale__x3t__ operator /(Scale__x3t__ scale, __ft__ value)
         {
-            return Scale__x3t__.Divide(scale, value);
+            return scale * (1 / value);
         }
 
         /// <summary>
         /// Calculates the division of a __ft__ scalar with a <see cref="Scale__x3t__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale__x3t__ operator /(__ft__ value, Scale__x3t__ scale)
         {
-            return Scale__x3t__.Divide(value, scale);
+            return scale.Reciprocal * value;
         }
 
         #endregion
@@ -637,5 +562,8 @@ namespace Aardvark.Base
 
         #endregion
     }
-    //# } // isDouble
+
+    #endregion
+
+    //# }
 }
