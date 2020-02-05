@@ -116,8 +116,6 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Similarity transformation.
         /// [1/Scale, Rot^T,-Rot^T Trans/Scale]
         /// </summary>
-        /// <remarks>Not tested.</remarks>
-        // [todo ISSUE 20090807 andi : andi] Test
         public Similarity3f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -282,11 +280,9 @@ namespace Aardvark.Base
         #region Invert, Normalize
 
         /// <summary>
-        /// Inverts this similarity transformation (multiplicative inverse).
+        /// Inverts the similarity transformation (multiplicative inverse).
         /// this = [1/Scale, Rot^T,-Rot^T Trans/Scale]
         /// </summary>
-        /// <remarks>Not tested.</remarks>
-        // [todo ISSUE 20090807 andi : andi] Test
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Similarity3f t)
         {
@@ -479,8 +475,6 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Similarity transformation.
         /// [1/Scale, Rot^T,-Rot^T Trans/Scale]
         /// </summary>
-        /// <remarks>Not tested.</remarks>
-        // [todo ISSUE 20090807 andi : andi] Test
         public Similarity3d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -645,11 +639,9 @@ namespace Aardvark.Base
         #region Invert, Normalize
 
         /// <summary>
-        /// Inverts this similarity transformation (multiplicative inverse).
+        /// Inverts the similarity transformation (multiplicative inverse).
         /// this = [1/Scale, Rot^T,-Rot^T Trans/Scale]
         /// </summary>
-        /// <remarks>Not tested.</remarks>
-        // [todo ISSUE 20090807 andi : andi] Test
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Similarity3d t)
         {
