@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    #region Euclidean2f
+
     /// <summary>
     /// Represents a Rigid Transformation (or Rigid Body Transformation) in 2D that is composed of a 
     /// 2D rotation Rot and a subsequent translation by a 2D vector Trans.
@@ -230,6 +232,8 @@ namespace Aardvark.Base
 
     public static partial class Euclidean
     {
+        #region Transform
+
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
         /// </summary>
@@ -266,6 +270,10 @@ namespace Aardvark.Base
             return r.Rot.InvTransform(p - r.Trans);
         }
 
+        #endregion
+
+        #region Invert
+
         /// <summary>
         /// Inverts the given rigid transformation (multiplicative inverse), yielding [Rot^T,-Rot^T Trans].
         /// </summary>
@@ -275,6 +283,8 @@ namespace Aardvark.Base
             r.Rot.Invert();
             r.Trans = -r.Rot.Transform(r.Trans);
         }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -295,6 +305,10 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
+
+    #region Euclidean2d
 
     /// <summary>
     /// Represents a Rigid Transformation (or Rigid Body Transformation) in 2D that is composed of a 
@@ -520,6 +534,8 @@ namespace Aardvark.Base
 
     public static partial class Euclidean
     {
+        #region Transform
+
         /// <summary>
         /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
         /// </summary>
@@ -556,6 +572,10 @@ namespace Aardvark.Base
             return r.Rot.InvTransform(p - r.Trans);
         }
 
+        #endregion
+
+        #region Invert
+
         /// <summary>
         /// Inverts the given rigid transformation (multiplicative inverse), yielding [Rot^T,-Rot^T Trans].
         /// </summary>
@@ -565,6 +585,8 @@ namespace Aardvark.Base
             r.Rot.Invert();
             r.Trans = -r.Rot.Transform(r.Trans);
         }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -585,5 +607,7 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
 
 }

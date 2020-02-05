@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -15,6 +16,8 @@ namespace Aardvark.Base
     //#   var r3t = isDouble ? "Rot3d" : "Rot3f";
     //#   var e3t = isDouble ? "Euclidean3d" : "Euclidean3f";
     //#   var eps = isDouble ? "1e-12" : "1e-5f";
+    #region __e3t__
+
     /// <summary>
     /// Represents a Rigid Transformation (or Rigid Body Transformation) in 3D that is composed of a 
     /// 3D rotation Rot and a subsequent translation by a 3D vector Trans.
@@ -76,7 +79,11 @@ namespace Aardvark.Base
         /// <summary>
         /// Identity (__r3t__.Identity, __v3t__.Zero)
         /// </summary>
-        public static readonly __e3t__ Identity = new __e3t__(__r3t__.Identity, __v3t__.Zero);
+        public static __e3t__ Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __e3t__(__r3t__.Identity, __v3t__.Zero);
+        }
 
         #endregion
 
@@ -90,116 +97,12 @@ namespace Aardvark.Base
         #region Euclidean Transformation Arithmetics
 
         /// <summary>
-        /// Multiplies 2 Euclidean transformations.
-        /// This concatenates the two rigid transformations into a single one, first b is applied, then a.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        public static __e3t__ Multiply(__e3t__ a, __e3t__ b)
-        {
-            //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
-            return new __e3t__(a.Rot * b.Rot, a.Trans + a.Rot.Transform(b.Trans));
-        }
-
-        public static M3__s4f__ Multiply(M3__s3f__ m, __e3t__ r)
-        {
-            return M3__s4f__.Multiply(m, (M3__s4f__)r);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public static __v3t__ TransformDir(__e3t__ r, __v3t__ v)
-        {
-            return r.Rot.Transform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
-        /// </summary>
-        public static __v3t__ TransformPos(__e3t__ r, __v3t__ p)
-        {
-            return r.Rot.Transform(p) + r.Trans;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public static __v3t__ InvTransformDir(__e3t__ r, __v3t__ v)
-        {
-            return r.Rot.InvTransform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        public static __v3t__ InvTransformPos(__e3t__ r, __v3t__ p)
-        {
-            return r.Rot.InvTransform(p - r.Trans);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this rigid transformation.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public __v3t__ TransformDir(__v3t__ v)
-        {
-            return TransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this rigid transformation.
-        /// </summary>
-        public __v3t__ TransformPos(__v3t__ p)
-        {
-            return TransformPos(this, p);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of this rigid transformation.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public __v3t__ InvTransformDir(__v3t__ v)
-        {
-            return InvTransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of this rigid transformation.
-        /// </summary>
-        public __v3t__ InvTransformPos(__v3t__ p)
-        {
-            return InvTransformPos(this, p);
-        }
-
-        /// <summary>
-        /// Normalizes the rotation quaternion.
-        /// </summary>
-        public void Normalize()
-        {
-            Rot.Normalize();
-        }
-
-        /// <summary>
         /// Returns a new version of this Euclidean transformation with a normalized rotation quaternion.
         /// </summary>
         public __e3t__ Normalized
         {
-            get
-            {
-                return new __e3t__(Rot.Normalized, Trans);
-            }
-        }
-
-        /// <summary>
-        /// Inverts this rigid transformation (multiplicative inverse).
-        /// this = [Rot^T,-Rot^T Trans]
-        /// </summary>
-        public void Invert()
-        {
-            Rot.Invert();
-            Trans = -Rot.Transform(Trans);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __e3t__(Rot.Normalized, Trans);
         }
 
         /// <summary>
@@ -208,6 +111,7 @@ namespace Aardvark.Base
         /// </summary>
         public __e3t__ Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 var newR = Rot.Inverse;
@@ -219,9 +123,16 @@ namespace Aardvark.Base
 
         #region Arithmetic Operators
 
+        /// <summary>
+        /// Multiplies 2 Euclidean transformations.
+        /// This concatenates the two rigid transformations into a single one, first b is applied, then a.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __e3t__ operator *(__e3t__ a, __e3t__ b)
         {
-            return __e3t__.Multiply(a, b);
+            //a.Rot * b.Rot, a.Trans + a.Rot * b.Trans
+            return new __e3t__(a.Rot * b.Rot, a.Trans + a.Rot.Transform(b.Trans));
         }
 
 #if false //// [todo ISSUE 20090421 andi : andi] check if these are really necessary and comment them what they really do.
@@ -282,48 +193,17 @@ namespace Aardvark.Base
         */
         // [todo ISSUE 20090427 andi : andi] this is again a __e3t__.
         // [todo ISSUE 20090427 andi : andi] __r3t__ * Shift__s3f__ should return a __e3t__!
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M3__s4f__ operator *(__e3t__ r, Shift__s3f__ m)
         {
             return (M3__s4f__)r * m;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M3__s4f__ operator *(M3__s3f__ m, __e3t__ r)
         {
-            return Multiply(m, r);
+            return M3__s4f__.Multiply(m, (M3__s4f__)r);
         }
-        /*
-        public static M3__s4f__ operator *(M3__s3f__ m, __e3t__ r)
-        {
-            return (M3__s4f__)m * (M3__s4f__)r;
-        }
-        */
-        #endregion
-
-        #region Transformations yielding a Euclidean transformation
-
-        /// <summary>
-        /// Returns a new Euclidean transformation by transforming self by a Trafo t.
-        /// Note: This is not a concatenation. 
-        /// t is fully applied to the Translation and Rotation,
-        /// but the scale is not reflected in the resulting Euclidean transformation.
-        /// </summary>
-        // [todo ISSUE 20090810 andi : andi] Rethink this notation. Maybe write Transformed methods for all transformations.
-        public static __e3t__ Transformed(__e3t__ self, Similarity__s3f__ t)
-        {
-            return new __e3t__(t.Rot * self.Rot, t.TransformPos(self.Trans));
-        }
-
-        /// <summary>
-        /// Returns a new Euclidean transformation by transforming this by a t.
-        /// Note: This is not a concatenation. 
-        /// t is fully applied to the Translation and Rotation,
-        /// but the scale is not reflected in the resulting Euclidean transformation.
-        /// </summary>
-        public __e3t__ Transformed(Similarity__s3f__ t)
-        {
-            return Transformed(this, t);
-        }
-
         #endregion
 
         #region Comparison Operators
@@ -391,15 +271,97 @@ namespace Aardvark.Base
 
     }
 
+    public static partial class Euclidean
+    {
+        #region Transform
+
+        /// <summary>
+        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ TransformDir(this __e3t__ r, __v3t__ v)
+        {
+            return r.Rot.Transform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ TransformPos(this __e3t__ r, __v3t__ p)
+        {
+            return r.Rot.Transform(p) + r.Trans;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ InvTransformDir(this __e3t__ r, __v3t__ v)
+        {
+            return r.Rot.InvTransform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ InvTransformPos(this __e3t__ r, __v3t__ p)
+        {
+            return r.Rot.InvTransform(p - r.Trans);
+        }
+
+        /// <summary>
+        /// Returns a new Euclidean transformation by transforming self by a Trafo t.
+        /// Note: This is not a concatenation. 
+        /// t is fully applied to the Translation and Rotation,
+        /// but the scale is not reflected in the resulting Euclidean transformation.
+        /// </summary>
+        // [todo ISSUE 20090810 andi : andi] Rethink this notation. Maybe write Transformed methods for all transformations.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __e3t__ Transformed(this __e3t__ self, Similarity__s3f__ t)
+        {
+            return new __e3t__(t.Rot * self.Rot, t.TransformPos(self.Trans));
+        }
+
+        #endregion
+
+        #region Normalize and invert
+
+        /// <summary>
+        /// Normalizes the rotation quaternion.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Normalize(this ref __e3t__ r)
+        {
+            r.Rot.Normalize();
+        }
+
+        /// <summary>
+        /// Inverts this rigid transformation (multiplicative inverse).
+        /// this = [Rot^T,-Rot^T Trans]
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Invert(this ref __e3t__ r)
+        {
+            r.Rot.Invert();
+            r.Trans = -r.Rot.Transform(r.Trans);
+        }
+
+        #endregion
+    }
+
     public static partial class Fun
     {
         #region ApproximateEquals
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __e3t__ r0, __e3t__ r1)
         {
             return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __e3t__ r0, __e3t__ r1, __ft__ angleTol, __ft__ posTol)
         {
             return ApproximateEquals(r0.Trans, r1.Trans, posTol) && r0.Rot.ApproximateEquals(r1.Rot, angleTol);
@@ -407,6 +369,8 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
 
     //# }
 }

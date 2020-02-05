@@ -27,6 +27,8 @@ namespace Aardvark.Base
     //#   var eulerAnglesEps = isDouble ? "0.49999999999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
+    #region __rot3t__
+
     /// <summary>
     /// Type for general quaternions, if normalized it represents an arbritrary rotation in three dimensions.
     /// </summary>
@@ -844,6 +846,8 @@ namespace Aardvark.Base
 
     public static partial class Fun
     {
+        #region Log, Exp
+
         /// <summary>
         /// Calculates the logarithm of the given quaternion.
         /// </summary>
@@ -883,10 +887,15 @@ namespace Aardvark.Base
 
             return result;
         }
+
+        #endregion
     }
 
     public static partial class Rot
     {
+
+        #region Operations
+
         /// <summary>
         /// Inverts the given quaternion (multiplicative inverse).
         /// </summary>
@@ -938,6 +947,10 @@ namespace Aardvark.Base
             return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
 
+        #endregion
+
+        #region Transform
+
         /// <summary>
         /// Transforms a vector with a quaternion.
         /// </summary>
@@ -979,10 +992,14 @@ namespace Aardvark.Base
                 w * q.Z + z * q.W + x * q.Y - y * q.X
                 );
         }
+
+        #endregion
     }
 
     public static partial class Fun
     {
+        #region ApproximateEquals
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __rot3t__ r0, __rot3t__ r1)
         {
@@ -1000,7 +1017,11 @@ namespace Aardvark.Base
                    (r0.Y - r1.Y).Abs() <= tolerance &&
                    (r0.Z - r1.Z).Abs() <= tolerance;
         }
+
+        #endregion
     }
+
+    #endregion
 
     //# }
 }

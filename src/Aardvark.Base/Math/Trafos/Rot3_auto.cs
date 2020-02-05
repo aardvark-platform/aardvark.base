@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    #region Rot3f
+
     /// <summary>
     /// Type for general quaternions, if normalized it represents an arbritrary rotation in three dimensions.
     /// </summary>
@@ -825,6 +827,8 @@ namespace Aardvark.Base
 
     public static partial class Fun
     {
+        #region Log, Exp
+
         /// <summary>
         /// Calculates the logarithm of the given quaternion.
         /// </summary>
@@ -864,10 +868,15 @@ namespace Aardvark.Base
 
             return result;
         }
+
+        #endregion
     }
 
     public static partial class Rot
     {
+
+        #region Operations
+
         /// <summary>
         /// Inverts the given quaternion (multiplicative inverse).
         /// </summary>
@@ -919,6 +928,10 @@ namespace Aardvark.Base
             return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
 
+        #endregion
+
+        #region Transform
+
         /// <summary>
         /// Transforms a vector with a quaternion.
         /// </summary>
@@ -960,10 +973,14 @@ namespace Aardvark.Base
                 w * q.Z + z * q.W + x * q.Y - y * q.X
                 );
         }
+
+        #endregion
     }
 
     public static partial class Fun
     {
+        #region ApproximateEquals
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot3f r0, Rot3f r1)
         {
@@ -981,7 +998,13 @@ namespace Aardvark.Base
                    (r0.Y - r1.Y).Abs() <= tolerance &&
                    (r0.Z - r1.Z).Abs() <= tolerance;
         }
+
+        #endregion
     }
+
+    #endregion
+
+    #region Rot3d
 
     /// <summary>
     /// Type for general quaternions, if normalized it represents an arbritrary rotation in three dimensions.
@@ -1800,6 +1823,8 @@ namespace Aardvark.Base
 
     public static partial class Fun
     {
+        #region Log, Exp
+
         /// <summary>
         /// Calculates the logarithm of the given quaternion.
         /// </summary>
@@ -1839,10 +1864,15 @@ namespace Aardvark.Base
 
             return result;
         }
+
+        #endregion
     }
 
     public static partial class Rot
     {
+
+        #region Operations
+
         /// <summary>
         /// Inverts the given quaternion (multiplicative inverse).
         /// </summary>
@@ -1894,6 +1924,10 @@ namespace Aardvark.Base
             return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
 
+        #endregion
+
+        #region Transform
+
         /// <summary>
         /// Transforms a vector with a quaternion.
         /// </summary>
@@ -1935,10 +1969,14 @@ namespace Aardvark.Base
                 w * q.Z + z * q.W + x * q.Y - y * q.X
                 );
         }
+
+        #endregion
     }
 
     public static partial class Fun
     {
+        #region ApproximateEquals
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot3d r0, Rot3d r1)
         {
@@ -1956,6 +1994,10 @@ namespace Aardvark.Base
                    (r0.Y - r1.Y).Abs() <= tolerance &&
                    (r0.Z - r1.Z).Abs() <= tolerance;
         }
+
+        #endregion
     }
+
+    #endregion
 
 }

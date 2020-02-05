@@ -7,6 +7,8 @@ using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    #region Rot2f
+
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Rot2f
@@ -350,6 +352,8 @@ namespace Aardvark.Base
 
     public static partial class Rot
     {
+        #region Invert
+
         /// <summary>
         /// Inverts a rotation.
         /// </summary>
@@ -358,6 +362,10 @@ namespace Aardvark.Base
         {
             rot.Angle = -rot.Angle;
         }
+
+        #endregion
+
+        #region Transform
 
         /// <summary>
         /// Transforms a vector.
@@ -376,6 +384,8 @@ namespace Aardvark.Base
         {
             return -rot * v;
         }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -399,6 +409,10 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
+
+    #region Rot2d
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
@@ -743,6 +757,8 @@ namespace Aardvark.Base
 
     public static partial class Rot
     {
+        #region Invert
+
         /// <summary>
         /// Inverts a rotation.
         /// </summary>
@@ -751,6 +767,10 @@ namespace Aardvark.Base
         {
             rot.Angle = -rot.Angle;
         }
+
+        #endregion
+
+        #region Transform
 
         /// <summary>
         /// Transforms a vector.
@@ -769,6 +789,8 @@ namespace Aardvark.Base
         {
             return -rot * v;
         }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -792,5 +814,7 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
 
 }

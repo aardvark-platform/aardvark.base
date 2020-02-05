@@ -22,6 +22,8 @@ namespace Aardvark.Base
     //#   var m33t = "M33" + tc;
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
+    #region __rot2t__
+
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct __rot2t__
@@ -365,6 +367,8 @@ namespace Aardvark.Base
 
     public static partial class Rot
     {
+        #region Invert
+
         /// <summary>
         /// Inverts a rotation.
         /// </summary>
@@ -373,6 +377,10 @@ namespace Aardvark.Base
         {
             rot.Angle = -rot.Angle;
         }
+
+        #endregion
+
+        #region Transform
 
         /// <summary>
         /// Transforms a vector.
@@ -391,6 +399,8 @@ namespace Aardvark.Base
         {
             return -rot * v;
         }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -414,6 +424,8 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
 
     //# }
 }
