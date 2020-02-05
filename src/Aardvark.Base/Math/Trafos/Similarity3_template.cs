@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -11,6 +12,8 @@ namespace Aardvark.Base
     //#   var x3t = isDouble ? "3d" : "3f";
     //#   var x4t = isDouble ? "4d" : "4f";
     // [todo ISSUE 20090427 andi : andi] define Similarity2*
+    #region Similarity__x3t__
+
     /// <summary>
     /// Represents a Similarity Transformation in 3D that is composed of a 
     /// Uniform Scale and a subsequent Euclidean transformation (3D rotation Rot and a subsequent translation by a 3D vector Trans).
@@ -28,12 +31,20 @@ namespace Aardvark.Base
         /// <summary>
         /// Shortcut for Rot of EuclideanTransformation
         /// </summary>
-        public Rot__x3t__ Rot { get { return EuclideanTransformation.Rot; } }
+        public Rot__x3t__ Rot
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return EuclideanTransformation.Rot; }
+        }
 
         /// <summary>
         /// Shortcut for Trans of EuclideanTransformation
         /// </summary>
-        public V__x3t__ Trans { get { return EuclideanTransformation.Trans; } }
+        public V__x3t__ Trans
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return EuclideanTransformation.Trans; }
+        }
 
         #region Constructors
 
@@ -83,144 +94,26 @@ namespace Aardvark.Base
         /// <summary>
         /// Identity (1, EuclideanTransformation.Identity)
         /// </summary>
-        public static readonly Similarity__x3t__ Identity = new Similarity__x3t__(1, Euclidean__x3t__.Identity);
+        public static Similarity__x3t__ Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Similarity__x3t__(1, Euclidean__x3t__.Identity);
+        }
 
         #endregion
 
         #region Similarity Transformation Arithmetics
 
         /// <summary>
-        /// Multiplies 2 Similarity transformations.
-        /// This concatenates the two similarity transformations into a single one, first b is applied, then a.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        public static Similarity__x3t__ Multiply(Similarity__x3t__ a, Similarity__x3t__ b)
-        {
-            //a.Scale * b.Scale, a.Rot * b.Rot, a.Trans + a.Rot * a.Scale * b.Trans
-            return new Similarity__x3t__(a.Scale * b.Scale, new Euclidean__x3t__(
-                a.Rot * b.Rot,
-                a.Trans + a.Rot.Transform(a.Scale * b.Trans))
-                );
-        }
-
-        /// <summary>
-        /// Multiplies a Similarity transformation by an Euclidean transformation.
-        /// This concatenates the two transformations into a single one, first b is applied, then a.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        public static Similarity__x3t__ Multiply(Similarity__x3t__ a, Euclidean__x3t__ b)
-        {
-            return Multiply(a, (Similarity__x3t__)b);
-        }
-
-        /// <summary>
-        /// Multiplies an Euclidean transformation by a Similarity transformation.
-        /// This concatenates the two transformations into a single one, first b is applied, then a.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        public static Similarity__x3t__ Multiply(Euclidean__x3t__ a, Similarity__x3t__ b)
-        {
-            return Multiply((Similarity__x3t__)a, b);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by similarity transformation t.
-        /// Actually, only the rotation and scale is used.
-        /// </summary>
-        public static V__x3t__ TransformDir(Similarity__x3t__ t, V__x3t__ v)
-        {
-            return t.EuclideanTransformation.TransformDir(t.Scale * v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by similarity transformation t.
-        /// </summary>
-        public static V__x3t__ TransformPos(Similarity__x3t__ t, V__x3t__ p)
-        {
-            return t.EuclideanTransformation.TransformPos(t.Scale * p);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the similarity transformation t.
-        /// Actually, only the rotation and scale is used.
-        /// </summary>
-        public static V__x3t__ InvTransformDir(Similarity__x3t__ t, V__x3t__ v)
-        {
-            return t.EuclideanTransformation.InvTransformDir(v) / t.Scale;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the similarity transformation t.
-        /// </summary>
-        public static V__x3t__ InvTransformPos(Similarity__x3t__ t, V__x3t__ p)
-        {
-            return t.EuclideanTransformation.InvTransformPos(p) / t.Scale;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this similarity transformation.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public V__x3t__ TransformDir(V__x3t__ v)
-        {
-            return TransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this similarity transformation.
-        /// </summary>
-        public V__x3t__ TransformPos(V__x3t__ p)
-        {
-            return TransformPos(this, p);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of this similarity transformation.
-        /// Actually, only the rotation is used.
-        /// </summary>
-        public V__x3t__ InvTransformDir(V__x3t__ v)
-        {
-            return InvTransformDir(this, v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of this similarity transformation.
-        /// </summary>
-        public V__x3t__ InvTransformPos(V__x3t__ p)
-        {
-            return InvTransformPos(this, p);
-        }
-
-        /// <summary>
-        /// Normalizes the rotation quaternion.
-        /// </summary>
-        public void Normalize()
-        {
-            EuclideanTransformation.Normalize();
-        }
-
-        /// <summary>
         /// Returns a new version of this Similarity transformation with a normalized rotation quaternion.
         /// </summary>
         public Similarity__x3t__ Normalized
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 return new Similarity__x3t__(Scale, EuclideanTransformation.Normalized);
             }
-        }
-
-        /// <summary>
-        /// Inverts this similarity transformation (multiplicative inverse).
-        /// this = [1/Scale, Rot^T,-Rot^T Trans/Scale]
-        /// </summary>
-        /// <remarks>Not tested.</remarks>
-        // [todo ISSUE 20090807 andi : andi] Test
-        public void Invert()
-        {
-            Scale = 1 / Scale;
-            EuclideanTransformation.Invert();
-            EuclideanTransformation.Trans *= Scale;
         }
 
         /// <summary>
@@ -231,6 +124,7 @@ namespace Aardvark.Base
         // [todo ISSUE 20090807 andi : andi] Test
         public Similarity__x3t__ Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 var newS = 1 / Scale;
@@ -244,19 +138,41 @@ namespace Aardvark.Base
 
         #region Arithmetic Operators
 
+        /// <summary>
+        /// Multiplies 2 Similarity transformations.
+        /// This concatenates the two similarity transformations into a single one, first b is applied, then a.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity__x3t__ operator *(Similarity__x3t__ a, Similarity__x3t__ b)
         {
-            return Similarity__x3t__.Multiply(a, b);
+            //a.Scale * b.Scale, a.Rot * b.Rot, a.Trans + a.Rot * a.Scale * b.Trans
+            return new Similarity__x3t__(a.Scale * b.Scale, new Euclidean__x3t__(
+                a.Rot * b.Rot,
+                a.Trans + a.Rot.Transform(a.Scale * b.Trans))
+                );
         }
 
+        /// <summary>
+        /// Multiplies an Euclidean transformation by a Similarity transformation.
+        /// This concatenates the two transformations into a single one, first b is applied, then a.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity__x3t__ operator *(Euclidean__x3t__ a, Similarity__x3t__ b)
         {
-            return Similarity__x3t__.Multiply(a, b);
+            return (Similarity__x3t__)a * b;
         }
 
+        /// <summary>
+        /// Multiplies a Similarity transformation by an Euclidean transformation.
+        /// This concatenates the two transformations into a single one, first b is applied, then a.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity__x3t__ operator *(Similarity__x3t__ a, Euclidean__x3t__ b)
         {
-            return Similarity__x3t__.Multiply(a, b);
+            return a * (Similarity__x3t__)b;
         }
 
         // [todo ISSUE 20090427 andi : andi] add operator * for all other Trafo structs.
@@ -365,18 +281,98 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Similarity
+    {
+        #region Invert, Normalize
+
+        /// <summary>
+        /// Inverts this similarity transformation (multiplicative inverse).
+        /// this = [1/Scale, Rot^T,-Rot^T Trans/Scale]
+        /// </summary>
+        /// <remarks>Not tested.</remarks>
+        // [todo ISSUE 20090807 andi : andi] Test
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Invert(this ref Similarity__x3t__ t)
+        {
+            t.Scale = 1 / t.Scale;
+            t.EuclideanTransformation.Invert();
+            t.EuclideanTransformation.Trans *= t.Scale;
+        }
+
+        /// <summary>
+        /// Normalizes the rotation quaternion.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Normalize(this ref Similarity__x3t__ t)
+        {
+            t.EuclideanTransformation.Normalize();
+        }
+
+        #endregion
+
+        #region Transform
+
+        /// <summary>
+        /// Transforms direction vector v (v.w is presumed 0.0) by similarity transformation t.
+        /// Actually, only the rotation and scale is used.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x3t__ TransformDir(this Similarity__x3t__ t, V__x3t__ v)
+        {
+            return t.EuclideanTransformation.TransformDir(t.Scale * v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) by similarity transformation t.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x3t__ TransformPos(this Similarity__x3t__ t, V__x3t__ p)
+        {
+            return t.EuclideanTransformation.TransformPos(t.Scale * p);
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the similarity transformation t.
+        /// Actually, only the rotation and scale is used.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x3t__ InvTransformDir(this Similarity__x3t__ t, V__x3t__ v)
+        {
+            return t.EuclideanTransformation.InvTransformDir(v) / t.Scale;
+        }
+
+        /// <summary>
+        /// Transforms point p (p.w is presumed 1.0) by the inverse of the similarity transformation t.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V__x3t__ InvTransformPos(this Similarity__x3t__ t, V__x3t__ p)
+        {
+            return t.EuclideanTransformation.InvTransformPos(p) / t.Scale;
+        }
+
+        #endregion
+    }
+
     public static partial class Fun
     {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Similarity__x3t__ t0, Similarity__x3t__ t1)
         {
             return ApproximateEquals(t0, t1, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue, Constant<__ft__>.PositiveTinyValue);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Similarity__x3t__ t0, Similarity__x3t__ t1, __ft__ angleTol, __ft__ posTol, __ft__ scaleTol)
         {
             return t0.Scale.ApproximateEquals(t1.Scale, scaleTol) && t0.EuclideanTransformation.ApproximateEquals(t1.EuclideanTransformation, angleTol, posTol);
         }
+
+        #endregion
     }
+
+    #endregion
 
     //# }
 }

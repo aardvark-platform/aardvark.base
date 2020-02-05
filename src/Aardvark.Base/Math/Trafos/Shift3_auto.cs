@@ -3,9 +3,12 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    #region Shift3f
+
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Shift3f
@@ -53,7 +56,9 @@ namespace Aardvark.Base
         /// </summary>
         public float X
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.X; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
 
@@ -62,7 +67,9 @@ namespace Aardvark.Base
         /// </summary>
         public float Y
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Y; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
 
@@ -71,7 +78,9 @@ namespace Aardvark.Base
         /// </summary>
         public float Z
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
 
@@ -81,6 +90,7 @@ namespace Aardvark.Base
         /// <returns>A float scalar.</returns>
         public float Length
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
         }
 
@@ -90,12 +100,23 @@ namespace Aardvark.Base
         /// <returns>A float scalar.</returns>
         public float LengthSquared
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
         }
 
         public Shift3f Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Shift3f(-V); }
+        }
+
+        /// <summary>
+        /// Calculates the reciprocal of a <see cref="Shift3f"/>.
+        /// </summary>
+        public Shift3f Reciprocal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3f(1 / X, 1 / Y, 1 / Z);
         }
 
         #endregion
@@ -105,137 +126,43 @@ namespace Aardvark.Base
         /// <summary>
         /// A <see cref="Shift3f"/> single-precision floating point zero shift vector.
         /// </summary>
-        public static readonly Shift3f Zero = new Shift3f(0, 0, 0);
-        public static readonly Shift3f Identity = new Shift3f(0, 0, 0);
+        public static Shift3f Zero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3f(0, 0, 0);
+        }
+
+        public static Shift3f Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3f(0, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift3f"/> single-precision floating point X-Axis shift vector.
         /// </summary>
-        public static readonly Shift3f XAxis = new Shift3f(1, 0, 0);
+        public static Shift3f XAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3f(1, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift3f"/> single-precision floating point Y-Axis shift vector.
         /// </summary>
-        public static readonly Shift3f YAxis = new Shift3f(0, 1, 0);
+        public static Shift3f YAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3f(0, 1, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift3f"/> single-precision floating point Z-Axis shift vector.
         /// </summary>
-        public static readonly Shift3f ZAxis = new Shift3f(0, 0, 1);
-
-        #endregion
-
-        #region Vector Arithmetics
-        //different calculations for shift vectors
-
-        /// <summary>
-        /// Multiplacation of a float scalar with a <see cref="Shift3f"/>.
-        /// </summary>
-        public static Shift3f Multiply(Shift3f shift, float value)
+        public static Shift3f ZAxis
         {
-            return new Shift3f(shift.X * value,
-                               shift.Y * value,
-                               shift.Z * value);
-        }
-
-        /// <summary>
-        /// Multiplication of two <see cref="Shift3f"/>s.
-        /// </summary>
-        public static Shift3f Multiply(Shift3f shift0, Shift3f shift1)
-        {
-            return new Shift3f(shift0.X + shift1.X,
-                               shift0.Y + shift1.Y,
-                               shift0.Z + shift1.Z);
-        }
-
-        public static M34f Multiply(Shift3f shift, Scale3f scale)
-        {
-            return new M34f(scale.X, 0, 0, shift.X,
-                            0, scale.Y, 0, shift.Y,
-                            0, 0, scale.Z, shift.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Shift3f"/> with a <see cref="M44f"/>.
-        /// </summary>
-        public static M44f Multiply(Shift3f shift, M44f m)
-        {
-            return new M44f(
-                    m.M00 + shift.X * m.M30,
-                    m.M01 + shift.X * m.M31,
-                    m.M02 + shift.X * m.M32,
-                    m.M03 + shift.X * m.M33,
-
-                    m.M10 + shift.Y * m.M30,
-                    m.M11 + shift.Y * m.M31,
-                    m.M12 + shift.Y * m.M32,
-                    m.M13 + shift.Y * m.M33,
-
-                    m.M20 + shift.Z * m.M30,
-                    m.M21 + shift.Z * m.M31,
-                    m.M22 + shift.Z * m.M32,
-                    m.M23 + shift.Z * m.M33,
-
-                    m.M30,
-                    m.M31,
-                    m.M32,
-                    m.M33
-                    );
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Shift3f"/> with a <see cref="M34f"/>.
-        /// </summary>
-        public static M34f Multiply(Shift3f shift, M34f m)
-        {
-            return new M34f(
-                    m.M00,
-                    m.M01,
-                    m.M02,
-                    m.M03 + shift.X,
-
-                    m.M10,
-                    m.M11,
-                    m.M12,
-                    m.M13 + shift.Y,
-
-                    m.M20,
-                    m.M21,
-                    m.M22,
-                    m.M23 + shift.Z
-                    );
-        }
-
-        /// <summary>
-        /// Division of a <see cref="Shift3f"/> instance with a float scalar.
-        /// </summary>
-        public static Shift3f Divide(Shift3f shift, float val)
-        {
-            return Multiply(shift, 1 / val);
-        }
-
-        /// <summary>
-        /// Division of a float scalar with a <see cref="Shift3f"/>.
-        /// </summary>
-        public static Shift3f Divide(float value, Shift3f shift)
-        {
-            return Multiply(Reciprocal(shift), value);
-        }
-
-        /// <summary>
-        /// Negates all values of a <see cref="Shift3f"/>.
-        /// </summary>
-        public static Shift3f Negate(Shift3f shift)
-        {
-            return new Shift3f(-shift.X, -shift.Y, -shift.Z);
-        }
-
-        /// <summary>
-        /// Calculates the reciprocal of a <see cref="Shift3f"/>.
-        /// </summary>
-        public static Shift3f Reciprocal(Shift3f shift)
-        {
-            return new Shift3f(1 / shift.X, 1 / shift.Y, 1 / shift.Z);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3f(0, 0, 1);
         }
 
         #endregion
@@ -245,21 +172,33 @@ namespace Aardvark.Base
         /// <summary>
         /// Negates the values of a <see cref="Shift3f"/> instance.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3f operator -(Shift3f shift)
         {
-            return Shift3f.Negate(shift);
+            return new Shift3f(-shift.X, -shift.Y, -shift.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Shift3f"/> with a float scalar.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3f operator *(Shift3f shift, float value)
+        {
+            return new Shift3f(shift.X * value, shift.Y * value, shift.Z * value);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a float scalar with a <see cref="Shift3f"/>.
         /// </summary>
-        public static Shift3f operator *(Shift3f shift, float value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3f operator *(float value, Shift3f shift)
         {
-            return Shift3f.Multiply(shift, value);
+            return new Shift3f(shift.X * value, shift.Y * value, shift.Z * value);
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4f operator *(Shift3f shift, V4f vec)
         {
             return new V4f(vec.X + shift.X * vec.W,
@@ -270,6 +209,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator *(Shift3f shift, M22f mat)
         {
             return new M34f(mat.M00, mat.M01, 0, shift.X,
@@ -279,81 +219,119 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public static M34f operator *(Shift3f shift, M33f mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(Shift3f shift, M33f matrix)
         {
-            return new M34f(mat.M00, mat.M01, mat.M02, shift.X,
-                             mat.M10, mat.M11, mat.M12, shift.Y,
-                             mat.M20, mat.M21, mat.M22, shift.Z);
+            return new M34f(matrix.M00, matrix.M01, matrix.M02, shift.X,
+                             matrix.M10, matrix.M11, matrix.M12, shift.Y,
+                             matrix.M20, matrix.M21, matrix.M22, shift.Z);
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator *(Shift3f shift, Rot3f rot)
         {
-            return Shift3f.Multiply(shift, (M34f)rot);
+            return shift * (M34f)rot;
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator *(Shift3f shift, Rot2f rot)
         {
             return (M34f)(shift * (M22f)rot);
         }
 
         /// <summary>
-        /// Calculates the multiplacation of a <see cref="Shift3f"/> with a float scalar.
-        /// </summary>
-        public static Shift3f operator *(float value, Shift3f shift)
-        {
-            return Shift3f.Multiply(shift, value);
-        }
-
-        /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift3f"/> with a <see cref="Shift3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3f operator *(Shift3f shift0, Shift3f shift1)
         {
-            return Shift3f.Multiply(shift0, shift1);
+            return new Shift3f(shift0.X + shift1.X, shift0.Y + shift1.Y, shift0.Z + shift1.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift3f"/> with a <see cref="Scale3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator *(Shift3f shift, Scale3f scale)
         {
-            return Shift3f.Multiply(shift, scale);
+            return new M34f(scale.X, 0, 0, shift.X,
+                0, scale.Y, 0, shift.Y,
+                0, 0, scale.Z, shift.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift3f"/> with a <see cref="M44f"/>.
         /// </summary>
-        public static M44f operator *(Shift3f shift, M44f mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f operator *(Shift3f shift, M44f matrix)
         {
-            return Shift3f.Multiply(shift, mat);
+            return new M44f(
+                    matrix.M00 + shift.X * matrix.M30,
+                    matrix.M01 + shift.X * matrix.M31,
+                    matrix.M02 + shift.X * matrix.M32,
+                    matrix.M03 + shift.X * matrix.M33,
+
+                    matrix.M10 + shift.Y * matrix.M30,
+                    matrix.M11 + shift.Y * matrix.M31,
+                    matrix.M12 + shift.Y * matrix.M32,
+                    matrix.M13 + shift.Y * matrix.M33,
+
+                    matrix.M20 + shift.Z * matrix.M30,
+                    matrix.M21 + shift.Z * matrix.M31,
+                    matrix.M22 + shift.Z * matrix.M32,
+                    matrix.M23 + shift.Z * matrix.M33,
+
+                    matrix.M30,
+                    matrix.M31,
+                    matrix.M32,
+                    matrix.M33
+                    );
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift3f"/> with a <see cref="M34f"/>.
         /// </summary>
-        public static M34f operator *(Shift3f shift, M34f mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(Shift3f shift, M34f matrix)
         {
-            return Shift3f.Multiply(shift, mat);
+            return new M34f(
+                    matrix.M00,
+                    matrix.M01,
+                    matrix.M02,
+                    matrix.M03 + shift.X,
+
+                    matrix.M10,
+                    matrix.M11,
+                    matrix.M12,
+                    matrix.M13 + shift.Y,
+
+                    matrix.M20,
+                    matrix.M21,
+                    matrix.M22,
+                    matrix.M23 + shift.Z
+                    );
         }
 
         /// <summary>
         /// Calculates the division of a <see cref="Shift3f"/> with a float scalar.
         /// </summary>
-        public static Shift3f operator /(Shift3f shift, float val)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3f operator /(Shift3f shift, float value)
         {
-            return Shift3f.Divide(shift, val);
+            return shift * (1 / value);
         }
 
         /// <summary>
         /// Calculates the division of a float scalar with a <see cref="Shift3f"/>.
         /// </summary>
-        public static Shift3f operator /(float val, Shift3f shift)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3f operator /(float value, Shift3f shift)
         {
-            return Shift3f.Divide(val, shift);
+            return shift.Reciprocal * value;
         }
 
         #endregion
@@ -508,6 +486,11 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
+
+    #region Shift3d
+
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Shift3d
@@ -555,7 +538,9 @@ namespace Aardvark.Base
         /// </summary>
         public double X
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.X; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
 
@@ -564,7 +549,9 @@ namespace Aardvark.Base
         /// </summary>
         public double Y
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Y; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
 
@@ -573,7 +560,9 @@ namespace Aardvark.Base
         /// </summary>
         public double Z
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
 
@@ -583,6 +572,7 @@ namespace Aardvark.Base
         /// <returns>A double scalar.</returns>
         public double Length
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
         }
 
@@ -592,12 +582,23 @@ namespace Aardvark.Base
         /// <returns>A double scalar.</returns>
         public double LengthSquared
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
         }
 
         public Shift3d Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Shift3d(-V); }
+        }
+
+        /// <summary>
+        /// Calculates the reciprocal of a <see cref="Shift3d"/>.
+        /// </summary>
+        public Shift3d Reciprocal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3d(1 / X, 1 / Y, 1 / Z);
         }
 
         #endregion
@@ -607,137 +608,43 @@ namespace Aardvark.Base
         /// <summary>
         /// A <see cref="Shift3d"/> double-precision floating point zero shift vector.
         /// </summary>
-        public static readonly Shift3d Zero = new Shift3d(0, 0, 0);
-        public static readonly Shift3d Identity = new Shift3d(0, 0, 0);
+        public static Shift3d Zero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3d(0, 0, 0);
+        }
+
+        public static Shift3d Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3d(0, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift3d"/> double-precision floating point X-Axis shift vector.
         /// </summary>
-        public static readonly Shift3d XAxis = new Shift3d(1, 0, 0);
+        public static Shift3d XAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3d(1, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift3d"/> double-precision floating point Y-Axis shift vector.
         /// </summary>
-        public static readonly Shift3d YAxis = new Shift3d(0, 1, 0);
+        public static Shift3d YAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3d(0, 1, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift3d"/> double-precision floating point Z-Axis shift vector.
         /// </summary>
-        public static readonly Shift3d ZAxis = new Shift3d(0, 0, 1);
-
-        #endregion
-
-        #region Vector Arithmetics
-        //different calculations for shift vectors
-
-        /// <summary>
-        /// Multiplacation of a float scalar with a <see cref="Shift3d"/>.
-        /// </summary>
-        public static Shift3d Multiply(Shift3d shift, double value)
+        public static Shift3d ZAxis
         {
-            return new Shift3d(shift.X * value,
-                               shift.Y * value,
-                               shift.Z * value);
-        }
-
-        /// <summary>
-        /// Multiplication of two <see cref="Shift3d"/>s.
-        /// </summary>
-        public static Shift3d Multiply(Shift3d shift0, Shift3d shift1)
-        {
-            return new Shift3d(shift0.X + shift1.X,
-                               shift0.Y + shift1.Y,
-                               shift0.Z + shift1.Z);
-        }
-
-        public static M34d Multiply(Shift3d shift, Scale3d scale)
-        {
-            return new M34d(scale.X, 0, 0, shift.X,
-                            0, scale.Y, 0, shift.Y,
-                            0, 0, scale.Z, shift.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Shift3d"/> with a <see cref="M44d"/>.
-        /// </summary>
-        public static M44d Multiply(Shift3d shift, M44d m)
-        {
-            return new M44d(
-                    m.M00 + shift.X * m.M30,
-                    m.M01 + shift.X * m.M31,
-                    m.M02 + shift.X * m.M32,
-                    m.M03 + shift.X * m.M33,
-
-                    m.M10 + shift.Y * m.M30,
-                    m.M11 + shift.Y * m.M31,
-                    m.M12 + shift.Y * m.M32,
-                    m.M13 + shift.Y * m.M33,
-
-                    m.M20 + shift.Z * m.M30,
-                    m.M21 + shift.Z * m.M31,
-                    m.M22 + shift.Z * m.M32,
-                    m.M23 + shift.Z * m.M33,
-
-                    m.M30,
-                    m.M31,
-                    m.M32,
-                    m.M33
-                    );
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Shift3d"/> with a <see cref="M34d"/>.
-        /// </summary>
-        public static M34d Multiply(Shift3d shift, M34d m)
-        {
-            return new M34d(
-                    m.M00,
-                    m.M01,
-                    m.M02,
-                    m.M03 + shift.X,
-
-                    m.M10,
-                    m.M11,
-                    m.M12,
-                    m.M13 + shift.Y,
-
-                    m.M20,
-                    m.M21,
-                    m.M22,
-                    m.M23 + shift.Z
-                    );
-        }
-
-        /// <summary>
-        /// Division of a <see cref="Shift3d"/> instance with a double scalar.
-        /// </summary>
-        public static Shift3d Divide(Shift3d shift, double val)
-        {
-            return Multiply(shift, 1 / val);
-        }
-
-        /// <summary>
-        /// Division of a double scalar with a <see cref="Shift3d"/>.
-        /// </summary>
-        public static Shift3d Divide(double value, Shift3d shift)
-        {
-            return Multiply(Reciprocal(shift), value);
-        }
-
-        /// <summary>
-        /// Negates all values of a <see cref="Shift3d"/>.
-        /// </summary>
-        public static Shift3d Negate(Shift3d shift)
-        {
-            return new Shift3d(-shift.X, -shift.Y, -shift.Z);
-        }
-
-        /// <summary>
-        /// Calculates the reciprocal of a <see cref="Shift3d"/>.
-        /// </summary>
-        public static Shift3d Reciprocal(Shift3d shift)
-        {
-            return new Shift3d(1 / shift.X, 1 / shift.Y, 1 / shift.Z);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift3d(0, 0, 1);
         }
 
         #endregion
@@ -747,21 +654,33 @@ namespace Aardvark.Base
         /// <summary>
         /// Negates the values of a <see cref="Shift3d"/> instance.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3d operator -(Shift3d shift)
         {
-            return Shift3d.Negate(shift);
+            return new Shift3d(-shift.X, -shift.Y, -shift.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Shift3d"/> with a double scalar.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3d operator *(Shift3d shift, double value)
+        {
+            return new Shift3d(shift.X * value, shift.Y * value, shift.Z * value);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a double scalar with a <see cref="Shift3d"/>.
         /// </summary>
-        public static Shift3d operator *(Shift3d shift, double value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3d operator *(double value, Shift3d shift)
         {
-            return Shift3d.Multiply(shift, value);
+            return new Shift3d(shift.X * value, shift.Y * value, shift.Z * value);
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4d operator *(Shift3d shift, V4d vec)
         {
             return new V4d(vec.X + shift.X * vec.W,
@@ -772,6 +691,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator *(Shift3d shift, M22d mat)
         {
             return new M34d(mat.M00, mat.M01, 0, shift.X,
@@ -781,81 +701,119 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public static M34d operator *(Shift3d shift, M33d mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(Shift3d shift, M33d matrix)
         {
-            return new M34d(mat.M00, mat.M01, mat.M02, shift.X,
-                             mat.M10, mat.M11, mat.M12, shift.Y,
-                             mat.M20, mat.M21, mat.M22, shift.Z);
+            return new M34d(matrix.M00, matrix.M01, matrix.M02, shift.X,
+                             matrix.M10, matrix.M11, matrix.M12, shift.Y,
+                             matrix.M20, matrix.M21, matrix.M22, shift.Z);
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator *(Shift3d shift, Rot3d rot)
         {
-            return Shift3d.Multiply(shift, (M34d)rot);
+            return shift * (M34d)rot;
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator *(Shift3d shift, Rot2d rot)
         {
             return (M34d)(shift * (M22d)rot);
         }
 
         /// <summary>
-        /// Calculates the multiplacation of a <see cref="Shift3d"/> with a double scalar.
-        /// </summary>
-        public static Shift3d operator *(double value, Shift3d shift)
-        {
-            return Shift3d.Multiply(shift, value);
-        }
-
-        /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift3d"/> with a <see cref="Shift3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3d operator *(Shift3d shift0, Shift3d shift1)
         {
-            return Shift3d.Multiply(shift0, shift1);
+            return new Shift3d(shift0.X + shift1.X, shift0.Y + shift1.Y, shift0.Z + shift1.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift3d"/> with a <see cref="Scale3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator *(Shift3d shift, Scale3d scale)
         {
-            return Shift3d.Multiply(shift, scale);
+            return new M34d(scale.X, 0, 0, shift.X,
+                0, scale.Y, 0, shift.Y,
+                0, 0, scale.Z, shift.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift3d"/> with a <see cref="M44d"/>.
         /// </summary>
-        public static M44d operator *(Shift3d shift, M44d mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d operator *(Shift3d shift, M44d matrix)
         {
-            return Shift3d.Multiply(shift, mat);
+            return new M44d(
+                    matrix.M00 + shift.X * matrix.M30,
+                    matrix.M01 + shift.X * matrix.M31,
+                    matrix.M02 + shift.X * matrix.M32,
+                    matrix.M03 + shift.X * matrix.M33,
+
+                    matrix.M10 + shift.Y * matrix.M30,
+                    matrix.M11 + shift.Y * matrix.M31,
+                    matrix.M12 + shift.Y * matrix.M32,
+                    matrix.M13 + shift.Y * matrix.M33,
+
+                    matrix.M20 + shift.Z * matrix.M30,
+                    matrix.M21 + shift.Z * matrix.M31,
+                    matrix.M22 + shift.Z * matrix.M32,
+                    matrix.M23 + shift.Z * matrix.M33,
+
+                    matrix.M30,
+                    matrix.M31,
+                    matrix.M32,
+                    matrix.M33
+                    );
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift3d"/> with a <see cref="M34d"/>.
         /// </summary>
-        public static M34d operator *(Shift3d shift, M34d mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(Shift3d shift, M34d matrix)
         {
-            return Shift3d.Multiply(shift, mat);
+            return new M34d(
+                    matrix.M00,
+                    matrix.M01,
+                    matrix.M02,
+                    matrix.M03 + shift.X,
+
+                    matrix.M10,
+                    matrix.M11,
+                    matrix.M12,
+                    matrix.M13 + shift.Y,
+
+                    matrix.M20,
+                    matrix.M21,
+                    matrix.M22,
+                    matrix.M23 + shift.Z
+                    );
         }
 
         /// <summary>
         /// Calculates the division of a <see cref="Shift3d"/> with a double scalar.
         /// </summary>
-        public static Shift3d operator /(Shift3d shift, double val)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3d operator /(Shift3d shift, double value)
         {
-            return Shift3d.Divide(shift, val);
+            return shift * (1 / value);
         }
 
         /// <summary>
         /// Calculates the division of a double scalar with a <see cref="Shift3d"/>.
         /// </summary>
-        public static Shift3d operator /(double val, Shift3d shift)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3d operator /(double value, Shift3d shift)
         {
-            return Shift3d.Divide(val, shift);
+            return shift.Reciprocal * value;
         }
 
         #endregion
@@ -1010,4 +968,7 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    #endregion
+
 }

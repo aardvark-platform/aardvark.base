@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -12,6 +13,8 @@ namespace Aardvark.Base
     //#   var x2t = isDouble ? "2d" : "2f";
     //#   var x3t = isDouble ? "3d" : "3f";
     //#   var x4t = isDouble ? "4d" : "4f";
+    #region Shift__x3t__
+
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Shift__x3t__
@@ -59,7 +62,9 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ X
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.X; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
 
@@ -68,7 +73,9 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ Y
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Y; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
 
@@ -77,7 +84,9 @@ namespace Aardvark.Base
         /// </summary>
         public __ft__ Z
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Z; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
 
@@ -87,6 +96,7 @@ namespace Aardvark.Base
         /// <returns>A __ft__ scalar.</returns>
         public __ft__ Length
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
         }
 
@@ -96,12 +106,23 @@ namespace Aardvark.Base
         /// <returns>A __ft__ scalar.</returns>
         public __ft__ LengthSquared
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
         }
 
         public Shift__x3t__ Inverse
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Shift__x3t__(-V); }
+        }
+
+        /// <summary>
+        /// Calculates the reciprocal of a <see cref="Shift__x3t__"/>.
+        /// </summary>
+        public Shift__x3t__ Reciprocal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift__x3t__(1 / X, 1 / Y, 1 / Z);
         }
 
         #endregion
@@ -111,137 +132,43 @@ namespace Aardvark.Base
         /// <summary>
         /// A <see cref="Shift__x3t__"/> __single__-precision floating point zero shift vector.
         /// </summary>
-        public static readonly Shift__x3t__ Zero = new Shift__x3t__(0, 0, 0);
-        public static readonly Shift__x3t__ Identity = new Shift__x3t__(0, 0, 0);
+        public static Shift__x3t__ Zero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift__x3t__(0, 0, 0);
+        }
+
+        public static Shift__x3t__ Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift__x3t__(0, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift__x3t__"/> __single__-precision floating point X-Axis shift vector.
         /// </summary>
-        public static readonly Shift__x3t__ XAxis = new Shift__x3t__(1, 0, 0);
+        public static Shift__x3t__ XAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift__x3t__(1, 0, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift__x3t__"/> __single__-precision floating point Y-Axis shift vector.
         /// </summary>
-        public static readonly Shift__x3t__ YAxis = new Shift__x3t__(0, 1, 0);
+        public static Shift__x3t__ YAxis
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift__x3t__(0, 1, 0);
+        }
 
         /// <summary>
         /// A <see cref="Shift__x3t__"/> __single__-precision floating point Z-Axis shift vector.
         /// </summary>
-        public static readonly Shift__x3t__ ZAxis = new Shift__x3t__(0, 0, 1);
-
-        #endregion
-
-        #region Vector Arithmetics
-        //different calculations for shift vectors
-
-        /// <summary>
-        /// Multiplacation of a float scalar with a <see cref="Shift__x3t__"/>.
-        /// </summary>
-        public static Shift__x3t__ Multiply(Shift__x3t__ shift, __ft__ value)
+        public static Shift__x3t__ ZAxis
         {
-            return new Shift__x3t__(shift.X * value,
-                               shift.Y * value,
-                               shift.Z * value);
-        }
-
-        /// <summary>
-        /// Multiplication of two <see cref="Shift__x3t__"/>s.
-        /// </summary>
-        public static Shift__x3t__ Multiply(Shift__x3t__ shift0, Shift__x3t__ shift1)
-        {
-            return new Shift__x3t__(shift0.X + shift1.X,
-                               shift0.Y + shift1.Y,
-                               shift0.Z + shift1.Z);
-        }
-
-        public static M3__x4t__ Multiply(Shift__x3t__ shift, Scale__x3t__ scale)
-        {
-            return new M3__x4t__(scale.X, 0, 0, shift.X,
-                            0, scale.Y, 0, shift.Y,
-                            0, 0, scale.Z, shift.Z);
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Shift__x3t__"/> with a <see cref="M4__x4t__"/>.
-        /// </summary>
-        public static M4__x4t__ Multiply(Shift__x3t__ shift, M4__x4t__ m)
-        {
-            return new M4__x4t__(
-                    m.M00 + shift.X * m.M30,
-                    m.M01 + shift.X * m.M31,
-                    m.M02 + shift.X * m.M32,
-                    m.M03 + shift.X * m.M33,
-
-                    m.M10 + shift.Y * m.M30,
-                    m.M11 + shift.Y * m.M31,
-                    m.M12 + shift.Y * m.M32,
-                    m.M13 + shift.Y * m.M33,
-
-                    m.M20 + shift.Z * m.M30,
-                    m.M21 + shift.Z * m.M31,
-                    m.M22 + shift.Z * m.M32,
-                    m.M23 + shift.Z * m.M33,
-
-                    m.M30,
-                    m.M31,
-                    m.M32,
-                    m.M33
-                    );
-        }
-
-        /// <summary>
-        /// Multiplacation of a <see cref="Shift__x3t__"/> with a <see cref="M3__x4t__"/>.
-        /// </summary>
-        public static M3__x4t__ Multiply(Shift__x3t__ shift, M3__x4t__ m)
-        {
-            return new M3__x4t__(
-                    m.M00,
-                    m.M01,
-                    m.M02,
-                    m.M03 + shift.X,
-
-                    m.M10,
-                    m.M11,
-                    m.M12,
-                    m.M13 + shift.Y,
-
-                    m.M20,
-                    m.M21,
-                    m.M22,
-                    m.M23 + shift.Z
-                    );
-        }
-
-        /// <summary>
-        /// Division of a <see cref="Shift__x3t__"/> instance with a __ft__ scalar.
-        /// </summary>
-        public static Shift__x3t__ Divide(Shift__x3t__ shift, __ft__ val)
-        {
-            return Multiply(shift, 1 / val);
-        }
-
-        /// <summary>
-        /// Division of a __ft__ scalar with a <see cref="Shift__x3t__"/>.
-        /// </summary>
-        public static Shift__x3t__ Divide(__ft__ value, Shift__x3t__ shift)
-        {
-            return Multiply(Reciprocal(shift), value);
-        }
-
-        /// <summary>
-        /// Negates all values of a <see cref="Shift__x3t__"/>.
-        /// </summary>
-        public static Shift__x3t__ Negate(Shift__x3t__ shift)
-        {
-            return new Shift__x3t__(-shift.X, -shift.Y, -shift.Z);
-        }
-
-        /// <summary>
-        /// Calculates the reciprocal of a <see cref="Shift__x3t__"/>.
-        /// </summary>
-        public static Shift__x3t__ Reciprocal(Shift__x3t__ shift)
-        {
-            return new Shift__x3t__(1 / shift.X, 1 / shift.Y, 1 / shift.Z);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Shift__x3t__(0, 0, 1);
         }
 
         #endregion
@@ -251,21 +178,33 @@ namespace Aardvark.Base
         /// <summary>
         /// Negates the values of a <see cref="Shift__x3t__"/> instance.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift__x3t__ operator -(Shift__x3t__ shift)
         {
-            return Shift__x3t__.Negate(shift);
+            return new Shift__x3t__(-shift.X, -shift.Y, -shift.Z);
+        }
+
+        /// <summary>
+        /// Calculates the multiplacation of a <see cref="Shift__x3t__"/> with a __ft__ scalar.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift__x3t__ operator *(Shift__x3t__ shift, __ft__ value)
+        {
+            return new Shift__x3t__(shift.X * value, shift.Y * value, shift.Z * value);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a __ft__ scalar with a <see cref="Shift__x3t__"/>.
         /// </summary>
-        public static Shift__x3t__ operator *(Shift__x3t__ shift, __ft__ value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift__x3t__ operator *(__ft__ value, Shift__x3t__ shift)
         {
-            return Shift__x3t__.Multiply(shift, value);
+            return new Shift__x3t__(shift.X * value, shift.Y * value, shift.Z * value);
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V__x4t__ operator *(Shift__x3t__ shift, V__x4t__ vec)
         {
             return new V__x4t__(vec.X + shift.X * vec.W,
@@ -276,6 +215,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M3__x4t__ operator *(Shift__x3t__ shift, M2__x2t__ mat)
         {
             return new M3__x4t__(mat.M00, mat.M01, 0, shift.X,
@@ -285,81 +225,119 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public static M3__x4t__ operator *(Shift__x3t__ shift, M3__x3t__ mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x4t__ operator *(Shift__x3t__ shift, M3__x3t__ matrix)
         {
-            return new M3__x4t__(mat.M00, mat.M01, mat.M02, shift.X,
-                             mat.M10, mat.M11, mat.M12, shift.Y,
-                             mat.M20, mat.M21, mat.M22, shift.Z);
+            return new M3__x4t__(matrix.M00, matrix.M01, matrix.M02, shift.X,
+                             matrix.M10, matrix.M11, matrix.M12, shift.Y,
+                             matrix.M20, matrix.M21, matrix.M22, shift.Z);
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M3__x4t__ operator *(Shift__x3t__ shift, Rot__x3t__ rot)
         {
-            return Shift__x3t__.Multiply(shift, (M3__x4t__)rot);
+            return shift * (M3__x4t__)rot;
         }
 
         /// <summary>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M3__x4t__ operator *(Shift__x3t__ shift, Rot__x2t__ rot)
         {
             return (M3__x4t__)(shift * (M2__x2t__)rot);
         }
 
         /// <summary>
-        /// Calculates the multiplacation of a <see cref="Shift__x3t__"/> with a __ft__ scalar.
-        /// </summary>
-        public static Shift__x3t__ operator *(__ft__ value, Shift__x3t__ shift)
-        {
-            return Shift__x3t__.Multiply(shift, value);
-        }
-
-        /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift__x3t__"/> with a <see cref="Shift__x3t__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift__x3t__ operator *(Shift__x3t__ shift0, Shift__x3t__ shift1)
         {
-            return Shift__x3t__.Multiply(shift0, shift1);
+            return new Shift__x3t__(shift0.X + shift1.X, shift0.Y + shift1.Y, shift0.Z + shift1.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift__x3t__"/> with a <see cref="Scale__x3t__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M3__x4t__ operator *(Shift__x3t__ shift, Scale__x3t__ scale)
         {
-            return Shift__x3t__.Multiply(shift, scale);
+            return new M3__x4t__(scale.X, 0, 0, shift.X,
+                0, scale.Y, 0, shift.Y,
+                0, 0, scale.Z, shift.Z);
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift__x3t__"/> with a <see cref="M4__x4t__"/>.
         /// </summary>
-        public static M4__x4t__ operator *(Shift__x3t__ shift, M4__x4t__ mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M4__x4t__ operator *(Shift__x3t__ shift, M4__x4t__ matrix)
         {
-            return Shift__x3t__.Multiply(shift, mat);
+            return new M4__x4t__(
+                    matrix.M00 + shift.X * matrix.M30,
+                    matrix.M01 + shift.X * matrix.M31,
+                    matrix.M02 + shift.X * matrix.M32,
+                    matrix.M03 + shift.X * matrix.M33,
+
+                    matrix.M10 + shift.Y * matrix.M30,
+                    matrix.M11 + shift.Y * matrix.M31,
+                    matrix.M12 + shift.Y * matrix.M32,
+                    matrix.M13 + shift.Y * matrix.M33,
+
+                    matrix.M20 + shift.Z * matrix.M30,
+                    matrix.M21 + shift.Z * matrix.M31,
+                    matrix.M22 + shift.Z * matrix.M32,
+                    matrix.M23 + shift.Z * matrix.M33,
+
+                    matrix.M30,
+                    matrix.M31,
+                    matrix.M32,
+                    matrix.M33
+                    );
         }
 
         /// <summary>
         /// Calculates the multiplacation of a <see cref="Shift__x3t__"/> with a <see cref="M3__x4t__"/>.
         /// </summary>
-        public static M3__x4t__ operator *(Shift__x3t__ shift, M3__x4t__ mat)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x4t__ operator *(Shift__x3t__ shift, M3__x4t__ matrix)
         {
-            return Shift__x3t__.Multiply(shift, mat);
+            return new M3__x4t__(
+                    matrix.M00,
+                    matrix.M01,
+                    matrix.M02,
+                    matrix.M03 + shift.X,
+
+                    matrix.M10,
+                    matrix.M11,
+                    matrix.M12,
+                    matrix.M13 + shift.Y,
+
+                    matrix.M20,
+                    matrix.M21,
+                    matrix.M22,
+                    matrix.M23 + shift.Z
+                    );
         }
 
         /// <summary>
         /// Calculates the division of a <see cref="Shift__x3t__"/> with a __ft__ scalar.
         /// </summary>
-        public static Shift__x3t__ operator /(Shift__x3t__ shift, __ft__ val)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift__x3t__ operator /(Shift__x3t__ shift, __ft__ value)
         {
-            return Shift__x3t__.Divide(shift, val);
+            return shift * (1 / value);
         }
 
         /// <summary>
         /// Calculates the division of a __ft__ scalar with a <see cref="Shift__x3t__"/>.
         /// </summary>
-        public static Shift__x3t__ operator /(__ft__ val, Shift__x3t__ shift)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift__x3t__ operator /(__ft__ value, Shift__x3t__ shift)
         {
-            return Shift__x3t__.Divide(val, shift);
+            return shift.Reciprocal * value;
         }
 
         #endregion
@@ -514,5 +492,8 @@ namespace Aardvark.Base
 
         #endregion
     }
-    //# } // isDouble
+
+    #endregion
+
+    //# }
 }
