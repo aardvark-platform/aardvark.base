@@ -235,5 +235,25 @@ namespace Aardvark.Tests
             //        ValidateTrafos(direct, usingAardvark);
             //    }
         }
+        
+        [Test]
+        public static void NormalFrame()
+        {
+            var rnd = new RandomSystem(1337);
+            for (int i = 0; i < 1000000; i++)
+            {
+                var n = rnd.UniformV3d().Normalized;
+
+                var basis = M33d.NormalFrame(n);
+
+                Assert.IsTrue(basis.C0.Length.ApproximateEquals(1, 1e-7));
+                Assert.IsTrue(basis.C1.Length.ApproximateEquals(1, 1e-7));
+                Assert.IsTrue(basis.C2.Length.ApproximateEquals(1, 1e-7));
+
+                Assert.IsTrue(basis.C0.AngleBetween(basis.C1).ApproximateEquals(Constant.PiHalf, 1e-7));
+                Assert.IsTrue(basis.C0.AngleBetween(basis.C2).ApproximateEquals(Constant.PiHalf, 1e-7));
+                Assert.IsTrue(basis.C1.AngleBetween(basis.C2).ApproximateEquals(Constant.PiHalf, 1e-7));
+            }
+        }
     }
 }
