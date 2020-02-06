@@ -327,7 +327,7 @@ module SVDTests =
     let ``[SVD] random M33d``() =
 
         let rnd = new RandomSystem(1)
-        for i in 0..10000000 do
+        for i in 0..100000 do
             let mat = M33d.FromCols(rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d())
 
             let svd = SVD.decompose mat
@@ -342,7 +342,7 @@ module SVDTests =
     let ``[SVD] random M34d``() =
 
         let rnd = new RandomSystem(1)
-        for i in 0..10000000 do
+        for i in 0..100000 do
             let mat = M34d.FromCols(rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d())
 
             let svd = SVD.decompose mat
@@ -357,7 +357,7 @@ module SVDTests =
     let ``[SVD] random M44d``() =
 
         let rnd = new RandomSystem(1)
-        for i in 0..10000000 do
+        for i in 0..100000 do
             let mat = M44d.FromCols(rnd.UniformV4d(), rnd.UniformV4d(), rnd.UniformV4d(), rnd.UniformV4d())
 
             let svd = SVD.decompose mat
