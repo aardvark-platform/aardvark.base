@@ -13,6 +13,7 @@ module internal QRHelpers =
         abs v <= eps
 
     let inline applyGivensMat (mat : NativeMatrix< ^a >) (c : int) (r : int) (cos : ^a) (sin : ^a) =
+        //if c < 0 || c >= int mat.SX || r < 0 || r >= int mat.SY then printfn "bad givens (%d, %d)" c r
         let ptrQ = NativePtr.toNativeInt mat.Pointer
         let dcQ = nativeint sizeof< ^a > * nativeint mat.DX
         let drQ = nativeint sizeof< ^a > * nativeint mat.DY
@@ -34,6 +35,7 @@ module internal QRHelpers =
             p1 <- p1 + drQ
                 
     let inline applyGivensTransposedMat (mat : NativeMatrix< ^a >) (c : int) (r : int) (cos : ^a) (sin :  ^a) =
+        //if c < 0 || c >= int mat.SX || r < 0 || r >= int mat.SY then printfn "bad transposed givens (%d, %d)" c r
         let ptrQ = NativePtr.toNativeInt mat.Pointer
         let dcQ = nativeint sizeof< ^a > * nativeint mat.DX
         let drQ = nativeint sizeof< ^a > * nativeint mat.DY
@@ -273,13 +275,15 @@ module internal QRHelpers =
                     
                 pij <- pij + dbc
                 
+            let pd = pii - dbc
+            let i = i - 1
             let normv =
                 if i > 0 then 
                     // abs B.[i-1,i] + abs B.[i,i]
-                    abs (NativeInt.read< ^a > (pii - dbc - dbr)) + abs (NativeInt.read< ^a > (pii - dbc))
+                    abs (NativeInt.read< ^a > (pd - dbc)) + abs (NativeInt.read< ^a > pd)
                 else 
                     // abs B.[i,i]
-                    abs (NativeInt.read< ^a > (pii - dbc))
+                    abs (NativeInt.read< ^a > pd)
 
             anorm <- max anorm normv
             pii <- pii + dbr
@@ -462,7 +466,10 @@ type QR private() =
         }
         Q, R
         
-
+        
+    static member BidiagonalizeInPlaceWithNorm(U : NativeMatrix<float>, B : NativeMatrix<float>, Vt : NativeMatrix<float>) =
+        qrBidiagonalizeNative doubleEps U B Vt
+        
     static member BidiagonalizeInPlace(U : NativeMatrix<float>, B : NativeMatrix<float>, Vt : NativeMatrix<float>) =
         qrBidiagonalizeNative doubleEps U B Vt |> ignore
         

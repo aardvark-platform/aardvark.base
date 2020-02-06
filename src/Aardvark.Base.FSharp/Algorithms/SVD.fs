@@ -30,17 +30,21 @@ module private SVDHelpers =
         let drvl = dw
         
         let inline rvl i =
+            //if i < 0 || i >= cccc then printfn "rvl %d" i
             if i = 0 then rvl0
             else NativeInt.read< ^a > (prvl + nativeint (i - 1) * drvl) //B.[i-1,i]
                 
         let inline setrvl i v =
+            //if i < 0 || i >= cccc then printfn "setrvl %d %A" i v
             if i = 0 then rvl0 <- v
             else NativeInt.write (prvl + nativeint (i - 1) * drvl) v //B.[i-1,i] <- v
 
         let inline w i =
+            //if i < 0 || i >= cccc then printfn "w %d" i
             NativeInt.read< ^a > (pw + nativeint i * dw)
             
         let inline setw i (v :  ^a) =
+            //if i < 0 || i >= cccc then printfn "setw %d %A" i v
             NativeInt.write (pw + nativeint i * dw) v
              
         let mutable f : ^a = LanguagePrimitives.GenericZero
@@ -65,7 +69,7 @@ module private SVDHelpers =
                     if abs (rvl l) + anorm = anorm then
                         flag <- false
                         testing <- false
-                    elif abs (w nm) + anorm = anorm then
+                    elif l = 0 || (abs (w nm) + anorm = anorm) then
                         testing <- false
                     else
                         dec &l

@@ -15,7 +15,7 @@ module Program
             SVDTests.``[SVD] DecomposeWithNative``()
         with 
             | :? System.Exception as e -> 
-                sprintf "%s" (e.ToString())
+                printfn "%s" (e.ToString())
                 ()
 
         0

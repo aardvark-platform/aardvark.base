@@ -1,34 +1,70 @@
 ﻿// Learn more about F# at http://fsharp.org
 
 open Aardvark.Base
-open FSharp.Data.Traceable
-open FSharp.Data.Adaptive
-open MBrace.FsPickler
-open MBrace.FsPickler.Json
 
-let pickler = FsPickler.CreateJsonSerializer(true, true)
 
-let picklerTest (input : 'a) =
-    Log.start "%s" typeof<'a>.Name
+let svd() =
+    let rand = RandomSystem()
+    let mutable evil = None
+    let mk() =
+        let morig =
+            (Trafo2d.Rotation(rand.UniformDouble()*Constant.PiTimesTwo))
+                //Trafo2d.Translation(rand.UniformV2d()))
+                .Forward
+        let m = morig
+        let vs = morig.ToArray()
 
-    let str = pickler.PickleToString input
-    Log.line "%s" str
+        match SVD.decompose m with
+        | None -> failwith "none"
+        | Some (u,s,vt) -> 
+            let mutable res = true
+            let mt = u * s * vt
+            for i in 0..vs.Length-1 do
+                let ms = mt.ToArray()
+                if not <| (Fun.ApproximateEquals(vs.[i],ms.[i],1E-8) || Fun.ApproximateEquals(vs.[i],-ms.[i],1E-8)) then
+                    for j in 0..vs.Length-1 do
+                        Log.line "%.5f ~ %.5f" vs.[j] ms.[j]
+                    Log.error "wrong %d" i
+                    evil <- Some(m)
+                    res <- false
+            res
 
-    let output = str |> pickler.UnPickleOfString
-    if input = output then Log.line "success %A" output
-    else Log.warn "error: %A vs %A" input output
+                    
+    let ct = 100000
+    Log.startTimed "Running"
+    Report.Progress(0.0)
+    let mutable res = true
+    let mutable i = 0
+    while i < ct && res do
+        res <- mk()
+        i <- i+1
+        Report.Progress(float i/float ct)
+    Report.Progress(1.0)
     Log.stop()
+    
+    let m = evil |> Option.get
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+
+
+    Log.line "ok"
 
 [<EntryPoint>]
 let main argv =
-    Aardvark.Init()
-    picklerTest (HashSet.ofList [1;2;3;2])
-    picklerTest (CountingHashSet.ofList [1;2;3;2])
-    picklerTest (HashSetDelta.ofList [Add 1; Rem 2; Add 3; Rem 2])
-    picklerTest (Map.ofList [1,2; 3,4; 5,6])
-    picklerTest (HashMap.ofList [1,2; 3,4; 5,6])
-    picklerTest (HashMapDelta.ofList [1, Set 2; 2, Remove; 3, Set 4])
-    picklerTest (IndexList.ofList [1;2;3;2])
-    picklerTest (MapExt.ofList [1,2; 3,4; 5,6])
+    svd()
     
     0 

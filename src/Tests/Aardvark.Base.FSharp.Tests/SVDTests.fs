@@ -81,7 +81,7 @@ module SVDTests =
             let tS  = NativeMatrix<float>(NativePtr.cast pS1, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
             let tVt = NativeMatrix<float>(NativePtr.cast pV1, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
 
-            let suc = SVD.DecomposeInPlace(tU, tS, tVt)
+            let suc : bool = SVD.DecomposeInPlace(tU, tS, tVt)
 
             let testUl = NativePtr.read (pU)
             let testUh = NativePtr.read (pU2)
@@ -104,6 +104,7 @@ module SVDTests =
             if Sres.Elements |> Seq.exists (fun x -> x.IsNaN()) then failwith "any NaN"
             if Vres.Elements |> Seq.exists (fun x -> x.IsNaN()) then failwith "any NaN"
 
+            
             if suc then 
                 Some (Ures, Sres, Vres)
             else
@@ -163,7 +164,14 @@ module SVDTests =
     let ``[SVD] DecomposeWithNative``() =
 
         let rnd = new RandomSystem(1)
-        for i in 0..10000000 do
+        let iter = 10000000
+        let mutable last = 0.0
+        for i in 0..iter do
+            let p = float i / float iter
+            if p > last + 0.05 then 
+                printfn "%.2f%%" (100.0 * p)
+                last <- p
+
             let mat = M33d.FromCols(rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d())
 
             let svd = DecomposeWithNative mat
