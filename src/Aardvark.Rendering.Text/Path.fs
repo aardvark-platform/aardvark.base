@@ -198,6 +198,8 @@ module Path =
             fragment {
                 let kind = v.klmKind.W + 0.001 * v.samplePos.X
    
+                let mutable color = v.color
+
                 if uniform.FillGlyphs then
                     if kind > 1.5 && kind < 3.5 then
                         // bezier2
@@ -214,7 +216,7 @@ module Path =
                         if f > 0.0 then
                             discard()
 
-                     elif kind > 5.5 && kind < 8.5 then
+                     elif kind > 5.5  then
                         let ci = v.klmKind.XYZ
                         let f = ci.X * ci.X * ci.X - ci.Y * ci.Z
                         if f > 0.0 then
@@ -223,7 +225,7 @@ module Path =
 
                 let sp = 0.5 * v.p.Z / v.p.W + 0.5
                 let bias = 255.0 * v.layer * uniform.DepthBias
-                return { color = v.color; d = sp - bias }
+                return { color = color; d = sp - bias }
                     
             }
         
@@ -634,165 +636,269 @@ module Path =
     // calculates the (k,l,m) coordinates for a given bezier-segment as
     // shown by Blinn 2003: http://www.msr-waypoint.net/en-us/um/people/cloop/LoopBlinn05.pdf
     // returns the (k,l,m) triples for the four control-points
-    let private texCoords(p0 : V2d, p1 : V2d, p2 : V2d, p3 : V2d) =
+    let private texCoordsOld(p0 : V2d, p1 : V2d, p2 : V2d, p3 : V2d) =
         let p0 = V3d(p0, 1.0)
         let p1 = V3d(p1, 1.0)
         let p2 = V3d(p2, 1.0)
         let p3 = V3d(p3, 1.0)
 
-        let M3 =
-            M44d(
-                    +1.0,   0.0,  0.0,  0.0,
-                    -3.0,   3.0,  0.0,  0.0,
-                    +3.0,  -6.0,  3.0,  0.0,
-                    -1.0,   3.0, -3.0,  1.0
-            )
+        let a1 = Vec.dot p0 (Vec.cross p3 p2)
+        let a2 = Vec.dot p1 (Vec.cross p0 p3)
+        let a3 = Vec.dot p2 (Vec.cross p1 p0)
 
-        let M3Inverse =
-            M44d(
-                    1.0,   0.0,        0.0,        0.0,
-                    1.0,   1.0/3.0,    0.0,        0.0,
-                    1.0,   2.0/3.0,    1.0/3.0,    0.0,
-                    1.0,   1.0,        1.0,        1.0
-            )
+        let d1 =  a1 - 2.0 * a2 + 3.0 * a3
+        let d2 = -a2 + 3.0 * a3
+        let d3 =  3.0 * a3
+        let discr = d1*d1*(3.0*d2*d2 - 4.0*d1*d3)
+        
+        let inline flip (v : V3d) = V3d(-v.X, -v.Y, v.Z)
 
-        let v0 =  1.0*p0
-        let v1 = -3.0*p0 + 3.0*p1 
-        let v2 =  3.0*p0 - 6.0*p1 + 3.0*p2
-        let v3 = -1.0*p0 + 3.0*p1 - 3.0*p2 + 1.0*p3
+        if Fun.IsTiny(discr, 1E-8) && Fun.IsTiny(d1, 1E-8) && not (Fun.IsTiny(d2, 1E-8)) then 
+            // cusp
 
-        let det (r0 : V3d) (r1 : V3d) (r2 : V3d) =
-            M33d.FromRows(r0, r1, r2).Det
+            let l = V2d(d3, 3.0*d2).Normalized
+            let ls = l.X
+            let lt = l.Y
 
-        let d0 =  (det v3 v2 v1)
-        let d1 = -(det v3 v2 v0)
-        let d2 =  (det v3 v1 v0)
-        let d3 = -(det v2 v1 v0)
+            let w0 = V3d(ls, ls*ls*ls, 1.0)
+            let w1 = V3d(ls - lt/3.0, ls*ls*(ls - lt), 1.0)
+            let w2 = V3d(ls - 2.0*lt/3.0, ls*sqr(ls - lt), 1.0)
+            let w3 = V3d(ls - lt, (ls-lt)**3.0, 1.0)
+            Choice1Of2(6, w0, w1, w2, w3)
 
-
-        let O(a : V3d,b : V3d,c : V3d,d : V3d) =
-            V3d(-a.X, -a.Y, a.Z),
-            V3d(-b.X, -b.Y, b.Z),
-            V3d(-c.X, -c.Y, c.Z),
-            V3d(-d.X, -d.Y, d.Z)
-
-
-
-        let zero v = Fun.IsTiny(v, 1.0E-5)
-        let nonzero v = Fun.IsTiny(v, 1.0E-5) |> not
-
-        let v = 3.0 * d2 * d2 - 4.0*d1*d3
-        let d1z = zero d1
-        let d1nz = d1z |> not
-
-
-        // 1. The Serpentine
-        // 3a. Cusp with inflection at infinity
-        if d1nz && v >= 0.0 then
+        elif discr >= 0.0 then   
             // serpentine
-            // Cusp with inflection at infinity
+            let q = sqrt(9.0*d2*d2 - 12.0*d1*d3)
+            let l = V2d(3.0*d2 - q, 6.0*d1).Normalized
+            let m = V2d(3.0*d2 + q, 6.0*d1).Normalized
 
-            let r = sqrt((3.0*d2*d2 - 4.0*d1*d3) / 3.0)
-            let tl = d2 + r
-            let sl = 2.0 * d1
-            let tm = d2 - r
-            let sm = sl
+            let ls = l.X
+            let lt = l.Y
+            let ms = m.X
+            let mt = m.Y
 
-
-            let F =
-                M44d(
-                        tl * tm,            tl * tl * tl,           tm * tm * tm,       1.0,
-                    -sm*tl - sl*tm,     -3.0*sl*tl*tl,          -3.0*sm*tm*tm,       0.0,
-                        sl*sm,              3.0*sl*sl*tl,           3.0*sm*sm*tm,       0.0,
-                        0.0,               -sl*sl*sl,              -sm*sm*sm,           0.0
-                )
-
-            let weights = M3Inverse * F
-
-            let w0 = weights.R0.XYZ
-            let w1 = weights.R1.XYZ
-            let w2 = weights.R2.XYZ
-            let w3 = weights.R3.XYZ
-
-            let res = w0, w1, w2, w3
-            if d1 < 0.0 then O res
-            else res
-
-        // 2. The Loop
-        elif d1nz && v < 0.0 then
+            let w0 = V3d(ls*ms, ls*ls*ls, ms*ms*ms)
+            let w1 = V3d((3.0*ls*ms - ls*mt - lt*ms)/3.0, ls*ls*(ls - lt), ms*ms*(ms-mt))
+            let w2 = V3d((lt*(mt-2.0*ms) + ls*(3.0*ms - 2.0*mt))/3.0, sqr (lt-ls) * ls, sqr (mt - ms) * ms)
+            let w3 = V3d((lt-ls)*(mt-ms), -(lt-ls)**3.0, -(mt-ms)**3.0)
+            
+            if d1 < -1E-8 then Choice1Of2(7, flip w0, flip w1, flip w2, flip w3)
+            else Choice1Of2(7, w0, w1, w2, w3)
+        else
             // loop
 
-            let r = sqrt(4.0 * d1 * d3 - 3.0*d2*d2)
+            //V3d.NOO, V3d.NOO, V3d.NOO, V3d.NOO
 
-            let td = d2 + r
-            let sd = 2.0*d1
+            let m3 =
+                M44d(
+                    +1.0,  0.0,  0.0,  0.0,
+                    -3.0,  3.0,  0.0,  0.0,
+                    +3.0, -6.0,  3.0,  0.0,
+                    -1.0,  3.0, -3.0,  1.0
+                )
+                
+            let m3i =
+                M44d(
+                    1.0,  0.0,      0.0,     0.0,
+                    1.0,  1.0/3.0,  0.0,     0.0,
+                    1.0,  2.0/3.0,  1.0/3.0, 0.0,
+                    1.0,  1.0,      1.0,     1.0
+                ) 
 
-            let te = d2 - r
-            let se = sd
+            let b =
+                M44d.FromRows(
+                    V4d(p0.X, p0.Y, 0.0, 1.0),
+                    V4d(p1.X, p1.Y, 0.0, 1.0),
+                    V4d(p2.X, p2.Y, 0.0, 1.0),
+                    V4d(p3.X, p3.Y, 0.0, 1.0)
+                )
 
+            let bla = m3 * b
+            let p0 = bla.R0.XYW
+            let p1 = bla.R1.XYW
+            let p2 = bla.R2.XYW
+            let p3 = bla.R3.XYW
+
+            let d0 =  M33d.FromRows(p3, p2, p1).Det
+            let d1 = -M33d.FromRows(p3, p2, p0).Det
+            let d2 =  M33d.FromRows(p3, p1, p0).Det
+            let d3 = -M33d.FromRows(p2, p1, p0).Det
+
+            let delta1 = d0*d2 - d1*d1
+            let delta2 = d1*d2 - d0*d3
+            let delta3 = d1*d3 - d2*d2
+            let discr = 4.0*delta1*delta3 - delta2*delta2
+
+
+            let d = V2d(d2 + sqrt(4.0*d1*d3 - 3.0*d2*d2), 2.0*d1).Normalized
+            let e = V2d(d2 - sqrt(4.0*d1*d3 - 3.0*d2*d2), 2.0*d1).Normalized
+
+            let td = d.X
+            let sd = d.Y
+            let te = e.X
+            let se = e.Y
+
+            let a = td / sd
+            let b = te / se
+
+            let va = a >= 1E-3 && a <= 1.0 - 1E-3
+            let vb = b >= 1E-3 && b <= 1.0 - 1E-3
+
+            if va then Log.warn "split %A" a; Choice2Of2 a
+            elif vb then Log.warn "split %A" b; Choice2Of2 b
+            else
+                let F =
+                    M44d(
+                        td*te,          td*td*te,                   td*te*te,                   1.0,
+                        -se*td-sd*te,   -se*td*td-2.0*sd*te*td,     -sd*te*te-2.0*se*td*te,     0.0,
+                        sd*se,          te*sd*sd+2.0*se*td*sd,      td*se*se+2.0*sd*te*se,      0.0,
+                        0.0,            -sd*sd*se,                  -sd*se*se,                  0.0
+                    )
+
+                let w = m3i * F
+
+                let shouldNotFlip = (d1 > 0.0 && w.M10 < 0.0) || (d1 < 0.0 && w.M10 > 0.0)
+
+                if not shouldNotFlip then Choice1Of2(8, flip w.R0.XYZ, flip w.R1.XYZ, flip w.R2.XYZ, flip w.R3.XYZ)
+                else Choice1Of2(8, w.R0.XYZ, w.R1.XYZ, w.R2.XYZ, w.R3.XYZ)
+
+            
+    // calculates the (k,l,m) coordinates for a given bezier-segment as
+    // shown by Blinn 2003: http://www.msr-waypoint.net/en-us/um/people/cloop/LoopBlinn05.pdf
+    // returns the (k,l,m) triples for the four control-points
+    let private texCoords(p0 : V2d, p1 : V2d, p2 : V2d, p3 : V2d) =
+        let m3 =
+            M44d(
+                +1.0,  0.0,  0.0,  0.0,
+                -3.0,  3.0,  0.0,  0.0,
+                +3.0, -6.0,  3.0,  0.0,
+                -1.0,  3.0, -3.0,  1.0
+            )
+                
+        let m3i =
+            M44d(
+                1.0,  0.0,      0.0,     0.0,
+                1.0,  1.0/3.0,  0.0,     0.0,
+                1.0,  2.0/3.0,  1.0/3.0, 0.0,
+                1.0,  1.0,      1.0,     1.0
+            ) 
+
+        let b =
+            M44d.FromRows(
+                V4d(p0.X, p0.Y, 0.0, 1.0),
+                V4d(p1.X, p1.Y, 0.0, 1.0),
+                V4d(p2.X, p2.Y, 0.0, 1.0),
+                V4d(p3.X, p3.Y, 0.0, 1.0)
+            )
+
+        let bla = m3 * b
+        let p0 = bla.R0.XYW
+        let p1 = bla.R1.XYW
+        let p2 = bla.R2.XYW
+        let p3 = bla.R3.XYW
+
+        let d0 =  M33d.FromRows(p3, p2, p1).Det
+        let d1 = -M33d.FromRows(p3, p2, p0).Det
+        let d2 =  M33d.FromRows(p3, p1, p0).Det
+        let d3 = -M33d.FromRows(p2, p1, p0).Det
+
+        let delta1 = d0*d2 - d1*d1
+        let delta2 = d1*d2 - d0*d3
+        let delta3 = d1*d3 - d2*d2
+        let discr = 4.0*delta1*delta3 - delta2*delta2
+        
+        let inline flip (v : V3d) = V3d(-v.X, -v.Y, v.Z)
+
+        let qs2 = 3.0*d2*d2 - 4.0*d1*d3
+
+        if qs2 >= 0.0 && not (Fun.IsTiny(d1, 1E-8)) then   
+            // serpentine / Cusp with inflection at infinity
+            let qs = sqrt(qs2 / 3.0)
+            let l = V2d(d2 + qs, 2.0*d1).Normalized
+            let m = V2d(d2 - qs, 2.0*d1).Normalized
+
+            let tl = l.X
+            let sl = l.Y
+            let tm = m.X
+            let sm = m.Y
 
             let F =
                 M44d(
-                        td*te,               td*td*te,                   td*te*te,                       1.0,
-                    -se*td - sd*te,      -se*td*td - 2.0*sd*te*td,   -sd*te*te - 2.0*se*td*te,        0.0,
-                        sd * se,             te*sd*sd + 2.0*se*td*sd,    td*se*se + 2.0*sd*te*se,        0.0,
-                        0.0,                -sd*sd*se,                  -sd*se*se,                       0.0
+                    tl*tm,          tl*tl*tl,                   tm*tm*tm,                   1.0,
+                    -sm*tl-sl*tm,   -3.0*sl*tl*tl,              -3.0*sm*tm*tm,              0.0,
+                    sl*sm,          3.0*sl*sl*tl,               3.0*sm*sm*tm,               0.0,
+                    0.0,            -sl*sl*sl,                  -sm*sm*sm,                  0.0
                 )
 
-            let weights = M3Inverse * F
+            let shouldFlip = d1 > 0.0 // TODO
+            let w = m3i * F
+            if shouldFlip then Choice1Of2(7, flip w.R0.XYZ, flip w.R1.XYZ, flip w.R2.XYZ, flip w.R3.XYZ)
+            else Choice1Of2(7, w.R0.XYZ, w.R1.XYZ, w.R2.XYZ, w.R3.XYZ)
 
-            let w0 = weights.R0.XYZ
-            let w1 = weights.R1.XYZ
-            let w2 = weights.R2.XYZ
-            let w3 = weights.R3.XYZ
+        elif qs2 < 0.0 && not (Fun.IsTiny(d1, 1E-8)) then 
+            // loop
+            let ql = sqrt(-qs2)
+            let d = V2d(d2 + ql, 2.0*d1).Normalized
+            let e = V2d(d2 - ql, 2.0*d1).Normalized
 
-            let res = w0, w1, w2, w3
-            if d1 < 0.0 then O res
-            else res
+            let td = d.X
+            let sd = d.Y
+            let te = e.X
+            let se = e.Y
 
-        // 4. Quadratic
-        elif zero d1 && zero d2 && nonzero d3 then
-            let w0 = V3d(0.0,0.0,0.0)
-            let w1 = V3d(1.0/3.0,0.0,1.0/3.0)
-            let w2 = V3d(2.0/3.0,1.0/3.0,2.0/3.0)
-            let w3 = V3d(1.0,1.0,1.0)
+            let a = td / sd
+            let b = te / se
+
+            let va = a >= 1E-3 && a <= 1.0 - 1E-3
+            let vb = b >= 1E-3 && b <= 1.0 - 1E-3
+
+            if va then 
+                Log.warn "split %A" a
+                Choice2Of2 a
+            elif vb then 
+                Log.warn "split %A" b
+                Choice2Of2 b
+            else
+                let F =
+                    M44d(
+                        td*te,          td*td*te,                   td*te*te,                   1.0,
+                        -se*td-sd*te,   -se*td*td-2.0*sd*te*td,     -sd*te*te-2.0*se*td*te,     0.0,
+                        sd*se,          te*sd*sd+2.0*se*td*sd,      td*se*se+2.0*sd*te*se,      0.0,
+                        0.0,            -sd*sd*se,                  -sd*se*se,                  0.0
+                    )
+
+                let w = m3i * F
+
+                let shouldNotFlip = (d1 > 0.0 && w.M10 < 0.0) || (d1 < 0.0 && w.M10 > 0.0)
+
+                if not shouldNotFlip then Choice1Of2(8, flip w.R0.XYZ, flip w.R1.XYZ, flip w.R2.XYZ, flip w.R3.XYZ)
+                else Choice1Of2(8, w.R0.XYZ, w.R1.XYZ, w.R2.XYZ, w.R3.XYZ)
+        
+        elif Fun.IsTiny(d1, 1E-8) && not (Fun.IsTiny(d1, 1E-8)) then
+            // Cusp with cusp at infinity
 
 
-            let res = w0,w1,w2,w3
-            if d3 < 0.0 then O res
-            else res
-
-        // 3b. Cusp with cusp at infinity
-        elif d1z && zero v then
-            let tl = d3
-            let sl = 3.0*d2
-            let tm = 1.0
-            let sm = 0.0
-
+            let l = V2d(d3, 3.0*d2).Normalized
+            let tl = l.X
+            let sl = l.Y
 
             let F =
                 M44d(
-                    tl,     tl*tl*tl,       1.0, 1.0,
-                    -sl,    -3.0*sl*tl*tl,   0.0, 0.0,
-                    0.0,     3.0*sl*sl*tl,   0.0, 0.0,
-                    0.0,    -sl*sl*sl,       0.0, 0.0
-                )
-
-            let weights = M3Inverse * F
-            let w0 = weights.R0.XYZ
-            let w1 = weights.R1.XYZ
-            let w2 = weights.R2.XYZ
-            let w3 = weights.R3.XYZ
-
-            w0, w1, w2, w3
-
-
-        elif Fun.IsTiny d1 && Fun.IsTiny d2 && Fun.IsTiny d3 then
-            failwith "line or point"
-
+                    tl,         tl*tl*tl,       1.0, 1.0,
+                    -sl,        -3.0*sl*tl*tl,  0.0, 0.0,
+                    0.0,        3.0*sl*sl*tl,   0.0, 0.0,
+                    0.0,        -sl*sl*sl,      0.0, 0.0
+                ) 
+            
+            let w = m3i * F
+            Choice1Of2(6, w.R0.XYZ, w.R1.XYZ, w.R2.XYZ, w.R3.XYZ)
+        
+        elif Fun.IsTiny(d1, 1E-8) && Fun.IsTiny(d2, 1E-8) && not (Fun.IsTiny(d3, 1E-8)) then
+            // quadratic
+            failwith "quadratic"
 
         else
-            failwith "not possible"
+            failwith "line or point"
 
     /// creates a geometry using the !!closed!! path which contains the left-hand-side of
     /// the outline.
@@ -981,37 +1087,88 @@ module Path =
                     run rest
 
                 | (Bezier3(p0, p1, p2, p3) as s) :: rest ->
-                    let q = Polygon2d(p0, p1, p2, p3)
-                    let p1Inside = p1.PosLeftOfLineValue(p0, p3) < 0.0
-                    let p2Inside = p2.PosLeftOfLineValue(p0, p3) < 0.0
+                    //match PathSegment.inflectionParameters s with
+                    //| [t0] when t0 >= 1E-8 && t0 <= 1.0 - 1E-8 ->
+                    //    let l, r = PathSegment.split t0 s
 
-                    start p0
-                    add p0
-                        
-                    let kind = 
-                        if p1Inside && p2Inside then
-                            add p1
-                            add p2
-                            6.0
-                        elif not p1Inside && not p2Inside then
-                            7.0
-                        else
-                            8.0
+                    //    match l, r with
+                    //    | Some l, Some r ->
+                    //        run (l :: r :: rest)
+                    //    | Some s, None | None, Some s ->
+                    //        run (s :: rest)
+                    //    | None, None ->
+                    //        run rest
+                    //| _ -> 
+
+                        match texCoords(p0, p1, p2, p3) with
+                        | Choice1Of2(kind, w0, w1, w2, w3) ->
                             
+                            let points  = [|p0;p1;p2;p3|]
+                            let weights = [|w0;w1;w2;w3|]
+                            let hull = Polygon2d(points).ComputeConvexHullIndexPolygon().Indices |> Seq.toArray 
 
-                        
+                            let wnan = weights |> Array.exists (fun w -> w.AnyNaN || w.AnyInfinity)
+                            if wnan then Log.warn "asdasda"
+                            let kind = float kind
 
-                    let w0,w1,w2,w3 = texCoords(p0, p1, p2, p3)
-                    boundaryTriangles.AddRange [p0; p1; p2]
-                    boundaryCoords.AddRange [V4d(w0, kind); V4d(w1, kind); V4d(w2, kind)]
-                    boundaryTriangles.AddRange [p0; p2; p3]
-                    boundaryCoords.AddRange [V4d(w0, kind); V4d(w2, kind); V4d(w3, kind)]
+                            if hull.Length > 2 then
+                                start p0
+                                add p0
 
-                    add p3
-                    current <- p3
+                                let p1Inside = Array.exists (fun i -> i = 1) hull && p1.PosLeftOfLineValue(p0, p3) <= 0.0
+                                let p2Inside = Array.exists (fun i -> i = 2) hull && p2.PosLeftOfLineValue(p0, p3) <= 0.0
+                                if p1Inside then add p1 
+                                if p2Inside then add p2
 
-                    run rest
+                                let ws = hull |> Array.map (fun i -> weights.[i])
+                                let ps = hull |> Array.map (fun i -> points.[i])
 
+                                if hull.Length = 3 then
+                                    //let m = Array.init 4 id |> Array.find (fun v -> not (Array.contains v hull))
+
+                                    //boundaryTriangles.AddRange [ps.[0]; ps.[1]; points.[m]]
+                                    //boundaryCoords.AddRange [V4d(ws.[0], kind); V4d(ws.[1], kind); V4d(weights.[m], kind)]
+                                    
+                                    //boundaryTriangles.AddRange [ps.[1]; ps.[2]; points.[m]]
+                                    //boundaryCoords.AddRange [V4d(ws.[1], kind); V4d(ws.[2], kind); V4d(weights.[m], kind)]
+                                    
+                                    //boundaryTriangles.AddRange [ps.[2]; ps.[0]; points.[m]]
+                                    //boundaryCoords.AddRange [V4d(ws.[2], kind); V4d(ws.[0], kind); V4d(weights.[m], kind)]
+                                    boundaryTriangles.AddRange [ps.[0]; ps.[1]; ps.[2]]
+                                    boundaryCoords.AddRange [V4d(ws.[0], kind); V4d(ws.[1], kind); V4d(ws.[2], kind)]
+
+                                elif hull.Length = 4 then
+
+                                    //let o = V2d(0.0, 10.0)
+                                    //boundaryTriangles.AddRange [o+ps.[0]; o+ps.[1]; o+ps.[2]]
+                                    //boundaryCoords.AddRange [V4d(ws.[0], kind); V4d(ws.[1], kind); V4d(ws.[2], kind)]
+                                    //boundaryTriangles.AddRange [o+ps.[0]; o+ps.[2]; o+ps.[3]]
+                                    //boundaryCoords.AddRange [V4d(ws.[0], kind); V4d(ws.[2], kind); V4d(ws.[3], kind)]
+
+                                    boundaryTriangles.AddRange [ps.[0]; ps.[1]; ps.[3]]
+                                    boundaryCoords.AddRange [V4d(ws.[0], kind); V4d(ws.[1], kind); V4d(ws.[3], kind)]
+                                    boundaryTriangles.AddRange [ps.[3]; ps.[1]; ps.[2]]
+                                    boundaryCoords.AddRange [V4d(ws.[3], kind); V4d(ws.[1], kind); V4d(ws.[2], kind)]
+
+                                add p3
+
+                            current <- p3
+                            run rest
+
+                        | Choice2Of2 t ->
+                            let l, r = PathSegment.split t s
+
+                            let rest =
+                                match r with
+                                | Some r -> r :: rest
+                                | None -> rest
+
+                            let rest =
+                                match l with
+                                | Some l -> l :: rest
+                                | None -> rest
+                                
+                            run rest
 
                 | [] -> ()
 
