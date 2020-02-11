@@ -262,7 +262,7 @@ module SVDTests =
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwithf "NONE at %d" i
 
-    [<Test; Ignore("Builder pattern is illegal")>]
+    [<Test; Ignore("Builder pattern is illegal for structs")>]
     let ``[SVD] DecomposeWithBuilder``() =
 
         let rnd = new RandomSystem(1)

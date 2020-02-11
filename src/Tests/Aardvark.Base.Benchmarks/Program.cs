@@ -21,7 +21,8 @@ namespace Aardvark.Base.Benchmarks
             //td.BenchmarkNumericalStability();
 
             //BenchmarkRunner.Run<Rot3dTransform>();
-            BenchmarkRunner.Run<StaticConstants>();
+            //BenchmarkRunner.Run<StaticConstants>();
+            BenchmarkRunner.Run<MatrixMultiply>();
         }
     }
 }
