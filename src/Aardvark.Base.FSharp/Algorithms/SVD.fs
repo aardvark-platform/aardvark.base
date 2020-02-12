@@ -631,9 +631,9 @@ type SVD private() =
         use pS =  fixed aS
         use pVt = fixed aVt
 
-        let tU  = NativeMatrix<float32>(NativePtr.cast pU,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tS  = NativeMatrix<float32>(NativePtr.cast pS,    MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
-        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tU  = NativeMatrix<float32>(NativePtr.cast pU,    MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrix<float32>(NativePtr.cast pS,    MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
 
         if SVD.DecomposeInPlace(tU,tS,tVt) then
             Some (aU.[0], aS.[0], aVt.[0])
