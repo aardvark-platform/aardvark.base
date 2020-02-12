@@ -7,7 +7,7 @@ open Microsoft.FSharp.NativeInterop
 [<AutoOpen>]
 module private SVDHelpers =
     let inline pythag a b = sqrt (a*a + b*b)
-
+    
     let inline svdBidiagonalNative (anorm : ^a) (U : NativeMatrix< ^a >) (B : NativeMatrix< ^a >) (Vt : NativeMatrix< ^a >) : bool =
         let two = LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne
         let mutable c : ^a = LanguagePrimitives.GenericZero
@@ -15,8 +15,11 @@ module private SVDHelpers =
         let mutable rvl0 = LanguagePrimitives.GenericZero
         let mutable suc = true
 
+        let inline istiny v =
+            anorm + v = anorm
+
         let n = int B.SY
-        let m = int B.SX
+        let m = min (int B.SX) n
 
         let pB = NativePtr.toNativeInt B.Pointer
         let sa = nativeint sizeof< ^a >
@@ -28,23 +31,31 @@ module private SVDHelpers =
 
         let prvl = pB + dbc
         let drvl = dw
-        
-        let inline rvl i =
-            //if i < 0 || i >= cccc then printfn "rvl %d" i
+
+        let inline rvl (i : int) : ^a =
+#if DEBUG
+            if i < 0 || i >= n then failwithf "rvl %d" i
+#endif
             if i = 0 then rvl0
             else NativeInt.read< ^a > (prvl + nativeint (i - 1) * drvl) //B.[i-1,i]
                 
-        let inline setrvl i v =
-            //if i < 0 || i >= cccc then printfn "setrvl %d %A" i v
+        let inline setrvl (i : int) (v : ^a) =
+#if DEBUG
+            if i < 0 || i >= n then failwithf "setrvl %d %A" i v
+#endif
             if i = 0 then rvl0 <- v
             else NativeInt.write (prvl + nativeint (i - 1) * drvl) v //B.[i-1,i] <- v
 
-        let inline w i =
-            //if i < 0 || i >= cccc then printfn "w %d" i
+        let inline w (i : int) : ^a =
+#if DEBUG
+            if i < 0 || i >= n then failwithf "w %d" i
+#endif
             NativeInt.read< ^a > (pw + nativeint i * dw)
             
-        let inline setw i (v :  ^a) =
-            //if i < 0 || i >= cccc then printfn "setw %d %A" i v
+        let inline setw (i : int) (v :  ^a) =
+#if DEBUG
+            if i < 0 || i >= n then failwithf "setw %d %A" i v
+#endif
             NativeInt.write (pw + nativeint i * dw) v
              
         let mutable f : ^a = LanguagePrimitives.GenericZero
@@ -66,11 +77,11 @@ module private SVDHelpers =
                 let mutable testing = true
                 while testing && l >= 0 do
                     nm <- l - 1
-                    if abs (rvl l) + anorm = anorm then
+                    if l = 0 || abs (rvl l) + anorm = anorm then
                         flag <- false
                         testing <- false
-                    elif l = 0 || (abs (w nm) + anorm = anorm) then
-                        testing <- false
+                    elif (abs (w nm) + anorm = anorm) then
+                        testing <- false    
                     else
                         dec &l
 
@@ -78,8 +89,10 @@ module private SVDHelpers =
                 if flag then
                     c <- LanguagePrimitives.GenericZero
                     s <- LanguagePrimitives.GenericOne
-                    for i in l .. k do
+                    let mutable i = l
+                    while i <= k do
                         f <- s * rvl i
+                        setrvl i (c * rvl i)
                         if abs f + anorm <> anorm then
                             g <- w i //B.[i,i]
                             h <- pythag f g
@@ -89,7 +102,10 @@ module private SVDHelpers =
                             s <- -f * h
 
                             applyGivensMat U nm i c s
-    
+                            i <- i + 1
+                        else
+                            i <- k+1
+
                 z <- w k //B.[k,k] 
                 if l = k then
                     conv <- true
@@ -133,7 +149,7 @@ module private SVDHelpers =
                         z <- pythag f h // Fun.Pythag(f, h)
                         setw j z //B.[j,j] <- z
 
-                        if z <> LanguagePrimitives.GenericZero then
+                        if not (istiny z) then
                             z <- LanguagePrimitives.GenericOne / z
                             c <- f * z
                             s <- h * z
@@ -163,24 +179,34 @@ module private SVDHelpers =
                     compare (abs l) (abs r)
             }
 
-        let mutable values = MapExt<_,_>(cmp, MapExtImplementation.MapEmpty)
+        let values = 
+            //SortedSetExt< ^a * _ >(cmp)
+            System.Collections.Generic.SortedDictionary< ^a, _ >(cmp)
         for i in 0 .. m - 1 do
             let v = w i //B.[i,i]
-            values <- 
-                MapExt.alter v (fun o ->
-                    let o = defaultArg o []
-                    Some (i :: o)
-                ) values
+            match values.TryGetValue(v) with
+            | (true,o) -> 
+                values.[v] <- i::o
+            | _ -> 
+                values.[v] <- [i]
+                // values <- 
+                //     MapExt.alter v (fun o ->
+                //         let o = defaultArg o []
+                //         Some (i :: o)
+                //     ) values
                 
         for i0 in 0..m-1 do
             let biggestIdx =
-                let (key, indices) = MapExt.tryItem (values.Count - 1) values |> Option.get
+                let (KeyValue(key,indices)) = values |> Seq.last
+                //let (key, indices) = MapExt.tryItem (values.Count - 1) values |> Option.get
                 match indices with
                     | [i0] -> 
-                        values <- MapExt.remove key values
+                        values.Remove(key) |> ignore
+                        //values <- MapExt.remove key values
                         i0
                     | i0 :: r ->
-                        values <- MapExt.add key r values
+                        values.[key] <- r
+                        //values <- MapExt.add key r values
                         i0
                     | _ ->
                         failwith ""
@@ -189,11 +215,16 @@ module private SVDHelpers =
                 let v0 = w i0 //B.[i0, i0]
                 swap i0 biggestIdx
                
-                values <- 
-                    MapExt.alter v0 (fun o ->
-                        let o = Option.defaultValue [] o
-                        o |> List.map (fun ii -> if ii = i0 then biggestIdx else ii) |> Some
-                    ) values
+                match values.TryGetValue(v0) with
+                | (true,o) -> 
+                    values.[v0] <- o |> List.map (fun ii -> if ii = i0 then biggestIdx else ii)
+                | _ -> 
+                    values.[v0] <- []                
+                // values <- 
+                //     MapExt.alter v0 (fun o ->
+                //         let o = Option.defaultValue [] o
+                //         o |> List.map (fun ii -> if ii = i0 then biggestIdx else ii) |> Some
+                //     ) values
 
     
         for i0 in 0..m-2 do
@@ -209,7 +240,7 @@ module private SVDHelpers =
 type SVD private() =
 
     static let doubleEps = 1E-20
-    static let floatEps = 1E-15f
+    static let floatEps = float32 1E-6
 
     static member DecomposeInPlace(U : NativeMatrix<float>, S : NativeMatrix<float>, Vt : NativeMatrix<float>) =
         if S.SX <= S.SY then
@@ -336,167 +367,325 @@ type SVD private() =
         
 
     static member Decompose(m : M22d) =
-        let mutable S = m
-        let mutable U = M22d()
-        let mutable Vt = M22d()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aTmp = [| M22d(); m; M22d()|]
+
+        use pTmp = fixed aTmp
+        let pS =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrix<float>(NativePtr.cast pS,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aTmp.[0], aTmp.[1], aTmp.[2])
         else
             None
+
+        //let mutable S = m
+        //let mutable U = M22d()
+        //let mutable Vt = M22d()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
 
     static member Decompose(m : M23d) =
-        let mutable S = m
-        let mutable U = M22d()
-        let mutable Vt = M33d()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aU  = [|M22d()|]
+        let aS  = [|m|]
+        let aVt = [|M33d()|]
+
+        use pU =  fixed aU
+        use pS =  fixed aS
+        use pVt = fixed aVt
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pU,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrix<float>(NativePtr.cast pS,    MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aU.[0], aS.[0], aVt.[0])
         else
             None
+
+        //let mutable S = m
+        //let mutable U = M22d()
+        //let mutable Vt = M33d()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
 
     static member Decompose(m : M33d) =
-        let mutable S = m
-        let mutable U = M33d()
-        let mutable Vt = M33d()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aTmp = [| M33d(); m; M33d()|]
+
+        use pTmp = fixed aTmp
+        let pS =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrix<float>(NativePtr.cast pS,    MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aTmp.[0], aTmp.[1], aTmp.[2])
         else
             None
+
+        //let mutable S = m
+        //let mutable U = M33d()
+        //let mutable Vt = M33d()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
 
     static member Decompose(m : M34d) =
-        let mutable S = m
-        let mutable U = M33d()
-        let mutable Vt = M44d()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aU  = [|M33d()|]
+        let aS  = [|m|]
+        let aVt = [|M44d()|]
+
+        use pU =  fixed aU
+        use pS =  fixed aS
+        use pVt = fixed aVt
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pU,    MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrix<float>(NativePtr.cast pS,    MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aU.[0], aS.[0], aVt.[0])
         else
             None
 
+
+        //let mutable S = m
+        //let mutable U = M33d()
+        //let mutable Vt = M44d()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
+
     static member Decompose(m : M44d) =
-        let mutable S = m
-        let mutable U = M44d()
-        let mutable Vt = M44d()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aTmp = [| M44d(); m; M44d()|]
+
+        use pTmp = fixed aTmp
+        let pS =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tS  = NativeMatrix<float>(NativePtr.cast pS,    MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aTmp.[0], aTmp.[1], aTmp.[2])
         else
             None
+
+        //let mutable S = m
+        //let mutable U = M44d()
+        //let mutable Vt = M44d()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
 
 
     static member Decompose(m : M22f) =
-        let mutable S = m
-        let mutable U = M22f()
-        let mutable Vt = M22f()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aTmp = [| M22f(); m; M22f()|]
+
+        use pTmp = fixed aTmp
+        let pS =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrix<float32>(NativePtr.cast pS,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aTmp.[0], aTmp.[1], aTmp.[2])
         else
             None
+
+        //let mutable S = m
+        //let mutable U = M22f()
+        //let mutable Vt = M22f()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
 
     static member Decompose(m : M23f) =
-        let mutable S = m
-        let mutable U = M22f()
-        let mutable Vt = M33f()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aU  = [|M22f()|]
+        let aS  = [|m|]
+        let aVt = [|M33f()|]
+
+        use pU =  fixed aU
+        use pS =  fixed aS
+        use pVt = fixed aVt
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pU,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrix<float32>(NativePtr.cast pS,    MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aU.[0], aS.[0], aVt.[0])
         else
             None
+
+        //let mutable S = m
+        //let mutable U = M22f()
+        //let mutable Vt = M33f()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
 
     static member Decompose(m : M33f) =
-        let mutable S = m
-        let mutable U = M33f()
-        let mutable Vt = M33f()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aTmp = [| M33f(); m; M33f()|]
+
+        use pTmp = fixed aTmp
+        let pS =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrix<float32>(NativePtr.cast pS,    MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aTmp.[0], aTmp.[1], aTmp.[2])
         else
             None
+
+        //let mutable S = m
+        //let mutable U = M33f()
+        //let mutable Vt = M33f()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
 
     static member Decompose(m : M34f) =
-        let mutable S = m
-        let mutable U = M33f()
-        let mutable Vt = M44f()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aU  = [|M33f()|]
+        let aS  = [|m|]
+        let aVt = [|M44f()|]
+
+        use pU =  fixed aU
+        use pS =  fixed aS
+        use pVt = fixed aVt
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pU,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrix<float32>(NativePtr.cast pS,    MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aU.[0], aS.[0], aVt.[0])
         else
             None
+
+        //let mutable S = m
+        //let mutable U = M33f()
+        //let mutable Vt = M44f()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
 
     static member Decompose(m : M44f) =
-        let mutable S = m
-        let mutable U = M44f()
-        let mutable Vt = M44f()
-        let mutable suc = false
-        tensor {
-            let! pS = &S
-            let! pU = &U
-            let! pVt = &Vt
-            suc <- SVD.DecomposeInPlace(pU, pS, pVt)
-        }
-        if suc then
-            Some (U, S, Vt)
+        let aTmp = [| M44f(); m; M44f()|]
+
+        use pTmp = fixed aTmp
+        let pS =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tS  = NativeMatrix<float32>(NativePtr.cast pS,    MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+
+        if SVD.DecomposeInPlace(tU,tS,tVt) then
+            Some (aTmp.[0], aTmp.[1], aTmp.[2])
         else
             None
-        
 
+        //let mutable S = m
+        //let mutable U = M44f()
+        //let mutable Vt = M44f()
+        //let mutable suc = false
+        //tensor {
+        //    let! pS = &S
+        //    let! pU = &U
+        //    let! pVt = &Vt
+        //    suc <- SVD.DecomposeInPlace(pU, pS, pVt)
+        //}
+        //if suc then
+        //    Some (U, S, Vt)
+        //else
+        //    None
+        
 
 module SVD =
     let inline private dec< ^a, ^c, ^d when (^a or ^d) : (static member Decompose : ^a -> ^c) > (d : ^d) (m : ^a) : ^c =
