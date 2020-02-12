@@ -11,3 +11,4 @@ FsPickler
 Aardvark.Base.TypeProviders
 NUnit3TestAdapter
 Microsoft.NET.Test.Sdk
+YoloDev.Expecto.TestSdk

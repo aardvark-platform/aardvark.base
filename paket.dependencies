@@ -22,7 +22,9 @@ nuget NUnit3TestAdapter            ~> 3.16.1
 nuget Microsoft.NET.Test.Sdk       ~> 15.8.0
 nuget Expecto                      
 nuget Expecto.FsCheck              
-nuget Expecto.VisualStudio.TestAdapter ~> 10.0.2
+nuget Expecto.VisualStudio.TestAdapter version_in_path: true
+nuget YoloDev.Expecto.TestSdk
+
 
 nuget FsPickler                    ~> 5.2.2
 nuget FsPickler.Json               ~> 5.2.2

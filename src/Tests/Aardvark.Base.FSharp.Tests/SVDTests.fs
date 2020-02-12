@@ -718,8 +718,10 @@ module ExpectoSvdTests =
                 res.ApproximateEquals(mat.value)
             )
         ]    
+
+    [<Tests>]
     let all =
-        testList "AllTests" [
+        testList "AllSvdTests-Expecto" [
             qr
             rq
             qrBidiag
@@ -1149,7 +1151,7 @@ module SVDTests =
 
             match svd with
             | Some (q, s, v) -> let test = q * s * v
-                                if not (Fun.ApproximateEquals(test, mat, 1e-6f)) then
+                                if not (Fun.ApproximateEquals(test, mat, 1e-2f)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"
 
