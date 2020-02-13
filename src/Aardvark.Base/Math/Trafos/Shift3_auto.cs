@@ -217,6 +217,17 @@ namespace Aardvark.Base
                              0, 0, 1, shift.Z);
         }
 
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(M22f matrix, Shift3f shift)
+        {
+            return new M34f(matrix.M00, matrix.M01, 0, matrix.M00 * shift.X + matrix.M01 * shift.Y,
+                            matrix.M10, matrix.M11, 0, matrix.M10 * shift.X + matrix.M11 * shift.Y,
+                            0, 0, 1, shift.Z);
+        }
+
         /// <summary>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -225,6 +236,16 @@ namespace Aardvark.Base
             return new M34f(matrix.M00, matrix.M01, matrix.M02, shift.X,
                              matrix.M10, matrix.M11, matrix.M12, shift.Y,
                              matrix.M20, matrix.M21, matrix.M22, shift.Z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(M33f m, Shift3f t)
+        {
+            return new M34f(
+               m.M00, m.M01, m.M02, m.M00 * t.X + m.M01 * t.Y + m.M02 * t.Z,
+               m.M10, m.M11, m.M12, m.M10 * t.X + m.M11 * t.Y + m.M12 * t.Z,
+               m.M20, m.M21, m.M22, m.M20 * t.X + m.M21 * t.Y + m.M22 * t.Z
+               );
         }
 
         /// <summary>
@@ -408,6 +429,10 @@ namespace Aardvark.Base
                             0, 1, 0, s.Y,
                             0, 0, 1, s.Z);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3f(Shift3f s)
+            => new Affine3f(s);
 
         /// <summary>
         /// Returns all values of a <see cref="Shift3f"/> instance
@@ -699,6 +724,17 @@ namespace Aardvark.Base
                              0, 0, 1, shift.Z);
         }
 
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(M22d matrix, Shift3d shift)
+        {
+            return new M34d(matrix.M00, matrix.M01, 0, matrix.M00 * shift.X + matrix.M01 * shift.Y,
+                            matrix.M10, matrix.M11, 0, matrix.M10 * shift.X + matrix.M11 * shift.Y,
+                            0, 0, 1, shift.Z);
+        }
+
         /// <summary>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -707,6 +743,16 @@ namespace Aardvark.Base
             return new M34d(matrix.M00, matrix.M01, matrix.M02, shift.X,
                              matrix.M10, matrix.M11, matrix.M12, shift.Y,
                              matrix.M20, matrix.M21, matrix.M22, shift.Z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(M33d m, Shift3d t)
+        {
+            return new M34d(
+               m.M00, m.M01, m.M02, m.M00 * t.X + m.M01 * t.Y + m.M02 * t.Z,
+               m.M10, m.M11, m.M12, m.M10 * t.X + m.M11 * t.Y + m.M12 * t.Z,
+               m.M20, m.M21, m.M22, m.M20 * t.X + m.M21 * t.Y + m.M22 * t.Z
+               );
         }
 
         /// <summary>
@@ -890,6 +936,10 @@ namespace Aardvark.Base
                             0, 1, 0, s.Y,
                             0, 0, 1, s.Z);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3d(Shift3d s)
+            => new Affine3d(s);
 
         /// <summary>
         /// Returns all values of a <see cref="Shift3d"/> instance

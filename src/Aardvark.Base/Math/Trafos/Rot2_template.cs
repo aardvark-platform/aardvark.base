@@ -7,6 +7,9 @@ using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    //# Action comma = () => Out(", ");
+    //# Action commaln = () => Out("," + Environment.NewLine);
+    //# Action add = () => Out(" + ");
     //# foreach (var isDouble in new[] { false, true }) {
     //#   var ft = isDouble ? "double" : "float";
     //#   var tc = isDouble ? "d" : "f";
@@ -24,6 +27,9 @@ namespace Aardvark.Base
     //#   var m44t = "M44" + tc;
     #region __rot2t__
 
+    /// <summary>
+    /// Represents a 2D rotation counterclockwise around the origin.
+    /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct __rot2t__
@@ -49,224 +55,90 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public __rot2t__ Inverse { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot2t__(-Angle); } 
+        public __rot2t__ Inverse { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot2t__(-Angle); }
 
         #endregion
 
         #region Arithmetic operators
 
         /// <summary>
-        /// Negates the rotation.
+        /// Multiplies two <see cref="__rot2t__"/> transformations.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator -(__rot2t__ rot)
-        {
-            return new __rot2t__(-rot.Angle);
-        }
-
-        /// <summary>
-        /// Adds two rotations.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator +(__rot2t__ r0, __rot2t__ r1)
+        public static __rot2t__ operator *(__rot2t__ r0, __rot2t__ r1)
         {
             return new __rot2t__(r0.Angle + r1.Angle);
         }
 
         /// <summary>
-        /// Adds a rotation and a scalar value.
+        /// Multiplies a <see cref="__rot2t__"/> transformation with a <see cref="__v2t__"/>.
+        /// Attention: Multiplication is NOT commutative!
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator +(__rot2t__ rot, __ft__ angle)
-        {
-            return new __rot2t__(rot.Angle + angle);
-        }
-
-        /// <summary>
-        /// Adds a rotation and a scalar value.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator +(__ft__ angle, __rot2t__ rot)
-        {
-            return new __rot2t__(rot.Angle + angle);
-        }
-
-        /// <summary>
-        /// Subtracts two rotations.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator -(__rot2t__ r0, __rot2t__ r1)
-        {
-            return new __rot2t__(r0.Angle - r1.Angle);
-        }
-
-        /// <summary>
-        /// Subtracts a scalar value from a rotation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator -(__rot2t__ rot, __ft__ angle)
-        {
-            return new __rot2t__(rot.Angle - angle);
-        }
-
-        /// <summary>
-        /// Subtracts a rotation from a scalar value.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator -(__ft__ angle, __rot2t__ rot)
-        {
-            return new __rot2t__(angle - rot.Angle);
-        }
-
-        /// <summary>
-        /// Multiplies a rotation with a scalar value.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator *(__rot2t__ rot, __ft__ val)
-        {
-            return new __rot2t__(rot.Angle * val);
-        }
-
-        /// <summary>
-        /// Multiplies a scalar value with a rotation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator *(__ft__ val, __rot2t__ rot)
-        {
-            return new __rot2t__(rot.Angle * val);
-        }
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ operator *(__rot2t__ rot, __v2t__ vec)
         {
             __ft__ a = Fun.Cos(rot.Angle);
             __ft__ b = Fun.Sin(rot.Angle);
 
-            return new __v2t__(a * vec.X + b * vec.Y,
-                              -b * vec.X + a * vec.Y);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __v3t__ operator *(__rot2t__ rot, __v3t__ vec)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __v3t__(a * vec.X + b * vec.Y,
-                              -b * vec.X + a * vec.Y,
-                               vec.Z);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __v4t__ operator *(__rot2t__ rot, __v4t__ vec)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __v4t__(a * vec.X + b * vec.Y,
-                              -b * vec.X + a * vec.Y,
-                               vec.Z,
-                               vec.W);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m22t__ operator *(__rot2t__ rot, __m22t__ mat)
-        {
-            return (__m22t__)rot * mat;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m33t__ operator *(__rot2t__ rot, __m33t__ mat)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m33t__(a * mat.M00 + b * mat.M10,
-                                a * mat.M01 + b * mat.M11,
-                                a * mat.M02 + b * mat.M12,
-                               -b * mat.M00 + a * mat.M10,
-                               -b * mat.M01 + a * mat.M11,
-                               -b * mat.M02 + a * mat.M12,
-                                mat.M20, mat.M21, mat.M22);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m34t__ operator *(__rot2t__ rot, __m34t__ mat)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m34t__(a * mat.M00 + b * mat.M10,
-                                a * mat.M01 + b * mat.M11,
-                                a * mat.M02 + b * mat.M12,
-                                a * mat.M03 + b * mat.M13,
-                               -b * mat.M00 + a * mat.M10,
-                               -b * mat.M01 + a * mat.M11,
-                               -b * mat.M02 + a * mat.M12,
-                               -b * mat.M03 + a * mat.M13,
-                                mat.M20, mat.M21, mat.M22, mat.M23);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m44t__ operator *(__rot2t__ rot, __m44t__ mat)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m44t__(a * mat.M00 + b * mat.M10,
-                                a * mat.M01 + b * mat.M11,
-                                a * mat.M02 + b * mat.M12,
-                                a * mat.M03 + b * mat.M13,
-                               -b * mat.M00 + a * mat.M10,
-                               -b * mat.M01 + a * mat.M11,
-                               -b * mat.M02 + a * mat.M12,
-                               -b * mat.M03 + a * mat.M13,
-                                mat.M20, mat.M21, mat.M22, mat.M23,
-                                mat.M30, mat.M31, mat.M32, mat.M33);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m33t__ operator *(__rot2t__ rot2, __rot3t__ rot3)
-        {
-            return rot2 * (__m33t__)rot3;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator *(__rot2t__ r0, __rot2t__ r1)
-        {
-            return new __rot2t__(r0.Angle * r1.Angle);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m33t__ operator *(__rot2t__ rot, __scale3t__ scale)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m33t__(a * scale.X, b * scale.Y, 0,
-                               -b * scale.X, a * scale.Y, 0,
-                                0, 0, scale.Z);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m34t__ operator *(__rot2t__ rot, __shift3t__ shift)
-        {
-            __ft__ a = Fun.Cos(rot.Angle);
-            __ft__ b = Fun.Sin(rot.Angle);
-
-            return new __m34t__(a, b, 0, a * shift.X + b * shift.Y,
-                               -b, a, 0, -b * shift.X + a * shift.Y,
-                                0, 0, 1, shift.Z);
+            return new __v2t__(a * vec.X + -b * vec.Y, b * vec.X + a * vec.Y);
         }
 
         /// <summary>
-        /// Divides rotation by scalar value.
+        /// Multiplies a <see cref="__v2t__"/> with the inverse of a <see cref="__rot2t__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot2t__ operator /(__rot2t__ rot, __ft__ val)
+        public static __v2t__ operator *(__v2t__ vec, __rot2t__ rot)
         {
-            return new __rot2t__(rot.Angle / val);
+            __ft__ a = Fun.Cos(-rot.Angle);
+            __ft__ b = Fun.Sin(-rot.Angle);
+
+            return new __v2t__(a * vec.X + -b * vec.Y, b * vec.X + a * vec.Y);
         }
+
+        //# for (int n = 2; n <= 4; n++) {
+        //# for (int m = n; m <= (n+1) && m <= 4; m++) {
+        //#     var mat = "M" + n + m + tc;
+        //#     var nsub2 = n - 2;
+        //#     var msub2 = m - 2;
+        /// <summary>
+        /// Multiplies a <see cref="__rot2t__"/> transformation (as a __n__x__n__ matrix) with a <see cref="__mat__"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mat__ operator *(__rot2t__ r, __mat__ m)
+        {
+            __ft__ a = Fun.Cos(r.Angle);
+            __ft__ b = Fun.Sin(r.Angle);
+
+            return new __mat__(/*# 2.ForEach(i => { m.ForEach(j => { */
+                //# var x = (i == 0) ? "a" : "b";
+                //# var y = (i == 0) ? "-b" :  "a";
+                __x__ * m.M0__j__ + __y__ * m.M1__j__/*# }, comma); }, commaln); if (nsub2 > 0) {*/,
+                /*# nsub2.ForEach(i => { var ip2 = i + 2; */
+                /*# m.ForEach(j => { */m.M__ip2____j__/*# }, comma); }, comma); }*/);
+        }
+
+        //# if (n == m) {
+        /// <summary>
+        /// Multiplies a <see cref="__mat__"/> with a <see cref="__rot2t__"/> transformation (as a __n__x__n__ matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mat__ operator *(__mat__ m, __rot2t__ r)
+        {
+            __ft__ a = Fun.Cos(r.Angle);
+            __ft__ b = Fun.Sin(r.Angle);
+
+            return new __mat__(/*# n.ForEach(i => { 2.ForEach(j => { */
+                //# var x = (j == 0) ? "a" : "-b";
+                //# var y = (j == 0) ? "b" :  "a";
+                m.M__i__0 * __x__ + m.M__i__1 * __y__/*# }, comma); if (msub2 > 0) {*/,
+                /*# msub2.ForEach(jj => { var jjp2 = jj + 2; */m.M__i____jjp2__/*# }, comma); } }, commaln);*/);
+        }
+
+        //# }
+        //# } }
 
         #endregion
 
@@ -294,63 +166,55 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Creator Function
+        #region Static Creators
 
-        //WARNING: untested
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rot2t__ From__m22t__(__m22t__ m)
         {
-            // cos(a) sin(a)
-            //-sin(a) cos(a)
-
-            if (m.M00 >= -1.0 && m.M00 <= 1.0)
-            {
-                return new __rot2t__(Fun.Acos(m.M00));
-            }
-            else throw new ArgumentException("Given __m22t__ is not a Rotation-Matrix");
+            return new __rot2t__(m.RotationAngle());
         }
 
         #endregion
 
         #region Conversion Operators
 
+        //# for (int n = 2; n <= 4; n++) {
+        //# for (int m = n; m <= (n+1) && m <= 4; m++) {
+        //#     var mat = "M" + n + m + tc;
+        //#     string[,] val = new string[,] {{" a", "-b"}, {" b", " a"}};
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __m22t__(__rot2t__ r)
+        public static explicit operator __mat__(__rot2t__ r)
         {
-            var ca = Fun.Cos(r.Angle);
-            var sa = Fun.Sin(r.Angle);
+            __ft__ a = Fun.Cos(r.Angle);
+            __ft__ b = Fun.Sin(r.Angle);
 
-            return new __m22t__(ca, sa, -sa, ca);
+            return new __mat__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var x = (i < 2 && j < 2) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
         }
 
+        //# } }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __m23t__(__rot2t__ r)
-        {
-            var ca = Fun.Cos(r.Angle);
-            var sa = Fun.Sin(r.Angle);
-
-            return new __m23t__(ca, sa, 0.0f, -sa, ca, 0.0f);
-        }
+        public static explicit operator Euclidean2__tc__(__rot2t__ r)
+            => new Euclidean2__tc__(r, __v2t__.Zero);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __m33t__(__rot2t__ r)
-        {
-            var ca = Fun.Cos(r.Angle);
-            var sa = Fun.Sin(r.Angle);
+        public static explicit operator Affine2__tc__(__rot2t__ r)
+            => new Affine2__tc__(r);
 
-            return new __m33t__(ca, sa, 0,
-                            -sa, ca, 0,
-                            0, 0, 1);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2__tc__(__rot2t__ r)
+        {
+            var f = (__m33t__)r;
+            var b = (__m33t__)r.Inverse;
+            return new Trafo2__tc__(f, b);
         }
 
         #endregion
 
         #region Overrides
 
-        /// <summary>
-        /// Calculates Hash-code of the given rotation.
-        /// </summary>
-        /// <returns>Hash-code.</returns>
         public override int GetHashCode()
         {
             return Angle.GetHashCode();
@@ -369,17 +233,10 @@ namespace Aardvark.Base
             );
         }
 
-        /// <summary>
-        /// Checks if 2 objects are equal.
-        /// </summary>
-        /// <returns>True if equal.</returns>
         public override bool Equals(object obj)
         {
             if (obj is __rot2t__)
-            {
-                __rot2t__ rotation = (__rot2t__)obj;
-                return (Angle == rotation.Angle);
-            }
+                return Rot.Distance(this, (__rot2t__)obj) == 0;
             return false;
         }
 
@@ -391,7 +248,7 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
-        /// Inverts a rotation.
+        /// Inverts a <see cref="__rot2t__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref __rot2t__ rot)
@@ -401,10 +258,26 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Distance
+
+        /// <summary>
+        /// Returns the absolute difference in radians between two <see cref="__rot2t__"/> rotations.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ft__ Distance(this __rot2t__ r1, __rot2t__ r2)
+        {
+            //# var cast = isDouble ? "" : "(float)"; 
+            var phi = Fun.Abs(r2.Angle - r1.Angle) % __cast__Constant.PiTimesTwo;
+            return (phi > __cast__Constant.Pi) ? __cast__Constant.PiTimesTwo - phi : phi;
+        }
+
+        #endregion
+
         #region Transform
 
         /// <summary>
-        /// Transforms a vector.
+        /// Transforms a <see cref="__v2t__"/> vector by a <see cref="__rot2t__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ Transform(this __rot2t__ rot, __v2t__ v)
@@ -413,13 +286,57 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Inverse transforms a vector.
+        /// Transforms a <see cref="__v3t__"/> vector by a <see cref="__rot2t__"/> transformation.
+        /// The z coordinate of the vector is unaffected.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ Transform(this __rot2t__ rot, __v3t__ v)
+        {
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __v3t__(a * v.X + -b * v.Y,
+                        b * v.X + a * v.Y,
+                        v.Z);
+        }
+
+        /// <summary>
+        /// Transforms a <see cref="__v4t__"/> vector by a <see cref="__rot2t__"/> transformation.
+        /// The z and w coordinates of the vector are unaffected.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v4t__ Transform(this __rot2t__ rot, __v4t__ v)
+        {
+            __ft__ a = Fun.Cos(rot.Angle);
+            __ft__ b = Fun.Sin(rot.Angle);
+
+            return new __v4t__(a * v.X + -b * v.Y,
+                        b * v.X + a * v.Y,
+                        v.Z, v.W);
+        }
+
+        /// <summary>
+        /// Transforms a <see cref="__v2t__"/> vector by the inverse of a <see cref="__rot2t__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ InvTransform(this __rot2t__ rot, __v2t__ v)
-        {
-            return -rot * v;
-        }
+            => v * rot;
+
+        /// <summary>
+        /// Transforms a <see cref="__v3t__"/> vector by the inverse of a <see cref="__rot2t__"/> transformation.
+        /// The z coordinate of the vector is unaffected.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ InvTransform(this __rot2t__ rot, __v3t__ v)
+            => Transform(rot.Inverse, v);
+
+        /// <summary>
+        /// Transforms a <see cref="__v4t__"/> vector by the inverse of a <see cref="__rot2t__"/> transformation.
+        /// The z and w coordinates of the vector are unaffected.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v4t__ InvTransform(this __rot2t__ rot, __v4t__ v)
+            => Transform(rot.Inverse, v);
 
         #endregion
     }
@@ -434,13 +351,10 @@ namespace Aardvark.Base
             return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue);
         }
 
-        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes ber�cksichtigen -q == q, weil es die selbe rotation definiert.
-        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproximateEquals(__rot3t__ other);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __rot2t__ r0, __rot2t__ r1, __ft__ tolerance)
         {
-            return (r0.Angle - r1.Angle).Abs() <= tolerance;
+            return Abs(Rot.Distance(r0, r1)) <= tolerance;
         }
 
         #endregion

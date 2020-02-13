@@ -160,7 +160,7 @@ namespace Aardvark.Base
 
         public static M23f operator *(M22f m, Euclidean2f r)
         {
-            return M23f.Multiply(m, (M23f)r);
+            return m * (M23f)r;
         }
         /*
         public static M34f operator *(M33f m, Euclidean3f r)
@@ -187,6 +187,7 @@ namespace Aardvark.Base
         #region Conversion
 
         // [todo ISSUE 20090421 andi] caching of the Matrix would greatly improve performance
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M23f(Euclidean2f r)
         {
             M23f rv = (M23f)r.Rot;
@@ -194,12 +195,17 @@ namespace Aardvark.Base
             return rv;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M33f(Euclidean2f r)
         {
             M33f rv = (M33f)r.Rot;
             rv.C2 = r.Trans.XYI;
             return rv;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine2f(Euclidean2f r)
+            => new Affine2f(r);
 
         #endregion
 
@@ -462,7 +468,7 @@ namespace Aardvark.Base
 
         public static M23d operator *(M22d m, Euclidean2d r)
         {
-            return M23d.Multiply(m, (M23d)r);
+            return m * (M23d)r;
         }
         /*
         public static M34f operator *(M33d m, Euclidean3d r)
@@ -489,6 +495,7 @@ namespace Aardvark.Base
         #region Conversion
 
         // [todo ISSUE 20090421 andi] caching of the Matrix would greatly improve performance
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M23d(Euclidean2d r)
         {
             M23d rv = (M23d)r.Rot;
@@ -496,12 +503,17 @@ namespace Aardvark.Base
             return rv;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M33d(Euclidean2d r)
         {
             M33d rv = (M33d)r.Rot;
             rv.C2 = r.Trans.XYI;
             return rv;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine2d(Euclidean2d r)
+            => new Affine2d(r);
 
         #endregion
 

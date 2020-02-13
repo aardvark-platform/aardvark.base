@@ -13,6 +13,7 @@ namespace Aardvark.Base
     //#   var v2t = isDouble ? "V2d" : "V2f";
     //#   var r2t = isDouble ? "Rot2d" : "Rot2f";
     //#   var e2t = isDouble ? "Euclidean2d" : "Euclidean2f";
+    //#   var a2t = isDouble ? "Affine2d" : "Affine2f";
     #region __e2t__
 
     /// <summary>
@@ -167,7 +168,7 @@ namespace Aardvark.Base
 
         public static M2__s3f__ operator *(M2__s2f__ m, __e2t__ r)
         {
-            return M2__s3f__.Multiply(m, (M2__s3f__)r);
+            return m * (M2__s3f__)r;
         }
         /*
         public static M34f operator *(M3__s3f__ m, Euclidean__s3f__ r)
@@ -194,6 +195,7 @@ namespace Aardvark.Base
         #region Conversion
 
         // [todo ISSUE 20090421 andi] caching of the Matrix would greatly improve performance
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M2__s3f__(__e2t__ r)
         {
             M2__s3f__ rv = (M2__s3f__)r.Rot;
@@ -201,12 +203,17 @@ namespace Aardvark.Base
             return rv;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M3__s3f__(__e2t__ r)
         {
             M3__s3f__ rv = (M3__s3f__)r.Rot;
             rv.C2 = r.Trans.XYI;
             return rv;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __a2t__(__e2t__ r)
+            => new __a2t__(r);
 
         #endregion
 

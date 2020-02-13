@@ -124,7 +124,10 @@ namespace Aardvark.Base
                            __m44t__.Scale(1 / sx, 1 / sy, 1 / sz));
 
         public static __type__ Scale(__rtype__ s)
-            => new __type__(__m44t__.Scale(s), __m44t__.Scale(1 / s));
+        {
+            var t = 1 / s;
+            return new __type__(__m44t__.Scale(s, s, s), __m44t__.Scale(t, t, t));
+        }
 
         public static __type__ Rotation(__v3t__ normalizedAxis, __rtype__ angleInRadians)
             => new __type__(__m44t__.Rotation(normalizedAxis, angleInRadians),
@@ -527,7 +530,7 @@ namespace Aardvark.Base
             translation = trafo.GetModelOrigin();
             
             var rt = trafo.GetOrthoNormalOrientation();
-            if (rt.Forward.Det.IsTiny())
+            if (rt.Forward.Determinant.IsTiny())
             {
                 rotation = __v3t__.Zero;
             }
@@ -541,7 +544,7 @@ namespace Aardvark.Base
 
             // if matrix is left-handed there must be some negative scale
             // since rotation remains the x-axis, the y-axis must be flipped
-            if (trafo.Forward.Det < 0)
+            if (trafo.Forward.Determinant < 0)
                 scale.Y = -scale.Y;
         }
     }

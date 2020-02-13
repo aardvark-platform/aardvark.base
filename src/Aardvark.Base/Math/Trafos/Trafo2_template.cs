@@ -103,8 +103,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Scale(__rtype__ s)
         {
-            return new __type__(__m33t__.Scale(s),
-                                __m33t__.Scale(1 / s));
+            var t = 1 / s;
+            return new __type__(__m33t__.Scale(s, s),
+                                __m33t__.Scale(t, t));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

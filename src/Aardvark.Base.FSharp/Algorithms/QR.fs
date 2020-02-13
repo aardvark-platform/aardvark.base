@@ -880,7 +880,7 @@ module RQ =
 
 module private QROverloadTest = 
     let test() =
-        let a = QR.bidiagonalize M34d.Identity
+        let a = QR.bidiagonalize M34d.Zero
         let a = QR.decompose M44d.Identity
 
         let a = Matrix<float>()

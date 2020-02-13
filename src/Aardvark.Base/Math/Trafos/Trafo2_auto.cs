@@ -97,8 +97,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo2f Scale(float s)
         {
-            return new Trafo2f(M33f.Scale(s),
-                                M33f.Scale(1 / s));
+            var t = 1 / s;
+            return new Trafo2f(M33f.Scale(s, s),
+                                M33f.Scale(t, t));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -235,8 +236,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo2d Scale(double s)
         {
-            return new Trafo2d(M33d.Scale(s),
-                                M33d.Scale(1 / s));
+            var t = 1 / s;
+            return new Trafo2d(M33d.Scale(s, s),
+                                M33d.Scale(t, t));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -819,6 +819,10 @@ namespace Aardvark.Base
             return array;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3f(Rot3f r)
+            => new Affine3f(r);
+
         #endregion
 
         #region Overrides
@@ -1841,6 +1845,10 @@ namespace Aardvark.Base
             array[3] = r.Z;
             return array;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3d(Rot3d r)
+            => new Affine3d(r);
 
         #endregion
 

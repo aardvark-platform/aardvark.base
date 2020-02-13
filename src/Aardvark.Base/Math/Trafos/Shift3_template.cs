@@ -223,6 +223,17 @@ namespace Aardvark.Base
                              0, 0, 1, shift.Z);
         }
 
+
+        /// <summary>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x4t__ operator *(M2__x2t__ matrix, Shift__x3t__ shift)
+        {
+            return new M3__x4t__(matrix.M00, matrix.M01, 0, matrix.M00 * shift.X + matrix.M01 * shift.Y,
+                            matrix.M10, matrix.M11, 0, matrix.M10 * shift.X + matrix.M11 * shift.Y,
+                            0, 0, 1, shift.Z);
+        }
+
         /// <summary>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -231,6 +242,16 @@ namespace Aardvark.Base
             return new M3__x4t__(matrix.M00, matrix.M01, matrix.M02, shift.X,
                              matrix.M10, matrix.M11, matrix.M12, shift.Y,
                              matrix.M20, matrix.M21, matrix.M22, shift.Z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M3__x4t__ operator *(M3__x3t__ m, Shift__x3t__ t)
+        {
+            return new M3__x4t__(
+               m.M00, m.M01, m.M02, m.M00 * t.X + m.M01 * t.Y + m.M02 * t.Z,
+               m.M10, m.M11, m.M12, m.M10 * t.X + m.M11 * t.Y + m.M12 * t.Z,
+               m.M20, m.M21, m.M22, m.M20 * t.X + m.M21 * t.Y + m.M22 * t.Z
+               );
         }
 
         /// <summary>
@@ -414,6 +435,10 @@ namespace Aardvark.Base
                             0, 1, 0, s.Y,
                             0, 0, 1, s.Z);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine__x3t__(Shift__x3t__ s)
+            => new Affine__x3t__(s);
 
         /// <summary>
         /// Returns all values of a <see cref="Shift__x3t__"/> instance

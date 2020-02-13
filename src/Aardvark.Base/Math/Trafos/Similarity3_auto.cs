@@ -217,21 +217,6 @@ namespace Aardvark.Base
 
         #region Conversion
 
-        public static explicit operator M34f(Similarity3f t)
-        {
-            M34f rv = (M34f)t.EuclideanTransformation;
-            rv.M00 *= t.Scale;
-            rv.M01 *= t.Scale;
-            rv.M02 *= t.Scale;
-            rv.M10 *= t.Scale;
-            rv.M11 *= t.Scale;
-            rv.M12 *= t.Scale;
-            rv.M20 *= t.Scale;
-            rv.M21 *= t.Scale;
-            rv.M22 *= t.Scale;
-            return rv;
-        }
-
         public static explicit operator M44f(Similarity3f t)
         {
             M44f rv = (M44f)t.EuclideanTransformation;
@@ -246,6 +231,10 @@ namespace Aardvark.Base
             rv.M22 *= t.Scale;
             return rv;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3f(Similarity3f s)
+            => new Affine3f(s);
 
         #endregion
 
@@ -576,21 +565,6 @@ namespace Aardvark.Base
 
         #region Conversion
 
-        public static explicit operator M34d(Similarity3d t)
-        {
-            M34d rv = (M34d)t.EuclideanTransformation;
-            rv.M00 *= t.Scale;
-            rv.M01 *= t.Scale;
-            rv.M02 *= t.Scale;
-            rv.M10 *= t.Scale;
-            rv.M11 *= t.Scale;
-            rv.M12 *= t.Scale;
-            rv.M20 *= t.Scale;
-            rv.M21 *= t.Scale;
-            rv.M22 *= t.Scale;
-            return rv;
-        }
-
         public static explicit operator M44d(Similarity3d t)
         {
             M44d rv = (M44d)t.EuclideanTransformation;
@@ -605,6 +579,10 @@ namespace Aardvark.Base
             rv.M22 *= t.Scale;
             return rv;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3d(Similarity3d s)
+            => new Affine3d(s);
 
         #endregion
 

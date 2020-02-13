@@ -221,21 +221,6 @@ namespace Aardvark.Base
 
         #region Conversion
 
-        public static explicit operator M3__x4t__(Similarity__x3t__ t)
-        {
-            M3__x4t__ rv = (M3__x4t__)t.EuclideanTransformation;
-            rv.M00 *= t.Scale;
-            rv.M01 *= t.Scale;
-            rv.M02 *= t.Scale;
-            rv.M10 *= t.Scale;
-            rv.M11 *= t.Scale;
-            rv.M12 *= t.Scale;
-            rv.M20 *= t.Scale;
-            rv.M21 *= t.Scale;
-            rv.M22 *= t.Scale;
-            return rv;
-        }
-
         public static explicit operator M4__x4t__(Similarity__x3t__ t)
         {
             M4__x4t__ rv = (M4__x4t__)t.EuclideanTransformation;
@@ -250,6 +235,10 @@ namespace Aardvark.Base
             rv.M22 *= t.Scale;
             return rv;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine__x3t__(Similarity__x3t__ s)
+            => new Affine__x3t__(s);
 
         #endregion
 

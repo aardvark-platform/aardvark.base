@@ -186,7 +186,7 @@ namespace Aardvark.Tests
         
         void ValidateTrafos(Trafo3d a, Trafo3d b)
         {
-            var e = M44d.DistanceMax(a.Forward, b.Forward);
+            var e = Mat.DistanceMax(a.Forward, b.Forward);
             Assert.IsTrue(e.Abs() < 1e-8, "not equal");
 
             var eq = CheckForwardBackwardConsistency(new Trafo3d(a.Forward, b.Backward))

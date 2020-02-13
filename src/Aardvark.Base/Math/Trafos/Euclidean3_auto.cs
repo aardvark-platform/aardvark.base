@@ -186,15 +186,15 @@ namespace Aardvark.Base
         // [todo ISSUE 20090427 andi : andi] this is again a Euclidean3f.
         // [todo ISSUE 20090427 andi : andi] Rot3f * Shift3f should return a Euclidean3f!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f operator *(Euclidean3f r, Shift3f m)
+        public static Affine3f operator *(Euclidean3f r, Shift3f m)
         {
-            return (M34f)r * m;
+            return new Affine3f((M44f)r * (M44f)m);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f operator *(M33f m, Euclidean3f r)
+        public static Affine3f operator *(M33f m, Euclidean3f r)
         {
-            return M34f.Multiply(m, (M34f)r);
+            return new Affine3f((M44f)m * (M44f)r);
         }
         #endregion
 
@@ -215,13 +215,7 @@ namespace Aardvark.Base
         #region Conversion
 
         // [todo ISSUE 20090421 andi] caching of the Matrix would greatly improve performance
-        public static explicit operator M34f(Euclidean3f r)
-        {
-            M34f rv = (M34f)r.Rot;
-            rv.C3 = r.Trans;
-            return rv;
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M44f(Euclidean3f r)
         {
             M44f rv = (M44f)r.Rot;
@@ -229,10 +223,15 @@ namespace Aardvark.Base
             return rv;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Similarity3f(Euclidean3f r)
         {
             return new Similarity3f(1, r);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3f(Euclidean3f r)
+            => new Affine3f(r);
 
         #endregion
 
@@ -542,15 +541,15 @@ namespace Aardvark.Base
         // [todo ISSUE 20090427 andi : andi] this is again a Euclidean3d.
         // [todo ISSUE 20090427 andi : andi] Rot3d * Shift3d should return a Euclidean3d!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d operator *(Euclidean3d r, Shift3d m)
+        public static Affine3d operator *(Euclidean3d r, Shift3d m)
         {
-            return (M34d)r * m;
+            return new Affine3d((M44d)r * (M44d)m);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d operator *(M33d m, Euclidean3d r)
+        public static Affine3d operator *(M33d m, Euclidean3d r)
         {
-            return M34d.Multiply(m, (M34d)r);
+            return new Affine3d((M44d)m * (M44d)r);
         }
         #endregion
 
@@ -571,13 +570,7 @@ namespace Aardvark.Base
         #region Conversion
 
         // [todo ISSUE 20090421 andi] caching of the Matrix would greatly improve performance
-        public static explicit operator M34d(Euclidean3d r)
-        {
-            M34d rv = (M34d)r.Rot;
-            rv.C3 = r.Trans;
-            return rv;
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M44d(Euclidean3d r)
         {
             M44d rv = (M44d)r.Rot;
@@ -585,10 +578,15 @@ namespace Aardvark.Base
             return rv;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Similarity3d(Euclidean3d r)
         {
             return new Similarity3d(1, r);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3d(Euclidean3d r)
+            => new Affine3d(r);
 
         #endregion
 

@@ -15,6 +15,7 @@ namespace Aardvark.Base
     //#   var v3t = isDouble ? "V3d" : "V3f";
     //#   var r3t = isDouble ? "Rot3d" : "Rot3f";
     //#   var e3t = isDouble ? "Euclidean3d" : "Euclidean3f";
+    //#   var a3t = isDouble ? "Affine3d" : "Affine3f";
     //#   var eps = isDouble ? "1e-12" : "1e-5f";
     #region __e3t__
 
@@ -194,15 +195,15 @@ namespace Aardvark.Base
         // [todo ISSUE 20090427 andi : andi] this is again a __e3t__.
         // [todo ISSUE 20090427 andi : andi] __r3t__ * Shift__s3f__ should return a __e3t__!
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M3__s4f__ operator *(__e3t__ r, Shift__s3f__ m)
+        public static Affine__s3f__ operator *(__e3t__ r, Shift__s3f__ m)
         {
-            return (M3__s4f__)r * m;
+            return new Affine__s3f__((M4__s4f__)r * (M4__s4f__)m);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M3__s4f__ operator *(M3__s3f__ m, __e3t__ r)
+        public static Affine__s3f__ operator *(M3__s3f__ m, __e3t__ r)
         {
-            return M3__s4f__.Multiply(m, (M3__s4f__)r);
+            return new Affine__s3f__((M4__s4f__)m * (M4__s4f__)r);
         }
         #endregion
 
@@ -223,13 +224,7 @@ namespace Aardvark.Base
         #region Conversion
 
         // [todo ISSUE 20090421 andi] caching of the Matrix would greatly improve performance
-        public static explicit operator M3__s4f__(__e3t__ r)
-        {
-            M3__s4f__ rv = (M3__s4f__)r.Rot;
-            rv.C3 = r.Trans;
-            return rv;
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M4__s4f__(__e3t__ r)
         {
             M4__s4f__ rv = (M4__s4f__)r.Rot;
@@ -237,10 +232,15 @@ namespace Aardvark.Base
             return rv;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Similarity__s3f__(__e3t__ r)
         {
             return new Similarity__s3f__(1, r);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __a3t__(__e3t__ r)
+            => new __a3t__(r);
 
         #endregion
 

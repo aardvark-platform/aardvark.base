@@ -838,6 +838,10 @@ namespace Aardvark.Base
             return array;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3__tc__(__rot3t__ r)
+            => new Affine3__tc__(r);
+
         #endregion
 
         #region Overrides

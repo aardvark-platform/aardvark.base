@@ -114,7 +114,10 @@ namespace Aardvark.Base
                            M44f.Scale(1 / sx, 1 / sy, 1 / sz));
 
         public static Trafo3f Scale(float s)
-            => new Trafo3f(M44f.Scale(s), M44f.Scale(1 / s));
+        {
+            var t = 1 / s;
+            return new Trafo3f(M44f.Scale(s, s, s), M44f.Scale(t, t, t));
+        }
 
         public static Trafo3f Rotation(V3f normalizedAxis, float angleInRadians)
             => new Trafo3f(M44f.Rotation(normalizedAxis, angleInRadians),
@@ -517,7 +520,7 @@ namespace Aardvark.Base
             translation = trafo.GetModelOrigin();
             
             var rt = trafo.GetOrthoNormalOrientation();
-            if (rt.Forward.Det.IsTiny())
+            if (rt.Forward.Determinant.IsTiny())
             {
                 rotation = V3f.Zero;
             }
@@ -531,7 +534,7 @@ namespace Aardvark.Base
 
             // if matrix is left-handed there must be some negative scale
             // since rotation remains the x-axis, the y-axis must be flipped
-            if (trafo.Forward.Det < 0)
+            if (trafo.Forward.Determinant < 0)
                 scale.Y = -scale.Y;
         }
     }
@@ -644,7 +647,10 @@ namespace Aardvark.Base
                            M44d.Scale(1 / sx, 1 / sy, 1 / sz));
 
         public static Trafo3d Scale(double s)
-            => new Trafo3d(M44d.Scale(s), M44d.Scale(1 / s));
+        {
+            var t = 1 / s;
+            return new Trafo3d(M44d.Scale(s, s, s), M44d.Scale(t, t, t));
+        }
 
         public static Trafo3d Rotation(V3d normalizedAxis, double angleInRadians)
             => new Trafo3d(M44d.Rotation(normalizedAxis, angleInRadians),
@@ -1047,7 +1053,7 @@ namespace Aardvark.Base
             translation = trafo.GetModelOrigin();
             
             var rt = trafo.GetOrthoNormalOrientation();
-            if (rt.Forward.Det.IsTiny())
+            if (rt.Forward.Determinant.IsTiny())
             {
                 rotation = V3d.Zero;
             }
@@ -1061,7 +1067,7 @@ namespace Aardvark.Base
 
             // if matrix is left-handed there must be some negative scale
             // since rotation remains the x-axis, the y-axis must be flipped
-            if (trafo.Forward.Det < 0)
+            if (trafo.Forward.Determinant < 0)
                 scale.Y = -scale.Y;
         }
     }
