@@ -672,7 +672,7 @@ module ExpectoSvdTests =
         }
 
     let epsilon = 1E-8
-    let floatEpsilon = 0.1f
+    let floatEpsilon = float32 1E-1
 
     open System.Runtime.CompilerServices
 
@@ -1626,10 +1626,10 @@ module ExpectoSvdTests =
             rq
             qrBidiag
             svd
-            qr32
-            //rq32  //float32
-            qrBidiag32
-            svd32
+            //qr32
+            //rq32
+            //qrBidiag32
+            //svd32
         ]
 
 
