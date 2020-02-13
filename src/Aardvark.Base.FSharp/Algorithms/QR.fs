@@ -554,7 +554,7 @@ type QR private() =
         //Q, R
         
     static member Decompose (m : M23f) =
-        let aQ = [|M23f()|]
+        let aQ = [|M22f()|]
         let aR = [|m|]
         
         use pQ = fixed aQ

@@ -988,169 +988,648 @@ module ExpectoSvdTests =
             )
         ]    
 
-    let rq32 =
-        testList "[RQ32] decompose" [
-            //testPropertyWithConfig cfg "[RQ32] R*Q = M" (fun (mat : WideMatrix<float32>) -> 
-            //    if mat.value.SY > mat.value.SX then failwith "asuofhasiofh"
-            //    let (r,q) = RQ.decompose mat.value
-            //    let res = r.Multiply(q)
-            //    res.ApproximateEquals(mat.value)
-            //)
-
-            //testPropertyWithConfig cfg "[RQ32] Q*Qt = ID" (fun (mat : WideMatrix<float32> ) -> 
-            //    let (_,q) = RQ.decompose mat.value
-            //    q.IsOrtho()
-            //)
-
-            //testPropertyWithConfig cfg "[RQ32] R = right upper" (fun (mat : WideMatrix<float32> ) -> 
-            //    let (r,_) = RQ.decompose mat.value
-            //    r.IsUpperRight()
-            //)
-        ]
-
     let qrBidiag = 
         testList "[QR64] bidiagonalize" [
-            //testPropertyWithConfig cfg "[QR64] U*Ut = ID " (fun (mat : PrettyMatrix<float>) -> 
-            //    let (u,_,_) = QR.Bidiagonalize mat.value
-            //    u.IsOrtho()
-            //)
-            //testPropertyWithConfig cfg "[QR64] D is bidiagonal" (fun (mat : PrettyMatrix<float>) -> 
-            //    let (_,d,_) = QR.Bidiagonalize mat.value
-            //    d.IsBidiagonal() z
-            //)
+            testPropertyWithConfig cfg "[QR64] U*Ut = ID " (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    u.IsOrtho()
+                | M22 mat ->      
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M22 u)).IsOrtho()
+                | M33 mat -> 
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M33 u)).IsOrtho()
+                | M44 mat -> 
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M44 u)).IsOrtho()
+                | M23 mat -> 
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M22 u)).IsOrtho()
+                | M34 mat ->
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M33 u)).IsOrtho()
+            )
 
-            //testPropertyWithConfig cfg "[QR64] V*Vt = ID" (fun (mat : PrettyMatrix<float>) -> 
-            //    let (_,_,vt) = QR.Bidiagonalize mat.value
-            //    vt.IsOrtho()
-            //)        
-            //testPropertyWithConfig cfg "[QR64] U*D*Vt = M" (fun (mat : PrettyMatrix<float>) -> 
-            //    let (u,d,vt) = QR.Bidiagonalize mat.value
-            //    let res = u.Multiply(d.Multiply(vt))
-            //    res.ApproximateEquals(mat.value)
-            //)
+            testPropertyWithConfig cfg "[QR64] D is bidiagonal" (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    d.IsBidiagonal()
+                | M22 mat ->      
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M22 d)).IsBidiagonal()
+                | M33 mat -> 
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M33 d)).IsBidiagonal()
+                | M44 mat -> 
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M44 d)).IsBidiagonal()
+                | M23 mat -> 
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M23 d)).IsBidiagonal()
+                | M34 mat ->
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M34 d)).IsBidiagonal()
+            )
+
+            testPropertyWithConfig cfg "[QR64] V*Vt = ID" (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    vt.IsOrtho()
+                | M22 mat ->      
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M22 vt)).IsOrtho()
+                | M33 mat -> 
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M33 vt)).IsOrtho()
+                | M44 mat -> 
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M44 vt)).IsOrtho()
+                | M23 mat -> 
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M33 vt)).IsOrtho()
+                | M34 mat ->
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat (M44 vt)).IsOrtho()
+            )        
+
+            testPropertyWithConfig cfg "[QR64] U*D*Vt = M" (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u.Multiply(d.Multiply(vt))
+                    res.ApproximateEquals(mat)
+                | M22 mat ->      
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat (M22 res)).ApproximateEquals(MatrixChoice.toRealMat (M22 mat))
+                | M33 mat -> 
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat (M33 res)).ApproximateEquals(MatrixChoice.toRealMat (M33 mat))
+                | M44 mat -> 
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat (M44 res)).ApproximateEquals(MatrixChoice.toRealMat (M44 mat))
+                | M23 mat -> 
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat (M23 res)).ApproximateEquals(MatrixChoice.toRealMat (M23 mat))
+                | M34 mat ->
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat (M34 res)).ApproximateEquals(MatrixChoice.toRealMat (M34 mat))
+            )
         ]    
 
     let svd = 
         testList "[SVD64] decompose" [
-            //testPropertyWithConfig cfg "[SVD64] U*Ut = ID " (fun (mat : PrettyMatrix<float>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (u,_,_) -> u.IsOrtho()
-            //    | None -> true
-            //)
-            //testPropertyWithConfig cfg "[SVD64] S is diagonal" (fun (mat : PrettyMatrix<float>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (_,s,_) -> s.IsDiagonal()
-            //    | None -> true
-            //)
-        
-            //testPropertyWithConfig cfg "[SVD64] S is decreasing" (fun (mat : PrettyMatrix<float>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (_,s,_) -> s.DecreasingDiagonal()
-            //    | None -> true
-            //)
+            testPropertyWithConfig cfg "[SVD64] U*Ut = ID " (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> u.IsOrtho())
+                    |> Option.defaultValue true
+                | M22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat (M22 u)).IsOrtho())
+                    |> Option.defaultValue true
+                | M33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat (M33 u)).IsOrtho())
+                    |> Option.defaultValue true
+                | M44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat (M44 u)).IsOrtho())
+                    |> Option.defaultValue true
+                | M23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat (M22 u)).IsOrtho())
+                    |> Option.defaultValue true
+                | M34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat (M33 u)).IsOrtho())
+                    |> Option.defaultValue true
+            )
 
-            //testPropertyWithConfig cfg "[SVD64] V*Vt = ID" (fun (mat : PrettyMatrix<float>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (_,_,vt) -> vt.IsOrtho()
-            //    | None -> true
-            //)        
-            //testPropertyWithConfig cfg "[SVD64] U*S*Vt = M" (fun (mat : PrettyMatrix<float>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (u,s,vt) -> 
-            //        let res = u.Multiply(s.Multiply(vt))
-            //        res.ApproximateEquals(mat.value)
-            //    | None ->
-            //        true            
-            //)
+            testPropertyWithConfig cfg "[SVD64] S is diagonal" (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> s.IsDiagonal())
+                    |> Option.defaultValue true
+                | M22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M22 s)).IsDiagonal())
+                    |> Option.defaultValue true
+                | M33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M33 s)).IsDiagonal())
+                    |> Option.defaultValue true
+                | M44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M44 s)).IsDiagonal())
+                    |> Option.defaultValue true
+                | M23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M23 s)).IsDiagonal())
+                    |> Option.defaultValue true
+                | M34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M34 s)).IsDiagonal())
+                    |> Option.defaultValue true
+            )
+        
+            testPropertyWithConfig cfg "[SVD64] S is decreasing" (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> s.DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | M22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M22 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | M33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M33 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | M44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M44 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | M23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M23 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | M34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat (M34 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+            )
+
+            testPropertyWithConfig cfg "[SVD64] V*Vt = ID" (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> vt.IsOrtho())
+                    |> Option.defaultValue true
+                | M22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat (M22 vt)).IsOrtho())
+                    |> Option.defaultValue true
+                | M33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat (M33 vt)).IsOrtho())
+                    |> Option.defaultValue true
+                | M44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat (M44 vt)).IsOrtho())
+                    |> Option.defaultValue true
+                | M23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat (M33 vt)).IsOrtho())
+                    |> Option.defaultValue true
+                | M34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat (M44 vt)).IsOrtho())
+                    |> Option.defaultValue true
+            )        
+
+            testPropertyWithConfig cfg "[SVD64] U*S*Vt = M" (fun (mat : PrettyMatrix<float>) -> 
+                match mat.value with
+                | RealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u.Multiply(s.Multiply(vt)) in res.ApproximateEquals(mat))
+                    |> Option.defaultValue true
+                | M22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat (M22 res)).ApproximateEquals(MatrixChoice.toRealMat (M22 mat)))
+                    |> Option.defaultValue true
+                | M33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat (M33 res)).ApproximateEquals(MatrixChoice.toRealMat (M33 mat)))
+                    |> Option.defaultValue true
+                | M44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat (M44 res)).ApproximateEquals(MatrixChoice.toRealMat (M44 mat)))
+                    |> Option.defaultValue true
+                | M23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat (M23 res)).ApproximateEquals(MatrixChoice.toRealMat (M23 mat)))
+                    |> Option.defaultValue true
+                | M34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat (M34 res)).ApproximateEquals(MatrixChoice.toRealMat (M34 mat)))
+                    |> Option.defaultValue true
+            )
         ]   
   
-
-    let svd32 = 
-        testList "[SVD32] decompose" [
-            //testPropertyWithConfig cfg "[SVD32] U*Ut = ID " (fun (mat : PrettyMatrix<float32>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (u,_,_) -> u.IsOrtho()
-            //    | None -> true
-            //)
-            //testPropertyWithConfig cfg "[SVD32] S is diagonal" (fun (mat : PrettyMatrix<float32>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (_,s,_) -> s.IsDiagonal()
-            //    | None -> true
-            //)
-        
-            //testPropertyWithConfig cfg "[SVD32] S is decreasing" (fun (mat : PrettyMatrix<float32>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (_,s,_) -> s.DecreasingDiagonal()
-            //    | None -> true
-            //)
-
-            //testPropertyWithConfig cfg "[SVD32] V*Vt = ID" (fun (mat : PrettyMatrix<float32>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (_,_,vt) -> vt.IsOrtho()
-            //    | None -> true
-            //)        
-            //testPropertyWithConfig cfg "[SVD32] U*S*Vt = M" (fun (mat : PrettyMatrix<float32>) -> 
-            //    match SVD.decompose mat.value with
-            //    | Some (u,s,vt) -> 
-            //        let res = u.Multiply(s.Multiply(vt))
-            //        res.ApproximateEquals(mat.value)
-            //    | None ->
-            //        true            
-            //)
-        ]   
-
     let qr32 =
         testList "[QR32] decompose" [
-            //testPropertyWithConfig cfg "[QR32] Q*R = M" (fun (mat : PrettyMatrix<float32>) -> 
-            //    let (q,r) = QR.decompose mat.value
-            //    let res = q.Multiply(r)
-            //    res.ApproximateEquals(mat.value)
-            //)
+            testPropertyWithConfig cfg "[QR32] Q*R = M" (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat ->     
+                    let (q,r) = QR.decompose mat
+                    let res = q.Multiply(r)
+                    res.ApproximateEquals(mat)
+                | FM22 mat ->      
+                    let (q,r) = QR.decompose mat
+                    let res = q * r
+                    M22f.DistanceMax(res,mat) < floatEpsilon
+                | FM33 mat -> 
+                    let (q,r) = QR.decompose mat
+                    let res = q * r
+                    M33f.DistanceMax(res,mat) < floatEpsilon
+                | FM44 mat -> 
+                    let (q,r) = QR.decompose mat
+                    let res = q * r
+                    M44f.DistanceMax(res,mat) < floatEpsilon
+                | FM23 mat -> 
+                    let (q,r) = QR.decompose mat
+                    let res = q * r
+                    M23f.DistanceMax(res,mat) < floatEpsilon
+                | FM34 mat ->
+                    let (q,r) = QR.decompose mat
+                    let res = q * r
+                    M34f.DistanceMax(res,mat) < floatEpsilon
+            )
 
-            //testPropertyWithConfig cfg "[QR32] Q*Qt = ID" (fun (mat : PrettyMatrix<float32> ) -> 
-            //    let (q,_) = QR.decompose mat.value
-            //    q.IsOrtho()
-            //)
+            testPropertyWithConfig cfg "[QR32] Q*Qt = ID" (fun (mat : PrettyMatrix32<float32> ) -> 
+                match mat.value with
+                | FRealMatrix mat ->     
+                    let (q,r) = QR.decompose mat
+                    q.IsOrtho()
+                | FM22 mat ->      
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM22 q)).IsOrtho()
+                | FM33 mat -> 
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM33 q)).IsOrtho()
+                | FM44 mat -> 
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM44 q)).IsOrtho()
+                | FM23 mat -> 
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM22 q)).IsOrtho()
+                | FM34 mat ->
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM33 q)).IsOrtho()
+            )
 
-            //testPropertyWithConfig cfg "[QR32] R = right upper" (fun (mat : PrettyMatrix<float32> ) -> 
-            //    let (_,r) = QR.decompose mat.value
-            //    r.IsUpperRight()
-            //)
+            testPropertyWithConfig cfg "[QR32] R = right upper" (fun (mat : PrettyMatrix32<float32> ) -> 
+                match mat.value with
+                | FRealMatrix mat ->     
+                    let (q,r) = QR.decompose mat
+                    r.IsUpperRight()
+                | FM22 mat ->      
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM22 r)).IsUpperRight()
+                | FM33 mat -> 
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM33 r)).IsUpperRight()
+                | FM44 mat -> 
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM44 r)).IsUpperRight()
+                | FM23 mat -> 
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM23 r)).IsUpperRight()
+                | FM34 mat ->
+                    let (q,r) = QR.decompose mat
+                    (MatrixChoice.toRealMat32 (FM34 r)).IsUpperRight()
+            )
         ]    
+
+    let rq32 =
+        testList "[RQ32] decompose" [
+            testPropertyWithConfig cfg "[RQ32] R*Q = M" (fun (mat : WideMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat ->   
+                    let (r,q) = RQ.decompose mat
+                    let res = r.Multiply(q)
+                    res.ApproximateEquals(mat)
+                | FM22 mat ->      
+                    let (r,q) = RQ.decompose mat
+                    let res = r * q
+                    M22f.DistanceMax(res,mat) < floatEpsilon
+                | FM33 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    let res = r * q
+                    M33f.DistanceMax(res,mat) < floatEpsilon
+                | FM44 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    let res = r * q
+                    M44f.DistanceMax(res,mat) < floatEpsilon
+                | FM23 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    let res = r * q
+                    M23f.DistanceMax(res,mat) < floatEpsilon
+                | FM34 mat ->
+                    let (r,q) = RQ.decompose mat
+                    let res = r * q
+                    M34f.DistanceMax(res,mat) < floatEpsilon
+            )
+
+            testPropertyWithConfig cfg "[RQ32] Q*Qt = ID" (fun (mat : WideMatrix32<float32> ) -> 
+                match mat.value with
+                | FRealMatrix mat ->     
+                    let (r,q) = RQ.decompose mat
+                    q.IsOrtho()
+                | FM22 mat ->      
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM22 q)).IsOrtho()
+                | FM33 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM33 q)).IsOrtho()
+                | FM44 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM44 q)).IsOrtho()
+                | FM23 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM33 q)).IsOrtho()
+                | FM34 mat ->
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM44 q)).IsOrtho()
+            )
+
+            testPropertyWithConfig cfg "[RQ32] R = right upper" (fun (mat : WideMatrix32<float32> ) -> 
+                match mat.value with
+                | FRealMatrix mat ->     
+                    let (r,q) = RQ.decompose mat
+                    r.IsUpperRight()
+                | FM22 mat ->      
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM22 r)).IsUpperRight()
+                | FM33 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM33 r)).IsUpperRight()
+                | FM44 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM44 r)).IsUpperRight()
+                | FM23 mat -> 
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM23 r)).IsUpperRight()
+                | FM34 mat ->
+                    let (r,q) = RQ.decompose mat
+                    (MatrixChoice.toRealMat32 (FM34 r)).IsUpperRight()
+            )
+        ]
 
     let qrBidiag32 = 
         testList "[QR32] Bidiagonalize" [
-            //testPropertyWithConfig cfg "[QR32] U*Ut = ID " (fun (mat : PrettyMatrix<float32>) -> 
-            //    let (u,_,_) = QR.Bidiagonalize mat.value
-            //    u.IsOrtho()
-            //)
-            //testPropertyWithConfig cfg "[QR32] D is bidiagonal" (fun (mat : PrettyMatrix<float32>) -> 
-            //    let (_,d,_) = QR.Bidiagonalize mat.value
-            //    d.IsBidiagonal()
-            //)
+            testPropertyWithConfig cfg "[QR32] U*Ut = ID " (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    u.IsOrtho()
+                | FM22 mat ->      
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM22 u)).IsOrtho()
+                | FM33 mat -> 
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM33 u)).IsOrtho()
+                | FM44 mat -> 
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM44 u)).IsOrtho()
+                | FM23 mat -> 
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM22 u)).IsOrtho()
+                | FM34 mat ->
+                    let (u,_,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM33 u)).IsOrtho()
+            )
 
-            //testPropertyWithConfig cfg "[QR32] V*Vt = ID" (fun (mat : PrettyMatrix<float32>) -> 
-            //    let (_,_,vt) = QR.Bidiagonalize mat.value
-            //    vt.IsOrtho()
-            //)        
-            //testPropertyWithConfig cfg "[QR32] U*D*Vt = M" (fun (mat : PrettyMatrix<float32>) -> 
-            //    let (u,d,vt) = QR.Bidiagonalize mat.value
-            //    let res = u.Multiply(d.Multiply(vt))
-            //    res.ApproximateEquals(mat.value)
-            //)
-        ]    
+            testPropertyWithConfig cfg "[QR32] D is bidiagonal" (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    d.IsBidiagonal()
+                | FM22 mat ->      
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM22 d)).IsBidiagonal()
+                | FM33 mat -> 
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM33 d)).IsBidiagonal()
+                | FM44 mat -> 
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM44 d)).IsBidiagonal()
+                | FM23 mat -> 
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM23 d)).IsBidiagonal()
+                | FM34 mat ->
+                    let (_,d,_) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM34 d)).IsBidiagonal()
+            )
 
+            testPropertyWithConfig cfg "[QR32] V*Vt = ID" (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    vt.IsOrtho()
+                | FM22 mat ->      
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM22 vt)).IsOrtho()
+                | FM33 mat -> 
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM33 vt)).IsOrtho()
+                | FM44 mat -> 
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM44 vt)).IsOrtho()
+                | FM23 mat -> 
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM33 vt)).IsOrtho()
+                | FM34 mat ->
+                    let (_,_,vt) = QR.Bidiagonalize mat
+                    (MatrixChoice.toRealMat32 (FM44 vt)).IsOrtho()
+            )        
+
+            testPropertyWithConfig cfg "[QR32] U*D*Vt = M" (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u.Multiply(d.Multiply(vt))
+                    res.ApproximateEquals(mat)
+                | FM22 mat ->      
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat32 (FM22 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM22 mat))
+                | FM33 mat -> 
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat32 (FM33 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM33 mat))
+                | FM44 mat -> 
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat32 (FM44 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM44 mat))
+                | FM23 mat -> 
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat32 (FM23 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM23 mat))
+                | FM34 mat ->
+                    let (u,d,vt) = QR.Bidiagonalize mat
+                    let res = u * d * vt
+                    (MatrixChoice.toRealMat32 (FM34 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM34 mat))
+            )
+        ]   
+
+    let svd32 = 
+        testList "[SVD32] decompose" [
+            testPropertyWithConfig cfg "[SVD32] U*Ut = ID " (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> u.IsOrtho())
+                    |> Option.defaultValue true
+                | FM22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat32 (FM22 u)).IsOrtho())
+                    |> Option.defaultValue true
+                | FM33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat32 (FM33 u)).IsOrtho())
+                    |> Option.defaultValue true
+                | FM44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat32 (FM44 u)).IsOrtho())
+                    |> Option.defaultValue true
+                | FM23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat32 (FM22 u)).IsOrtho())
+                    |> Option.defaultValue true
+                | FM34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,_,_) -> (MatrixChoice.toRealMat32 (FM33 u)).IsOrtho())
+                    |> Option.defaultValue true
+            )
+
+            testPropertyWithConfig cfg "[SVD32] S is diagonal" (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> s.IsDiagonal())
+                    |> Option.defaultValue true
+                | FM22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM22 s)).IsDiagonal())
+                    |> Option.defaultValue true
+                | FM33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM33 s)).IsDiagonal())
+                    |> Option.defaultValue true
+                | FM44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM44 s)).IsDiagonal())
+                    |> Option.defaultValue true
+                | FM23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM23 s)).IsDiagonal())
+                    |> Option.defaultValue true
+                | FM34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM34 s)).IsDiagonal())
+                    |> Option.defaultValue true
+            )
+        
+            testPropertyWithConfig cfg "[SVD32] S is decreasing" (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> s.DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | FM22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM22 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | FM33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM33 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | FM44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM44 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | FM23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM23 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+                | FM34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,s,_) -> (MatrixChoice.toRealMat32 (FM34 s)).DecreasingDiagonal())
+                    |> Option.defaultValue true
+            )
+
+            testPropertyWithConfig cfg "[SVD32] V*Vt = ID" (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> vt.IsOrtho())
+                    |> Option.defaultValue true
+                | FM22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat32 (FM22 vt)).IsOrtho())
+                    |> Option.defaultValue true
+                | FM33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat32 (FM33 vt)).IsOrtho())
+                    |> Option.defaultValue true
+                | FM44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat32 (FM44 vt)).IsOrtho())
+                    |> Option.defaultValue true
+                | FM23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat32 (FM33 vt)).IsOrtho())
+                    |> Option.defaultValue true
+                | FM34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (_,_,vt) -> (MatrixChoice.toRealMat32 (FM44 vt)).IsOrtho())
+                    |> Option.defaultValue true
+            )        
+
+            testPropertyWithConfig cfg "[SVD32] U*S*Vt = M" (fun (mat : PrettyMatrix32<float32>) -> 
+                match mat.value with
+                | FRealMatrix mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u.Multiply(s.Multiply(vt)) in res.ApproximateEquals(mat))
+                    |> Option.defaultValue true
+                | FM22 mat ->      
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat32 (FM22 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM22 mat)))
+                    |> Option.defaultValue true
+                | FM33 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat32 (FM33 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM33 mat)))
+                    |> Option.defaultValue true
+                | FM44 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat32 (FM44 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM44 mat)))
+                    |> Option.defaultValue true
+                | FM23 mat -> 
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat32 (FM23 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM23 mat)))
+                    |> Option.defaultValue true
+                | FM34 mat ->
+                    SVD.decompose mat 
+                    |> Option.map (fun (u,s,vt) -> let res = u * s * vt in (MatrixChoice.toRealMat32 (FM34 res)).ApproximateEquals(MatrixChoice.toRealMat32 (FM34 mat)))
+                    |> Option.defaultValue true
+            )
+        ]   
+
+ 
     [<Tests>]
     let all =
-        testList "AllSvdTests-Expecto" [
+        testList "QR and SVD" [
             qr
             rq
             qrBidiag
             svd
-            //qr32
-            //rq32
-            //qrBidiag32
-            //svd32
+            qr32
+            //rq32  //float32
+            qrBidiag32
+            svd32
         ]
 
 
