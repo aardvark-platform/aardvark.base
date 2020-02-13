@@ -1055,7 +1055,7 @@ type RQ private() =
         tensor {
             let! pR = &R
             let! pQ = &Q
-            qrDecomposeNative floatEps pR pQ
+            rqDecomposeNative floatEps pR pQ
         }
         
     static member Decompose (m : float[,]) =
