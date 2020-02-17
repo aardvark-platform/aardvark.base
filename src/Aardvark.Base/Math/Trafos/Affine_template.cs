@@ -126,11 +126,19 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(__rotnt__ r) : this((__mnnt__)r) { }
 
-        //# if (n == 3) {
         /// <summary>
         /// Constructs an affine transformation from a <see cref="__scalent__"/>.
         /// </summary>
         public __type__(__scalent__ s) : this((__mnnt__)s) { }
+
+        /// <summary>
+        /// Constructs an affine transformation from a <see cref="__shiftnt__"/>.
+        /// </summary>
+        public __type__(__shiftnt__ s)
+        {
+            Linear = __mnnt__.Identity;
+            Trans = s.V;
+        }
 
         /// <summary>
         /// Constructs an affine transformation from a linear map and a <see cref="__shiftnt__"/>.
@@ -143,15 +151,7 @@ namespace Aardvark.Base
             Trans = shift.V;
         }
 
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="__shiftnt__"/>.
-        /// </summary>
-        public __type__(__shiftnt__ s)
-        {
-            Linear = __mnnt__.Identity;
-            Trans = s.V;
-        }
-
+        //# if (n == 3) {
         /// <summary>
         /// Constructs an affine transformation from a <see cref="__similaritynt__"/>.
         /// </summary>
@@ -376,6 +376,24 @@ namespace Aardvark.Base
         //# }
         #endregion
 
+        #region Comparison Operators
+
+        /// <summary>
+        /// Checks whether two <see cref="__type__"/> transformations are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(__type__ a0, __type__ a1)
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+
+        /// <summary>
+        /// Checks whether two <see cref="__type__"/> transformations are different.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(__type__ a0, __type__ a1)
+            => (a0.Linear != a1.Linear) || (a0.Trans != a1.Trans);
+
+        #endregion
+
         #region Static Creators
 
         /// <summary>
@@ -499,6 +517,31 @@ namespace Aardvark.Base
             Debug.Assert(a.Linear.Invertible);
             var t = (__mmmt__) a;
             return new __trafont__(t, t.Inverse);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode()
+        {
+            return HashCode.GetCombined(Linear, Trans);
+        }
+
+        public override bool Equals(object other)
+        {
+            return (other is __type__) ? (this == (__type__)other) : false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
+        }
+
+        public static __type__ Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new __type__(__mnnt__.Parse(x[0]), __vnt__.Parse(x[1]));
         }
 
         #endregion

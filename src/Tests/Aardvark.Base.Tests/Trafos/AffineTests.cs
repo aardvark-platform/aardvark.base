@@ -43,6 +43,23 @@ namespace Aardvark.Tests
             return new Affine3d(GetRandomSimilarity(rnd, withTranslation));
         }
 
+
+        [Test]
+        public static void Comparison()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a0 = GetRandomAffine(rnd);
+                var a1 = new Affine3d(a0.Linear, a0.Trans + V3d.OII);
+
+                Assert.IsFalse(a0.Equals(a1));
+                Assert.IsFalse(a0 == a1);
+                Assert.IsTrue(a0 != a1);
+            }
+        }
+
         [Test]
         public static void InverseTest()
         {

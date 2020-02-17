@@ -102,6 +102,31 @@ namespace Aardvark.Base
         /// </summary>
         public Affine2f(Rot2f r) : this((M22f)r) { }
 
+        /// <summary>
+        /// Constructs an affine transformation from a <see cref="Scale2f"/>.
+        /// </summary>
+        public Affine2f(Scale2f s) : this((M22f)s) { }
+
+        /// <summary>
+        /// Constructs an affine transformation from a <see cref="Shift2f"/>.
+        /// </summary>
+        public Affine2f(Shift2f s)
+        {
+            Linear = M22f.Identity;
+            Trans = s.V;
+        }
+
+        /// <summary>
+        /// Constructs an affine transformation from a linear map and a <see cref="Shift2f"/>.
+        /// The matrix <paramref name="linear"/> must be invertible.
+        /// </summary>
+        public Affine2f(M22f linear, Shift2f shift)
+        {
+            Debug.Assert(linear.Invertible);
+            Linear = linear;
+            Trans = shift.V;
+        }
+
         #endregion
 
         #region Constants
@@ -268,6 +293,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparison Operators
+
+        /// <summary>
+        /// Checks whether two <see cref="Affine2f"/> transformations are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Affine2f a0, Affine2f a1)
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+
+        /// <summary>
+        /// Checks whether two <see cref="Affine2f"/> transformations are different.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Affine2f a0, Affine2f a1)
+            => (a0.Linear != a1.Linear) || (a0.Trans != a1.Trans);
+
+        #endregion
+
         #region Static Creators
 
         /// <summary>
@@ -334,6 +377,31 @@ namespace Aardvark.Base
             Debug.Assert(a.Linear.Invertible);
             var t = (M33f) a;
             return new Trafo2f(t, t.Inverse);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode()
+        {
+            return HashCode.GetCombined(Linear, Trans);
+        }
+
+        public override bool Equals(object other)
+        {
+            return (other is Affine2f) ? (this == (Affine2f)other) : false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
+        }
+
+        public static Affine2f Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Affine2f(M22f.Parse(x[0]), V2f.Parse(x[1]));
         }
 
         #endregion
@@ -522,6 +590,15 @@ namespace Aardvark.Base
         public Affine3f(Scale3f s) : this((M33f)s) { }
 
         /// <summary>
+        /// Constructs an affine transformation from a <see cref="Shift3f"/>.
+        /// </summary>
+        public Affine3f(Shift3f s)
+        {
+            Linear = M33f.Identity;
+            Trans = s.V;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a <see cref="Shift3f"/>.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
@@ -530,15 +607,6 @@ namespace Aardvark.Base
             Debug.Assert(linear.Invertible);
             Linear = linear;
             Trans = shift.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Shift3f"/>.
-        /// </summary>
-        public Affine3f(Shift3f s)
-        {
-            Linear = M33f.Identity;
-            Trans = s.V;
         }
 
         /// <summary>
@@ -792,6 +860,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparison Operators
+
+        /// <summary>
+        /// Checks whether two <see cref="Affine3f"/> transformations are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Affine3f a0, Affine3f a1)
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+
+        /// <summary>
+        /// Checks whether two <see cref="Affine3f"/> transformations are different.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Affine3f a0, Affine3f a1)
+            => (a0.Linear != a1.Linear) || (a0.Trans != a1.Trans);
+
+        #endregion
+
         #region Static Creators
 
         /// <summary>
@@ -909,6 +995,31 @@ namespace Aardvark.Base
             Debug.Assert(a.Linear.Invertible);
             var t = (M44f) a;
             return new Trafo3f(t, t.Inverse);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode()
+        {
+            return HashCode.GetCombined(Linear, Trans);
+        }
+
+        public override bool Equals(object other)
+        {
+            return (other is Affine3f) ? (this == (Affine3f)other) : false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
+        }
+
+        public static Affine3f Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Affine3f(M33f.Parse(x[0]), V3f.Parse(x[1]));
         }
 
         #endregion
@@ -1095,6 +1206,31 @@ namespace Aardvark.Base
         /// </summary>
         public Affine2d(Rot2d r) : this((M22d)r) { }
 
+        /// <summary>
+        /// Constructs an affine transformation from a <see cref="Scale2d"/>.
+        /// </summary>
+        public Affine2d(Scale2d s) : this((M22d)s) { }
+
+        /// <summary>
+        /// Constructs an affine transformation from a <see cref="Shift2d"/>.
+        /// </summary>
+        public Affine2d(Shift2d s)
+        {
+            Linear = M22d.Identity;
+            Trans = s.V;
+        }
+
+        /// <summary>
+        /// Constructs an affine transformation from a linear map and a <see cref="Shift2d"/>.
+        /// The matrix <paramref name="linear"/> must be invertible.
+        /// </summary>
+        public Affine2d(M22d linear, Shift2d shift)
+        {
+            Debug.Assert(linear.Invertible);
+            Linear = linear;
+            Trans = shift.V;
+        }
+
         #endregion
 
         #region Constants
@@ -1261,6 +1397,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparison Operators
+
+        /// <summary>
+        /// Checks whether two <see cref="Affine2d"/> transformations are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Affine2d a0, Affine2d a1)
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+
+        /// <summary>
+        /// Checks whether two <see cref="Affine2d"/> transformations are different.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Affine2d a0, Affine2d a1)
+            => (a0.Linear != a1.Linear) || (a0.Trans != a1.Trans);
+
+        #endregion
+
         #region Static Creators
 
         /// <summary>
@@ -1327,6 +1481,31 @@ namespace Aardvark.Base
             Debug.Assert(a.Linear.Invertible);
             var t = (M33d) a;
             return new Trafo2d(t, t.Inverse);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode()
+        {
+            return HashCode.GetCombined(Linear, Trans);
+        }
+
+        public override bool Equals(object other)
+        {
+            return (other is Affine2d) ? (this == (Affine2d)other) : false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
+        }
+
+        public static Affine2d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Affine2d(M22d.Parse(x[0]), V2d.Parse(x[1]));
         }
 
         #endregion
@@ -1515,6 +1694,15 @@ namespace Aardvark.Base
         public Affine3d(Scale3d s) : this((M33d)s) { }
 
         /// <summary>
+        /// Constructs an affine transformation from a <see cref="Shift3d"/>.
+        /// </summary>
+        public Affine3d(Shift3d s)
+        {
+            Linear = M33d.Identity;
+            Trans = s.V;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a <see cref="Shift3d"/>.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
@@ -1523,15 +1711,6 @@ namespace Aardvark.Base
             Debug.Assert(linear.Invertible);
             Linear = linear;
             Trans = shift.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Shift3d"/>.
-        /// </summary>
-        public Affine3d(Shift3d s)
-        {
-            Linear = M33d.Identity;
-            Trans = s.V;
         }
 
         /// <summary>
@@ -1785,6 +1964,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparison Operators
+
+        /// <summary>
+        /// Checks whether two <see cref="Affine3d"/> transformations are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Affine3d a0, Affine3d a1)
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+
+        /// <summary>
+        /// Checks whether two <see cref="Affine3d"/> transformations are different.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Affine3d a0, Affine3d a1)
+            => (a0.Linear != a1.Linear) || (a0.Trans != a1.Trans);
+
+        #endregion
+
         #region Static Creators
 
         /// <summary>
@@ -1902,6 +2099,31 @@ namespace Aardvark.Base
             Debug.Assert(a.Linear.Invertible);
             var t = (M44d) a;
             return new Trafo3d(t, t.Inverse);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode()
+        {
+            return HashCode.GetCombined(Linear, Trans);
+        }
+
+        public override bool Equals(object other)
+        {
+            return (other is Affine3d) ? (this == (Affine3d)other) : false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
+        }
+
+        public static Affine3d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Affine3d(M33d.Parse(x[0]), V3d.Parse(x[1]));
         }
 
         #endregion

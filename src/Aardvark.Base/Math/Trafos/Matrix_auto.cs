@@ -590,7 +590,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M22i"/> with 2 scalar values for scaling.
+        /// Creates a transformation <see cref="M22i"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i Scale(int tX, int tY)
@@ -601,7 +601,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M22i"/> with a <see cref="V2i"/> vector for scaling.
+        /// Creates a transformation <see cref="M22i"/> using a <see cref="V2i"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i Scale(V2i s)
@@ -2557,7 +2557,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M22l"/> with 2 scalar values for scaling.
+        /// Creates a transformation <see cref="M22l"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l Scale(long tX, long tY)
@@ -2568,7 +2568,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M22l"/> with a <see cref="V2l"/> vector for scaling.
+        /// Creates a transformation <see cref="M22l"/> using a <see cref="V2l"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l Scale(V2l s)
@@ -4426,7 +4426,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M22f"/> with 2 scalar values for scaling.
+        /// Creates a transformation <see cref="M22f"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f Scale(float tX, float tY)
@@ -4437,7 +4437,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M22f"/> with a <see cref="V2f"/> vector for scaling.
+        /// Creates a transformation <see cref="M22f"/> using a <see cref="V2f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f Scale(V2f s)
@@ -4457,10 +4457,12 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f Rotation(float angleInRadians)
         {
-            var cos = Fun.Cos(angleInRadians);
-            var sin = Fun.Sin(angleInRadians);
-            return new M22f(cos, -sin,
-                            sin, cos);
+            var a = Fun.Cos(angleInRadians);
+            var b = Fun.Sin(angleInRadians);
+
+            return new M22f(
+                 a, -b, 
+                 b,  a);
         }
 
         /// <summary>
@@ -6306,7 +6308,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M22d"/> with 2 scalar values for scaling.
+        /// Creates a transformation <see cref="M22d"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d Scale(double tX, double tY)
@@ -6317,7 +6319,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M22d"/> with a <see cref="V2d"/> vector for scaling.
+        /// Creates a transformation <see cref="M22d"/> using a <see cref="V2d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d Scale(V2d s)
@@ -6337,10 +6339,12 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d Rotation(double angleInRadians)
         {
-            var cos = Fun.Cos(angleInRadians);
-            var sin = Fun.Sin(angleInRadians);
-            return new M22d(cos, -sin,
-                            sin, cos);
+            var a = Fun.Cos(angleInRadians);
+            var b = Fun.Sin(angleInRadians);
+
+            return new M22d(
+                 a, -b, 
+                 b,  a);
         }
 
         /// <summary>
@@ -8105,6 +8109,58 @@ namespace Aardvark.Base
                 row1.X, row1.Y, row1.Z);
         }
 
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23i"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i Scale(int tX, int tY)
+        {
+            return new M23i(
+                tX, 0, 0, 
+                0, tY, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23i"/> using a <see cref="V3i"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i Scale(V3i s)
+        {
+            return new M23i(
+                s.X, 0, 0, 
+                0, s.Y, 0);
+        }
+
+        #endregion
+
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23i"/> with the translational component given by 2 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i Translation(int tX, int tY)
+        {
+            return new M23i(
+                1, 0, tX, 
+                0, 1, tY);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23i"/> with the translational component given by a <see cref="V2i"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i Translation(V2i t)
+        {
+            return new M23i(
+                1, 0, t.X, 
+                0, 1, t.Y);
+        }
+
+        #endregion
+
         #endregion
 
         #region Properties and Indexers
@@ -9299,11 +9355,46 @@ namespace Aardvark.Base
             => m * v;
 
         /// <summary>
+        /// Transforms vector v by matrix m.
+        /// v.W is not modified.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3i Transform(this M23i m, V4i v)
+        {
+            return new V3i(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z,
+                v.W);
+        }
+
+        /// <summary>
         /// Transforms vector v by the transpose of matrix m.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3i TransposedTransform(this M23i m, V2i v)
             => v * m;
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
+        /// </summary>
+        public static V2i TransformDir(this M23i m, V2i v)
+        {
+            return new V2i(
+                m.M00 * v.X + m.M01 * v.Y, 
+                m.M10 * v.X + m.M11 * v.Y
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
+        /// </summary>
+        public static V2i TransformPos(this M23i m, V2i p)
+        {
+            return new V2i(
+                m.M00 * p.X + m.M01 * p.Y + m.M02, 
+                m.M10 * p.X + m.M11 * p.Y + m.M12
+                );
+        }
 
         #endregion
 
@@ -9953,6 +10044,58 @@ namespace Aardvark.Base
                 row0.X, row0.Y, row0.Z, 
                 row1.X, row1.Y, row1.Z);
         }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23l"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l Scale(long tX, long tY)
+        {
+            return new M23l(
+                tX, 0, 0, 
+                0, tY, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23l"/> using a <see cref="V3l"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l Scale(V3l s)
+        {
+            return new M23l(
+                s.X, 0, 0, 
+                0, s.Y, 0);
+        }
+
+        #endregion
+
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23l"/> with the translational component given by 2 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l Translation(long tX, long tY)
+        {
+            return new M23l(
+                1, 0, tX, 
+                0, 1, tY);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23l"/> with the translational component given by a <see cref="V2l"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l Translation(V2l t)
+        {
+            return new M23l(
+                1, 0, t.X, 
+                0, 1, t.Y);
+        }
+
+        #endregion
 
         #endregion
 
@@ -11050,11 +11193,46 @@ namespace Aardvark.Base
             => m * v;
 
         /// <summary>
+        /// Transforms vector v by matrix m.
+        /// v.W is not modified.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3l Transform(this M23l m, V4l v)
+        {
+            return new V3l(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z,
+                v.W);
+        }
+
+        /// <summary>
         /// Transforms vector v by the transpose of matrix m.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3l TransposedTransform(this M23l m, V2l v)
             => v * m;
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
+        /// </summary>
+        public static V2l TransformDir(this M23l m, V2l v)
+        {
+            return new V2l(
+                m.M00 * v.X + m.M01 * v.Y, 
+                m.M10 * v.X + m.M11 * v.Y
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
+        /// </summary>
+        public static V2l TransformPos(this M23l m, V2l p)
+        {
+            return new V2l(
+                m.M00 * p.X + m.M01 * p.Y + m.M02, 
+                m.M10 * p.X + m.M11 * p.Y + m.M12
+                );
+        }
 
         #endregion
 
@@ -11704,6 +11882,94 @@ namespace Aardvark.Base
                 row0.X, row0.Y, row0.Z, 
                 row1.X, row1.Y, row1.Z);
         }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23f"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f Scale(float tX, float tY)
+        {
+            return new M23f(
+                tX, 0, 0, 
+                0, tY, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23f"/> using a <see cref="V3f"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f Scale(V3f s)
+        {
+            return new M23f(
+                s.X, 0, 0, 
+                0, s.Y, 0);
+        }
+
+        #endregion
+
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23f"/> with the translational component given by 2 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f Translation(float tX, float tY)
+        {
+            return new M23f(
+                1, 0, tX, 
+                0, 1, tY);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23f"/> with the translational component given by a <see cref="V2f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f Translation(V2f t)
+        {
+            return new M23f(
+                1, 0, t.X, 
+                0, 1, t.Y);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23f"/> from a <see cref="Shift2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f Translation(Shift2f s)
+        {
+            return new M23f(
+                1, 0, s.X, 
+                0, 1, s.Y);
+        }
+
+        #endregion
+
+        #region Rotation
+
+        /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f Rotation(float angleInRadians)
+        {
+            var a = Fun.Cos(angleInRadians);
+            var b = Fun.Sin(angleInRadians);
+
+            return new M23f(
+                 a, -b,  0, 
+                 b,  a,  0);
+        }
+
+        /// <summary>
+        /// Creates a 2D rotation matrix from a <see cref="Rot2f"/>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f Rotation(Rot2f r)
+            => (M23f)r;
+
+        #endregion
 
         #endregion
 
@@ -12703,11 +12969,46 @@ namespace Aardvark.Base
             => m * v;
 
         /// <summary>
+        /// Transforms vector v by matrix m.
+        /// v.W is not modified.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f Transform(this M23f m, V4f v)
+        {
+            return new V3f(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z,
+                v.W);
+        }
+
+        /// <summary>
         /// Transforms vector v by the transpose of matrix m.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f TransposedTransform(this M23f m, V2f v)
             => v * m;
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
+        /// </summary>
+        public static V2f TransformDir(this M23f m, V2f v)
+        {
+            return new V2f(
+                m.M00 * v.X + m.M01 * v.Y, 
+                m.M10 * v.X + m.M11 * v.Y
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
+        /// </summary>
+        public static V2f TransformPos(this M23f m, V2f p)
+        {
+            return new V2f(
+                m.M00 * p.X + m.M01 * p.Y + m.M02, 
+                m.M10 * p.X + m.M11 * p.Y + m.M12
+                );
+        }
 
         #endregion
 
@@ -13357,6 +13658,94 @@ namespace Aardvark.Base
                 row0.X, row0.Y, row0.Z, 
                 row1.X, row1.Y, row1.Z);
         }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23d"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d Scale(double tX, double tY)
+        {
+            return new M23d(
+                tX, 0, 0, 
+                0, tY, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23d"/> using a <see cref="V3d"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d Scale(V3d s)
+        {
+            return new M23d(
+                s.X, 0, 0, 
+                0, s.Y, 0);
+        }
+
+        #endregion
+
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23d"/> with the translational component given by 2 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d Translation(double tX, double tY)
+        {
+            return new M23d(
+                1, 0, tX, 
+                0, 1, tY);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23d"/> with the translational component given by a <see cref="V2d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d Translation(V2d t)
+        {
+            return new M23d(
+                1, 0, t.X, 
+                0, 1, t.Y);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23d"/> from a <see cref="Shift2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d Translation(Shift2d s)
+        {
+            return new M23d(
+                1, 0, s.X, 
+                0, 1, s.Y);
+        }
+
+        #endregion
+
+        #region Rotation
+
+        /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d Rotation(double angleInRadians)
+        {
+            var a = Fun.Cos(angleInRadians);
+            var b = Fun.Sin(angleInRadians);
+
+            return new M23d(
+                 a, -b,  0, 
+                 b,  a,  0);
+        }
+
+        /// <summary>
+        /// Creates a 2D rotation matrix from a <see cref="Rot2d"/>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d Rotation(Rot2d r)
+            => (M23d)r;
+
+        #endregion
 
         #endregion
 
@@ -14258,11 +14647,46 @@ namespace Aardvark.Base
             => m * v;
 
         /// <summary>
+        /// Transforms vector v by matrix m.
+        /// v.W is not modified.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d Transform(this M23d m, V4d v)
+        {
+            return new V3d(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z,
+                v.W);
+        }
+
+        /// <summary>
         /// Transforms vector v by the transpose of matrix m.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d TransposedTransform(this M23d m, V2d v)
             => v * m;
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by matrix m.
+        /// </summary>
+        public static V2d TransformDir(this M23d m, V2d v)
+        {
+            return new V2d(
+                m.M00 * v.X + m.M01 * v.Y, 
+                m.M10 * v.X + m.M11 * v.Y
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.Z is presumed 1.0) by matrix m.
+        /// </summary>
+        public static V2d TransformPos(this M23d m, V2d p)
+        {
+            return new V2d(
+                m.M00 * p.X + m.M01 * p.Y + m.M02, 
+                m.M10 * p.X + m.M11 * p.Y + m.M12
+                );
+        }
 
         #endregion
 
@@ -15008,7 +15432,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M33i"/> with 3 scalar values for scaling.
+        /// Creates a transformation <see cref="M33i"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i Scale(int tX, int tY, int tZ)
@@ -15020,7 +15444,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33i"/> with 2 scalar values for scaling.
+        /// Creates a transformation <see cref="M33i"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i Scale(int tX, int tY)
@@ -15028,11 +15452,11 @@ namespace Aardvark.Base
             return new M33i(
                 tX, 0, 0, 
                 0, tY, 0, 
-                0, 0, 0);
+                0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33i"/> with a <see cref="V3i"/> vector for scaling.
+        /// Creates a transformation <see cref="M33i"/> using a <see cref="V3i"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i Scale(V3i s)
@@ -15044,7 +15468,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33i"/> with a <see cref="V2i"/> vector for scaling.
+        /// Creates a transformation <see cref="M33i"/> using a <see cref="V2i"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i Scale(V2i s)
@@ -15052,7 +15476,7 @@ namespace Aardvark.Base
             return new M33i(
                 s.X, 0, 0, 
                 0, s.Y, 0, 
-                0, 0, 0);
+                0, 0, 1);
         }
 
         #endregion
@@ -15060,7 +15484,7 @@ namespace Aardvark.Base
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="M33i"/> with 2 scalar values for translation.
+        /// Creates a transformation <see cref="M33i"/> with the translational component given by 2 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i Translation(int tX, int tY)
@@ -15072,7 +15496,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33i"/> with a <see cref="V2i"/> vector for translation.
+        /// Creates a transformation <see cref="M33i"/> with the translational component given by a <see cref="V2i"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i Translation(V2i t)
@@ -15089,23 +15513,26 @@ namespace Aardvark.Base
 
         public static M33i ShearXY(int factorX, int factorY)
         {
-            return new M33i(1, 0, factorX,
-                            0, 1, factorY,
-                            0, 0, 1);
+            return new M33i(
+                1, 0, factorX, 
+                0, 1, factorY, 
+                0, 0, 1);
         }
 
         public static M33i ShearXZ(int factorX, int factorZ)
         {
-            return new M33i(1, factorX, 0,
-                            0, 1, 0,
-                            0, factorZ, 1);
+            return new M33i(
+                1, factorX, 0, 
+                0, 1, 0, 
+                0, factorZ, 1);
         }
 
         public static M33i ShearYZ(int factorY, int factorZ)
         {
-            return new M33i(1, 0, 0,
-                            factorY, 1, 0,
-                            factorZ, 0, 1);
+            return new M33i(
+                1, 0, 0, 
+                factorY, 1, 0, 
+                factorZ, 0, 1);
         }
 
         #endregion
@@ -17484,7 +17911,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M33l"/> with 3 scalar values for scaling.
+        /// Creates a transformation <see cref="M33l"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l Scale(long tX, long tY, long tZ)
@@ -17496,7 +17923,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33l"/> with 2 scalar values for scaling.
+        /// Creates a transformation <see cref="M33l"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l Scale(long tX, long tY)
@@ -17504,11 +17931,11 @@ namespace Aardvark.Base
             return new M33l(
                 tX, 0, 0, 
                 0, tY, 0, 
-                0, 0, 0);
+                0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33l"/> with a <see cref="V3l"/> vector for scaling.
+        /// Creates a transformation <see cref="M33l"/> using a <see cref="V3l"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l Scale(V3l s)
@@ -17520,7 +17947,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33l"/> with a <see cref="V2l"/> vector for scaling.
+        /// Creates a transformation <see cref="M33l"/> using a <see cref="V2l"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l Scale(V2l s)
@@ -17528,7 +17955,7 @@ namespace Aardvark.Base
             return new M33l(
                 s.X, 0, 0, 
                 0, s.Y, 0, 
-                0, 0, 0);
+                0, 0, 1);
         }
 
         #endregion
@@ -17536,7 +17963,7 @@ namespace Aardvark.Base
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="M33l"/> with 2 scalar values for translation.
+        /// Creates a transformation <see cref="M33l"/> with the translational component given by 2 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l Translation(long tX, long tY)
@@ -17548,7 +17975,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33l"/> with a <see cref="V2l"/> vector for translation.
+        /// Creates a transformation <see cref="M33l"/> with the translational component given by a <see cref="V2l"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l Translation(V2l t)
@@ -17565,23 +17992,26 @@ namespace Aardvark.Base
 
         public static M33l ShearXY(long factorX, long factorY)
         {
-            return new M33l(1, 0, factorX,
-                            0, 1, factorY,
-                            0, 0, 1);
+            return new M33l(
+                1, 0, factorX, 
+                0, 1, factorY, 
+                0, 0, 1);
         }
 
         public static M33l ShearXZ(long factorX, long factorZ)
         {
-            return new M33l(1, factorX, 0,
-                            0, 1, 0,
-                            0, factorZ, 1);
+            return new M33l(
+                1, factorX, 0, 
+                0, 1, 0, 
+                0, factorZ, 1);
         }
 
         public static M33l ShearYZ(long factorY, long factorZ)
         {
-            return new M33l(1, 0, 0,
-                            factorY, 1, 0,
-                            factorZ, 0, 1);
+            return new M33l(
+                1, 0, 0, 
+                factorY, 1, 0, 
+                factorZ, 0, 1);
         }
 
         #endregion
@@ -19848,7 +20278,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M33f"/> with 3 scalar values for scaling.
+        /// Creates a transformation <see cref="M33f"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Scale(float tX, float tY, float tZ)
@@ -19860,7 +20290,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33f"/> with 2 scalar values for scaling.
+        /// Creates a transformation <see cref="M33f"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Scale(float tX, float tY)
@@ -19868,11 +20298,11 @@ namespace Aardvark.Base
             return new M33f(
                 tX, 0, 0, 
                 0, tY, 0, 
-                0, 0, 0);
+                0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33f"/> with a <see cref="V3f"/> vector for scaling.
+        /// Creates a transformation <see cref="M33f"/> using a <see cref="V3f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Scale(V3f s)
@@ -19884,7 +20314,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33f"/> with a <see cref="V2f"/> vector for scaling.
+        /// Creates a transformation <see cref="M33f"/> using a <see cref="V2f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Scale(V2f s)
@@ -19892,11 +20322,11 @@ namespace Aardvark.Base
             return new M33f(
                 s.X, 0, 0, 
                 0, s.Y, 0, 
-                0, 0, 0);
+                0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33f"/> with a <see cref="Scale3f"/> for scaling.
+        /// Creates a transformation <see cref="M33f"/> from a <see cref="Scale3f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Scale(Scale3f s)
@@ -19912,7 +20342,7 @@ namespace Aardvark.Base
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="M33f"/> with 2 scalar values for translation.
+        /// Creates a transformation <see cref="M33f"/> with the translational component given by 2 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Translation(float tX, float tY)
@@ -19924,7 +20354,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33f"/> with a <see cref="V2f"/> vector for translation.
+        /// Creates a transformation <see cref="M33f"/> with the translational component given by a <see cref="V2f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Translation(V2f t)
@@ -19932,6 +20362,18 @@ namespace Aardvark.Base
             return new M33f(
                 1, 0, t.X, 
                 0, 1, t.Y, 
+                0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33f"/> from a <see cref="Shift2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Translation(Shift2f s)
+        {
+            return new M33f(
+                1, 0, s.X, 
+                0, 1, s.Y, 
                 0, 0, 1);
         }
 
@@ -19945,11 +20387,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Rotation(float angleInRadians)
         {
-            var cos = Fun.Cos(angleInRadians);
-            var sin = Fun.Sin(angleInRadians);
-            return new M33f(cos, -sin, 0,
-                            sin, cos, 0,
-                            0, 0, 1);
+            var a = Fun.Cos(angleInRadians);
+            var b = Fun.Sin(angleInRadians);
+
+            return new M33f(
+                 a, -b,  0, 
+                 b,  a,  0, 
+                 0,  0,  1);
         }
 
         /// <summary>
@@ -20016,11 +20460,13 @@ namespace Aardvark.Base
         /// </summary>
         public static M33f RotationX(float angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M33f(1, 0, 0,
-                            0, cos, -sin,
-                            0, sin, cos);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M33f(
+                 1,  0,  0, 
+                 0,  a, -b, 
+                 0,  b,  a);
         }
 
         /// <summary>
@@ -20028,11 +20474,13 @@ namespace Aardvark.Base
         /// </summary>
         public static M33f RotationY(float angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M33f(cos, 0, sin, 
-                            0, 1, 0,
-                            -sin, 0, cos);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M33f(
+                 a,  0,  b, 
+                 0,  1,  0, 
+                -b,  0,  a);
         }
 
         /// <summary>
@@ -20040,11 +20488,13 @@ namespace Aardvark.Base
         /// </summary>
         public static M33f RotationZ(float angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M33f(cos, -sin, 0,
-                            sin, cos, 0,
-                            0, 0, 1);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M33f(
+                 a, -b,  0, 
+                 b,  a,  0, 
+                 0,  0,  1);
         }
 
         #endregion
@@ -20053,23 +20503,26 @@ namespace Aardvark.Base
 
         public static M33f ShearXY(float factorX, float factorY)
         {
-            return new M33f(1, 0, factorX,
-                            0, 1, factorY,
-                            0, 0, 1);
+            return new M33f(
+                1, 0, factorX, 
+                0, 1, factorY, 
+                0, 0, 1);
         }
 
         public static M33f ShearXZ(float factorX, float factorZ)
         {
-            return new M33f(1, factorX, 0,
-                            0, 1, 0,
-                            0, factorZ, 1);
+            return new M33f(
+                1, factorX, 0, 
+                0, 1, 0, 
+                0, factorZ, 1);
         }
 
         public static M33f ShearYZ(float factorY, float factorZ)
         {
-            return new M33f(1, 0, 0,
-                            factorY, 1, 0,
-                            factorZ, 0, 1);
+            return new M33f(
+                1, 0, 0, 
+                factorY, 1, 0, 
+                factorZ, 0, 1);
         }
 
         #endregion
@@ -22299,7 +22752,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M33d"/> with 3 scalar values for scaling.
+        /// Creates a transformation <see cref="M33d"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Scale(double tX, double tY, double tZ)
@@ -22311,7 +22764,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33d"/> with 2 scalar values for scaling.
+        /// Creates a transformation <see cref="M33d"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Scale(double tX, double tY)
@@ -22319,11 +22772,11 @@ namespace Aardvark.Base
             return new M33d(
                 tX, 0, 0, 
                 0, tY, 0, 
-                0, 0, 0);
+                0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33d"/> with a <see cref="V3d"/> vector for scaling.
+        /// Creates a transformation <see cref="M33d"/> using a <see cref="V3d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Scale(V3d s)
@@ -22335,7 +22788,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33d"/> with a <see cref="V2d"/> vector for scaling.
+        /// Creates a transformation <see cref="M33d"/> using a <see cref="V2d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Scale(V2d s)
@@ -22343,11 +22796,11 @@ namespace Aardvark.Base
             return new M33d(
                 s.X, 0, 0, 
                 0, s.Y, 0, 
-                0, 0, 0);
+                0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33d"/> with a <see cref="Scale3d"/> for scaling.
+        /// Creates a transformation <see cref="M33d"/> from a <see cref="Scale3d"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Scale(Scale3d s)
@@ -22363,7 +22816,7 @@ namespace Aardvark.Base
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="M33d"/> with 2 scalar values for translation.
+        /// Creates a transformation <see cref="M33d"/> with the translational component given by 2 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Translation(double tX, double tY)
@@ -22375,7 +22828,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M33d"/> with a <see cref="V2d"/> vector for translation.
+        /// Creates a transformation <see cref="M33d"/> with the translational component given by a <see cref="V2d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Translation(V2d t)
@@ -22383,6 +22836,18 @@ namespace Aardvark.Base
             return new M33d(
                 1, 0, t.X, 
                 0, 1, t.Y, 
+                0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33d"/> from a <see cref="Shift2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Translation(Shift2d s)
+        {
+            return new M33d(
+                1, 0, s.X, 
+                0, 1, s.Y, 
                 0, 0, 1);
         }
 
@@ -22396,11 +22861,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Rotation(double angleInRadians)
         {
-            var cos = Fun.Cos(angleInRadians);
-            var sin = Fun.Sin(angleInRadians);
-            return new M33d(cos, -sin, 0,
-                            sin, cos, 0,
-                            0, 0, 1);
+            var a = Fun.Cos(angleInRadians);
+            var b = Fun.Sin(angleInRadians);
+
+            return new M33d(
+                 a, -b,  0, 
+                 b,  a,  0, 
+                 0,  0,  1);
         }
 
         /// <summary>
@@ -22467,11 +22934,13 @@ namespace Aardvark.Base
         /// </summary>
         public static M33d RotationX(double angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M33d(1, 0, 0,
-                            0, cos, -sin,
-                            0, sin, cos);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M33d(
+                 1,  0,  0, 
+                 0,  a, -b, 
+                 0,  b,  a);
         }
 
         /// <summary>
@@ -22479,11 +22948,13 @@ namespace Aardvark.Base
         /// </summary>
         public static M33d RotationY(double angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M33d(cos, 0, sin, 
-                            0, 1, 0,
-                            -sin, 0, cos);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M33d(
+                 a,  0,  b, 
+                 0,  1,  0, 
+                -b,  0,  a);
         }
 
         /// <summary>
@@ -22491,11 +22962,13 @@ namespace Aardvark.Base
         /// </summary>
         public static M33d RotationZ(double angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M33d(cos, -sin, 0,
-                            sin, cos, 0,
-                            0, 0, 1);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M33d(
+                 a, -b,  0, 
+                 b,  a,  0, 
+                 0,  0,  1);
         }
 
         #endregion
@@ -22504,23 +22977,26 @@ namespace Aardvark.Base
 
         public static M33d ShearXY(double factorX, double factorY)
         {
-            return new M33d(1, 0, factorX,
-                            0, 1, factorY,
-                            0, 0, 1);
+            return new M33d(
+                1, 0, factorX, 
+                0, 1, factorY, 
+                0, 0, 1);
         }
 
         public static M33d ShearXZ(double factorX, double factorZ)
         {
-            return new M33d(1, factorX, 0,
-                            0, 1, 0,
-                            0, factorZ, 1);
+            return new M33d(
+                1, factorX, 0, 
+                0, 1, 0, 
+                0, factorZ, 1);
         }
 
         public static M33d ShearYZ(double factorY, double factorZ)
         {
-            return new M33d(1, 0, 0,
-                            factorY, 1, 0,
-                            factorZ, 0, 1);
+            return new M33d(
+                1, 0, 0, 
+                factorY, 1, 0, 
+                factorZ, 0, 1);
         }
 
         #endregion
@@ -24655,6 +25131,114 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z, row2.W);
         }
 
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34i"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i Scale(int tX, int tY, int tZ)
+        {
+            return new M34i(
+                tX, 0, 0, 0, 
+                0, tY, 0, 0, 
+                0, 0, tZ, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34i"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i Scale(int tX, int tY)
+        {
+            return new M34i(
+                tX, 0, 0, 0, 
+                0, tY, 0, 0, 
+                0, 0, 1, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34i"/> using a <see cref="V4i"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i Scale(V4i s)
+        {
+            return new M34i(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, s.Z, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34i"/> using a <see cref="V3i"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i Scale(V3i s)
+        {
+            return new M34i(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, 1, 0);
+        }
+
+        #endregion
+
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34i"/> with the translational component given by 3 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i Translation(int tX, int tY, int tZ)
+        {
+            return new M34i(
+                1, 0, 0, tX, 
+                0, 1, 0, tY, 
+                0, 0, 1, tZ);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34i"/> with the translational component given by a <see cref="V3i"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i Translation(V3i t)
+        {
+            return new M34i(
+                1, 0, 0, t.X, 
+                0, 1, 0, t.Y, 
+                0, 0, 1, t.Z);
+        }
+
+        #endregion
+
+        #region Shearing
+
+        public static M34i ShearXY(int factorX, int factorY)
+        {
+            return new M34i(
+                1, 0, factorX, 0, 
+                0, 1, factorY, 0, 
+                0, 0, 1, 0);
+        }
+
+        public static M34i ShearXZ(int factorX, int factorZ)
+        {
+            return new M34i(
+                1, factorX, 0, 0, 
+                0, 1, 0, 0, 
+                0, factorZ, 1, 0);
+        }
+
+        public static M34i ShearYZ(int factorY, int factorZ)
+        {
+            return new M34i(
+                1, 0, 0, 0, 
+                factorY, 1, 0, 0, 
+                factorZ, 0, 1, 0);
+        }
+
+        #endregion
+
         #endregion
 
         #region Properties and Indexers
@@ -26141,6 +26725,30 @@ namespace Aardvark.Base
         public static V4i TransposedTransform(this M34i m, V3i v)
             => v * m;
 
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
+        /// </summary>
+        public static V3i TransformDir(this M34i m, V3i v)
+        {
+            return new V3i(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z, 
+                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
+        /// </summary>
+        public static V3i TransformPos(this M34i m, V3i p)
+        {
+            return new V3i(
+                m.M00 * p.X + m.M01 * p.Y + m.M02 * p.Z + m.M03, 
+                m.M10 * p.X + m.M11 * p.Y + m.M12 * p.Z + m.M13, 
+                m.M20 * p.X + m.M21 * p.Y + m.M22 * p.Z + m.M23
+                );
+        }
+
         #endregion
 
         #region Operations
@@ -26903,6 +27511,114 @@ namespace Aardvark.Base
                 row1.X, row1.Y, row1.Z, row1.W, 
                 row2.X, row2.Y, row2.Z, row2.W);
         }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34l"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l Scale(long tX, long tY, long tZ)
+        {
+            return new M34l(
+                tX, 0, 0, 0, 
+                0, tY, 0, 0, 
+                0, 0, tZ, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34l"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l Scale(long tX, long tY)
+        {
+            return new M34l(
+                tX, 0, 0, 0, 
+                0, tY, 0, 0, 
+                0, 0, 1, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34l"/> using a <see cref="V4l"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l Scale(V4l s)
+        {
+            return new M34l(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, s.Z, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34l"/> using a <see cref="V3l"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l Scale(V3l s)
+        {
+            return new M34l(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, 1, 0);
+        }
+
+        #endregion
+
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34l"/> with the translational component given by 3 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l Translation(long tX, long tY, long tZ)
+        {
+            return new M34l(
+                1, 0, 0, tX, 
+                0, 1, 0, tY, 
+                0, 0, 1, tZ);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34l"/> with the translational component given by a <see cref="V3l"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l Translation(V3l t)
+        {
+            return new M34l(
+                1, 0, 0, t.X, 
+                0, 1, 0, t.Y, 
+                0, 0, 1, t.Z);
+        }
+
+        #endregion
+
+        #region Shearing
+
+        public static M34l ShearXY(long factorX, long factorY)
+        {
+            return new M34l(
+                1, 0, factorX, 0, 
+                0, 1, factorY, 0, 
+                0, 0, 1, 0);
+        }
+
+        public static M34l ShearXZ(long factorX, long factorZ)
+        {
+            return new M34l(
+                1, factorX, 0, 0, 
+                0, 1, 0, 0, 
+                0, factorZ, 1, 0);
+        }
+
+        public static M34l ShearYZ(long factorY, long factorZ)
+        {
+            return new M34l(
+                1, 0, 0, 0, 
+                factorY, 1, 0, 0, 
+                factorZ, 0, 1, 0);
+        }
+
+        #endregion
 
         #endregion
 
@@ -28278,6 +28994,30 @@ namespace Aardvark.Base
         public static V4l TransposedTransform(this M34l m, V3l v)
             => v * m;
 
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
+        /// </summary>
+        public static V3l TransformDir(this M34l m, V3l v)
+        {
+            return new V3l(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z, 
+                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
+        /// </summary>
+        public static V3l TransformPos(this M34l m, V3l p)
+        {
+            return new V3l(
+                m.M00 * p.X + m.M01 * p.Y + m.M02 * p.Z + m.M03, 
+                m.M10 * p.X + m.M11 * p.Y + m.M12 * p.Z + m.M13, 
+                m.M20 * p.X + m.M21 * p.Y + m.M22 * p.Z + m.M23
+                );
+        }
+
         #endregion
 
         #region Operations
@@ -29040,6 +29780,229 @@ namespace Aardvark.Base
                 row1.X, row1.Y, row1.Z, row1.W, 
                 row2.X, row2.Y, row2.Z, row2.W);
         }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34f"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Scale(float tX, float tY, float tZ)
+        {
+            return new M34f(
+                tX, 0, 0, 0, 
+                0, tY, 0, 0, 
+                0, 0, tZ, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34f"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Scale(float tX, float tY)
+        {
+            return new M34f(
+                tX, 0, 0, 0, 
+                0, tY, 0, 0, 
+                0, 0, 1, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34f"/> using a <see cref="V4f"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Scale(V4f s)
+        {
+            return new M34f(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, s.Z, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34f"/> using a <see cref="V3f"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Scale(V3f s)
+        {
+            return new M34f(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, 1, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34f"/> from a <see cref="Scale3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Scale(Scale3f s)
+        {
+            return new M34f(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, s.Z, 0);
+        }
+
+        #endregion
+
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34f"/> with the translational component given by 3 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Translation(float tX, float tY, float tZ)
+        {
+            return new M34f(
+                1, 0, 0, tX, 
+                0, 1, 0, tY, 
+                0, 0, 1, tZ);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34f"/> with the translational component given by a <see cref="V3f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Translation(V3f t)
+        {
+            return new M34f(
+                1, 0, 0, t.X, 
+                0, 1, 0, t.Y, 
+                0, 0, 1, t.Z);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34f"/> from a <see cref="Shift3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Translation(Shift3f s)
+        {
+            return new M34f(
+                1, 0, 0, s.X, 
+                0, 1, 0, s.Y, 
+                0, 0, 1, s.Z);
+        }
+
+        #endregion
+
+        #region Rotation
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Rotation(V3f normalizedAxis, float angleInRadians)
+        {
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            return (M34f)(new Rot3f(normalizedAxis, angleInRadians));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Rotation(float rollInRadians, float pitchInRadians, float yawInRadians)
+        {
+            return (M34f)(new Rot3f(rollInRadians, pitchInRadians, yawInRadians));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f Rotation(V3f roll_pitch_yaw_inRadians)
+        {
+            return (M34f)(new Rot3f(
+                roll_pitch_yaw_inRadians.X,
+                roll_pitch_yaw_inRadians.Y,
+                roll_pitch_yaw_inRadians.Z));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static M34f Rotation(V3f from, V3f into)
+        {
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            return (M34f)(new Rot3f(from, into));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// </summary>
+        public static M34f RotationX(float angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M34f(
+                 1,  0,  0,  0, 
+                 0,  a, -b,  0, 
+                 0,  b,  a,  0);
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// </summary>
+        public static M34f RotationY(float angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M34f(
+                 a,  0,  b,  0, 
+                 0,  1,  0,  0, 
+                -b,  0,  a,  0);
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// </summary>
+        public static M34f RotationZ(float angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M34f(
+                 a, -b,  0,  0, 
+                 b,  a,  0,  0, 
+                 0,  0,  1,  0);
+        }
+
+        #endregion
+
+        #region Shearing
+
+        public static M34f ShearXY(float factorX, float factorY)
+        {
+            return new M34f(
+                1, 0, factorX, 0, 
+                0, 1, factorY, 0, 
+                0, 0, 1, 0);
+        }
+
+        public static M34f ShearXZ(float factorX, float factorZ)
+        {
+            return new M34f(
+                1, factorX, 0, 0, 
+                0, 1, 0, 0, 
+                0, factorZ, 1, 0);
+        }
+
+        public static M34f ShearYZ(float factorY, float factorZ)
+        {
+            return new M34f(
+                1, 0, 0, 0, 
+                factorY, 1, 0, 0, 
+                factorZ, 0, 1, 0);
+        }
+
+        #endregion
 
         #endregion
 
@@ -30303,6 +31266,30 @@ namespace Aardvark.Base
         public static V4f TransposedTransform(this M34f m, V3f v)
             => v * m;
 
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
+        /// </summary>
+        public static V3f TransformDir(this M34f m, V3f v)
+        {
+            return new V3f(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z, 
+                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
+        /// </summary>
+        public static V3f TransformPos(this M34f m, V3f p)
+        {
+            return new V3f(
+                m.M00 * p.X + m.M01 * p.Y + m.M02 * p.Z + m.M03, 
+                m.M10 * p.X + m.M11 * p.Y + m.M12 * p.Z + m.M13, 
+                m.M20 * p.X + m.M21 * p.Y + m.M22 * p.Z + m.M23
+                );
+        }
+
         #endregion
 
         #region Operations
@@ -31065,6 +32052,229 @@ namespace Aardvark.Base
                 row1.X, row1.Y, row1.Z, row1.W, 
                 row2.X, row2.Y, row2.Z, row2.W);
         }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34d"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Scale(double tX, double tY, double tZ)
+        {
+            return new M34d(
+                tX, 0, 0, 0, 
+                0, tY, 0, 0, 
+                0, 0, tZ, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34d"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Scale(double tX, double tY)
+        {
+            return new M34d(
+                tX, 0, 0, 0, 
+                0, tY, 0, 0, 
+                0, 0, 1, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34d"/> using a <see cref="V4d"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Scale(V4d s)
+        {
+            return new M34d(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, s.Z, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34d"/> using a <see cref="V3d"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Scale(V3d s)
+        {
+            return new M34d(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, 1, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34d"/> from a <see cref="Scale3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Scale(Scale3d s)
+        {
+            return new M34d(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, s.Z, 0);
+        }
+
+        #endregion
+
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34d"/> with the translational component given by 3 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Translation(double tX, double tY, double tZ)
+        {
+            return new M34d(
+                1, 0, 0, tX, 
+                0, 1, 0, tY, 
+                0, 0, 1, tZ);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34d"/> with the translational component given by a <see cref="V3d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Translation(V3d t)
+        {
+            return new M34d(
+                1, 0, 0, t.X, 
+                0, 1, 0, t.Y, 
+                0, 0, 1, t.Z);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M34d"/> from a <see cref="Shift3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Translation(Shift3d s)
+        {
+            return new M34d(
+                1, 0, 0, s.X, 
+                0, 1, 0, s.Y, 
+                0, 0, 1, s.Z);
+        }
+
+        #endregion
+
+        #region Rotation
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Rotation(V3d normalizedAxis, double angleInRadians)
+        {
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            return (M34d)(new Rot3d(normalizedAxis, angleInRadians));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Rotation(double rollInRadians, double pitchInRadians, double yawInRadians)
+        {
+            return (M34d)(new Rot3d(rollInRadians, pitchInRadians, yawInRadians));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d Rotation(V3d roll_pitch_yaw_inRadians)
+        {
+            return (M34d)(new Rot3d(
+                roll_pitch_yaw_inRadians.X,
+                roll_pitch_yaw_inRadians.Y,
+                roll_pitch_yaw_inRadians.Z));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static M34d Rotation(V3d from, V3d into)
+        {
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            return (M34d)(new Rot3d(from, into));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// </summary>
+        public static M34d RotationX(double angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M34d(
+                 1,  0,  0,  0, 
+                 0,  a, -b,  0, 
+                 0,  b,  a,  0);
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// </summary>
+        public static M34d RotationY(double angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M34d(
+                 a,  0,  b,  0, 
+                 0,  1,  0,  0, 
+                -b,  0,  a,  0);
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// </summary>
+        public static M34d RotationZ(double angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M34d(
+                 a, -b,  0,  0, 
+                 b,  a,  0,  0, 
+                 0,  0,  1,  0);
+        }
+
+        #endregion
+
+        #region Shearing
+
+        public static M34d ShearXY(double factorX, double factorY)
+        {
+            return new M34d(
+                1, 0, factorX, 0, 
+                0, 1, factorY, 0, 
+                0, 0, 1, 0);
+        }
+
+        public static M34d ShearXZ(double factorX, double factorZ)
+        {
+            return new M34d(
+                1, factorX, 0, 0, 
+                0, 1, 0, 0, 
+                0, factorZ, 1, 0);
+        }
+
+        public static M34d ShearYZ(double factorY, double factorZ)
+        {
+            return new M34d(
+                1, 0, 0, 0, 
+                factorY, 1, 0, 0, 
+                factorZ, 0, 1, 0);
+        }
+
+        #endregion
 
         #endregion
 
@@ -32216,6 +33426,30 @@ namespace Aardvark.Base
         public static V4d TransposedTransform(this M34d m, V3d v)
             => v * m;
 
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by matrix m.
+        /// </summary>
+        public static V3d TransformDir(this M34d m, V3d v)
+        {
+            return new V3d(
+                m.M00 * v.X + m.M01 * v.Y + m.M02 * v.Z, 
+                m.M10 * v.X + m.M11 * v.Y + m.M12 * v.Z, 
+                m.M20 * v.X + m.M21 * v.Y + m.M22 * v.Z
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.W is presumed 1.0) by matrix m.
+        /// </summary>
+        public static V3d TransformPos(this M34d m, V3d p)
+        {
+            return new V3d(
+                m.M00 * p.X + m.M01 * p.Y + m.M02 * p.Z + m.M03, 
+                m.M10 * p.X + m.M11 * p.Y + m.M12 * p.Z + m.M13, 
+                m.M20 * p.X + m.M21 * p.Y + m.M22 * p.Z + m.M23
+                );
+        }
+
         #endregion
 
         #region Operations
@@ -33080,7 +34314,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M44i"/> with 4 scalar values for scaling.
+        /// Creates a transformation <see cref="M44i"/> using 4 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i Scale(int tX, int tY, int tZ, int tW)
@@ -33093,7 +34327,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44i"/> with 3 scalar values for scaling.
+        /// Creates a transformation <see cref="M44i"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i Scale(int tX, int tY, int tZ)
@@ -33102,11 +34336,11 @@ namespace Aardvark.Base
                 tX, 0, 0, 0, 
                 0, tY, 0, 0, 
                 0, 0, tZ, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44i"/> with a <see cref="V4i"/> vector for scaling.
+        /// Creates a transformation <see cref="M44i"/> using a <see cref="V4i"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i Scale(V4i s)
@@ -33119,7 +34353,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44i"/> with a <see cref="V3i"/> vector for scaling.
+        /// Creates a transformation <see cref="M44i"/> using a <see cref="V3i"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i Scale(V3i s)
@@ -33128,7 +34362,7 @@ namespace Aardvark.Base
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         #endregion
@@ -33136,7 +34370,7 @@ namespace Aardvark.Base
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="M44i"/> with 3 scalar values for translation.
+        /// Creates a transformation <see cref="M44i"/> with the translational component given by 3 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i Translation(int tX, int tY, int tZ)
@@ -33149,7 +34383,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44i"/> with a <see cref="V3i"/> vector for translation.
+        /// Creates a transformation <see cref="M44i"/> with the translational component given by a <see cref="V3i"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i Translation(V3i t)
@@ -33167,26 +34401,29 @@ namespace Aardvark.Base
 
         public static M44i ShearXY(int factorX, int factorY)
         {
-            return new M44i(1, 0, factorX, 0,
-                            0, 1, factorY, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1);
+            return new M44i(
+                1, 0, factorX, 0, 
+                0, 1, factorY, 0, 
+                0, 0, 1, 0, 
+                0, 0, 0, 1);
         }
 
         public static M44i ShearXZ(int factorX, int factorZ)
         {
-            return new M44i(1, factorX, 0, 0,
-                            0, 1, 0, 0,
-                            0, factorZ, 1, 0,
-                            0, 0, 0, 1);
+            return new M44i(
+                1, factorX, 0, 0, 
+                0, 1, 0, 0, 
+                0, factorZ, 1, 0, 
+                0, 0, 0, 1);
         }
 
         public static M44i ShearYZ(int factorY, int factorZ)
         {
-            return new M44i(1, 0, 0, 0,
-                            factorY, 1, 0, 0,
-                            factorZ, 0, 1, 0,
-                            0, 0, 0, 1);
+            return new M44i(
+                1, 0, 0, 0, 
+                factorY, 1, 0, 0, 
+                factorZ, 0, 1, 0, 
+                0, 0, 0, 1);
         }
 
         #endregion
@@ -35997,7 +37234,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M44l"/> with 4 scalar values for scaling.
+        /// Creates a transformation <see cref="M44l"/> using 4 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l Scale(long tX, long tY, long tZ, long tW)
@@ -36010,7 +37247,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44l"/> with 3 scalar values for scaling.
+        /// Creates a transformation <see cref="M44l"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l Scale(long tX, long tY, long tZ)
@@ -36019,11 +37256,11 @@ namespace Aardvark.Base
                 tX, 0, 0, 0, 
                 0, tY, 0, 0, 
                 0, 0, tZ, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44l"/> with a <see cref="V4l"/> vector for scaling.
+        /// Creates a transformation <see cref="M44l"/> using a <see cref="V4l"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l Scale(V4l s)
@@ -36036,7 +37273,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44l"/> with a <see cref="V3l"/> vector for scaling.
+        /// Creates a transformation <see cref="M44l"/> using a <see cref="V3l"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l Scale(V3l s)
@@ -36045,7 +37282,7 @@ namespace Aardvark.Base
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         #endregion
@@ -36053,7 +37290,7 @@ namespace Aardvark.Base
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="M44l"/> with 3 scalar values for translation.
+        /// Creates a transformation <see cref="M44l"/> with the translational component given by 3 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l Translation(long tX, long tY, long tZ)
@@ -36066,7 +37303,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44l"/> with a <see cref="V3l"/> vector for translation.
+        /// Creates a transformation <see cref="M44l"/> with the translational component given by a <see cref="V3l"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l Translation(V3l t)
@@ -36084,26 +37321,29 @@ namespace Aardvark.Base
 
         public static M44l ShearXY(long factorX, long factorY)
         {
-            return new M44l(1, 0, factorX, 0,
-                            0, 1, factorY, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1);
+            return new M44l(
+                1, 0, factorX, 0, 
+                0, 1, factorY, 0, 
+                0, 0, 1, 0, 
+                0, 0, 0, 1);
         }
 
         public static M44l ShearXZ(long factorX, long factorZ)
         {
-            return new M44l(1, factorX, 0, 0,
-                            0, 1, 0, 0,
-                            0, factorZ, 1, 0,
-                            0, 0, 0, 1);
+            return new M44l(
+                1, factorX, 0, 0, 
+                0, 1, 0, 0, 
+                0, factorZ, 1, 0, 
+                0, 0, 0, 1);
         }
 
         public static M44l ShearYZ(long factorY, long factorZ)
         {
-            return new M44l(1, 0, 0, 0,
-                            factorY, 1, 0, 0,
-                            factorZ, 0, 1, 0,
-                            0, 0, 0, 1);
+            return new M44l(
+                1, 0, 0, 0, 
+                factorY, 1, 0, 0, 
+                factorZ, 0, 1, 0, 
+                0, 0, 0, 1);
         }
 
         #endregion
@@ -38788,7 +40028,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M44f"/> with 4 scalar values for scaling.
+        /// Creates a transformation <see cref="M44f"/> using 4 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Scale(float tX, float tY, float tZ, float tW)
@@ -38801,7 +40041,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44f"/> with 3 scalar values for scaling.
+        /// Creates a transformation <see cref="M44f"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Scale(float tX, float tY, float tZ)
@@ -38810,11 +40050,11 @@ namespace Aardvark.Base
                 tX, 0, 0, 0, 
                 0, tY, 0, 0, 
                 0, 0, tZ, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44f"/> with a <see cref="V4f"/> vector for scaling.
+        /// Creates a transformation <see cref="M44f"/> using a <see cref="V4f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Scale(V4f s)
@@ -38827,7 +40067,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44f"/> with a <see cref="V3f"/> vector for scaling.
+        /// Creates a transformation <see cref="M44f"/> using a <see cref="V3f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Scale(V3f s)
@@ -38836,11 +40076,11 @@ namespace Aardvark.Base
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44f"/> with a <see cref="Scale3f"/> for scaling.
+        /// Creates a scaling transformation <see cref="M44f"/> from a <see cref="Scale3f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Scale(Scale3f s)
@@ -38857,7 +40097,7 @@ namespace Aardvark.Base
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="M44f"/> with 3 scalar values for translation.
+        /// Creates a transformation <see cref="M44f"/> with the translational component given by 3 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Translation(float tX, float tY, float tZ)
@@ -38870,7 +40110,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44f"/> with a <see cref="V3f"/> vector for translation.
+        /// Creates a transformation <see cref="M44f"/> with the translational component given by a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Translation(V3f t)
@@ -38883,7 +40123,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44f"/> with a <see cref="Shift3f"/> for translation.
+        /// Creates a transformation <see cref="M44f"/> from a <see cref="Shift3f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Translation(Shift3f s)
@@ -38956,12 +40196,14 @@ namespace Aardvark.Base
         /// </summary>
         public static M44f RotationX(float angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M44f(1, 0, 0, 0,
-                            0, cos, -sin, 0,
-                            0, sin, cos, 0,
-                            0, 0, 0, 1);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M44f(
+                 1,  0,  0,  0, 
+                 0,  a, -b,  0, 
+                 0,  b,  a,  0, 
+                 0,  0,  0,  1);
         }
 
         /// <summary>
@@ -38969,12 +40211,14 @@ namespace Aardvark.Base
         /// </summary>
         public static M44f RotationY(float angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M44f(cos, 0, sin, 0,
-                            0, 1, 0, 0,
-                            -sin, 0, cos, 0,
-                            0, 0, 0, 1);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M44f(
+                 a,  0,  b,  0, 
+                 0,  1,  0,  0, 
+                -b,  0,  a,  0, 
+                 0,  0,  0,  1);
         }
 
         /// <summary>
@@ -38982,12 +40226,14 @@ namespace Aardvark.Base
         /// </summary>
         public static M44f RotationZ(float angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M44f(cos, -sin, 0, 0,
-                            sin, cos, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M44f(
+                 a, -b,  0,  0, 
+                 b,  a,  0,  0, 
+                 0,  0,  1,  0, 
+                 0,  0,  0,  1);
         }
 
         #endregion
@@ -38996,26 +40242,29 @@ namespace Aardvark.Base
 
         public static M44f ShearXY(float factorX, float factorY)
         {
-            return new M44f(1, 0, factorX, 0,
-                            0, 1, factorY, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1);
+            return new M44f(
+                1, 0, factorX, 0, 
+                0, 1, factorY, 0, 
+                0, 0, 1, 0, 
+                0, 0, 0, 1);
         }
 
         public static M44f ShearXZ(float factorX, float factorZ)
         {
-            return new M44f(1, factorX, 0, 0,
-                            0, 1, 0, 0,
-                            0, factorZ, 1, 0,
-                            0, 0, 0, 1);
+            return new M44f(
+                1, factorX, 0, 0, 
+                0, 1, 0, 0, 
+                0, factorZ, 1, 0, 
+                0, 0, 0, 1);
         }
 
         public static M44f ShearYZ(float factorY, float factorZ)
         {
-            return new M44f(1, 0, 0, 0,
-                            factorY, 1, 0, 0,
-                            factorZ, 0, 1, 0,
-                            0, 0, 0, 1);
+            return new M44f(
+                1, 0, 0, 0, 
+                factorY, 1, 0, 0, 
+                factorZ, 0, 1, 0, 
+                0, 0, 0, 1);
         }
 
         #endregion
@@ -41649,7 +42898,7 @@ namespace Aardvark.Base
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="M44d"/> with 4 scalar values for scaling.
+        /// Creates a transformation <see cref="M44d"/> using 4 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Scale(double tX, double tY, double tZ, double tW)
@@ -41662,7 +42911,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44d"/> with 3 scalar values for scaling.
+        /// Creates a transformation <see cref="M44d"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Scale(double tX, double tY, double tZ)
@@ -41671,11 +42920,11 @@ namespace Aardvark.Base
                 tX, 0, 0, 0, 
                 0, tY, 0, 0, 
                 0, 0, tZ, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44d"/> with a <see cref="V4d"/> vector for scaling.
+        /// Creates a transformation <see cref="M44d"/> using a <see cref="V4d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Scale(V4d s)
@@ -41688,7 +42937,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44d"/> with a <see cref="V3d"/> vector for scaling.
+        /// Creates a transformation <see cref="M44d"/> using a <see cref="V3d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Scale(V3d s)
@@ -41697,11 +42946,11 @@ namespace Aardvark.Base
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44d"/> with a <see cref="Scale3d"/> for scaling.
+        /// Creates a scaling transformation <see cref="M44d"/> from a <see cref="Scale3d"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Scale(Scale3d s)
@@ -41718,7 +42967,7 @@ namespace Aardvark.Base
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="M44d"/> with 3 scalar values for translation.
+        /// Creates a transformation <see cref="M44d"/> with the translational component given by 3 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Translation(double tX, double tY, double tZ)
@@ -41731,7 +42980,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44d"/> with a <see cref="V3d"/> vector for translation.
+        /// Creates a transformation <see cref="M44d"/> with the translational component given by a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Translation(V3d t)
@@ -41744,7 +42993,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="M44d"/> with a <see cref="Shift3d"/> for translation.
+        /// Creates a transformation <see cref="M44d"/> from a <see cref="Shift3d"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Translation(Shift3d s)
@@ -41817,12 +43066,14 @@ namespace Aardvark.Base
         /// </summary>
         public static M44d RotationX(double angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M44d(1, 0, 0, 0,
-                            0, cos, -sin, 0,
-                            0, sin, cos, 0,
-                            0, 0, 0, 1);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M44d(
+                 1,  0,  0,  0, 
+                 0,  a, -b,  0, 
+                 0,  b,  a,  0, 
+                 0,  0,  0,  1);
         }
 
         /// <summary>
@@ -41830,12 +43081,14 @@ namespace Aardvark.Base
         /// </summary>
         public static M44d RotationY(double angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M44d(cos, 0, sin, 0,
-                            0, 1, 0, 0,
-                            -sin, 0, cos, 0,
-                            0, 0, 0, 1);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M44d(
+                 a,  0,  b,  0, 
+                 0,  1,  0,  0, 
+                -b,  0,  a,  0, 
+                 0,  0,  0,  1);
         }
 
         /// <summary>
@@ -41843,12 +43096,14 @@ namespace Aardvark.Base
         /// </summary>
         public static M44d RotationZ(double angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            return new M44d(cos, -sin, 0, 0,
-                            sin, cos, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1);
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new M44d(
+                 a, -b,  0,  0, 
+                 b,  a,  0,  0, 
+                 0,  0,  1,  0, 
+                 0,  0,  0,  1);
         }
 
         #endregion
@@ -41857,26 +43112,29 @@ namespace Aardvark.Base
 
         public static M44d ShearXY(double factorX, double factorY)
         {
-            return new M44d(1, 0, factorX, 0,
-                            0, 1, factorY, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1);
+            return new M44d(
+                1, 0, factorX, 0, 
+                0, 1, factorY, 0, 
+                0, 0, 1, 0, 
+                0, 0, 0, 1);
         }
 
         public static M44d ShearXZ(double factorX, double factorZ)
         {
-            return new M44d(1, factorX, 0, 0,
-                            0, 1, 0, 0,
-                            0, factorZ, 1, 0,
-                            0, 0, 0, 1);
+            return new M44d(
+                1, factorX, 0, 0, 
+                0, 1, 0, 0, 
+                0, factorZ, 1, 0, 
+                0, 0, 0, 1);
         }
 
         public static M44d ShearYZ(double factorY, double factorZ)
         {
-            return new M44d(1, 0, 0, 0,
-                            factorY, 1, 0, 0,
-                            factorZ, 0, 1, 0,
-                            0, 0, 0, 1);
+            return new M44d(
+                1, 0, 0, 0, 
+                factorY, 1, 0, 0, 
+                factorZ, 0, 1, 0, 
+                0, 0, 0, 1);
         }
 
         #endregion

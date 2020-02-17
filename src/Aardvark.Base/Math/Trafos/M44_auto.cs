@@ -184,47 +184,6 @@ namespace Aardvark.Base
         }
         #endregion
 
-        #region Operators
-
-        /// <summary>
-        /// Calculates the product of a <see cref="M44f"/> with a <see cref="Shift3f"/>.
-        /// </summary>
-        public static M44f operator *(M44f matrix, Shift3f shift)
-        {
-            return new M44f(
-                    matrix.M00,
-                    matrix.M01,
-                    matrix.M02,
-                    matrix.M00 * shift.X +
-                    matrix.M01 * shift.Y +
-                    matrix.M02 * shift.Z +
-                    matrix.M03,
-
-                    matrix.M10,
-                    matrix.M11,
-                    matrix.M12,
-                    matrix.M10 * shift.X +
-                    matrix.M11 * shift.Y +
-                    matrix.M12 * shift.Z +
-                    matrix.M13,
-
-                    matrix.M20,
-                    matrix.M21,
-                    matrix.M22,
-                    matrix.M20 * shift.X +
-                    matrix.M21 * shift.Y +
-                    matrix.M22 * shift.Z +
-                    matrix.M23,
-
-                    matrix.M30,
-                    matrix.M31,
-                    matrix.M32,
-                    matrix.M33
-                    );
-        }
-
-        #endregion
-
         #region Static creators
 
         /// <summary>
@@ -463,47 +422,6 @@ namespace Aardvark.Base
                 0, 0, B, 0);
             return P;
         }
-        #endregion
-
-        #region Operators
-
-        /// <summary>
-        /// Calculates the product of a <see cref="M44d"/> with a <see cref="Shift3d"/>.
-        /// </summary>
-        public static M44d operator *(M44d matrix, Shift3d shift)
-        {
-            return new M44d(
-                    matrix.M00,
-                    matrix.M01,
-                    matrix.M02,
-                    matrix.M00 * shift.X +
-                    matrix.M01 * shift.Y +
-                    matrix.M02 * shift.Z +
-                    matrix.M03,
-
-                    matrix.M10,
-                    matrix.M11,
-                    matrix.M12,
-                    matrix.M10 * shift.X +
-                    matrix.M11 * shift.Y +
-                    matrix.M12 * shift.Z +
-                    matrix.M13,
-
-                    matrix.M20,
-                    matrix.M21,
-                    matrix.M22,
-                    matrix.M20 * shift.X +
-                    matrix.M21 * shift.Y +
-                    matrix.M22 * shift.Z +
-                    matrix.M23,
-
-                    matrix.M30,
-                    matrix.M31,
-                    matrix.M32,
-                    matrix.M33
-                    );
-        }
-
         #endregion
 
         #region Static creators

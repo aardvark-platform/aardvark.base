@@ -37,9 +37,9 @@ namespace Aardvark.Base
     //#     var vmtype = "V"+ m + tchar;
     //#     var vmsub1type = "V"+ msub1 + tchar;
     //#     var vntype = "V"+ n + tchar;
-    //#     var shiftnsub1t = "Shift" + (n - 1) + tchar;
     //#     var scalent = "Scale" + n + tchar;
     //#     var scalensub1t = "Scale" + (n - 1) + tchar;
+    //#     var shiftmsub1t = "Shift" + (m - 1) + tchar;
     //#     var rotnt = "Rot" + n + tchar;
     //#     var rotnsub1t = "Rot" + (n - 1) + tchar;
     //#     var nfields = fields.Take(n).ToArray();
@@ -238,11 +238,10 @@ namespace Aardvark.Base
                 /*# mfields.ForEach(f => {*/row__r__.__f__/*#}, comma);}, comma); */);
         }
 
-        //# if (n == m) {
         #region Scale
 
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with __n__ scalar values for scaling.
+        /// Creates a transformation <see cref="__nmtype__"/> using __n__ scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Scale(/*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
@@ -253,18 +252,18 @@ namespace Aardvark.Base
 
         //# if (n > 2) {
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with __nsub1__ scalar values for scaling.
+        /// Creates a transformation <see cref="__nmtype__"/> using __nsub1__ scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Scale(/*# nfields.Take(n - 1).ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = (i < n - 1 && i == j) ? "t" + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "t" + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
         //# }
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with a <see cref="__vmtype__"/> vector for scaling.
+        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vmtype__"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Scale(__vmtype__ s)
@@ -275,20 +274,20 @@ namespace Aardvark.Base
 
         //# if (n > 2) {
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with a <see cref="__vmsub1type__"/> vector for scaling.
+        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vmsub1type__"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Scale(__vmsub1type__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = (i < n - 1 && i == j) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
         //# }
         //# if (t > 1) {
         //# if (n == 3) {
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with a <see cref="__scalent__"/> for scaling.
+        /// Creates a transformation <see cref="__nmtype__"/> from a <see cref="__scalent__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Scale(__scalent__ s)
@@ -299,7 +298,7 @@ namespace Aardvark.Base
 
         //# } else if (n == 4) {
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with a <see cref="__scalensub1t__"/> for scaling.
+        /// Creates a scaling transformation <see cref="__nmtype__"/> from a <see cref="__scalensub1t__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Scale(__scalensub1t__ s)
@@ -312,21 +311,21 @@ namespace Aardvark.Base
         //# }
         #endregion
 
-        //# if (n > 2) {
+        //# if (m > 2) {
         #region Translation
 
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with __msub1__ scalar values for translation.
+        /// Creates a transformation <see cref="__nmtype__"/> with the translational component given by __msub1__ scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Translation(/*# nfields.Take(n - 1).ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
+        public static __nmtype__ Translation(/*# fields.Take(m - 1).ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
                 /*# m.ForEach(j => { var v = i == j ? "1" : (j == m - 1) ? "t" + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with a <see cref="__vmsub1type__"/> vector for translation.
+        /// Creates a transformation <see cref="__nmtype__"/> with the translational component given by a <see cref="__vmsub1type__"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Translation(__vmsub1type__ t)
@@ -335,12 +334,12 @@ namespace Aardvark.Base
                 /*# m.ForEach(j => { var v = i == j ? "1" : (j == m - 1) ? "t." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
-        //# if (t > 1 && n == 4) {
+        //# if (t > 1) {
         /// <summary>
-        /// Creates new Identity <see cref="__nmtype__"/> with a <see cref="__shiftnsub1t__"/> for translation.
+        /// Creates a transformation <see cref="__nmtype__"/> from a <see cref="__shiftmsub1t__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Translation(__shiftnsub1t__ s)
+        public static __nmtype__ Translation(__shiftmsub1t__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
                 /*# m.ForEach(j => { var v = i == j ? "1" : (j == m - 1) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
@@ -353,23 +352,21 @@ namespace Aardvark.Base
         //# if (t > 1) {
         #region Rotation
 
-        //# if (n < 4) {
+        //# if (m < 4) {
+        //# var val = new string[,] { { " a", "-b" }, { " b", " a" } };
         /// <summary>
         /// Creates a 2D rotation matrix with the specified angle in radians.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Rotation(__ftype__ angleInRadians)
         {
-            var cos = Fun.Cos(angleInRadians);
-            var sin = Fun.Sin(angleInRadians);
-            //# if (n == 2) {
-            return new __nmtype__(cos, -sin,
-                            sin, cos);
-            //# } else {
-            return new __nmtype__(cos, -sin, 0,
-                            sin, cos, 0,
-                            0, 0, 1);
-            //# }
+            var a = Fun.Cos(angleInRadians);
+            var b = Fun.Sin(angleInRadians);
+
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var x = (i < 2 && j < 2) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
         }
 
         /// <summary>
@@ -381,6 +378,7 @@ namespace Aardvark.Base
 
         //# }
         //# if (n > 2) {
+        //# if (n == m) {
         /// <summary>
         /// Creates a __nsub1__D rotation matrix from a <see cref="__rotnsub1t__"/>
         /// </summary>
@@ -388,6 +386,7 @@ namespace Aardvark.Base
         public static __nmtype__ Rotation(__rotnsub1t__ r)
             => (__nmtype__)r;
 
+        //# }
         /// <summary>
         /// Creates a 3D rotation matrix from an axis vector and an angle in radians.
         /// The axis vector has to be normalized.
@@ -438,18 +437,14 @@ namespace Aardvark.Base
         /// </summary>
         public static __nmtype__ RotationX(__ftype__ angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            //# if (n == 3) {
-            return new __nmtype__(1, 0, 0,
-                            0, cos, -sin,
-                            0, sin, cos);
-            //# } else {
-            return new __nmtype__(1, 0, 0, 0,
-                            0, cos, -sin, 0,
-                            0, sin, cos, 0,
-                            0, 0, 0, 1);
-            //# }
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {" 1", " 0", " 0" }, {" 0", " a", "-b"}, {" 0", " b", " a"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
         }
 
         /// <summary>
@@ -457,18 +452,14 @@ namespace Aardvark.Base
         /// </summary>
         public static __nmtype__ RotationY(__ftype__ angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            //# if (n == 3) {
-            return new __nmtype__(cos, 0, sin, 
-                            0, 1, 0,
-                            -sin, 0, cos);
-            //# } else {
-            return new __nmtype__(cos, 0, sin, 0,
-                            0, 1, 0, 0,
-                            -sin, 0, cos, 0,
-                            0, 0, 0, 1);
-            //# }
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {" a", " 0", " b" }, {" 0", " 1", " 0"}, {"-b", " 0", " a"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
         }
 
         /// <summary>
@@ -476,18 +467,14 @@ namespace Aardvark.Base
         /// </summary>
         public static __nmtype__ RotationZ(__ftype__ angleRadians)
         {
-            var cos = Fun.Cos(angleRadians);
-            var sin = Fun.Sin(angleRadians);
-            //# if (n == 3) {
-            return new __nmtype__(cos, -sin, 0,
-                            sin, cos, 0,
-                            0, 0, 1);
-            //# } else {
-            return new __nmtype__(cos, -sin, 0, 0,
-                            sin, cos, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1);
-            //# }
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {" a", "-b"}, {" b", " a"} };
+                   var x = (i < 2 && j < 2) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
         }
 
         //# }
@@ -499,49 +486,33 @@ namespace Aardvark.Base
 
         public static __nmtype__ ShearXY(__ftype__ factorX, __ftype__ factorY)
         {
-            //# if (n == 3) {
-            return new __nmtype__(1, 0, factorX,
-                            0, 1, factorY,
-                            0, 0, 1);
-            //# } else {
-            return new __nmtype__(1, 0, factorX, 0,
-                            0, 1, factorY, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1);
-            //# }
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {"1", "0", "factorX" }, {"0", "1", "factorY"}, {"0", "0", "1"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? "1" : "0");
+                */__x__/*# }, comma); }, comma);*/);
         }
 
         public static __nmtype__ ShearXZ(__ftype__ factorX, __ftype__ factorZ)
         {
-            //# if (n == 3) {
-            return new __nmtype__(1, factorX, 0,
-                            0, 1, 0,
-                            0, factorZ, 1);
-            //# } else {
-            return new __nmtype__(1, factorX, 0, 0,
-                            0, 1, 0, 0,
-                            0, factorZ, 1, 0,
-                            0, 0, 0, 1);
-            //# }
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {"1", "factorX", "0" }, {"0", "1", "0"}, {"0", "factorZ", "1"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? "1" : "0");
+                */__x__/*# }, comma); }, comma);*/);
         }
 
         public static __nmtype__ ShearYZ(__ftype__ factorY, __ftype__ factorZ)
         {
-            //# if (n == 3) {
-            return new __nmtype__(1, 0, 0,
-                            factorY, 1, 0,
-                            factorZ, 0, 1);
-            //# } else {
-            return new __nmtype__(1, 0, 0, 0,
-                            factorY, 1, 0, 0,
-                            factorZ, 0, 1, 0,
-                            0, 0, 0, 1);
-            //# }
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {"1", "0", "0" }, {"factorY", "1", "0"}, {"factorZ", "0", "1"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? "1" : "0");
+                */__x__/*# }, comma); }, comma);*/);
         }
 
         #endregion
 
-        //# }
         //# }
         #endregion
 
@@ -1314,7 +1285,6 @@ namespace Aardvark.Base
         public static __vntype__ Transform(this __nmtype__ m, __vmtype__ v)
             => m * v;
 
-        //# if (n == m) {
         //# for (int k = m + 1; k <= 4; k++) {
         //# var d = k - m;
         //# var vktype = "V" + k + tchar;
@@ -1333,7 +1303,7 @@ namespace Aardvark.Base
                 /*# constfields.ForEach(f => { */v.__f__/*# }, comma);*/);
         }
 
-        //# } }
+        //# }
         /// <summary>
         /// Transforms vector v by the transpose of matrix m.
         /// </summary>
@@ -1361,7 +1331,6 @@ namespace Aardvark.Base
         }
 
         //# } }
-        //# if (n == m) {
         //# if (m == 2) {
         /// <summary>
         /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
@@ -1416,8 +1385,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by matrix m.
-        /// No projective transform is performed.
+        /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by matrix m./*# if (n == m) {*/
+        /// No projective transform is performed./*# }*/
         /// </summary>
         public static __vmsub1type__ TransformPos(this __nmtype__ m, __vmsub1type__ p)
         {
@@ -1426,6 +1395,7 @@ namespace Aardvark.Base
                 );
         }
 
+        //# if (n == m) {
         /// <summary>
         /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by matrix m.
         /// Projective transform is performed. Perspective Division is performed.
@@ -1489,8 +1459,8 @@ namespace Aardvark.Base
                 );
         }
 
-        //# } // m != 2
         //# } // n != m
+        //# } // m != 2
         #endregion
 
         #region Operations

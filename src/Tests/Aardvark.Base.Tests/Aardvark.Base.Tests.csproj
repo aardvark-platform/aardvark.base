@@ -22,7 +22,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Trafos\ScaleTests.cs" />
+    <None Include="Trafos\Scale3dTests.cs" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

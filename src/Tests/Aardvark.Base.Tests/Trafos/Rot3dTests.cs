@@ -92,7 +92,7 @@ namespace Aardvark.Tests
         public static void YawPitchRoll()
         {
             var rnd = new RandomSystem(1);
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var yaw = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;
                 var pitch = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;

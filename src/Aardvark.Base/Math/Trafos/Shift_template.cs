@@ -16,11 +16,13 @@ namespace Aardvark.Base
     //# Action or = () => Out(" || ");
     //# Action andLit = () => Out(" and ");
     //# var fields = new[] {"X", "Y", "Z", "W"};
+    //# var fieldsL = new[] {"x", "y", "z", "w"};
     //# foreach (var isDouble in new[] { false, true }) {
     //# for (int d = 2; d <= 3; d++) {
+    //#   var d1 = d + 1;
     //#   var ftype = isDouble ? "double" : "float";
     //#   var tc = isDouble ? "d" : "f";
-    //#   var type = "Scale" + d + tc;
+    //#   var type = "Shift" + d + tc;
     //#   var trafodt = "Trafo" + d + tc;
     //#   var affinedt = "Affine" + d + tc;
     //#   var euclideandt = "Euclidean" + d + tc;
@@ -28,13 +30,16 @@ namespace Aardvark.Base
     //#   var shiftdt = "Shift" + d + tc;
     //#   var similaritydt = "Similarity" + d + tc;
     //#   var mddt = "M" + d + d + tc;
+    //#   var md1d1t = "M" + (d + 1) + (d + 1) + tc;
+    //#   var mdd1t = "M" + d + (d + 1) + tc;
     //#   var vdt = "V" + d + tc;
     //#   var dfields = fields.Take(d).ToArray();
+    //#   var dfieldsL = fieldsL.Take(d).ToArray();
     //#   var fd = fields[d];
     #region __type__
 
     /// <summary>
-    /// A __d__-dimensional scaling transform with different scaling values
+    /// A __d__-dimensional translational transform with different translation values
     /// in each dimension.
     /// </summary>
     [DataContract]
@@ -49,25 +54,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from __d__ __ftype__s.
         /// </summary>
-        public __type__(/*# dfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
+        public __type__(/*# dfieldsL.ForEach(f => { */__ftype__ __f__/*# }, comma); */)
         {
-            V = new __vdt__(/*# dfields.ForEach(f => { */s__f__/*# }, comma); */);
+            V = new __vdt__(/*# dfieldsL.ForEach(f => { */__f__/*# }, comma); */);
         }
 
         /// <summary>
-        /// Constructs a <see cref="__type__"/> from __d__ scaling factors provided as <see cref="__vdt__"/>.
+        /// Constructs a <see cref="__type__"/> from a <see cref="__vdt__"/>.
         /// </summary>
-        public __type__(__vdt__ scalingFactors)
+        public __type__(__vdt__ v)
         {
-            V = scalingFactors;
-        }
-
-        /// <summary>
-        /// Constructs a <see cref="__type__"/> transformation from a uniform __ftype__ value.
-        /// </summary>
-        public __type__(__ftype__ uniform)
-        {
-            V = new __vdt__(/*# dfields.ForEach(f => { */uniform/*# }, comma); */);
+            V = v;
         }
 
         /// <summary>
@@ -104,12 +101,39 @@ namespace Aardvark.Base
 
         //# });
         /// <summary>
+        /// Gets the length of this <see cref="__type__"/> transformation.
+        /// </summary>
+        public __ftype__ Length
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return V.Length; }
+        }
+
+        /// <summary>
+        /// Gets the squared length of this <see cref="__type__"/> transformation.
+        /// </summary>
+        public __ftype__ LengthSquared
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return V.LengthSquared; }
+        }
+
+        /// <summary>
         /// Gets the inverse of this <see cref="__type__"/> transformation.
         /// </summary>
         public __type__ Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(/*# dfields.ForEach(f => { */1 / __f__/*# }, comma); */);
+            get { return new __type__(-V); }
+        }
+
+        /// <summary>
+        /// Gets the reciprocal of this <see cref="__type__"/> transformation.
+        /// </summary>
+        public __type__ Reciprocal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __type__(1 / V);
         }
 
         #endregion
@@ -122,21 +146,22 @@ namespace Aardvark.Base
         public static __type__ Identity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(/*# dfields.ForEach(f => { */1/*# }, comma); */);
+            get => new __type__(/*# dfields.ForEach(f => { */0/*# }, comma); */);
         }
 
         /// <summary>
         /// Gets a <see cref="__type__"/> transformation with all components set to zero.
+        /// Note: Equivalent to Identity.
         /// </summary>
         public static __type__ Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(/*# dfields.ForEach(f => { */0/*# }, comma); */);
+            get => Identity;
         }
 
         //# dfields.ForEach((fi, i) => {
         /// <summary>
-        /// Gets a <see cref="__type__"/> transformation with scaling factors (/*# dfields.ForEach((fj, j) => { var val = (i != j) ? "0" : "1"; */__val__/*# }, comma); */).
+        /// Gets a <see cref="__type__"/> transformation with components (/*# dfields.ForEach((fj, j) => { var val = (i != j) ? "0" : "1"; */__val__/*# }, comma); */).
         /// </summary>
         public static __type__ __fi__Axis
         {
@@ -153,80 +178,80 @@ namespace Aardvark.Base
         /// Negates the values of a <see cref="__type__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ operator -(__type__ scale)
+        public static __type__ operator -(__type__ shift)
         {
-            return new __type__(/*# dfields.ForEach(f => { */-scale.__f__/*# }, comma); */);
+            return new __type__(/*# dfields.ForEach(f => { */-shift.__f__/*# }, comma); */);
         }
 
-        #region Scale / Scalar
+        #region Shift / Scalar
 
         /// <summary>
         /// Multiplies a <see cref="__type__"/> transformation with a __ftype__ scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ operator *(__type__ scale, __ftype__ scalar)
+        public static __type__ operator *(__type__ shift, __ftype__ scalar)
         {
-            return new __type__(/*# dfields.ForEach(f => { */scale.__f__ * scalar/*# }, comma); */);
+            return new __type__(/*# dfields.ForEach(f => { */shift.__f__ * scalar/*# }, comma); */);
         }
 
         /// <summary>
         /// Multiplies a __ftype__ scalar with a <see cref="__type__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ operator *(__ftype__ scalar, __type__ scale)
+        public static __type__ operator *(__ftype__ scalar, __type__ shift)
         {
-            return new __type__(/*# dfields.ForEach(f => { */scale.__f__ * scalar/*# }, comma); */);
+            return new __type__(/*# dfields.ForEach(f => { */shift.__f__ * scalar/*# }, comma); */);
         }
 
         /// <summary>
         /// Divides a <see cref="__type__"/> transformation by a __ftype__ scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ operator /(__type__ scale, __ftype__ scalar)
+        public static __type__ operator /(__type__ shift, __ftype__ scalar)
         {
-            return new __type__(/*# dfields.ForEach(f => { */scale.__f__ / scalar/*# }, comma); */);
+            return new __type__(/*# dfields.ForEach(f => { */shift.__f__ / scalar/*# }, comma); */);
         }
 
         /// <summary>
         /// Divides a __ftype__ scalar by a <see cref="__type__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ operator /(__ftype__ scalar, __type__ scale)
+        public static __type__ operator /(__ftype__ scalar, __type__ shift)
         {
-            return new __type__(/*# dfields.ForEach(f => { */scalar / scale.__f__/*# }, comma); */);
+            return new __type__(/*# dfields.ForEach(f => { */scalar / shift.__f__/*# }, comma); */);
         }
 
         #endregion
 
-        #region Scale / Vector Multiplication
+        #region Shift / Vector Multiplication
 
         /// <summary>
         /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__vdt__"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vdt__ operator *(__type__ scale, __vdt__ vector)
+        public static __vdt__ operator *(__type__ shift, __vdt__ vector)
         {
-            return new __vdt__(/*# dfields.ForEach(f => { */vector.__f__ * scale.__f__/*# }, comma); */);
+            return new __vdt__(/*# dfields.ForEach(f => { */vector.__f__ + shift.__f__/*# }, comma); */);
         }
 
         #endregion
 
-        #region Scale / Scale Multiplication
+        #region Shift / Shift Multiplication
 
         //# for (int n = 2; n <= 3; n++) {
         //# var r = (d > n) ? d : n;
         //# var m = (d < n) ? d : n;
         //# var mfields = fields.Take(m);
         //# var rem = r - m;
-        //# var ntype = "Scale" + n + tc;
-        //# var rtype = "Scale" + r + tc;
+        //# var ntype = "Shift" + n + tc;
+        //# var rtype = "Shift" + r + tc;
         /// <summary>
         /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__ntype__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype__ operator *(__type__ a, __ntype__ b)
-            => new __rtype__(/*# mfields.ForEach(f => {*/a.__f__ * b.__f__/*# }, comma);
+            => new __rtype__(/*# mfields.ForEach(f => {*/a.__f__ + b.__f__/*# }, comma);
                 if (r > m) {*/, /*# rem.ForEach(i => {
                 var x = (d > n) ? "a" : "b";
                 var f = fields[m + i]; */__x__.__f__/*#}, comma); } */);
@@ -234,45 +259,80 @@ namespace Aardvark.Base
         //# }
         #endregion
 
-        #region Scale / Matrix Multiplication
+        #region Shift / Matrix Multiplication
 
-        //# for (int n = 2; n <= 4; n++) {
-        //# for (int m = n; m <= (n + 1) && m <= 4; m++) {
-        //#     var mat = "M" + n + m + tc;
-        //#     var nfields = dfields.Take(n);
-        //#     var mfields = dfields.Take(m);
-        //#     var nrem = n - d;
-        //#     var mrem = m - d;
         /// <summary>
-        /// Multiplies a <see cref="__type__"/> transformation (as a __n__x__n__ matrix) with a <see cref="__mat__"/>.
+        /// Multiplies a <see cref="__type__"/> transformation (as a __d__x__d1__ matrix) with a <see cref="__mddt__"/> (as a __d1__x__d1__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __mat__ operator *(__type__ scale, __mat__ matrix)
+        public static __mdd1t__ operator *(__type__ shift, __mddt__ matrix)
         {
-            return new __mat__(/*# nfields.ForEach((fi, i) => { */
-                /*# m.ForEach(j => { */scale.__fi__ * matrix.M__i____j__/*# }, comma); }, comma);
-                 if (nrem > 0) {*/, /*# nrem.ForEach(i => { */
-                /*# var ipd = i + d; m.ForEach(j => { */matrix.M__ipd____j__/*# }, comma); }, comma); }*/);
+            return new __mdd1t__(matrix, shift.V);
         }
 
-        //# if (n == m) {
-        //# var rem = m - d;
         /// <summary>
-        /// Multiplies a <see cref="__mat__"/> with a <see cref="__type__"/> transformation (as a __n__x__n__ matrix).
+        /// Multiplies a <see cref="__mddt__"/> with a <see cref="__type__"/> transformation (as a __d__x__d1__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __mat__ operator *(__mat__ matrix, __type__ scale)
+        public static __mdd1t__ operator *(__mddt__ matrix, __type__ shift)
         {
-            return new __mat__(/*# n.ForEach(i => { */
-                /*# mfields.ForEach((fj, j) => { */matrix.M__i____j__ * scale.__fj__/*# }, comma);
-                  if (mrem > 0) {*/, /*# mrem.ForEach(j => {
-                  var jpd = j + d; */matrix.M__i____jpd__/*# }, comma); } }, comma);*/);
+            return new __mdd1t__(matrix, matrix * shift.V);
         }
 
-        //# }
-        //# } }
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation (as a __d1__x__d1__ matrix) with a <see cref="__md1d1t__"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __md1d1t__ operator *(__type__ s, __md1d1t__ m)
+        {
+            return new __md1d1t__(/*# dfields.ForEach((fi, i) => { d1.ForEach(j => { */
+                m.M__i____j__ + s.__fi__ * m.M__d____j__/*# }, comma); }, commaln);*/,
+
+                /*# d1.ForEach(j => {*/m.M__d____j__/*# }, comma);*/);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__md1d1t__"/> with a <see cref="__type__"/> transformation (as a __d1__x__d1__ matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __md1d1t__ operator *(__md1d1t__ m, __type__ s)
+        {
+            return new __md1d1t__(/*# d1.ForEach(i => { dfields.ForEach((fj, j) => { */
+                m.M__i____j__/*# }, comma);*/,
+                /*# dfields.ForEach((fj, j) => {
+                */s.__fj__ * m.M__i____j__/*# }, add);
+                */ + m.M__i____d__/*# }, commaln);*/);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation (as a __d__x__d1__ matrix) with a <see cref="__mdd1t__"/> (as a __d1__x__d1__ matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mdd1t__ operator *(__type__ s, __mdd1t__ m)
+        {
+            return new __mdd1t__(/*# dfields.ForEach((fi, i) => { */
+                /*# dfields.ForEach((fj, j) => {*/m.M__i____j__/*# }, comma);*/, m.M__i____d__ + s.__fi__/*# }, comma);*/);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__mdd1t__"/> with a <see cref="__type__"/> transformation (as a __d1__x__d1__ matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mdd1t__ operator *(__mdd1t__ m, __type__ s)
+        {
+            return new __mdd1t__(/*# d.ForEach(i => { dfields.ForEach((fj, j) => { */
+                m.M__i____j__/*# }, comma);*/,
+                /*# dfields.ForEach((fj, j) => {
+                */s.__fj__ * m.M__i____j__/*# }, add);
+                */ + m.M__i____d__/*# }, commaln);*/);
+        }
+
         #endregion
 
         #endregion
@@ -297,31 +357,44 @@ namespace Aardvark.Base
 
         #region Conversion
 
-        //# for (int n = 2; n <= 4; n++) {
-        //# for (int m = n; m <= (n+1) && m <= 4; m++) {
-        //#     var mat = "M" + n + m + tc;
+        //# for (int n = 3; n <= 4; n++) {
+        //#     var m = n - 1;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __mat__(__type__ s)
+        public static explicit operator M__n____n____tc__(__type__ s)
         {
-            return new __mat__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => {
-                   var x = (i == j) ? ((i < d) ? "s." + fields[i] : "1  ") : "0  ";
-                */__x__/*# }, comma); }, comma);*/);
+            return new M__n____n____tc__(/*# fields.Take(m).ForEach((fi, i) => { */
+                /*# var f = (i < d) ? "s." + fi : "0";
+                   m.ForEach(j => {
+                   var x = (i == j) ? "1" : "0";
+                */__x__/*# }, comma);*/, __f__/*# }, comma);*/,
+                /*# m.ForEach(i => { */0/*# }, comma);*/, 1);
         }
 
-        //# } }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator M__m____n____tc__(__type__ s)
+        {
+            return new M__m____n____tc__(/*# fields.Take(m).ForEach((fi, i) => { */
+                /*# var f = (i < d) ? "s." + fi : "0";
+                   m.ForEach(j => {
+                   var x = (i == j) ? "1" : "0";
+                */__x__/*# }, comma);*/, __f__/*# }, comma);*/);
+        }
 
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __affinedt__(__type__ s)
-            => new __affinedt__((__mddt__)s);
+            => new __affinedt__(s);
 
         /// <summary>
         /// Returns all values of a <see cref="__type__"/> instance
         /// in a __ftype__[] array.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __ftype__[](__type__ s)
-            => (__ftype__[])s.V;
+        public static explicit operator __ftype__[](__type__ shift)
+        {
+            __ftype__[] array = new __ftype__[__d__];
+            /*# dfields.ForEach((f, i) => {*/array[__i__] = shift.__f__;
+            /*# });*/return array;
+        }
 
         #endregion
 
@@ -384,7 +457,7 @@ namespace Aardvark.Base
         #endregion
     }
 
-    public static partial class Scale
+    public static partial class Shift
     {
         #region Invert
 
@@ -392,9 +465,9 @@ namespace Aardvark.Base
         /// Inverts a <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Invert(this ref __type__ scale)
+        public static void Invert(this ref __type__ shift)
         {
-            scale = scale.Inverse;
+            shift = shift.Inverse;
         }
 
         #endregion
@@ -412,7 +485,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vec__ Transform(this __type__ s, __vec__ v)
-            => new __vec__(/*# dfields.ForEach(f => {*/v.__f__ * s.__f__/*# }, comma);
+            => new __vec__(/*# dfields.ForEach(f => {*/v.__f__ + s.__f__/*# }, comma);
                 if (rem > 0) {*/, /*# rem.ForEach(i => {
                 var f = fields[d + i]; */v.__f__/*#}, comma); } */);
 
@@ -421,7 +494,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vec__ InvTransform(this __type__ s, __vec__ v)
-            => new __vec__(/*# dfields.ForEach(f => {*/v.__f__ / s.__f__/*# }, comma);
+            => new __vec__(/*# dfields.ForEach(f => {*/v.__f__ - s.__f__/*# }, comma);
                 if (rem > 0) {*/, /*# rem.ForEach(i => {
                 var f = fields[d + i]; */v.__f__/*#}, comma); } */);
 

@@ -189,47 +189,6 @@ namespace Aardvark.Base
         }
         #endregion
 
-        #region Operators
-
-        /// <summary>
-        /// Calculates the product of a <see cref="M4__x4t__"/> with a <see cref="Shift__x3t__"/>.
-        /// </summary>
-        public static M4__x4t__ operator *(M4__x4t__ matrix, Shift__x3t__ shift)
-        {
-            return new M4__x4t__(
-                    matrix.M00,
-                    matrix.M01,
-                    matrix.M02,
-                    matrix.M00 * shift.X +
-                    matrix.M01 * shift.Y +
-                    matrix.M02 * shift.Z +
-                    matrix.M03,
-
-                    matrix.M10,
-                    matrix.M11,
-                    matrix.M12,
-                    matrix.M10 * shift.X +
-                    matrix.M11 * shift.Y +
-                    matrix.M12 * shift.Z +
-                    matrix.M13,
-
-                    matrix.M20,
-                    matrix.M21,
-                    matrix.M22,
-                    matrix.M20 * shift.X +
-                    matrix.M21 * shift.Y +
-                    matrix.M22 * shift.Z +
-                    matrix.M23,
-
-                    matrix.M30,
-                    matrix.M31,
-                    matrix.M32,
-                    matrix.M33
-                    );
-        }
-
-        #endregion
-
         #region Static creators
 
         /// <summary>

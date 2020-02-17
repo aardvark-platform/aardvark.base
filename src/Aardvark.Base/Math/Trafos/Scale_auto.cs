@@ -103,30 +103,41 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// Gets the identity <see cref="Scale2f"/> transformation.
+        /// </summary>
         public static Scale2f Identity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2f(1, 1);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale2f"/> transformation with all components set to zero.
+        /// </summary>
         public static Scale2f Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2f(0, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale2f"/> transformation with scaling factors (1, 0).
+        /// </summary>
         public static Scale2f XAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2f(1, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale2f"/> transformation with scaling factors (0, 1).
+        /// </summary>
         public static Scale2f YAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2f(0, 1);
         }
-
 
         #endregion
 
@@ -138,7 +149,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2f operator -(Scale2f scale)
         {
-            return new Scale2f(scale.X, scale.Y);
+            return new Scale2f(-scale.X, -scale.Y);
         }
 
         #region Scale / Scalar
@@ -191,16 +202,6 @@ namespace Aardvark.Base
         public static V2f operator *(Scale2f scale, V2f vector)
         {
             return new V2f(vector.X * scale.X, vector.Y * scale.Y);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="V2f"/> with the inverse of a <see cref="Scale2f"/> transformation.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f operator *(V2f vector, Scale2f scale)
-        {
-            return new V2f(vector.X / scale.X, vector.Y / scale.Y);
         }
 
         #endregion
@@ -663,36 +664,50 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// Gets the identity <see cref="Scale3f"/> transformation.
+        /// </summary>
         public static Scale3f Identity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3f(1, 1, 1);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale3f"/> transformation with all components set to zero.
+        /// </summary>
         public static Scale3f Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3f(0, 0, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale3f"/> transformation with scaling factors (1, 0, 0).
+        /// </summary>
         public static Scale3f XAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3f(1, 0, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale3f"/> transformation with scaling factors (0, 1, 0).
+        /// </summary>
         public static Scale3f YAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3f(0, 1, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale3f"/> transformation with scaling factors (0, 0, 1).
+        /// </summary>
         public static Scale3f ZAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3f(0, 0, 1);
         }
-
 
         #endregion
 
@@ -704,7 +719,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3f operator -(Scale3f scale)
         {
-            return new Scale3f(scale.X, scale.Y, scale.Z);
+            return new Scale3f(-scale.X, -scale.Y, -scale.Z);
         }
 
         #region Scale / Scalar
@@ -757,16 +772,6 @@ namespace Aardvark.Base
         public static V3f operator *(Scale3f scale, V3f vector)
         {
             return new V3f(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="V3f"/> with the inverse of a <see cref="Scale3f"/> transformation.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f operator *(V3f vector, Scale3f scale)
-        {
-            return new V3f(vector.X / scale.X, vector.Y / scale.Y, vector.Z / scale.Z);
         }
 
         #endregion
@@ -1060,20 +1065,6 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Transforms a <see cref="V2f"/> vector by a <see cref="Scale3f"/> transformation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f Transform(this Scale3f s, V2f v)
-            => new V2f(v.X * s.X, v.Y * s.Y);
-
-        /// <summary>
-        /// Transforms a <see cref="V2f"/> vector by the inverse of a <see cref="Scale3f"/> transformation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f InvTransform(this Scale3f s, V2f v)
-            => new V2f(v.X / s.X, v.Y / s.Y);
-
-        /// <summary>
         /// Transforms a <see cref="V3f"/> vector by a <see cref="Scale3f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1220,30 +1211,41 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// Gets the identity <see cref="Scale2d"/> transformation.
+        /// </summary>
         public static Scale2d Identity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2d(1, 1);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale2d"/> transformation with all components set to zero.
+        /// </summary>
         public static Scale2d Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2d(0, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale2d"/> transformation with scaling factors (1, 0).
+        /// </summary>
         public static Scale2d XAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2d(1, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale2d"/> transformation with scaling factors (0, 1).
+        /// </summary>
         public static Scale2d YAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2d(0, 1);
         }
-
 
         #endregion
 
@@ -1255,7 +1257,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2d operator -(Scale2d scale)
         {
-            return new Scale2d(scale.X, scale.Y);
+            return new Scale2d(-scale.X, -scale.Y);
         }
 
         #region Scale / Scalar
@@ -1308,16 +1310,6 @@ namespace Aardvark.Base
         public static V2d operator *(Scale2d scale, V2d vector)
         {
             return new V2d(vector.X * scale.X, vector.Y * scale.Y);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="V2d"/> with the inverse of a <see cref="Scale2d"/> transformation.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d operator *(V2d vector, Scale2d scale)
-        {
-            return new V2d(vector.X / scale.X, vector.Y / scale.Y);
         }
 
         #endregion
@@ -1780,36 +1772,50 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// Gets the identity <see cref="Scale3d"/> transformation.
+        /// </summary>
         public static Scale3d Identity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3d(1, 1, 1);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale3d"/> transformation with all components set to zero.
+        /// </summary>
         public static Scale3d Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3d(0, 0, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale3d"/> transformation with scaling factors (1, 0, 0).
+        /// </summary>
         public static Scale3d XAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3d(1, 0, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale3d"/> transformation with scaling factors (0, 1, 0).
+        /// </summary>
         public static Scale3d YAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3d(0, 1, 0);
         }
 
+        /// <summary>
+        /// Gets a <see cref="Scale3d"/> transformation with scaling factors (0, 0, 1).
+        /// </summary>
         public static Scale3d ZAxis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3d(0, 0, 1);
         }
-
 
         #endregion
 
@@ -1821,7 +1827,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3d operator -(Scale3d scale)
         {
-            return new Scale3d(scale.X, scale.Y, scale.Z);
+            return new Scale3d(-scale.X, -scale.Y, -scale.Z);
         }
 
         #region Scale / Scalar
@@ -1874,16 +1880,6 @@ namespace Aardvark.Base
         public static V3d operator *(Scale3d scale, V3d vector)
         {
             return new V3d(vector.X * scale.X, vector.Y * scale.Y, vector.Z * scale.Z);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="V3d"/> with the inverse of a <see cref="Scale3d"/> transformation.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d operator *(V3d vector, Scale3d scale)
-        {
-            return new V3d(vector.X / scale.X, vector.Y / scale.Y, vector.Z / scale.Z);
         }
 
         #endregion
@@ -2175,20 +2171,6 @@ namespace Aardvark.Base
         #endregion
 
         #region Transformations
-
-        /// <summary>
-        /// Transforms a <see cref="V2d"/> vector by a <see cref="Scale3d"/> transformation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d Transform(this Scale3d s, V2d v)
-            => new V2d(v.X * s.X, v.Y * s.Y);
-
-        /// <summary>
-        /// Transforms a <see cref="V2d"/> vector by the inverse of a <see cref="Scale3d"/> transformation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d InvTransform(this Scale3d s, V2d v)
-            => new V2d(v.X / s.X, v.Y / s.Y);
 
         /// <summary>
         /// Transforms a <see cref="V3d"/> vector by a <see cref="Scale3d"/> transformation.
