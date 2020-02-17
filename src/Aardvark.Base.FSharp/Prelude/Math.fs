@@ -6,7 +6,7 @@ open System
 /// Functions already provided by the F# core library are only redefined if necessary 
 /// (e.g. different signature)
 [<AutoOpen>]
-module Math =
+module FSharpMath =
 
     module Helpers =
         type Power() =
