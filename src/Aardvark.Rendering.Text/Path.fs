@@ -350,14 +350,12 @@ module Path =
                     failwith "cannot use lineTo without starting the path"
             
         [<CustomOperation("arc")>]
-        member x.Arc(s : PathBuilderState, p1 : V2d, e : Ellipse2d) = 
+        member x.Arc(s : PathBuilderState, p1 : V2d, p2 : V2d) = 
             match s.current with
                 | Some p0 ->
-                    let a0 = e.GetAlpha p0
-                    let a1 = e.GetAlpha p1
-                    match PathSegment.tryArc a0 a1 e with
+                    match PathSegment.tryArcSegment p0 p1 p2 with
                         | Some seg -> 
-                            { s with current = Some p1; segments = seg :: s.segments }
+                            { s with current = Some p2; segments = seg :: s.segments }
                         | None ->
                             s
                 | None ->
@@ -924,27 +922,42 @@ module Path =
                 current <- p
                 
         let overlap (q0 : Polygon2d) (q1 : Polygon2d) =
-            let realIntersections =
-                seq {
-                    for u in q0.EdgeLines do
-                        let mutable t = nan
-                        let r = u.Ray2d
-                        for v in q1.EdgeLines do
-                            match r.Intersects(v, &t) with
-                                | true when t > 0.001 && t < 0.999 -> yield 1
-                                | _ -> ()
-                }
-            realIntersections |> Seq.isEmpty |> not
+            q0.Intersects q1
+            //q0.ClippedBy(q1, epsilon) |> Seq.isEmpty |> not
+            //if q0.IsFullyContainedInside(q1) then true
+            //elif q1.IsFullyContainedInside(q0) then true
+            //else
+            //    let realIntersections =
+            //        seq {
+            //            for u in q0.EdgeLines do
+            //                let mutable t = nan
+            //                let r = u.Ray2d
+            //                for v in q1.EdgeLines do
+            //                    match r.Intersects(v, &t) with
+            //                        | true when t > 0.001 && t < 0.999 -> yield 1
+            //                        | _ -> ()
+            //        }
+            //    realIntersections |> Seq.isEmpty |> not
             
         let components = System.Collections.Generic.List<PathSegment>(p.outline)
 
         let toPolygon (l : PathSegment) =
             match l with
-                | Arc(a0, a1, e) -> 
-                    let p0 = e.GetPoint(a0)
-                    let p1 = e.GetPoint(a1)
-                    let pc = e.GetControlPoint(a0, a1)
-                    Polygon2d [| p0; pc; p1 |] |> Some
+                | Arc(p0, p1, a0, da, e) -> 
+                    let steps = abs da / Constant.PiHalf |> round |> int |> max 1
+
+                    let res = System.Collections.Generic.List()
+                    let step = da / float steps
+                    let mutable a = a0
+                    res.Add p0
+                    for i in 1 .. steps do
+                        let n = a + step
+                        let np = if i = steps then p1 else e.GetPoint n
+                        let c = e.GetControlPoint(a, n)
+                        res.Add c
+                        res.Add np
+                        a <- n
+                    Polygon2d (Seq.toArray res) |> Some
                 | Bezier2(p0, p1, p2) -> Polygon2d [| p0; p1; p2 |] |> Some
                 | Bezier3(p0, p1, p2, p3) -> Polygon2d [| p0; p1; p2; p3 |] |> Some
                 | _ -> None
@@ -956,34 +969,9 @@ module Path =
                 | Some l, Some r -> overlap l r
                 | _ -> false
 
-        let subdivide (segment : PathSegment) =
-            match segment with
-                | Bezier2(p0, p1, p2) ->
-                    let m0 = 0.5 * (p0 + p1)
-                    let m1 = 0.5 * (p1 + p2)
-                    let pp = 0.5 * (m0 + m1)
-                    Bezier2(p0,m0,pp), Bezier2(pp, m1, p2)
-
-                | Bezier3(p0, p1, p2, p3) ->
-                    let m0 = 0.5 * (p1 + p0)
-                    let m1 = 0.5 * (p1 + p2)
-                    let m2 = 0.5 * (p2 + p3)
-                    let q0 = 0.5 * (m0 + m1)
-                    let q1 = 0.5 * (m1 + m2)
-                    let p = 0.5 * (q0 + q1)
-
-                    let s0 = Bezier3(p0, m0, q0, p)
-                    let s1 = Bezier3(p, q1, m2, p3)
-                    s0, s1
-
-                | Arc(a0, a1, ellipse) ->
-                    let da = angleDifference a0 a1
-                    let an = a0 + 0.5 * da
-                    ArcSeg(a0, an, ellipse), ArcSeg(an, a1, ellipse)
-
-                | Line(p0, p1) ->
-                    let m = 0.5 * (p0 + p1)
-                    Line(p0,m), Line(m, p1)
+        let subdivide (segment : PathSegment) = 
+            let l, r = PathSegment.split 0.5 segment
+            l.Value, r.Value
 
         let mutable i = 0
         while i < components.Count do
@@ -1040,29 +1028,40 @@ module Path =
                     add p1
                     run rest
 
-                | (Arc(a0, a2, ellipse) as a) :: rest ->
-                    let p0 = ellipse.GetPoint a0
-                    let p2 = ellipse.GetPoint a2
-                    let p1 = ellipse.GetControlPoint(a0, a2)
-                    let p1Inside = p1.PosLeftOfLineValue(p0, p2) < 0.0
-                    
+                | (Arc(p0, p1, a0, da, ellipse) as a) :: rest ->
+                    let steps = abs da / Constant.PiHalf |> round |> int |> max 1
                     start p0
                     add p0
 
-                    if p1Inside then 
-                        add p1
-
-                    boundaryTriangles.AddRange [p0; p1; p2]
-                    let c0, c1, c2 = arcCoords p0 p1 p2 ellipse
-                    if p1Inside then
-                        boundaryCoords.AddRange [V4d(c0.X, c0.Y,-1.0, 4.0); V4d(c1.X, c1.Y,-1.0, 4.0); V4d(c2.X, c2.Y,-1.0,4.0)]
-                    else 
-                        boundaryCoords.AddRange [V4d(c0.X, c0.Y,1.0, 5.0); V4d(c1.X, c1.Y,1.0, 5.0); V4d(c2.X, c2.Y,1.0,5.0)]
+                    let step = da / float steps
+                    let mutable a = a0
+                    let mutable q0 = p0
+                    for i in 1 .. steps do
+                        let n = a + step
+                        let q1 = if i = steps then p1 else ellipse.GetPoint n
+                        let c = ellipse.GetControlPoint(a, n)
+                        let c0, c1, c2 = arcCoords q0 c q1 ellipse
                             
-                    add p2
+                        
+                        let controlInside = 
+                            c.PosLeftOfLineValue(q0, q1) < 0.0
 
-                    current <- p2
+                        if controlInside then
+                            add c
+                            boundaryCoords.AddRange [V4d(c0.X, c0.Y,-1.0, 4.0); V4d(c1.X, c1.Y,-1.0, 4.0); V4d(c2.X, c2.Y,-1.0,4.0)]
+                        else 
+                            boundaryCoords.AddRange [V4d(c0.X, c0.Y,1.0, 5.0); V4d(c1.X, c1.Y,1.0, 5.0); V4d(c2.X, c2.Y,1.0,5.0)]
+
+                        add q1
+                        boundaryTriangles.AddRange [q0; c; q1]
+
+                        a <- n
+                        q0 <- q1
+                            
+                    add p1
+                    current <- p1
                     run rest
+
 
                 | Bezier2(p0, p1, p2) :: rest ->
                     let q = Polygon2d(p0, p1, p2)
@@ -1193,7 +1192,7 @@ module Path =
                 l |> CSharpList.toArray |> Array.take (l.Count-1) |> Polygon2d
             ) |> Seq.toArray
 
-        let index, positions = LibTess.TessellateIndexed(innerPoints, false)
+        let index, positions = LibTess.TessellateIndexed(innerPoints, true)
 
         let trianglePositions = List<V3d>(positions.Length * 2)
         let triangleCoords = List<V4d>(positions.Length * 2)
