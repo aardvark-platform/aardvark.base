@@ -41,9 +41,8 @@ module Program
         //Log.warn "%A" m
         try
             SVDTests.``[SVD] DecomposeWithNative``()
-        with 
-            | :? System.Exception as e -> 
-                printfn "%s" (e.ToString())
-                ()
+        with e ->
+            printfn "%s" (e.ToString())
+            ()
 
         0

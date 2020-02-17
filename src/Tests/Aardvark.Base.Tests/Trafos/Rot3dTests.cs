@@ -98,11 +98,11 @@ namespace Aardvark.Tests
                 var pitch = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;
                 var roll = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;
 
-                // Aardvark euler angles: Yaw (X), pitch (Y), roll (Z). Ther are applied in that order.
-                var mat = (M33d)(M44d.RotationZ(roll) * M44d.RotationY(pitch) * M44d.RotationX(yaw));
-                var mat2 = (M33d)M44d.Rotation(yaw, pitch, roll);
-                var mat3 = (M33d)(Rot3d.RotationZ(roll) * Rot3d.RotationY(pitch) * Rot3d.RotationX(yaw));
-                var mat4 = (M33d)new Rot3d(yaw, pitch, roll);
+                // Aardvark euler angles: roll (X), pitch (Y), yaw (Z). Ther are applied in reversed order.
+                var mat = (M33d)(M44d.RotationZ(yaw) * M44d.RotationY(pitch) * M44d.RotationX(roll));
+                var mat2 = (M33d)M44d.Rotation(roll, pitch, yaw);
+                var mat3 = (M33d)(Rot3d.RotationZ(yaw) * Rot3d.RotationY(pitch) * Rot3d.RotationX(roll));
+                var mat4 = (M33d)new Rot3d(roll, pitch, yaw);
 
                 Assert.IsTrue(Fun.ApproximateEquals(mat, mat2, 1e-7));
                 Assert.IsTrue(Fun.ApproximateEquals(mat, mat3, 1e-7));
