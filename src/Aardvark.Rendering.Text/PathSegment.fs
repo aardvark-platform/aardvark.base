@@ -299,23 +299,23 @@ module PathSegment =
         elif t >= 1.0 then endPoint seg
         else
             match seg with
-                | LineSeg(p0, p1) -> 
-                    (1.0 - t) * p0 + (t) * p1
+            | LineSeg(p0, p1) -> 
+                lerp p0 p1 t
 
-                | Bezier2Seg(p0, p1, p2) ->
-                    let u = 1.0 - t
-                    (u * u) * p0 + (2.0 * t * u) * p1 + (t * t) * p2
+            | Bezier2Seg(p0, p1, p2) ->
+                let u = 1.0 - t
+                (u * u) * p0 + (2.0 * t * u) * p1 + (t * t) * p2
 
-                | Bezier3Seg(p0, p1, p2, p3) ->
-                    let u = 1.0 - t
-                    let u2 = u * u
-                    let t2 = t * t
-                    (u * u2) * p0 + (3.0 * u2 * t) * p1 + (3.0 * u * t2) * p2 + (t * t2) * p2
+            | Bezier3Seg(p0, p1, p2, p3) ->
+                let u = 1.0 - t
+                let u2 = u * u
+                let t2 = t * t
+                (u * u2) * p0 + (3.0 * u2 * t) * p1 + (3.0 * u * t2) * p2 + (t * t2) * p3
 
-                | ArcSeg(p0, p1, a0, da, ellipse) ->
-                    if t <= 0.0 then p0
-                    elif t >= 1.0 then p1
-                    else ellipse.GetPoint(a0 + t * da)
+            | ArcSeg(p0, p1, a0, da, ellipse) ->
+                if t <= 0.0 then p0
+                elif t >= 1.0 then p1
+                else ellipse.GetPoint(a0 + t * da)
  
     /// evaluates the curve-derivative for the given parameter (t <- [0;1])
     let derivative (t : float) (seg : PathSegment) =
@@ -621,7 +621,7 @@ module PathSegment =
 
             | ArcSeg(p0, p1, a0, da, e) ->
                 let d = t * da
-                let pm = e.GetPoint(a0 + da/2.0)
+                let pm = e.GetPoint(a0 + d)
 
                 let left =
                     match tryArc a0 d e with
