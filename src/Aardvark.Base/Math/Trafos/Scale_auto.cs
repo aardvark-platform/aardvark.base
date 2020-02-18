@@ -493,6 +493,13 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
+        /// Returns the inverse of a <see cref="Scale2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale2f Inverse(Scale2f scale)
+            => scale.Inverse;
+
+        /// <summary>
         /// Inverts a <see cref="Scale2f"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1080,6 +1087,13 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
+        /// Returns the inverse of a <see cref="Scale3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3f Inverse(Scale3f scale)
+            => scale.Inverse;
+
+        /// <summary>
         /// Inverts a <see cref="Scale3f"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1627,6 +1641,13 @@ namespace Aardvark.Base
     public static partial class Scale
     {
         #region Invert
+
+        /// <summary>
+        /// Returns the inverse of a <see cref="Scale2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale2d Inverse(Scale2d scale)
+            => scale.Inverse;
 
         /// <summary>
         /// Inverts a <see cref="Scale2d"/>.
@@ -2214,6 +2235,13 @@ namespace Aardvark.Base
     public static partial class Scale
     {
         #region Invert
+
+        /// <summary>
+        /// Returns the inverse of a <see cref="Scale3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3d Inverse(Scale3d scale)
+            => scale.Inverse;
 
         /// <summary>
         /// Inverts a <see cref="Scale3d"/>.

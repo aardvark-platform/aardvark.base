@@ -493,6 +493,13 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
+        /// Returns the inverse of a <see cref="Shift2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift2f Inverse(Shift2f shift)
+            => shift.Inverse;
+
+        /// <summary>
         /// Inverts a <see cref="Shift2f"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1104,6 +1111,13 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
+        /// Returns the inverse of a <see cref="Shift3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3f Inverse(Shift3f shift)
+            => shift.Inverse;
+
+        /// <summary>
         /// Inverts a <see cref="Shift3f"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1651,6 +1665,13 @@ namespace Aardvark.Base
     public static partial class Shift
     {
         #region Invert
+
+        /// <summary>
+        /// Returns the inverse of a <see cref="Shift2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift2d Inverse(Shift2d shift)
+            => shift.Inverse;
 
         /// <summary>
         /// Inverts a <see cref="Shift2d"/>.
@@ -2262,6 +2283,13 @@ namespace Aardvark.Base
     public static partial class Shift
     {
         #region Invert
+
+        /// <summary>
+        /// Returns the inverse of a <see cref="Shift3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3d Inverse(Shift3d shift)
+            => shift.Inverse;
 
         /// <summary>
         /// Inverts a <see cref="Shift3d"/>.

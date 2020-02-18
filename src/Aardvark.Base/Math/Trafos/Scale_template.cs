@@ -403,6 +403,13 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
+        /// Returns the inverse of a <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Inverse(__type__ scale)
+            => scale.Inverse;
+
+        /// <summary>
         /// Inverts a <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

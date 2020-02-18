@@ -43,13 +43,27 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static Rot2f Identity { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Rot2f(0); }
+        /// <summary>
+        /// Gets the identity <see cref="Rot2f"/> transformation.
+        /// </summary>
+        public static Rot2f Identity
+        { 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Rot2f(0);
+        }
 
         #endregion
 
         #region Properties
 
-        public Rot2f Inverse { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Rot2f(-Angle); }
+        /// <summary>
+        /// Gets the inverse of this <see cref="Rot2f"/> tranformation.
+        /// </summary>
+        public Rot2f Inverse
+        { 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Rot2f(-Angle);
+        }
 
         #endregion
 
@@ -420,6 +434,13 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
+        /// Returns the inverse of a <see cref="Rot2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot2f Inverse(Rot2f rot)
+            => rot.Inverse;
+
+        /// <summary>
         /// Inverts a <see cref="Rot2f"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -569,13 +590,27 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static Rot2d Identity { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Rot2d(0); }
+        /// <summary>
+        /// Gets the identity <see cref="Rot2d"/> transformation.
+        /// </summary>
+        public static Rot2d Identity
+        { 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Rot2d(0);
+        }
 
         #endregion
 
         #region Properties
 
-        public Rot2d Inverse { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Rot2d(-Angle); }
+        /// <summary>
+        /// Gets the inverse of this <see cref="Rot2d"/> tranformation.
+        /// </summary>
+        public Rot2d Inverse
+        { 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new Rot2d(-Angle);
+        }
 
         #endregion
 
@@ -944,6 +979,13 @@ namespace Aardvark.Base
     public static partial class Rot
     {
         #region Invert
+
+        /// <summary>
+        /// Returns the inverse of a <see cref="Rot2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot2d Inverse(Rot2d rot)
+            => rot.Inverse;
 
         /// <summary>
         /// Inverts a <see cref="Rot2d"/>.

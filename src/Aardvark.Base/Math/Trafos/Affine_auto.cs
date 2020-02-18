@@ -433,6 +433,13 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
+        /// Returns the inverse of an <see cref="Affine2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f Inverse(Affine2f a)
+            => a.Inverse;
+
+        /// <summary>
         /// Inverts the given affine transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1092,6 +1099,13 @@ namespace Aardvark.Base
         #region Invert
 
         /// <summary>
+        /// Returns the inverse of an <see cref="Affine3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f Inverse(Affine3f a)
+            => a.Inverse;
+
+        /// <summary>
         /// Inverts the given affine transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1616,6 +1630,13 @@ namespace Aardvark.Base
     public static partial class Affine
     {
         #region Invert
+
+        /// <summary>
+        /// Returns the inverse of an <see cref="Affine2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d Inverse(Affine2d a)
+            => a.Inverse;
 
         /// <summary>
         /// Inverts the given affine transformation.
@@ -2275,6 +2296,13 @@ namespace Aardvark.Base
     public static partial class Affine
     {
         #region Invert
+
+        /// <summary>
+        /// Returns the inverse of an <see cref="Affine3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d Inverse(Affine3d a)
+            => a.Inverse;
 
         /// <summary>
         /// Inverts the given affine transformation.
