@@ -313,6 +313,36 @@ namespace Aardvark.Base
 
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Min(this decimal a, decimal b)
+            => a < b ? a : b;
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Max(this decimal a, decimal b)
+            => a > b ? a : b;
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Min(this decimal a, decimal b, decimal c)
+            => a < b ? (a < c ? a : c) : (b < c ? b : c);
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Max(this decimal a, decimal b, decimal c)
+            => a > b ? (a > c ? a : c) : (b > c ? b : c);
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Min(this decimal a, decimal b, decimal c, decimal d)
+            => Min(Min(a, b), Min(c, d));
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Max(this decimal a, decimal b, decimal c, decimal d)
+            => Max(Max(a, b), Max(c, d));
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Min(this Fraction a, Fraction b)
             => a < b ? a : b;
 

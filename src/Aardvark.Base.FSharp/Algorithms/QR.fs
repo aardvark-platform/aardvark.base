@@ -13,6 +13,10 @@ module internal QRHelpers =
         abs v <= eps
 
     let inline applyGivensMat (mat : NativeMatrix< ^a >) (c : int) (r : int) (cos : ^a) (sin : ^a) =
+#if DEBUG
+        let s = min mat.SX mat.SY |> int
+        if c < 0 || c >= s || r < 0 || r >= s then failwithf "bad givens (%d, %d)" c r
+#endif
         let ptrQ = NativePtr.toNativeInt mat.Pointer
         let dcQ = nativeint sizeof< ^a > * nativeint mat.DX
         let drQ = nativeint sizeof< ^a > * nativeint mat.DY
@@ -34,6 +38,10 @@ module internal QRHelpers =
             p1 <- p1 + drQ
                 
     let inline applyGivensTransposedMat (mat : NativeMatrix< ^a >) (c : int) (r : int) (cos : ^a) (sin :  ^a) =
+#if DEBUG
+        let s = min mat.SX mat.SY |> int
+        if c < 0 || c >= s || r < 0 || r >= s then failwithf "bad givens (%d, %d)" c r
+#endif
         let ptrQ = NativePtr.toNativeInt mat.Pointer
         let dcQ = nativeint sizeof< ^a > * nativeint mat.DX
         let drQ = nativeint sizeof< ^a > * nativeint mat.DY
@@ -50,7 +58,7 @@ module internal QRHelpers =
 
             p0 <- p0 + dcQ
             p1 <- p1 + dcQ
-
+            
     let inline qrDecomposeNative (eps : ^a) (pQ : NativeMatrix< ^a >) (pR : NativeMatrix< ^a >) =
         let rows = int pR.SY
         let cols = int pR.SX
@@ -62,15 +70,32 @@ module internal QRHelpers =
         let drR = nativeint pR.DY * sa
         let dcR = nativeint pR.DX * sa
 
-        let mutable pc0 = NativePtr.toNativeInt pR.Pointer
-        let mutable pcc = pc0
+        let pr = NativePtr.toNativeInt pR.Pointer
+
+#if DEBUG
+        let maxp = nativeint (rows * cols) * sa
+#endif
+        let inline read (p : nativeint) : ^a =
+#if DEBUG    
+            if p < 0n || p > maxp then failwithf "[QR] bad read: %A outside %A" p maxp
+#endif        
+            NativeInt.read< ^a > (pr + p)
+
+        let inline write (p : nativeint) (v : ^a ) : unit =
+#if DEBUG    
+            if p < 0n || p > maxp then failwithf "[RQ] bad write: %A outside %A" p maxp
+#endif        
+            NativeInt.write< ^a > (pr + p) v
+
+        let mutable pc0 = 0n
+        let mutable pcc = 0n
         for c in 0 .. cols - 1 do
             // wiki performs this loop backwards (should not really matter)
             let mutable prc = pcc + drR
             let mutable pr0 = pc0 + drR
             for r in c + 1 .. rows - 1 do 
-                let vcc : ^a = NativeInt.read pcc // important since R.[c,c] changes
-                let vrc : ^a = NativeInt.read prc 
+                let vcc : ^a = read pcc // important since R.[c,c] changes
+                let vrc : ^a = read prc 
 
                 // if the dst-element is not already zero then make it zero
                 if not (tiny eps vrc) then
@@ -84,11 +109,11 @@ module internal QRHelpers =
                     let mutable p1 = prc 
                     // adjust affected elements
                     for ci in c .. cols - 1 do
-                        let A = NativeInt.read< ^a > p0
-                        let B = NativeInt.read< ^a > p1
+                        let A = read p0
+                        let B = read p1
                         
-                        NativeInt.write p0 ( cos * A + sin * B )
-                        NativeInt.write p1 (-sin * A + cos * B )
+                        write p0 ( cos * A + sin * B )
+                        write p1 (-sin * A + cos * B )
                         
                         p0 <- p0 + dcR
                         p1 <- p1 + dcR
@@ -102,37 +127,51 @@ module internal QRHelpers =
             
             pc0 <- pc0 + drR
             pcc <- pcc + drR + dcR
-
+            
     let inline rqDecomposeNative (eps : ^a) (pR : NativeMatrix< ^a >) (pQ : NativeMatrix< ^a >) =
         let rows = int pR.SY
         let cols = int pR.SX
-
-        if rows > cols then failwithf "cannot RQ decompose matrix with %d rows and %d cols" rows cols
-
-
+#if DEBUG    
+        if rows > cols then failwithf "cannot RQ decompose matrix with %d rows > %d cols" rows cols
+#endif
         // pQ <- identity
         pQ.SetByCoord (fun (v : V2i) -> if v.X = v.Y then LanguagePrimitives.GenericOne else LanguagePrimitives.GenericZero)
-        
+
         let sa = nativeint sizeof< ^a >
         let drR = nativeint pR.DY * sa
         let dcR = nativeint pR.DX * sa
 
         let pr = NativePtr.toNativeInt pR.Pointer
 
+#if DEBUG
+        let maxp = nativeint (rows * cols) * sa
+#endif    
+        let inline read (p : nativeint) : ^a = 
+#if DEBUG    
+            if p < 0n || p > maxp then failwithf "[RQ] bad read: %A outside %A" p maxp
+#endif        
+            NativeInt.read< ^a > (pr + p)
+        
+        let inline write (p : nativeint) (v : ^a ) : unit = 
+#if DEBUG
+            if p < 0n || p > maxp then failwithf "[RQ] bad write: %A outside %A" p maxp
+#endif    
+            NativeInt.write< ^a > (pr + p) v
+
 
         let diag = min cols rows
-        let mutable pdd = pr + (dcR + drR) * nativeint (diag - 1)   //ptr (diag - 1) (diag - 1)
-        let mutable pd0 = pr + drR * nativeint (diag - 1)           //ptr (diag - 1) 0
-        let mutable p0d = pr + dcR * nativeint (diag - 1)           //ptr 0 (diag - 1)
+        let mutable pdd = (dcR + drR) * nativeint (diag - 1)   //ptr (diag - 1) (diag - 1)
+        let mutable pd0 = drR * nativeint (diag - 1)           //ptr (diag - 1) 0
+        let mutable p0d = dcR * nativeint (diag - 1)           //ptr 0 (diag - 1)
 
         for d in 1 .. diag - 1 do
             let d = diag - d
 
             let mutable pdc = pd0
-            let mutable p0c = pr
+            let mutable p0c = 0n
             for c in 0 .. d - 1 do
-                let vcc : ^a = NativeInt.read pdd // important since R.[d,d] changes
-                let vrc : ^a = NativeInt.read pdc
+                let vcc : ^a = read pdd // important since R.[d,d] changes
+                let vrc : ^a = read pdc
                 
                 // if the dst-element is not already zero then make it zero
                 if not (tiny eps vrc) then
@@ -149,11 +188,11 @@ module internal QRHelpers =
                     for ri in 0 .. d do
                         //let p0 = ptr ri d
                         //let p1 = ptr ri c
-                        let A = NativeInt.read< ^a > p0
-                        let B = NativeInt.read< ^a > p1
+                        let A = read p0
+                        let B = read p1
                         
-                        NativeInt.write p0 ( cos * A + sin * B )
-                        NativeInt.write p1 (-sin * A + cos * B )
+                        write p0 ( cos * A + sin * B )
+                        write p1 (-sin * A + cos * B )
                         p0 <- p0 + drR
                         p1 <- p1 + drR
                         
@@ -167,6 +206,7 @@ module internal QRHelpers =
             pd0 <- pd0 - drR
             p0d <- p0d - dcR
 
+            
 
     /// creates a (in-place) decomposition B = U * B' * Vt where
     /// U and V a orthonormal rotations and B' is upper bidiagonal
@@ -179,21 +219,40 @@ module internal QRHelpers =
         U.SetByCoord(fun (v : V2i) -> if v.X = v.Y then LanguagePrimitives.GenericOne else LanguagePrimitives.GenericZero)
         Vt.SetByCoord(fun (v : V2i) -> if v.X = v.Y then LanguagePrimitives.GenericOne else LanguagePrimitives.GenericZero)
 
+        let pbSize = nativeint B.SX * nativeint B.SY * nativeint sizeof< ^a >
+
         let sa = nativeint sizeof< ^a >
         let pB = NativePtr.toNativeInt B.Pointer
         let dbr = nativeint B.DY * sa
         let dbc = nativeint B.DX * sa
         
+        let inline read (ptr : nativeint) : ^a = 
+#if DEBUG
+             let dist = ptr - pB
+             if dist < 0n || dist >= pbSize then 
+                 failwithf "bad offset: %A" (int64 pbSize / int64 sizeof< ^a >)
+#endif
+             NativeInt.read< ^a> ptr
+
+        let inline write (ptr : nativeint) (value : ^a) =  
+#if DEBUG
+             let dist = ptr - pB
+             if dist < 0n || dist >= pbSize then 
+                 failwithf "bad offset: %A" (int64 pbSize / int64 sizeof< ^a >)
+#endif
+             NativeInt.write< ^a > ptr value
+
         let mutable anorm = LanguagePrimitives.GenericZero
 
         let mutable pii = pB
-        for i in 0 .. cols - 1 do
+        let s = min rows cols 
+        for i in 0 .. s - 1 do
 
             // make the subdiagonal column 0
             let mutable pi1i = pii + dbr
             for j in i + 1 .. rows - 1 do
-                let vcc = NativeInt.read< ^a > pii     //B.[i,i]
-                let vrc = NativeInt.read< ^a > pi1i    //B.[j,i]
+                let vcc = read pii     //B.[i,i]
+                let vrc = read pi1i    //B.[j,i]
 
                 // if the dst-element is not already zero then make it zero
                 if not (tiny eps vrc) then
@@ -208,18 +267,18 @@ module internal QRHelpers =
                     let mutable pr1 = pi1i
 
                     // first iteration
-                    let a = NativeInt.read< ^a > pr0 //B.[r0,ci]
-                    let b = NativeInt.read< ^a > pr1 //B.[r1,ci]
-                    NativeInt.write pr0 ( cos * a + sin * b )
-                    NativeInt.write pr1 0.0
+                    let a = read pr0 //B.[r0,ci]
+                    let b = read pr1 //B.[r1,ci]
+                    write pr0 ( cos * a + sin * b )
+                    write pr1 LanguagePrimitives.GenericZero
                     pr1 <- pr1 + dbc
                     pr0 <- pr0 + dbc
 
                     for _ in i+1 .. cols - 1 do
-                        let a = NativeInt.read< ^a > pr0 //B.[r0,ci]
-                        let b = NativeInt.read< ^a > pr1 //B.[r1,ci]
-                        NativeInt.write pr0 ( cos * a + sin * b )
-                        NativeInt.write pr1 (-sin * a + cos * b )
+                        let a = read pr0 //B.[r0,ci]
+                        let b = read pr1 //B.[r1,ci]
+                        write pr0 ( cos * a + sin * b )
+                        write pr1 (-sin * a + cos * b )
                         pr1 <- pr1 + dbc
                         pr0 <- pr0 + dbc
 
@@ -236,14 +295,14 @@ module internal QRHelpers =
             
             // make the 2nd superdiagonal row 0
             for j in i + 1 .. cols - 1 do
-                let vcc = NativeInt.read< ^a > pii     //B.[i,i+1] // important since R.[c,c] changes
-                let vrc = NativeInt.read< ^a > pij     //B.[i,j]
+                let vcc = read pii     //B.[i,i+1] // important since R.[c,c] changes
+                let vrc = read pij     //B.[i,j]
 
                 // if the dst-element is not already zero then make it zero
                 if not (tiny eps vrc) then
 
                     // find givens rotation
-                    let rho = if vcc = LanguagePrimitives.GenericZero then abs vrc else sgn vcc * sqrt (vcc * vcc + vrc * vrc)
+                    let rho = sgn vcc * sqrt (vcc * vcc + vrc * vrc)
                     let sin = vrc / rho
                     let cos = vcc / rho
                     
@@ -252,19 +311,18 @@ module internal QRHelpers =
                     let mutable pc1 = pij
                     
                     // first iteration
-                    let a = NativeInt.read< ^a > pc0 //B.[r0,ci]
-                    let b = NativeInt.read< ^a > pc1 //B.[r1,ci]
-                    NativeInt.write pc0 ( cos * a + sin * b )
-                    NativeInt.write pc1 0.0
+                    let a = read pc0 //B.[r0,ci]
+                    let b = read pc1 //B.[r1,ci]
+                    write pc0 ( cos * a + sin * b )
+                    write pc1 LanguagePrimitives.GenericZero
                     pc0 <- pc0 + dbr
                     pc1 <- pc1 + dbr
 
-
-                    for _ in i .. rows - 1 do
-                        let a = NativeInt.read< ^a > pc0 //B.[r0,ci]
-                        let b = NativeInt.read< ^a > pc1 //B.[r1,ci]
-                        NativeInt.write pc0 ( cos * a + sin * b )
-                        NativeInt.write pc1 (-sin * a + cos * b )
+                    for _ in i+1 .. rows do
+                        let a = read pc0 //B.[r0,ci]
+                        let b = read pc1 //B.[r1,ci]
+                        write pc0 ( cos * a + sin * b )
+                        write pc1 (-sin * a + cos * b )
                         pc0 <- pc0 + dbr
                         pc1 <- pc1 + dbr
                         
@@ -273,13 +331,15 @@ module internal QRHelpers =
                     
                 pij <- pij + dbc
                 
+            let pd = pii - dbc
+            let i = i - 1
             let normv =
                 if i > 0 then 
                     // abs B.[i-1,i] + abs B.[i,i]
-                    abs (NativeInt.read< ^a > (pii - dbc - dbr)) + abs (NativeInt.read< ^a > (pii - dbc))
+                    abs (read (pd - dbc)) + abs (read pd)
                 else 
                     // abs B.[i,i]
-                    abs (NativeInt.read< ^a > (pii - dbc))
+                    abs (read pd)
 
             anorm <- max anorm normv
             pii <- pii + dbr
@@ -287,11 +347,12 @@ module internal QRHelpers =
         anorm
 
 
+
 [<AbstractClass; Sealed>]
 type QR private() =
 
     static let doubleEps = 1E-20
-    static let floatEps = 1E-15f
+    static let floatEps =  float32 1E-6
 
 
     static member DecomposeInPlace(Q : float[,], R : float[,]) =
@@ -350,54 +411,113 @@ type QR private() =
         Q, R
         
     static member Decompose (m : M22d) =
-        let mutable R = m
-        let mutable Q = M22d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aTmp = [|M22d(); m|]
+
+        use pTmp = fixed aTmp
+        let pR = NativePtr.add pTmp 1
+
+        let tQ = NativeMatrix<float>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tR = NativeMatrix<float>(NativePtr.cast pR,   MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+
+        QR.DecomposeInPlace(tQ, tR)
+
+        aTmp.[0], aTmp.[1]
+        
+        //let mutable R = m
+        //let mutable Q = M22d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
         
     static member Decompose (m : M23d) =
-        let mutable R = m
-        let mutable Q = M22d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aQ = [|M22d()|]
+        let aR = [|m|]
+        
+        use pQ = fixed aQ
+        use pR = fixed aR
+        
+        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
+        
+        QR.DecomposeInPlace(tQ, tR)
+        
+        aQ.[0], aR.[0]
+
+        //let mutable R = m
+        //let mutable Q = M22d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
         
     static member Decompose (m : M33d) =
-        let mutable R = m
-        let mutable Q = M33d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aTmp = [|M33d(); m|]
+
+        use pTmp = fixed aTmp
+        let pR = NativePtr.add pTmp 1
+
+        let tQ = NativeMatrix<float>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tR = NativeMatrix<float>(NativePtr.cast pR,   MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+
+        QR.DecomposeInPlace(tQ, tR)
+
+        aTmp.[0], aTmp.[1]
+        //let mutable R = m
+        //let mutable Q = M33d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
 
     static member Decompose (m : M34d) =
-        let mutable R = m
-        let mutable Q = M33d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aQ = [|M33d()|]
+        let aR = [|m|]
+        
+        use pQ = fixed aQ
+        use pR = fixed aR
+        
+        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
+        
+        QR.DecomposeInPlace(tQ, tR)
+        
+        aQ.[0], aR.[0]
+        //let mutable R = m
+        //let mutable Q = M33d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
 
     static member Decompose (m : M44d) =
-        let mutable R = m
-        let mutable Q = M44d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aTmp = [|M44d(); m|]
+
+        use pTmp = fixed aTmp
+        let pR = NativePtr.add pTmp 1
+
+        let tQ = NativeMatrix<float>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        let tR = NativeMatrix<float>(NativePtr.cast pR,   MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+
+        QR.DecomposeInPlace(tQ, tR)
+
+        aTmp.[0], aTmp.[1]
+        //let mutable R = m
+        //let mutable Q = M44d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
         
     static member Decompose (m : float32[,]) =
         let rows = m.GetLength(0)
@@ -411,58 +531,119 @@ type QR private() =
         let Q = Matrix<float32>(m.SY, m.SY)
         QR.DecomposeInPlace(Q, R)
         Q, R
-        
+       
     static member Decompose (m : M22f) =
-        let mutable R = m
-        let mutable Q = M22f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aTmp = [|M22f(); m|]
+
+        use pTmp = fixed aTmp
+        let pR = NativePtr.add pTmp 1
+
+        let tQ = NativeMatrix<float32>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tR = NativeMatrix<float32>(NativePtr.cast pR,   MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+
+        QR.DecomposeInPlace(tQ, tR)
+
+        aTmp.[0], aTmp.[1]
+        //let mutable R = m
+        //let mutable Q = M22f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
         
     static member Decompose (m : M23f) =
-        let mutable R = m
-        let mutable Q = M22f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aQ = [|M22f()|]
+        let aR = [|m|]
+        
+        use pQ = fixed aQ
+        use pR = fixed aR
+        
+        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
+        
+        QR.DecomposeInPlace(tQ, tR)
+        
+        aQ.[0], aR.[0]
+
+        //let mutable R = m
+        //let mutable Q = M22f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
         
     static member Decompose (m : M33f) =
-        let mutable R = m
-        let mutable Q = M33f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aTmp = [|M33f(); m|]
+
+        use pTmp = fixed aTmp
+        let pR = NativePtr.add pTmp 1
+
+        let tQ = NativeMatrix<float32>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tR = NativeMatrix<float32>(NativePtr.cast pR,   MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+
+        QR.DecomposeInPlace(tQ, tR)
+
+        aTmp.[0], aTmp.[1]
+        //let mutable R = m
+        //let mutable Q = M33f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
 
     static member Decompose (m : M34f) =
-        let mutable R = m
-        let mutable Q = M33f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
+        let aQ = [|M33f()|]
+        let aR = [|m|]
+        
+        use pQ = fixed aQ
+        use pR = fixed aR
+        
+        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
+        
+        QR.DecomposeInPlace(tQ, tR)
+        
+        aQ.[0], aR.[0]
+        //let mutable R = m
+        //let mutable Q = M33f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
 
     static member Decompose (m : M44f) =
-        let mutable R = m
-        let mutable Q = M44f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            QR.DecomposeInPlace(pQ, pR)
-        }
-        Q, R
-        
+        let aTmp = [|M44f(); m|]
 
+        use pTmp = fixed aTmp
+        let pR = NativePtr.add pTmp 1
+
+        let tQ = NativeMatrix<float32>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        let tR = NativeMatrix<float32>(NativePtr.cast pR,   MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+
+        QR.DecomposeInPlace(tQ, tR)
+
+        aTmp.[0], aTmp.[1]
+        //let mutable R = m
+        //let mutable Q = M44f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    QR.DecomposeInPlace(pQ, pR)
+        //}
+        //Q, R
+        
+        
+    static member BidiagonalizeInPlaceWithNorm(U : NativeMatrix<float>, B : NativeMatrix<float>, Vt : NativeMatrix<float>) =
+        qrBidiagonalizeNative doubleEps U B Vt
+        
     static member BidiagonalizeInPlace(U : NativeMatrix<float>, B : NativeMatrix<float>, Vt : NativeMatrix<float>) =
         qrBidiagonalizeNative doubleEps U B Vt |> ignore
         
@@ -535,64 +716,133 @@ type QR private() =
         U, B, Vt       
 
     static member Bidiagonalize (m : M22d) =
-        let mutable U = M22d()
-        let mutable B = m
-        let mutable Vt = M22d()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aTmp = [| M22d(); m; M22d()|]
+
+        use pTmp = fixed aTmp
+        let pB =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tB  = NativeMatrix<float>(NativePtr.cast pB,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aTmp.[0], aTmp.[1], aTmp.[2]
+        //let mutable U = M22d()
+        //let mutable B = m
+        //let mutable Vt = M22d()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize (m : M23d) =
-        let mutable U = M22d()
-        let mutable B = m
-        let mutable Vt = M33d()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aU  = [|M22d()|]
+        let aB  = [|m|]
+        let aVt = [|M33d()|]
+
+        use pU =  fixed aU
+        use pB =  fixed aB
+        use pVt = fixed aVt
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pU,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tB  = NativeMatrix<float>(NativePtr.cast pB,    MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aU.[0], aB.[0], aVt.[0]
+        //let mutable U = M22d()
+        //let mutable B = m
+        //let mutable Vt = M33d()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize (m : M33d) =
-        let mutable U = M33d()
-        let mutable B = m
-        let mutable Vt = M33d()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aTmp = [| M33d(); m; M33d()|]
+
+        use pTmp = fixed aTmp
+        let pB =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tB  = NativeMatrix<float>(NativePtr.cast pB,    MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aTmp.[0], aTmp.[1], aTmp.[2]
+        //let mutable U = M33d()
+        //let mutable B = m
+        //let mutable Vt = M33d()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize (m : M34d) =
-        let mutable U = M33d()
-        let mutable B = m
-        let mutable Vt = M44d()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aU  = [|M33d()|]
+        let aB  = [|m|]
+        let aVt = [|M44d()|]
+
+        use pU =  fixed aU
+        use pB =  fixed aB
+        use pVt = fixed aVt
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pU,    MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tB  = NativeMatrix<float>(NativePtr.cast pB,    MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aU.[0], aB.[0], aVt.[0]
+        //let mutable U = M33d()
+        //let mutable B = m
+        //let mutable Vt = M44d()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize (m : M44d) =
-        let mutable U = M44d()
-        let mutable B = m
-        let mutable Vt = M44d()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aTmp = [| M44d(); m; M44d()|]
+
+        use pTmp = fixed aTmp
+        let pB =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tB  = NativeMatrix<float>(NativePtr.cast pB,    MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tVt = NativeMatrix<float>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aTmp.[0], aTmp.[1], aTmp.[2]
+        //let mutable U = M44d()
+        //let mutable B = m
+        //let mutable Vt = M44d()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize(m : Matrix<float32>) =
         let U = Matrix<float32>(m.SY, m.SY)
@@ -611,64 +861,133 @@ type QR private() =
         U, B, Vt       
        
     static member Bidiagonalize (m : M22f) =
-        let mutable U = M22f()
-        let mutable B = m
-        let mutable Vt = M22f()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aTmp = [| M22f(); m; M22f()|]
+
+        use pTmp = fixed aTmp
+        let pB =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tB  = NativeMatrix<float32>(NativePtr.cast pB,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aTmp.[0], aTmp.[1], aTmp.[2]
+        //let mutable U = M22f()
+        //let mutable B = m
+        //let mutable Vt = M22f()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize (m : M23f) =
-        let mutable U = M22f()
-        let mutable B = m
-        let mutable Vt = M33f()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aU  = [|M22f()|]
+        let aB  = [|m|]
+        let aVt = [|M33f()|]
+
+        use pU =  fixed aU
+        use pB =  fixed aB
+        use pVt = fixed aVt
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pU,    MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tB  = NativeMatrix<float32>(NativePtr.cast pB,    MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aU.[0], aB.[0], aVt.[0]
+        //let mutable U = M22f()
+        //let mutable B = m
+        //let mutable Vt = M33f()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize (m : M33f) =
-        let mutable U = M33f()
-        let mutable B = m
-        let mutable Vt = M33f()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aTmp = [| M33f(); m; M33f()|]
+
+        use pTmp = fixed aTmp
+        let pB =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tB  = NativeMatrix<float32>(NativePtr.cast pB,    MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aTmp.[0], aTmp.[1], aTmp.[2]
+        //let mutable U = M33f()
+        //let mutable B = m
+        //let mutable Vt = M33f()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize (m : M34f) =
-        let mutable U = M33f()
-        let mutable B = m
-        let mutable Vt = M44f()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aU  = [|M33f()|]
+        let aB  = [|m|]
+        let aVt = [|M44f()|]
+
+        use pU =  fixed aU
+        use pB =  fixed aB
+        use pVt = fixed aVt
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pU,    MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tB  = NativeMatrix<float32>(NativePtr.cast pB,    MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aU.[0], aB.[0], aVt.[0]
+        //let mutable U = M33f()
+        //let mutable B = m
+        //let mutable Vt = M44f()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
     static member Bidiagonalize (m : M44f) =
-        let mutable U = M44f()
-        let mutable B = m
-        let mutable Vt = M44f()
-        tensor {
-            let! pU = &U
-            let! pB = &B
-            let! pVt = &Vt
-            QR.BidiagonalizeInPlace(pU, pB, pVt)
-        }
-        U, B, Vt
+        let aTmp = [| M44f(); m; M44f()|]
+
+        use pTmp = fixed aTmp
+        let pB =  NativePtr.add pTmp 1
+        let pVt = NativePtr.add pTmp 2
+
+        let tU  = NativeMatrix<float32>(NativePtr.cast pTmp,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tB  = NativeMatrix<float32>(NativePtr.cast pB,    MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tVt = NativeMatrix<float32>(NativePtr.cast pVt,   MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+
+        QR.BidiagonalizeInPlace(tU,tB,tVt)
+
+        aTmp.[0], aTmp.[1], aTmp.[2]
+        //let mutable U = M44f()
+        //let mutable B = m
+        //let mutable Vt = M44f()
+        //tensor {
+        //    let! pU = &U
+        //    let! pB = &B
+        //    let! pVt = &Vt
+        //    QR.BidiagonalizeInPlace(pU, pB, pVt)
+        //}
+        //U, B, Vt
 
 module QR =
     let inline private dec< ^a, ^c, ^d when (^a or ^d) : (static member Decompose : ^a -> ^c) > (d : ^d) (m : ^a) : ^c =
@@ -694,7 +1013,7 @@ module QR =
 type RQ private() =
 
     static let doubleEps = 1E-20
-    static let floatEps = 1E-15f
+    static let floatEps =  float32 1E-6
 
 
     static member DecomposeInPlace(R : float[,], Q : float[,]) =
@@ -736,7 +1055,7 @@ type RQ private() =
         tensor {
             let! pR = &R
             let! pQ = &Q
-            qrDecomposeNative floatEps pR pQ
+            rqDecomposeNative floatEps pR pQ
         }
         
     static member Decompose (m : float[,]) =
@@ -753,54 +1072,116 @@ type RQ private() =
         R, Q
         
     static member Decompose (m : M22d) =
-        let mutable R = m
-        let mutable Q = M22d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let tmp = [|m; M22d()|]
+
+        use pTmp = fixed tmp
+        let pQ = NativePtr.add pTmp 1
+
+        let tR = NativeMatrix<float>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tQ = NativeMatrix<float>(NativePtr.cast pQ,   MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+
+        RQ.DecomposeInPlace(tR, tQ)
+
+        tmp.[0], tmp.[1]
+
+        //let mutable R = m
+        //let mutable Q = M22d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
         
     static member Decompose (m : M23d) =
-        let mutable R = m
-        let mutable Q = M33d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let aR = [|m|]
+        let aQ = [|M33d()|]
+        
+        use pR = fixed aR
+        use pQ = fixed aQ
+        
+        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
+        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        
+        RQ.DecomposeInPlace(tR, tQ)
+        
+        aR.[0], aQ.[0]
+
+        //let mutable R = m
+        //let mutable Q = M33d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
         
     static member Decompose (m : M33d) =
-        let mutable R = m
-        let mutable Q = M33d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let tmp = [|m; M33d()|]
+
+        use pTmp = fixed tmp
+        let pQ = NativePtr.add pTmp 1
+
+        let tR = NativeMatrix<float>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tQ = NativeMatrix<float>(NativePtr.cast pQ,   MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+
+        RQ.DecomposeInPlace(tR, tQ)
+
+        tmp.[0], tmp.[1]
+
+        //let mutable R = m
+        //let mutable Q = M33d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
 
     static member Decompose (m : M34d) =
-        let mutable R = m
-        let mutable Q = M44d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let aR = [|m|]
+        let aQ = [|M44d()|]
+        
+        use pR = fixed aR
+        use pQ = fixed aQ
+        
+        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
+        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        
+        RQ.DecomposeInPlace(tR, tQ)
+        
+        aR.[0], aQ.[0]
+
+        //let mutable R = m
+        //let mutable Q = M44d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
 
     static member Decompose (m : M44d) =
-        let mutable R = m
-        let mutable Q = M44d()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let tmp = [|m; M44d()|]
+
+        use pTmp = fixed tmp
+        let pQ = NativePtr.add pTmp 1
+
+        let tR = NativeMatrix<float>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        let tQ = NativeMatrix<float>(NativePtr.cast pQ,   MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+
+        RQ.DecomposeInPlace(tR, tQ)
+
+        tmp.[0], tmp.[1]
+
+        //let mutable R = m
+        //let mutable Q = M44d()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
         
     static member Decompose (m : float32[,]) =
         let cols = m.GetLength(1)
@@ -816,57 +1197,118 @@ type RQ private() =
         R, Q
         
     static member Decompose (m : M22f) =
-        let mutable R = m
-        let mutable Q = M22f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let tmp = [|m; M22f()|]
+
+        use pTmp = fixed tmp
+        let pQ = NativePtr.add pTmp 1
+
+        let tR = NativeMatrix<float32>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tQ = NativeMatrix<float32>(NativePtr.cast pQ,   MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+
+        RQ.DecomposeInPlace(tR, tQ)
+
+        tmp.[0], tmp.[1]
+
+        //let mutable R = m
+        //let mutable Q = M22f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
         
     static member Decompose (m : M23f) =
-        let mutable R = m
-        let mutable Q = M33f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let aR = [|m|]
+        let aQ = [|M33f()|]
+        
+        use pR = fixed aR
+        use pQ = fixed aQ
+        
+        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
+        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        
+        RQ.DecomposeInPlace(tR, tQ)
+        
+        aR.[0], aQ.[0]
+
+        //let mutable R = m
+        //let mutable Q = M33f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
         
     static member Decompose (m : M33f) =
-        let mutable R = m
-        let mutable Q = M33f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let tmp = [|m; M33f()|]
+
+        use pTmp = fixed tmp
+        let pQ = NativePtr.add pTmp 1
+
+        let tR = NativeMatrix<float32>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tQ = NativeMatrix<float32>(NativePtr.cast pQ,   MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+
+        RQ.DecomposeInPlace(tR, tQ)
+
+        tmp.[0], tmp.[1]
+
+        //let mutable R = m
+        //let mutable Q = M33f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
 
     static member Decompose (m : M34f) =
-        let mutable R = m
-        let mutable Q = M44f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
+        let aR = [|m|]
+        let aQ = [|M44f()|]
+        
+        use pR = fixed aR
+        use pQ = fixed aQ
+        
+        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
+        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        
+        RQ.DecomposeInPlace(tR, tQ)
+        
+        aR.[0], aQ.[0]
+
+        //let mutable R = m
+        //let mutable Q = M44f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
 
     static member Decompose (m : M44f) =
-        let mutable R = m
-        let mutable Q = M44f()
-        tensor {
-            let! pR = &R
-            let! pQ = &Q
-            RQ.DecomposeInPlace(pR, pQ)
-        }
-        R, Q
-        
-        
+        let tmp = [|m; M44f()|]
 
+        use pTmp = fixed tmp
+        let pQ = NativePtr.add pTmp 1
+
+        let tR = NativeMatrix<float32>(NativePtr.cast pTmp, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        let tQ = NativeMatrix<float32>(NativePtr.cast pQ,   MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+
+        RQ.DecomposeInPlace(tR, tQ)
+
+        tmp.[0], tmp.[1]
+
+        //let mutable R = m
+        //let mutable Q = M44f()
+        //tensor {
+        //    let! pR = &R
+        //    let! pQ = &Q
+        //    RQ.DecomposeInPlace(pR, pQ)
+        //}
+        //R, Q
+        
+        
 module RQ =
     let inline private dec< ^a, ^c, ^d when (^a or ^d) : (static member Decompose : ^a -> ^c) > (d : ^d) (m : ^a) : ^c =
         ((^a or ^d) : (static member Decompose : ^a -> ^c) (m))

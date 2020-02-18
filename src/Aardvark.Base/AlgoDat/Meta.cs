@@ -788,7 +788,9 @@ namespace Aardvark.Base
                             .Concat(FractionType.IntoArray())
                             .ToArray();
 
-            ComparableTypes = NumericTypes
+            ComparableTypes = StandardNumericTypes
+                            .Concat(DecimalType.IntoArray())
+                            .Concat(FractionType.IntoArray())
                             .Concat(TimeTypes)
                             .ToArray();
 
@@ -1060,7 +1062,9 @@ namespace Aardvark.Base
             Add("Square and Power",
                 Method("Square", Tensor("x")),
                 Method("Pow", FloatType, AllExcept(DoubleType), Tensor("x"), Tensor("y", FloatType)),
-                Method("Pow", DoubleType, AllExcept(FloatType), Tensor("x"), Tensor("y", DoubleType))
+                Method("Pow", FloatType, AllExcept(DoubleType), Tensor("x"), Scalar("y", FloatType)),
+                Method("Pow", DoubleType, AllExcept(FloatType), Tensor("x"), Tensor("y", DoubleType)),
+                Method("Pow", DoubleType, AllExcept(FloatType), Tensor("x"), Scalar("y", DoubleType))
             );
             #endregion
 

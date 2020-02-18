@@ -1,5 +1,8 @@
 FsCheck
 FsCheck.NUnit
+Expecto
+Expecto.FsCheck
+Expecto.VisualStudio.TestAdapter
 FSharp.Core
 FsUnit
 NUnit
@@ -8,3 +11,4 @@ FsPickler
 Aardvark.Base.TypeProviders
 NUnit3TestAdapter
 Microsoft.NET.Test.Sdk
+YoloDev.Expecto.TestSdk

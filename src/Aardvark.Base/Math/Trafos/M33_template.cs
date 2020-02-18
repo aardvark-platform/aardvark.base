@@ -14,6 +14,27 @@ namespace Aardvark.Base
         #region Coordinate-System Transforms
 
         /// <summary>
+        /// Creates an orthonormal basis from the given normal as z-axis.
+        /// The resulting matrix transforms from the local to the global coordinate system.
+        /// The normal is expected to be normalized.
+        /// 
+        /// The implementation is based on:
+        /// Building an Orthonormal Basis, Revisited, by Duff et al. 2017
+        /// </summary>
+        public static M3__x3t__ NormalFrame(V__x3t__ n)
+        {
+            var sg = n.Z >= 0 ? 1 : -1; // original uses copysign(1.0, n.Z) -> not the same as sign where 0 -> 0
+            var a = -1 / (sg + n.Z);
+            var b = n.X * n.Y * a;
+            // column 0: [1 + sg * n.X * n.X * a, sg * b, -sg * n.X]
+            // column 1: [b, sg + n.Y * n.Y * a, -n.Y]
+            // column 2: n
+            return new M3__x3t__(1 + sg * n.X * n.X * a, b, n.X,
+                                 sg * b, sg + n.Y * n.Y * a, n.Y,
+                                 -sg * n.X, -n.Y, n.Z);
+        }        
+
+        /// <summary>
         /// Computes from a <see cref="V__x3t__"/> normal the transformation matrix
         /// from the local coordinate system where the normal is the z-axis to
         /// the global coordinate system.
