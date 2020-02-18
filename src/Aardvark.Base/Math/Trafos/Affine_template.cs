@@ -52,9 +52,20 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type__ affine)
+        {
+            Linear = affine.Linear;
+            Trans = affine.Trans;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__mnnt__ linear, __vnt__ translation)
         {
             Debug.Assert(linear.Invertible);
@@ -66,6 +77,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__mnnt__ linear, /*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
         {
             Debug.Assert(linear.Invertible);
@@ -77,6 +89,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__mnnt__ linear)
         {
             Debug.Assert(linear.Invertible);
@@ -88,6 +101,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a __n__x__m__ matrix.
         /// The left __n__x__n__ submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__mnmt__ matrix)
         {
             Linear = (__mnnt__)matrix;
@@ -99,6 +113,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a __m__x__m__ matrix.
         /// The upper left __n__x__n__ submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__mmmt__ matrix)
         {
             Linear = (__mnnt__)matrix;
@@ -109,6 +124,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from a <see cref="__trafont__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__trafont__ trafo)
         {
             Linear = (__mnnt__)trafo.Forward;
@@ -119,21 +135,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from an <see cref="__euclideannt__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__euclideannt__ e) : this((__mmmt__)e) {}
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="__rotnt__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__rotnt__ r) : this((__mnnt__)r) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="__scalent__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__scalent__ s) : this((__mnnt__)s) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="__shiftnt__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__shiftnt__ s)
         {
             Linear = __mnnt__.Identity;
@@ -144,6 +164,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a <see cref="__shiftnt__"/>.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__mnnt__ linear, __shiftnt__ shift)
         {
             Debug.Assert(linear.Invertible);
@@ -155,6 +176,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from a <see cref="__similaritynt__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__similaritynt__ s) : this((__mmmt__)s) { }
 
         //# } // n = 3
@@ -622,6 +644,25 @@ namespace Aardvark.Base
         {
             var s = /*# nfields.ForEach(f => {*/v.__f__ * a.Trans.__f__/*# }, add);*/ + 1;
             return TransposedTransform(a, v) * (1 / s);
+        }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a0, __type__ a1)
+        {
+            return ApproximateEquals(a0, a1, Constant<__ftype__>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a0, __type__ a1, __ftype__ tolerance)
+        {
+            return ApproximateEquals(a0.Linear, a1.Linear, tolerance) && ApproximateEquals(a0.Trans, a1.Trans, tolerance);
         }
 
         #endregion

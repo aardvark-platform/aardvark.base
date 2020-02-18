@@ -39,10 +39,22 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        /// <summary>
+        /// Constructs a <see cref="__rot2t__"/> transformation given an rotation angle in radians.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __rot2t__(__ft__ angleInRadians)
         {
             Angle = angleInRadians;
+        }
+
+        /// <summary>
+        /// Constructs a copy of a <see cref="__rot2t__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __rot2t__(__rot2t__ r)
+        {
+            Angle = r.Angle;
         }
 
         #endregion

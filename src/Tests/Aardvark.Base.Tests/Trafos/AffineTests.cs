@@ -216,5 +216,21 @@ namespace Aardvark.Tests
         [Test]
         public static void MultiplicationSimilarityTest()
             => GenericMultiplicationTest(rnd => GetRandomSimilarity(rnd));
+
+        [Test]
+        public static void ToStringAndParse()
+        {
+            var rnd = new RandomSystem(1);
+            
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomAffine(rnd);
+
+                var str = a.ToString();
+                var parsed = Affine3d.Parse(str);
+
+                Assert.IsTrue(Fun.ApproximateEquals(parsed, a, 0.00001));
+            }
+        }
     }
 }

@@ -21,10 +21,22 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        /// <summary>
+        /// Constructs a <see cref="Rot2f"/> transformation given an rotation angle in radians.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Rot2f(float angleInRadians)
         {
             Angle = angleInRadians;
+        }
+
+        /// <summary>
+        /// Constructs a copy of a <see cref="Rot2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rot2f(Rot2f r)
+        {
+            Angle = r.Angle;
         }
 
         #endregion
@@ -535,10 +547,22 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        /// <summary>
+        /// Constructs a <see cref="Rot2d"/> transformation given an rotation angle in radians.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Rot2d(double angleInRadians)
         {
             Angle = angleInRadians;
+        }
+
+        /// <summary>
+        /// Constructs a copy of a <see cref="Rot2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rot2d(Rot2d r)
+        {
+            Angle = r.Angle;
         }
 
         #endregion

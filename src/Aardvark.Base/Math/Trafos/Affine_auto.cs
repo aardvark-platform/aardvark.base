@@ -28,9 +28,20 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="Affine2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine2f(Affine2f affine)
+        {
+            Linear = affine.Linear;
+            Trans = affine.Trans;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(M22f linear, V2f translation)
         {
             Debug.Assert(linear.Invertible);
@@ -42,6 +53,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(M22f linear, float tX, float tY)
         {
             Debug.Assert(linear.Invertible);
@@ -53,6 +65,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(M22f linear)
         {
             Debug.Assert(linear.Invertible);
@@ -64,6 +77,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a 2x3 matrix.
         /// The left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(M23f matrix)
         {
             Linear = (M22f)matrix;
@@ -75,6 +89,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a 3x3 matrix.
         /// The upper left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(M33f matrix)
         {
             Linear = (M22f)matrix;
@@ -85,6 +100,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Trafo2f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(Trafo2f trafo)
         {
             Linear = (M22f)trafo.Forward;
@@ -95,21 +111,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from an <see cref="Euclidean2f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(Euclidean2f e) : this((M33f)e) {}
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Rot2f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(Rot2f r) : this((M22f)r) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Scale2f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(Scale2f s) : this((M22f)s) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Shift2f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(Shift2f s)
         {
             Linear = M22f.Identity;
@@ -120,6 +140,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a <see cref="Shift2f"/>.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2f(M22f linear, Shift2f shift)
         {
             Debug.Assert(linear.Invertible);
@@ -490,6 +511,25 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Affine2f a0, Affine2f a1)
+        {
+            return ApproximateEquals(a0, a1, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Affine2f a0, Affine2f a1, float tolerance)
+        {
+            return ApproximateEquals(a0.Linear, a1.Linear, tolerance) && ApproximateEquals(a0.Trans, a1.Trans, tolerance);
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region Affine3f
@@ -510,9 +550,20 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="Affine3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine3f(Affine3f affine)
+        {
+            Linear = affine.Linear;
+            Trans = affine.Trans;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(M33f linear, V3f translation)
         {
             Debug.Assert(linear.Invertible);
@@ -524,6 +575,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(M33f linear, float tX, float tY, float tZ)
         {
             Debug.Assert(linear.Invertible);
@@ -535,6 +587,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(M33f linear)
         {
             Debug.Assert(linear.Invertible);
@@ -546,6 +599,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a 3x4 matrix.
         /// The left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(M34f matrix)
         {
             Linear = (M33f)matrix;
@@ -557,6 +611,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a 4x4 matrix.
         /// The upper left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(M44f matrix)
         {
             Linear = (M33f)matrix;
@@ -567,6 +622,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Trafo3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(Trafo3f trafo)
         {
             Linear = (M33f)trafo.Forward;
@@ -577,21 +633,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from an <see cref="Euclidean3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(Euclidean3f e) : this((M44f)e) {}
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Rot3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(Rot3f r) : this((M33f)r) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Scale3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(Scale3f s) : this((M33f)s) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Shift3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(Shift3f s)
         {
             Linear = M33f.Identity;
@@ -602,6 +662,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a <see cref="Shift3f"/>.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(M33f linear, Shift3f shift)
         {
             Debug.Assert(linear.Invertible);
@@ -612,6 +673,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Similarity3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3f(Similarity3f s) : this((M44f)s) { }
 
         #endregion
@@ -1112,6 +1174,25 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Affine3f a0, Affine3f a1)
+        {
+            return ApproximateEquals(a0, a1, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Affine3f a0, Affine3f a1, float tolerance)
+        {
+            return ApproximateEquals(a0.Linear, a1.Linear, tolerance) && ApproximateEquals(a0.Trans, a1.Trans, tolerance);
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region Affine2d
@@ -1132,9 +1213,20 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="Affine2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine2d(Affine2d affine)
+        {
+            Linear = affine.Linear;
+            Trans = affine.Trans;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(M22d linear, V2d translation)
         {
             Debug.Assert(linear.Invertible);
@@ -1146,6 +1238,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(M22d linear, double tX, double tY)
         {
             Debug.Assert(linear.Invertible);
@@ -1157,6 +1250,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(M22d linear)
         {
             Debug.Assert(linear.Invertible);
@@ -1168,6 +1262,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a 2x3 matrix.
         /// The left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(M23d matrix)
         {
             Linear = (M22d)matrix;
@@ -1179,6 +1274,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a 3x3 matrix.
         /// The upper left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(M33d matrix)
         {
             Linear = (M22d)matrix;
@@ -1189,6 +1285,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Trafo2d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(Trafo2d trafo)
         {
             Linear = (M22d)trafo.Forward;
@@ -1199,21 +1296,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from an <see cref="Euclidean2d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(Euclidean2d e) : this((M33d)e) {}
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Rot2d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(Rot2d r) : this((M22d)r) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Scale2d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(Scale2d s) : this((M22d)s) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Shift2d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(Shift2d s)
         {
             Linear = M22d.Identity;
@@ -1224,6 +1325,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a <see cref="Shift2d"/>.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine2d(M22d linear, Shift2d shift)
         {
             Debug.Assert(linear.Invertible);
@@ -1594,6 +1696,25 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Affine2d a0, Affine2d a1)
+        {
+            return ApproximateEquals(a0, a1, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Affine2d a0, Affine2d a1, double tolerance)
+        {
+            return ApproximateEquals(a0.Linear, a1.Linear, tolerance) && ApproximateEquals(a0.Trans, a1.Trans, tolerance);
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region Affine3d
@@ -1614,9 +1735,20 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="Affine3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine3d(Affine3d affine)
+        {
+            Linear = affine.Linear;
+            Trans = affine.Trans;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(M33d linear, V3d translation)
         {
             Debug.Assert(linear.Invertible);
@@ -1628,6 +1760,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(M33d linear, double tX, double tY, double tZ)
         {
             Debug.Assert(linear.Invertible);
@@ -1639,6 +1772,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(M33d linear)
         {
             Debug.Assert(linear.Invertible);
@@ -1650,6 +1784,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a 3x4 matrix.
         /// The left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(M34d matrix)
         {
             Linear = (M33d)matrix;
@@ -1661,6 +1796,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a 4x4 matrix.
         /// The upper left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(M44d matrix)
         {
             Linear = (M33d)matrix;
@@ -1671,6 +1807,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Trafo3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(Trafo3d trafo)
         {
             Linear = (M33d)trafo.Forward;
@@ -1681,21 +1818,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from an <see cref="Euclidean3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(Euclidean3d e) : this((M44d)e) {}
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Rot3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(Rot3d r) : this((M33d)r) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Scale3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(Scale3d s) : this((M33d)s) { }
 
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Shift3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(Shift3d s)
         {
             Linear = M33d.Identity;
@@ -1706,6 +1847,7 @@ namespace Aardvark.Base
         /// Constructs an affine transformation from a linear map and a <see cref="Shift3d"/>.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(M33d linear, Shift3d shift)
         {
             Debug.Assert(linear.Invertible);
@@ -1716,6 +1858,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs an affine transformation from a <see cref="Similarity3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Affine3d(Similarity3d s) : this((M44d)s) { }
 
         #endregion
@@ -2211,6 +2354,25 @@ namespace Aardvark.Base
         {
             var s = v.X * a.Trans.X + v.Y * a.Trans.Y + v.Z * a.Trans.Z + 1;
             return TransposedTransform(a, v) * (1 / s);
+        }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Affine3d a0, Affine3d a1)
+        {
+            return ApproximateEquals(a0, a1, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Affine3d a0, Affine3d a1, double tolerance)
+        {
+            return ApproximateEquals(a0.Linear, a1.Linear, tolerance) && ApproximateEquals(a0.Trans, a1.Trans, tolerance);
         }
 
         #endregion

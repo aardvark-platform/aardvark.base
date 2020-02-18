@@ -54,6 +54,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from __d__ __ftype__s.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# dfieldsL.ForEach(f => { */__ftype__ __f__/*# }, comma); */)
         {
             V = new __vdt__(/*# dfieldsL.ForEach(f => { */__f__/*# }, comma); */);
@@ -62,14 +63,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="__type__"/> from a <see cref="__vdt__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__vdt__ v)
         {
             V = v;
         }
 
         /// <summary>
+        /// Constructs a copy of a <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type__ s)
+        {
+            V = s.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from a __ftype__-array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__[] array)
         {
             V = new __vdt__(array);
@@ -78,6 +90,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from a __ftype__-array starting from the given index.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__[] array, int start)
         {
             V = new __vdt__(array, start);

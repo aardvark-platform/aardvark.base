@@ -49,6 +49,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from __d__ __ftype__s.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# dfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
         {
             V = new __vdt__(/*# dfields.ForEach(f => { */s__f__/*# }, comma); */);
@@ -57,6 +58,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="__type__"/> from __d__ scaling factors provided as <see cref="__vdt__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__vdt__ scalingFactors)
         {
             V = scalingFactors;
@@ -65,14 +67,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from a uniform __ftype__ value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__ uniform)
         {
             V = new __vdt__(/*# dfields.ForEach(f => { */uniform/*# }, comma); */);
         }
 
         /// <summary>
+        /// Constructs a copy of a <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type__ scale)
+        {
+            V = scale.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from a __ftype__-array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__[] array)
         {
             V = new __vdt__(array);
@@ -81,6 +94,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from a __ftype__-array starting from the given index.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__[] array, int start)
         {
             V = new __vdt__(array, start);

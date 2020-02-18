@@ -27,6 +27,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale2f"/> transformation from 2 floats.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2f(float sX, float sY)
         {
             V = new V2f(sX, sY);
@@ -35,6 +36,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale2f"/> from 2 scaling factors provided as <see cref="V2f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2f(V2f scalingFactors)
         {
             V = scalingFactors;
@@ -43,14 +45,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale2f"/> transformation from a uniform float value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2f(float uniform)
         {
             V = new V2f(uniform, uniform);
         }
 
         /// <summary>
+        /// Constructs a copy of a <see cref="Scale2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Scale2f(Scale2f scale)
+        {
+            V = scale.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Scale2f"/> transformation from a float-array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2f(float[] array)
         {
             V = new V2f(array);
@@ -59,6 +72,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale2f"/> transformation from a float-array starting from the given index.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2f(float[] array, int start)
         {
             V = new V2f(array, start);
@@ -577,6 +591,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale3f"/> transformation from 3 floats.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3f(float sX, float sY, float sZ)
         {
             V = new V3f(sX, sY, sZ);
@@ -585,6 +600,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale3f"/> from 3 scaling factors provided as <see cref="V3f"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3f(V3f scalingFactors)
         {
             V = scalingFactors;
@@ -593,14 +609,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale3f"/> transformation from a uniform float value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3f(float uniform)
         {
             V = new V3f(uniform, uniform, uniform);
         }
 
         /// <summary>
+        /// Constructs a copy of a <see cref="Scale3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Scale3f(Scale3f scale)
+        {
+            V = scale.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Scale3f"/> transformation from a float-array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3f(float[] array)
         {
             V = new V3f(array);
@@ -609,6 +636,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale3f"/> transformation from a float-array starting from the given index.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3f(float[] array, int start)
         {
             V = new V3f(array, start);
@@ -1135,6 +1163,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale2d"/> transformation from 2 doubles.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2d(double sX, double sY)
         {
             V = new V2d(sX, sY);
@@ -1143,6 +1172,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale2d"/> from 2 scaling factors provided as <see cref="V2d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2d(V2d scalingFactors)
         {
             V = scalingFactors;
@@ -1151,14 +1181,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale2d"/> transformation from a uniform double value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2d(double uniform)
         {
             V = new V2d(uniform, uniform);
         }
 
         /// <summary>
+        /// Constructs a copy of a <see cref="Scale2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Scale2d(Scale2d scale)
+        {
+            V = scale.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Scale2d"/> transformation from a double-array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2d(double[] array)
         {
             V = new V2d(array);
@@ -1167,6 +1208,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale2d"/> transformation from a double-array starting from the given index.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale2d(double[] array, int start)
         {
             V = new V2d(array, start);
@@ -1685,6 +1727,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale3d"/> transformation from 3 doubles.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3d(double sX, double sY, double sZ)
         {
             V = new V3d(sX, sY, sZ);
@@ -1693,6 +1736,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale3d"/> from 3 scaling factors provided as <see cref="V3d"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3d(V3d scalingFactors)
         {
             V = scalingFactors;
@@ -1701,14 +1745,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale3d"/> transformation from a uniform double value.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3d(double uniform)
         {
             V = new V3d(uniform, uniform, uniform);
         }
 
         /// <summary>
+        /// Constructs a copy of a <see cref="Scale3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Scale3d(Scale3d scale)
+        {
+            V = scale.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Scale3d"/> transformation from a double-array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3d(double[] array)
         {
             V = new V3d(array);
@@ -1717,6 +1772,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Constructs a <see cref="Scale3d"/> transformation from a double-array starting from the given index.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Scale3d(double[] array, int start)
         {
             V = new V3d(array, start);

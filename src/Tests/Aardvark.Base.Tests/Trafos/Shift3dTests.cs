@@ -157,5 +157,21 @@ namespace Aardvark.Tests
                 Assert.IsTrue(Fun.ApproximateEquals(res, res2, 0.00001), "{0} != {1}", res, res2);
             }
         }
+
+        [Test]
+        public static void ToStringAndParse()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var s = GetRandomShift(rnd);
+
+                var str = s.ToString();
+                var parsed = Shift3d.Parse(str);
+
+                Assert.IsTrue(Fun.ApproximateEquals(parsed, s, 0.00001));
+            }
+        }
     }
 }

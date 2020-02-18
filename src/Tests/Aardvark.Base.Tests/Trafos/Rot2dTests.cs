@@ -147,36 +147,19 @@ namespace Aardvark.Tests
             }
         }
 
-        private static void GenericMultiplicationTest<T>(Func<RandomSystem, T> frnd)
+        [Test]
+        public static void ToStringAndParse()
         {
             var rnd = new RandomSystem(1);
 
             for (int i = 0; i < iterations; i++)
             {
                 var r = GetRandomRot2(rnd);
-                dynamic t = frnd(rnd);
 
-                var p = rnd.UniformV2d() * rnd.UniformInt(1000);
+                var str = r.ToString();
+                var parsed = Rot2d.Parse(str);
 
-                {
-                    var trafo = r * t;
-                    var res = Rot.Transform(trafo, p);
-
-                    var trafoRef = (M33d)r * (M33d)t;
-                    var resRef = trafoRef.TransformPos(p);
-
-                    Assert.IsTrue(Fun.ApproximateEquals(res, resRef, 0.00001), "{0} != {1}", res, resRef);
-                }
-
-                {
-                    var trafo = t * r;
-                    var res = Rot.Transform(trafo, p);
-
-                    var trafoRef = (M33d)t * (M33d)r;
-                    var resRef = trafoRef.TransformPos(p);
-
-                    Assert.IsTrue(Fun.ApproximateEquals(res, resRef, 0.00001), "{0} != {1}", res, resRef);
-                }
+                Assert.IsTrue(Fun.ApproximateEquals(parsed, r, 0.00001));
             }
         }
     }
