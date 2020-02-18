@@ -159,7 +159,7 @@ namespace Aardvark.Base
             // column 1: [b, sg + n.Y * n.Y * a, -n.Y]
             // column 2: n
             return new M33f(1 + sg * n.X * n.X * a, b, n.X,
-                                 sg * b, sg * n.Y * n.Y * a, n.Y,
+                                 sg * b, sg + n.Y * n.Y * a, n.Y,
                                  -sg * n.X, -n.Y, n.Z);
         }
 
@@ -467,7 +467,7 @@ namespace Aardvark.Base
             // column 1: [b, sg + n.Y * n.Y * a, -n.Y]
             // column 2: n
             return new M33d(1 + sg * n.X * n.X * a, b, n.X,
-                                 sg * b, sg * n.Y * n.Y * a, n.Y,
+                                 sg * b, sg + n.Y * n.Y * a, n.Y,
                                  -sg * n.X, -n.Y, n.Z);
         }
 
