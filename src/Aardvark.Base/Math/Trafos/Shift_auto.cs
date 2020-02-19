@@ -505,7 +505,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Shift2f shift)
         {
-            shift = shift.Inverse;
+            shift.V.X = -shift.V.X;
+            shift.V.Y = -shift.V.Y;
         }
 
         #endregion
@@ -1123,7 +1124,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Shift3f shift)
         {
-            shift = shift.Inverse;
+            shift.V.X = -shift.V.X;
+            shift.V.Y = -shift.V.Y;
+            shift.V.Z = -shift.V.Z;
         }
 
         #endregion
@@ -1679,7 +1682,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Shift2d shift)
         {
-            shift = shift.Inverse;
+            shift.V.X = -shift.V.X;
+            shift.V.Y = -shift.V.Y;
         }
 
         #endregion
@@ -2297,7 +2301,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Shift3d shift)
         {
-            shift = shift.Inverse;
+            shift.V.X = -shift.V.X;
+            shift.V.Y = -shift.V.Y;
+            shift.V.Z = -shift.V.Z;
         }
 
         #endregion

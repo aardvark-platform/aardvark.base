@@ -19,7 +19,7 @@ namespace Aardvark.Tests
 
         private static Rot3d GetRandomRot(RandomSystem rnd)
         {
-            return new Rot3d(rnd.UniformV3dDirection(), rnd.UniformDouble() * Constant.PiTimesTwo);
+            return Rot3d.Rotation(rnd.UniformV3dDirection(), rnd.UniformDouble() * Constant.PiTimesTwo);
         }
 
         private static Shift3d GetRandomShift(RandomSystem rnd)

@@ -16,9 +16,7 @@ namespace Aardvark.Base
     //# Action and = () => Out(" && ");
     //# Action or = () => Out(" || ");
     //# Action andLit = () => Out(" and ");
-    //# var fields = new[] {"X", "Y", "Z", "W"};
     //# var qfields = new[] {"W", "X", "Y", "Z"};
-    //# var fieldsL = new[] {"x", "y", "z", "w"};
     //# var qfieldsL = new[] {"w", "x", "y", "z"};
     //# foreach (var isDouble in new[] { false, true }) {
     //#   var ftype = isDouble ? "double" : "float";
@@ -113,7 +111,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="__type__"/> from array.
+        /// Creates a <see cref="__type__"/> from an array.
         /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -124,7 +122,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="__type__"/> from array starting at specified index.
+        /// Creates a <see cref="__type__"/> from an array starting at specified index.
         /// (w = a[start], (x = a[start+1], y = a[start+2], z = a[start+3])).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -493,7 +491,7 @@ namespace Aardvark.Base
 
     public static partial class Quaternion
     {
-        #region Invert, Normalize, Conjugate
+        #region Invert, Normalize, Conjugate, Dot
 
         /// <summary>
         /// Returns the inverse of a <see cref="__type__"/>.
@@ -541,6 +539,15 @@ namespace Aardvark.Base
         public static void Conjugate(this ref __type__ q)
         {
             q = q.Conjugated;
+        }
+
+        /// <summary> 
+        /// Returns the dot product of two <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Dot(this __type__ a, __type__ b)
+        {
+            return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
 
         #endregion

@@ -95,7 +95,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="QuaternionF"/> from array.
+        /// Creates a <see cref="QuaternionF"/> from an array.
         /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -106,7 +106,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="QuaternionF"/> from array starting at specified index.
+        /// Creates a <see cref="QuaternionF"/> from an array starting at specified index.
         /// (w = a[start], (x = a[start+1], y = a[start+2], z = a[start+3])).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -484,7 +484,7 @@ namespace Aardvark.Base
 
     public static partial class Quaternion
     {
-        #region Invert, Normalize, Conjugate
+        #region Invert, Normalize, Conjugate, Dot
 
         /// <summary>
         /// Returns the inverse of a <see cref="QuaternionF"/>.
@@ -532,6 +532,15 @@ namespace Aardvark.Base
         public static void Conjugate(this ref QuaternionF q)
         {
             q = q.Conjugated;
+        }
+
+        /// <summary> 
+        /// Returns the dot product of two <see cref="QuaternionF"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Dot(this QuaternionF a, QuaternionF b)
+        {
+            return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
 
         #endregion
@@ -661,7 +670,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="QuaternionD"/> from array.
+        /// Creates a <see cref="QuaternionD"/> from an array.
         /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -672,7 +681,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="QuaternionD"/> from array starting at specified index.
+        /// Creates a <see cref="QuaternionD"/> from an array starting at specified index.
         /// (w = a[start], (x = a[start+1], y = a[start+2], z = a[start+3])).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1050,7 +1059,7 @@ namespace Aardvark.Base
 
     public static partial class Quaternion
     {
-        #region Invert, Normalize, Conjugate
+        #region Invert, Normalize, Conjugate, Dot
 
         /// <summary>
         /// Returns the inverse of a <see cref="QuaternionD"/>.
@@ -1098,6 +1107,15 @@ namespace Aardvark.Base
         public static void Conjugate(this ref QuaternionD q)
         {
             q = q.Conjugated;
+        }
+
+        /// <summary> 
+        /// Returns the dot product of two <see cref="QuaternionD"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Dot(this QuaternionD a, QuaternionD b)
+        {
+            return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
 
         #endregion

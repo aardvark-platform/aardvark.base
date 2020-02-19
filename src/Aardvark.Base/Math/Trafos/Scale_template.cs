@@ -11,6 +11,7 @@ namespace Aardvark.Base
 
     //# Action comma = () => Out(", ");
     //# Action commaln = () => Out("," + Environment.NewLine);
+    //# Action endl = () => Out(Environment.NewLine);
     //# Action add = () => Out(" + ");
     //# Action and = () => Out(" && ");
     //# Action or = () => Out(" || ");
@@ -415,7 +416,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref __type__ scale)
         {
-            scale = scale.Inverse;
+            //# dfields.ForEach(f => {
+            scale.V.__f__ = 1 / scale.V.__f__;
+            //# });
         }
 
         #endregion

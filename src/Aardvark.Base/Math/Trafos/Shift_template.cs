@@ -487,7 +487,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref __type__ shift)
         {
-            shift = shift.Inverse;
+            //# dfields.ForEach(f => {
+            shift.V.__f__ = -shift.V.__f__;
+            //# });
         }
 
         #endregion

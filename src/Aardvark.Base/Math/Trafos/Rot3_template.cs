@@ -8,14 +8,23 @@ using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    //# Action comma = () => Out(", ");
+    //# Action commaln = () => Out("," + Environment.NewLine);
+    //# Action add = () => Out(" + ");
+    //# Action and = () => Out(" && ");
+    //# Action or = () => Out(" || ");
+    //# Action andLit = () => Out(" and ");
+    //# var qfields = new[] {"W", "X", "Y", "Z"};
+    //# var qfieldsL = new[] {"w", "x", "y", "z"};
     //# foreach (var isDouble in new[] { false, true }) {
-    //#   var ft = isDouble ? "double" : "float";
+    //#   var ftype = isDouble ? "double" : "float";
     //#   var tc = isDouble ? "d" : "f";
+    //#   var type = "Rot3" + tc;
+    //#   var quatt = "Quaternion" + tc.ToUpper();
     //#   var v2t = "V2" + tc;
     //#   var v3t = "V3" + tc;
     //#   var v4t = "V4" + tc;
     //#   var rot2t = "Rot2" + tc;
-    //#   var rot3t = "Rot3" + tc;
     //#   var scale3t = "Scale3" + tc;
     //#   var shift3t = "Shift3" + tc;
     //#   var m22t = "M22" + tc;
@@ -27,121 +36,495 @@ namespace Aardvark.Base
     //#   var eulerAnglesEps = isDouble ? "0.49999999999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
-    #region __rot3t__
-
+    //#   var assertNorm = "Debug.Assert(Fun.ApproximateEquals(NormSquared, 1))";
+    #region __type__
+        
     /// <summary>
-    /// Type for general quaternions, if normalized it represents an arbritrary rotation in three dimensions.
+    /// Represents a rotation in three dimensions using a unit quaternion.
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __rot3t__
+    public partial struct __type__
     {
+        /// <summary>
+        /// Scalar (real) part of the quaternion.
+        /// </summary>
         [DataMember]
-        public __ft__ W;
+        public __ftype__ W;
+
+        /// <summary>
+        /// First component of vector (imaginary) part of the quaternion.
+        /// </summary>
         [DataMember]
-        public __ft__ X;
+        public __ftype__ X;
+
+        /// <summary>
+        /// Second component of vector (imaginary) part of the quaternion.
+        /// </summary>
         [DataMember]
-        public __ft__ Y;
+        public __ftype__ Y;
+
+        /// <summary>
+        /// Third component of vector (imaginary) part of the quaternion.
+        /// </summary>
         [DataMember]
-        public __ft__ Z;
+        public __ftype__ Z;
 
         #region Constructors
 
         /// <summary>
-        /// Creates quaternion (w, (x, y, z)).
+        /// Constructs a <see cref="__type__"/> transformation from the quaternion (w, (x, y, z)).
+        /// The quaternion must be of unit length.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __rot3t__(__ft__ w, __ft__ x, __ft__ y, __ft__ z)
+        public __type__(__ftype__ w, __ftype__ x, __ftype__ y, __ftype__ z)
         {
             W = w;
-            X = x;
-            Y = y;
-            Z = z;
+            X = x; Y = y; Z = z;
+            __assertNorm__;
         }
 
         /// <summary>
-        /// Creates quaternion (w, (v.x, v.y, v.z)).
+        /// Constructs a <see cref="__type__"/> transformation from the quaternion (w, (v.x, v.y, v.z)).
+        /// The quaternion must be of unit length.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __rot3t__(__ft__ w, __v3t__ v)
+        public __type__(__ftype__ w, __v3t__ v)
         {
             W = w;
-            X = v.X;
-            Y = v.Y;
-            Z = v.Z;
+            X = v.X; Y = v.Y; Z = v.Z;
+            __assertNorm__;
         }
 
         /// <summary>
-        /// Creates quaternion from array.
-        /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
+        /// Constructs a <see cref="__type__"/> transformation from the quaternion <paramref name="q"/>.
+        /// The quaternion must be of unit length.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __rot3t__(__ft__[] a)
+        public __type__(__quatt__ q)
+        {
+            /*# qfields.ForEach(f => {*/__f__ = q.__f__; /*# });*/
+            __assertNorm__;
+        }
+
+        /// <summary>
+        /// Constructs a copy of a <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type__ r)
+        {
+            /*# qfields.ForEach(f => {*/__f__ = r.__f__; /*# });*/
+            __assertNorm__;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="__type__"/> transformation from the quaternion (a[0], (a[1], a[2], a[3])).
+        /// The quaternion must be of unit length.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__ftype__[] a)
         {
             W = a[0];
-            X = a[1];
-            Y = a[2];
-            Z = a[3];
+            X = a[1]; Y = a[2]; Z = a[3];
+            __assertNorm__;
         }
 
         /// <summary>
-        /// Creates quaternion from array starting at specified index.
-        /// (w = a[start], (x = a[start+1], y = a[start+2], z = a[start+3])).
+        /// Constructs a <see cref="__type__"/> transformation from the quaternion (a[start], (a[start + 1], a[start + 2], a[start + 3])).
+        /// The quaternion must be of unit length.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __rot3t__(__ft__[] a, int start)
+        public __type__(__ftype__[] a, int start)
         {
             W = a[start];
-            X = a[start + 1];
-            Y = a[start + 2];
-            Z = a[start + 3];
+            X = a[start + 1]; Y = a[start + 2]; Z = a[start + 3];
+            __assertNorm__;
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the vector part (x, y, z) of this <see cref="__type__"/> unit quaternion.
+        /// </summary>
+        public __v3t__ V
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return new __v3t__(X, Y, Z); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set { X = value.X; Y = value.Y; Z = value.Z; }
         }
 
         /// <summary>
-        /// Creates quaternion representing a rotation around an axis by an angle.
+        /// Gets the squared norm (or squared length) of this <see cref="__type__"/>.
+        /// May not be exactly 1, due to numerical inaccuracy.
+        /// </summary>
+        public __ftype__ NormSquared
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => /*# qfields.ForEach(f => {*/__f__ * __f__/*# }, add);*/;
+        }
+
+        /// <summary>
+        /// Gets the norm (or length) of this <see cref="__type__"/>.
+        /// May not be exactly 1, due to numerical inaccuracy. 
+        /// </summary>
+        public __ftype__ Norm
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => NormSquared.Sqrt();
+        }
+
+        /// <summary>
+        /// Gets normalized (unit) quaternion from this <see cref="__type__"/>
+        /// </summary>
+        public __type__ Normalized
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                var rs = new __type__(this);
+                rs.Normalize();
+                return rs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the inverse of this <see cref="__type__"/> transformation.
+        /// </summary>
+        public __type__ Inverse
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                __assertNorm__;
+                return new __type__(W, -X, -Y, -Z);
+            }
+        }
+
+        #endregion
+
+        #region Constants
+
+        /// <summary>
+        /// Gets the identity <see cref="__type__"/>.
+        /// </summary>
+        public static __type__ Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __type__(1, 0, 0, 0);
+        }
+
+        #endregion
+
+        #region Arithmetic Operators
+
+        /// <summary>
+        /// Returns the component-wise negation of a <see cref="__type__"/> unit quaternion.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ operator -(__type__ q)
+            => new __type__(/*# qfields.ForEach(f => {*/-q.__f__/*# }, comma);*/);
+
+        /// <summary>
+        /// Multiplies two <see cref="__type__"/> transformations.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ operator *(__type__ a, __type__ b)
+        {
+            return new __type__(
+                a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z,
+                a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
+                a.W * b.Y + a.Y * b.W + a.Z * b.X - a.X * b.Z,
+                a.W * b.Z + a.Z * b.W + a.X * b.Y - a.Y * b.X);
+        }
+
+        /// <summary>
+        /// Transforms a <see cref="__v3t__"/> vector by a <see cref="__type__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ operator *(__type__ r, __v3t__ v)
+        {
+            var w = -r.X * v.X - r.Y * v.Y - r.Z * v.Z;
+            var x = r.W * v.X + r.Y * v.Z - r.Z * v.Y;
+            var y = r.W * v.Y + r.Z * v.X - r.X * v.Z;
+            var z = r.W * v.Z + r.X * v.Y - r.Y * v.X;
+
+            return new __v3t__(
+                -w * r.X + x * r.W - y * r.Z + z * r.Y,
+                -w * r.Y + y * r.W - z * r.X + x * r.Z,
+                -w * r.Z + z * r.W - x * r.Y + y * r.X);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__m33t__"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __m33t__ operator *(__type__ rot, __m33t__ m)
+        {
+            return (__m33t__)rot * m;
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__m33t__"/> with a <see cref="__type__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __m33t__ operator *(__m33t__ m, __type__ rot)
+        {
+            return m * (__m33t__)rot;
+        }
+
+        #region Rot / Quaternion arithmetics
+
+        /// <summary>
+        /// Returns the sum of a <see cref="__type__"/> and a <see cref="__quatt__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator +(__type__ r, __quatt__ q)
+            => new __quatt__(/*# qfields.ForEach(f => {*/r.__f__ + q.__f__/*# }, comma);*/);
+
+        /// <summary>
+        /// Returns the sum of a <see cref="__quatt__"/> and a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator +(__quatt__ q, __type__ r)
+            => new __quatt__(/*# qfields.ForEach(f => {*/q.__f__ + r.__f__/*# }, comma);*/);
+
+        /// <summary>
+        /// Returns the sum of a <see cref="__type__"/> and a real scalar.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator +(__type__ r, __ftype__ s)
+            => new __quatt__(r.W + s, r.X, r.Y, r.Z);
+
+        /// <summary>
+        /// Returns the sum of a real scalar and a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator +(__ftype__ s, __type__ r)
+            => new __quatt__(r.W + s, r.X, r.Y, r.Z);
+
+        /// <summary>
+        /// Returns the difference between a <see cref="__type__"/> and a <see cref="__quatt__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator -(__type__ r, __quatt__ q)
+            => new __quatt__(/*# qfields.ForEach(f => {*/r.__f__ - q.__f__/*# }, comma);*/);
+
+        /// <summary>
+        /// Returns the difference between a <see cref="__quatt__"/> and a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator -(__quatt__ q, __type__ r)
+            => new __quatt__(/*# qfields.ForEach(f => {*/q.__f__ - r.__f__/*# }, comma);*/);
+
+        /// <summary>
+        /// Returns the difference between a <see cref="__type__"/> and a real scalar.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator -(__type__ r, __ftype__ s)
+            => new __quatt__(r.W - s, r.X, r.Y, r.Z);
+
+        /// <summary>
+        /// Returns the difference between a real scalar and a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator -(__ftype__ s, __type__ r)
+            => new __quatt__(s - r.W, -r.X, -r.Y, -r.Z);
+
+        /// <summary>
+        /// Returns the product of a <see cref="__type__"/> and a scalar.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator *(__type__ r, __ftype__ s)
+            => new __quatt__(/*# qfields.ForEach(f => {*/r.__f__ * s/*# }, comma);*/);
+
+        /// <summary>
+        /// Returns the product of a scalar and a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator *(__ftype__ s, __type__ r)
+            => new __quatt__(/*# qfields.ForEach(f => {*/r.__f__ * s/*# }, comma);*/);
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> with a <see cref="__quatt__"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator *(__type__ r, __quatt__ q)
+        {
+            return new __quatt__(
+                r.W * q.W - r.X * q.X - r.Y * q.Y - r.Z * q.Z,
+                r.W * q.X + r.X * q.W + r.Y * q.Z - r.Z * q.Y,
+                r.W * q.Y + r.Y * q.W + r.Z * q.X - r.X * q.Z,
+                r.W * q.Z + r.Z * q.W + r.X * q.Y - r.Y * q.X);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__quatt__"/> with a <see cref="__type__"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator *(__quatt__ q, __type__ r)
+        {
+            return new __quatt__(
+                q.W * r.W - q.X * r.X - q.Y * r.Y - q.Z * r.Z,
+                q.W * r.X + q.X * r.W + q.Y * r.Z - q.Z * r.Y,
+                q.W * r.Y + q.Y * r.W + q.Z * r.X - q.X * r.Z,
+                q.W * r.Z + q.Z * r.W + q.X * r.Y - q.Y * r.X);
+        }
+
+        /// <summary>
+        /// Divides a <see cref="__type__"/> by a <see cref="__quatt__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator /(__type__ r, __quatt__ q)
+            => r * q.Inverse;
+
+        /// <summary>
+        /// Divides a <see cref="__quatt__"/> by a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator /(__quatt__ q, __type__ r)
+            => q * r.Inverse;
+
+        /// <summary>
+        /// Divides a <see cref="__type__"/> by a scalar.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator /(__type__ r, __ftype__ s)
+            => new __quatt__(/*# qfields.ForEach(f => {*/r.__f__ / s/*# }, comma);*/);
+
+        /// <summary>
+        /// Divides a scalar by a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __quatt__ operator /(__ftype__ s, __type__ r)
+            => new __quatt__(/*# qfields.ForEach(f => {*/s / r.__f__/*# }, comma);*/);
+
+        #endregion
+
+        #endregion
+
+        #region Comparison Operators
+
+        /// <summary>
+        /// Checks whether two <see cref="__type__"/> transformations are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(__type__ r0, __type__ r1)
+            => (/*# qfields.ForEach(f => {*/r0.__f__ == r1.__f__/*# }, and);*/) ||
+                    (/*# qfields.ForEach(f => {*/r0.__f__ == -r1.__f__/*# }, and);*/);
+
+        /// <summary>
+        /// Checks whether two <see cref="__type__"/> transformations are different.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(__type__ r0, __type__ r1)
+            => !(r0 == r1);
+
+        #endregion
+
+        #region Static Creators
+
+        /// <summary>
+        /// WARNING: UNTESTED!!!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ FromFrame(__v3t__ x, __v3t__ y, __v3t__ z)
+        {
+            return From__m33t__(__m33t__.FromCols(x, y, z));
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a Rodrigues axis-angle vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ FromAngleAxis(__v3t__ angleAxis)
+        {
+            __ftype__ theta2 = angleAxis.LengthSquared;
+            if (theta2 > Constant<__ftype__>.PositiveTinyValue)
+            {
+                var theta = Fun.Sqrt(theta2);
+                var thetaHalf = theta / 2;
+                var k = Fun.Sin(thetaHalf) / theta;
+                return new __type__(Fun.Cos(thetaHalf), k * angleAxis);
+            }
+            else
+                return new __type__(1, 0, 0, 0);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a rotation matrix.
+        /// </summary>
+        public static __type__ From__m33t__(__m33t__ m, __ftype__ epsilon = (__ftype__)1e-6)
+        {
+            if (!m.IsOrthonormal(epsilon)) throw new ArgumentException("Matrix is not orthonormal.");
+            var tr = m.M00 + m.M11 + m.M22;
+
+            if (tr > 0)
+            {
+                __ftype__ s = (tr + 1).Sqrt() * 2;
+                __ftype__ x = (m.M21 - m.M12) / s;
+                __ftype__ y = (m.M02 - m.M20) / s;
+                __ftype__ z = (m.M10 - m.M01) / s;
+                __ftype__ w = s / 4;
+                return new __type__(new __quatt__(w, x, y, z).Normalized);
+            }
+            else if (m.M00 > m.M11 && m.M00 > m.M22)
+            {
+                __ftype__ s = Fun.Sqrt(1 + m.M00 - m.M11 - m.M22) * 2;
+                __ftype__ x = s / 4;
+                __ftype__ y = (m.M01 + m.M10) / s;
+                __ftype__ z = (m.M02 + m.M20) / s;
+                __ftype__ w = (m.M21 - m.M12) / s;
+                return new __type__(new __quatt__(w, x, y, z).Normalized);
+            }
+            else if (m.M11 > m.M22)
+            {
+                __ftype__ s = Fun.Sqrt(1 + m.M11 - m.M00 - m.M22) * 2;
+                __ftype__ x = (m.M01 + m.M10) / s;
+                __ftype__ y = s / 4;
+                __ftype__ z = (m.M12 + m.M21) / s;
+                __ftype__ w = (m.M02 - m.M20) / s;
+                return new __type__(new __quatt__(w, x, y, z).Normalized);
+            }
+            else
+            {
+                __ftype__ s = Fun.Sqrt(1 + m.M22 - m.M00 - m.M11) * 2;
+                __ftype__ x = (m.M02 + m.M20) / s;
+                __ftype__ y = (m.M12 + m.M21) / s;
+                __ftype__ z = s / 4;
+                __ftype__ w = (m.M10 - m.M01) / s;
+                return new __type__(new __quatt__(w, x, y, z).Normalized);
+            }
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation representing a rotation around 
+        /// an axis by an angle in radians.
         /// The axis vector has to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __rot3t__(__v3t__ normalizedAxis, __ft__ angleInRadians)
+        public static __type__ Rotation(__v3t__ normalizedAxis, __ftype__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
-            W = halfAngle.Cos();
             var halfAngleSin = halfAngle.Sin();
-            X = normalizedAxis.X * halfAngleSin;
-            Y = normalizedAxis.Y * halfAngleSin;
-            Z = normalizedAxis.Z * halfAngleSin;
+
+            return new __type__(halfAngle.Cos(), normalizedAxis * halfAngleSin);
         }
 
         /// <summary>
-        /// Creates quaternion from euler angles [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
-        /// </summary>
-        /// <param name="rollInRadians">Rotation around X</param>
-        /// <param name="pitchInRadians">Rotation around Y</param>
-        /// <param name="yawInRadians">Rotation around Z</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __rot3t__(__ft__ rollInRadians, __ft__ pitchInRadians, __ft__ yawInRadians)
-        {
-            __ft__ rollHalf = rollInRadians / 2;
-            __ft__ cr = Fun.Cos(rollHalf);
-            __ft__ sr = Fun.Sin(rollHalf);
-            __ft__ pitchHalf = pitchInRadians / 2;
-            __ft__ cp = Fun.Cos(pitchHalf);
-            __ft__ sp = Fun.Sin(pitchHalf);
-            __ft__ yawHalf = yawInRadians / 2;
-            __ft__ cy = Fun.Cos(yawHalf);
-            __ft__ sy = Fun.Sin(yawHalf);
-            W = cy * cp * cr + sy * sp * sr;
-            X = cy * cp * sr - sy * sp * cr;
-            Y = sy * cp * sr + cy * sp * cr;
-            Z = sy * cp * cr - cy * sp * sr;
-        }
-
-        /// <summary>
-        /// Creates a quaternion representing a rotation from one vector into another.
+        /// Creates a <see cref="__type__"/> transformation representing a rotation from one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
-        public __rot3t__(__v3t__ from, __v3t__ into)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotateInto(__v3t__ from, __v3t__ into)
         {
             var angle = from.AngleBetween(into);
 
@@ -150,697 +533,173 @@ namespace Aardvark.Base
             if (angle < __rotIntoEps__)
             {
                 // axis = a; angle = 0;
-                W = 1;
-                X = 0;
-                Y = 0;
-                Z = 0;
+                return Identity;
             }
             else if (__pi__ - angle.Abs() < __rotIntoEps__)
             {
                 //axis = a.AxisAlignedNormal(); //angle = PI;
-                this = new __rot3t__(0, from.AxisAlignedNormal());
+                return new __type__(0, from.AxisAlignedNormal());
             }
             else
             {
                 __v3t__ axis = Vec.Cross(from, into).Normalized;
-                this = new __rot3t__(axis, angle);
-            }
-        }
-
-        #endregion
-
-        #region Properties
-
-        public __ft__ this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
-                    case 0: return X;
-                    case 1: return Y;
-                    case 2: return Z;
-                    case 3: return W;
-                    default: throw new ArgumentException();
-                }
-            }
-
-            set
-            {
-                switch (index)
-                {
-                    case 0: X = value; break;
-                    case 1: Y = value; break;
-                    case 2: Z = value; break;
-                    case 3: W = value; break;
-                    default: throw new ArgumentException();
-                }
-            }
-        }
-
-        public __v3t__ V
-        {
-            get { return new __v3t__(X, Y, Z); }
-            set { X = value.X; Y = value.Y; Z = value.Z; }
-        }
-
-        #endregion
-
-        #region Constants
-        /// <summary>
-        /// Zero (0, (0,0,0))
-        /// </summary>
-        public static __rot3t__ Zero { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(0, __v3t__.Zero); }
-
-        /// <summary>
-        /// Identity (1, (0,0,0)).
-        /// </summary>
-        public static __rot3t__ Identity { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(1, 0, 0, 0); }
-
-        /// <summary>
-        /// X-Axis (0, (1,0,0)).
-        /// </summary>
-        public static __rot3t__ XAxis { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(0, 1, 0, 0); }
-
-        /// <summary>
-        /// Y-Axis (0, (0,1,0)).
-        /// </summary>
-        public static __rot3t__ YAxis { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(0, 0, 1, 0); }
-
-        /// <summary>
-        /// Z-Axis (0, (0,0,1)).
-        /// </summary>
-        public static __rot3t__ ZAxis { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new __rot3t__(0, 0, 0, 1); }
-
-        #endregion
-
-        #region Quaternion Arithmetics
-
-        /// <summary>
-        /// Gets squared norm (or squared length) of this quaternion.
-        /// </summary>
-        public __ft__ NormSquared
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => W * W + V.LengthSquared;
-        }
-
-        /// <summary>
-        /// Gets norm (or length) of this quaternion.
-        /// </summary>
-        public __ft__ Norm
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => NormSquared.Sqrt();
-        }
-
-        /// <summary>
-        /// Gets normalized (unit) quaternion from this quaternion.
-        /// </summary>
-        public __rot3t__ Normalized
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                var norm = Norm;
-                if (norm == 0) return __rot3t__.Zero;
-                var scale = 1 / norm;
-                return new __rot3t__(W * scale, V * scale);
+                return Rotation(axis, angle);
             }
         }
 
         /// <summary>
-        /// Gets the (multiplicative) inverse of this quaternion.
-        /// </summary>
-        public __rot3t__ Inverse
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                var norm = NormSquared;
-                if (norm == 0) return __rot3t__.Zero;
-                var scale = 1 / norm;
-                return new __rot3t__(W * scale, V * (-scale));
-            }
-        }
-
-        /// <summary>
-        /// Gets the conjugate of this quaternion.
-        /// For normalized rotation-quaternions this is the same as Inverted().
-        /// </summary>
-        public __rot3t__ Conjugated
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __rot3t__(W, -V);
-        }
-
-        /// <summary>
-        /// Returns the component-wise reciprocal (1/W, 1/X, 1/Y, 1/Z).
-        /// </summary>
-        public __rot3t__ Reciprocal
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __rot3t__(1 / W, 1 / X, 1 / Y, 1 / Z);
-        }
-
-        /// <summary>
-        /// Returns the Euler-Angles from the quatarnion as vector.
-        /// The vector components represent [roll (X), pitch (Y), yaw (Z)] with rotation order is Z, Y, X.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __v3t__ GetEulerAngles()
-        {
-            var test = W * Y - X * Z;
-            if (test > __eulerAnglesEps__) // singularity at north pole
-            {
-                return new __v3t__(
-                    2 * Fun.Atan2(X, W),
-                    __piHalf__,
-                    0);
-            }
-            if (test < -__eulerAnglesEps__) // singularity at south pole
-            {
-                return new __v3t__(
-                    2 * Fun.Atan2(X, W),
-                    -__piHalf__,
-                    0);
-            }
-            // From Wikipedia, conversion between quaternions and Euler angles.
-            return new __v3t__(
-                        Fun.Atan2(2 * (W * X + Y * Z),
-                                  1 - 2 * (X * X + Y * Y)),
-                        Fun.AsinClamped(2 * test),
-                        Fun.Atan2(2 * (W * Z + X * Y),
-                                  1 - 2 * (Y * Y + Z * Z)));
-        }
-
-        #endregion
-
-        #region Arithmetic Operators
-
-        /// <summary>
-        /// Returns the component-wise negation (-q.w, -q.v) of quaternion q.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator -(__rot3t__ q)
-        {
-            return new __rot3t__(-q.W, -q.X, -q.Y, -q.Z);
-        }
-
-        /// <summary>
-        /// Returns the sum of two quaternions (a.w + b.w, a.v + b.v).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator +(__rot3t__ a, __rot3t__ b)
-        {
-            return new __rot3t__(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-        }
-
-        /// <summary>
-        /// Returns (q.w + s, (q.x + s, q.y + s, q.z + s)).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator +(__rot3t__ q, __ft__ s)
-        {
-            return new __rot3t__(q.W + s, q.X + s, q.Y + s, q.Z + s);
-        }
-
-        /// <summary>
-        /// Returns (q.w + s, (q.x + s, q.y + s, q.z + s)).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator +(__ft__ s, __rot3t__ q)
-        {
-            return new __rot3t__(q.W + s, q.X + s, q.Y + s, q.Z + s);
-        }
-
-        /// <summary>
-        /// Returns (a.w - b.w, a.v - b.v).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator -(__rot3t__ a, __rot3t__ b)
-        {
-            return new __rot3t__(a.W - b.W, a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-        }
-
-        /// <summary>
-        /// Returns (q.w - s, (q.x - s, q.y - s, q.z - s)).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator -(__rot3t__ q, __ft__ s)
-        {
-            return new __rot3t__(q.W - s, q.X - s, q.Y - s, q.Z - s);
-        }
-
-        /// <summary>
-        /// Returns (s - q.w, (s - q.x, s- q.y, s- q.z)).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator -(__ft__ s, __rot3t__ q)
-        {
-            return new __rot3t__(s - q.W, s - q.X, s - q.Y, s - q.Z);
-        }
-
-        /// <summary>
-        /// Returns (q.w * s, q.v * s).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator *(__rot3t__ q, __ft__ s)
-        {
-            return new __rot3t__(q.W * s, q.X * s, q.Y * s, q.Z * s);
-        }
-
-        /// <summary>
-        /// Returns (q.w * s, q.v * s).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator *(__ft__ s, __rot3t__ q)
-        {
-            return new __rot3t__(q.W * s, q.X * s, q.Y * s, q.Z * s);
-        }
-
-        /// <summary>
-        /// Multiplies two quaternions.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator *(__rot3t__ a, __rot3t__ b)
-        {
-            return new __rot3t__(
-                a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z,
-                a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
-                a.W * b.Y + a.Y * b.W + a.Z * b.X - a.X * b.Z,
-                a.W * b.Z + a.Z * b.W + a.X * b.Y - a.Y * b.X
-                );
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __v3t__ operator *(__rot3t__ q, __v3t__ v)
-        {
-            return q.Transform(v);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __v3t__ operator *(__v3t__ v, __rot3t__ q)
-        {
-            return q.InvTransform(v);
-        }
-
-#if false //// [todo ISSUE 20090421 andi : andi] check if these are really necessary and comment them what they really do.
-        /// <summary>
-        /// </summary>
-        public static __v3t__ operator *(__rot3t__ rot, __v2t__ v)
-        {
-            return (__m33t__)rot * v;
-        }
-
-        /// <summary>
-        /// </summary>
-        public static __v3t__ operator *(__rot3t__ rot, __v3t__ v)
-        {
-            return (__m33t__)rot * v;
-        }
-
-        /// <summary>
-        /// </summary>
-        public static __v4t__ operator *(__rot3t__ rot, __v4t__ v)
-        {
-            return (__m33t__)rot * v;
-        }
-
-        /// <summary>
-        /// </summary>
-        public static __m33t__ operator *(__rot3t__ r3, __rot2t__ r2)
-        {
-            __m33t__ m33 = (__m33t__)r3;
-            __m22t__ m22 = (__m22t__)r2;
-            return new __m33t__(
-                m33.M00 * m22.M00 + m33.M01 * m22.M10,
-                m33.M00 * m22.M01 + m33.M01 * m22.M11,
-                m33.M02,
-
-                m33.M10 * m22.M00 + m33.M11 * m22.M10,
-                m33.M10 * m22.M01 + m33.M11 * m22.M11,
-                m33.M12,
-
-                m33.M20 * m22.M00 + m33.M21 * m22.M10,
-                m33.M20 * m22.M01 + m33.M21 * m22.M11,
-                m33.M22
-                );
-
-        }
-#endif
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m33t__ operator *(__rot3t__ rot, __scale3t__ m)
-        {
-            return (__m33t__)rot * m;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m34t__ operator *(__rot3t__ rot, __shift3t__ m)
-        {
-            return (__m33t__)rot * m;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m33t__ operator *(__rot3t__ rot, __m33t__ m)
-        {
-            return (__m33t__)rot * m;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __m33t__ operator *(__m33t__ m, __rot3t__ rot)
-        {
-            return m * (__m33t__)rot;
-        }
-
-        /// <summary>
-        /// Divides two quaternions.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator /(__rot3t__ a, __rot3t__ b)
-        {
-            return a * b.Reciprocal;
-        }
-
-        /// <summary>
-        /// Returns (q.w / s, q.v / s).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator /(__rot3t__ q, __ft__ s)
-        {
-            return new __rot3t__(q.W / s, q.X / s, q.Y / s, q.Z / s);
-        }
-
-        /// <summary>
-        /// Returns (s / q.w, s / q.v).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ operator /(__ft__ s, __rot3t__ q)
-        {
-            return new __rot3t__(s / q.W, s / q.X, s / q.Y, s / q.Z);
-        }
-
-        #endregion
-
-        #region Comparison Operators
-
-        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(__rot3t__ r0, __rot3t__ r1)
-        {
-            return r0.W == r1.W && r0.X == r1.X && r0.Y == r1.Y && r0.Z == r1.Z;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(__rot3t__ r0, __rot3t__ r1)
-        {
-            return !(r0 == r1);
-        }
-
-        #endregion
-
-        #region Creator Functions
-
-        /// <summary>
-        /// WARNING: UNTESTED!!!
-        /// </summary>
-        public static __rot3t__ FromFrame(__v3t__ x, __v3t__ y, __v3t__ z)
-        {
-            return From__m33t__(__m33t__.FromCols(x, y, z));
-        }
-
-        /// <summary>
-        /// Create from Rodrigues axis-angle vactor
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ FromAngleAxis(__v3t__ angleAxis)
-        {
-            __ft__ theta2 = angleAxis.LengthSquared;
-            if (theta2 > Constant<__ft__>.PositiveTinyValue)
-            {
-                var theta = Fun.Sqrt(theta2);
-                var thetaHalf = theta / 2;
-                var k = Fun.Sin(thetaHalf) / theta;
-                return new __rot3t__(Fun.Cos(thetaHalf), k * angleAxis);
-            }
-            else
-                return new __rot3t__(1, 0, 0, 0);
-        }
-
-        /// <summary>
-        /// Creates a quaternion from a rotation matrix
-        /// </summary>
-        /// <param name="m"></param>
-        /// <param name="epsilon"></param>
-        public static __rot3t__ From__m33t__(__m33t__ m, __ft__ epsilon = (__ft__)1e-6)
-        {
-            if (!m.IsOrthonormal(epsilon)) throw new ArgumentException("Matrix is not orthonormal.");
-            var tr = m.M00 + m.M11 + m.M22;
-
-            if (tr > 0)
-            {
-                __ft__ s = (tr + 1).Sqrt() * 2;
-                __ft__ x = (m.M21 - m.M12) / s;
-                __ft__ y = (m.M02 - m.M20) / s;
-                __ft__ z = (m.M10 - m.M01) / s;
-                __ft__ w = s / 4;
-                return new __rot3t__(w, x, y, z).Normalized;
-            }
-            else if (m.M00 > m.M11 && m.M00 > m.M22)
-            {
-                __ft__ s = Fun.Sqrt(1 + m.M00 - m.M11 - m.M22) * 2;
-                __ft__ x = s / 4;
-                __ft__ y = (m.M01 + m.M10) / s;
-                __ft__ z = (m.M02 + m.M20) / s;
-                __ft__ w = (m.M21 - m.M12) / s;
-                return new __rot3t__(w, x, y, z).Normalized;
-            }
-            else if (m.M11 > m.M22)
-            {
-                __ft__ s = Fun.Sqrt(1 + m.M11 - m.M00 - m.M22) * 2;
-                __ft__ x = (m.M01 + m.M10) / s;
-                __ft__ y = s / 4;
-                __ft__ z = (m.M12 + m.M21) / s;
-                __ft__ w = (m.M02 - m.M20) / s;
-                return new __rot3t__(w, x, y, z).Normalized;
-            }
-            else
-            {
-                __ft__ s = Fun.Sqrt(1 + m.M22 - m.M00 - m.M11) * 2;
-                __ft__ x = (m.M02 + m.M20) / s;
-                __ft__ y = (m.M12 + m.M21) / s;
-                __ft__ z = s / 4;
-                __ft__ w = (m.M10 - m.M01) / s;
-                return new __rot3t__(w, x, y, z).Normalized;
-            }
-        }
-
-        /// <summary>
-        /// Create rotation around the X-axis.
+        /// Creates a <see cref="__type__"/> rotation around the x-axis.
         /// <param name="angleInRadians">Rotation angle in radians</param>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ RotationX(__ft__ angleInRadians)
+        public static __type__ RotationX(__ftype__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
-            return new __rot3t__(halfAngle.Cos(), new __v3t__(halfAngle.Sin(), 0, 0));
+            return new __type__(halfAngle.Cos(), new __v3t__(halfAngle.Sin(), 0, 0));
         }
 
         /// <summary>
-        /// Create rotation around the Y-axis.
+        /// Creates a <see cref="__type__"/> rotation around the y-axis.
         /// <param name="angleInRadians">Rotation angle in radians</param>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ RotationY(__ft__ angleInRadians)
+        public static __type__ RotationY(__ftype__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
-            return new __rot3t__(halfAngle.Cos(), new __v3t__(0, halfAngle.Sin(), 0));
+            return new __type__(halfAngle.Cos(), new __v3t__(0, halfAngle.Sin(), 0));
         }
 
         /// <summary>
-        /// Create rotation around the Z-axis.
+        /// Creates a <see cref="__type__"/> rotation around the z-axis.
         /// <param name="angleInRadians">Rotation angle in radians</param>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ RotationZ(__ft__ angleInRadians)
+        public static __type__ RotationZ(__ftype__ angleInRadians)
         {
             var halfAngle = angleInRadians / 2;
-            return new __rot3t__(halfAngle.Cos(), new __v3t__(0, 0, halfAngle.Sin()));
+            return new __type__(halfAngle.Cos(), new __v3t__(0, 0, halfAngle.Sin()));
         }
 
         /// <summary>
-        /// Create rotation from euler angles as vector [roll, pitch, yaw].
+        /// Creates a <see cref="__type__"/> transformation from euler angles [roll, pitch, yaw].
         /// The rotation order is yaw (Z), pitch (Y), roll (X).
-        /// <param name="rollPitchYawInRadians">[yaw, pitch, roll] in radians</param>
+        /// </summary>
+        /// <param name="rollInRadians">Rotation in radians around X</param>
+        /// <param name="pitchInRadians">Rotation in radians around Y</param>
+        /// <param name="yawInRadians">Rotation in radians around Z</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationEuler(__ftype__ rollInRadians, __ftype__ pitchInRadians, __ftype__ yawInRadians)
+        {
+            __ftype__ rollHalf = rollInRadians / 2;
+            __ftype__ cr = Fun.Cos(rollHalf);
+            __ftype__ sr = Fun.Sin(rollHalf);
+            __ftype__ pitchHalf = pitchInRadians / 2;
+            __ftype__ cp = Fun.Cos(pitchHalf);
+            __ftype__ sp = Fun.Sin(pitchHalf);
+            __ftype__ yawHalf = yawInRadians / 2;
+            __ftype__ cy = Fun.Cos(yawHalf);
+            __ftype__ sy = Fun.Sin(yawHalf);
+
+            return new __type__(
+                cy * cp * cr + sy * sp * sr,
+                cy * cp * sr - sy * sp * cr,
+                sy * cp * sr + cy * sp * cr,
+                sy * cp * cr - cy * sp * sr);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> rotation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ FromEulerAngles(__v3t__ rollPitchYawInRadians)
-        {
-            return new __rot3t__(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
-        }
+        public static __type__ RotationEuler(__v3t__ rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
 
         #endregion
 
         #region Conversion
 
-        /// <summary>
-        /// Returns the Rodrigues angle-axis vector of the quaternion.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __v3t__ ToAngleAxis()
-        {
-            var sinTheta2 = V.LengthSquared;
-            if (sinTheta2 > Constant<__ft__>.PositiveTinyValue)
-            {
-                __ft__ sinTheta = Fun.Sqrt(sinTheta2);
-                __ft__ cosTheta = W;
-                __ft__ twoTheta = 2 * (cosTheta < 0 ? Fun.Atan2(-sinTheta, -cosTheta)
-                                                    : Fun.Atan2(sinTheta, cosTheta));
-                return V * (twoTheta / sinTheta);
-            }
-            else
-                return __v3t__.Zero;
-        }
-
-        /// <summary>
-        /// Converts this Rotation to the axis angle representation.
-        /// </summary>
-        /// <param name="axis">Output of normalized axis of rotation.</param>
-        /// <param name="angleInRadians">Output of angle of rotation about axis (Right Hand Rule).</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void ToAxisAngle(ref __v3t__ axis, ref __ft__ angleInRadians)
-        {
-            if (!Fun.ApproximateEquals(NormSquared, 1, 0.001))
-                throw new ArgumentException("Quaternion needs to be normalized to represent a rotation.");
-            angleInRadians = 2 * Fun.Acos(W);
-            var s = Fun.Sqrt(1 - W * W); // assuming quaternion normalised then w is less than 1, so term always positive.
-            if (s < 0.001)
-            { // test to avoid divide by zero, s is always positive due to sqrt
-                // if s close to zero then direction of axis not important
-                axis.X = X; // if it is important that axis is normalised then replace with x=1; y=z=0;
-                axis.Y = Y;
-                axis.Z = Z;
-            }
-            else
-            {
-                axis.X = X / s; // normalise axis
-                axis.Y = Y / s;
-                axis.Z = Z / s;
-            }
-        }
-
         // [todo ISSUE 20090421 andi> caching of the Matrix would greatly improve performance.
-        // Implement __rot3t__ as a Matrix-backed Quaternion. Quaternion should be its own class with all Quaternion-operations, 
-        // and __rot3t__ only an efficient Rotation (Matrix) that is has its Orthonormalization-Constraint enforced (by a Quaternion).
+        // Implement __type__ as a Matrix-backed Quaternion. Quaternion should be its own class with all Quaternion-operations, 
+        // and __type__ only an efficient Rotation (Matrix) that is has its Orthonormalization-Constraint enforced (by a Quaternion).
         //<]
+        //# for (int n = 3; n <= 4; n++) {
+        //# for (int m = n; m <= (n+1) && m <= 4; m++) {
+        //#     var mat = "M" + n + m + tc;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __m33t__(__rot3t__ r)
+        public static explicit operator __mat__(__type__ r)
         {
             //speed up by computing the multiplications only once (each is used 2 times below)
-            __ft__ xx = r.X * r.X;
-            __ft__ yy = r.Y * r.Y;
-            __ft__ zz = r.Z * r.Z;
-            __ft__ xy = r.X * r.Y;
-            __ft__ xz = r.X * r.Z;
-            __ft__ yz = r.Y * r.Z;
-            __ft__ xw = r.X * r.W;
-            __ft__ yw = r.Y * r.W;
-            __ft__ zw = r.Z * r.W;
-            return new __m33t__(
+            __ftype__ xx = r.X * r.X;
+            __ftype__ yy = r.Y * r.Y;
+            __ftype__ zz = r.Z * r.Z;
+            __ftype__ xy = r.X * r.Y;
+            __ftype__ xz = r.X * r.Z;
+            __ftype__ yz = r.Y * r.Z;
+            __ftype__ xw = r.X * r.W;
+            __ftype__ yw = r.Y * r.W;
+            __ftype__ zw = r.Z * r.W;
+            return new __mat__(
                 1 - 2 * (yy + zz),
                 2 * (xy - zw),
                 2 * (xz + yw),
-
+                /*# if (m == 4) {*/0,
+                /*# }*/
                 2 * (xy + zw),
                 1 - 2 * (zz + xx),
                 2 * (yz - xw),
-
+                /*# if (m == 4) {*/0,
+                /*# }*/
                 2 * (xz - yw),
                 2 * (yz + xw),
-                1 - 2 * (yy + xx)
-                );
+                1 - 2 * (yy + xx)/*# if (m == 4) {*/,
+                0/*# } if (n == 4) {*/,
+
+                /*# m.ForEach(i => { var x = (i == m - 1) ? 1 : 0; */__x__/*# }, comma); }*/);
         }
 
+        //# } }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __m44t__(__rot3t__ r)
+        public static explicit operator __ftype__[](__type__ r)
         {
-            //speed up by computing the multiplications only once (each is used 2 times below)
-            __ft__ xx = r.X * r.X;
-            __ft__ yy = r.Y * r.Y;
-            __ft__ zz = r.Z * r.Z;
-            __ft__ xy = r.X * r.Y;
-            __ft__ xz = r.X * r.Z;
-            __ft__ yz = r.Y * r.Z;
-            __ft__ xw = r.X * r.W;
-            __ft__ yw = r.Y * r.W;
-            __ft__ zw = r.Z * r.W;
-            return new __m44t__(
-                1 - 2 * (yy + zz),
-                2 * (xy - zw),
-                2 * (xz + yw),
-                0,
-
-                2 * (xy + zw),
-                1 - 2 * (zz + xx),
-                2 * (yz - xw),
-                0,
-
-                2 * (xz - yw),
-                2 * (yz + xw),
-                1 - 2 * (yy + xx),
-                0,
-
-                0, 0, 0, 1
-                );
+            __ftype__[] array = new __ftype__[__qfields.Length__];
+            /*# qfields.ForEach((f, i) => {*/array[__i__] = r.__f__;
+            /*# });*/return array;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __m34t__(__rot3t__ r)
-        {
-            //speed up by computing the multiplications only once (each is used 2 times below)
-            __ft__ xx = r.X * r.X;
-            __ft__ yy = r.Y * r.Y;
-            __ft__ zz = r.Z * r.Z;
-            __ft__ xy = r.X * r.Y;
-            __ft__ xz = r.X * r.Z;
-            __ft__ yz = r.Y * r.Z;
-            __ft__ xw = r.X * r.W;
-            __ft__ yw = r.Y * r.W;
-            __ft__ zw = r.Z * r.W;
-            return new __m34t__(
-                1 - 2 * (yy + zz),
-                2 * (xy - zw),
-                2 * (xz + yw),
-                0,
-
-                2 * (xy + zw),
-                1 - 2 * (zz + xx),
-                2 * (yz - xw),
-                0,
-
-                2 * (xz - yw),
-                2 * (yz + xw),
-                1 - 2 * (yy + xx),
-                0
-                );
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __ft__[](__rot3t__ r)
-        {
-            __ft__[] array = new __ft__[4];
-            array[0] = r.W;
-            array[1] = r.X;
-            array[2] = r.Y;
-            array[3] = r.Z;
-            return array;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Affine3__tc__(__rot3t__ r)
+        public static explicit operator Affine3__tc__(__type__ r)
             => new Affine3__tc__(r);
+
+        #endregion
+
+        #region Indexing
+
+        /// <summary>
+        /// Gets or sets the <paramref name="i"/>-th component of the <see cref="__type__"/> unit quaternion with components (W, (X, Y, Z)).
+        /// </summary>
+        public __ftype__ this[int i]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                switch (i)
+                {
+                    /*# qfields.ForEach((f, i) => {*/case __i__: return __f__;
+                    /*# });*/default: throw new IndexOutOfRangeException();
+                }
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set
+            {
+                switch (i)
+                {
+                    /*# qfields.ForEach((f, i) => {*/case __i__: __f__ = value; return;
+                    /*# });*/default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
 
         #endregion
 
@@ -853,7 +712,7 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is __rot3t__) ? (this == (__rot3t__)other) : false;
+            return (other is __type__) ? (this == (__type__)other) : false;
         }
 
         public override string ToString()
@@ -861,59 +720,10 @@ namespace Aardvark.Base
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", W, V);
         }
 
-        public static __rot3t__ Parse(string s)
+        public static __type__ Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new __rot3t__(__ft__.Parse(x[0]), __v3t__.Parse(x[1]));
-        }
-
-        #endregion
-    }
-
-    public static partial class Fun
-    {
-        #region Log, Exp
-
-        /// <summary>
-        /// Calculates the logarithm of the given quaternion.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ Log(this __rot3t__ a)
-        {
-            var result = __rot3t__.Zero;
-
-            if (a.W.Abs() < 1)
-            {
-                var angle = a.W.Acos();
-                var sin = angle.Sin();
-                result.V = (sin.Abs() >= 0) ? (a.V * (angle / sin)) : a.V;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Calculates exponent of the given quaternion.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ Exp(this __rot3t__ a)
-        {
-            var result = __rot3t__.Zero;
-
-            var angle = (a.X * a.X + a.Y * a.Y + a.Z * a.Z).Sqrt();
-            var sin = angle.Sin();
-
-            if (sin.Abs() > 0)
-            {
-                var coeff = angle / sin;
-                result.V = coeff * a.V;
-            }
-            else
-            {
-                result.V = a.V;
-            }
-
-            return result;
+            return new __type__(__ftype__.Parse(x[0]), __v3t__.Parse(x[1]));
         }
 
         #endregion
@@ -921,106 +731,171 @@ namespace Aardvark.Base
 
     public static partial class Rot
     {
-        #region Operations
-
-        /// <summary>
-        /// Inverts the given quaternion (multiplicative inverse).
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Invert(this ref __rot3t__ r)
-        {
-            var norm = r.NormSquared;
-            if (norm == 0) return;
-            var scale = 1 / norm;
-            r.W *= scale;
-            r.V *= -scale;
-        }
-
-        /// <summary>
-        /// Conjugates the given quaternion.
-        /// For normalized rotation-quaternions this is the same as Invert().
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Conjugate(this ref __rot3t__ r)
-        {
-            r.V = -r.V;
-        }
-
-        /// <summary>
-        /// Normalizes the given quaternion.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Normalize(this ref __rot3t__ r)
-        {
-            var norm = r.Norm;
-            if (norm == 0) return;
-            var scale = 1 / norm;
-            r.W *= scale;
-            r.V *= scale;
-        }
-
-        /// <summary>
-        /// Returns the component-wise reciprocal (1/q.w, 1/q.x, 1/q.y, 1/q.z)
-        /// of quaternion q.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rot3t__ Reciprocal(__rot3t__ q)
-            => q.Reciprocal;
+        #region Dot
 
         /// <summary> 
-        /// Returns the dot product of two quaternions.
+        /// Returns the dot product of two <see cref="__type__"/> unit quaternions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ft__ Dot(this __rot3t__ a, __rot3t__ b)
+        public static __ftype__ Dot(this __type__ a, __type__ b)
         {
             return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
 
         #endregion
 
-        #region Transform
+        #region Invert, Normalize
 
         /// <summary>
-        /// Transforms a vector with a quaternion.
+        /// Returns the inverse of a <see cref="__type__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __v3t__ Transform(this __rot3t__ q, __v3t__ v)
+        public static __type__ Inverse(__type__ r)
+            => r.Inverse;
+
+        /// <summary>
+        /// Inverts the given <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Invert(this ref __type__ r)
         {
-            // q * v * q'
-
-            // step 1: tmp = q * Quaternion(0, v)
-            var w = -q.X * v.X - q.Y * v.Y - q.Z * v.Z;
-            var x = q.W * v.X + q.Y * v.Z - q.Z * v.Y;
-            var y = q.W * v.Y + q.Z * v.X - q.X * v.Z;
-            var z = q.W * v.Z + q.X * v.Y - q.Y * v.X;
-
-            // step 2: tmp * q.Conjungated (q.W, -q.V)
-            return new __v3t__(
-                -w * q.X + x * q.W - y * q.Z + z * q.Y,
-                -w * q.Y + y * q.W - z * q.X + x * q.Z,
-                -w * q.Z + z * q.W - x * q.Y + y * q.X
-                );
+            r.X = -r.X;
+            r.Y = -r.Y;
+            r.Z = -r.Z;
         }
 
         /// <summary>
-        /// Transforms a vector with the inverse of a quaternion.
+        /// Returns a normalized copy of a <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __v3t__ InvTransform(this __rot3t__ q, __v3t__ v)
+        public static __type__ Normalized(__type__ r)
+            => r.Normalized;
+
+        /// <summary>
+        /// Normalizes a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Normalize(this ref __type__ r)
         {
-            // q' * v * q
+            var norm = r.Norm;
+            if (norm > 0)
+            {
+                var scale = 1 / norm;
+                /*# qfields.ForEach(f => {*/
+                r.__f__ *= scale;/*# });*/
+            }
+        }
 
-            // step 1: tmp = q.Conungated * Rot3d(0, v)
-            var w = q.X * v.X + q.Y * v.Y + q.Z * v.Z;
-            var x = q.W * v.X - q.Y * v.Z + q.Z * v.Y;
-            var y = q.W * v.Y - q.Z * v.X + q.X * v.Z;
-            var z = q.W * v.Z - q.X * v.Y + q.Y * v.X;
+        #endregion
 
-            // step 2: tmp * q
+        #region Conversion
+
+        /// <summary>
+        /// Returns the Rodrigues angle-axis vector of a <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ ToAngleAxis(this __type__ r)
+        {
+            var sinTheta2 = r.V.LengthSquared;
+            if (sinTheta2 > Constant<__ftype__>.PositiveTinyValue)
+            {
+                __ftype__ sinTheta = Fun.Sqrt(sinTheta2);
+                __ftype__ cosTheta = r.W;
+                __ftype__ twoTheta = 2 * (cosTheta < 0 ? Fun.Atan2(-sinTheta, -cosTheta)
+                                                    : Fun.Atan2(sinTheta, cosTheta));
+                return r.V * (twoTheta / sinTheta);
+            }
+            else
+                return __v3t__.Zero;
+        }
+
+        /// <summary>
+        /// Returns the axis-angle representation of a <see cref="__type__"/> transformation.
+        /// </summary>
+        /// <param name="r">A <see cref="__type__"/> transformation.</param>
+        /// <param name="axis">Output of normalized axis of rotation.</param>
+        /// <param name="angleInRadians">Output of angle of rotation in radians about axis (Right Hand Rule).</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ToAxisAngle(this __type__ r, ref __v3t__ axis, ref __ftype__ angleInRadians)
+        {
+            angleInRadians = 2 * Fun.Acos(r.W);
+            var s = Fun.Sqrt(1 - r.W * r.W); // assuming quaternion normalised then w is less than 1, so term always positive.
+            if (s < 0.001)
+            { // test to avoid divide by zero, s is always positive due to sqrt
+                // if s close to zero then direction of axis not important
+                axis.X = r.X; // if it is important that axis is normalised then replace with x=1; y=z=0;
+                axis.Y = r.Y;
+                axis.Z = r.Z;
+            }
+            else
+            {
+                axis.X = r.X / s; // normalise axis
+                axis.Y = r.Y / s;
+                axis.Z = r.Z / s;
+            }
+        }
+
+        #endregion
+
+        #region Euler Angles
+
+        /// <summary>
+        /// Returns the Euler-Angles from the given <see cref="__type__"/> as a <see cref="__v3t__"/> vector.
+        /// The vector components represent [roll (X), pitch (Y), yaw (Z)] with rotation order is Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ GetEulerAngles(this __type__ r)
+        {
+            var test = r.W * r.Y - r.X * r.Z;
+            if (test > __eulerAnglesEps__) // singularity at north pole
+            {
+                return new __v3t__(
+                    2 * Fun.Atan2(r.X, r.W),
+                    __piHalf__,
+                    0);
+            }
+            if (test < -__eulerAnglesEps__) // singularity at south pole
+            {
+                return new __v3t__(
+                    2 * Fun.Atan2(r.X, r.W),
+                    -__piHalf__,
+                    0);
+            }
+            // From Wikipedia, conversion between quaternions and Euler angles.
             return new __v3t__(
-                w * q.X + x * q.W + y * q.Z - z * q.Y,
-                w * q.Y + y * q.W + z * q.X - x * q.Z,
-                w * q.Z + z * q.W + x * q.Y - y * q.X
+                        Fun.Atan2(2 * (r.W * r.X + r.Y * r.Z),
+                                  1 - 2 * (r.X * r.X + r.Y * r.Y)),
+                        Fun.AsinClamped(2 * test),
+                        Fun.Atan2(2 * (r.W * r.Z + r.X * r.Y),
+                                  1 - 2 * (r.Y * r.Y + r.Z * r.Z)));
+        }
+
+        #endregion
+
+        #region Transformations
+
+        /// <summary>
+        /// Transforms a <see cref="__v3t__"/> vector by a <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ Transform(this __type__ r, __v3t__ v)
+            => r * v;
+
+        /// <summary>
+        /// Transforms a <see cref="__v3t__"/> vector by the inverse of a <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v3t__ InvTransform(this __type__ r, __v3t__ v)
+        {
+            var w = r.X * v.X + r.Y * v.Y + r.Z * v.Z;
+            var x = r.W * v.X - r.Y * v.Z + r.Z * v.Y;
+            var y = r.W * v.Y - r.Z * v.X + r.X * v.Z;
+            var z = r.W * v.Z - r.X * v.Y + r.Y * v.X;
+
+            return new __v3t__(
+                w * r.X + x * r.W + y * r.Z - z * r.Y,
+                w * r.Y + y * r.W + z * r.X - x * r.Z,
+                w * r.Z + z * r.W + x * r.Y - y * r.X
                 );
         }
 
@@ -1032,16 +907,16 @@ namespace Aardvark.Base
         #region ApproximateEquals
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ApproximateEquals(this __rot3t__ r0, __rot3t__ r1)
+        public static bool ApproximateEquals(this __type__ r0, __type__ r1)
         {
-            return ApproximateEquals(r0, r1, Constant<__ft__>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<__ftype__>.PositiveTinyValue);
         }
 
         // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
         // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add __rot3t__.ApproximateEquals(__rot3t__ other);
+        // [todo ISSUE 20090427 andi : andi] add __type__.ApproximateEquals(__type__ other);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ApproximateEquals(this __rot3t__ r0, __rot3t__ r1, __ft__ tolerance)
+        public static bool ApproximateEquals(this __type__ r0, __type__ r1, __ftype__ tolerance)
         {
             return (r0.W - r1.W).Abs() <= tolerance &&
                    (r0.X - r1.X).Abs() <= tolerance &&

@@ -505,7 +505,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Scale2f scale)
         {
-            scale = scale.Inverse;
+            scale.V.X = 1 / scale.V.X;
+            scale.V.Y = 1 / scale.V.Y;
         }
 
         #endregion
@@ -1099,7 +1100,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Scale3f scale)
         {
-            scale = scale.Inverse;
+            scale.V.X = 1 / scale.V.X;
+            scale.V.Y = 1 / scale.V.Y;
+            scale.V.Z = 1 / scale.V.Z;
         }
 
         #endregion
@@ -1655,7 +1658,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Scale2d scale)
         {
-            scale = scale.Inverse;
+            scale.V.X = 1 / scale.V.X;
+            scale.V.Y = 1 / scale.V.Y;
         }
 
         #endregion
@@ -2249,7 +2253,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Scale3d scale)
         {
-            scale = scale.Inverse;
+            scale.V.X = 1 / scale.V.X;
+            scale.V.Y = 1 / scale.V.Y;
+            scale.V.Z = 1 / scale.V.Z;
         }
 
         #endregion

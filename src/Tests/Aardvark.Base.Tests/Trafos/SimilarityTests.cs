@@ -18,7 +18,7 @@ namespace Aardvark.Tests
             for (int i = 0; i < 1000000; i++)
             {
                 var scale = rnd.UniformDouble() * 5;
-                var rotation = new Rot3d(rnd.UniformV3dDirection(), rnd.UniformDouble() * Constant.PiTimesTwo);
+                var rotation = Rot3d.Rotation(rnd.UniformV3dDirection(), rnd.UniformDouble() * Constant.PiTimesTwo);
                 var translation = rnd.UniformV3d() * 10;
                 
                 var s = new Similarity3d(scale, new Euclidean3d(rotation, translation));

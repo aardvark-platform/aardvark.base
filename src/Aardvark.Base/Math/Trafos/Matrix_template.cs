@@ -395,7 +395,7 @@ namespace Aardvark.Base
         public static __nmtype__ Rotation(V__x3t__ normalizedAxis, __ftype__ angleInRadians)
         {
             Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
-            return (__nmtype__)(new Rot__x3t__(normalizedAxis, angleInRadians));
+            return (__nmtype__)(Rot__x3t__.Rotation(normalizedAxis, angleInRadians));
         }
 
         /// <summary>
@@ -403,9 +403,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Rotation(__ftype__ rollInRadians, __ftype__ pitchInRadians, __ftype__ yawInRadians)
+        public static __nmtype__ RotationEuler(__ftype__ rollInRadians, __ftype__ pitchInRadians, __ftype__ yawInRadians)
         {
-            return (__nmtype__)(new Rot__x3t__(rollInRadians, pitchInRadians, yawInRadians));
+            return (__nmtype__)(Rot__x3t__.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
         }
 
         /// <summary>
@@ -413,9 +413,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Rotation(V__x3t__ roll_pitch_yaw_inRadians)
+        public static __nmtype__ RotationEuler(V__x3t__ roll_pitch_yaw_inRadians)
         {
-            return (__nmtype__)(new Rot__x3t__(
+            return (__nmtype__)(Rot__x3t__.RotationEuler(
                 roll_pitch_yaw_inRadians.X,
                 roll_pitch_yaw_inRadians.Y,
                 roll_pitch_yaw_inRadians.Z));
@@ -425,11 +425,11 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
-        public static __nmtype__ Rotation(V__x3t__ from, V__x3t__ into)
+        public static __nmtype__ RotateInto(V__x3t__ from, V__x3t__ into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
             Debug.Assert(into.LengthSquared.ApproximateEquals(1));
-            return (__nmtype__)(new Rot__x3t__(from, into));
+            return (__nmtype__)(Rot__x3t__.RotateInto(from, into));
         }
 
         /// <summary>

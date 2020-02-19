@@ -216,16 +216,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the inverse of this affine tranformation.
+        /// Gets the inverse of this affine transformation.
         /// </summary>
         public __type__ Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Debug.Assert(Linear.Invertible);
-                var i = Linear.Inverse;
-                return new __type__(i, -i * Trans);
+                var rs = new __type__(this);
+                rs.Invert();
+                return rs;
             }
         }
 
@@ -244,7 +244,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a <see cref="__type__"/> vector by an affine transformation.
+        /// Transforms a <see cref="__vmt__"/> vector by an affine transformation.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -492,8 +492,17 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Rotation(__ftype__ rollInRadians, __ftype__ pitchInRadians, __ftype__ yawInRadians)
-            => new __type__(__mnnt__.Rotation(rollInRadians, pitchInRadians, yawInRadians));
+        public static __type__ RotationEuler(__ftype__ rollInRadians, __ftype__ pitchInRadians, __ftype__ yawInRadians)
+            => new __type__(__mnnt__.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationEuler(__vnt__ rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
 
         /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
@@ -586,7 +595,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref __type__ a)
         {
-            a = a.Inverse;
+            Debug.Assert(a.Linear.Invertible);
+            a.Linear.Invert();
+            a.Trans = -a.Linear * a.Trans;
         }
 
         #endregion

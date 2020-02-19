@@ -18,7 +18,7 @@ namespace Aardvark.Tests
             {
                 var rot = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
 
-                var mat = M44d.Rotation(rot);
+                var mat = M44d.RotationEuler(rot);
                 var mat2 = (M44d)Rot3d.FromM33d((M33d)mat);
 
                 Assert.IsFalse(mat.Elements.Any(x => x.IsNaN()), "NaN");
@@ -42,17 +42,17 @@ namespace Aardvark.Tests
                 var angle = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;
 
                 var rotX1 = Rot3d.RotationX(angle);
-                var rotX2 = new Rot3d(V3d.XAxis, angle);
+                var rotX2 = Rot3d.Rotation(V3d.XAxis, angle);
 
                 Assert.True(ApproxEq(rotX1, rotX2), "EQUAL");
 
                 var rotY1 = Rot3d.RotationY(angle);
-                var rotY2 = new Rot3d(V3d.YAxis, angle);
+                var rotY2 = Rot3d.Rotation(V3d.YAxis, angle);
 
                 Assert.True(ApproxEq(rotY1, rotY2), "EQUAL");
 
                 var rotZ1 = Rot3d.RotationZ(angle);
-                var rotZ2 = new Rot3d(V3d.ZAxis, angle);
+                var rotZ2 = Rot3d.Rotation(V3d.ZAxis, angle);
 
                 Assert.True(ApproxEq(rotZ1, rotZ2), "EQUAL");
             }
@@ -66,7 +66,7 @@ namespace Aardvark.Tests
             {
                 var euler = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
                 
-                var rot = Rot3d.FromEulerAngles(euler);
+                var rot = Rot3d.RotationEuler(euler);
 
                 var qx = Rot3d.RotationX(euler.X);
                 var qy = Rot3d.RotationY(euler.Y);
@@ -76,7 +76,7 @@ namespace Aardvark.Tests
                 Assert.True(ApproxEq(rot, test), "EQUAL");
 
                 var euler2 = rot.GetEulerAngles();
-                var rot2 = Rot3d.FromEulerAngles(euler2);
+                var rot2 = Rot3d.RotationEuler(euler2);
 
                 var rot2M = (M33d)rot2;
                 var rotM = (M33d)rot;
@@ -100,9 +100,9 @@ namespace Aardvark.Tests
 
                 // Aardvark euler angles: roll (X), pitch (Y), yaw (Z). Ther are applied in reversed order.
                 var mat = (M33d)(M44d.RotationZ(yaw) * M44d.RotationY(pitch) * M44d.RotationX(roll));
-                var mat2 = (M33d)M44d.Rotation(roll, pitch, yaw);
+                var mat2 = (M33d)M44d.RotationEuler(roll, pitch, yaw);
                 var mat3 = (M33d)(Rot3d.RotationZ(yaw) * Rot3d.RotationY(pitch) * Rot3d.RotationX(roll));
-                var mat4 = (M33d)new Rot3d(roll, pitch, yaw);
+                var mat4 = (M33d)Rot3d.RotationEuler(roll, pitch, yaw);
 
                 Assert.IsTrue(Fun.ApproximateEquals(mat, mat2, 1e-7));
                 Assert.IsTrue(Fun.ApproximateEquals(mat, mat3, 1e-7));
@@ -118,7 +118,7 @@ namespace Aardvark.Tests
             {
                 // some vectors will not normalize to 1.0 -> provoke numerical issues in Rot3d
                 var vecd = new V3d(0, 0, -rnd.NextDouble());
-                var rotd = new Rot3d(V3d.OOI, vecd.Normalized);
+                var rotd = Rot3d.RotateInto(V3d.OOI, vecd.Normalized);
                 var testd = rotd.Transform(V3d.OOI);
                 Assert.True((testd + V3d.OOI).Length < 1e-8);
 
@@ -136,23 +136,23 @@ namespace Aardvark.Tests
             for (int i = 0; i < 1000000; i++)
             {
                 var dir = rnd.UniformV3d().Normalized;
-                var rotId = new Rot3d(dir, dir);
+                var rotId = Rot3d.RotateInto(dir, dir);
                 var matId = (M33d)rotId;
 
                 Assert.IsTrue(matId.IsIdentity(0));
 
-                var rot = new Rot3d(dir, -dir);
+                var rot = Rot3d.RotateInto(dir, -dir);
                 var invDir = rot.Transform(dir);
 
                 Assert.IsTrue(invDir.ApproximateEquals(-dir, 1e-14));
 
                 var dirF = rnd.UniformV3f().Normalized;
-                var rotIdF = new Rot3f(dirF, dirF);
+                var rotIdF = Rot3f.RotateInto(dirF, dirF);
                 var matIdF = (M33f)rotIdF;
 
                 Assert.IsTrue(matIdF.IsIdentity(0));
 
-                var rotF = new Rot3f(dirF, -dirF);
+                var rotF = Rot3f.RotateInto(dirF, -dirF);
                 var invDirF = rotF.Transform(dirF);
 
                 Assert.IsTrue(invDirF.ApproximateEquals(-dirF, 1e-6f));
@@ -167,14 +167,14 @@ namespace Aardvark.Tests
             {
                 var dir = rnd.UniformV3d().Normalized;
                 var eps = rnd.UniformV3d() * (i / 100) * 1e-22;
-                var rotId = new Rot3d(dir, (dir + eps).Normalized);
+                var rotId = Rot3d.RotateInto(dir, (dir + eps).Normalized);
                 var matId = (M33d)rotId;
 
                 Assert.IsTrue(matId.IsIdentity(1e-10));
 
                 var dirF = rnd.UniformV3f().Normalized;
                 var epsF = rnd.UniformV3f() * (i / 100) * 1e-12f;
-                var rotIdF = new Rot3f(dirF, (dirF + epsF).Normalized);
+                var rotIdF = Rot3f.RotateInto(dirF, (dirF + epsF).Normalized);
                 var matIdF = (M33f)rotIdF;
 
                 Assert.IsTrue(matIdF.IsIdentity(1e-7f));

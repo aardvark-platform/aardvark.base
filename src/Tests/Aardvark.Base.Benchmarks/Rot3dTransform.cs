@@ -82,7 +82,7 @@ namespace Aardvark.Base.Benchmarks
 
         static V3d TransformUsingQuaternion(Rot3d q, V3d v)
         {
-            var r = q * new Rot3d(0, v) * q.Conjugated;
+            var r = q * new Rot3d(0, v) * q.Inverse;
             return new V3d(r.X, r.Y, r.Z);
         }
 
@@ -163,7 +163,7 @@ namespace Aardvark.Base.Benchmarks
                 var v = rnd.UniformV3d();
                 var axis = rnd.UniformV3dDirection();
                 var ang = rnd.UniformDouble();
-                var rot = new Rot3d(axis, ang);
+                var rot = Rot3d.Rotation(axis, ang);
 
                 var test1 = TransformUsingM33d(rot, v);
                 var test2 = rot.Transform(v);
@@ -183,7 +183,7 @@ namespace Aardvark.Base.Benchmarks
 
         static V3d InvTransformUsingQuaternion(Rot3d rot, V3d v)
         {
-            var r = rot.Conjugated * new Rot3d(0, v) * rot;
+            var r = rot.Inverse * new Rot3d(0, v) * rot;
             return new V3d(r.X, r.Y, r.Z);
         }
 
@@ -223,7 +223,7 @@ namespace Aardvark.Base.Benchmarks
                 var v = rnd.UniformV3d();
                 var axis = rnd.UniformV3dDirection();
                 var ang = rnd.UniformDouble();
-                var rot = new Rot3d(axis, ang);
+                var rot = Rot3d.Rotation(axis, ang);
 
                 var test1 = InvTransformUsingM33d(rot, v);
                 var test2 = rot.InvTransform(v);

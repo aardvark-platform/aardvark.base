@@ -147,24 +147,24 @@ namespace Aardvark.Base
         public static Trafo3f RotationZInDegrees(float angleInDegrees)
             => RotationZ(Conversion.RadiansFromDegrees(angleInDegrees));
 
-        public static Trafo3f Rotation(float rollInRadians, float pitchInRadians, float yawInRadians)
+        public static Trafo3f RotationEuler(float rollInRadians, float pitchInRadians, float yawInRadians)
         {
-            var m = M44f.Rotation(rollInRadians, pitchInRadians, yawInRadians);
+            var m = M44f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians);
             return new Trafo3f(m, m.Transposed); //transposed is equal but faster to inverted on orthonormal matrices like rotations.
         }
 
-        public static Trafo3f RotationInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
-            => Rotation(rollInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), yawInDegrees.RadiansFromDegrees());
+        public static Trafo3f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
+            => RotationEuler(rollInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), yawInDegrees.RadiansFromDegrees());
 
-        public static Trafo3f Rotation(V3f roll_pitch_yaw_inRadians)
-            => Rotation(roll_pitch_yaw_inRadians.X, roll_pitch_yaw_inRadians.Y, roll_pitch_yaw_inRadians.Z);
+        public static Trafo3f RotationEuler(V3f roll_pitch_yaw_inRadians)
+            => RotationEuler(roll_pitch_yaw_inRadians.X, roll_pitch_yaw_inRadians.Y, roll_pitch_yaw_inRadians.Z);
 
-        public static Trafo3f RotationInDegrees(V3f roll_pitch_yaw_inDegrees)
-            => RotationInDegrees(roll_pitch_yaw_inDegrees.X, roll_pitch_yaw_inDegrees.Y, roll_pitch_yaw_inDegrees.Z);
+        public static Trafo3f RotationEulerInDegrees(V3f roll_pitch_yaw_inDegrees)
+            => RotationEulerInDegrees(roll_pitch_yaw_inDegrees.X, roll_pitch_yaw_inDegrees.Y, roll_pitch_yaw_inDegrees.Z);
 
         public static Trafo3f RotateInto(V3f from, V3f into)
         {
-            var rot = new Rot3f(from, into);
+            var rot = Rot3f.RotateInto(from, into);
             var inv = rot.Inverse;
             return new Trafo3f((M44f)rot, (M44f)inv);
         }
@@ -181,7 +181,7 @@ namespace Aardvark.Base
         ///       The rotation is in Euler-Angles (yaw, pitch, roll).
         /// </summary>
         public static Trafo3f FromComponents(V3f scale, V3f rotation, V3f translation)
-            => Scale(scale) * Rotation(rotation) * Translation(translation);
+            => Scale(scale) * RotationEuler(rotation) * Translation(translation);
 
         public static Trafo3f ShearYZ(float factorY, float factorZ)
             => new Trafo3f(M44f.ShearYZ(factorY, factorZ),
@@ -680,24 +680,24 @@ namespace Aardvark.Base
         public static Trafo3d RotationZInDegrees(double angleInDegrees)
             => RotationZ(Conversion.RadiansFromDegrees(angleInDegrees));
 
-        public static Trafo3d Rotation(double rollInRadians, double pitchInRadians, double yawInRadians)
+        public static Trafo3d RotationEuler(double rollInRadians, double pitchInRadians, double yawInRadians)
         {
-            var m = M44d.Rotation(rollInRadians, pitchInRadians, yawInRadians);
+            var m = M44d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians);
             return new Trafo3d(m, m.Transposed); //transposed is equal but faster to inverted on orthonormal matrices like rotations.
         }
 
-        public static Trafo3d RotationInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
-            => Rotation(rollInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), yawInDegrees.RadiansFromDegrees());
+        public static Trafo3d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
+            => RotationEuler(rollInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), yawInDegrees.RadiansFromDegrees());
 
-        public static Trafo3d Rotation(V3d roll_pitch_yaw_inRadians)
-            => Rotation(roll_pitch_yaw_inRadians.X, roll_pitch_yaw_inRadians.Y, roll_pitch_yaw_inRadians.Z);
+        public static Trafo3d RotationEuler(V3d roll_pitch_yaw_inRadians)
+            => RotationEuler(roll_pitch_yaw_inRadians.X, roll_pitch_yaw_inRadians.Y, roll_pitch_yaw_inRadians.Z);
 
-        public static Trafo3d RotationInDegrees(V3d roll_pitch_yaw_inDegrees)
-            => RotationInDegrees(roll_pitch_yaw_inDegrees.X, roll_pitch_yaw_inDegrees.Y, roll_pitch_yaw_inDegrees.Z);
+        public static Trafo3d RotationEulerInDegrees(V3d roll_pitch_yaw_inDegrees)
+            => RotationEulerInDegrees(roll_pitch_yaw_inDegrees.X, roll_pitch_yaw_inDegrees.Y, roll_pitch_yaw_inDegrees.Z);
 
         public static Trafo3d RotateInto(V3d from, V3d into)
         {
-            var rot = new Rot3d(from, into);
+            var rot = Rot3d.RotateInto(from, into);
             var inv = rot.Inverse;
             return new Trafo3d((M44d)rot, (M44d)inv);
         }
@@ -714,7 +714,7 @@ namespace Aardvark.Base
         ///       The rotation is in Euler-Angles (yaw, pitch, roll).
         /// </summary>
         public static Trafo3d FromComponents(V3d scale, V3d rotation, V3d translation)
-            => Scale(scale) * Rotation(rotation) * Translation(translation);
+            => Scale(scale) * RotationEuler(rotation) * Translation(translation);
 
         public static Trafo3d ShearYZ(double factorY, double factorZ)
             => new Trafo3d(M44d.ShearYZ(factorY, factorZ),

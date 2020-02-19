@@ -68,7 +68,7 @@ namespace Aardvark.Base
                 double s1 = ((1.0 - t) * omega).Sin() / sinomega;
                 double s2 = (t * omega).Sin() / sinomega;
 
-                result = s1 * a + s2 * q3;
+                result = new Rot3d(s1 * a + s2 * q3);
             }
             else if (cosomega > 0)
             {
@@ -77,7 +77,7 @@ namespace Aardvark.Base
                 double s1 = 1.0 - t;
                 double s2 = t;
 
-                result = s1 * a + s2 * q3;
+                result = new Rot3d(s1 * a + s2 * q3);
             }
             else
             {
@@ -88,7 +88,7 @@ namespace Aardvark.Base
                 double s1 = ((0.5 - t) * Constant.Pi).Sin();
                 double s2 = (t * Constant.Pi).Sin();
 
-                result = s1 * a + s2 * result;
+                result = new Rot3d(s1 * a + s2 * result);
             }
 
             return result;
@@ -116,7 +116,7 @@ namespace Aardvark.Base
             if (cosomega < 0.0)
             {
                 cosomega = -cosomega;
-                q3 *= -1; //q3 = -q3;
+                q3 = -q3;
             }
 
             if (cosomega >= 1.0)
@@ -137,7 +137,7 @@ namespace Aardvark.Base
                 float s1 = (float)(System.Math.Sin((1.0 - t) * omega) / sinomega);
                 float s2 = (float)(System.Math.Sin(t * omega) / sinomega);
 
-                result = s1 * q1 + s2 * q3;
+                result = new Rot3f(s1 * q1 + s2 * q3);
             }
             else if (cosomega > 0)
             {
@@ -146,7 +146,7 @@ namespace Aardvark.Base
                 float s1 = 1.0f - (float)t;
                 float s2 = (float)t;
 
-                result = s1 * q1 + s2 * q3;
+                result = new Rot3f(s1 * q1 + s2 * q3);
             }
             else
             {
@@ -160,7 +160,7 @@ namespace Aardvark.Base
                 float s1 = (float)System.Math.Sin((0.5 - t) * System.Math.PI);
                 float s2 = (float)System.Math.Sin(t * System.Math.PI);
 
-                result = s1 * q1 + s2 * result;
+                result = new Rot3f(s1 * q1 + s2 * result);
             }
 
             return result;

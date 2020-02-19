@@ -157,24 +157,24 @@ namespace Aardvark.Base
         public static __type__ RotationZInDegrees(__rtype__ angleInDegrees)
             => RotationZ(Conversion.RadiansFromDegrees(angleInDegrees));
 
-        public static __type__ Rotation(__rtype__ rollInRadians, __rtype__ pitchInRadians, __rtype__ yawInRadians)
+        public static __type__ RotationEuler(__rtype__ rollInRadians, __rtype__ pitchInRadians, __rtype__ yawInRadians)
         {
-            var m = __m44t__.Rotation(rollInRadians, pitchInRadians, yawInRadians);
+            var m = __m44t__.RotationEuler(rollInRadians, pitchInRadians, yawInRadians);
             return new __type__(m, m.Transposed); //transposed is equal but faster to inverted on orthonormal matrices like rotations.
         }
 
-        public static __type__ RotationInDegrees(__rtype__ rollInDegrees, __rtype__ pitchInDegrees, __rtype__ yawInDegrees)
-            => Rotation(rollInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), yawInDegrees.RadiansFromDegrees());
+        public static __type__ RotationEulerInDegrees(__rtype__ rollInDegrees, __rtype__ pitchInDegrees, __rtype__ yawInDegrees)
+            => RotationEuler(rollInDegrees.RadiansFromDegrees(), pitchInDegrees.RadiansFromDegrees(), yawInDegrees.RadiansFromDegrees());
 
-        public static __type__ Rotation(__v3t__ roll_pitch_yaw_inRadians)
-            => Rotation(roll_pitch_yaw_inRadians.X, roll_pitch_yaw_inRadians.Y, roll_pitch_yaw_inRadians.Z);
+        public static __type__ RotationEuler(__v3t__ roll_pitch_yaw_inRadians)
+            => RotationEuler(roll_pitch_yaw_inRadians.X, roll_pitch_yaw_inRadians.Y, roll_pitch_yaw_inRadians.Z);
 
-        public static __type__ RotationInDegrees(__v3t__ roll_pitch_yaw_inDegrees)
-            => RotationInDegrees(roll_pitch_yaw_inDegrees.X, roll_pitch_yaw_inDegrees.Y, roll_pitch_yaw_inDegrees.Z);
+        public static __type__ RotationEulerInDegrees(__v3t__ roll_pitch_yaw_inDegrees)
+            => RotationEulerInDegrees(roll_pitch_yaw_inDegrees.X, roll_pitch_yaw_inDegrees.Y, roll_pitch_yaw_inDegrees.Z);
 
         public static __type__ RotateInto(__v3t__ from, __v3t__ into)
         {
-            var rot = new __rot3t__(from, into);
+            var rot = __rot3t__.RotateInto(from, into);
             var inv = rot.Inverse;
             return new __type__((__m44t__)rot, (__m44t__)inv);
         }
@@ -191,7 +191,7 @@ namespace Aardvark.Base
         ///       The rotation is in Euler-Angles (yaw, pitch, roll).
         /// </summary>
         public static __type__ FromComponents(__v3t__ scale, __v3t__ rotation, __v3t__ translation)
-            => Scale(scale) * Rotation(rotation) * Translation(translation);
+            => Scale(scale) * RotationEuler(rotation) * Translation(translation);
 
         public static __type__ ShearYZ(__rtype__ factorY, __rtype__ factorZ)
             => new __type__(__m44t__.ShearYZ(factorY, factorZ),

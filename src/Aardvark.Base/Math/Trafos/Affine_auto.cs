@@ -184,16 +184,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the inverse of this affine tranformation.
+        /// Gets the inverse of this affine transformation.
         /// </summary>
         public Affine2f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Debug.Assert(Linear.Invertible);
-                var i = Linear.Inverse;
-                return new Affine2f(i, -i * Trans);
+                var rs = new Affine2f(this);
+                rs.Invert();
+                return rs;
             }
         }
 
@@ -212,7 +212,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a <see cref="Affine2f"/> vector by an affine transformation.
+        /// Transforms a <see cref="V3f"/> vector by an affine transformation.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -445,7 +445,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Affine2f a)
         {
-            a = a.Inverse;
+            Debug.Assert(a.Linear.Invertible);
+            a.Linear.Invert();
+            a.Trans = -a.Linear * a.Trans;
         }
 
         #endregion
@@ -719,16 +721,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the inverse of this affine tranformation.
+        /// Gets the inverse of this affine transformation.
         /// </summary>
         public Affine3f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Debug.Assert(Linear.Invertible);
-                var i = Linear.Inverse;
-                return new Affine3f(i, -i * Trans);
+                var rs = new Affine3f(this);
+                rs.Invert();
+                return rs;
             }
         }
 
@@ -747,7 +749,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a <see cref="Affine3f"/> vector by an affine transformation.
+        /// Transforms a <see cref="V4f"/> vector by an affine transformation.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1018,8 +1020,17 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Affine3f Rotation(float rollInRadians, float pitchInRadians, float yawInRadians)
-            => new Affine3f(M33f.Rotation(rollInRadians, pitchInRadians, yawInRadians));
+        public static Affine3f RotationEuler(float rollInRadians, float pitchInRadians, float yawInRadians)
+            => new Affine3f(M33f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f RotationEuler(V3f rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
 
         /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
@@ -1111,7 +1122,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Affine3f a)
         {
-            a = a.Inverse;
+            Debug.Assert(a.Linear.Invertible);
+            a.Linear.Invert();
+            a.Trans = -a.Linear * a.Trans;
         }
 
         #endregion
@@ -1383,16 +1396,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the inverse of this affine tranformation.
+        /// Gets the inverse of this affine transformation.
         /// </summary>
         public Affine2d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Debug.Assert(Linear.Invertible);
-                var i = Linear.Inverse;
-                return new Affine2d(i, -i * Trans);
+                var rs = new Affine2d(this);
+                rs.Invert();
+                return rs;
             }
         }
 
@@ -1411,7 +1424,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a <see cref="Affine2d"/> vector by an affine transformation.
+        /// Transforms a <see cref="V3d"/> vector by an affine transformation.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1644,7 +1657,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Affine2d a)
         {
-            a = a.Inverse;
+            Debug.Assert(a.Linear.Invertible);
+            a.Linear.Invert();
+            a.Trans = -a.Linear * a.Trans;
         }
 
         #endregion
@@ -1918,16 +1933,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the inverse of this affine tranformation.
+        /// Gets the inverse of this affine transformation.
         /// </summary>
         public Affine3d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Debug.Assert(Linear.Invertible);
-                var i = Linear.Inverse;
-                return new Affine3d(i, -i * Trans);
+                var rs = new Affine3d(this);
+                rs.Invert();
+                return rs;
             }
         }
 
@@ -1946,7 +1961,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Transforms a <see cref="Affine3d"/> vector by an affine transformation.
+        /// Transforms a <see cref="V4d"/> vector by an affine transformation.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2217,8 +2232,17 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Affine3d Rotation(double rollInRadians, double pitchInRadians, double yawInRadians)
-            => new Affine3d(M33d.Rotation(rollInRadians, pitchInRadians, yawInRadians));
+        public static Affine3d RotationEuler(double rollInRadians, double pitchInRadians, double yawInRadians)
+            => new Affine3d(M33d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d RotationEuler(V3d rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
 
         /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
@@ -2310,7 +2334,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref Affine3d a)
         {
-            a = a.Inverse;
+            Debug.Assert(a.Linear.Invertible);
+            a.Linear.Invert();
+            a.Trans = -a.Linear * a.Trans;
         }
 
         #endregion

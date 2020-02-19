@@ -20418,7 +20418,7 @@ namespace Aardvark.Base
         public static M33f Rotation(V3f normalizedAxis, float angleInRadians)
         {
             Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
-            return (M33f)(new Rot3f(normalizedAxis, angleInRadians));
+            return (M33f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
         /// <summary>
@@ -20426,9 +20426,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f Rotation(float rollInRadians, float pitchInRadians, float yawInRadians)
+        public static M33f RotationEuler(float rollInRadians, float pitchInRadians, float yawInRadians)
         {
-            return (M33f)(new Rot3f(rollInRadians, pitchInRadians, yawInRadians));
+            return (M33f)(Rot3f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
         }
 
         /// <summary>
@@ -20436,9 +20436,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f Rotation(V3f roll_pitch_yaw_inRadians)
+        public static M33f RotationEuler(V3f roll_pitch_yaw_inRadians)
         {
-            return (M33f)(new Rot3f(
+            return (M33f)(Rot3f.RotationEuler(
                 roll_pitch_yaw_inRadians.X,
                 roll_pitch_yaw_inRadians.Y,
                 roll_pitch_yaw_inRadians.Z));
@@ -20448,11 +20448,11 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
-        public static M33f Rotation(V3f from, V3f into)
+        public static M33f RotateInto(V3f from, V3f into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
             Debug.Assert(into.LengthSquared.ApproximateEquals(1));
-            return (M33f)(new Rot3f(from, into));
+            return (M33f)(Rot3f.RotateInto(from, into));
         }
 
         /// <summary>
@@ -22892,7 +22892,7 @@ namespace Aardvark.Base
         public static M33d Rotation(V3d normalizedAxis, double angleInRadians)
         {
             Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
-            return (M33d)(new Rot3d(normalizedAxis, angleInRadians));
+            return (M33d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
         /// <summary>
@@ -22900,9 +22900,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d Rotation(double rollInRadians, double pitchInRadians, double yawInRadians)
+        public static M33d RotationEuler(double rollInRadians, double pitchInRadians, double yawInRadians)
         {
-            return (M33d)(new Rot3d(rollInRadians, pitchInRadians, yawInRadians));
+            return (M33d)(Rot3d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
         }
 
         /// <summary>
@@ -22910,9 +22910,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d Rotation(V3d roll_pitch_yaw_inRadians)
+        public static M33d RotationEuler(V3d roll_pitch_yaw_inRadians)
         {
-            return (M33d)(new Rot3d(
+            return (M33d)(Rot3d.RotationEuler(
                 roll_pitch_yaw_inRadians.X,
                 roll_pitch_yaw_inRadians.Y,
                 roll_pitch_yaw_inRadians.Z));
@@ -22922,11 +22922,11 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
-        public static M33d Rotation(V3d from, V3d into)
+        public static M33d RotateInto(V3d from, V3d into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
             Debug.Assert(into.LengthSquared.ApproximateEquals(1));
-            return (M33d)(new Rot3d(from, into));
+            return (M33d)(Rot3d.RotateInto(from, into));
         }
 
         /// <summary>
@@ -29895,7 +29895,7 @@ namespace Aardvark.Base
         public static M34f Rotation(V3f normalizedAxis, float angleInRadians)
         {
             Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
-            return (M34f)(new Rot3f(normalizedAxis, angleInRadians));
+            return (M34f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
         /// <summary>
@@ -29903,9 +29903,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f Rotation(float rollInRadians, float pitchInRadians, float yawInRadians)
+        public static M34f RotationEuler(float rollInRadians, float pitchInRadians, float yawInRadians)
         {
-            return (M34f)(new Rot3f(rollInRadians, pitchInRadians, yawInRadians));
+            return (M34f)(Rot3f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
         }
 
         /// <summary>
@@ -29913,9 +29913,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f Rotation(V3f roll_pitch_yaw_inRadians)
+        public static M34f RotationEuler(V3f roll_pitch_yaw_inRadians)
         {
-            return (M34f)(new Rot3f(
+            return (M34f)(Rot3f.RotationEuler(
                 roll_pitch_yaw_inRadians.X,
                 roll_pitch_yaw_inRadians.Y,
                 roll_pitch_yaw_inRadians.Z));
@@ -29925,11 +29925,11 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
-        public static M34f Rotation(V3f from, V3f into)
+        public static M34f RotateInto(V3f from, V3f into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
             Debug.Assert(into.LengthSquared.ApproximateEquals(1));
-            return (M34f)(new Rot3f(from, into));
+            return (M34f)(Rot3f.RotateInto(from, into));
         }
 
         /// <summary>
@@ -32167,7 +32167,7 @@ namespace Aardvark.Base
         public static M34d Rotation(V3d normalizedAxis, double angleInRadians)
         {
             Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
-            return (M34d)(new Rot3d(normalizedAxis, angleInRadians));
+            return (M34d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
         /// <summary>
@@ -32175,9 +32175,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d Rotation(double rollInRadians, double pitchInRadians, double yawInRadians)
+        public static M34d RotationEuler(double rollInRadians, double pitchInRadians, double yawInRadians)
         {
-            return (M34d)(new Rot3d(rollInRadians, pitchInRadians, yawInRadians));
+            return (M34d)(Rot3d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
         }
 
         /// <summary>
@@ -32185,9 +32185,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d Rotation(V3d roll_pitch_yaw_inRadians)
+        public static M34d RotationEuler(V3d roll_pitch_yaw_inRadians)
         {
-            return (M34d)(new Rot3d(
+            return (M34d)(Rot3d.RotationEuler(
                 roll_pitch_yaw_inRadians.X,
                 roll_pitch_yaw_inRadians.Y,
                 roll_pitch_yaw_inRadians.Z));
@@ -32197,11 +32197,11 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
-        public static M34d Rotation(V3d from, V3d into)
+        public static M34d RotateInto(V3d from, V3d into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
             Debug.Assert(into.LengthSquared.ApproximateEquals(1));
-            return (M34d)(new Rot3d(from, into));
+            return (M34d)(Rot3d.RotateInto(from, into));
         }
 
         /// <summary>
@@ -40154,7 +40154,7 @@ namespace Aardvark.Base
         public static M44f Rotation(V3f normalizedAxis, float angleInRadians)
         {
             Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
-            return (M44f)(new Rot3f(normalizedAxis, angleInRadians));
+            return (M44f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
         /// <summary>
@@ -40162,9 +40162,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f Rotation(float rollInRadians, float pitchInRadians, float yawInRadians)
+        public static M44f RotationEuler(float rollInRadians, float pitchInRadians, float yawInRadians)
         {
-            return (M44f)(new Rot3f(rollInRadians, pitchInRadians, yawInRadians));
+            return (M44f)(Rot3f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
         }
 
         /// <summary>
@@ -40172,9 +40172,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f Rotation(V3f roll_pitch_yaw_inRadians)
+        public static M44f RotationEuler(V3f roll_pitch_yaw_inRadians)
         {
-            return (M44f)(new Rot3f(
+            return (M44f)(Rot3f.RotationEuler(
                 roll_pitch_yaw_inRadians.X,
                 roll_pitch_yaw_inRadians.Y,
                 roll_pitch_yaw_inRadians.Z));
@@ -40184,11 +40184,11 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
-        public static M44f Rotation(V3f from, V3f into)
+        public static M44f RotateInto(V3f from, V3f into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
             Debug.Assert(into.LengthSquared.ApproximateEquals(1));
-            return (M44f)(new Rot3f(from, into));
+            return (M44f)(Rot3f.RotateInto(from, into));
         }
 
         /// <summary>
@@ -43024,7 +43024,7 @@ namespace Aardvark.Base
         public static M44d Rotation(V3d normalizedAxis, double angleInRadians)
         {
             Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
-            return (M44d)(new Rot3d(normalizedAxis, angleInRadians));
+            return (M44d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
         /// <summary>
@@ -43032,9 +43032,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d Rotation(double rollInRadians, double pitchInRadians, double yawInRadians)
+        public static M44d RotationEuler(double rollInRadians, double pitchInRadians, double yawInRadians)
         {
-            return (M44d)(new Rot3d(rollInRadians, pitchInRadians, yawInRadians));
+            return (M44d)(Rot3d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
         }
 
         /// <summary>
@@ -43042,9 +43042,9 @@ namespace Aardvark.Base
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d Rotation(V3d roll_pitch_yaw_inRadians)
+        public static M44d RotationEuler(V3d roll_pitch_yaw_inRadians)
         {
-            return (M44d)(new Rot3d(
+            return (M44d)(Rot3d.RotationEuler(
                 roll_pitch_yaw_inRadians.X,
                 roll_pitch_yaw_inRadians.Y,
                 roll_pitch_yaw_inRadians.Z));
@@ -43054,11 +43054,11 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
-        public static M44d Rotation(V3d from, V3d into)
+        public static M44d RotateInto(V3d from, V3d into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
             Debug.Assert(into.LengthSquared.ApproximateEquals(1));
-            return (M44d)(new Rot3d(from, into));
+            return (M44d)(Rot3d.RotateInto(from, into));
         }
 
         /// <summary>
