@@ -150,11 +150,13 @@ namespace Aardvark.Base
             => GetAll___<(MethodInfo, T[])>(a, typeof(T).FullName,
                   lines => from line in lines
                            let t = Type.GetType(line)
+                           where t != null
                            from m in t.GetMethods()
                            let attribs = m.GetCustomAttributes(typeof(T), false)
                            where attribs.Length > 0
                            select (m, attribs.Select(x => (T)x).ToArray()),
                   types => from t in types
+                           where t != null
                            from m in t.GetMethods()
                            let attribs = m.GetCustomAttributes(typeof(T), false)
                            where attribs.Length > 0
@@ -1497,12 +1499,6 @@ namespace Aardvark.Base
             Report.Line("Processor:   {0} core {1}", Environment.ProcessorCount, ArchitectureString(RuntimeInformation.OSArchitecture));
             Report.Line("Process:     {0}", ArchitectureString(RuntimeInformation.ProcessArchitecture));
             Report.Line("Framework:   {0}", RuntimeInformation.FrameworkDescription);
-
-            if (RuntimeInformation.OSDescription.StartsWith("Darwin"))
-            {
-                Report.Error("Sorry, MacOS is not supported yet!");
-                Environment.Exit(1);
-            }
 
             if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
             {

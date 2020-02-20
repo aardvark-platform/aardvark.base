@@ -9,8 +9,9 @@ namespace PixImageDemo
         public static void Main(string[] args)
         {
             Aardvark.Base.Aardvark.Init();
-            // require a directory of the following name inside the Aardvark workdir.
-            string dir = @"C:\Users\schorsch\Desktop\demo";
+            var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "PixImageDemo");
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
             
             PolygonDemo(dir);
             HowManyColorsIllusion(dir);

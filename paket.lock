@@ -21,7 +21,7 @@ NUGET
       FSharp.Core (>= 4.6.2)
       FSharp.Data.Adaptive (0.0.16)
       System.Reflection.Emit.Lightweight (>= 4.6 < 4.7)
-    DevILSharp (0.2.7)
+    DevILSharp (0.2.8)
       FSharp.Core (>= 4.6.2)
     Expecto (8.12)
       FSharp.Core (>= 4.3.4)
