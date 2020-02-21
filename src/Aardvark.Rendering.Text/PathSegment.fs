@@ -89,8 +89,8 @@ module Helpers =
 
             if Fun.IsTiny(Vec.dot a0 a1, epsilon) then
                 let d = pt - x.Center
-                let u = a0.Dot d
-                let v = a1.Dot d
+                let u = a0.Dot d / l0
+                let v = a1.Dot d / l1
                 atan2 v u
             else
                 failwith "cannot get alpha for bad ellipse"
@@ -733,12 +733,14 @@ module private PathSegmentIntersections =
                 let mutable t = V2d(atl, atr)
                 let mutable lastStep = 1E10
                 let mutable iter = 0
-                while iter < 30 && lastStep > 1E-20 do
+                while iter < 30 && lastStep > 1E-15 do
                     let dt = newtonStep t
                     t <- t + dt
                     lastStep <- dt.NormMax
                     iter <- iter + 1
                 
+                
+
                 let tl = clamp 0.0 1.0 t.X
                 let tr = clamp 0.0 1.0 t.Y
                 let pl = point tl l
@@ -768,7 +770,7 @@ module private PathSegmentIntersections =
                 let lb = bounds l
                 let rb = bounds r
                 if lb.Intersects rb then
-                    if lb.Size.NormMax <= epsilon && rb.Size.NormMax <= epsilon then
+                    if lb.Size.NormMax <= 1E-6 || rb.Size.NormMax <= 1E-6 then
                         add (lo + ls/2.0) (ro + rs/2.0)
                     else
                         let l0, l1 = halves l
