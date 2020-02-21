@@ -250,18 +250,18 @@ module Path =
     /// creates a path using the given segments
     let ofSeq (segments : seq<PathSegment>) =
         let arr = Seq.toArray segments
-        let bounds = arr |> Array.fold (fun l r -> Box2d.Union(l,PathSegment.bounds r)) Box2d.Invalid
+        let bounds = arr |> Array.fold (fun l r -> Box.Union(l,PathSegment.bounds r)) Box2d.Invalid
         { bounds = bounds; outline = arr }
 
     /// creates a path using the given segments
     let ofList (segments : list<PathSegment>) =
         let arr = List.toArray segments
-        let bounds = arr |> Array.fold (fun l r -> Box2d.Union(l,PathSegment.bounds r)) Box2d.Invalid
+        let bounds = arr |> Array.fold (fun l r -> Box.Union(l,PathSegment.bounds r)) Box2d.Invalid
         { bounds = bounds; outline = arr }
 
     /// creates a path using the given segments
     let ofArray (segments : PathSegment[]) =
-        let bounds = segments |> Array.fold (fun l r -> Box2d.Union(l,PathSegment.bounds r)) Box2d.Invalid
+        let bounds = segments |> Array.fold (fun l r -> Box.Union(l,PathSegment.bounds r)) Box2d.Invalid
         { bounds = bounds; outline = segments }
 
     /// returns all path segments
@@ -278,11 +278,11 @@ module Path =
 
     /// concatenates two paths
     let append (l : Path) (r : Path) =
-        { bounds = Box2d.Union(l.bounds, r.bounds); outline = Array.append l.outline r.outline }
+        { bounds = Box.Union(l.bounds, r.bounds); outline = Array.append l.outline r.outline }
 
     /// concatenates a sequence paths
     let concat (l : seq<Path>) =
-        let bounds = l |> Seq.fold (fun l r -> Box2d.Union(l, r.bounds)) Box2d.Invalid
+        let bounds = l |> Seq.fold (fun l r -> Box.Union(l, r.bounds)) Box2d.Invalid
         let arr = l |> Seq.collect toArray |> Seq.toArray
         { bounds = bounds; outline = arr }
 
