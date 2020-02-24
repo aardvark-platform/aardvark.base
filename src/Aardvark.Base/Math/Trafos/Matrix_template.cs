@@ -1331,49 +1331,7 @@ namespace Aardvark.Base
         }
 
         //# } }
-        //# if (m == 2) {
-        /// <summary>
-        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ftype__ TransformDir(this __nmtype__ m, __ftype__ v)
-        {
-            return m.M00 * v;
-        }
-
-        /// <summary>
-        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
-        /// No projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ftype__ TransformPos(this __nmtype__ m, __ftype__ p)
-        {
-            return m.M00 * p + m.M01;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ftype__ TransformPosProj(this __nmtype__ m, __ftype__ p)
-        {
-            __ftype__ s = m.M10 * p + m.M11;
-            s = 1 / s;
-            return (TransformPos(m, p)) * s;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vmtype__ TransformPosProjFull(this __nmtype__ m, __ftype__ p)
-        {
-            return new __vmtype__(TransformPos(m, p), m.M10 * p + m.M11);
-        }
-
-        //# } else { // m != 2
+        //# if (m > 2) {
         /// <summary>
         /// Transforms direction vector v (v.__fields[m-1]__ is presumed 0.0) by matrix m.
         /// </summary>
@@ -1460,7 +1418,7 @@ namespace Aardvark.Base
         }
 
         //# } // n != m
-        //# } // m != 2
+        //# } // m > 2
         #endregion
 
         #region Operations

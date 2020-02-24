@@ -157,10 +157,9 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var norm = Norm;
-                if (norm == 0) return Zero;
-                var scale = 1 / norm;
-                return new QuaternionF(W * scale, X * scale, Y * scale, Z * scale);
+                var rs = new QuaternionF(this);
+                rs.Normalize();
+                return rs;
             }
         }
 
@@ -173,10 +172,9 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var norm = NormSquared;
-                if (norm == 0) return Zero;
-                var scale = 1 / norm;
-                return new QuaternionF(W * scale, V * (-scale));
+                var rs = new QuaternionF(this);
+                rs.Invert();
+                return rs;
             }
         }
 
@@ -499,7 +497,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref QuaternionF q)
         {
-            q = q.Inverse;
+            var norm = q.NormSquared;
+            if (norm > 0)
+            {
+                var scale = 1 / norm;
+                q.W *= scale;
+                q.X *= -scale;
+                q.Y *= -scale;
+                q.Z *= -scale;
+            }
         }
 
         /// <summary>
@@ -515,7 +521,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref QuaternionF q)
         {
-            q = q.Normalized;
+            var norm = q.NormSquared;
+            if (norm > 0)
+            {
+                var scale = 1 / norm;
+                q.W *= scale;
+                q.X *= scale;
+                q.Y *= scale;
+                q.Z *= scale;
+            }
         }
 
         /// <summary>
@@ -531,7 +545,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Conjugate(this ref QuaternionF q)
         {
-            q = q.Conjugated;
+            q.X = -q.X;
+            q.Y = -q.Y;
+            q.Z = -q.Z;
         }
 
         /// <summary> 
@@ -732,10 +748,9 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var norm = Norm;
-                if (norm == 0) return Zero;
-                var scale = 1 / norm;
-                return new QuaternionD(W * scale, X * scale, Y * scale, Z * scale);
+                var rs = new QuaternionD(this);
+                rs.Normalize();
+                return rs;
             }
         }
 
@@ -748,10 +763,9 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var norm = NormSquared;
-                if (norm == 0) return Zero;
-                var scale = 1 / norm;
-                return new QuaternionD(W * scale, V * (-scale));
+                var rs = new QuaternionD(this);
+                rs.Invert();
+                return rs;
             }
         }
 
@@ -1074,7 +1088,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref QuaternionD q)
         {
-            q = q.Inverse;
+            var norm = q.NormSquared;
+            if (norm > 0)
+            {
+                var scale = 1 / norm;
+                q.W *= scale;
+                q.X *= -scale;
+                q.Y *= -scale;
+                q.Z *= -scale;
+            }
         }
 
         /// <summary>
@@ -1090,7 +1112,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref QuaternionD q)
         {
-            q = q.Normalized;
+            var norm = q.NormSquared;
+            if (norm > 0)
+            {
+                var scale = 1 / norm;
+                q.W *= scale;
+                q.X *= scale;
+                q.Y *= scale;
+                q.Z *= scale;
+            }
         }
 
         /// <summary>
@@ -1106,7 +1136,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Conjugate(this ref QuaternionD q)
         {
-            q = q.Conjugated;
+            q.X = -q.X;
+            q.Y = -q.Y;
+            q.Z = -q.Z;
         }
 
         /// <summary> 

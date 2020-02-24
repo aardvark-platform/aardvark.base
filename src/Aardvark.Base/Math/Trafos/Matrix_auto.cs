@@ -1860,47 +1860,6 @@ namespace Aardvark.Base
                 v.Z, v.W);
         }
 
-        /// <summary>
-        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int TransformDir(this M22i m, int v)
-        {
-            return m.M00 * v;
-        }
-
-        /// <summary>
-        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
-        /// No projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int TransformPos(this M22i m, int p)
-        {
-            return m.M00 * p + m.M01;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int TransformPosProj(this M22i m, int p)
-        {
-            int s = m.M10 * p + m.M11;
-            s = 1 / s;
-            return (TransformPos(m, p)) * s;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2i TransformPosProjFull(this M22i m, int p)
-        {
-            return new V2i(TransformPos(m, p), m.M10 * p + m.M11);
-        }
-
         #endregion
 
         #region Operations
@@ -3729,47 +3688,6 @@ namespace Aardvark.Base
                 v.Z, v.W);
         }
 
-        /// <summary>
-        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long TransformDir(this M22l m, long v)
-        {
-            return m.M00 * v;
-        }
-
-        /// <summary>
-        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
-        /// No projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long TransformPos(this M22l m, long p)
-        {
-            return m.M00 * p + m.M01;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long TransformPosProj(this M22l m, long p)
-        {
-            long s = m.M10 * p + m.M11;
-            s = 1 / s;
-            return (TransformPos(m, p)) * s;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2l TransformPosProjFull(this M22l m, long p)
-        {
-            return new V2l(TransformPos(m, p), m.M10 * p + m.M11);
-        }
-
         #endregion
 
         #region Operations
@@ -5574,47 +5492,6 @@ namespace Aardvark.Base
                 v.Z, v.W);
         }
 
-        /// <summary>
-        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float TransformDir(this M22f m, float v)
-        {
-            return m.M00 * v;
-        }
-
-        /// <summary>
-        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
-        /// No projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float TransformPos(this M22f m, float p)
-        {
-            return m.M00 * p + m.M01;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float TransformPosProj(this M22f m, float p)
-        {
-            float s = m.M10 * p + m.M11;
-            s = 1 / s;
-            return (TransformPos(m, p)) * s;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f TransformPosProjFull(this M22f m, float p)
-        {
-            return new V2f(TransformPos(m, p), m.M10 * p + m.M11);
-        }
-
         #endregion
 
         #region Operations
@@ -7356,47 +7233,6 @@ namespace Aardvark.Base
                 v.X * m.M00 + v.Y * m.M10, 
                 v.X * m.M01 + v.Y * m.M11,
                 v.Z, v.W);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.Y is presumed 0.0) by matrix m.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double TransformDir(this M22d m, double v)
-        {
-            return m.M00 * v;
-        }
-
-        /// <summary>
-        /// Transforms point p (v.Y is presumed 1.0) by matrix m.
-        /// No projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double TransformPos(this M22d m, double p)
-        {
-            return m.M00 * p + m.M01;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double TransformPosProj(this M22d m, double p)
-        {
-            double s = m.M10 * p + m.M11;
-            s = 1 / s;
-            return (TransformPos(m, p)) * s;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.Y is presumed 1.0) by matrix m.
-        /// Projective transform is performed.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d TransformPosProjFull(this M22d m, double p)
-        {
-            return new V2d(TransformPos(m, p), m.M10 * p + m.M11);
         }
 
         #endregion

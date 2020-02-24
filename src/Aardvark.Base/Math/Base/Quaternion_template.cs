@@ -173,10 +173,9 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var norm = Norm;
-                if (norm == 0) return Zero;
-                var scale = 1 / norm;
-                return new __type__(/*# qfields.ForEach(f => {*/__f__ * scale/*# }, comma);*/);
+                var rs = new __type__(this);
+                rs.Normalize();
+                return rs;
             }
         }
 
@@ -189,10 +188,9 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var norm = NormSquared;
-                if (norm == 0) return Zero;
-                var scale = 1 / norm;
-                return new __type__(W * scale, V * (-scale));
+                var rs = new __type__(this);
+                rs.Invert();
+                return rs;
             }
         }
 
@@ -506,7 +504,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invert(this ref __type__ q)
         {
-            q = q.Inverse;
+            var norm = q.NormSquared;
+            if (norm > 0)
+            {
+                var scale = 1 / norm;
+                q.W *= scale;
+                q.X *= -scale;
+                q.Y *= -scale;
+                q.Z *= -scale;
+            }
         }
 
         /// <summary>
@@ -522,7 +528,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref __type__ q)
         {
-            q = q.Normalized;
+            var norm = q.NormSquared;
+            if (norm > 0)
+            {
+                var scale = 1 / norm;
+                q.W *= scale;
+                q.X *= scale;
+                q.Y *= scale;
+                q.Z *= scale;
+            }
         }
 
         /// <summary>
@@ -538,7 +552,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Conjugate(this ref __type__ q)
         {
-            q = q.Conjugated;
+            q.X = -q.X;
+            q.Y = -q.Y;
+            q.Z = -q.Z;
         }
 
         /// <summary> 

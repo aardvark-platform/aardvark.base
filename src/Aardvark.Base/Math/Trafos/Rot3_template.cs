@@ -723,7 +723,7 @@ namespace Aardvark.Base
         public static __type__ Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new __type__(__ftype__.Parse(x[0]), __v3t__.Parse(x[1]));
+            return new __type__(__ftype__.Parse(x[0], CultureInfo.InvariantCulture), __v3t__.Parse(x[1]));
         }
 
         #endregion

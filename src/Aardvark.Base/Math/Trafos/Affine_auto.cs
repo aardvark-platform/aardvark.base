@@ -312,6 +312,52 @@ namespace Aardvark.Base
         public static Affine2f operator *(Rot2f r, Affine2f a)
             => new Affine2f(r * a.Linear, r * a.Trans);
 
+        /// <summary>
+        /// Multiplies a <see cref="Affine2f"/> and a <see cref="Scale2f"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Affine2f a, Scale2f s)
+        {
+            return new Affine2f(new M22f(
+                a.Linear.M00 * s.X, a.Linear.M01 * s.Y, 
+                a.Linear.M10 * s.X, a.Linear.M11 * s.Y),
+                a.Trans);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale2f"/> and a <see cref="Affine2f"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Scale2f s, Affine2f a)
+        {
+            return new Affine2f(new M22f(
+                a.Linear.M00 * s.X, a.Linear.M01 * s.X, 
+                a.Linear.M10 * s.Y, a.Linear.M11 * s.Y),
+                a.Trans * s.V);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Affine2f"/> and a <see cref="Shift2f"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Affine2f a, Shift2f s)
+        {
+            return new Affine2f(a.Linear, a.Linear * s.V + a.Trans);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift2f"/> and a <see cref="Affine2f"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Shift2f s, Affine2f a)
+        {
+            return new Affine2f(a.Linear, a.Trans + s.V);
+        }
+
         #endregion
 
         #region Comparison Operators
@@ -1523,6 +1569,52 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d operator *(Rot2d r, Affine2d a)
             => new Affine2d(r * a.Linear, r * a.Trans);
+
+        /// <summary>
+        /// Multiplies a <see cref="Affine2d"/> and a <see cref="Scale2d"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Affine2d a, Scale2d s)
+        {
+            return new Affine2d(new M22d(
+                a.Linear.M00 * s.X, a.Linear.M01 * s.Y, 
+                a.Linear.M10 * s.X, a.Linear.M11 * s.Y),
+                a.Trans);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale2d"/> and a <see cref="Affine2d"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Scale2d s, Affine2d a)
+        {
+            return new Affine2d(new M22d(
+                a.Linear.M00 * s.X, a.Linear.M01 * s.X, 
+                a.Linear.M10 * s.Y, a.Linear.M11 * s.Y),
+                a.Trans * s.V);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Affine2d"/> and a <see cref="Shift2d"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Affine2d a, Shift2d s)
+        {
+            return new Affine2d(a.Linear, a.Linear * s.V + a.Trans);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift2d"/> and a <see cref="Affine2d"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Shift2d s, Affine2d a)
+        {
+            return new Affine2d(a.Linear, a.Trans + s.V);
+        }
 
         #endregion
 

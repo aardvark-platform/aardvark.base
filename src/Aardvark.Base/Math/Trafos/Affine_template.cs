@@ -334,7 +334,6 @@ namespace Aardvark.Base
         public static __type__ operator *(__rotnt__ r, __type__ a)
             => new __type__(r * a.Linear, r * a.Trans);
 
-        //# if (n == 3) {
         /// <summary>
         /// Multiplies a <see cref="__type__"/> and a <see cref="__scalent__"/>.
         /// Attention: Multiplication is NOT commutative!
@@ -379,6 +378,7 @@ namespace Aardvark.Base
             return new __type__(a.Linear, a.Trans + s.V);
         }
 
+        //# if (n == 3) {
         /// <summary>
         /// Multiplies a <see cref="__type__"/> and a <see cref="__similaritynt__"/>.
         /// Attention: Multiplication is NOT commutative!

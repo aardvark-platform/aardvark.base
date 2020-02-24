@@ -756,7 +756,7 @@ namespace Aardvark.Base
         public static Rot3f Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Rot3f(float.Parse(x[0]), V3f.Parse(x[1]));
+            return new Rot3f(float.Parse(x[0], CultureInfo.InvariantCulture), V3f.Parse(x[1]));
         }
 
         #endregion
@@ -1713,7 +1713,7 @@ namespace Aardvark.Base
         public static Rot3d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Rot3d(double.Parse(x[0]), V3d.Parse(x[1]));
+            return new Rot3d(double.Parse(x[0], CultureInfo.InvariantCulture), V3d.Parse(x[1]));
         }
 
         #endregion
