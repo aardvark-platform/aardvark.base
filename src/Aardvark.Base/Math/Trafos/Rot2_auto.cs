@@ -421,8 +421,8 @@ namespace Aardvark.Base
 
         public override bool Equals(object obj)
         {
-            if (obj is Rot2f)
-                return Rot.Distance(this, (Rot2f)obj) == 0;
+            if (obj is Rot2f r)
+                return Rot.Distance(this, r) == 0;
             return false;
         }
 
@@ -968,8 +968,8 @@ namespace Aardvark.Base
 
         public override bool Equals(object obj)
         {
-            if (obj is Rot2d)
-                return Rot.Distance(this, (Rot2d)obj) == 0;
+            if (obj is Rot2d r)
+                return Rot.Distance(this, r) == 0;
             return false;
         }
 

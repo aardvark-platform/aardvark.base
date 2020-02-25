@@ -27,6 +27,16 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="Euclidean2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2f(Euclidean2f e)
+        {
+            Rot = e.Rot;
+            Trans = e.Trans;
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34,38 +44,6 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean2f(M22f rot, V2f trans)
-        {
-            Rot = Rot2f.FromM22f(rot);
-            Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a matrix <paramref name="m"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean2f(M33f m, float epsilon = 1e-5f)
-            : this(((M22f)m) / m.M22,
-                  m.C2.XY / m.M22)
-        {
-            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
-                throw new ArgumentException("Matrix contains perspective components.");
-            if (m.M22.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean2f(Trafo2f trafo, float epsilon = 1e-5f)
-            : this(trafo.Forward, epsilon)
-        {
         }
 
         #endregion
@@ -268,6 +246,57 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f FromM22fAndV2f(M22f rot, V2f trans)
+            => new Euclidean2f(Rot2f.FromM22f(rot), trans);
+
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean2f"/> transformation from a <see cref="M33f"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components and its upper left 2x2 submatrix must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f FromM33f(M33f m, float epsilon = 1e-5f) 
+        {
+            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+            if (m.M22.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
+
+            return FromM22fAndV2f(((M22f)m) / m.M22,
+                    m.C2.XY / m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean2f"/> transformation from a <see cref="M23f"/> matrix.
+        /// The left 2x2 submatrix of <paramref name="m"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f FromM23f(M23f m, float epsilon = 1e-5f)
+        {
+            return FromM22fAndV2f(((M22f)m),
+                    m.C2.XY);
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
+        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
+            => FromM33f(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -284,6 +313,12 @@ namespace Aardvark.Base
             M33f rv = (M33f)r.Rot;
             rv.C2 = r.Trans.XYI;
             return rv;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity2f(Euclidean2f r)
+        {
+            return new Similarity2f(1, r);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -321,53 +356,6 @@ namespace Aardvark.Base
 
     public static partial class Euclidean
     {
-        #region Transform
-
-        /// <summary>
-        /// Transforms a <see cref="V3f"/> by an <see cref="Euclidean2f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f Transform(this Euclidean2f a, V3f v)
-            => a * v;
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f TransformDir(this Euclidean2f r, V2f v)
-        {
-            return r.Rot.Transform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f TransformPos(this Euclidean2f r, V2f p)
-        {
-            return r.Rot.Transform(p) + r.Trans;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f InvTransformDir(this Euclidean2f r, V2f v)
-        {
-            return r.Rot.InvTransform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f InvTransformPos(this Euclidean2f r, V2f p)
-        {
-            return r.Rot.InvTransform(p - r.Trans);
-        }
-
-        #endregion
-
         #region Invert
 
         /// <summary>
@@ -389,6 +377,53 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Transform
+
+        /// <summary>
+        /// Transforms a <see cref="V3f"/> by an <see cref="Euclidean2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f Transform(this Euclidean2f a, V3f v)
+            => a * v;
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f TransformDir(this Euclidean2f r, V2f v)
+        {
+            return r.Rot.Transform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f TransformPos(this Euclidean2f r, V2f p)
+        {
+            return r.Rot.Transform(p) + r.Trans;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransformDir(this Euclidean2f r, V2f v)
+        {
+            return r.Rot.InvTransform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransformPos(this Euclidean2f r, V2f p)
+        {
+            return r.Rot.InvTransform(p - r.Trans);
+        }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -398,7 +433,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Euclidean2f r0, Euclidean2f r1)
         {
-            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Euclidean2f r0, Euclidean2f r1, float tol)
+        {
+            return ApproximateEquals(r0.Trans, r1.Trans, tol) && r0.Rot.ApproximateEquals(r1.Rot, tol);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -431,6 +472,16 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="Euclidean3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3f(Euclidean3f e)
+        {
+            Rot = e.Rot;
+            Trans = e.Trans;
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -438,39 +489,6 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean3f(M33f rot, V3f trans, float epsilon = 1e-5f)
-        {
-            Rot = Rot3f.FromM33f(rot, epsilon);
-            Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a matrix <paramref name="m"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean3f(M44f m, float epsilon = 1e-5f)
-            : this(((M33f)m) / m.M33,
-                  m.C3.XYZ / m.M33,
-                  epsilon)
-        {
-            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
-                throw new ArgumentException("Matrix contains perspective components.");
-            if (m.M33.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean3f(Trafo3f trafo, float epsilon = 1e-5f)
-            : this(trafo.Forward, epsilon)
-        {
         }
 
         #endregion
@@ -699,6 +717,59 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f FromM33fAndV3f(M33f rot, V3f trans, float epsilon = 1e-5f)
+            => new Euclidean3f(Rot3f.FromM33f(rot, epsilon), trans);
+
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean3f"/> transformation from a <see cref="M44f"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components and its upper left 3x3 submatrix must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f FromM44f(M44f m, float epsilon = 1e-5f) 
+        {
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+            if (m.M33.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
+
+            return FromM33fAndV3f(((M33f)m) / m.M33,
+                    m.C3.XYZ / m.M33,
+                    epsilon);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean3f"/> transformation from a <see cref="M34f"/> matrix.
+        /// The left 3x3 submatrix of <paramref name="m"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f FromM34f(M34f m, float epsilon = 1e-5f)
+        {
+            return FromM33fAndV3f(((M33f)m),
+                    m.C3.XYZ,
+                    epsilon);
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
+        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
+            => FromM44f(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -758,53 +829,6 @@ namespace Aardvark.Base
 
     public static partial class Euclidean
     {
-        #region Transform
-
-        /// <summary>
-        /// Transforms a <see cref="V4f"/> by an <see cref="Euclidean3f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4f Transform(this Euclidean3f a, V4f v)
-            => a * v;
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f TransformDir(this Euclidean3f r, V3f v)
-        {
-            return r.Rot.Transform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f TransformPos(this Euclidean3f r, V3f p)
-        {
-            return r.Rot.Transform(p) + r.Trans;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f InvTransformDir(this Euclidean3f r, V3f v)
-        {
-            return r.Rot.InvTransform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f InvTransformPos(this Euclidean3f r, V3f p)
-        {
-            return r.Rot.InvTransform(p - r.Trans);
-        }
-
-        #endregion
-
         #region Normalize
 
         /// <summary>
@@ -846,6 +870,53 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Transform
+
+        /// <summary>
+        /// Transforms a <see cref="V4f"/> by an <see cref="Euclidean3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f Transform(this Euclidean3f a, V4f v)
+            => a * v;
+
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f TransformDir(this Euclidean3f r, V3f v)
+        {
+            return r.Rot.Transform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f TransformPos(this Euclidean3f r, V3f p)
+        {
+            return r.Rot.Transform(p) + r.Trans;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f InvTransformDir(this Euclidean3f r, V3f v)
+        {
+            return r.Rot.InvTransform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f InvTransformPos(this Euclidean3f r, V3f p)
+        {
+            return r.Rot.InvTransform(p - r.Trans);
+        }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -855,7 +926,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Euclidean3f r0, Euclidean3f r1)
         {
-            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue, Constant<float>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Euclidean3f r0, Euclidean3f r1, float tol)
+        {
+            return ApproximateEquals(r0.Trans, r1.Trans, tol) && r0.Rot.ApproximateEquals(r1.Rot, tol);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -888,6 +965,16 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2d(Euclidean2d e)
+        {
+            Rot = e.Rot;
+            Trans = e.Trans;
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -895,38 +982,6 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean2d(M22d rot, V2d trans)
-        {
-            Rot = Rot2d.FromM22d(rot);
-            Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a matrix <paramref name="m"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean2d(M33d m, double epsilon = 1e-12)
-            : this(((M22d)m) / m.M22,
-                  m.C2.XY / m.M22)
-        {
-            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
-                throw new ArgumentException("Matrix contains perspective components.");
-            if (m.M22.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean2d(Trafo2d trafo, double epsilon = 1e-12)
-            : this(trafo.Forward, epsilon)
-        {
         }
 
         #endregion
@@ -1129,6 +1184,57 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d FromM22dAndV2d(M22d rot, V2d trans)
+            => new Euclidean2d(Rot2d.FromM22d(rot), trans);
+
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean2d"/> transformation from a <see cref="M33d"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components and its upper left 2x2 submatrix must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d FromM33d(M33d m, double epsilon = 1e-12) 
+        {
+            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+            if (m.M22.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
+
+            return FromM22dAndV2d(((M22d)m) / m.M22,
+                    m.C2.XY / m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean2d"/> transformation from a <see cref="M23d"/> matrix.
+        /// The left 2x2 submatrix of <paramref name="m"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d FromM23d(M23d m, double epsilon = 1e-12)
+        {
+            return FromM22dAndV2d(((M22d)m),
+                    m.C2.XY);
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
+        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
+            => FromM33d(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1145,6 +1251,12 @@ namespace Aardvark.Base
             M33d rv = (M33d)r.Rot;
             rv.C2 = r.Trans.XYI;
             return rv;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity2d(Euclidean2d r)
+        {
+            return new Similarity2d(1, r);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1182,53 +1294,6 @@ namespace Aardvark.Base
 
     public static partial class Euclidean
     {
-        #region Transform
-
-        /// <summary>
-        /// Transforms a <see cref="V3d"/> by an <see cref="Euclidean2d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d Transform(this Euclidean2d a, V3d v)
-            => a * v;
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d TransformDir(this Euclidean2d r, V2d v)
-        {
-            return r.Rot.Transform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d TransformPos(this Euclidean2d r, V2d p)
-        {
-            return r.Rot.Transform(p) + r.Trans;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d InvTransformDir(this Euclidean2d r, V2d v)
-        {
-            return r.Rot.InvTransform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d InvTransformPos(this Euclidean2d r, V2d p)
-        {
-            return r.Rot.InvTransform(p - r.Trans);
-        }
-
-        #endregion
-
         #region Invert
 
         /// <summary>
@@ -1250,6 +1315,53 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Transform
+
+        /// <summary>
+        /// Transforms a <see cref="V3d"/> by an <see cref="Euclidean2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d Transform(this Euclidean2d a, V3d v)
+            => a * v;
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d TransformDir(this Euclidean2d r, V2d v)
+        {
+            return r.Rot.Transform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d TransformPos(this Euclidean2d r, V2d p)
+        {
+            return r.Rot.Transform(p) + r.Trans;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransformDir(this Euclidean2d r, V2d v)
+        {
+            return r.Rot.InvTransform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransformPos(this Euclidean2d r, V2d p)
+        {
+            return r.Rot.InvTransform(p - r.Trans);
+        }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -1259,7 +1371,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Euclidean2d r0, Euclidean2d r1)
         {
-            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Euclidean2d r0, Euclidean2d r1, double tol)
+        {
+            return ApproximateEquals(r0.Trans, r1.Trans, tol) && r0.Rot.ApproximateEquals(r1.Rot, tol);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1292,6 +1410,16 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3d(Euclidean3d e)
+        {
+            Rot = e.Rot;
+            Trans = e.Trans;
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1299,39 +1427,6 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean3d(M33d rot, V3d trans, double epsilon = 1e-12)
-        {
-            Rot = Rot3d.FromM33d(rot, epsilon);
-            Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a matrix <paramref name="m"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean3d(M44d m, double epsilon = 1e-12)
-            : this(((M33d)m) / m.M33,
-                  m.C3.XYZ / m.M33,
-                  epsilon)
-        {
-            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
-                throw new ArgumentException("Matrix contains perspective components.");
-            if (m.M33.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Euclidean3d(Trafo3d trafo, double epsilon = 1e-12)
-            : this(trafo.Forward, epsilon)
-        {
         }
 
         #endregion
@@ -1560,6 +1655,59 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d FromM33dAndV3d(M33d rot, V3d trans, double epsilon = 1e-12)
+            => new Euclidean3d(Rot3d.FromM33d(rot, epsilon), trans);
+
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean3d"/> transformation from a <see cref="M44d"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components and its upper left 3x3 submatrix must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d FromM44d(M44d m, double epsilon = 1e-12) 
+        {
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+            if (m.M33.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
+
+            return FromM33dAndV3d(((M33d)m) / m.M33,
+                    m.C3.XYZ / m.M33,
+                    epsilon);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean3d"/> transformation from a <see cref="M34d"/> matrix.
+        /// The left 3x3 submatrix of <paramref name="m"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d FromM34d(M34d m, double epsilon = 1e-12)
+        {
+            return FromM33dAndV3d(((M33d)m),
+                    m.C3.XYZ,
+                    epsilon);
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
+        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
+            => FromM44d(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1619,53 +1767,6 @@ namespace Aardvark.Base
 
     public static partial class Euclidean
     {
-        #region Transform
-
-        /// <summary>
-        /// Transforms a <see cref="V4d"/> by an <see cref="Euclidean3d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4d Transform(this Euclidean3d a, V4d v)
-            => a * v;
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d TransformDir(this Euclidean3d r, V3d v)
-        {
-            return r.Rot.Transform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d TransformPos(this Euclidean3d r, V3d p)
-        {
-            return r.Rot.Transform(p) + r.Trans;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d InvTransformDir(this Euclidean3d r, V3d v)
-        {
-            return r.Rot.InvTransform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d InvTransformPos(this Euclidean3d r, V3d p)
-        {
-            return r.Rot.InvTransform(p - r.Trans);
-        }
-
-        #endregion
-
         #region Normalize
 
         /// <summary>
@@ -1707,6 +1808,53 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Transform
+
+        /// <summary>
+        /// Transforms a <see cref="V4d"/> by an <see cref="Euclidean3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d Transform(this Euclidean3d a, V4d v)
+            => a * v;
+
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d TransformDir(this Euclidean3d r, V3d v)
+        {
+            return r.Rot.Transform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d TransformPos(this Euclidean3d r, V3d p)
+        {
+            return r.Rot.Transform(p) + r.Trans;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d InvTransformDir(this Euclidean3d r, V3d v)
+        {
+            return r.Rot.InvTransform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d InvTransformPos(this Euclidean3d r, V3d p)
+        {
+            return r.Rot.InvTransform(p - r.Trans);
+        }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -1716,7 +1864,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Euclidean3d r0, Euclidean3d r1)
         {
-            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue, Constant<double>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Euclidean3d r0, Euclidean3d r1, double tol)
+        {
+            return ApproximateEquals(r0.Trans, r1.Trans, tol) && r0.Rot.ApproximateEquals(r1.Rot, tol);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

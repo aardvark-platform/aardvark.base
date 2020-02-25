@@ -52,7 +52,7 @@ namespace Aardvark.Base
         {
             W = w;
             X = x; Y = y; Z = z;
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Aardvark.Base
         {
             W = w;
             X = v.X; Y = v.Y; Z = v.Z;
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Aardvark.Base
         public Rot3f(QuaternionF q)
         {
             W = q.W; X = q.X; Y = q.Y; Z = q.Z; 
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Aardvark.Base
         public Rot3f(Rot3f r)
         {
             W = r.W; X = r.X; Y = r.Y; Z = r.Z; 
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Aardvark.Base
         {
             W = a[0];
             X = a[1]; Y = a[2]; Z = a[3];
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Aardvark.Base
         {
             W = a[start];
             X = a[start + 1]; Y = a[start + 2]; Z = a[start + 3];
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
         }
 
         #endregion
@@ -169,7 +169,7 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+                Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
                 return new Rot3f(W, -X, -Y, -Z);
             }
         }
@@ -433,6 +433,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a <see cref="Rot3f"/> transformation from a rotation matrix.
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         public static Rot3f FromM33f(M33f m, float epsilon = (float)1e-6)
         {
             if (!m.IsOrthonormal(epsilon)) throw new ArgumentException("Matrix is not orthonormal.");
@@ -948,16 +949,19 @@ namespace Aardvark.Base
             return ApproximateEquals(r0, r1, Constant<float>.PositiveTinyValue);
         }
 
-        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
-        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add Rot3f.ApproximateEquals(Rot3f other);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot3f r0, Rot3f r1, float tolerance)
         {
-            return (r0.W - r1.W).Abs() <= tolerance &&
-                   (r0.X - r1.X).Abs() <= tolerance &&
-                   (r0.Y - r1.Y).Abs() <= tolerance &&
-                   (r0.Z - r1.Z).Abs() <= tolerance;
+            return ((r0.W - r1.W).Abs() <= tolerance
+                     && (r0.X - r1.X).Abs() <= tolerance
+                     && (r0.Y - r1.Y).Abs() <= tolerance
+                     && (r0.Z - r1.Z).Abs() <= tolerance
+                    ) ||
+                        ((r0.W + r1.W).Abs() <= tolerance
+                         && (r0.X + r1.X).Abs() <= tolerance
+                         && (r0.Y + r1.Y).Abs() <= tolerance
+                         && (r0.Z + r1.Z).Abs() <= tolerance
+                        );
         }
 
         #endregion
@@ -1009,7 +1013,7 @@ namespace Aardvark.Base
         {
             W = w;
             X = x; Y = y; Z = z;
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
         }
 
         /// <summary>
@@ -1021,7 +1025,7 @@ namespace Aardvark.Base
         {
             W = w;
             X = v.X; Y = v.Y; Z = v.Z;
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
         }
 
         /// <summary>
@@ -1032,7 +1036,7 @@ namespace Aardvark.Base
         public Rot3d(QuaternionD q)
         {
             W = q.W; X = q.X; Y = q.Y; Z = q.Z; 
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
         }
 
         /// <summary>
@@ -1042,7 +1046,7 @@ namespace Aardvark.Base
         public Rot3d(Rot3d r)
         {
             W = r.W; X = r.X; Y = r.Y; Z = r.Z; 
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
         }
 
         /// <summary>
@@ -1054,7 +1058,7 @@ namespace Aardvark.Base
         {
             W = a[0];
             X = a[1]; Y = a[2]; Z = a[3];
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
         }
 
         /// <summary>
@@ -1066,7 +1070,7 @@ namespace Aardvark.Base
         {
             W = a[start];
             X = a[start + 1]; Y = a[start + 2]; Z = a[start + 3];
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
         }
 
         #endregion
@@ -1126,7 +1130,7 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Debug.Assert(Fun.ApproximateEquals(NormSquared, 1));
+                Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
                 return new Rot3d(W, -X, -Y, -Z);
             }
         }
@@ -1390,6 +1394,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a <see cref="Rot3d"/> transformation from a rotation matrix.
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         public static Rot3d FromM33d(M33d m, double epsilon = (double)1e-6)
         {
             if (!m.IsOrthonormal(epsilon)) throw new ArgumentException("Matrix is not orthonormal.");
@@ -1905,16 +1910,19 @@ namespace Aardvark.Base
             return ApproximateEquals(r0, r1, Constant<double>.PositiveTinyValue);
         }
 
-        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
-        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add Rot3d.ApproximateEquals(Rot3d other);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot3d r0, Rot3d r1, double tolerance)
         {
-            return (r0.W - r1.W).Abs() <= tolerance &&
-                   (r0.X - r1.X).Abs() <= tolerance &&
-                   (r0.Y - r1.Y).Abs() <= tolerance &&
-                   (r0.Z - r1.Z).Abs() <= tolerance;
+            return ((r0.W - r1.W).Abs() <= tolerance
+                     && (r0.X - r1.X).Abs() <= tolerance
+                     && (r0.Y - r1.Y).Abs() <= tolerance
+                     && (r0.Z - r1.Z).Abs() <= tolerance
+                    ) ||
+                        ((r0.W + r1.W).Abs() <= tolerance
+                         && (r0.X + r1.X).Abs() <= tolerance
+                         && (r0.Y + r1.Y).Abs() <= tolerance
+                         && (r0.Z + r1.Z).Abs() <= tolerance
+                        );
         }
 
         #endregion

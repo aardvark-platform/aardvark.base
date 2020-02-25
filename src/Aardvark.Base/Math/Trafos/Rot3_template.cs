@@ -32,11 +32,12 @@ namespace Aardvark.Base
     //#   var m33t = "M33" + tc;
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
+    //#   var assertEps = isDouble ? "1e-10" : "1e-6f";
     //#   var rotIntoEps = isDouble ? "1e-16" : "1e-6f";
     //#   var eulerAnglesEps = isDouble ? "0.49999999999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
-    //#   var assertNorm = "Debug.Assert(Fun.ApproximateEquals(NormSquared, 1))";
+    //#   var assertNorm = "Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, " + assertEps + "))";
     #region __type__
         
     /// <summary>
@@ -462,6 +463,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a <see cref="__type__"/> transformation from a rotation matrix.
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         public static __type__ From__m33t__(__m33t__ m, __ftype__ epsilon = (__ftype__)1e-6)
         {
             if (!m.IsOrthonormal(epsilon)) throw new ArgumentException("Matrix is not orthonormal.");
@@ -912,16 +914,13 @@ namespace Aardvark.Base
             return ApproximateEquals(r0, r1, Constant<__ftype__>.PositiveTinyValue);
         }
 
-        // [todo ISSUE 20090225 andi : andi] Wir sollten auch folgendes beruecksichtigen -q == q, weil es die selbe rotation definiert.
-        // [todo ISSUE 20090427 andi : andi] use an angle-tolerance
-        // [todo ISSUE 20090427 andi : andi] add __type__.ApproximateEquals(__type__ other);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __type__ r0, __type__ r1, __ftype__ tolerance)
         {
-            return (r0.W - r1.W).Abs() <= tolerance &&
-                   (r0.X - r1.X).Abs() <= tolerance &&
-                   (r0.Y - r1.Y).Abs() <= tolerance &&
-                   (r0.Z - r1.Z).Abs() <= tolerance;
+            return (/*# qfields.ForEach(f => {*/(r0.__f__ - r1.__f__).Abs() <= tolerance
+                    /*# }, and);*/) ||
+                        (/*# qfields.ForEach(f => {*/(r0.__f__ + r1.__f__).Abs() <= tolerance
+                        /*# }, and);*/);
         }
 
         #endregion

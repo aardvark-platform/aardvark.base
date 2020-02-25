@@ -148,6 +148,12 @@ namespace Aardvark.Base
             Trans = shift.V;
         }
 
+        /// <summary>
+        /// Constructs an affine transformation from a <see cref="Similarity2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine2f(Similarity2f s) : this((M33f)s) { }
+
         #endregion
 
         #region Constants
@@ -1405,6 +1411,12 @@ namespace Aardvark.Base
             Linear = linear;
             Trans = shift.V;
         }
+
+        /// <summary>
+        /// Constructs an affine transformation from a <see cref="Similarity2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine2d(Similarity2d s) : this((M33d)s) { }
 
         #endregion
 

@@ -261,8 +261,8 @@ namespace Aardvark.Base
 
         public override bool Equals(object obj)
         {
-            if (obj is __type__)
-                return Rot.Distance(this, (__type__)obj) == 0;
+            if (obj is __type__ r)
+                return Rot.Distance(this, r) == 0;
             return false;
         }
 

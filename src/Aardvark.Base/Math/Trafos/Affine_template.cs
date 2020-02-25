@@ -172,14 +172,12 @@ namespace Aardvark.Base
             Trans = shift.V;
         }
 
-        //# if (n == 3) {
         /// <summary>
         /// Constructs an affine transformation from a <see cref="__similaritynt__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__similaritynt__ s) : this((__mmmt__)s) { }
 
-        //# } // n = 3
         #endregion
 
         #region Constants

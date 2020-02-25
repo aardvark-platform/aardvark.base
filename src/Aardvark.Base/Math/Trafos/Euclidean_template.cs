@@ -56,6 +56,16 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Constructs a copy of an <see cref="__type__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type__ e)
+        {
+            Rot = e.Rot;
+            Trans = e.Trans;
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63,47 +73,6 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //# if (n == 2) {
-        public __type__(__mnnt__ rot, __vnt__ trans)
-        {
-            Rot = __rotnt__.From__mnnt__(rot);
-            Trans = trans;
-        }
-        //# } else {
-        public __type__(__mnnt__ rot, __vnt__ trans, __ftype__ epsilon = __eps__)
-        {
-            Rot = __rotnt__.From__mnnt__(rot, epsilon);
-            Trans = trans;
-        }
-        //# }
-
-        /// <summary>
-        /// Creates a rigid transformation from a matrix <paramref name="m"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__mmmt__ m, __ftype__ epsilon = __eps__)
-            : this(((__mnnt__)m) / m.M__n____n__,
-                  m.C__n__.__xyz__ / m.M__n____n__/*# if (n > 2) {*/,
-                  epsilon/*# }*/)
-        {
-            if (!(/*#n.ForEach(j => {*/m.M__n____j__.IsTiny(epsilon)/*# }, and);*/))
-                throw new ArgumentException("Matrix contains perspective components.");
-            if (m.M__n____n__.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
-        }
-
-        /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__trafont__ trafo, __ftype__ epsilon = __eps__)
-            : this(trafo.Forward, epsilon)
-        {
         }
 
         #endregion
@@ -302,6 +271,65 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //# if (n == 2) {
+        public static __type__ From__mnnt__And__vnt__(__mnnt__ rot, __vnt__ trans)
+            => new __type__(__rotnt__.From__mnnt__(rot), trans);
+
+        //# } else {
+        public static __type__ From__mnnt__And__vnt__(__mnnt__ rot, __vnt__ trans, __ftype__ epsilon = __eps__)
+            => new __type__(__rotnt__.From__mnnt__(rot, epsilon), trans);
+
+        //# }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__mmmt__"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components and its upper left __n__x__n__ submatrix must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__mmmt__(__mmmt__ m, __ftype__ epsilon = __eps__) 
+        {
+            if (!(/*#n.ForEach(j => {*/m.M__n____j__.IsTiny(epsilon)/*# }, and);*/))
+                throw new ArgumentException("Matrix contains perspective components.");
+            if (m.M__n____n__.IsTiny(epsilon)) throw new ArgumentException("Matrix is not homogeneous.");
+
+            return From__mnnt__And__vnt__(((__mnnt__)m) / m.M__n____n__,
+                    m.C__n__.__xyz__ / m.M__n____n__/*# if (n > 2) {*/,
+                    epsilon/*# }*/);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__mnmt__"/> matrix.
+        /// The left __n__x__n__ submatrix of <paramref name="m"/> must be a valid rotation matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__mnmt__(__mnmt__ m, __ftype__ epsilon = __eps__)
+        {
+            return From__mnnt__And__vnt__(((__mnnt__)m),
+                    m.C__n__.__xyz__/*# if (n > 2) {*/,
+                    epsilon/*# }*/);
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
+        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__trafont__(__trafont__ trafo, __ftype__ epsilon = __eps__)
+            => From__mmmt__(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -320,14 +348,12 @@ namespace Aardvark.Base
             return rv;
         }
 
-        //# if (n == 3) {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __similaritynt__(__type__ r)
         {
             return new __similaritynt__(1, r);
         }
 
-        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __affinent__(__type__ r)
             => new __affinent__(r);
@@ -363,53 +389,6 @@ namespace Aardvark.Base
 
     public static partial class Euclidean
     {
-        #region Transform
-
-        /// <summary>
-        /// Transforms a <see cref="__vmt__"/> by an <see cref="__type__"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vmt__ Transform(this __type__ a, __vmt__ v)
-            => a * v;
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vnt__ TransformDir(this __type__ r, __vnt__ v)
-        {
-            return r.Rot.Transform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vnt__ TransformPos(this __type__ r, __vnt__ p)
-        {
-            return r.Rot.Transform(p) + r.Trans;
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vnt__ InvTransformDir(this __type__ r, __vnt__ v)
-        {
-            return r.Rot.InvTransform(v);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by the inverse of the rigid transformation r.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vnt__ InvTransformPos(this __type__ r, __vnt__ p)
-        {
-            return r.Rot.InvTransform(p - r.Trans);
-        }
-
-        #endregion
-
         //# if (n > 2) {
         #region Normalize
 
@@ -453,6 +432,53 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Transform
+
+        /// <summary>
+        /// Transforms a <see cref="__vmt__"/> by an <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmt__ Transform(this __type__ a, __vmt__ v)
+            => a * v;
+
+        /// <summary>
+        /// Transforms direction vector v (v.__fn__ is presumed 0.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ TransformDir(this __type__ r, __vnt__ v)
+        {
+            return r.Rot.Transform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.__fn__ is presumed 1.0) by rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ TransformPos(this __type__ r, __vnt__ p)
+        {
+            return r.Rot.Transform(p) + r.Trans;
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.__fn__ is presumed 0.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ InvTransformDir(this __type__ r, __vnt__ v)
+        {
+            return r.Rot.InvTransform(v);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.__fn__ is presumed 1.0) by the inverse of the rigid transformation r.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ InvTransformPos(this __type__ r, __vnt__ p)
+        {
+            return r.Rot.InvTransform(p - r.Trans);
+        }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -462,7 +488,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __type__ r0, __type__ r1)
         {
-            return ApproximateEquals(r0, r1, Constant<__ftype__>.PositiveTinyValue, Constant<__ftype__>.PositiveTinyValue);
+            return ApproximateEquals(r0, r1, Constant<__ftype__>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ r0, __type__ r1, __ftype__ tol)
+        {
+            return ApproximateEquals(r0.Trans, r1.Trans, tol) && r0.Rot.ApproximateEquals(r1.Rot, tol);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

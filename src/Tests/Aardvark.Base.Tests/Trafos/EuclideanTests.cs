@@ -226,6 +226,21 @@ namespace Aardvark.Tests
             => GenericMultiplicationTest<Scale3d, Affine3d>(GetRandomScale, Affine.TransformPos);
 
         [Test]
+        public static void FromM44dTest()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var e = GetRandomEuclidean(rnd);
+                var m = (M44d)e;
+
+                var restored = Euclidean3d.FromM44d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(e, restored, 0.00001), "{0}: {1} != {2}", i, e, restored);
+            }
+        }
+
+        [Test]
         public static void ToStringAndParse()
         {
             var rnd = new RandomSystem(1);
@@ -237,7 +252,7 @@ namespace Aardvark.Tests
                 var str = a.ToString();
                 var parsed = Euclidean3d.Parse(str);
 
-                Assert.IsTrue(Fun.ApproximateEquals(parsed, a, 0.00001, 0.00001));
+                Assert.IsTrue(Fun.ApproximateEquals(parsed, a, 0.00001));
             }
         }
     }
