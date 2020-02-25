@@ -528,7 +528,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref __type__ q)
         {
-            var norm = q.NormSquared;
+            var norm = q.Norm;
             if (norm > 0)
             {
                 var scale = 1 / norm;

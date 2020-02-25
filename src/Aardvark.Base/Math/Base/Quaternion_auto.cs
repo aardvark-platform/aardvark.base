@@ -521,7 +521,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref QuaternionF q)
         {
-            var norm = q.NormSquared;
+            var norm = q.Norm;
             if (norm > 0)
             {
                 var scale = 1 / norm;
@@ -1112,7 +1112,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref QuaternionD q)
         {
-            var norm = q.NormSquared;
+            var norm = q.Norm;
             if (norm > 0)
             {
                 var scale = 1 / norm;

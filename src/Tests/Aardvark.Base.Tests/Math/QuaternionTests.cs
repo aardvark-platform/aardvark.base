@@ -64,6 +64,27 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public static void NormalizeTest()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var q = GetRandomQuat(rnd);
+
+                // Normalized property
+                var q1 = q.Normalized;
+
+                // Normalize method
+                var q2 = new QuaternionD(q);
+                Quaternion.Normalize(ref q2);
+
+                Assert.IsTrue(Fun.ApproximateEquals(q1.Norm, 1, 0.00001));
+                Assert.IsTrue(Fun.ApproximateEquals(q2.Norm, 1, 0.00001));
+            }
+        }
+
+        [Test]
         public static void InverseTest()
         {
             var rnd = new RandomSystem(1);
