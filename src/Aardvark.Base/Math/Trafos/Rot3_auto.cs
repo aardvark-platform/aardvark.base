@@ -746,7 +746,9 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is Rot3f) ? (this == (Rot3f)other) : false;
+            if (other is Rot3f r)
+                return Rot.Distance(this, r) == 0;
+            return false;
         }
 
         public override string ToString()
@@ -774,6 +776,33 @@ namespace Aardvark.Base
         public static float Dot(this Rot3f a, Rot3f b)
         {
             return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+        }
+
+        #endregion
+
+        #region Distance
+
+        /// <summary>
+        /// Returns the absolute difference in radians between two <see cref="Rot3f"/> rotations.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DistanceFast(this Rot3f r1, Rot3f r2)
+        {
+            var d = Dot(r1, r2);
+            return 2 * Fun.AcosClamped((d < 0) ? -d : d);
+        }
+
+        /// <summary>
+        /// Returns the absolute difference in radians between two <see cref="Rot3f"/> rotations
+        /// using a numerically stable algorithm.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Distance(this Rot3f r1, Rot3f r2)
+        {
+            var q = r1.Inverse * r2;
+            return 2 * Fun.Atan2(q.V.Length, (q.W < 0) ? -q.W : q.W);
         }
 
         #endregion
@@ -952,16 +981,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot3f r0, Rot3f r1, float tolerance)
         {
-            return ((r0.W - r1.W).Abs() <= tolerance
-                     && (r0.X - r1.X).Abs() <= tolerance
-                     && (r0.Y - r1.Y).Abs() <= tolerance
-                     && (r0.Z - r1.Z).Abs() <= tolerance
-                    ) ||
-                        ((r0.W + r1.W).Abs() <= tolerance
-                         && (r0.X + r1.X).Abs() <= tolerance
-                         && (r0.Y + r1.Y).Abs() <= tolerance
-                         && (r0.Z + r1.Z).Abs() <= tolerance
-                        );
+            return Rot.Distance(r0, r1) <= tolerance;
         }
 
         #endregion
@@ -1707,7 +1727,9 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is Rot3d) ? (this == (Rot3d)other) : false;
+            if (other is Rot3d r)
+                return Rot.Distance(this, r) == 0;
+            return false;
         }
 
         public override string ToString()
@@ -1735,6 +1757,33 @@ namespace Aardvark.Base
         public static double Dot(this Rot3d a, Rot3d b)
         {
             return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+        }
+
+        #endregion
+
+        #region Distance
+
+        /// <summary>
+        /// Returns the absolute difference in radians between two <see cref="Rot3d"/> rotations.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double DistanceFast(this Rot3d r1, Rot3d r2)
+        {
+            var d = Dot(r1, r2);
+            return 2 * Fun.AcosClamped((d < 0) ? -d : d);
+        }
+
+        /// <summary>
+        /// Returns the absolute difference in radians between two <see cref="Rot3d"/> rotations
+        /// using a numerically stable algorithm.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Distance(this Rot3d r1, Rot3d r2)
+        {
+            var q = r1.Inverse * r2;
+            return 2 * Fun.Atan2(q.V.Length, (q.W < 0) ? -q.W : q.W);
         }
 
         #endregion
@@ -1913,16 +1962,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Rot3d r0, Rot3d r1, double tolerance)
         {
-            return ((r0.W - r1.W).Abs() <= tolerance
-                     && (r0.X - r1.X).Abs() <= tolerance
-                     && (r0.Y - r1.Y).Abs() <= tolerance
-                     && (r0.Z - r1.Z).Abs() <= tolerance
-                    ) ||
-                        ((r0.W + r1.W).Abs() <= tolerance
-                         && (r0.X + r1.X).Abs() <= tolerance
-                         && (r0.Y + r1.Y).Abs() <= tolerance
-                         && (r0.Z + r1.Z).Abs() <= tolerance
-                        );
+            return Rot.Distance(r0, r1) <= tolerance;
         }
 
         #endregion

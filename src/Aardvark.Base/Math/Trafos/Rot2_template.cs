@@ -259,9 +259,9 @@ namespace Aardvark.Base
             );
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object other)
         {
-            if (obj is __type__ r)
+            if (other is __type__ r)
                 return Rot.Distance(this, r) == 0;
             return false;
         }
@@ -387,7 +387,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __type__ r0, __type__ r1, __ftype__ tolerance)
         {
-            return Abs(Rot.Distance(r0, r1)) <= tolerance;
+            return Rot.Distance(r0, r1) <= tolerance;
         }
 
         #endregion

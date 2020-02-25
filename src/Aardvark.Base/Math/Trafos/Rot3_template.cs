@@ -714,7 +714,9 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is __type__) ? (this == (__type__)other) : false;
+            if (other is __type__ r)
+                return Rot.Distance(this, r) == 0;
+            return false;
         }
 
         public override string ToString()
@@ -742,6 +744,33 @@ namespace Aardvark.Base
         public static __ftype__ Dot(this __type__ a, __type__ b)
         {
             return a.W * b.W + a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+        }
+
+        #endregion
+
+        #region Distance
+
+        /// <summary>
+        /// Returns the absolute difference in radians between two <see cref="__type__"/> rotations.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ DistanceFast(this __type__ r1, __type__ r2)
+        {
+            var d = Dot(r1, r2);
+            return 2 * Fun.AcosClamped((d < 0) ? -d : d);
+        }
+
+        /// <summary>
+        /// Returns the absolute difference in radians between two <see cref="__type__"/> rotations
+        /// using a numerically stable algorithm.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Distance(this __type__ r1, __type__ r2)
+        {
+            var q = r1.Inverse * r2;
+            return 2 * Fun.Atan2(q.V.Length, (q.W < 0) ? -q.W : q.W);
         }
 
         #endregion
@@ -917,10 +946,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __type__ r0, __type__ r1, __ftype__ tolerance)
         {
-            return (/*# qfields.ForEach(f => {*/(r0.__f__ - r1.__f__).Abs() <= tolerance
-                    /*# }, and);*/) ||
-                        (/*# qfields.ForEach(f => {*/(r0.__f__ + r1.__f__).Abs() <= tolerance
-                        /*# }, and);*/);
+            return Rot.Distance(r0, r1) <= tolerance;
         }
 
         #endregion

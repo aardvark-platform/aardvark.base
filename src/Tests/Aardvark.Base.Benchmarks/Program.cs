@@ -20,9 +20,18 @@ namespace Aardvark.Base.Benchmarks
             //var td = new AngleBetweenDouble();
             //td.BenchmarkNumericalStability();
 
+            var tf = new DistanceRot3f();
+            tf.BenchmarkNumericalStability();
+
+            var td = new DistanceRot3d();
+            td.BenchmarkNumericalStability();
+
+            //BenchmarkRunner.Run<DistanceRot3f>();
+            //BenchmarkRunner.Run<DistanceRot3d>();
+
             //BenchmarkRunner.Run<Rot3dTransform>();
             //BenchmarkRunner.Run<StaticConstants>();
-            BenchmarkRunner.Run<MatrixMultiply>();
+            //BenchmarkRunner.Run<MatrixMultiply>();
         }
     }
 }
