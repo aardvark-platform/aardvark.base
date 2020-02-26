@@ -250,8 +250,11 @@ type Glyph internal(g : Typography.OpenFont.Glyph, scale : float, advance : floa
 type private FontImpl(file : string) =
     let f =
         use stream = System.IO.File.OpenRead file
-        let reader = OpenFontReader()
-        reader.Read(stream, ReadFlags.Full)
+        try
+            let reader = OpenFontReader()
+            reader.Read(stream, ReadFlags.Full)
+        with e ->
+            failwithf "could not load font %s: %A" file e.Message
 
     let scale = f.CalculateScaleToPixel 1.0f |> float
 
@@ -320,14 +323,10 @@ type private FontImpl(file : string) =
         let d = f.GetKernDistance(l, r)
         float d * scale
 
-type Font(family : string, style : FontStyle) =
-    static let table = System.Collections.Concurrent.ConcurrentDictionary<string * FontStyle, FontImpl>()
+type Font private(impl : FontImpl, family : string, style : FontStyle) =
+    static let systemTable = System.Collections.Concurrent.ConcurrentDictionary<string * FontStyle, FontImpl>()
+    static let fileTable = System.Collections.Concurrent.ConcurrentDictionary<string, FontImpl>()
 
-    let impl =
-        table.GetOrAdd((family, style), fun (family, style) ->
-            let impl = FontImpl(FontResolver.resolveFont family style)
-            impl
-        )
 
     member x.Family = family
     member x.LineHeight = impl.LineHeight
@@ -341,6 +340,22 @@ type Font(family : string, style : FontStyle) =
     member x.GetGlyph(c : char) = impl.GetGlyph c
     member x.GetKerning(l : char, r : char) = impl.GetKerning(l,r)
 
+    static member Load(file : string) =
+        let impl =
+            fileTable.GetOrAdd(file, fun file ->
+                let impl = FontImpl(file)
+                impl
+            )
+        Font(impl, impl.Family, impl.Style)
+
+    new(family : string, style : FontStyle) =
+        let impl =
+            systemTable.GetOrAdd((family, style), fun (family, style) ->
+                let impl = FontImpl(FontResolver.resolveFont family style)
+                impl
+            )
+        Font(impl, family, style)
+    
     new(family : string) = Font(family, FontStyle.Regular)
 
 type ShapeCache(r : IRuntime) =
