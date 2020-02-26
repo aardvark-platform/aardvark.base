@@ -249,7 +249,7 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// Creates a <see cref="Euclidean2f"/> transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
@@ -287,8 +287,29 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// Creates a <see cref="Euclidean2f"/> transformation from a <see cref="Similarity2f"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Euclidean2f FromSimilarity2f(Similarity2f similarity, float epsilon = 1e-5f)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            return similarity.Euclidean;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean2f"/> transformation from an <see cref="Affine2f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Euclidean2f FromAffine2f(Affine2f affine, float epsilon = 1e-5f)
+            => FromM33f((M33f)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean2f"/> transformation from a <see cref="Trafo2f"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -308,22 +329,28 @@ namespace Aardvark.Base
             => (M22f)e.Rot;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator M33f(Euclidean2f r)
+        public static explicit operator M33f(Euclidean2f e)
         {
-            M33f rv = (M33f)r.Rot;
-            rv.C2 = r.Trans.XYI;
+            M33f rv = (M33f)e.Rot;
+            rv.C2 = e.Trans.XYI;
             return rv;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Similarity2f(Euclidean2f r)
-        {
-            return new Similarity2f(1, r);
-        }
+        public static explicit operator Similarity2f(Euclidean2f e)
+            => new Similarity2f(1, e);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Affine2f(Euclidean2f r)
-            => new Affine2f(r);
+        public static explicit operator Affine2f(Euclidean2f e)
+            => new Affine2f((M22f)e.Rot, e.Trans);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2f(Euclidean2f e)
+            => new Trafo2f((M33f)e, (M33f)e.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean2d(Euclidean2f e)
+            => new Euclidean2d((Rot2d)e.Rot, (V2d)e.Trans);
 
         #endregion
 
@@ -720,7 +747,7 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// Creates a <see cref="Euclidean3f"/> transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
@@ -760,8 +787,29 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// Creates a <see cref="Euclidean3f"/> transformation from a <see cref="Similarity3f"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Euclidean3f FromSimilarity3f(Similarity3f similarity, float epsilon = 1e-5f)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            return similarity.Euclidean;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean3f"/> transformation from an <see cref="Affine3f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Euclidean3f FromAffine3f(Affine3f affine, float epsilon = 1e-5f)
+            => FromM44f((M44f)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean3f"/> transformation from a <see cref="Trafo3f"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -781,22 +829,28 @@ namespace Aardvark.Base
             => (M33f)e.Rot;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator M44f(Euclidean3f r)
+        public static explicit operator M44f(Euclidean3f e)
         {
-            M44f rv = (M44f)r.Rot;
-            rv.C3 = r.Trans.XYZI;
+            M44f rv = (M44f)e.Rot;
+            rv.C3 = e.Trans.XYZI;
             return rv;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Similarity3f(Euclidean3f r)
-        {
-            return new Similarity3f(1, r);
-        }
+        public static explicit operator Similarity3f(Euclidean3f e)
+            => new Similarity3f(1, e);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Affine3f(Euclidean3f r)
-            => new Affine3f(r);
+        public static explicit operator Affine3f(Euclidean3f e)
+            => new Affine3f((M33f)e.Rot, e.Trans);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3f(Euclidean3f e)
+            => new Trafo3f((M44f)e, (M44f)e.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean3d(Euclidean3f e)
+            => new Euclidean3d((Rot3d)e.Rot, (V3d)e.Trans);
 
         #endregion
 
@@ -1187,7 +1241,7 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// Creates a <see cref="Euclidean2d"/> transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
@@ -1225,8 +1279,29 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// Creates a <see cref="Euclidean2d"/> transformation from a <see cref="Similarity2d"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Euclidean2d FromSimilarity2d(Similarity2d similarity, double epsilon = 1e-12)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            return similarity.Euclidean;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean2d"/> transformation from an <see cref="Affine2d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Euclidean2d FromAffine2d(Affine2d affine, double epsilon = 1e-12)
+            => FromM33d((M33d)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean2d"/> transformation from a <see cref="Trafo2d"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1246,22 +1321,28 @@ namespace Aardvark.Base
             => (M22d)e.Rot;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator M33d(Euclidean2d r)
+        public static explicit operator M33d(Euclidean2d e)
         {
-            M33d rv = (M33d)r.Rot;
-            rv.C2 = r.Trans.XYI;
+            M33d rv = (M33d)e.Rot;
+            rv.C2 = e.Trans.XYI;
             return rv;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Similarity2d(Euclidean2d r)
-        {
-            return new Similarity2d(1, r);
-        }
+        public static explicit operator Similarity2d(Euclidean2d e)
+            => new Similarity2d(1, e);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Affine2d(Euclidean2d r)
-            => new Affine2d(r);
+        public static explicit operator Affine2d(Euclidean2d e)
+            => new Affine2d((M22d)e.Rot, e.Trans);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2d(Euclidean2d e)
+            => new Trafo2d((M33d)e, (M33d)e.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean2f(Euclidean2d e)
+            => new Euclidean2f((Rot2f)e.Rot, (V2f)e.Trans);
 
         #endregion
 
@@ -1658,7 +1739,7 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// Creates a <see cref="Euclidean3d"/> transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
@@ -1698,8 +1779,29 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// Creates a <see cref="Euclidean3d"/> transformation from a <see cref="Similarity3d"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Euclidean3d FromSimilarity3d(Similarity3d similarity, double epsilon = 1e-12)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            return similarity.Euclidean;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean3d"/> transformation from an <see cref="Affine3d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Euclidean3d FromAffine3d(Affine3d affine, double epsilon = 1e-12)
+            => FromM44d((M44d)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Euclidean3d"/> transformation from a <see cref="Trafo3d"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1719,22 +1821,28 @@ namespace Aardvark.Base
             => (M33d)e.Rot;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator M44d(Euclidean3d r)
+        public static explicit operator M44d(Euclidean3d e)
         {
-            M44d rv = (M44d)r.Rot;
-            rv.C3 = r.Trans.XYZI;
+            M44d rv = (M44d)e.Rot;
+            rv.C3 = e.Trans.XYZI;
             return rv;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Similarity3d(Euclidean3d r)
-        {
-            return new Similarity3d(1, r);
-        }
+        public static explicit operator Similarity3d(Euclidean3d e)
+            => new Similarity3d(1, e);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Affine3d(Euclidean3d r)
-            => new Affine3d(r);
+        public static explicit operator Affine3d(Euclidean3d e)
+            => new Affine3d((M33d)e.Rot, e.Trans);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3d(Euclidean3d e)
+            => new Trafo3d((M44d)e, (M44d)e.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean3f(Euclidean3d e)
+            => new Euclidean3f((Rot3f)e.Rot, (V3f)e.Trans);
 
         #endregion
 

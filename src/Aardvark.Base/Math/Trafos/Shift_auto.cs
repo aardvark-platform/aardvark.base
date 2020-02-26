@@ -370,6 +370,87 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="Shift2f"/> transformation from a translation <see cref="M23f"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2f FromM23f(M23f m, float epsilon = (float)1e-6)
+        {
+            if (!M22f.Identity.ApproximateEquals((M22f)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            return new Shift2f(m.C2);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift2f"/> transformation from a translation <see cref="M33f"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2f FromM33f(M33f m, float epsilon = (float)1e-6)
+        {
+            if (!M22f.Identity.ApproximateEquals((M22f)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M22.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new Shift2f(m.C2.XY / m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift2f"/> transformation from a <see cref="Euclidean2f"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2f FromEuclidean2f(Euclidean2f euclidean, float epsilon = 1e-5f)
+        {
+            if (!euclidean.Rot.ApproximateEquals(Rot2f.Identity, epsilon))
+                throw new ArgumentException("Euclidean transformation contains rotational component");
+
+            return new Shift2f(euclidean.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift2f"/> transformation from a <see cref="Similarity2f"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2f FromSimilarity2f(Similarity2f similarity, float epsilon = 1e-5f)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Rot.ApproximateEquals(Rot2f.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new Shift2f(similarity.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift2f"/> transformation from an <see cref="Affine2f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2f FromAffine2f(Affine2f affine, float epsilon = 1e-5f)
+            => FromM33f((M33f)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Shift2f"/> transformation from a <see cref="Trafo2f"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
+            => FromM33f(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -409,8 +490,24 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean2f(Shift2f s)
+            => new Euclidean2f(Rot2f.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity2f(Shift2f s)
+            => new Similarity2f(1, Rot2f.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine2f(Shift2f s)
-            => new Affine2f(s);
+            => new Affine2f(M22f.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2f(Shift2f s)
+            => new Trafo2f((M33f)s, (M33f)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Shift2d(Shift2f s)
+            => new Shift2d((V2d)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="Shift2f"/> instance
@@ -985,6 +1082,87 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="Shift3f"/> transformation from a translation <see cref="M34f"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3f FromM34f(M34f m, float epsilon = (float)1e-6)
+        {
+            if (!M33f.Identity.ApproximateEquals((M33f)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            return new Shift3f(m.C3);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift3f"/> transformation from a translation <see cref="M44f"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3f FromM44f(M44f m, float epsilon = (float)1e-6)
+        {
+            if (!M33f.Identity.ApproximateEquals((M33f)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new Shift3f(m.C3.XYZ / m.M33);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift3f"/> transformation from a <see cref="Euclidean3f"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3f FromEuclidean3f(Euclidean3f euclidean, float epsilon = 1e-5f)
+        {
+            if (!euclidean.Rot.ApproximateEquals(Rot3f.Identity, epsilon))
+                throw new ArgumentException("Euclidean transformation contains rotational component");
+
+            return new Shift3f(euclidean.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift3f"/> transformation from a <see cref="Similarity3f"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3f FromSimilarity3f(Similarity3f similarity, float epsilon = 1e-5f)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Rot.ApproximateEquals(Rot3f.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new Shift3f(similarity.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift3f"/> transformation from an <see cref="Affine3f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3f FromAffine3f(Affine3f affine, float epsilon = 1e-5f)
+            => FromM44f((M44f)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Shift3f"/> transformation from a <see cref="Trafo3f"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
+            => FromM44f(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1024,8 +1202,24 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean3f(Shift3f s)
+            => new Euclidean3f(Rot3f.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity3f(Shift3f s)
+            => new Similarity3f(1, Rot3f.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine3f(Shift3f s)
-            => new Affine3f(s);
+            => new Affine3f(M33f.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3f(Shift3f s)
+            => new Trafo3f((M44f)s, (M44f)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Shift3d(Shift3f s)
+            => new Shift3d((V3d)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="Shift3f"/> instance
@@ -1547,6 +1741,87 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="Shift2d"/> transformation from a translation <see cref="M23d"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2d FromM23d(M23d m, double epsilon = (double)1e-6)
+        {
+            if (!M22d.Identity.ApproximateEquals((M22d)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            return new Shift2d(m.C2);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift2d"/> transformation from a translation <see cref="M33d"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2d FromM33d(M33d m, double epsilon = (double)1e-6)
+        {
+            if (!M22d.Identity.ApproximateEquals((M22d)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M22.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new Shift2d(m.C2.XY / m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift2d"/> transformation from a <see cref="Euclidean2d"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2d FromEuclidean2d(Euclidean2d euclidean, double epsilon = 1e-12)
+        {
+            if (!euclidean.Rot.ApproximateEquals(Rot2d.Identity, epsilon))
+                throw new ArgumentException("Euclidean transformation contains rotational component");
+
+            return new Shift2d(euclidean.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift2d"/> transformation from a <see cref="Similarity2d"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2d FromSimilarity2d(Similarity2d similarity, double epsilon = 1e-12)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Rot.ApproximateEquals(Rot2d.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new Shift2d(similarity.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift2d"/> transformation from an <see cref="Affine2d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift2d FromAffine2d(Affine2d affine, double epsilon = 1e-12)
+            => FromM33d((M33d)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Shift2d"/> transformation from a <see cref="Trafo2d"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
+            => FromM33d(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1586,8 +1861,24 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean2d(Shift2d s)
+            => new Euclidean2d(Rot2d.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity2d(Shift2d s)
+            => new Similarity2d(1, Rot2d.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine2d(Shift2d s)
-            => new Affine2d(s);
+            => new Affine2d(M22d.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2d(Shift2d s)
+            => new Trafo2d((M33d)s, (M33d)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Shift2f(Shift2d s)
+            => new Shift2f((V2f)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="Shift2d"/> instance
@@ -2162,6 +2453,87 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="Shift3d"/> transformation from a translation <see cref="M34d"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3d FromM34d(M34d m, double epsilon = (double)1e-6)
+        {
+            if (!M33d.Identity.ApproximateEquals((M33d)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            return new Shift3d(m.C3);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift3d"/> transformation from a translation <see cref="M44d"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3d FromM44d(M44d m, double epsilon = (double)1e-6)
+        {
+            if (!M33d.Identity.ApproximateEquals((M33d)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new Shift3d(m.C3.XYZ / m.M33);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift3d"/> transformation from a <see cref="Euclidean3d"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3d FromEuclidean3d(Euclidean3d euclidean, double epsilon = 1e-12)
+        {
+            if (!euclidean.Rot.ApproximateEquals(Rot3d.Identity, epsilon))
+                throw new ArgumentException("Euclidean transformation contains rotational component");
+
+            return new Shift3d(euclidean.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift3d"/> transformation from a <see cref="Similarity3d"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3d FromSimilarity3d(Similarity3d similarity, double epsilon = 1e-12)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Rot.ApproximateEquals(Rot3d.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new Shift3d(similarity.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Shift3d"/> transformation from an <see cref="Affine3d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Shift3d FromAffine3d(Affine3d affine, double epsilon = 1e-12)
+            => FromM44d((M44d)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Shift3d"/> transformation from a <see cref="Trafo3d"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Shift3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
+            => FromM44d(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2201,8 +2573,24 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean3d(Shift3d s)
+            => new Euclidean3d(Rot3d.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity3d(Shift3d s)
+            => new Similarity3d(1, Rot3d.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine3d(Shift3d s)
-            => new Affine3d(s);
+            => new Affine3d(M33d.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3d(Shift3d s)
+            => new Trafo3d((M44d)s, (M44d)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Shift3f(Shift3d s)
+            => new Shift3f((V3f)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="Shift3d"/> instance

@@ -34,6 +34,97 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public static void FromM33dAndV3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomEuclidean(rnd);
+                var m = (M33d)a.Rot;
+                var t = a.Trans;
+
+                var restored = Euclidean3d.FromM33dAndV3d(m, t);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromM34d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomEuclidean(rnd);
+                var m = (M34d)a;
+
+                var restored = Euclidean3d.FromM34d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromM44d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomEuclidean(rnd);
+                var m = (M44d)a;
+
+                var restored = Euclidean3d.FromM44d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromSimilarity3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomEuclidean(rnd);
+                var m = (Similarity3d)a;
+
+                var restored = Euclidean3d.FromSimilarity3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromAffine3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomEuclidean(rnd);
+                var m = (Affine3d)a;
+
+                var restored = Euclidean3d.FromAffine3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromTrafo3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomEuclidean(rnd);
+                var m = (Trafo3d)a;
+
+                var restored = Euclidean3d.FromTrafo3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
         public static void Comparison()
         {
             var rnd = new RandomSystem(1);

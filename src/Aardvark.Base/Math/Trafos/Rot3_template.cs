@@ -18,8 +18,11 @@ namespace Aardvark.Base
     //# var qfieldsL = new[] {"w", "x", "y", "z"};
     //# foreach (var isDouble in new[] { false, true }) {
     //#   var ftype = isDouble ? "double" : "float";
+    //#   var ftype2 = isDouble ? "float" : "double";
     //#   var tc = isDouble ? "d" : "f";
+    //#   var tc2 = isDouble ? "f" : "d";
     //#   var type = "Rot3" + tc;
+    //#   var type2 = "Rot3" + tc2;
     //#   var quatt = "Quaternion" + tc.ToUpper();
     //#   var v2t = "V2" + tc;
     //#   var v3t = "V3" + tc;
@@ -27,6 +30,10 @@ namespace Aardvark.Base
     //#   var rot2t = "Rot2" + tc;
     //#   var scale3t = "Scale3" + tc;
     //#   var shift3t = "Shift3" + tc;
+    //#   var affine3t = "Affine3" + tc;
+    //#   var similarity3t = "Similarity3" + tc;
+    //#   var euclidean3t = "Euclidean3" + tc;
+    //#   var trafo3t = "Trafo3" + tc;
     //#   var m22t = "M22" + tc;
     //#   var m23t = "M23" + tc;
     //#   var m33t = "M33" + tc;
@@ -38,8 +45,9 @@ namespace Aardvark.Base
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
     //#   var assertNorm = "Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, " + assertEps + "))";
+    //#   var eps = isDouble ? "1e-12" : "1e-5f";
     #region __type__
-        
+
     /// <summary>
     /// Represents a rotation in three dimensions using a unit quaternion.
     /// </summary>
@@ -508,6 +516,72 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__m44t__"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__m44t__(__m44t__ m, __ftype__ epsilon = __eps__)
+        {
+            if (!(/*#3.ForEach(j => {*/m.M3__j__.IsTiny(epsilon)/*# }, and);*/))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (!m.C3.XYZ.ApproximateEquals(__v3t__.Zero, epsilon))
+                throw new ArgumentException("Matrix contains translational component.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return From__m33t__(((__m33t__)m) / m.M33);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__euclidean3t__"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__euclidean3t__(__euclidean3t__ euclidean, __ftype__ epsilon = __eps__)
+        {
+            if (!euclidean.Trans.ApproximateEquals(__v3t__.Zero, epsilon))
+                throw new ArgumentException("Euclidean transformation contains translational component");
+
+            return euclidean.Rot;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__similarity3t__"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__similarity3t__(__similarity3t__ similarity, __ftype__ epsilon = __eps__)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Trans.ApproximateEquals(__v3t__.Zero, epsilon))
+                throw new ArgumentException("Similarity transformation contains translational component");
+
+            return similarity.Rot;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from an <see cref="__affine3t__"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__affine3t__(__affine3t__ affine, __ftype__ epsilon = __eps__)
+            => From__m44t__((__m44t__)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__trafo3t__"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__trafo3t__(__trafo3t__ trafo, __ftype__ epsilon = __eps__)
+            => From__m44t__(trafo.Forward, epsilon);
+
+        /// <summary>
         /// Creates a <see cref="__type__"/> transformation representing a rotation around 
         /// an axis by an angle in radians.
         /// The axis vector has to be normalized.
@@ -622,10 +696,6 @@ namespace Aardvark.Base
 
         #region Conversion
 
-        // [todo ISSUE 20090421 andi> caching of the Matrix would greatly improve performance.
-        // Implement __type__ as a Matrix-backed Quaternion. Quaternion should be its own class with all Quaternion-operations, 
-        // and __type__ only an efficient Rotation (Matrix) that is has its Orthonormalization-Constraint enforced (by a Quaternion).
-        //<]
         //# for (int n = 3; n <= 4; n++) {
         //# for (int m = n; m <= (n+1) && m <= 4; m++) {
         //#     var mat = "M" + n + m + tc;
@@ -671,8 +741,24 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Affine3__tc__(__type__ r)
-            => new Affine3__tc__(r);
+        public static explicit operator __euclidean3t__(__type__ r)
+            => new __euclidean3t__(r, __v3t__.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __similarity3t__(__type__ r)
+            => new __similarity3t__(1, r, __v3t__.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __affine3t__(__type__ r)
+            => new __affine3t__((__m33t__)r);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __trafo3t__(__type__ r)
+            => new __trafo3t__((__m44t__)r, (__m44t__)r.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type2__(__type__ r)
+            => new __type2__(/*# qfields.ForEach(f => {*/(__ftype2__)r.__f__/*# }, comma);*/);
 
         #endregion
 

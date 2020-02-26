@@ -63,7 +63,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
         public Similarity2f(float scale, Rot2f rotation, V2f translation)
         {
@@ -295,7 +295,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity2f FromM22fAndV2f(M22f m, V2f trans, float epsilon = (float)0.00001)
+        public static Similarity2f FromM22fAndV2f(M22f m, V2f trans, float epsilon = 1e-5f)
         {
             var s0 = m.C0.Norm2;
             var s1 = m.C1.Norm2;
@@ -313,7 +313,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity2f FromM23f(M23f m, float epsilon = (float)0.00001)
+        public static Similarity2f FromM23f(M23f m, float epsilon = 1e-5f)
             => FromM22fAndV2f((M22f)m, m.C2);
 
         /// <summary>
@@ -322,7 +322,7 @@ namespace Aardvark.Base
         /// a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity2f FromM33f(M33f m, float epsilon = (float)0.00001)
+        public static Similarity2f FromM33f(M33f m, float epsilon = 1e-5f)
         {
             if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -334,11 +334,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="Similarity2f"/> transformation from an <see cref="Scale2f"/>.
+        /// The transformation <paramref name="scale"/> must represent a uniform scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Similarity2f FromScale2f(Scale2f scale, float epsilon = 1e-5f)
+        {
+            var s = (scale.X * scale.Y).Pow(1.0f / 2);
+
+            if (!scale.ApproximateEquals(new Scale2f(s), epsilon))
+                throw new ArgumentException("Matrix features non-uniform scaling");
+
+            return new Similarity2f(s, Euclidean2f.Identity);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Similarity2f"/> transformation from an <see cref="Affine2f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a uniform scale, rotation, and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Similarity2f FromAffine2f(Affine2f affine, float epsilon = 1e-5f)
+            => FromM33f((M33f)affine, epsilon);
+
+        /// <summary>
         /// Creates a <see cref="Similarity2f"/> transformation from a <see cref="Trafo2f"/>.
         /// The transformation <paramref name="trafo"/> must only consist of a uniform scale, rotation, and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity2f FromTrafo2f(Trafo2f trafo, float epsilon = (float)0.00001)
+        public static Similarity2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
             => FromM33f(trafo.Forward, epsilon);
 
         #endregion
@@ -374,7 +397,18 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine2f(Similarity2f s)
-            => new Affine2f(s);
+        {
+            var m = (M23f)s;
+            return new Affine2f((M22f)m, m.C2);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2f(Similarity2f s)
+            => new Trafo2f((M33f)s, (M33f)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity2d(Similarity2f s)
+            => new Similarity2d((double)s.Scale, (Euclidean2d)s.Euclidean);
 
         #endregion
 
@@ -560,7 +594,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
         public Similarity3f(float scale, Rot3f rotation, V3f translation)
         {
@@ -818,7 +852,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity3f FromM33fAndV3f(M33f m, V3f trans, float epsilon = (float)0.00001)
+        public static Similarity3f FromM33fAndV3f(M33f m, V3f trans, float epsilon = 1e-5f)
         {
             var s0 = m.C0.Norm2;
             var s1 = m.C1.Norm2;
@@ -837,7 +871,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity3f FromM34f(M34f m, float epsilon = (float)0.00001)
+        public static Similarity3f FromM34f(M34f m, float epsilon = 1e-5f)
             => FromM33fAndV3f((M33f)m, m.C3, epsilon);
 
         /// <summary>
@@ -846,7 +880,7 @@ namespace Aardvark.Base
         /// a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity3f FromM44f(M44f m, float epsilon = (float)0.00001)
+        public static Similarity3f FromM44f(M44f m, float epsilon = 1e-5f)
         {
             if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -858,11 +892,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="Similarity3f"/> transformation from an <see cref="Scale3f"/>.
+        /// The transformation <paramref name="scale"/> must represent a uniform scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Similarity3f FromScale3f(Scale3f scale, float epsilon = 1e-5f)
+        {
+            var s = (scale.X * scale.Y * scale.Z).Pow(1.0f / 3);
+
+            if (!scale.ApproximateEquals(new Scale3f(s), epsilon))
+                throw new ArgumentException("Matrix features non-uniform scaling");
+
+            return new Similarity3f(s, Euclidean3f.Identity);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Similarity3f"/> transformation from an <see cref="Affine3f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a uniform scale, rotation, and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Similarity3f FromAffine3f(Affine3f affine, float epsilon = 1e-5f)
+            => FromM44f((M44f)affine, epsilon);
+
+        /// <summary>
         /// Creates a <see cref="Similarity3f"/> transformation from a <see cref="Trafo3f"/>.
         /// The transformation <paramref name="trafo"/> must only consist of a uniform scale, rotation, and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity3f FromTrafo3f(Trafo3f trafo, float epsilon = (float)0.00001)
+        public static Similarity3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
             => FromM44f(trafo.Forward, epsilon);
 
         #endregion
@@ -901,7 +958,18 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine3f(Similarity3f s)
-            => new Affine3f(s);
+        {
+            var m = (M34f)s;
+            return new Affine3f((M33f)m, m.C3);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3f(Similarity3f s)
+            => new Trafo3f((M44f)s, (M44f)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity3d(Similarity3f s)
+            => new Similarity3d((double)s.Scale, (Euclidean3d)s.Euclidean);
 
         #endregion
 
@@ -1107,7 +1175,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
         public Similarity2d(double scale, Rot2d rotation, V2d translation)
         {
@@ -1339,7 +1407,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity2d FromM22dAndV2d(M22d m, V2d trans, double epsilon = (double)0.00001)
+        public static Similarity2d FromM22dAndV2d(M22d m, V2d trans, double epsilon = 1e-12)
         {
             var s0 = m.C0.Norm2;
             var s1 = m.C1.Norm2;
@@ -1357,7 +1425,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity2d FromM23d(M23d m, double epsilon = (double)0.00001)
+        public static Similarity2d FromM23d(M23d m, double epsilon = 1e-12)
             => FromM22dAndV2d((M22d)m, m.C2);
 
         /// <summary>
@@ -1366,7 +1434,7 @@ namespace Aardvark.Base
         /// a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity2d FromM33d(M33d m, double epsilon = (double)0.00001)
+        public static Similarity2d FromM33d(M33d m, double epsilon = 1e-12)
         {
             if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -1378,11 +1446,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="Similarity2d"/> transformation from an <see cref="Scale2d"/>.
+        /// The transformation <paramref name="scale"/> must represent a uniform scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Similarity2d FromScale2d(Scale2d scale, double epsilon = 1e-12)
+        {
+            var s = (scale.X * scale.Y).Pow(1.0 / 2);
+
+            if (!scale.ApproximateEquals(new Scale2d(s), epsilon))
+                throw new ArgumentException("Matrix features non-uniform scaling");
+
+            return new Similarity2d(s, Euclidean2d.Identity);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Similarity2d"/> transformation from an <see cref="Affine2d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a uniform scale, rotation, and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Similarity2d FromAffine2d(Affine2d affine, double epsilon = 1e-12)
+            => FromM33d((M33d)affine, epsilon);
+
+        /// <summary>
         /// Creates a <see cref="Similarity2d"/> transformation from a <see cref="Trafo2d"/>.
         /// The transformation <paramref name="trafo"/> must only consist of a uniform scale, rotation, and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity2d FromTrafo2d(Trafo2d trafo, double epsilon = (double)0.00001)
+        public static Similarity2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
             => FromM33d(trafo.Forward, epsilon);
 
         #endregion
@@ -1418,7 +1509,18 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine2d(Similarity2d s)
-            => new Affine2d(s);
+        {
+            var m = (M23d)s;
+            return new Affine2d((M22d)m, m.C2);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2d(Similarity2d s)
+            => new Trafo2d((M33d)s, (M33d)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity2f(Similarity2d s)
+            => new Similarity2f((float)s.Scale, (Euclidean2f)s.Euclidean);
 
         #endregion
 
@@ -1604,7 +1706,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
         public Similarity3d(double scale, Rot3d rotation, V3d translation)
         {
@@ -1862,7 +1964,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity3d FromM33dAndV3d(M33d m, V3d trans, double epsilon = (double)0.00001)
+        public static Similarity3d FromM33dAndV3d(M33d m, V3d trans, double epsilon = 1e-12)
         {
             var s0 = m.C0.Norm2;
             var s1 = m.C1.Norm2;
@@ -1881,7 +1983,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity3d FromM34d(M34d m, double epsilon = (double)0.00001)
+        public static Similarity3d FromM34d(M34d m, double epsilon = 1e-12)
             => FromM33dAndV3d((M33d)m, m.C3, epsilon);
 
         /// <summary>
@@ -1890,7 +1992,7 @@ namespace Aardvark.Base
         /// a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity3d FromM44d(M44d m, double epsilon = (double)0.00001)
+        public static Similarity3d FromM44d(M44d m, double epsilon = 1e-12)
         {
             if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -1902,11 +2004,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="Similarity3d"/> transformation from an <see cref="Scale3d"/>.
+        /// The transformation <paramref name="scale"/> must represent a uniform scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Similarity3d FromScale3d(Scale3d scale, double epsilon = 1e-12)
+        {
+            var s = (scale.X * scale.Y * scale.Z).Pow(1.0 / 3);
+
+            if (!scale.ApproximateEquals(new Scale3d(s), epsilon))
+                throw new ArgumentException("Matrix features non-uniform scaling");
+
+            return new Similarity3d(s, Euclidean3d.Identity);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Similarity3d"/> transformation from an <see cref="Affine3d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a uniform scale, rotation, and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Similarity3d FromAffine3d(Affine3d affine, double epsilon = 1e-12)
+            => FromM44d((M44d)affine, epsilon);
+
+        /// <summary>
         /// Creates a <see cref="Similarity3d"/> transformation from a <see cref="Trafo3d"/>.
         /// The transformation <paramref name="trafo"/> must only consist of a uniform scale, rotation, and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static Similarity3d FromTrafo3d(Trafo3d trafo, double epsilon = (double)0.00001)
+        public static Similarity3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
             => FromM44d(trafo.Forward, epsilon);
 
         #endregion
@@ -1945,7 +2070,18 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine3d(Similarity3d s)
-            => new Affine3d(s);
+        {
+            var m = (M34d)s;
+            return new Affine3d((M33d)m, m.C3);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3d(Similarity3d s)
+            => new Trafo3d((M44d)s, (M44d)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity3f(Similarity3d s)
+            => new Similarity3f((float)s.Scale, (Euclidean3f)s.Euclidean);
 
         #endregion
 

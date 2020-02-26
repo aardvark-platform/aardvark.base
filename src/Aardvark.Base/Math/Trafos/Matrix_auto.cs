@@ -593,11 +593,11 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M22i"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22i Scale(int tX, int tY)
+        public static M22i Scale(int sX, int sY)
         {
             return new M22i(
-                tX, 0, 
-                0, tY);
+                sX, 0, 
+                0, sY);
         }
 
         /// <summary>
@@ -1927,7 +1927,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M22i a, M22i b, int epsilon)
+        public static bool ApproximateEquals(this M22i a, M22i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -2519,11 +2519,11 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M22l"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22l Scale(long tX, long tY)
+        public static M22l Scale(long sX, long sY)
         {
             return new M22l(
-                tX, 0, 
-                0, tY);
+                sX, 0, 
+                0, sY);
         }
 
         /// <summary>
@@ -3755,7 +3755,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M22l a, M22l b, long epsilon)
+        public static bool ApproximateEquals(this M22l a, M22l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -4347,11 +4347,11 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M22f"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22f Scale(float tX, float tY)
+        public static M22f Scale(float sX, float sY)
         {
             return new M22f(
-                tX, 0, 
-                0, tY);
+                sX, 0, 
+                0, sY);
         }
 
         /// <summary>
@@ -4359,6 +4359,17 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f Scale(V2f s)
+        {
+            return new M22f(
+                s.X, 0, 
+                0, s.Y);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M22f"/> from a <see cref="Scale2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f Scale(Scale2f s)
         {
             return new M22f(
                 s.X, 0, 
@@ -5596,7 +5607,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M22f a, M22f b, float epsilon)
+        public static bool ApproximateEquals(this M22f a, M22f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -6188,11 +6199,11 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M22d"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22d Scale(double tX, double tY)
+        public static M22d Scale(double sX, double sY)
         {
             return new M22d(
-                tX, 0, 
-                0, tY);
+                sX, 0, 
+                0, sY);
         }
 
         /// <summary>
@@ -6200,6 +6211,17 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d Scale(V2d s)
+        {
+            return new M22d(
+                s.X, 0, 
+                0, s.Y);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M22d"/> from a <see cref="Scale2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d Scale(Scale2d s)
         {
             return new M22d(
                 s.X, 0, 
@@ -7339,7 +7361,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M22d a, M22d b, double epsilon)
+        public static bool ApproximateEquals(this M22d a, M22d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -7951,18 +7973,18 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M23i"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23i Scale(int tX, int tY)
+        public static M23i Scale(int sX, int sY)
         {
             return new M23i(
-                tX, 0, 0, 
-                0, tY, 0);
+                sX, 0, 0, 
+                0, sY, 0);
         }
 
         /// <summary>
-        /// Creates a transformation <see cref="M23i"/> using a <see cref="V3i"/> as scaling factor.
+        /// Creates a transformation <see cref="M23i"/> using a <see cref="V2i"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23i Scale(V3i s)
+        public static M23i Scale(V2i s)
         {
             return new M23i(
                 s.X, 0, 0, 
@@ -9275,7 +9297,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M23i a, M23i b, int epsilon)
+        public static bool ApproximateEquals(this M23i a, M23i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -9887,18 +9909,18 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M23l"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23l Scale(long tX, long tY)
+        public static M23l Scale(long sX, long sY)
         {
             return new M23l(
-                tX, 0, 0, 
-                0, tY, 0);
+                sX, 0, 0, 
+                0, sY, 0);
         }
 
         /// <summary>
-        /// Creates a transformation <see cref="M23l"/> using a <see cref="V3l"/> as scaling factor.
+        /// Creates a transformation <see cref="M23l"/> using a <see cref="V2l"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23l Scale(V3l s)
+        public static M23l Scale(V2l s)
         {
             return new M23l(
                 s.X, 0, 0, 
@@ -11113,7 +11135,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M23l a, M23l b, long epsilon)
+        public static bool ApproximateEquals(this M23l a, M23l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -11725,18 +11747,29 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M23f"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23f Scale(float tX, float tY)
+        public static M23f Scale(float sX, float sY)
         {
             return new M23f(
-                tX, 0, 0, 
-                0, tY, 0);
+                sX, 0, 0, 
+                0, sY, 0);
         }
 
         /// <summary>
-        /// Creates a transformation <see cref="M23f"/> using a <see cref="V3f"/> as scaling factor.
+        /// Creates a transformation <see cref="M23f"/> using a <see cref="V2f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23f Scale(V3f s)
+        public static M23f Scale(V2f s)
+        {
+            return new M23f(
+                s.X, 0, 0, 
+                0, s.Y, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23f"/> from a <see cref="Scale2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f Scale(Scale2f s)
         {
             return new M23f(
                 s.X, 0, 0, 
@@ -12889,7 +12922,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M23f a, M23f b, float epsilon)
+        public static bool ApproximateEquals(this M23f a, M23f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -13501,18 +13534,29 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M23d"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23d Scale(double tX, double tY)
+        public static M23d Scale(double sX, double sY)
         {
             return new M23d(
-                tX, 0, 0, 
-                0, tY, 0);
+                sX, 0, 0, 
+                0, sY, 0);
         }
 
         /// <summary>
-        /// Creates a transformation <see cref="M23d"/> using a <see cref="V3d"/> as scaling factor.
+        /// Creates a transformation <see cref="M23d"/> using a <see cref="V2d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23d Scale(V3d s)
+        public static M23d Scale(V2d s)
+        {
+            return new M23d(
+                s.X, 0, 0, 
+                0, s.Y, 0);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M23d"/> from a <see cref="Scale2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d Scale(Scale2d s)
         {
             return new M23d(
                 s.X, 0, 0, 
@@ -14567,7 +14611,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M23d a, M23d b, double epsilon)
+        public static bool ApproximateEquals(this M23d a, M23d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -15271,24 +15315,12 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M33i"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33i Scale(int tX, int tY, int tZ)
+        public static M33i Scale(int sX, int sY, int sZ)
         {
             return new M33i(
-                tX, 0, 0, 
-                0, tY, 0, 
-                0, 0, tZ);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M33i"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33i Scale(int tX, int tY)
-        {
-            return new M33i(
-                tX, 0, 0, 
-                0, tY, 0, 
-                0, 0, 1);
+                sX, 0, 0, 
+                0, sY, 0, 
+                0, 0, sZ);
         }
 
         /// <summary>
@@ -15301,6 +15333,18 @@ namespace Aardvark.Base
                 s.X, 0, 0, 
                 0, s.Y, 0, 
                 0, 0, s.Z);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33i"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i Scale(int sX, int sY)
+        {
+            return new M33i(
+                sX, 0, 0, 
+                0, sY, 0, 
+                0, 0, 1);
         }
 
         /// <summary>
@@ -17046,7 +17090,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M33i a, M33i b, int epsilon)
+        public static bool ApproximateEquals(this M33i a, M33i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -17750,24 +17794,12 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M33l"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33l Scale(long tX, long tY, long tZ)
+        public static M33l Scale(long sX, long sY, long sZ)
         {
             return new M33l(
-                tX, 0, 0, 
-                0, tY, 0, 
-                0, 0, tZ);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M33l"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33l Scale(long tX, long tY)
-        {
-            return new M33l(
-                tX, 0, 0, 
-                0, tY, 0, 
-                0, 0, 1);
+                sX, 0, 0, 
+                0, sY, 0, 
+                0, 0, sZ);
         }
 
         /// <summary>
@@ -17780,6 +17812,18 @@ namespace Aardvark.Base
                 s.X, 0, 0, 
                 0, s.Y, 0, 
                 0, 0, s.Z);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33l"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l Scale(long sX, long sY)
+        {
+            return new M33l(
+                sX, 0, 0, 
+                0, sY, 0, 
+                0, 0, 1);
         }
 
         /// <summary>
@@ -19413,7 +19457,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M33l a, M33l b, long epsilon)
+        public static bool ApproximateEquals(this M33l a, M33l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -20117,24 +20161,12 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M33f"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f Scale(float tX, float tY, float tZ)
+        public static M33f Scale(float sX, float sY, float sZ)
         {
             return new M33f(
-                tX, 0, 0, 
-                0, tY, 0, 
-                0, 0, tZ);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M33f"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f Scale(float tX, float tY)
-        {
-            return new M33f(
-                tX, 0, 0, 
-                0, tY, 0, 
-                0, 0, 1);
+                sX, 0, 0, 
+                0, sY, 0, 
+                0, 0, sZ);
         }
 
         /// <summary>
@@ -20150,6 +20182,30 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a transformation <see cref="M33f"/> from a <see cref="Scale3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Scale(Scale3f s)
+        {
+            return new M33f(
+                s.X, 0, 0, 
+                0, s.Y, 0, 
+                0, 0, s.Z);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33f"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Scale(float sX, float sY)
+        {
+            return new M33f(
+                sX, 0, 0, 
+                0, sY, 0, 
+                0, 0, 1);
+        }
+
+        /// <summary>
         /// Creates a transformation <see cref="M33f"/> using a <see cref="V2f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20162,15 +20218,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a transformation <see cref="M33f"/> from a <see cref="Scale3f"/> transformation.
+        /// Creates a scaling transformation <see cref="M33f"/> from a <see cref="Scale2f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f Scale(Scale3f s)
+        public static M33f Scale(Scale2f s)
         {
             return new M33f(
                 s.X, 0, 0, 
                 0, s.Y, 0, 
-                0, 0, s.Z);
+                0, 0, 1);
         }
 
         #endregion
@@ -21887,7 +21943,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M33f a, M33f b, float epsilon)
+        public static bool ApproximateEquals(this M33f a, M33f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -22591,24 +22647,12 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M33d"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d Scale(double tX, double tY, double tZ)
+        public static M33d Scale(double sX, double sY, double sZ)
         {
             return new M33d(
-                tX, 0, 0, 
-                0, tY, 0, 
-                0, 0, tZ);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M33d"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d Scale(double tX, double tY)
-        {
-            return new M33d(
-                tX, 0, 0, 
-                0, tY, 0, 
-                0, 0, 1);
+                sX, 0, 0, 
+                0, sY, 0, 
+                0, 0, sZ);
         }
 
         /// <summary>
@@ -22624,6 +22668,30 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a transformation <see cref="M33d"/> from a <see cref="Scale3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Scale(Scale3d s)
+        {
+            return new M33d(
+                s.X, 0, 0, 
+                0, s.Y, 0, 
+                0, 0, s.Z);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33d"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Scale(double sX, double sY)
+        {
+            return new M33d(
+                sX, 0, 0, 
+                0, sY, 0, 
+                0, 0, 1);
+        }
+
+        /// <summary>
         /// Creates a transformation <see cref="M33d"/> using a <see cref="V2d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22636,15 +22704,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a transformation <see cref="M33d"/> from a <see cref="Scale3d"/> transformation.
+        /// Creates a scaling transformation <see cref="M33d"/> from a <see cref="Scale2d"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d Scale(Scale3d s)
+        public static M33d Scale(Scale2d s)
         {
             return new M33d(
                 s.X, 0, 0, 
                 0, s.Y, 0, 
-                0, 0, s.Z);
+                0, 0, 1);
         }
 
         #endregion
@@ -24249,7 +24317,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M33d a, M33d b, double epsilon)
+        public static bool ApproximateEquals(this M33d a, M33d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -24973,36 +25041,12 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M34i"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34i Scale(int tX, int tY, int tZ)
+        public static M34i Scale(int sX, int sY, int sZ)
         {
             return new M34i(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34i"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34i Scale(int tX, int tY)
-        {
-            return new M34i(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, 1, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34i"/> using a <see cref="V4i"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34i Scale(V4i s)
-        {
-            return new M34i(
-                s.X, 0, 0, 0, 
-                0, s.Y, 0, 0, 
-                0, 0, s.Z, 0);
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0);
         }
 
         /// <summary>
@@ -25014,7 +25058,7 @@ namespace Aardvark.Base
             return new M34i(
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
-                0, 0, 1, 0);
+                0, 0, s.Z, 0);
         }
 
         #endregion
@@ -26630,7 +26674,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M34i a, M34i b, int epsilon)
+        public static bool ApproximateEquals(this M34i a, M34i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -27354,36 +27398,12 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M34l"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34l Scale(long tX, long tY, long tZ)
+        public static M34l Scale(long sX, long sY, long sZ)
         {
             return new M34l(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34l"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34l Scale(long tX, long tY)
-        {
-            return new M34l(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, 1, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34l"/> using a <see cref="V4l"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34l Scale(V4l s)
-        {
-            return new M34l(
-                s.X, 0, 0, 0, 
-                0, s.Y, 0, 0, 
-                0, 0, s.Z, 0);
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0);
         }
 
         /// <summary>
@@ -27395,7 +27415,7 @@ namespace Aardvark.Base
             return new M34l(
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
-                0, 0, 1, 0);
+                0, 0, s.Z, 0);
         }
 
         #endregion
@@ -28899,7 +28919,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M34l a, M34l b, long epsilon)
+        public static bool ApproximateEquals(this M34l a, M34l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -29623,36 +29643,12 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M34f"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f Scale(float tX, float tY, float tZ)
+        public static M34f Scale(float sX, float sY, float sZ)
         {
             return new M34f(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34f"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f Scale(float tX, float tY)
-        {
-            return new M34f(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, 1, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34f"/> using a <see cref="V4f"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f Scale(V4f s)
-        {
-            return new M34f(
-                s.X, 0, 0, 0, 
-                0, s.Y, 0, 0, 
-                0, 0, s.Z, 0);
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0);
         }
 
         /// <summary>
@@ -29664,7 +29660,7 @@ namespace Aardvark.Base
             return new M34f(
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
-                0, 0, 1, 0);
+                0, 0, s.Z, 0);
         }
 
         /// <summary>
@@ -31171,7 +31167,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M34f a, M34f b, float epsilon)
+        public static bool ApproximateEquals(this M34f a, M34f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -31895,36 +31891,12 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M34d"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d Scale(double tX, double tY, double tZ)
+        public static M34d Scale(double sX, double sY, double sZ)
         {
             return new M34d(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34d"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d Scale(double tX, double tY)
-        {
-            return new M34d(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, 1, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34d"/> using a <see cref="V4d"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d Scale(V4d s)
-        {
-            return new M34d(
-                s.X, 0, 0, 0, 
-                0, s.Y, 0, 0, 
-                0, 0, s.Z, 0);
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0);
         }
 
         /// <summary>
@@ -31936,7 +31908,7 @@ namespace Aardvark.Base
             return new M34d(
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
-                0, 0, 1, 0);
+                0, 0, s.Z, 0);
         }
 
         /// <summary>
@@ -33331,7 +33303,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M34d a, M34d b, double epsilon)
+        public static bool ApproximateEquals(this M34d a, M34d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -34153,26 +34125,13 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M44i"/> using 4 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44i Scale(int tX, int tY, int tZ, int tW)
+        public static M44i Scale(int sX, int sY, int sZ, int sW)
         {
             return new M44i(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0, 
-                0, 0, 0, tW);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M44i"/> using 3 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44i Scale(int tX, int tY, int tZ)
-        {
-            return new M44i(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0, 
-                0, 0, 0, 1);
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0, 
+                0, 0, 0, sW);
         }
 
         /// <summary>
@@ -34186,6 +34145,19 @@ namespace Aardvark.Base
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
                 0, 0, 0, s.W);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44i"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i Scale(int sX, int sY, int sZ)
+        {
+            return new M44i(
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0, 
+                0, 0, 0, 1);
         }
 
         /// <summary>
@@ -36251,7 +36223,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M44i a, M44i b, int epsilon)
+        public static bool ApproximateEquals(this M44i a, M44i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -37073,26 +37045,13 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M44l"/> using 4 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44l Scale(long tX, long tY, long tZ, long tW)
+        public static M44l Scale(long sX, long sY, long sZ, long sW)
         {
             return new M44l(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0, 
-                0, 0, 0, tW);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M44l"/> using 3 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44l Scale(long tX, long tY, long tZ)
-        {
-            return new M44l(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0, 
-                0, 0, 0, 1);
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0, 
+                0, 0, 0, sW);
         }
 
         /// <summary>
@@ -37106,6 +37065,19 @@ namespace Aardvark.Base
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
                 0, 0, 0, s.W);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44l"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l Scale(long sX, long sY, long sZ)
+        {
+            return new M44l(
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0, 
+                0, 0, 0, 1);
         }
 
         /// <summary>
@@ -39045,7 +39017,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M44l a, M44l b, long epsilon)
+        public static bool ApproximateEquals(this M44l a, M44l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -39867,26 +39839,13 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M44f"/> using 4 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f Scale(float tX, float tY, float tZ, float tW)
+        public static M44f Scale(float sX, float sY, float sZ, float sW)
         {
             return new M44f(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0, 
-                0, 0, 0, tW);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M44f"/> using 3 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f Scale(float tX, float tY, float tZ)
-        {
-            return new M44f(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0, 
-                0, 0, 0, 1);
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0, 
+                0, 0, 0, sW);
         }
 
         /// <summary>
@@ -39900,6 +39859,19 @@ namespace Aardvark.Base
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
                 0, 0, 0, s.W);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44f"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Scale(float sX, float sY, float sZ)
+        {
+            return new M44f(
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0, 
+                0, 0, 0, 1);
         }
 
         /// <summary>
@@ -39925,7 +39897,7 @@ namespace Aardvark.Base
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         #endregion
@@ -41915,7 +41887,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M44f a, M44f b, float epsilon)
+        public static bool ApproximateEquals(this M44f a, M44f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
@@ -42737,26 +42709,13 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="M44d"/> using 4 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d Scale(double tX, double tY, double tZ, double tW)
+        public static M44d Scale(double sX, double sY, double sZ, double sW)
         {
             return new M44d(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0, 
-                0, 0, 0, tW);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M44d"/> using 3 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d Scale(double tX, double tY, double tZ)
-        {
-            return new M44d(
-                tX, 0, 0, 0, 
-                0, tY, 0, 0, 
-                0, 0, tZ, 0, 
-                0, 0, 0, 1);
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0, 
+                0, 0, 0, sW);
         }
 
         /// <summary>
@@ -42770,6 +42729,19 @@ namespace Aardvark.Base
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
                 0, 0, 0, s.W);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44d"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Scale(double sX, double sY, double sZ)
+        {
+            return new M44d(
+                sX, 0, 0, 0, 
+                0, sY, 0, 0, 
+                0, 0, sZ, 0, 
+                0, 0, 0, 1);
         }
 
         /// <summary>
@@ -42795,7 +42767,7 @@ namespace Aardvark.Base
                 s.X, 0, 0, 0, 
                 0, s.Y, 0, 0, 
                 0, 0, s.Z, 0, 
-                0, 0, 0, 0);
+                0, 0, 0, 1);
         }
 
         #endregion
@@ -44659,7 +44631,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(M44d a, M44d b, double epsilon)
+        public static bool ApproximateEquals(this M44d a, M44d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }

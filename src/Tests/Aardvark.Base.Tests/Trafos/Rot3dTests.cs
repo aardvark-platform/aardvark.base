@@ -10,11 +10,18 @@ namespace Aardvark.Tests
     [TestFixture]
     public static class Rot3dTests
     {
+        private static readonly int iterations = 10000;
+
+        private static Rot3d GetRandomRot(RandomSystem rnd)
+        {
+            return Rot3d.Rotation(rnd.UniformV3dDirection(), rnd.UniformDouble() * Constant.PiTimesTwo);
+        }
+
         [Test]
         public static void FromM33d()
         {
             var rnd = new RandomSystem(1);
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 var rot = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
 
@@ -27,7 +34,97 @@ namespace Aardvark.Tests
                     Assert.Fail("FAIL");
             }
         }
-        
+
+        [Test]
+        public static void FromM44d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var r = GetRandomRot(rnd);
+                var rmr = Rot3d.FromM44d((M44d)r);
+
+                Assert.IsTrue(Fun.ApproximateEquals(rmr, r, 0.00001), "{2}: {0} != {1}", rmr, r, i);
+            }
+        }
+
+        [Test]
+        public static void FromEuclidean3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomRot(rnd);
+                var m = (Euclidean3d)a;
+
+                var restored = Rot3d.FromEuclidean3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromSimilarity3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomRot(rnd);
+                var m = (Similarity3d)a;
+
+                var restored = Rot3d.FromSimilarity3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromAffine3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomRot(rnd);
+                var m = (Affine3d)a;
+
+                var restored = Rot3d.FromAffine3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromTrafo3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomRot(rnd);
+                var m = (Trafo3d)a;
+
+                var restored = Rot3d.FromTrafo3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void ToStringAndParse()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var r = GetRandomRot(rnd);
+
+                var str = r.ToString();
+                var parsed = Rot3d.Parse(str);
+
+                Assert.IsTrue(Fun.ApproximateEquals(parsed, r, 0.00001));
+            }
+        }
+
         static bool ApproxEq(Rot3d a, Rot3d b)
         {
             return a.V.ApproximateEquals(b.V, 1e-8) && a.W.ApproximateEquals(b.W, 1e-8);
@@ -37,7 +134,7 @@ namespace Aardvark.Tests
         public static void RotationXYZ()
         {
             var rnd = new RandomSystem(1);
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 var angle = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;
 
@@ -62,7 +159,7 @@ namespace Aardvark.Tests
         public static void FromEuler()
         {
             var rnd = new RandomSystem(1);
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 var euler = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
                 
@@ -133,7 +230,7 @@ namespace Aardvark.Tests
         public static void FromInto()
         {
             var rnd = new RandomSystem(1337);
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 var dir = rnd.UniformV3d().Normalized;
                 var rotId = Rot3d.RotateInto(dir, dir);
@@ -163,7 +260,7 @@ namespace Aardvark.Tests
         public static void FromIntoEpislon()
         {
             var rnd = new RandomSystem(1337);
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < iterations; i++)
             {
                 var dir = rnd.UniformV3d().Normalized;
                 var eps = rnd.UniformV3d() * (i / 100) * 1e-22;

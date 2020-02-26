@@ -10,21 +10,30 @@ namespace Aardvark.Base
     //# Action comma = () => Out(", ");
     //# Action commaln = () => Out("," + Environment.NewLine);
     //# Action add = () => Out(" + ");
+    //# Action and = () => Out(" && ");
     //# foreach (var isDouble in new[] { false, true }) {
     //#   var ftype = isDouble ? "double" : "float";
+    //#   var ftype2 = isDouble ? "float" : "double";
     //#   var tc = isDouble ? "d" : "f";
+    //#   var tc2 = isDouble ? "f" : "d";
     //#   var v2t = "V2" + tc;
     //#   var v3t = "V3" + tc;
     //#   var v4t = "V4" + tc;
     //#   var type = "Rot2" + tc;
+    //#   var type2 = "Rot2" + tc2;
     //#   var rot3t = "Rot3" + tc;
     //#   var scale3t = "Scale3" + tc;
     //#   var shift3t = "Shift3" + tc;
+    //#   var affine2t = "Affine2" + tc;
+    //#   var similarity2t = "Similarity2" + tc;
+    //#   var euclidean2t = "Euclidean2" + tc;
+    //#   var trafo2t = "Trafo2" + tc;
     //#   var m22t = "M22" + tc;
     //#   var m23t = "M23" + tc;
     //#   var m33t = "M33" + tc;
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
+    //#   var eps = isDouble ? "1e-12" : "1e-5f";
     #region __type__
 
     /// <summary>
@@ -194,11 +203,80 @@ namespace Aardvark.Base
 
         #region Static Creators
 
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__m22t__"/> matrix.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__m22t__(__m22t__ m)
         {
             return new __type__(m.RotationAngle());
         }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__m33t__"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__m33t__(__m33t__ m, __ftype__ epsilon = __eps__)
+        {
+            if (!(/*#2.ForEach(j => {*/m.M2__j__.IsTiny(epsilon)/*# }, and);*/))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (!m.C2.XY.ApproximateEquals(__v2t__.Zero, epsilon))
+                throw new ArgumentException("Matrix contains translational component.");
+
+            if (m.M22.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return From__m22t__(((__m22t__)m) / m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__euclidean2t__"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__euclidean2t__(__euclidean2t__ euclidean, __ftype__ epsilon = __eps__)
+        {
+            if (!euclidean.Trans.ApproximateEquals(__v2t__.Zero, epsilon))
+                throw new ArgumentException("Euclidean transformation contains translational component");
+
+            return euclidean.Rot;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__similarity2t__"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__similarity2t__(__similarity2t__ similarity, __ftype__ epsilon = __eps__)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Trans.ApproximateEquals(__v2t__.Zero, epsilon))
+                throw new ArgumentException("Similarity transformation contains translational component");
+
+            return similarity.Rot;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from an <see cref="__affine2t__"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__affine2t__(__affine2t__ affine, __ftype__ epsilon = __eps__)
+            => From__m33t__((__m33t__)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__trafo2t__"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__trafo2t__(__trafo2t__ trafo, __ftype__ epsilon = __eps__)
+            => From__m33t__(trafo.Forward, epsilon);
 
         #endregion
 
@@ -222,20 +300,24 @@ namespace Aardvark.Base
 
         //# } }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Euclidean2__tc__(__type__ r)
-            => new Euclidean2__tc__(r, __v2t__.Zero);
+        public static explicit operator __euclidean2t__(__type__ r)
+            => new __euclidean2t__(r, __v2t__.Zero);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Affine2__tc__(__type__ r)
-            => new Affine2__tc__(r);
+        public static explicit operator __similarity2t__(__type__ r)
+            => new __similarity2t__(1, r, __v2t__.Zero);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Trafo2__tc__(__type__ r)
-        {
-            var f = (__m33t__)r;
-            var b = (__m33t__)r.Inverse;
-            return new Trafo2__tc__(f, b);
-        }
+        public static explicit operator __affine2t__(__type__ r)
+            => new __affine2t__((__m22t__)r);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __trafo2t__(__type__ r)
+            => new __trafo2t__((__m33t__)r, (__m33t__)r.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type2__(__type__ r)
+            => new __type2__((__ftype2__)r.Angle);
 
         #endregion
 

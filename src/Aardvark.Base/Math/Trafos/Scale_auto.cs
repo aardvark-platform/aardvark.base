@@ -365,6 +365,77 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="Scale2f"/> transformation from a scaling <see cref="M22f"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale2f FromM22f(M22f m, float epsilon = (float)1e-6)
+        {
+            if (!(Fun.IsTiny(m.C0 * V2f.OI, epsilon) && Fun.IsTiny(m.C1 * V2f.IO, epsilon)))
+                throw new ArgumentException("Matrix is not a pure scaling matrix.");
+
+            return new Scale2f(m.M00, m.M11);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale2f"/> transformation from a scaling <see cref="M33f"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale2f FromM33f(M33f m, float epsilon = (float)1e-6)
+        {
+            if (!(Fun.IsTiny(m.C0.XY * V2f.OI, epsilon) && Fun.IsTiny(m.C1.XY * V2f.IO, epsilon)))
+                throw new ArgumentException("Matrix is not a pure scaling matrix.");
+
+            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (!m.C2.XY.IsTiny(epsilon))
+                throw new ArgumentException("Matrix contains translational component.");
+
+            if (m.M22.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new Scale2f(m.M00 / m.M22, m.M11 / m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale2f"/> transformation from a <see cref="Similarity2f"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale2f FromSimilarity2f(Similarity2f similarity, float epsilon = 1e-5f)
+        {
+            if (!similarity.Trans.IsTiny(epsilon))
+                throw new ArgumentException("Similarity transformation contains translational component");
+
+            if (!similarity.Rot.ApproximateEquals(Rot2f.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new Scale2f(similarity.Scale);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale2f"/> transformation from an <see cref="Affine2f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale2f FromAffine2f(Affine2f affine, float epsilon = 1e-5f)
+            => FromM33f((M33f)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Scale2f"/> transformation from a <see cref="Trafo2f"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
+            => FromM33f(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -411,10 +482,17 @@ namespace Aardvark.Base
                 0  , 0  , 0  , 1  );
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine2f(Scale2f s)
-            => new Affine2f((M22f)s);
+            => new Affine2f((M22f)s, V2f.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2f(Scale2f s)
+            => new Trafo2f((M33f)s, (M33f)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Scale2d(Scale2f s)
+            => new Scale2d((V2d)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="Scale2f"/> instance
@@ -957,6 +1035,77 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="Scale3f"/> transformation from a scaling <see cref="M33f"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale3f FromM33f(M33f m, float epsilon = (float)1e-6)
+        {
+            if (!(Fun.IsTiny(m.C0 * V3f.OII, epsilon) && Fun.IsTiny(m.C1 * V3f.IOI, epsilon) && Fun.IsTiny(m.C2 * V3f.IIO, epsilon)))
+                throw new ArgumentException("Matrix is not a pure scaling matrix.");
+
+            return new Scale3f(m.M00, m.M11, m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale3f"/> transformation from a scaling <see cref="M44f"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale3f FromM44f(M44f m, float epsilon = (float)1e-6)
+        {
+            if (!(Fun.IsTiny(m.C0.XYZ * V3f.OII, epsilon) && Fun.IsTiny(m.C1.XYZ * V3f.IOI, epsilon) && Fun.IsTiny(m.C2.XYZ * V3f.IIO, epsilon)))
+                throw new ArgumentException("Matrix is not a pure scaling matrix.");
+
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (!m.C3.XYZ.IsTiny(epsilon))
+                throw new ArgumentException("Matrix contains translational component.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new Scale3f(m.M00 / m.M33, m.M11 / m.M33, m.M22 / m.M33);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale3f"/> transformation from a <see cref="Similarity3f"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale3f FromSimilarity3f(Similarity3f similarity, float epsilon = 1e-5f)
+        {
+            if (!similarity.Trans.IsTiny(epsilon))
+                throw new ArgumentException("Similarity transformation contains translational component");
+
+            if (!similarity.Rot.ApproximateEquals(Rot3f.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new Scale3f(similarity.Scale);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale3f"/> transformation from an <see cref="Affine3f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale3f FromAffine3f(Affine3f affine, float epsilon = 1e-5f)
+            => FromM44f((M44f)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Scale3f"/> transformation from a <see cref="Trafo3f"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
+            => FromM44f(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1003,10 +1152,17 @@ namespace Aardvark.Base
                 0  , 0  , 0  , 1  );
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine3f(Scale3f s)
-            => new Affine3f((M33f)s);
+            => new Affine3f((M33f)s, V3f.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3f(Scale3f s)
+            => new Trafo3f((M44f)s, (M44f)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Scale3d(Scale3f s)
+            => new Scale3d((V3d)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="Scale3f"/> instance
@@ -1518,6 +1674,77 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="Scale2d"/> transformation from a scaling <see cref="M22d"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale2d FromM22d(M22d m, double epsilon = (double)1e-6)
+        {
+            if (!(Fun.IsTiny(m.C0 * V2d.OI, epsilon) && Fun.IsTiny(m.C1 * V2d.IO, epsilon)))
+                throw new ArgumentException("Matrix is not a pure scaling matrix.");
+
+            return new Scale2d(m.M00, m.M11);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale2d"/> transformation from a scaling <see cref="M33d"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale2d FromM33d(M33d m, double epsilon = (double)1e-6)
+        {
+            if (!(Fun.IsTiny(m.C0.XY * V2d.OI, epsilon) && Fun.IsTiny(m.C1.XY * V2d.IO, epsilon)))
+                throw new ArgumentException("Matrix is not a pure scaling matrix.");
+
+            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (!m.C2.XY.IsTiny(epsilon))
+                throw new ArgumentException("Matrix contains translational component.");
+
+            if (m.M22.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new Scale2d(m.M00 / m.M22, m.M11 / m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale2d"/> transformation from a <see cref="Similarity2d"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale2d FromSimilarity2d(Similarity2d similarity, double epsilon = 1e-12)
+        {
+            if (!similarity.Trans.IsTiny(epsilon))
+                throw new ArgumentException("Similarity transformation contains translational component");
+
+            if (!similarity.Rot.ApproximateEquals(Rot2d.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new Scale2d(similarity.Scale);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale2d"/> transformation from an <see cref="Affine2d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale2d FromAffine2d(Affine2d affine, double epsilon = 1e-12)
+            => FromM33d((M33d)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Scale2d"/> transformation from a <see cref="Trafo2d"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
+            => FromM33d(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1564,10 +1791,17 @@ namespace Aardvark.Base
                 0  , 0  , 0  , 1  );
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine2d(Scale2d s)
-            => new Affine2d((M22d)s);
+            => new Affine2d((M22d)s, V2d.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2d(Scale2d s)
+            => new Trafo2d((M33d)s, (M33d)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Scale2f(Scale2d s)
+            => new Scale2f((V2f)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="Scale2d"/> instance
@@ -2110,6 +2344,77 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="Scale3d"/> transformation from a scaling <see cref="M33d"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale3d FromM33d(M33d m, double epsilon = (double)1e-6)
+        {
+            if (!(Fun.IsTiny(m.C0 * V3d.OII, epsilon) && Fun.IsTiny(m.C1 * V3d.IOI, epsilon) && Fun.IsTiny(m.C2 * V3d.IIO, epsilon)))
+                throw new ArgumentException("Matrix is not a pure scaling matrix.");
+
+            return new Scale3d(m.M00, m.M11, m.M22);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale3d"/> transformation from a scaling <see cref="M44d"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale3d FromM44d(M44d m, double epsilon = (double)1e-6)
+        {
+            if (!(Fun.IsTiny(m.C0.XYZ * V3d.OII, epsilon) && Fun.IsTiny(m.C1.XYZ * V3d.IOI, epsilon) && Fun.IsTiny(m.C2.XYZ * V3d.IIO, epsilon)))
+                throw new ArgumentException("Matrix is not a pure scaling matrix.");
+
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (!m.C3.XYZ.IsTiny(epsilon))
+                throw new ArgumentException("Matrix contains translational component.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new Scale3d(m.M00 / m.M33, m.M11 / m.M33, m.M22 / m.M33);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale3d"/> transformation from a <see cref="Similarity3d"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale3d FromSimilarity3d(Similarity3d similarity, double epsilon = 1e-12)
+        {
+            if (!similarity.Trans.IsTiny(epsilon))
+                throw new ArgumentException("Similarity transformation contains translational component");
+
+            if (!similarity.Rot.ApproximateEquals(Rot3d.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new Scale3d(similarity.Scale);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Scale3d"/> transformation from an <see cref="Affine3d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Scale3d FromAffine3d(Affine3d affine, double epsilon = 1e-12)
+            => FromM44d((M44d)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Scale3d"/> transformation from a <see cref="Trafo3d"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Scale3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
+            => FromM44d(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2156,10 +2461,17 @@ namespace Aardvark.Base
                 0  , 0  , 0  , 1  );
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine3d(Scale3d s)
-            => new Affine3d((M33d)s);
+            => new Affine3d((M33d)s, V3d.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3d(Scale3d s)
+            => new Trafo3d((M44d)s, (M44d)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Scale3f(Scale3d s)
+            => new Scale3f((V3f)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="Scale3d"/> instance

@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 namespace Aardvark.Base
 {
     #region Rot3f
-        
+
     /// <summary>
     /// Represents a rotation in three dimensions using a unit quaternion.
     /// </summary>
@@ -478,6 +478,72 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="Rot3f"/> transformation from a <see cref="M44f"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3f FromM44f(M44f m, float epsilon = 1e-5f)
+        {
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (!m.C3.XYZ.ApproximateEquals(V3f.Zero, epsilon))
+                throw new ArgumentException("Matrix contains translational component.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return FromM33f(((M33f)m) / m.M33);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Rot3f"/> transformation from a <see cref="Euclidean3f"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Rot3f FromEuclidean3f(Euclidean3f euclidean, float epsilon = 1e-5f)
+        {
+            if (!euclidean.Trans.ApproximateEquals(V3f.Zero, epsilon))
+                throw new ArgumentException("Euclidean transformation contains translational component");
+
+            return euclidean.Rot;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Rot3f"/> transformation from a <see cref="Similarity3f"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Rot3f FromSimilarity3f(Similarity3f similarity, float epsilon = 1e-5f)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Trans.ApproximateEquals(V3f.Zero, epsilon))
+                throw new ArgumentException("Similarity transformation contains translational component");
+
+            return similarity.Rot;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Rot3f"/> transformation from an <see cref="Affine3f"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Rot3f FromAffine3f(Affine3f affine, float epsilon = 1e-5f)
+            => FromM44f((M44f)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Rot3f"/> transformation from a <see cref="Trafo3f"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
+            => FromM44f(trafo.Forward, epsilon);
+
+        /// <summary>
         /// Creates a <see cref="Rot3f"/> transformation representing a rotation around 
         /// an axis by an angle in radians.
         /// The axis vector has to be normalized.
@@ -592,10 +658,6 @@ namespace Aardvark.Base
 
         #region Conversion
 
-        // [todo ISSUE 20090421 andi> caching of the Matrix would greatly improve performance.
-        // Implement Rot3f as a Matrix-backed Quaternion. Quaternion should be its own class with all Quaternion-operations, 
-        // and Rot3f only an efficient Rotation (Matrix) that is has its Orthonormalization-Constraint enforced (by a Quaternion).
-        //<]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M33f(Rot3f r)
         {
@@ -697,8 +759,24 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean3f(Rot3f r)
+            => new Euclidean3f(r, V3f.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity3f(Rot3f r)
+            => new Similarity3f(1, r, V3f.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine3f(Rot3f r)
-            => new Affine3f(r);
+            => new Affine3f((M33f)r);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3f(Rot3f r)
+            => new Trafo3f((M44f)r, (M44f)r.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Rot3d(Rot3f r)
+            => new Rot3d((double)r.W, (double)r.X, (double)r.Y, (double)r.Z);
 
         #endregion
 
@@ -990,7 +1068,7 @@ namespace Aardvark.Base
     #endregion
 
     #region Rot3d
-        
+
     /// <summary>
     /// Represents a rotation in three dimensions using a unit quaternion.
     /// </summary>
@@ -1459,6 +1537,72 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="Rot3d"/> transformation from a <see cref="M44d"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3d FromM44d(M44d m, double epsilon = 1e-12)
+        {
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (!m.C3.XYZ.ApproximateEquals(V3d.Zero, epsilon))
+                throw new ArgumentException("Matrix contains translational component.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return FromM33d(((M33d)m) / m.M33);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Rot3d"/> transformation from a <see cref="Euclidean3d"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Rot3d FromEuclidean3d(Euclidean3d euclidean, double epsilon = 1e-12)
+        {
+            if (!euclidean.Trans.ApproximateEquals(V3d.Zero, epsilon))
+                throw new ArgumentException("Euclidean transformation contains translational component");
+
+            return euclidean.Rot;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Rot3d"/> transformation from a <see cref="Similarity3d"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Rot3d FromSimilarity3d(Similarity3d similarity, double epsilon = 1e-12)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Trans.ApproximateEquals(V3d.Zero, epsilon))
+                throw new ArgumentException("Similarity transformation contains translational component");
+
+            return similarity.Rot;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Rot3d"/> transformation from an <see cref="Affine3d"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static Rot3d FromAffine3d(Affine3d affine, double epsilon = 1e-12)
+            => FromM44d((M44d)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Rot3d"/> transformation from a <see cref="Trafo3d"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
+            => FromM44d(trafo.Forward, epsilon);
+
+        /// <summary>
         /// Creates a <see cref="Rot3d"/> transformation representing a rotation around 
         /// an axis by an angle in radians.
         /// The axis vector has to be normalized.
@@ -1573,10 +1717,6 @@ namespace Aardvark.Base
 
         #region Conversion
 
-        // [todo ISSUE 20090421 andi> caching of the Matrix would greatly improve performance.
-        // Implement Rot3d as a Matrix-backed Quaternion. Quaternion should be its own class with all Quaternion-operations, 
-        // and Rot3d only an efficient Rotation (Matrix) that is has its Orthonormalization-Constraint enforced (by a Quaternion).
-        //<]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M33d(Rot3d r)
         {
@@ -1678,8 +1818,24 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Euclidean3d(Rot3d r)
+            => new Euclidean3d(r, V3d.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Similarity3d(Rot3d r)
+            => new Similarity3d(1, r, V3d.Zero);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Affine3d(Rot3d r)
-            => new Affine3d(r);
+            => new Affine3d((M33d)r);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3d(Rot3d r)
+            => new Trafo3d((M44d)r, (M44d)r.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Rot3f(Rot3d r)
+            => new Rot3f((float)r.W, (float)r.X, (float)r.Y, (float)r.Z);
 
         #endregion
 

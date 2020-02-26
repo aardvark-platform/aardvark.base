@@ -21,8 +21,11 @@ namespace Aardvark.Base
     //# for (int d = 2; d <= 3; d++) {
     //#   var d1 = d + 1;
     //#   var ftype = isDouble ? "double" : "float";
+    //#   var xyz = "XYZW".Substring(0, d);
     //#   var tc = isDouble ? "d" : "f";
+    //#   var tc2 = isDouble ? "f" : "d";
     //#   var type = "Shift" + d + tc;
+    //#   var type2 = "Shift" + d + tc2;
     //#   var trafodt = "Trafo" + d + tc;
     //#   var affinedt = "Affine" + d + tc;
     //#   var euclideandt = "Euclidean" + d + tc;
@@ -33,9 +36,11 @@ namespace Aardvark.Base
     //#   var md1d1t = "M" + (d + 1) + (d + 1) + tc;
     //#   var mdd1t = "M" + d + (d + 1) + tc;
     //#   var vdt = "V" + d + tc;
+    //#   var vdt2 = "V" + d + tc2;
     //#   var dfields = fields.Take(d).ToArray();
     //#   var dfieldsL = fieldsL.Take(d).ToArray();
     //#   var fd = fields[d];
+    //#   var eps = isDouble ? "1e-12" : "1e-5f";
     #region __type__
 
     /// <summary>
@@ -368,6 +373,87 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static Creators
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a translation <see cref="__mdd1t__"/> matrix.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__mdd1t__(__mdd1t__ m, __ftype__ epsilon = (__ftype__)1e-6)
+        {
+            if (!__mddt__.Identity.ApproximateEquals((__mddt__)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            return new __type__(m.C__d__);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a translation <see cref="__md1d1t__"/> matrix.
+        /// The matrix has to be homogeneous and must not contain perspective components.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__md1d1t__(__md1d1t__ m, __ftype__ epsilon = (__ftype__)1e-6)
+        {
+            if (!__mddt__.Identity.ApproximateEquals((__mddt__)m, epsilon))
+                throw new ArgumentException("Matrix is not a pure translation matrix.");
+
+            if (!(/*#d.ForEach(j => {*/m.M__d____j__.IsTiny(epsilon)/*# }, and);*/))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M__d____d__.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            return new __type__(m.C__d__.__xyz__ / m.M__d____d__);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__euclideandt__"/>.
+        /// The transformation <paramref name="euclidean"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__euclideandt__(__euclideandt__ euclidean, __ftype__ epsilon = __eps__)
+        {
+            if (!euclidean.Rot.ApproximateEquals(__rotdt__.Identity, epsilon))
+                throw new ArgumentException("Euclidean transformation contains rotational component");
+
+            return new __type__(euclidean.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__similaritydt__"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__similaritydt__(__similaritydt__ similarity, __ftype__ epsilon = __eps__)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            if (!similarity.Rot.ApproximateEquals(__rotdt__.Identity, epsilon))
+                throw new ArgumentException("Similarity transformation contains rotational component");
+
+            return new __type__(similarity.Trans);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from an <see cref="__affinedt__"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__affinedt__(__affinedt__ affine, __ftype__ epsilon = __eps__)
+            => From__md1d1t__((__md1d1t__)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__trafodt__"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__trafodt__(__trafodt__ trafo, __ftype__ epsilon = __eps__)
+            => From__md1d1t__(trafo.Forward, epsilon);
+
+        #endregion
+
         #region Conversion
 
         //# for (int n = 3; n <= 4; n++) {
@@ -395,8 +481,24 @@ namespace Aardvark.Base
 
         //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __euclideandt__(__type__ s)
+            => new __euclideandt__(__rotdt__.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __similaritydt__(__type__ s)
+            => new __similaritydt__(1, __rotdt__.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __affinedt__(__type__ s)
-            => new __affinedt__(s);
+            => new __affinedt__(__mddt__.Identity, s.V);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __trafodt__(__type__ s)
+            => new __trafodt__((__md1d1t__)s, (__md1d1t__)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type2__(__type__ s)
+            => new __type2__((__vdt2__)s.V);
 
         /// <summary>
         /// Returns all values of a <see cref="__type__"/> instance

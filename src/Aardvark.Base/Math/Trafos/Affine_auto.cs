@@ -73,87 +73,6 @@ namespace Aardvark.Base
             Trans = V2f.Zero;
         }
 
-        /// <summary>
-        /// Constructs an affine transformation from a 2x3 matrix.
-        /// The left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(M23f matrix)
-        {
-            Linear = (M22f)matrix;
-            Trans = new V2f(matrix.M02, matrix.M12);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a 3x3 matrix.
-        /// The upper left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(M33f matrix)
-        {
-            Linear = (M22f)matrix;
-            Trans = new V2f(matrix.M02, matrix.M12);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Trafo2f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(Trafo2f trafo)
-        {
-            Linear = (M22f)trafo.Forward;
-            Trans = new V2f(trafo.Forward.M02, trafo.Forward.M12);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from an <see cref="Euclidean2f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(Euclidean2f e) : this((M33f)e) {}
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Rot2f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(Rot2f r) : this((M22f)r) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Scale2f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(Scale2f s) : this((M22f)s) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Shift2f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(Shift2f s)
-        {
-            Linear = M22f.Identity;
-            Trans = s.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a linear map and a <see cref="Shift2f"/>.
-        /// The matrix <paramref name="linear"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(M22f linear, Shift2f shift)
-        {
-            Debug.Assert(linear.Invertible);
-            Linear = linear;
-            Trans = shift.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Similarity2f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2f(Similarity2f s) : this((M33f)s) { }
-
         #endregion
 
         #region Constants
@@ -364,6 +283,22 @@ namespace Aardvark.Base
             return new Affine2f(a.Linear, a.Trans + s.V);
         }
 
+        /// <summary>
+        /// Multiplies a <see cref="Affine2f"/> and a <see cref="Similarity2f"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Affine2f a, Similarity2f s)
+            => a * (Affine2f)s;
+
+        /// <summary>
+        /// Multiplies a <see cref="Similarity2f"/> and a <see cref="Affine2f"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Similarity2f s, Affine2f a)
+            => (Affine2f)s * a;
+
         #endregion
 
         #region Comparison Operators
@@ -387,6 +322,55 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
+        /// Creates an affine transformation from a 2x3 matrix.
+        /// The left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f FromM23f(M23f matrix, float epsilon = 1e-5f)
+        {
+            var linear = (M22f)matrix;
+            var trans = new V2f(matrix.M02, matrix.M12);
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new Affine2f(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a 3x3 matrix.
+        /// The matrix <paramref name="m"/> has to be homogeneous and must not contain perspective components and its upper left 2x2 submatrix must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f FromM33f(M33f m, float epsilon = 1e-5f)
+        {
+            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M22.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            var linear = ((M22f)m) / m.M22;
+            var trans = new V2f(m.M02, m.M12) / m.M22;
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new Affine2f(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a <see cref="Trafo2f"/>.
+        /// The transformation <paramref name="trafo"/> must represent a valid affine transformation (e.g. it does not contain perspective components).
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
+            => FromM33f(trafo.Forward, epsilon);
+
+        /// <summary>
         /// Creates an affine transformation with the translational component given by 2 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -399,6 +383,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2f Translation(V2f vector)
             => new Affine2f(M22f.Identity, vector);
+
+        /// <summary>
+        /// Creates an affine transformation with the translational component given a <see cref="Shift2f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f Translation(Shift2f shift)
+            => new Affine2f(M22f.Identity, shift.V);
 
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
@@ -422,11 +413,18 @@ namespace Aardvark.Base
             => new Affine2f(M22f.Scale(scaleFactors));
 
         /// <summary>
+        /// Creates a scaling transformation using a <see cref="Scale2f"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f Scale(Scale2f scale)
+            => new Affine2f(M22f.Scale(scale));
+
+        /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot2f"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Affine2f Rotation(Rot2f q)
-            => new Affine2f(M22f.Rotation(q));
+        public static Affine2f Rotation(Rot2f rot)
+            => new Affine2f(M22f.Rotation(rot));
 
         #endregion
 
@@ -442,15 +440,19 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M33f(Affine2f a)
-            => new M33f((M23f) a);
+            => new M33f((M23f)a);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Trafo2f(Affine2f a)
         {
             Debug.Assert(a.Linear.Invertible);
-            var t = (M33f) a;
+            var t = (M33f)a;
             return new Trafo2f(t, t.Inverse);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine2d(Affine2f a)
+            => new Affine2d((M22d)a.Linear, (V2d)a.Trans);
 
         #endregion
 
@@ -655,87 +657,6 @@ namespace Aardvark.Base
             Linear = linear;
             Trans = V3f.Zero;
         }
-
-        /// <summary>
-        /// Constructs an affine transformation from a 3x4 matrix.
-        /// The left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(M34f matrix)
-        {
-            Linear = (M33f)matrix;
-            Trans = new V3f(matrix.M03, matrix.M13, matrix.M23);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a 4x4 matrix.
-        /// The upper left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(M44f matrix)
-        {
-            Linear = (M33f)matrix;
-            Trans = new V3f(matrix.M03, matrix.M13, matrix.M23);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Trafo3f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(Trafo3f trafo)
-        {
-            Linear = (M33f)trafo.Forward;
-            Trans = new V3f(trafo.Forward.M03, trafo.Forward.M13, trafo.Forward.M23);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from an <see cref="Euclidean3f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(Euclidean3f e) : this((M44f)e) {}
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Rot3f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(Rot3f r) : this((M33f)r) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Scale3f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(Scale3f s) : this((M33f)s) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Shift3f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(Shift3f s)
-        {
-            Linear = M33f.Identity;
-            Trans = s.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a linear map and a <see cref="Shift3f"/>.
-        /// The matrix <paramref name="linear"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(M33f linear, Shift3f shift)
-        {
-            Debug.Assert(linear.Invertible);
-            Linear = linear;
-            Trans = shift.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Similarity3f"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3f(Similarity3f s) : this((M44f)s) { }
 
         #endregion
 
@@ -1004,6 +925,55 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
+        /// Creates an affine transformation from a 3x4 matrix.
+        /// The left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f FromM34f(M34f matrix, float epsilon = 1e-5f)
+        {
+            var linear = (M33f)matrix;
+            var trans = new V3f(matrix.M03, matrix.M13, matrix.M23);
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new Affine3f(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a 4x4 matrix.
+        /// The matrix <paramref name="m"/> has to be homogeneous and must not contain perspective components and its upper left 3x3 submatrix must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f FromM44f(M44f m, float epsilon = 1e-5f)
+        {
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            var linear = ((M33f)m) / m.M33;
+            var trans = new V3f(m.M03, m.M13, m.M23) / m.M33;
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new Affine3f(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a <see cref="Trafo3f"/>.
+        /// The transformation <paramref name="trafo"/> must represent a valid affine transformation (e.g. it does not contain perspective components).
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
+            => FromM44f(trafo.Forward, epsilon);
+
+        /// <summary>
         /// Creates an affine transformation with the translational component given by 3 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1022,7 +992,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f Translation(Shift3f shift)
-            => new Affine3f(M33f.Identity, shift);
+            => new Affine3f(M33f.Identity, shift.V);
 
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
@@ -1050,14 +1020,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f Scale(Scale3f scale)
-            => new Affine3f(M33f.Scale(scale.X, scale.Y, scale.Z));
+            => new Affine3f(M33f.Scale(scale));
 
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot3f"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Affine3f Rotation(Rot3f q)
-            => new Affine3f(M33f.Rotation(q));
+        public static Affine3f Rotation(Rot3f rot)
+            => new Affine3f(M33f.Rotation(rot));
 
         /// <summary>
         /// Creates a rotation transformation from an axis vector and an angle in radians.
@@ -1119,15 +1089,19 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M44f(Affine3f a)
-            => new M44f((M34f) a);
+            => new M44f((M34f)a);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Trafo3f(Affine3f a)
         {
             Debug.Assert(a.Linear.Invertible);
-            var t = (M44f) a;
+            var t = (M44f)a;
             return new Trafo3f(t, t.Inverse);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3d(Affine3f a)
+            => new Affine3d((M33d)a.Linear, (V3d)a.Trans);
 
         #endregion
 
@@ -1336,87 +1310,6 @@ namespace Aardvark.Base
             Linear = linear;
             Trans = V2d.Zero;
         }
-
-        /// <summary>
-        /// Constructs an affine transformation from a 2x3 matrix.
-        /// The left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(M23d matrix)
-        {
-            Linear = (M22d)matrix;
-            Trans = new V2d(matrix.M02, matrix.M12);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a 3x3 matrix.
-        /// The upper left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(M33d matrix)
-        {
-            Linear = (M22d)matrix;
-            Trans = new V2d(matrix.M02, matrix.M12);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Trafo2d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(Trafo2d trafo)
-        {
-            Linear = (M22d)trafo.Forward;
-            Trans = new V2d(trafo.Forward.M02, trafo.Forward.M12);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from an <see cref="Euclidean2d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(Euclidean2d e) : this((M33d)e) {}
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Rot2d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(Rot2d r) : this((M22d)r) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Scale2d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(Scale2d s) : this((M22d)s) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Shift2d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(Shift2d s)
-        {
-            Linear = M22d.Identity;
-            Trans = s.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a linear map and a <see cref="Shift2d"/>.
-        /// The matrix <paramref name="linear"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(M22d linear, Shift2d shift)
-        {
-            Debug.Assert(linear.Invertible);
-            Linear = linear;
-            Trans = shift.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Similarity2d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine2d(Similarity2d s) : this((M33d)s) { }
 
         #endregion
 
@@ -1628,6 +1521,22 @@ namespace Aardvark.Base
             return new Affine2d(a.Linear, a.Trans + s.V);
         }
 
+        /// <summary>
+        /// Multiplies a <see cref="Affine2d"/> and a <see cref="Similarity2d"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Affine2d a, Similarity2d s)
+            => a * (Affine2d)s;
+
+        /// <summary>
+        /// Multiplies a <see cref="Similarity2d"/> and a <see cref="Affine2d"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Similarity2d s, Affine2d a)
+            => (Affine2d)s * a;
+
         #endregion
 
         #region Comparison Operators
@@ -1651,6 +1560,55 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
+        /// Creates an affine transformation from a 2x3 matrix.
+        /// The left 2x2 submatrix of <paramref name="matrix"/> must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d FromM23d(M23d matrix, double epsilon = 1e-12)
+        {
+            var linear = (M22d)matrix;
+            var trans = new V2d(matrix.M02, matrix.M12);
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new Affine2d(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a 3x3 matrix.
+        /// The matrix <paramref name="m"/> has to be homogeneous and must not contain perspective components and its upper left 2x2 submatrix must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d FromM33d(M33d m, double epsilon = 1e-12)
+        {
+            if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M22.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            var linear = ((M22d)m) / m.M22;
+            var trans = new V2d(m.M02, m.M12) / m.M22;
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new Affine2d(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a <see cref="Trafo2d"/>.
+        /// The transformation <paramref name="trafo"/> must represent a valid affine transformation (e.g. it does not contain perspective components).
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
+            => FromM33d(trafo.Forward, epsilon);
+
+        /// <summary>
         /// Creates an affine transformation with the translational component given by 2 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1663,6 +1621,13 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d Translation(V2d vector)
             => new Affine2d(M22d.Identity, vector);
+
+        /// <summary>
+        /// Creates an affine transformation with the translational component given a <see cref="Shift2d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d Translation(Shift2d shift)
+            => new Affine2d(M22d.Identity, shift.V);
 
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
@@ -1686,11 +1651,18 @@ namespace Aardvark.Base
             => new Affine2d(M22d.Scale(scaleFactors));
 
         /// <summary>
+        /// Creates a scaling transformation using a <see cref="Scale2d"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d Scale(Scale2d scale)
+            => new Affine2d(M22d.Scale(scale));
+
+        /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot2d"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Affine2d Rotation(Rot2d q)
-            => new Affine2d(M22d.Rotation(q));
+        public static Affine2d Rotation(Rot2d rot)
+            => new Affine2d(M22d.Rotation(rot));
 
         #endregion
 
@@ -1706,15 +1678,19 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M33d(Affine2d a)
-            => new M33d((M23d) a);
+            => new M33d((M23d)a);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Trafo2d(Affine2d a)
         {
             Debug.Assert(a.Linear.Invertible);
-            var t = (M33d) a;
+            var t = (M33d)a;
             return new Trafo2d(t, t.Inverse);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine2f(Affine2d a)
+            => new Affine2f((M22f)a.Linear, (V2f)a.Trans);
 
         #endregion
 
@@ -1919,87 +1895,6 @@ namespace Aardvark.Base
             Linear = linear;
             Trans = V3d.Zero;
         }
-
-        /// <summary>
-        /// Constructs an affine transformation from a 3x4 matrix.
-        /// The left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(M34d matrix)
-        {
-            Linear = (M33d)matrix;
-            Trans = new V3d(matrix.M03, matrix.M13, matrix.M23);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a 4x4 matrix.
-        /// The upper left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(M44d matrix)
-        {
-            Linear = (M33d)matrix;
-            Trans = new V3d(matrix.M03, matrix.M13, matrix.M23);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Trafo3d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(Trafo3d trafo)
-        {
-            Linear = (M33d)trafo.Forward;
-            Trans = new V3d(trafo.Forward.M03, trafo.Forward.M13, trafo.Forward.M23);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from an <see cref="Euclidean3d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(Euclidean3d e) : this((M44d)e) {}
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Rot3d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(Rot3d r) : this((M33d)r) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Scale3d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(Scale3d s) : this((M33d)s) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Shift3d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(Shift3d s)
-        {
-            Linear = M33d.Identity;
-            Trans = s.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a linear map and a <see cref="Shift3d"/>.
-        /// The matrix <paramref name="linear"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(M33d linear, Shift3d shift)
-        {
-            Debug.Assert(linear.Invertible);
-            Linear = linear;
-            Trans = shift.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="Similarity3d"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Affine3d(Similarity3d s) : this((M44d)s) { }
 
         #endregion
 
@@ -2268,6 +2163,55 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
+        /// Creates an affine transformation from a 3x4 matrix.
+        /// The left 3x3 submatrix of <paramref name="matrix"/> must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d FromM34d(M34d matrix, double epsilon = 1e-12)
+        {
+            var linear = (M33d)matrix;
+            var trans = new V3d(matrix.M03, matrix.M13, matrix.M23);
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new Affine3d(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a 4x4 matrix.
+        /// The matrix <paramref name="m"/> has to be homogeneous and must not contain perspective components and its upper left 3x3 submatrix must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d FromM44d(M44d m, double epsilon = 1e-12)
+        {
+            if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M33.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            var linear = ((M33d)m) / m.M33;
+            var trans = new V3d(m.M03, m.M13, m.M23) / m.M33;
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new Affine3d(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a <see cref="Trafo3d"/>.
+        /// The transformation <paramref name="trafo"/> must represent a valid affine transformation (e.g. it does not contain perspective components).
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
+            => FromM44d(trafo.Forward, epsilon);
+
+        /// <summary>
         /// Creates an affine transformation with the translational component given by 3 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2286,7 +2230,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d Translation(Shift3d shift)
-            => new Affine3d(M33d.Identity, shift);
+            => new Affine3d(M33d.Identity, shift.V);
 
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
@@ -2314,14 +2258,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d Scale(Scale3d scale)
-            => new Affine3d(M33d.Scale(scale.X, scale.Y, scale.Z));
+            => new Affine3d(M33d.Scale(scale));
 
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot3d"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Affine3d Rotation(Rot3d q)
-            => new Affine3d(M33d.Rotation(q));
+        public static Affine3d Rotation(Rot3d rot)
+            => new Affine3d(M33d.Rotation(rot));
 
         /// <summary>
         /// Creates a rotation transformation from an axis vector and an angle in radians.
@@ -2383,15 +2327,19 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M44d(Affine3d a)
-            => new M44d((M34d) a);
+            => new M44d((M34d)a);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Trafo3d(Affine3d a)
         {
             Debug.Assert(a.Linear.Invertible);
-            var t = (M44d) a;
+            var t = (M44d)a;
             return new Trafo3d(t, t.Inverse);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Affine3f(Affine3d a)
+            => new Affine3f((M33f)a.Linear, (V3f)a.Trans);
 
         #endregion
 

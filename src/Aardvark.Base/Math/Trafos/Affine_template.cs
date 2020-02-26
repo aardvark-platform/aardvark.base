@@ -13,13 +13,16 @@ namespace Aardvark.Base
     //# Action comma = () => Out(", ");
     //# Action commaln = () => Out("," + Environment.NewLine);
     //# Action add = () => Out(" + ");
+    //# Action and = () => Out(" && ");
     //# var fields = new[] {"X", "Y", "Z", "W"};
     //# foreach (var isDouble in new[] { false, true }) {
     //# for (int n = 2; n <= 3; n++) {
     //#   var ftype = isDouble ? "double" : "float";
     //#   var tc = isDouble ? "d" : "f";
+    //#   var tc2 = isDouble ? "f" : "d";
     //#   var m = n + 1;
     //#   var type = "Affine" + n + tc;
+    //#   var type2 = "Affine" + n + tc2;
     //#   var trafont = "Trafo" + n + tc;
     //#   var euclideannt = "Euclidean" + n + tc;
     //#   var rotnt = "Rot" + n + tc;
@@ -27,13 +30,16 @@ namespace Aardvark.Base
     //#   var shiftnt = "Shift" + n + tc;
     //#   var similaritynt = "Similarity" + n + tc;
     //#   var mnnt = "M" + n + n + tc;
+    //#   var mnnt2 = "M" + n + n + tc2;
     //#   var mnmt = "M" + n + m + tc;
     //#   var mmmt = "M" + m + m + tc;
     //#   var vnt = "V" + n + tc;
+    //#   var vnt2 = "V" + n + tc2;
     //#   var vmt = "V" + m + tc;
     //#   var nfields = fields.Take(n).ToArray();
     //#   var mfields = fields.Take(m).ToArray();
     //#   var fn = fields[n];
+    //#   var eps = isDouble ? "1e-12" : "1e-5f";
     #region __type__
 
     /// <summary>
@@ -96,87 +102,6 @@ namespace Aardvark.Base
             Linear = linear;
             Trans = __vnt__.Zero;
         }
-
-        /// <summary>
-        /// Constructs an affine transformation from a __n__x__m__ matrix.
-        /// The left __n__x__n__ submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__mnmt__ matrix)
-        {
-            Linear = (__mnnt__)matrix;
-            Trans = new __vnt__(/*# n.ForEach(i => { */matrix.M__i____n__/*# }, comma); */);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a __m__x__m__ matrix.
-        /// The upper left __n__x__n__ submatrix of <paramref name="matrix"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__mmmt__ matrix)
-        {
-            Linear = (__mnnt__)matrix;
-            Trans = new __vnt__(/*# n.ForEach(i => { */matrix.M__i____n__/*# }, comma); */);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="__trafont__"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__trafont__ trafo)
-        {
-            Linear = (__mnnt__)trafo.Forward;
-            Trans = new __vnt__(/*# n.ForEach(i => { */trafo.Forward.M__i____n__/*# }, comma); */);
-            Debug.Assert(Linear.Invertible);
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from an <see cref="__euclideannt__"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__euclideannt__ e) : this((__mmmt__)e) {}
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="__rotnt__"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__rotnt__ r) : this((__mnnt__)r) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="__scalent__"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__scalent__ s) : this((__mnnt__)s) { }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="__shiftnt__"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__shiftnt__ s)
-        {
-            Linear = __mnnt__.Identity;
-            Trans = s.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a linear map and a <see cref="__shiftnt__"/>.
-        /// The matrix <paramref name="linear"/> must be invertible.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__mnnt__ linear, __shiftnt__ shift)
-        {
-            Debug.Assert(linear.Invertible);
-            Linear = linear;
-            Trans = shift.V;
-        }
-
-        /// <summary>
-        /// Constructs an affine transformation from a <see cref="__similaritynt__"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(__similaritynt__ s) : this((__mmmt__)s) { }
 
         #endregion
 
@@ -376,7 +301,6 @@ namespace Aardvark.Base
             return new __type__(a.Linear, a.Trans + s.V);
         }
 
-        //# if (n == 3) {
         /// <summary>
         /// Multiplies a <see cref="__type__"/> and a <see cref="__similaritynt__"/>.
         /// Attention: Multiplication is NOT commutative!
@@ -393,7 +317,6 @@ namespace Aardvark.Base
         public static __type__ operator *(__similaritynt__ s, __type__ a)
             => (__type__)s * a;
 
-        //# }
         #endregion
 
         #region Comparison Operators
@@ -417,6 +340,55 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
+        /// Creates an affine transformation from a __n__x__m__ matrix.
+        /// The left __n__x__n__ submatrix of <paramref name="matrix"/> must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__mnmt__(__mnmt__ matrix, __ftype__ epsilon = __eps__)
+        {
+            var linear = (__mnnt__)matrix;
+            var trans = new __vnt__(/*# n.ForEach(i => { */matrix.M__i____n__/*# }, comma); */);
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new __type__(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a __m__x__m__ matrix.
+        /// The matrix <paramref name="m"/> has to be homogeneous and must not contain perspective components and its upper left __n__x__n__ submatrix must be invertible.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__mmmt__(__mmmt__ m, __ftype__ epsilon = __eps__)
+        {
+            if (!(/*#n.ForEach(j => {*/m.M__n____j__.IsTiny(epsilon)/*# }, and);*/))
+                throw new ArgumentException("Matrix contains perspective components.");
+
+            if (m.M__n____n__.IsTiny(epsilon))
+                throw new ArgumentException("Matrix is not homogeneous.");
+
+            var linear = ((__mnnt__)m) / m.M__n____n__;
+            var trans = new __vnt__(/*# n.ForEach(i => { */m.M__i____n__/*# }, comma); */) / m.M__n____n__;
+
+            if (linear.Determinant.IsTiny(epsilon))
+                throw new ArgumentException("Matrix must be invertible");
+
+            return new __type__(linear, trans);
+        }
+
+        /// <summary>
+        /// Creates an affine transformation from a <see cref="__trafont__"/>.
+        /// The transformation <paramref name="trafo"/> must represent a valid affine transformation (e.g. it does not contain perspective components).
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__trafont__(__trafont__ trafo, __ftype__ epsilon = __eps__)
+            => From__mmmt__(trafo.Forward, epsilon);
+
+        /// <summary>
         /// Creates an affine transformation with the translational component given by __n__ scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -430,15 +402,13 @@ namespace Aardvark.Base
         public static __type__ Translation(__vnt__ vector)
             => new __type__(__mnnt__.Identity, vector);
 
-        //# if (n == 3) {
         /// <summary>
         /// Creates an affine transformation with the translational component given a <see cref="__shiftnt__"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Translation(__shiftnt__ shift)
-            => new __type__(__mnnt__.Identity, shift);
+            => new __type__(__mnnt__.Identity, shift.V);
 
-        //# }
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
         /// </summary>
@@ -460,21 +430,19 @@ namespace Aardvark.Base
         public static __type__ Scale(__vnt__ scaleFactors)
             => new __type__(__mnnt__.Scale(scaleFactors));
 
-        //# if (n == 3) {
         /// <summary>
         /// Creates a scaling transformation using a <see cref="__scalent__"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Scale(__scalent__ scale)
-            => new __type__(__mnnt__.Scale(/*# nfields.ForEach(f => { */scale.__f__/*# }, comma); */));
+            => new __type__(__mnnt__.Scale(scale));
 
-        //# }
         /// <summary>
         /// Creates a rotation transformation from a <see cref="__rotnt__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Rotation(__rotnt__ q)
-            => new __type__(__mnnt__.Rotation(q));
+        public static __type__ Rotation(__rotnt__ rot)
+            => new __type__(__mnnt__.Rotation(rot));
 
         //# if (n == 3) {
         /// <summary>
@@ -538,15 +506,19 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __mmmt__(__type__ a)
-            => new __mmmt__((__mnmt__) a);
+            => new __mmmt__((__mnmt__)a);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __trafont__(__type__ a)
         {
             Debug.Assert(a.Linear.Invertible);
-            var t = (__mmmt__) a;
+            var t = (__mmmt__)a;
             return new __trafont__(t, t.Inverse);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type2__(__type__ a)
+            => new __type2__((__mnnt2__)a.Linear, (__vnt2__)a.Trans);
 
         #endregion
 

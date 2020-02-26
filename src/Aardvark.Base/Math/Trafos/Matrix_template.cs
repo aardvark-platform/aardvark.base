@@ -37,6 +37,7 @@ namespace Aardvark.Base
     //#     var vmtype = "V"+ m + tchar;
     //#     var vmsub1type = "V"+ msub1 + tchar;
     //#     var vntype = "V"+ n + tchar;
+    //#     var vnsub1type = "V"+ nsub1 + tchar;
     //#     var scalent = "Scale" + n + tchar;
     //#     var scalensub1t = "Scale" + (n - 1) + tchar;
     //#     var shiftmsub1t = "Shift" + (m - 1) + tchar;
@@ -244,48 +245,23 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="__nmtype__"/> using __n__ scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(/*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
+        public static __nmtype__ Scale(/*# nfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = i == j ? "t" + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+                /*# m.ForEach(j => { var v = i == j ? "s" + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
-        //# if (n > 2) {
         /// <summary>
-        /// Creates a transformation <see cref="__nmtype__"/> using __nsub1__ scalars as scaling factors.
+        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vntype__"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(/*# nfields.Take(n - 1).ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
-        {
-            return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "t" + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
-        }
-
-        //# }
-        /// <summary>
-        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vmtype__"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(__vmtype__ s)
+        public static __nmtype__ Scale(__vntype__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
                 /*# m.ForEach(j => { var v = i == j ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
-        //# if (n > 2) {
-        /// <summary>
-        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vmsub1type__"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(__vmsub1type__ s)
-        {
-            return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
-        }
-
-        //# }
-        //# if (t > 1) {
-        //# if (n == 3) {
+        //# if (t > 1 && n < 4) {
         /// <summary>
         /// Creates a transformation <see cref="__nmtype__"/> from a <see cref="__scalent__"/> transformation.
         /// </summary>
@@ -296,7 +272,29 @@ namespace Aardvark.Base
                 /*# m.ForEach(j => { var v = (i == j) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
-        //# } else if (n == 4) {
+        //# } // isReal
+        //# if (n > 2 && n == m) {
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using __nsub1__ scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(/*# nfields.Take(n - 1).ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "s" + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vnsub1type__"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(__vnsub1type__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# if (t > 1) {
         /// <summary>
         /// Creates a scaling transformation <see cref="__nmtype__"/> from a <see cref="__scalensub1t__"/> transformation.
         /// </summary>
@@ -304,10 +302,10 @@ namespace Aardvark.Base
         public static __nmtype__ Scale(__scalensub1t__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = (i < n - 1 && i == j) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
-        //# }
+        //# } // isReal
         //# }
         #endregion
 
@@ -1552,7 +1550,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
-        public static bool ApproximateEquals(__nmtype__ a, __nmtype__ b, __ftype__ epsilon)
+        public static bool ApproximateEquals(this __nmtype__ a, __nmtype__ b, __ftype__ epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }

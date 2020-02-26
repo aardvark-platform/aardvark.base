@@ -21,22 +21,26 @@ namespace Aardvark.Base
     //#   var ftype = isDouble ? "double" : "float";
     //#   var xyz = "XYZW".Substring(0, n);
     //#   var tc = isDouble ? "d" : "f";
+    //#   var tc2 = isDouble ? "f" : "d";
     //#   var type = "Euclidean" + n + tc;
+    //#   var type2 = "Euclidean" + n + tc2;
     //#   var vnt = "V" + n + tc;
+    //#   var vnt2 = "V" + n + tc2;
     //#   var vmt = "V" + m + tc;
     //#   var mnnt = "M" + n + n + tc;
     //#   var mmmt = "M" + m + m + tc;
     //#   var mnmt = "M" + n + m + tc;
     //#   var rotnt = "Rot" + n + tc;
+    //#   var rotnt2 = "Rot" + n + tc2;
     //#   var trafont = "Trafo" + n + tc;
     //#   var affinent = "Affine" + n + tc;
     //#   var scalent = "Scale" + n + tc;
     //#   var shiftnt = "Shift" + n + tc;
     //#   var similaritynt = "Similarity" + n + tc;
-    //#   var eps = isDouble ? "1e-12" : "1e-5f";
     //#   var nfields = fields.Take(n).ToArray();
     //#   var mfields = fields.Take(m).ToArray();
     //#   var fn = fields[n];
+    //#   var eps = isDouble ? "1e-12" : "1e-5f";
     #region __type__
 
     /// <summary>
@@ -274,7 +278,7 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a rigid transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
+        /// Creates a <see cref="__type__"/> transformation from a rotation matrix <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// The matrix <paramref name="rot"/> must be a valid rotation matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
@@ -320,8 +324,29 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rigid transformation from a trafo <paramref name="trafo"/>.
-        /// The transformation <paramref name="trafo"/> must only contain a rotational and translational component.
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__similaritynt__"/>.
+        /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__similaritynt__(__similaritynt__ similarity, __ftype__ epsilon = __eps__)
+        {
+            if (!similarity.Scale.ApproximateEquals(1, epsilon))
+                throw new ArgumentException("Similarity transformation contains scaling component");
+
+            return similarity.Euclidean;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from an <see cref="__affinent__"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__affinent__(__affinent__ affine, __ftype__ epsilon = __eps__)
+            => From__mmmt__((__mmmt__)affine, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__trafont__"/>.
+        /// The transformation <paramref name="trafo"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -341,22 +366,28 @@ namespace Aardvark.Base
             => (__mnnt__)e.Rot;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __mmmt__(__type__ r)
+        public static explicit operator __mmmt__(__type__ e)
         {
-            __mmmt__ rv = (__mmmt__)r.Rot;
-            rv.C__n__ = r.Trans.__xyz__I;
+            __mmmt__ rv = (__mmmt__)e.Rot;
+            rv.C__n__ = e.Trans.__xyz__I;
             return rv;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __similaritynt__(__type__ r)
-        {
-            return new __similaritynt__(1, r);
-        }
+        public static explicit operator __similaritynt__(__type__ e)
+            => new __similaritynt__(1, e);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __affinent__(__type__ r)
-            => new __affinent__(r);
+        public static explicit operator __affinent__(__type__ e)
+            => new __affinent__((__mnnt__)e.Rot, e.Trans);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __trafont__(__type__ e)
+            => new __trafont__((__mmmt__)e, (__mmmt__)e.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type2__(__type__ e)
+            => new __type2__((__rotnt2__)e.Rot, (__vnt2__)e.Trans);
 
         #endregion
 

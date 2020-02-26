@@ -12,7 +12,7 @@ namespace Aardvark.Tests
     {
         private static readonly int iterations = 10000;
 
-        private static Rot2d GetRandomRot2(RandomSystem rnd)
+        private static Rot2d GetRandomRot(RandomSystem rnd)
         {
             return new Rot2d(rnd.UniformDouble() * Constant.PiTimesTwo);
         }
@@ -25,7 +25,7 @@ namespace Aardvark.Tests
             for (int i = 0; i < iterations; i++)
             {
                 var delta = (rnd.UniformDouble() - 0.5) * 2.0 * Constant.Pi;
-                var r1 = GetRandomRot2(rnd);
+                var r1 = GetRandomRot(rnd);
                 var r2 = new Rot2d(r1.Angle + (delta + Constant.PiTimesTwo * rnd.UniformInt(10)));
 
                 var dist = r1.Distance(r2);
@@ -40,7 +40,7 @@ namespace Aardvark.Tests
 
             for (int i = 0; i < iterations; i++)
             {
-                var r = GetRandomRot2(rnd);
+                var r = GetRandomRot(rnd);
 
                 var p = rnd.UniformV2d() * rnd.UniformInt(1000);
                 var q = r.Transform(p);
@@ -64,8 +64,8 @@ namespace Aardvark.Tests
 
             for (int i = 0; i < iterations; i++)
             {
-                var r1 = GetRandomRot2(rnd);
-                var r2 = GetRandomRot2(rnd);
+                var r1 = GetRandomRot(rnd);
+                var r2 = GetRandomRot(rnd);
                 var r = r1 * r2;
                 var rm = (M22d)r1 * r2;
                 var mr = r1 * (M22d)r2;
@@ -92,8 +92,8 @@ namespace Aardvark.Tests
 
             for (int i = 0; i < iterations; i++)
             {
-                var r1 = GetRandomRot2(rnd);
-                var r2 = GetRandomRot2(rnd);
+                var r1 = GetRandomRot(rnd);
+                var r2 = GetRandomRot(rnd);
                 var r = r1 * r2;
                 var rm = (M33d)r1 * r2;
                 var mr = r1 * (M33d)r2;
@@ -114,7 +114,7 @@ namespace Aardvark.Tests
         }
 
         [Test]
-        public static void FromM22dTest()
+        public static void FromM22d()
         {
             var rnd = new RandomSystem(1);
 
@@ -123,8 +123,87 @@ namespace Aardvark.Tests
                 var angle = rnd.UniformDouble() * Constant.PiTimesTwo;
                 var m = Rot2d.FromM22d(M22d.Rotation(angle));
                 var r = new Rot2d(angle);
+                var rmr = Rot2d.FromM22d((M22d)r);
 
                 Assert.IsTrue(Fun.ApproximateEquals(m, r, 0.00001), "{2}: {0} != {1}", m, r, i);
+                Assert.IsTrue(Fun.ApproximateEquals(rmr, r, 0.00001), "{2}: {0} != {1}", rmr, r, i);
+            }
+        }
+
+        [Test]
+        public static void FromM33d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var angle = rnd.UniformDouble() * Constant.PiTimesTwo;
+                var m = Rot2d.FromM33d(M33d.Rotation(angle));
+                var r = new Rot2d(angle);
+                var rmr = Rot2d.FromM33d((M33d)r);
+
+                Assert.IsTrue(Fun.ApproximateEquals(m, r, 0.00001), "{2}: {0} != {1}", m, r, i);
+                Assert.IsTrue(Fun.ApproximateEquals(rmr, r, 0.00001), "{2}: {0} != {1}", rmr, r, i);
+            }
+        }
+
+        [Test]
+        public static void FromEuclidean2d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomRot(rnd);
+                var m = (Euclidean2d)a;
+
+                var restored = Rot2d.FromEuclidean2d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromSimilarity2d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomRot(rnd);
+                var m = (Similarity2d)a;
+
+                var restored = Rot2d.FromSimilarity2d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromAffine2d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomRot(rnd);
+                var m = (Affine2d)a;
+
+                var restored = Rot2d.FromAffine2d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromTrafo2d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomRot(rnd);
+                var m = (Trafo2d)a;
+
+                var restored = Rot2d.FromTrafo2d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
             }
         }
 
@@ -154,7 +233,7 @@ namespace Aardvark.Tests
 
             for (int i = 0; i < iterations; i++)
             {
-                var r = GetRandomRot2(rnd);
+                var r = GetRandomRot(rnd);
 
                 var str = r.ToString();
                 var parsed = Rot2d.Parse(str);

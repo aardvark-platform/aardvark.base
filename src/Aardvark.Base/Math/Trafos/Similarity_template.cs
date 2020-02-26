@@ -19,10 +19,13 @@ namespace Aardvark.Base
     //# for (int n = 2; n <= 3; n++) {
     //#   var m = n + 1;
     //#   var ftype = isDouble ? "double" : "float";
+    //#   var ftype2 = isDouble ? "float" : "double";
     //#   var one = isDouble ? "1.0" : "1.0f";
     //#   var xyz = "XYZW".Substring(0, n);
     //#   var tc = isDouble ? "d" : "f";
+    //#   var tc2 = isDouble ? "f" : "d";
     //#   var type = "Similarity" + n + tc;
+    //#   var type2 = "Similarity" + n + tc2;
     //#   var vnt = "V" + n + tc;
     //#   var vmt = "V" + m + tc;
     //#   var mnnt = "M" + n + n + tc;
@@ -34,10 +37,11 @@ namespace Aardvark.Base
     //#   var scalent = "Scale" + n + tc;
     //#   var shiftnt = "Shift" + n + tc;
     //#   var euclideannt = "Euclidean" + n + tc;
-    //#   var eps = isDouble ? "1e-12" : "1e-5f";
+    //#   var euclideannt2 = "Euclidean" + n + tc2;
     //#   var nfields = fields.Take(n).ToArray();
     //#   var mfields = fields.Take(m).ToArray();
     //#   var fn = fields[n];
+    //#   var eps = isDouble ? "1e-12" : "1e-5f";
     #region __type__
 
     /// <summary>
@@ -94,7 +98,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
         public __type__(__ftype__ scale, __rotnt__ rotation, __vnt__ translation)
         {
@@ -322,7 +326,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static __type__ From__mnnt__And__vnt__(__mnnt__ m, __vnt__ trans, __ftype__ epsilon = (__ftype__)0.00001)
+        public static __type__ From__mnnt__And__vnt__(__mnnt__ m, __vnt__ trans, __ftype__ epsilon = __eps__)
         {
             //# n.ForEach(i => {
             var s__i__ = m.C__i__.Norm2;
@@ -341,7 +345,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static __type__ From__mnmt__(__mnmt__ m, __ftype__ epsilon = (__ftype__)0.00001)
+        public static __type__ From__mnmt__(__mnmt__ m, __ftype__ epsilon = __eps__)
             => From__mnnt__And__vnt__((__mnnt__)m, m.C__n__/*# if (n > 2) {*/, epsilon/*# }*/);
 
         /// <summary>
@@ -350,7 +354,7 @@ namespace Aardvark.Base
         /// a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static __type__ From__mmmt__(__mmmt__ m, __ftype__ epsilon = (__ftype__)0.00001)
+        public static __type__ From__mmmt__(__mmmt__ m, __ftype__ epsilon = __eps__)
         {
             if (!(/*#n.ForEach(j => {*/m.M__n____j__.IsTiny(epsilon)/*# }, and);*/))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -362,11 +366,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from an <see cref="__scalent__"/>.
+        /// The transformation <paramref name="scale"/> must represent a uniform scaling.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__scalent__(__scalent__ scale, __ftype__ epsilon = __eps__)
+        {
+            var s = (/*# nfields.ForEach(f => {*/scale.__f__/*# }, mul);*/).Pow(__one__ / __n__);
+
+            if (!scale.ApproximateEquals(new __scalent__(s), epsilon))
+                throw new ArgumentException("Matrix features non-uniform scaling");
+
+            return new __type__(s, __euclideannt__.Identity);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation from an <see cref="__affinent__"/>.
+        /// The transformation <paramref name="affine"/> must only consist of a uniform scale, rotation, and translation.
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
+        public static __type__ From__affinent__(__affinent__ affine, __ftype__ epsilon = __eps__)
+            => From__mmmt__((__mmmt__)affine, epsilon);
+
+        /// <summary>
         /// Creates a <see cref="__type__"/> transformation from a <see cref="__trafont__"/>.
         /// The transformation <paramref name="trafo"/> must only consist of a uniform scale, rotation, and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
-        public static __type__ From__trafont__(__trafont__ trafo, __ftype__ epsilon = (__ftype__)0.00001)
+        public static __type__ From__trafont__(__trafont__ trafo, __ftype__ epsilon = __eps__)
             => From__mmmt__(trafo.Forward, epsilon);
 
         #endregion
@@ -405,7 +432,18 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __affinent__(__type__ s)
-            => new __affinent__(s);
+        {
+            var m = (__mnmt__)s;
+            return new __affinent__((__mnnt__)m, m.C__n__);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __trafont__(__type__ s)
+            => new __trafont__((__mmmt__)s, (__mmmt__)s.Inverse);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type2__(__type__ s)
+            => new __type2__((__ftype2__)s.Scale, (__euclideannt2__)s.Euclidean);
 
         #endregion
 

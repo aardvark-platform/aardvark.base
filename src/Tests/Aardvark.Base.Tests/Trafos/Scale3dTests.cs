@@ -18,6 +18,81 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public static void FromM33d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomScale(rnd);
+                var m = (M33d)a;
+
+                var restored = Scale3d.FromM33d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromM44d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomScale(rnd);
+                var m = (M44d)a;
+
+                var restored = Scale3d.FromM44d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromSimilarity3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = new Scale3d(rnd.UniformDouble() * 10);
+                var m = Similarity3d.FromScale3d(a);
+
+                var restored = Scale3d.FromSimilarity3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromAffine3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomScale(rnd);
+                var m = (Affine3d)a;
+
+                var restored = Scale3d.FromAffine3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
+        public static void FromTrafo3d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < iterations; i++)
+            {
+                var a = GetRandomScale(rnd);
+                var m = (Trafo3d)a;
+
+                var restored = Scale3d.FromTrafo3d(m);
+                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
+            }
+        }
+
+        [Test]
         public static void Comparison()
         {
             var rnd = new RandomSystem(1);
