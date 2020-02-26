@@ -73,7 +73,9 @@ module private Typography =
                     match start, pos with
                         | Some s, Some p ->
                             if p <> s then
-                                list.Add(PathSegment.line p s)
+                                match PathSegment.tryLine p s with
+                                | Some l -> list.Add l
+                                | None -> ()
                         | _ ->
                             ()
                     start <- None
@@ -91,7 +93,9 @@ module private Typography =
                     match pos with
                         | Some p0 ->
                             let pa = V2d(xa, ya) * scale
-                            list.Add(PathSegment.line p0 pa)
+                            match PathSegment.tryLine p0 pa with
+                            | Some l -> list.Add(l)
+                            | None -> ()
                             pos <- Some pa
                         | None ->
                             failwith "asdasd"
@@ -101,11 +105,13 @@ module private Typography =
                         | Some p0 ->
                             let pa = V2d(xa, ya) * scale
                             let pb = V2d(xb, yb) * scale
-                            
-                            list.Add(PathSegment.bezier2 p0 pa pb)
+                            match PathSegment.tryBezier2 p0 pa pb with
+                            | Some b -> list.Add b
+                            | None -> ()
                             pos <- Some pb
                         | None ->
-                            failwith "asdasd"
+                            ()
+                            //failwith "asdasd"
                     
                 member x.Curve4(xa, ya, xb, yb, xc, yc) = 
                     match pos with
@@ -114,16 +120,21 @@ module private Typography =
                             let pb = V2d(xb, yb) * scale
                             let pc = V2d(xc, yc) * scale
                             
-                            list.Add(PathSegment.bezier3 p0 pa pb pc)
+                            match PathSegment.tryBezier3 p0 pa pb pc with
+                            | Some b -> list.Add b
+                            | None -> ()
                             pos <- Some pc
                         | None ->
                             failwith "asdasd"
 
         let ofGlyph (scale : float) (g : Glyph) =
-
-            let tx = PathTranslator(scale)
-            tx.Read(g.GlyphPoints, g.EndPoints)
-            let segments = tx.ToArray()
+            if g.HasGlyphInstructions then
+                let tx = PathTranslator(scale)
+                tx.Read(g.GlyphPoints, g.EndPoints)
+                let segments = tx.ToArray()
+                { bounds = Bounds.toBox2d scale g.Bounds; outline = segments }
+            else
+                { bounds = Bounds.toBox2d scale g.Bounds; outline = [||] }
                 //[|
                 //    let mutable i = 0
                 //    while i < g.GlyphPoints.Length do
@@ -156,7 +167,7 @@ module private Typography =
                 //        i <- o 
                 //|]
                 
-            { bounds = Bounds.toBox2d scale g.Bounds; outline = segments }
+            
             
 
     module FontResolver =
@@ -229,15 +240,95 @@ module private Typography =
                 | None -> failwithf "[Text] could not get font %s %A" family style
 
 
-type Glyph internal(g : Typography.OpenFont.Glyph, scale : float, advance : float, bearing : float, c : char) =
+
+
+[<Struct; StructuredFormatDisplay("{AsString}")>]
+type CodePoint(value : int) =
+    member x.Value = value
+    
+    static member Invalid = CodePoint(-1)
+
+    member private x.AsString = x.ToString()
+
+    override x.ToString() = 
+        if value < 0 then "invalid"
+        else sprintf "U+%X" value
+
+    member x.String =
+        if value &&& 0x10000 = 0 then 
+            System.String(char value, 1)
+        else        
+            let value = value - 65536
+            let c0 = char (0xD800 ||| ((value >>> 10)))
+            let c1 = char (0xDC00 ||| (value &&& 0x3FF))
+            System.String [| c0; c1 |]
+
+    new (c : char) =
+        if (uint16 c &&& 0xF800us) = 0xD800us then CodePoint(-1)
+        else CodePoint(int c)
+
+[<AbstractClass; Sealed; Extension>]
+type CodePointStringExtensions private() =
+
+    [<Extension>]
+    static member ToCodePointArray(str : string) =
+        if str.Length > 0 then
+            let mutable arr : CodePoint[] = Array.zeroCreate str.Length
+            let mutable oi = 0
+            let mutable c0 = str.[0] |> uint16
+            let mutable lastSurrogate = (c0 &&& 0xF800us) = 0xD800us
+            if lastSurrogate then
+                c0 <- c0 &&& 0x27FFus
+            else
+                arr.[oi] <- CodePoint(int c0)
+                oi <- oi + 1
+
+            for ii in 1 .. str.Length - 1 do
+                let c1 = str.[ii] |> uint16
+                if lastSurrogate then   
+                    let v1 = c1 &&& 0x23FFus
+                    let code = 0x10000 ||| (int c0 <<< 10) ||| int v1
+                    arr.[oi] <- CodePoint(code)
+                    oi <- oi + 1
+                    lastSurrogate <- false
+                elif (c1 &&& 0xF800us) = 0xD800us then
+                    c0 <- c1 &&& 0x27FFus
+                    lastSurrogate <- true
+                else
+                    arr.[oi] <- CodePoint(int c1)
+                    oi <- oi + 1
+                    
+            if arr.Length > oi then System.Array.Resize(&arr, oi)
+            arr
+        else
+            [||]
+    
+    [<Extension>]
+    static member GetString(codepoints : CodePoint[]) =
+        let sb = System.Text.StringBuilder()
+
+        for c in codepoints do
+            let value = c.Value
+            if value &&& 0x10000 = 0 then 
+                sb.Append(char value) |> ignore
+            else        
+                let value = value - 65536
+                let c0 = char (0xD800 ||| ((value >>> 10)))
+                let c1 = char (0xDC00 ||| (value &&& 0x3FF))
+                sb.Append c0 |> ignore
+                sb.Append c1 |> ignore
+
+        sb.ToString()
+
+type Glyph internal(g : Typography.OpenFont.Glyph, scale : float, advance : float, bearing : float, c : CodePoint) =
     inherit Shape(Path.ofGlyph scale g)
 
     let widths = 
         let width = float (g.MaxX - g.MinX) * scale
         V3d(bearing, width, advance - width - bearing)
         
-    member x.Character = c
-    
+    member x.CodePoint = c
+
     member x.Bounds = base.Path.bounds
 
     member x.Path = base.Path
@@ -247,29 +338,23 @@ type Glyph internal(g : Typography.OpenFont.Glyph, scale : float, advance : floa
 
     member x.Before = -0.1666
 
-type private FontImpl(file : string) =
-    let f =
-        use stream = System.IO.File.OpenRead file
-        try
-            let reader = OpenFontReader()
-            reader.Read(stream, ReadFlags.Full)
-        with e ->
-            failwithf "could not load font %s: %A" file e.Message
 
+
+type private FontImpl private(f : Typeface) =
     let scale = f.CalculateScaleToPixel 1.0f |> float
 
-    let glyphCache = Dict<char, Glyph>()
+    let glyphCache = Dict<CodePoint, Glyph>()
     
     let lineHeight = float (f.Ascender - f.Descender + f.LineGap) * scale
     let spacing = 
-        let idx = f.LookupIndex(int ' ') |> int
+        let idx = f.GetGlyphIndex(int ' ') |> int
         
         if idx >= 0 && idx < f.Glyphs.Length then
             let g = f.Glyphs.[idx]
             if g.HasOriginalAdvancedWidth then
                 float g.OriginalAdvanceWidth  * scale
             else
-                let a = f.GetHAdvanceWidthFromGlyphIndex(int idx)
+                let a = f.GetHAdvanceWidthFromGlyphIndex(uint16 idx)
                 float a * scale
         else    
             float (f.GetAdvanceWidth(idx)) * scale
@@ -282,25 +367,45 @@ type private FontImpl(file : string) =
     let internalLeading = float ((f.Bounds.YMax - f.Bounds.YMin) - (f.Ascender - f.Descender) - f.LineGap) * scale
     let externalLeading = lineGap - internalLeading
 
-    let get (c : char) =
+    static let symbola = 
+        lazy (
+            let resName = typeof<FontImpl>.Assembly.GetManifestResourceNames() |> Array.find (fun n -> n.EndsWith "Symbola.ttf")
+            use s = typeof<FontImpl>.Assembly.GetManifestResourceStream(resName)
+            new FontImpl(s)
+        )
+
+    let get (c : CodePoint) (self : FontImpl) =
         lock glyphCache (fun () ->
             glyphCache.GetOrCreate(c, fun c ->
-                let idx = f.LookupIndex(int c)
-                let glyph = f.Glyphs.[int idx]
+                let idx = f.GetGlyphIndex(c.Value)
+                if idx = 0us && c.Value > 65535 && symbola.Value <> self then 
+                    symbola.Value.GetGlyph c
+                else
+                    let glyph = f.Glyphs.[int idx]
 
-                let advance = 
-                    if glyph.HasOriginalAdvancedWidth then
-                        float glyph.OriginalAdvanceWidth  * scale
-                    else
-                        let a = f.GetHAdvanceWidthFromGlyphIndex(int idx)
-                        float a * scale
+                    let advance = 
+                        if glyph.HasOriginalAdvancedWidth then
+                            float glyph.OriginalAdvanceWidth  * scale
+                        else
+                            let a = f.GetHAdvanceWidthFromGlyphIndex(idx)
+                            float a * scale
                         
-                let bearing = 
-                    let a = f.GetHFrontSideBearingFromGlyphIndex(int idx)
-                    float a * scale
-                Glyph(glyph, scale, advance, bearing, c)
+                    let bearing = 
+                        let a = f.GetHFrontSideBearingFromGlyphIndex(idx)
+                        float a * scale
+                    Glyph(glyph, scale, advance, bearing, c)
             )
         )
+
+    static let getTypeFace (file : string) =
+        try 
+            use stream = System.IO.File.OpenRead file
+            let reader = OpenFontReader()
+            reader.Read(stream, 0, ReadFlags.Full)
+        with e ->
+            failwithf "could not load font %s: %A" file e.Message
+
+    static member Symbola = symbola.Value
 
     member x.Family = f.Name
     member x.LineHeight = lineHeight
@@ -314,19 +419,36 @@ type private FontImpl(file : string) =
 
 
 
-    member x.GetGlyph(c : char) =
-        get c
+    member x.GetGlyph(c : CodePoint) =
+        get c x
 
-    member x.GetKerning(l : char, r : char) =
-        let l = f.LookupIndex (int l)
-        let r = f.LookupIndex (int r)
+    member x.GetKerning(l : CodePoint, r : CodePoint) =
+        let l = f.GetGlyphIndex (l.Value)
+        let r = f.GetGlyphIndex (r.Value)
         let d = f.GetKernDistance(l, r)
         float d * scale
 
+    new(file : string) = 
+        FontImpl(getTypeFace file)
+
+    new(stream : System.IO.Stream) = 
+        let reader = OpenFontReader()
+        FontImpl(reader.Read(stream, 0, ReadFlags.Full))
+
+
+
 type Font private(impl : FontImpl, family : string, style : FontStyle) =
+
+    static let symbola = 
+        lazy (
+            let impl = FontImpl.Symbola
+            new Font(impl, impl.Family, impl.Style)
+        )
+
     static let systemTable = System.Collections.Concurrent.ConcurrentDictionary<string * FontStyle, FontImpl>()
     static let fileTable = System.Collections.Concurrent.ConcurrentDictionary<string, FontImpl>()
 
+    static member Symbola = symbola.Value
 
     member x.Family = family
     member x.LineHeight = impl.LineHeight
@@ -337,8 +459,8 @@ type Font private(impl : FontImpl, family : string, style : FontStyle) =
     member x.ExternalLeading = impl.ExternalLeading
     member x.Style = style
     member x.Spacing = impl.Spacing
-    member x.GetGlyph(c : char) = impl.GetGlyph c
-    member x.GetKerning(l : char, r : char) = impl.GetKerning(l,r)
+    member x.GetGlyph(c : CodePoint) = impl.GetGlyph(c)
+    member x.GetKerning(l : CodePoint, r : CodePoint) = impl.GetKerning(l,r)
 
     static member Load(file : string) =
         let impl =
@@ -505,11 +627,18 @@ type ShapeCache(r : IRuntime) =
 type PrepareFontExtensions private() =
 
     [<Extension>]
+    static member PrepareGlyphs(r : IRuntime, f : Font, chars : seq<CodePoint>) =
+        let cache = ShapeCache.GetOrCreateCache r
+
+        for c in chars do
+            cache.GetBufferRange (f.GetGlyph(c)) |> ignore
+            
+    [<Extension>]
     static member PrepareGlyphs(r : IRuntime, f : Font, chars : seq<char>) =
         let cache = ShapeCache.GetOrCreateCache r
 
         for c in chars do
-            cache.GetBufferRange (f.GetGlyph c) |> ignore
+            cache.GetBufferRange (f.GetGlyph(CodePoint c)) |> ignore
             
     [<Extension>]
     static member PrepareTextShaders(r : IRuntime, f : Font, signature : IFramebufferSignature) =
@@ -525,8 +654,8 @@ module Font =
     let inline spacing (f : Font) = f.Spacing
     let inline lineHeight (f : Font) = f.LineHeight
 
-    let inline glyph (c : char) (f : Font) = f.GetGlyph c
-    let inline kerning (l : char) (r : char) (f : Font) = f.GetKerning(l,r)
+    let inline glyph (c : CodePoint) (f : Font) = f.GetGlyph c
+    let inline kerning (l : CodePoint) (r : CodePoint) (f : Font) = f.GetKerning(l,r)
 
     let inline create (family : string) (style : FontStyle) = Font(family, style)
 
@@ -536,7 +665,8 @@ module Glyph =
     let inline advance (g : Glyph) = g.Advance
     let inline path (g : Glyph) = g.Path
     let inline geometry (g : Glyph) = g.Geometry
-    let inline char (g : Glyph) = g.Character
+    let inline codePoint (g : Glyph) = g.CodePoint
+    let inline string (g : Glyph) = g.CodePoint.String
 
 
 
