@@ -10,18 +10,11 @@ namespace Aardvark.Tests
     [TestFixture]
     public static class Rot3dTests
     {
-        private static readonly int iterations = 10000;
-
-        private static Rot3d GetRandomRot(RandomSystem rnd)
-        {
-            return Rot3d.Rotation(rnd.UniformV3dDirection(), rnd.UniformDouble() * Constant.PiTimesTwo);
-        }
 
         [Test]
         public static void FromM33d()
         {
-            var rnd = new RandomSystem(1);
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
                 var rot = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
 
@@ -32,137 +25,75 @@ namespace Aardvark.Tests
 
                 if (!Fun.ApproximateEquals(mat, mat2, 1e-9))
                     Assert.Fail("FAIL");
-            }
+            });
         }
 
         [Test]
         public static void FromM44d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var r = GetRandomRot(rnd);
-                var rmr = Rot3d.FromM44d((M44d)r);
-
-                Assert.IsTrue(Fun.ApproximateEquals(rmr, r, 0.00001), "{2}: {0} != {1}", rmr, r, i);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot3, a => (M44d)a, b => Rot3d.FromM44d(b));
 
         [Test]
         public static void FromEuclidean3d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomRot(rnd);
-                var m = (Euclidean3d)a;
-
-                var restored = Rot3d.FromEuclidean3d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot3, a => (Euclidean3d)a, b => Rot3d.FromEuclidean3d(b));
 
         [Test]
         public static void FromSimilarity3d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomRot(rnd);
-                var m = (Similarity3d)a;
-
-                var restored = Rot3d.FromSimilarity3d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot3, a => (Similarity3d)a, b => Rot3d.FromSimilarity3d(b));
 
         [Test]
         public static void FromAffine3d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomRot(rnd);
-                var m = (Affine3d)a;
-
-                var restored = Rot3d.FromAffine3d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot3, a => (Affine3d)a, b => Rot3d.FromAffine3d(b));
 
         [Test]
         public static void FromTrafo3d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomRot(rnd);
-                var m = (Trafo3d)a;
-
-                var restored = Rot3d.FromTrafo3d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot3, a => (Trafo3d)a, b => Rot3d.FromTrafo3d(b));
 
         [Test]
         public static void ToStringAndParse()
-        {
-            var rnd = new RandomSystem(1);
+            => TrafoTesting.GenericToStringAndParseTest(TrafoTesting.GetRandomRot3, Rot3d.Parse);
 
-            for (int i = 0; i < iterations; i++)
-            {
-                var r = GetRandomRot(rnd);
+        [Test]
+        public static void MultiplicationRotTest()
+            => TrafoTesting.GenericMultiplicationTest<Rot3d, Rot3d, Rot3d>(TrafoTesting.GetRandomRot3, TrafoTesting.GetRandomRot3, Rot.Transform); 
 
-                var str = r.ToString();
-                var parsed = Rot3d.Parse(str);
-
-                Assert.IsTrue(Fun.ApproximateEquals(parsed, r, 0.00001));
-            }
-        }
-
-        static bool ApproxEq(Rot3d a, Rot3d b)
-        {
-            return a.V.ApproximateEquals(b.V, 1e-8) && a.W.ApproximateEquals(b.W, 1e-8);
-        }
+        [Test]
+        public static void MultiplicationShiftTest()
+            => TrafoTesting.GenericMultiplicationTest<Rot3d, Shift3d, Euclidean3d>(TrafoTesting.GetRandomRot3, TrafoTesting.GetRandomShift3, Euclidean.TransformPos);        
+        [Test]
+        public static void MultiplicationScaleTest()
+            => TrafoTesting.GenericMultiplicationTest<Rot3d, Scale3d, Affine3d>(TrafoTesting.GetRandomRot3, TrafoTesting.GetRandomScale3, Affine.TransformPos);
 
         [Test]
         public static void RotationXYZ()
         {
-            var rnd = new RandomSystem(1);
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
                 var angle = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;
 
                 var rotX1 = Rot3d.RotationX(angle);
                 var rotX2 = Rot3d.Rotation(V3d.XAxis, angle);
 
-                Assert.True(ApproxEq(rotX1, rotX2), "EQUAL");
+                TrafoTesting.AreEqual(rotX1, rotX2);
 
                 var rotY1 = Rot3d.RotationY(angle);
                 var rotY2 = Rot3d.Rotation(V3d.YAxis, angle);
 
-                Assert.True(ApproxEq(rotY1, rotY2), "EQUAL");
+                TrafoTesting.AreEqual(rotY1, rotY2);
 
                 var rotZ1 = Rot3d.RotationZ(angle);
                 var rotZ2 = Rot3d.Rotation(V3d.ZAxis, angle);
 
-                Assert.True(ApproxEq(rotZ1, rotZ2), "EQUAL");
-            }
+                TrafoTesting.AreEqual(rotZ1, rotZ2);
+            });
         }
 
         [Test]
         public static void FromEuler()
         {
-            var rnd = new RandomSystem(1);
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
                 var euler = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
-                
+
                 var rot = Rot3d.RotationEuler(euler);
 
                 var qx = Rot3d.RotationX(euler.X);
@@ -170,7 +101,7 @@ namespace Aardvark.Tests
                 var qz = Rot3d.RotationZ(euler.Z);
                 var test = qz * qy * qx;
 
-                Assert.True(ApproxEq(rot, test), "EQUAL");
+                TrafoTesting.AreEqual(rot, test);
 
                 var euler2 = rot.GetEulerAngles();
                 var rot2 = Rot3d.RotationEuler(euler2);
@@ -182,14 +113,13 @@ namespace Aardvark.Tests
                     Report.Line("FA");
 
                 Assert.IsTrue(Fun.ApproximateEquals(rot2M, rotM, 1e-6));
-            }
+            });
         }
 
         [Test]
         public static void YawPitchRoll()
         {
-            var rnd = new RandomSystem(1);
-            for (int i = 0; i < 1; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
                 var yaw = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;
                 var pitch = rnd.UniformDouble() * Constant.PiTimesFour - Constant.PiTimesTwo;
@@ -204,17 +134,16 @@ namespace Aardvark.Tests
                 Assert.IsTrue(Fun.ApproximateEquals(mat, mat2, 1e-7));
                 Assert.IsTrue(Fun.ApproximateEquals(mat, mat3, 1e-7));
                 Assert.IsTrue(Fun.ApproximateEquals(mat, mat4, 1e-7));
-            }
+            });
         }
 
         [Test]
         public static void RotIntoCornerCase()
         {
-            var rnd = new Random(2);
-            for (int i = 0; i < 100000; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
                 // some vectors will not normalize to 1.0 -> provoke numerical issues in Rot3d
-                var vecd = new V3d(0, 0, -rnd.NextDouble());
+                var vecd = new V3d(0, 0, -rnd.UniformDouble());
                 var rotd = Rot3d.RotateInto(V3d.OOI, vecd.Normalized);
                 var testd = rotd.Transform(V3d.OOI);
                 Assert.True((testd + V3d.OOI).Length < 1e-8);
@@ -223,14 +152,13 @@ namespace Aardvark.Tests
                 //var rotf = new Rot3f(V3f.OOI, vecf.Normalized);
                 //var testf = rotf.TransformDir(V3f.OOI);
                 //Assert.True((testf + V3f.OOI).Length < 1e-5);
-            }
+            });
         }
 
         [Test]
         public static void FromInto()
         {
-            var rnd = new RandomSystem(1337);
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
                 var dir = rnd.UniformV3d().Normalized;
                 var rotId = Rot3d.RotateInto(dir, dir);
@@ -253,14 +181,13 @@ namespace Aardvark.Tests
                 var invDirF = rotF.Transform(dirF);
 
                 Assert.IsTrue(invDirF.ApproximateEquals(-dirF, 1e-6f));
-            }
+            });
         }
 
         [Test]
         public static void FromIntoEpislon()
         {
-            var rnd = new RandomSystem(1337);
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest((rnd, i) =>
             {
                 var dir = rnd.UniformV3d().Normalized;
                 var eps = rnd.UniformV3d() * (i / 100) * 1e-22;
@@ -275,7 +202,7 @@ namespace Aardvark.Tests
                 var matIdF = (M33f)rotIdF;
 
                 Assert.IsTrue(matIdF.IsIdentity(1e-7f));
-            }
+            });
         }
     }
 }

@@ -10,38 +10,27 @@ namespace Aardvark.Tests
     [TestFixture]
     public static class Rot2dTests
     {
-        private static readonly int iterations = 10000;
-
-        private static Rot2d GetRandomRot(RandomSystem rnd)
-        {
-            return new Rot2d(rnd.UniformDouble() * Constant.PiTimesTwo);
-        }
-
         [Test]
         public static void DistanceTest()
         {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
                 var delta = (rnd.UniformDouble() - 0.5) * 2.0 * Constant.Pi;
-                var r1 = GetRandomRot(rnd);
+                var r1 = TrafoTesting.GetRandomRot2(rnd);
                 var r2 = new Rot2d(r1.Angle + (delta + Constant.PiTimesTwo * rnd.UniformInt(10)));
 
                 var dist = r1.Distance(r2);
-                Assert.IsTrue(Fun.ApproximateEquals(dist, Fun.Abs(delta), 0.00001), "{0} != {1}", dist, delta);
-            }
+                TrafoTesting.AreEqual(dist, Fun.Abs(delta));
+            });
         }
 
         [Test]
         public static void InverseTest()
         {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
-                var r = GetRandomRot(rnd);
-
+                var r = TrafoTesting.GetRandomRot2(rnd);
+                
                 var p = rnd.UniformV2d() * rnd.UniformInt(1000);
                 var q = r.Transform(p);
 
@@ -52,20 +41,18 @@ namespace Aardvark.Tests
                 Rot.Invert(ref r);
                 var res2 = r.Transform(q);
 
-                Assert.IsTrue(Fun.ApproximateEquals(p, res, 0.00001), "{0} != {1}", p, res);
-                Assert.IsTrue(Fun.ApproximateEquals(p, res2, 0.00001), "{0} != {1}", p, res2);
-            }
+                TrafoTesting.AreEqual(p, res);
+                TrafoTesting.AreEqual(p, res2);
+            });
         }
 
         [Test]
         public static void Multiplication2x2Test()
         {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
-                var r1 = GetRandomRot(rnd);
-                var r2 = GetRandomRot(rnd);
+                var r1 = TrafoTesting.GetRandomRot2(rnd);
+                var r2 = TrafoTesting.GetRandomRot2(rnd);
                 var r = r1 * r2;
                 var rm = (M22d)r1 * r2;
                 var mr = r1 * (M22d)r2;
@@ -78,22 +65,20 @@ namespace Aardvark.Tests
                     var res3 = rm.Transform(p);
                     var res4 = mr.Transform(p);
 
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res2, 0.00001), "{0} != {1}", res, res2);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res3, 0.00001), "{0} != {1}", res, res3);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res4, 0.00001), "{0} != {1}", res, res4);
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                    TrafoTesting.AreEqual(res, res4);
                 }
-            }
+            });
         }
 
         [Test]
         public static void Multiplication3x3Test()
         {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
-                var r1 = GetRandomRot(rnd);
-                var r2 = GetRandomRot(rnd);
+                var r1 = TrafoTesting.GetRandomRot2(rnd);
+                var r2 = TrafoTesting.GetRandomRot2(rnd);
                 var r = r1 * r2;
                 var rm = (M33d)r1 * r2;
                 var mr = r1 * (M33d)r2;
@@ -106,113 +91,101 @@ namespace Aardvark.Tests
                     var res3 = rm.TransformPos(p);
                     var res4 = mr.TransformPos(p);
 
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res2, 0.00001), "{0} != {1}", res, res2);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res3, 0.00001), "{0} != {1}", res, res3);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res4, 0.00001), "{0} != {1}", res, res4);
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                    TrafoTesting.AreEqual(res, res4);
                 }
-            }
+            });
         }
 
         [Test]
         public static void FromM22d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var angle = rnd.UniformDouble() * Constant.PiTimesTwo;
-                var m = Rot2d.FromM22d(M22d.Rotation(angle));
-                var r = new Rot2d(angle);
-                var rmr = Rot2d.FromM22d((M22d)r);
-
-                Assert.IsTrue(Fun.ApproximateEquals(m, r, 0.00001), "{2}: {0} != {1}", m, r, i);
-                Assert.IsTrue(Fun.ApproximateEquals(rmr, r, 0.00001), "{2}: {0} != {1}", rmr, r, i);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot2, a => (M22d)a, Rot2d.FromM22d);
 
         [Test]
         public static void FromM33d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var angle = rnd.UniformDouble() * Constant.PiTimesTwo;
-                var m = Rot2d.FromM33d(M33d.Rotation(angle));
-                var r = new Rot2d(angle);
-                var rmr = Rot2d.FromM33d((M33d)r);
-
-                Assert.IsTrue(Fun.ApproximateEquals(m, r, 0.00001), "{2}: {0} != {1}", m, r, i);
-                Assert.IsTrue(Fun.ApproximateEquals(rmr, r, 0.00001), "{2}: {0} != {1}", rmr, r, i);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot2, a => (M33d)a, b => Rot2d.FromM33d(b));
 
         [Test]
         public static void FromEuclidean2d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomRot(rnd);
-                var m = (Euclidean2d)a;
-
-                var restored = Rot2d.FromEuclidean2d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot2, a => (Euclidean2d)a, b => Rot2d.FromEuclidean2d(b));
 
         [Test]
         public static void FromSimilarity2d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomRot(rnd);
-                var m = (Similarity2d)a;
-
-                var restored = Rot2d.FromSimilarity2d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot2, a => (Similarity2d)a, b => Rot2d.FromSimilarity2d(b));
 
         [Test]
         public static void FromAffine2d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomRot(rnd);
-                var m = (Affine2d)a;
-
-                var restored = Rot2d.FromAffine2d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot2, a => (Affine2d)a, b => Rot2d.FromAffine2d(b));
 
         [Test]
         public static void FromTrafo2d()
-        {
-            var rnd = new RandomSystem(1);
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomRot2, a => (Trafo2d)a, b => Rot2d.FromTrafo2d(b));
 
-            for (int i = 0; i < iterations; i++)
+        [Test]
+        public static void MultiplicationShiftTest()
+            => TrafoTesting.GenericTest(rnd =>
             {
-                var a = GetRandomRot(rnd);
-                var m = (Trafo2d)a;
+                var a = TrafoTesting.GetRandomRot2(rnd);
+                var b = TrafoTesting.GetRandomShift2(rnd);
 
-                var restored = Rot2d.FromTrafo2d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+                var p = rnd.UniformV2d() * rnd.UniformInt(1000);
+
+                {
+                    var trafo = a * b;
+                    var res = trafo.TransformPos(p);
+
+                    var trafoRef = (M33d)a * (M33d)b;
+                    var resRef = trafoRef.TransformPos(p);
+
+                    TrafoTesting.AreEqual(res, resRef);
+                }
+
+                {
+                    var trafo = b * a;
+                    var res = trafo.TransformPos(p);
+
+                    var trafoRef = (M33d)b * (M33d)a;
+                    var resRef = trafoRef.TransformPos(p);
+
+                    TrafoTesting.AreEqual(res, resRef);
+                }
+            });
+        
+        [Test]
+        public static void MultiplicationScaleTest()
+            => TrafoTesting.GenericTest(rnd =>
+            {
+                var a = TrafoTesting.GetRandomRot2(rnd);
+                var b = TrafoTesting.GetRandomScale2(rnd);
+
+                var p = rnd.UniformV2d() * rnd.UniformInt(1000);
+
+                {
+                    var trafo = a * b;
+                    var res = trafo.TransformPos(p);
+
+                    var trafoRef = (M33d)a * (M33d)b;
+                    var resRef = trafoRef.TransformPos(p);
+
+                    TrafoTesting.AreEqual(res, resRef);
+                }
+
+                {
+                    var trafo = b * a;
+                    var res = trafo.TransformPos(p);
+
+                    var trafoRef = (M33d)b * (M33d)a;
+                    var resRef = trafoRef.TransformPos(p);
+
+                    TrafoTesting.AreEqual(res, resRef);
+                }
+            });
 
         [Test]
         public static void ConsistentWithMatrixRotationTest()
         {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
+            TrafoTesting.GenericTest(rnd =>
             {
                 var angle = rnd.UniformDouble() * Constant.PiTimesTwo;
                 var m = M22d.Rotation(angle);
@@ -222,24 +195,12 @@ namespace Aardvark.Tests
                 var res = m.Transform(p);
                 var res2 = r.Transform(p);
 
-                Assert.IsTrue(Fun.ApproximateEquals(res, res2, 0.00001), "{0} != {1}", res, res2);
-            }
+                TrafoTesting.AreEqual(res, res2);
+            });
         }
 
         [Test]
         public static void ToStringAndParse()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var r = GetRandomRot(rnd);
-
-                var str = r.ToString();
-                var parsed = Rot2d.Parse(str);
-
-                Assert.IsTrue(Fun.ApproximateEquals(parsed, r, 0.00001));
-            }
-        }
+            => TrafoTesting.GenericToStringAndParseTest(TrafoTesting.GetRandomRot2, Rot2d.Parse);
     }
 }

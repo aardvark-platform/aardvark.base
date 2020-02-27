@@ -78,6 +78,8 @@ namespace Aardvark.Base
             return new Rot2f(r0.Angle + r1.Angle);
         }
 
+        #region Rot / Vector Multiplication
+
         /// <summary>
         /// Multiplies a <see cref="Rot2f"/> transformation with a <see cref="V2f"/>.
         /// Attention: Multiplication is NOT commutative!
@@ -91,18 +93,9 @@ namespace Aardvark.Base
             return new V2f(a * vec.X + -b * vec.Y, b * vec.X + a * vec.Y);
         }
 
-        /// <summary>
-        /// Multiplies a <see cref="V2f"/> with the inverse of a <see cref="Rot2f"/> transformation.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f operator *(V2f vec, Rot2f rot)
-        {
-            float a = Fun.Cos(-rot.Angle);
-            float b = Fun.Sin(-rot.Angle);
+        #endregion
 
-            return new V2f(a * vec.X + -b * vec.Y, b * vec.X + a * vec.Y);
-        }
+        #region Rot / Matrix Multiplication
 
         /// <summary>
         /// Multiplies a <see cref="Rot2f"/> transformation (as a 2x2 matrix) with a <see cref="M22f"/>.
@@ -283,6 +276,27 @@ namespace Aardvark.Base
                 m.M32, m.M33);
         }
 
+        #endregion
+
+        #region Rot / Shift, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot2f"/> transformation with a <see cref="Shift2f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f operator *(Rot2f a, Shift2f b)
+            => new Euclidean2f(a, a * b.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot2f"/> transformation with a <see cref="Scale2f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Rot2f a, Scale2f b)
+            => new Affine2f((M22f)a * (M22f)b);
+
+        #endregion
 
         #endregion
 
@@ -585,7 +599,12 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f InvTransform(this Rot2f rot, V2f v)
-            => v * rot;
+        {
+            float a = Fun.Cos(-rot.Angle);
+            float b = Fun.Sin(-rot.Angle);
+
+            return new V2f(a * v.X + -b * v.Y, b * v.X + a * v.Y);
+        }
 
         /// <summary>
         /// Transforms a <see cref="V3f"/> vector by the inverse of a <see cref="Rot2f"/> transformation.
@@ -698,6 +717,8 @@ namespace Aardvark.Base
             return new Rot2d(r0.Angle + r1.Angle);
         }
 
+        #region Rot / Vector Multiplication
+
         /// <summary>
         /// Multiplies a <see cref="Rot2d"/> transformation with a <see cref="V2d"/>.
         /// Attention: Multiplication is NOT commutative!
@@ -711,18 +732,9 @@ namespace Aardvark.Base
             return new V2d(a * vec.X + -b * vec.Y, b * vec.X + a * vec.Y);
         }
 
-        /// <summary>
-        /// Multiplies a <see cref="V2d"/> with the inverse of a <see cref="Rot2d"/> transformation.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d operator *(V2d vec, Rot2d rot)
-        {
-            double a = Fun.Cos(-rot.Angle);
-            double b = Fun.Sin(-rot.Angle);
+        #endregion
 
-            return new V2d(a * vec.X + -b * vec.Y, b * vec.X + a * vec.Y);
-        }
+        #region Rot / Matrix Multiplication
 
         /// <summary>
         /// Multiplies a <see cref="Rot2d"/> transformation (as a 2x2 matrix) with a <see cref="M22d"/>.
@@ -903,6 +915,27 @@ namespace Aardvark.Base
                 m.M32, m.M33);
         }
 
+        #endregion
+
+        #region Rot / Shift, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot2d"/> transformation with a <see cref="Shift2d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d operator *(Rot2d a, Shift2d b)
+            => new Euclidean2d(a, a * b.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot2d"/> transformation with a <see cref="Scale2d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Rot2d a, Scale2d b)
+            => new Affine2d((M22d)a * (M22d)b);
+
+        #endregion
 
         #endregion
 
@@ -1205,7 +1238,12 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d InvTransform(this Rot2d rot, V2d v)
-            => v * rot;
+        {
+            double a = Fun.Cos(-rot.Angle);
+            double b = Fun.Sin(-rot.Angle);
+
+            return new V2d(a * v.X + -b * v.Y, b * v.X + a * v.Y);
+        }
 
         /// <summary>
         /// Transforms a <see cref="V3d"/> vector by the inverse of a <see cref="Rot2d"/> transformation.

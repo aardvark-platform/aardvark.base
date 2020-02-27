@@ -297,6 +297,26 @@ namespace Aardvark.Base
         //# } }
         #endregion
 
+        #region Scale / Rot, Shift Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__rotdt__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __affinedt__ operator *(__type__ a, __rotdt__ b)
+            => new __affinedt__((__mddt__)a * (__mddt__)b);
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__shiftdt__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __affinedt__ operator *(__type__ a, __shiftdt__ b)
+            => new __affinedt__((__mddt__)a, a * b.V);
+
+        #endregion
+
         #endregion
 
         #region Comparison Operators

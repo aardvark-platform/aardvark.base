@@ -10,108 +10,27 @@ namespace Aardvark.Tests
     [TestFixture]
     public static class AffineTests
     {
-        private static readonly int iterations = 10000;
-
-        private static Scale3d GetRandomScale(RandomSystem rnd)
-        {
-            return new Scale3d(rnd.UniformV3d() * 5);
-        }
-
-        private static Rot3d GetRandomRot(RandomSystem rnd)
-        {
-            return Rot3d.Rotation(rnd.UniformV3dDirection(), rnd.UniformDouble() * Constant.PiTimesTwo);
-        }
-
-        private static Shift3d GetRandomShift(RandomSystem rnd)
-        {
-            return new Shift3d(rnd.UniformV3d() * 10);
-        }
-
-        private static Euclidean3d GetRandomEuclidean(RandomSystem rnd, bool withTranslation = true)
-        {
-            var translation = withTranslation ? GetRandomShift(rnd).V : V3d.Zero;
-            return new Euclidean3d(GetRandomRot(rnd), translation);
-        }
-
-        private static Similarity3d GetRandomSimilarity(RandomSystem rnd, bool withTranslation = true)
-        {
-            return new Similarity3d(GetRandomScale(rnd).X, GetRandomEuclidean(rnd, withTranslation));
-        }
-
-        private static Affine3d GetRandomAffine(RandomSystem rnd, bool withTranslation = true) 
-        {
-            return (Affine3d)GetRandomSimilarity(rnd, withTranslation);
-        }
-
         [Test]
         public static void FromM34d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomAffine(rnd);
-                var m = (M34d)a;
-
-                var restored = Affine3d.FromM34d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomAffine, a => (M34d)a, b => Affine3d.FromM34d(b));
 
         [Test]
         public static void FromM44d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomAffine(rnd);
-                var m = (M44d)a;
-
-                var restored = Affine3d.FromM44d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomAffine, a => (M44d)a, b => Affine3d.FromM44d(b));
 
         [Test]
         public static void FromTrafo3d()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomAffine(rnd);
-                var m = (Trafo3d)a;
-
-                var restored = Affine3d.FromTrafo3d(m);
-                Assert.IsTrue(Fun.ApproximateEquals(a, restored, 0.00001), "{0}: {1} != {2}", i, a, restored);
-            }
-        }
+            => TrafoTesting.GenericConversionTest(TrafoTesting.GetRandomAffine, a => (Trafo3d)a, b => Affine3d.FromTrafo3d(b));
 
         [Test]
         public static void Comparison()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a0 = GetRandomAffine(rnd);
-                var a1 = new Affine3d(a0.Linear, a0.Trans + V3d.OII);
-
-                Assert.IsFalse(a0.Equals(a1));
-                Assert.IsFalse(a0 == a1);
-                Assert.IsTrue(a0 != a1);
-            }
-        }
+            => TrafoTesting.GenericComparisonTest(TrafoTesting.GetRandomAffine, a => new Affine3d(a.Linear, a.Trans + V3d.OII));
 
         [Test]
         public static void InverseTest()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
+            => TrafoTesting.GenericTest(rnd =>
             {
-                var a = GetRandomAffine(rnd);
+                var a = TrafoTesting.GetRandomAffine(rnd);
 
                 var p = rnd.UniformV3d() * rnd.UniformInt(1000);
                 var q = a.TransformPos(p);
@@ -123,20 +42,16 @@ namespace Aardvark.Tests
                 Affine.Invert(ref a);
                 var res2 = a.TransformPos(q);
 
-                Assert.IsTrue(Fun.ApproximateEquals(p, res, 0.00001), "{0} != {1}", p, res);
-                Assert.IsTrue(Fun.ApproximateEquals(p, res2, 0.00001), "{0} != {1}", p, res2);
-            }
-        }
+                TrafoTesting.AreEqual(p, res);
+                TrafoTesting.AreEqual(p, res2);
+            });
 
         [Test]
         public static void Multiplication3x3Test()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
+            => TrafoTesting.GenericTest(rnd =>
             {
-                var a1 = GetRandomAffine(rnd, false);
-                var a2 = GetRandomAffine(rnd, false);
+                var a1 = TrafoTesting.GetRandomAffine(rnd, false);
+                var a2 = TrafoTesting.GetRandomAffine(rnd, false);
                 var a = a1 * a2;
                 var am = (M33d)a1 * a2;
                 var ma = a1 * (M33d)a2;
@@ -149,9 +64,9 @@ namespace Aardvark.Tests
                     var res3 = am.Transform(p);
                     var res4 = ma.Transform(p);
 
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res2, 0.00001), "{0} != {1}", res, res2);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res3, 0.00001), "{0} != {1}", res, res3);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res4, 0.00001), "{0} != {1}", res, res4);
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                    TrafoTesting.AreEqual(res, res4);
                 }
 
                 {
@@ -161,22 +76,18 @@ namespace Aardvark.Tests
                     var res3 = am * p;
                     var res4 = ma * p;
 
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res2, 0.00001), "{0} != {1}", res, res2);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res3, 0.00001), "{0} != {1}", res, res3);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res4, 0.00001), "{0} != {1}", res, res4);
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                    TrafoTesting.AreEqual(res, res4);
                 }
-            }
-        }
+            });
 
         [Test]
         public static void Multiplication4x4Test()
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
+            => TrafoTesting.GenericTest(rnd =>
             {
-                var a1 = GetRandomAffine(rnd);
-                var a2 = GetRandomAffine(rnd);
+                var a1 = TrafoTesting.GetRandomAffine(rnd);
+                var a2 = TrafoTesting.GetRandomAffine(rnd);
                 var a = a1 * a2;
                 var am = (M44d)a1 * a2;
                 var ma = a1 * (M44d)a2;
@@ -189,9 +100,9 @@ namespace Aardvark.Tests
                     var res3 = am.TransformPos(p);
                     var res4 = ma.TransformPos(p);
 
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res2, 0.00001), "{0} != {1}", res, res2);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res3, 0.00001), "{0} != {1}", res, res3);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res4, 0.00001), "{0} != {1}", res, res4);
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                    TrafoTesting.AreEqual(res, res4);
                 }
 
                 {
@@ -201,80 +112,38 @@ namespace Aardvark.Tests
                     var res3 = am * p;
                     var res4 = ma * p;
 
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res2, 0.00001), "{0} != {1}", res, res2);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res3, 0.00001), "{0} != {1}", res, res3);
-                    Assert.IsTrue(Fun.ApproximateEquals(res, res4, 0.00001), "{0} != {1}", res, res4);
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                    TrafoTesting.AreEqual(res, res4);
                 }
-            }
-        }
+            });
 
-        private static void GenericMultiplicationTest<T>(Func<RandomSystem, T> frnd)
-        {
-            var rnd = new RandomSystem(1);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomAffine(rnd);
-                dynamic t = frnd(rnd);
-
-                var p = rnd.UniformV3d() * rnd.UniformInt(1000);
-
-                {
-                    var trafo = a * t;
-                    var res = Affine.TransformPos(trafo, p);
-
-                    var trafoRef = (M44d)a * (M44d)t;
-                    var resRef = trafoRef.TransformPos(p);
-
-                    Assert.IsTrue(Fun.ApproximateEquals(res, resRef, 0.00001), "{0} != {1}", res, resRef);
-                }
-
-                {
-                    var trafo = t * a;
-                    var res = Affine.TransformPos(trafo, p);
-
-                    var trafoRef = (M44d)t * (M44d)a;
-                    var resRef = trafoRef.TransformPos(p);
-
-                    Assert.IsTrue(Fun.ApproximateEquals(res, resRef, 0.00001), "{0} != {1}", res, resRef);
-                }
-            }
-        }
+        [Test]
+        public static void MultiplicationAffineTest()
+            => TrafoTesting.GenericMultiplicationTest<Affine3d, Affine3d, Affine3d>(TrafoTesting.GetRandomAffine, TrafoTesting.GetRandomAffine, Affine.TransformPos);
 
         [Test]
         public static void MultiplicationEuclideanTest()
-            => GenericMultiplicationTest(rnd => GetRandomEuclidean(rnd));
+            => TrafoTesting.GenericMultiplicationTest<Affine3d, Euclidean3d, Affine3d>(TrafoTesting.GetRandomAffine, TrafoTesting.GetRandomEuclidean, Affine.TransformPos);
 
         [Test]
         public static void MultiplicationRotTest()
-            => GenericMultiplicationTest(GetRandomRot);
-        
+            => TrafoTesting.GenericMultiplicationTest<Affine3d, Rot3d, Affine3d>(TrafoTesting.GetRandomAffine, TrafoTesting.GetRandomRot3, Affine.TransformPos);
+
         [Test]
         public static void MultiplicationScaleTest()
-            => GenericMultiplicationTest(GetRandomScale);
+            => TrafoTesting.GenericMultiplicationTest<Affine3d, Scale3d, Affine3d>(TrafoTesting.GetRandomAffine, TrafoTesting.GetRandomScale3, Affine.TransformPos);
 
         [Test]
         public static void MultiplicationShiftTest()
-            => GenericMultiplicationTest(GetRandomShift);
+            => TrafoTesting.GenericMultiplicationTest<Affine3d, Shift3d, Affine3d>(TrafoTesting.GetRandomAffine, TrafoTesting.GetRandomShift3, Affine.TransformPos);
 
         [Test]
         public static void MultiplicationSimilarityTest()
-            => GenericMultiplicationTest(rnd => GetRandomSimilarity(rnd));
+            => TrafoTesting.GenericMultiplicationTest<Affine3d, Similarity3d, Affine3d>(TrafoTesting.GetRandomAffine, TrafoTesting.GetRandomSimilarity, Affine.TransformPos);
 
         [Test]
         public static void ToStringAndParse()
-        {
-            var rnd = new RandomSystem(1);
-            
-            for (int i = 0; i < iterations; i++)
-            {
-                var a = GetRandomAffine(rnd);
-
-                var str = a.ToString();
-                var parsed = Affine3d.Parse(str);
-
-                Assert.IsTrue(Fun.ApproximateEquals(parsed, a, 0.00001));
-            }
-        }
+            => TrafoTesting.GenericToStringAndParseTest(TrafoTesting.GetRandomAffine, Affine3d.Parse);
     }
 }

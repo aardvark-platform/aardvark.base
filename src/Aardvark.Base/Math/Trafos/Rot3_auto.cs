@@ -212,6 +212,8 @@ namespace Aardvark.Base
                 a.W * b.Z + a.Z * b.W + a.X * b.Y - a.Y * b.X);
         }
 
+        #region Rot / Vector Multiplication
+
         /// <summary>
         /// Transforms a <see cref="V3f"/> vector by a <see cref="Rot3f"/> transformation.
         /// Attention: Multiplication is NOT commutative!
@@ -229,6 +231,10 @@ namespace Aardvark.Base
                 -w * r.Y + y * r.W - z * r.X + x * r.Z,
                 -w * r.Z + z * r.W - x * r.Y + y * r.X);
         }
+
+        #endregion
+
+        #region Rot / Matrix Multiplication
 
         /// <summary>
         /// Multiplies a <see cref="Rot3f"/> transformation with a <see cref="M33f"/>.
@@ -249,6 +255,8 @@ namespace Aardvark.Base
         {
             return m * (M33f)rot;
         }
+
+        #endregion
 
         #region Rot / Quaternion arithmetics
 
@@ -377,6 +385,26 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator /(float s, Rot3f r)
             => new QuaternionF(s / r.W, s / r.X, s / r.Y, s / r.Z);
+
+        #endregion
+
+        #region Rot / Shift, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot3f"/> transformation with a <see cref="Shift3f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f operator *(Rot3f a, Shift3f b)
+            => new Euclidean3f(a, a * b.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot3f"/> transformation with a <see cref="Scale3f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f operator *(Rot3f a, Scale3f b)
+            => new Affine3f((M33f)a * (M33f)b);
 
         #endregion
 
@@ -1271,6 +1299,8 @@ namespace Aardvark.Base
                 a.W * b.Z + a.Z * b.W + a.X * b.Y - a.Y * b.X);
         }
 
+        #region Rot / Vector Multiplication
+
         /// <summary>
         /// Transforms a <see cref="V3d"/> vector by a <see cref="Rot3d"/> transformation.
         /// Attention: Multiplication is NOT commutative!
@@ -1288,6 +1318,10 @@ namespace Aardvark.Base
                 -w * r.Y + y * r.W - z * r.X + x * r.Z,
                 -w * r.Z + z * r.W - x * r.Y + y * r.X);
         }
+
+        #endregion
+
+        #region Rot / Matrix Multiplication
 
         /// <summary>
         /// Multiplies a <see cref="Rot3d"/> transformation with a <see cref="M33d"/>.
@@ -1308,6 +1342,8 @@ namespace Aardvark.Base
         {
             return m * (M33d)rot;
         }
+
+        #endregion
 
         #region Rot / Quaternion arithmetics
 
@@ -1436,6 +1472,26 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator /(double s, Rot3d r)
             => new QuaternionD(s / r.W, s / r.X, s / r.Y, s / r.Z);
+
+        #endregion
+
+        #region Rot / Shift, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot3d"/> transformation with a <see cref="Shift3d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d operator *(Rot3d a, Shift3d b)
+            => new Euclidean3d(a, a * b.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot3d"/> transformation with a <see cref="Scale3d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d operator *(Rot3d a, Scale3d b)
+            => new Affine3d((M33d)a * (M33d)b);
 
         #endregion
 

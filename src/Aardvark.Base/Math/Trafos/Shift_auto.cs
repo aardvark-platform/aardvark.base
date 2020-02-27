@@ -350,6 +350,26 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Shift / Rot, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift2f"/> transformation with a <see cref="Rot2f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f operator *(Shift2f a, Rot2f b)
+            => new Euclidean2f(b, a.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift2f"/> transformation with a <see cref="Scale2f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Shift2f a, Scale2f b)
+            => new Affine2f((M22f)b, a.V);
+
+        #endregion
+
         #endregion
 
         #region Comparison Operators
@@ -1062,6 +1082,26 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Shift / Rot, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift3f"/> transformation with a <see cref="Rot3f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f operator *(Shift3f a, Rot3f b)
+            => new Euclidean3f(b, a.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift3f"/> transformation with a <see cref="Scale3f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f operator *(Shift3f a, Scale3f b)
+            => new Affine3f((M33f)b, a.V);
+
+        #endregion
+
         #endregion
 
         #region Comparison Operators
@@ -1718,6 +1758,26 @@ namespace Aardvark.Base
                 m.M11,
                 s.X * m.M10 + s.Y * m.M11 + m.M12);
         }
+
+        #endregion
+
+        #region Shift / Rot, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift2d"/> transformation with a <see cref="Rot2d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d operator *(Shift2d a, Rot2d b)
+            => new Euclidean2d(b, a.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift2d"/> transformation with a <see cref="Scale2d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Shift2d a, Scale2d b)
+            => new Affine2d((M22d)b, a.V);
 
         #endregion
 
@@ -2430,6 +2490,26 @@ namespace Aardvark.Base
                 m.M22,
                 s.X * m.M20 + s.Y * m.M21 + s.Z * m.M22 + m.M23);
         }
+
+        #endregion
+
+        #region Shift / Rot, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift3d"/> transformation with a <see cref="Rot3d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d operator *(Shift3d a, Rot3d b)
+            => new Euclidean3d(b, a.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="Shift3d"/> transformation with a <see cref="Scale3d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d operator *(Shift3d a, Scale3d b)
+            => new Affine3d((M33d)b, a.V);
 
         #endregion
 

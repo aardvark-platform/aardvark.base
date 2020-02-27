@@ -250,6 +250,8 @@ namespace Aardvark.Base
                 a.W * b.Z + a.Z * b.W + a.X * b.Y - a.Y * b.X);
         }
 
+        #region Rot / Vector Multiplication
+
         /// <summary>
         /// Transforms a <see cref="__v3t__"/> vector by a <see cref="__type__"/> transformation.
         /// Attention: Multiplication is NOT commutative!
@@ -267,6 +269,10 @@ namespace Aardvark.Base
                 -w * r.Y + y * r.W - z * r.X + x * r.Z,
                 -w * r.Z + z * r.W - x * r.Y + y * r.X);
         }
+
+        #endregion
+
+        #region Rot / Matrix Multiplication
 
         /// <summary>
         /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__m33t__"/>.
@@ -287,6 +293,8 @@ namespace Aardvark.Base
         {
             return m * (__m33t__)rot;
         }
+
+        #endregion
 
         #region Rot / Quaternion arithmetics
 
@@ -415,6 +423,26 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __quatt__ operator /(__ftype__ s, __type__ r)
             => new __quatt__(/*# qfields.ForEach(f => {*/s / r.__f__/*# }, comma);*/);
+
+        #endregion
+
+        #region Rot / Shift, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__shift3t__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __euclidean3t__ operator *(__type__ a, __shift3t__ b)
+            => new __euclidean3t__(a, a * b.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__scale3t__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __affine3t__ operator *(__type__ a, __scale3t__ b)
+            => new __affine3t__((__m33t__)a * (__m33t__)b);
 
         #endregion
 

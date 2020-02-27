@@ -31,6 +31,7 @@ namespace Aardvark.Base
     //#   var euclideandt = "Euclidean" + d + tc;
     //#   var rotdt = "Rot" + d + tc;
     //#   var shiftdt = "Shift" + d + tc;
+    //#   var scaledt = "Scale" + d + tc;
     //#   var similaritydt = "Similarity" + d + tc;
     //#   var mddt = "M" + d + d + tc;
     //#   var md1d1t = "M" + (d + 1) + (d + 1) + tc;
@@ -350,6 +351,26 @@ namespace Aardvark.Base
                 */s.__fj__ * m.M__i____j__/*# }, add);
                 */ + m.M__i____d__/*# }, commaln);*/);
         }
+
+        #endregion
+
+        #region Shift / Rot, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__rotdt__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __euclideandt__ operator *(__type__ a, __rotdt__ b)
+            => new __euclideandt__(b, a.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__scaledt__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __affinedt__ operator *(__type__ a, __scaledt__ b)
+            => new __affinedt__((__mddt__)b, a.V);
 
         #endregion
 

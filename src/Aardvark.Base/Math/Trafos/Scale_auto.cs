@@ -345,6 +345,26 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Scale / Rot, Shift Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale2f"/> transformation with a <see cref="Rot2f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Scale2f a, Rot2f b)
+            => new Affine2f((M22f)a * (M22f)b);
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale2f"/> transformation with a <see cref="Shift2f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f operator *(Scale2f a, Shift2f b)
+            => new Affine2f((M22f)a, a * b.V);
+
+        #endregion
+
         #endregion
 
         #region Comparison Operators
@@ -1015,6 +1035,26 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Scale / Rot, Shift Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale3f"/> transformation with a <see cref="Rot3f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f operator *(Scale3f a, Rot3f b)
+            => new Affine3f((M33f)a * (M33f)b);
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale3f"/> transformation with a <see cref="Shift3f"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f operator *(Scale3f a, Shift3f b)
+            => new Affine3f((M33f)a, a * b.V);
+
+        #endregion
+
         #endregion
 
         #region Comparison Operators
@@ -1651,6 +1691,26 @@ namespace Aardvark.Base
                 matrix.M20 * scale.X, matrix.M21 * scale.Y, matrix.M22, matrix.M23, 
                 matrix.M30 * scale.X, matrix.M31 * scale.Y, matrix.M32, matrix.M33);
         }
+
+        #endregion
+
+        #region Scale / Rot, Shift Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale2d"/> transformation with a <see cref="Rot2d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Scale2d a, Rot2d b)
+            => new Affine2d((M22d)a * (M22d)b);
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale2d"/> transformation with a <see cref="Shift2d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d operator *(Scale2d a, Shift2d b)
+            => new Affine2d((M22d)a, a * b.V);
 
         #endregion
 
@@ -2321,6 +2381,26 @@ namespace Aardvark.Base
                 matrix.M20 * scale.X, matrix.M21 * scale.Y, matrix.M22 * scale.Z, matrix.M23, 
                 matrix.M30 * scale.X, matrix.M31 * scale.Y, matrix.M32 * scale.Z, matrix.M33);
         }
+
+        #endregion
+
+        #region Scale / Rot, Shift Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale3d"/> transformation with a <see cref="Rot3d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d operator *(Scale3d a, Rot3d b)
+            => new Affine3d((M33d)a * (M33d)b);
+
+        /// <summary>
+        /// Multiplies a <see cref="Scale3d"/> transformation with a <see cref="Shift3d"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d operator *(Scale3d a, Shift3d b)
+            => new Affine3d((M33d)a, a * b.V);
 
         #endregion
 

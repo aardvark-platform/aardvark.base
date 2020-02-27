@@ -22,8 +22,8 @@ namespace Aardvark.Base
     //#   var type = "Rot2" + tc;
     //#   var type2 = "Rot2" + tc2;
     //#   var rot3t = "Rot3" + tc;
-    //#   var scale3t = "Scale3" + tc;
-    //#   var shift3t = "Shift3" + tc;
+    //#   var scale2t = "Scale2" + tc;
+    //#   var shift2t = "Shift2" + tc;
     //#   var affine2t = "Affine2" + tc;
     //#   var similarity2t = "Similarity2" + tc;
     //#   var euclidean2t = "Euclidean2" + tc;
@@ -105,6 +105,8 @@ namespace Aardvark.Base
             return new __type__(r0.Angle + r1.Angle);
         }
 
+        #region Rot / Vector Multiplication
+
         /// <summary>
         /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__v2t__"/>.
         /// Attention: Multiplication is NOT commutative!
@@ -118,18 +120,9 @@ namespace Aardvark.Base
             return new __v2t__(a * vec.X + -b * vec.Y, b * vec.X + a * vec.Y);
         }
 
-        /// <summary>
-        /// Multiplies a <see cref="__v2t__"/> with the inverse of a <see cref="__type__"/> transformation.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __v2t__ operator *(__v2t__ vec, __type__ rot)
-        {
-            __ftype__ a = Fun.Cos(-rot.Angle);
-            __ftype__ b = Fun.Sin(-rot.Angle);
+        #endregion
 
-            return new __v2t__(a * vec.X + -b * vec.Y, b * vec.X + a * vec.Y);
-        }
+        #region Rot / Matrix Multiplication
 
         //# for (int n = 2; n <= 4; n++) {
         //# for (int m = n; m <= (n+1) && m <= 4; m++) {
@@ -174,6 +167,27 @@ namespace Aardvark.Base
 
         //# }
         //# } }
+        #endregion
+
+        #region Rot / Shift, Scale Multiplication
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__shift2t__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __euclidean2t__ operator *(__type__ a, __shift2t__ b)
+            => new __euclidean2t__(a, a * b.V);
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__scale2t__"/> transformation.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __affine2t__ operator *(__type__ a, __scale2t__ b)
+            => new __affine2t__((__m22t__)a * (__m22t__)b);
+
+        #endregion
 
         #endregion
 
@@ -435,7 +449,12 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ InvTransform(this __type__ rot, __v2t__ v)
-            => v * rot;
+        {
+            __ftype__ a = Fun.Cos(-rot.Angle);
+            __ftype__ b = Fun.Sin(-rot.Angle);
+
+            return new __v2t__(a * v.X + -b * v.Y, b * v.X + a * v.Y);
+        }
 
         /// <summary>
         /// Transforms a <see cref="__v3t__"/> vector by the inverse of a <see cref="__type__"/> transformation.
