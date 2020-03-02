@@ -416,21 +416,21 @@ namespace Aardvark.Base
             => From__mmmt__(trafo.Forward, epsilon);
 
         /// <summary>
-        /// Creates an affine transformation with the translational component given by __n__ scalars.
+        /// Creates an <see cref="__type__"/> transformation with the translational component given by __n__ scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Translation(/*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
             => new __type__(__mnnt__.Identity, /*# nfields.ForEach(f => { */t__f__/*# }, comma); */);
 
         /// <summary>
-        /// Creates an affine transformation with the translational component given a <see cref="__vnt__"/> vector.
+        /// Creates an <see cref="__type__"/>transformation with the translational component given by a <see cref="__vnt__"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Translation(__vnt__ vector)
             => new __type__(__mnnt__.Identity, vector);
 
         /// <summary>
-        /// Creates an affine transformation with the translational component given a <see cref="__shiftnt__"/> vector.
+        /// Creates an <see cref="__type__"/> transformation with the translational component given by a <see cref="__shiftnt__"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Translation(__shiftnt__ shift)
@@ -471,7 +471,15 @@ namespace Aardvark.Base
         public static __type__ Rotation(__rotnt__ rot)
             => new __type__(__mnnt__.Rotation(rot));
 
-        //# if (n == 3) {
+        //# if (n == 2) {
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__ftype__ angleInRadians)
+            => new __type__(__mnnt__.Rotation(angleInRadians));
+
+        //# } else if (n == 3) {
         /// <summary>
         /// Creates a rotation transformation from an axis vector and an angle in radians.
         /// The axis vector has to be normalized.
@@ -498,6 +506,13 @@ namespace Aardvark.Base
             => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
 
         /// <summary>
+        /// Creates a rotation transformation which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static __type__ RotateInto(__vnt__ from, __vnt__ into)
+            => new __type__(__mnnt__.RotateInto(from, into));
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -517,6 +532,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotationZ(__ftype__ angleRadians)
             => new __type__(__mnnt__.RotationZ(angleRadians));
+
+        /// <summary>
+        /// Creates a shear transformation along the z-axis.
+        /// </summary>
+        public static __type__ ShearXY(__ftype__ factorX, __ftype__ factorY)
+            => new __type__(__mnnt__.ShearXY(factorX, factorY));
+
+        /// <summary>
+        /// Creates a shear transformation along the y-axis.
+        /// </summary>
+        public static __type__ ShearXZ(__ftype__ factorX, __ftype__ factorZ)
+            => new __type__(__mnnt__.ShearXZ(factorX, factorZ));
+
+        /// <summary>
+        /// Creates a shear transformation along the x-axis.
+        /// </summary>
+        public static __type__ ShearYZ(__ftype__ factorY, __ftype__ factorZ)
+            => new __type__(__mnnt__.ShearYZ(factorY, factorZ));
 
         //# }
         #endregion

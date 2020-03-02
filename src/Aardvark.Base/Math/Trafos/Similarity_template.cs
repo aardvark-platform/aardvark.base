@@ -89,8 +89,49 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__ftype__ scale)
+        {
+            Scale = scale;
+            Euclidean = __euclideannt__.Identity;
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__euclideannt__ euclideanTransformation)
+        {
+            Scale = 1;
+            Euclidean = euclideanTransformation;
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__rotnt__ rotation, __vnt__ translation)
+        {
+            Scale = 1;
+            Euclidean = new __euclideannt__(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation by (/*# nfields.ForEach(f => { */<paramref name="t__f__"/>/*# }, comma);*/).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__rotnt__ rotation, /*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma);*/)
+        {
+            Scale = 1;
+            Euclidean = new __euclideannt__(rotation, /*# nfields.ForEach(f => { */t__f__/*# }, comma);*/);
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__ scale, __euclideannt__ euclideanTransformation)
         {
             Scale = scale;
@@ -98,12 +139,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__ scale, __rotnt__ rotation, __vnt__ translation)
         {
             Scale = scale;
             Euclidean = new __euclideannt__(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and and translation by (/*# nfields.ForEach(f => { */<paramref name="t__f__"/>/*# }, comma);*/).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__ftype__ scale, __rotnt__ rotation, /*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma);*/)
+        {
+            Scale = scale;
+            Euclidean = new __euclideannt__(rotation, /*# nfields.ForEach(f => { */t__f__/*# }, comma);*/);
         }
 
         #endregion
@@ -424,6 +476,104 @@ namespace Aardvark.Base
         public static __type__ From__trafont__(__trafont__ trafo, __ftype__ epsilon = __eps__)
             => From__mmmt__(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation with the translational component given by __n__ scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Translation(/*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
+            => new __type__(__rotnt__.Identity, /*# nfields.ForEach(f => { */t__f__/*# }, comma); */);
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/>transformation with the translational component given by a <see cref="__vnt__"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Translation(__vnt__ vector)
+            => new __type__(__rotnt__.Identity, vector);
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation with the translational component given by a <see cref="__shiftnt__"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Translation(__shiftnt__ shift)
+            => new __type__(__rotnt__.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Scaling(__ftype__ scaleFactor)
+            => new __type__(scaleFactor);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="__rotnt__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__rotnt__ rot)
+            => new __type__(rot, __vnt__.Zero);
+
+        //# if (n == 2) {
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__ftype__ angleInRadians)
+            => new __type__(new __rotnt__(angleInRadians), __vnt__.Zero);
+
+        //# } else if (n == 3) {
+        /// <summary>
+        /// Creates a rotation transformation from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__vnt__ normalizedAxis, __ftype__ angleRadians)
+            => new __type__(__rotnt__.Rotation(normalizedAxis, angleRadians), __vnt__.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationEuler(__ftype__ rollInRadians, __ftype__ pitchInRadians, __ftype__ yawInRadians)
+            => new __type__(__rotnt__.RotationEuler(rollInRadians, pitchInRadians, yawInRadians), __vnt__.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationEuler(__vnt__ rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static __type__ RotateInto(__vnt__ from, __vnt__ into)
+            => new __type__(__rotnt__.RotateInto(from, into), __vnt__.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationX(__ftype__ angleRadians)
+            => new __type__(__rotnt__.RotationX(angleRadians), __vnt__.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationY(__ftype__ angleRadians)
+            => new __type__(__rotnt__.RotationY(angleRadians), __vnt__.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationZ(__ftype__ angleRadians)
+            => new __type__(__rotnt__.RotationZ(angleRadians), __vnt__.Zero);
+
+        //# }
         #endregion
 
         #region Conversion

@@ -15391,6 +15391,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M33i ShearXY(int factorX, int factorY)
         {
             return new M33i(
@@ -15399,6 +15402,9 @@ namespace Aardvark.Base
                 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M33i ShearXZ(int factorX, int factorZ)
         {
             return new M33i(
@@ -15407,6 +15413,9 @@ namespace Aardvark.Base
                 0, factorZ, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M33i ShearYZ(int factorY, int factorZ)
         {
             return new M33i(
@@ -17870,6 +17879,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M33l ShearXY(long factorX, long factorY)
         {
             return new M33l(
@@ -17878,6 +17890,9 @@ namespace Aardvark.Base
                 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M33l ShearXZ(long factorX, long factorZ)
         {
             return new M33l(
@@ -17886,6 +17901,9 @@ namespace Aardvark.Base
                 0, factorZ, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M33l ShearYZ(long factorY, long factorZ)
         {
             return new M33l(
@@ -20348,7 +20366,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
         public static M33f RotationX(float angleRadians)
         {
@@ -20362,7 +20380,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M33f RotationY(float angleRadians)
         {
@@ -20376,7 +20394,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M33f RotationZ(float angleRadians)
         {
@@ -20393,6 +20411,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M33f ShearXY(float factorX, float factorY)
         {
             return new M33f(
@@ -20401,6 +20422,9 @@ namespace Aardvark.Base
                 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M33f ShearXZ(float factorX, float factorZ)
         {
             return new M33f(
@@ -20409,6 +20433,9 @@ namespace Aardvark.Base
                 0, factorZ, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M33f ShearYZ(float factorY, float factorZ)
         {
             return new M33f(
@@ -22834,7 +22861,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
         public static M33d RotationX(double angleRadians)
         {
@@ -22848,7 +22875,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M33d RotationY(double angleRadians)
         {
@@ -22862,7 +22889,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M33d RotationZ(double angleRadians)
         {
@@ -22879,6 +22906,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M33d ShearXY(double factorX, double factorY)
         {
             return new M33d(
@@ -22887,6 +22917,9 @@ namespace Aardvark.Base
                 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M33d ShearXZ(double factorX, double factorZ)
         {
             return new M33d(
@@ -22895,6 +22928,9 @@ namespace Aardvark.Base
                 0, factorZ, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M33d ShearYZ(double factorY, double factorZ)
         {
             return new M33d(
@@ -25093,6 +25129,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M34i ShearXY(int factorX, int factorY)
         {
             return new M34i(
@@ -25101,6 +25140,9 @@ namespace Aardvark.Base
                 0, 0, 1, 0);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M34i ShearXZ(int factorX, int factorZ)
         {
             return new M34i(
@@ -25109,6 +25151,9 @@ namespace Aardvark.Base
                 0, factorZ, 1, 0);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M34i ShearYZ(int factorY, int factorZ)
         {
             return new M34i(
@@ -27450,6 +27495,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M34l ShearXY(long factorX, long factorY)
         {
             return new M34l(
@@ -27458,6 +27506,9 @@ namespace Aardvark.Base
                 0, 0, 1, 0);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M34l ShearXZ(long factorX, long factorZ)
         {
             return new M34l(
@@ -27466,6 +27517,9 @@ namespace Aardvark.Base
                 0, factorZ, 1, 0);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M34l ShearYZ(long factorY, long factorZ)
         {
             return new M34l(
@@ -29765,7 +29819,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
         public static M34f RotationX(float angleRadians)
         {
@@ -29779,7 +29833,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M34f RotationY(float angleRadians)
         {
@@ -29793,7 +29847,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M34f RotationZ(float angleRadians)
         {
@@ -29810,6 +29864,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M34f ShearXY(float factorX, float factorY)
         {
             return new M34f(
@@ -29818,6 +29875,9 @@ namespace Aardvark.Base
                 0, 0, 1, 0);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M34f ShearXZ(float factorX, float factorZ)
         {
             return new M34f(
@@ -29826,6 +29886,9 @@ namespace Aardvark.Base
                 0, factorZ, 1, 0);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M34f ShearYZ(float factorY, float factorZ)
         {
             return new M34f(
@@ -32013,7 +32076,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
         public static M34d RotationX(double angleRadians)
         {
@@ -32027,7 +32090,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M34d RotationY(double angleRadians)
         {
@@ -32041,7 +32104,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M34d RotationZ(double angleRadians)
         {
@@ -32058,6 +32121,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M34d ShearXY(double factorX, double factorY)
         {
             return new M34d(
@@ -32066,6 +32132,9 @@ namespace Aardvark.Base
                 0, 0, 1, 0);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M34d ShearXZ(double factorX, double factorZ)
         {
             return new M34d(
@@ -32074,6 +32143,9 @@ namespace Aardvark.Base
                 0, factorZ, 1, 0);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M34d ShearYZ(double factorY, double factorZ)
         {
             return new M34d(
@@ -34207,6 +34279,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M44i ShearXY(int factorX, int factorY)
         {
             return new M44i(
@@ -34216,6 +34291,9 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M44i ShearXZ(int factorX, int factorZ)
         {
             return new M44i(
@@ -34225,6 +34303,9 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M44i ShearYZ(int factorY, int factorZ)
         {
             return new M44i(
@@ -37127,6 +37208,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M44l ShearXY(long factorX, long factorY)
         {
             return new M44l(
@@ -37136,6 +37220,9 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M44l ShearXZ(long factorX, long factorZ)
         {
             return new M44l(
@@ -37145,6 +37232,9 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M44l ShearYZ(long factorY, long factorZ)
         {
             return new M44l(
@@ -40000,7 +40090,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
         public static M44f RotationX(float angleRadians)
         {
@@ -40015,7 +40105,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M44f RotationY(float angleRadians)
         {
@@ -40030,7 +40120,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M44f RotationZ(float angleRadians)
         {
@@ -40048,6 +40138,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M44f ShearXY(float factorX, float factorY)
         {
             return new M44f(
@@ -40057,6 +40150,9 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M44f ShearXZ(float factorX, float factorZ)
         {
             return new M44f(
@@ -40066,6 +40162,9 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M44f ShearYZ(float factorY, float factorZ)
         {
             return new M44f(
@@ -42870,7 +42969,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
         public static M44d RotationX(double angleRadians)
         {
@@ -42885,7 +42984,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M44d RotationY(double angleRadians)
         {
@@ -42900,7 +42999,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M44d RotationZ(double angleRadians)
         {
@@ -42918,6 +43017,9 @@ namespace Aardvark.Base
 
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static M44d ShearXY(double factorX, double factorY)
         {
             return new M44d(
@@ -42927,6 +43029,9 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static M44d ShearXZ(double factorX, double factorZ)
         {
             return new M44d(
@@ -42936,6 +43041,9 @@ namespace Aardvark.Base
                 0, 0, 0, 1);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static M44d ShearYZ(double factorY, double factorZ)
         {
             return new M44d(

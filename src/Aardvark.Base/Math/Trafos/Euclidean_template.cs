@@ -70,6 +70,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__rotnt__ rot)
+        {
+            Rot = rot;
+            Trans = __vnt__.Zero;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation <paramref name="trans"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__vnt__ trans)
+        {
+            Rot = __rotnt__.Identity;
+            Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation by (/*# nfields.ForEach(f => { */<paramref name="t__f__"/>/*# }, comma);*/).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(/*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma);*/)
+        {
+            Rot = __rotnt__.Identity;
+            Trans = new __vnt__(/*# nfields.ForEach(f => { */t__f__/*# }, comma);*/);
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -77,6 +107,16 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation by (/*# nfields.ForEach(f => { */<paramref name="t__f__"/>/*# }, comma);*/)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__rotnt__ rot, /*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma);*/)
+        {
+            Rot = rot;
+            Trans = new __vnt__(/*# nfields.ForEach(f => { */t__f__/*# }, comma);*/);
         }
 
         #endregion
@@ -381,6 +421,97 @@ namespace Aardvark.Base
         public static __type__ From__trafont__(__trafont__ trafo, __ftype__ epsilon = __eps__)
             => From__mmmt__(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates an <see cref="__type__"/> transformation with the translational component given by __n__ scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Translation(/*# nfields.ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
+            => new __type__(__rotnt__.Identity, /*# nfields.ForEach(f => { */t__f__/*# }, comma); */);
+
+        /// <summary>
+        /// Creates an <see cref="__type__"/>transformation with the translational component given by a <see cref="__vnt__"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Translation(__vnt__ vector)
+            => new __type__(__rotnt__.Identity, vector);
+
+        /// <summary>
+        /// Creates an <see cref="__type__"/> transformation with the translational component given by a <see cref="__shiftnt__"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Translation(__shiftnt__ shift)
+            => new __type__(__rotnt__.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="__rotnt__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__rotnt__ rot)
+            => new __type__(rot);
+
+        //# if (n == 2) {
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__ftype__ angleInRadians)
+            => new __type__(new __rotnt__(angleInRadians));
+
+        //# } else if (n == 3) {
+        /// <summary>
+        /// Creates a rotation transformation from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__vnt__ normalizedAxis, __ftype__ angleRadians)
+            => new __type__(__rotnt__.Rotation(normalizedAxis, angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationEuler(__ftype__ rollInRadians, __ftype__ pitchInRadians, __ftype__ yawInRadians)
+            => new __type__(__rotnt__.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationEuler(__vnt__ rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static __type__ RotateInto(__vnt__ from, __vnt__ into)
+            => new __type__(__rotnt__.RotateInto(from, into));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationX(__ftype__ angleRadians)
+            => new __type__(__rotnt__.RotationX(angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationY(__ftype__ angleRadians)
+            => new __type__(__rotnt__.RotationY(angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ RotationZ(__ftype__ angleRadians)
+            => new __type__(__rotnt__.RotationZ(angleRadians));
+
+        //# }
         #endregion
 
         #region Conversion

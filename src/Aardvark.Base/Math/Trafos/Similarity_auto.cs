@@ -54,8 +54,49 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2f(float scale)
+        {
+            Scale = scale;
+            Euclidean = Euclidean2f.Identity;
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2f(Euclidean2f euclideanTransformation)
+        {
+            Scale = 1;
+            Euclidean = euclideanTransformation;
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2f(Rot2f rotation, V2f translation)
+        {
+            Scale = 1;
+            Euclidean = new Euclidean2f(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation by (<paramref name="tX"/>, <paramref name="tY"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2f(Rot2f rotation, float tX, float tY)
+        {
+            Scale = 1;
+            Euclidean = new Euclidean2f(rotation, tX, tY);
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Similarity2f(float scale, Euclidean2f euclideanTransformation)
         {
             Scale = scale;
@@ -63,12 +104,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Similarity2f(float scale, Rot2f rotation, V2f translation)
         {
             Scale = scale;
             Euclidean = new Euclidean2f(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and and translation by (<paramref name="tX"/>, <paramref name="tY"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2f(float scale, Rot2f rotation, float tX, float tY)
+        {
+            Scale = scale;
+            Euclidean = new Euclidean2f(rotation, tX, tY);
         }
 
         #endregion
@@ -400,6 +452,48 @@ namespace Aardvark.Base
         public static Similarity2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
             => FromM33f(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates a <see cref="Similarity2f"/> transformation with the translational component given by 2 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2f Translation(float tX, float tY)
+            => new Similarity2f(Rot2f.Identity, tX, tY);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity2f"/>transformation with the translational component given by a <see cref="V2f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2f Translation(V2f vector)
+            => new Similarity2f(Rot2f.Identity, vector);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity2f"/> transformation with the translational component given by a <see cref="Shift2f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2f Translation(Shift2f shift)
+            => new Similarity2f(Rot2f.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2f Scaling(float scaleFactor)
+            => new Similarity2f(scaleFactor);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2f Rotation(Rot2f rot)
+            => new Similarity2f(rot, V2f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2f Rotation(float angleInRadians)
+            => new Similarity2f(new Rot2f(angleInRadians), V2f.Zero);
+
         #endregion
 
         #region Conversion
@@ -621,8 +715,49 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3f(float scale)
+        {
+            Scale = scale;
+            Euclidean = Euclidean3f.Identity;
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3f(Euclidean3f euclideanTransformation)
+        {
+            Scale = 1;
+            Euclidean = euclideanTransformation;
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3f(Rot3f rotation, V3f translation)
+        {
+            Scale = 1;
+            Euclidean = new Euclidean3f(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation by (<paramref name="tX"/>, <paramref name="tY"/>, <paramref name="tZ"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3f(Rot3f rotation, float tX, float tY, float tZ)
+        {
+            Scale = 1;
+            Euclidean = new Euclidean3f(rotation, tX, tY, tZ);
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Similarity3f(float scale, Euclidean3f euclideanTransformation)
         {
             Scale = scale;
@@ -630,12 +765,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Similarity3f(float scale, Rot3f rotation, V3f translation)
         {
             Scale = scale;
             Euclidean = new Euclidean3f(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and and translation by (<paramref name="tX"/>, <paramref name="tY"/>, <paramref name="tZ"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3f(float scale, Rot3f rotation, float tX, float tY, float tZ)
+        {
+            Scale = scale;
+            Euclidean = new Euclidean3f(rotation, tX, tY, tZ);
         }
 
         #endregion
@@ -1008,6 +1154,94 @@ namespace Aardvark.Base
         public static Similarity3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
             => FromM44f(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates a <see cref="Similarity3f"/> transformation with the translational component given by 3 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f Translation(float tX, float tY, float tZ)
+            => new Similarity3f(Rot3f.Identity, tX, tY, tZ);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity3f"/>transformation with the translational component given by a <see cref="V3f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f Translation(V3f vector)
+            => new Similarity3f(Rot3f.Identity, vector);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity3f"/> transformation with the translational component given by a <see cref="Shift3f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f Translation(Shift3f shift)
+            => new Similarity3f(Rot3f.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f Scaling(float scaleFactor)
+            => new Similarity3f(scaleFactor);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f Rotation(Rot3f rot)
+            => new Similarity3f(rot, V3f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f Rotation(V3f normalizedAxis, float angleRadians)
+            => new Similarity3f(Rot3f.Rotation(normalizedAxis, angleRadians), V3f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f RotationEuler(float rollInRadians, float pitchInRadians, float yawInRadians)
+            => new Similarity3f(Rot3f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians), V3f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f RotationEuler(V3f rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static Similarity3f RotateInto(V3f from, V3f into)
+            => new Similarity3f(Rot3f.RotateInto(from, into), V3f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f RotationX(float angleRadians)
+            => new Similarity3f(Rot3f.RotationX(angleRadians), V3f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f RotationY(float angleRadians)
+            => new Similarity3f(Rot3f.RotationY(angleRadians), V3f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f RotationZ(float angleRadians)
+            => new Similarity3f(Rot3f.RotationZ(angleRadians), V3f.Zero);
+
         #endregion
 
         #region Conversion
@@ -1252,8 +1486,49 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2d(double scale)
+        {
+            Scale = scale;
+            Euclidean = Euclidean2d.Identity;
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2d(Euclidean2d euclideanTransformation)
+        {
+            Scale = 1;
+            Euclidean = euclideanTransformation;
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2d(Rot2d rotation, V2d translation)
+        {
+            Scale = 1;
+            Euclidean = new Euclidean2d(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation by (<paramref name="tX"/>, <paramref name="tY"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2d(Rot2d rotation, double tX, double tY)
+        {
+            Scale = 1;
+            Euclidean = new Euclidean2d(rotation, tX, tY);
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Similarity2d(double scale, Euclidean2d euclideanTransformation)
         {
             Scale = scale;
@@ -1261,12 +1536,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Similarity2d(double scale, Rot2d rotation, V2d translation)
         {
             Scale = scale;
             Euclidean = new Euclidean2d(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and and translation by (<paramref name="tX"/>, <paramref name="tY"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2d(double scale, Rot2d rotation, double tX, double tY)
+        {
+            Scale = scale;
+            Euclidean = new Euclidean2d(rotation, tX, tY);
         }
 
         #endregion
@@ -1598,6 +1884,48 @@ namespace Aardvark.Base
         public static Similarity2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
             => FromM33d(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates a <see cref="Similarity2d"/> transformation with the translational component given by 2 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2d Translation(double tX, double tY)
+            => new Similarity2d(Rot2d.Identity, tX, tY);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity2d"/>transformation with the translational component given by a <see cref="V2d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2d Translation(V2d vector)
+            => new Similarity2d(Rot2d.Identity, vector);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity2d"/> transformation with the translational component given by a <see cref="Shift2d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2d Translation(Shift2d shift)
+            => new Similarity2d(Rot2d.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2d Scaling(double scaleFactor)
+            => new Similarity2d(scaleFactor);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2d Rotation(Rot2d rot)
+            => new Similarity2d(rot, V2d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2d Rotation(double angleInRadians)
+            => new Similarity2d(new Rot2d(angleInRadians), V2d.Zero);
+
         #endregion
 
         #region Conversion
@@ -1819,8 +2147,49 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3d(double scale)
+        {
+            Scale = scale;
+            Euclidean = Euclidean3d.Identity;
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3d(Euclidean3d euclideanTransformation)
+        {
+            Scale = 1;
+            Euclidean = euclideanTransformation;
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3d(Rot3d rotation, V3d translation)
+        {
+            Scale = 1;
+            Euclidean = new Euclidean3d(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a rotation <paramref name="rotation"/> and translation by (<paramref name="tX"/>, <paramref name="tY"/>, <paramref name="tZ"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3d(Rot3d rotation, double tX, double tY, double tZ)
+        {
+            Scale = 1;
+            Euclidean = new Euclidean3d(rotation, tX, tY, tZ);
+        }
+
+        /// <summary>
+        /// Creates a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rigid transformation <paramref name="euclideanTransformation"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Similarity3d(double scale, Euclidean3d euclideanTransformation)
         {
             Scale = scale;
@@ -1828,12 +2197,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Constructs a similarity transformation from an uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and translation <paramref name="translation"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Similarity3d(double scale, Rot3d rotation, V3d translation)
         {
             Scale = scale;
             Euclidean = new Euclidean3d(rotation, translation);
+        }
+
+        /// <summary>
+        /// Constructs a similarity transformation from a uniform scale by factor <paramref name="scale"/>, and a (subsequent) rotation <paramref name="rotation"/> and and translation by (<paramref name="tX"/>, <paramref name="tY"/>, <paramref name="tZ"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3d(double scale, Rot3d rotation, double tX, double tY, double tZ)
+        {
+            Scale = scale;
+            Euclidean = new Euclidean3d(rotation, tX, tY, tZ);
         }
 
         #endregion
@@ -2205,6 +2585,94 @@ namespace Aardvark.Base
         /// <exception cref="ArgumentException"></exception>
         public static Similarity3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
             => FromM44d(trafo.Forward, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity3d"/> transformation with the translational component given by 3 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d Translation(double tX, double tY, double tZ)
+            => new Similarity3d(Rot3d.Identity, tX, tY, tZ);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity3d"/>transformation with the translational component given by a <see cref="V3d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d Translation(V3d vector)
+            => new Similarity3d(Rot3d.Identity, vector);
+
+        /// <summary>
+        /// Creates a <see cref="Similarity3d"/> transformation with the translational component given by a <see cref="Shift3d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d Translation(Shift3d shift)
+            => new Similarity3d(Rot3d.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d Scaling(double scaleFactor)
+            => new Similarity3d(scaleFactor);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d Rotation(Rot3d rot)
+            => new Similarity3d(rot, V3d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d Rotation(V3d normalizedAxis, double angleRadians)
+            => new Similarity3d(Rot3d.Rotation(normalizedAxis, angleRadians), V3d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d RotationEuler(double rollInRadians, double pitchInRadians, double yawInRadians)
+            => new Similarity3d(Rot3d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians), V3d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d RotationEuler(V3d rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static Similarity3d RotateInto(V3d from, V3d into)
+            => new Similarity3d(Rot3d.RotateInto(from, into), V3d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d RotationX(double angleRadians)
+            => new Similarity3d(Rot3d.RotationX(angleRadians), V3d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d RotationY(double angleRadians)
+            => new Similarity3d(Rot3d.RotationY(angleRadians), V3d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d RotationZ(double angleRadians)
+            => new Similarity3d(Rot3d.RotationZ(angleRadians), V3d.Zero);
 
         #endregion
 

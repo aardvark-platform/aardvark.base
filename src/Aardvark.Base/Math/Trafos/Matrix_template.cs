@@ -431,7 +431,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the X-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
         public static __nmtype__ RotationX(__ftype__ angleRadians)
         {
@@ -446,7 +446,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Y-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static __nmtype__ RotationY(__ftype__ angleRadians)
         {
@@ -461,7 +461,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the Z-Axis.
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static __nmtype__ RotationZ(__ftype__ angleRadians)
         {
@@ -482,6 +482,9 @@ namespace Aardvark.Base
         //# if (n > 2) {
         #region Shearing
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
         public static __nmtype__ ShearXY(__ftype__ factorX, __ftype__ factorY)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
@@ -491,6 +494,9 @@ namespace Aardvark.Base
                 */__x__/*# }, comma); }, comma);*/);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
         public static __nmtype__ ShearXZ(__ftype__ factorX, __ftype__ factorZ)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
@@ -500,6 +506,9 @@ namespace Aardvark.Base
                 */__x__/*# }, comma); }, comma);*/);
         }
 
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
         public static __nmtype__ ShearYZ(__ftype__ factorY, __ftype__ factorZ)
         {
             return new __nmtype__(/*# n.ForEach(i => { */

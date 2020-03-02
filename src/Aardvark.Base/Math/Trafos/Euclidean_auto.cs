@@ -37,6 +37,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2f(Rot2f rot)
+        {
+            Rot = rot;
+            Trans = V2f.Zero;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation <paramref name="trans"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2f(V2f trans)
+        {
+            Rot = Rot2f.Identity;
+            Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation by (<paramref name="tX"/>, <paramref name="tY"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2f(float tX, float tY)
+        {
+            Rot = Rot2f.Identity;
+            Trans = new V2f(tX, tY);
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44,6 +74,16 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation by (<paramref name="tX"/>, <paramref name="tY"/>)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2f(Rot2f rot, float tX, float tY)
+        {
+            Rot = rot;
+            Trans = new V2f(tX, tY);
         }
 
         #endregion
@@ -352,6 +392,41 @@ namespace Aardvark.Base
         public static Euclidean2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
             => FromM33f(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates an <see cref="Euclidean2f"/> transformation with the translational component given by 2 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f Translation(float tX, float tY)
+            => new Euclidean2f(Rot2f.Identity, tX, tY);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean2f"/>transformation with the translational component given by a <see cref="V2f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f Translation(V2f vector)
+            => new Euclidean2f(Rot2f.Identity, vector);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean2f"/> transformation with the translational component given by a <see cref="Shift2f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f Translation(Shift2f shift)
+            => new Euclidean2f(Rot2f.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f Rotation(Rot2f rot)
+            => new Euclidean2f(rot);
+
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2f Rotation(float angleInRadians)
+            => new Euclidean2f(new Rot2f(angleInRadians));
+
         #endregion
 
         #region Conversion
@@ -545,6 +620,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3f(Rot3f rot)
+        {
+            Rot = rot;
+            Trans = V3f.Zero;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation <paramref name="trans"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3f(V3f trans)
+        {
+            Rot = Rot3f.Identity;
+            Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation by (<paramref name="tX"/>, <paramref name="tY"/>, <paramref name="tZ"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3f(float tX, float tY, float tZ)
+        {
+            Rot = Rot3f.Identity;
+            Trans = new V3f(tX, tY, tZ);
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -552,6 +657,16 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation by (<paramref name="tX"/>, <paramref name="tY"/>, <paramref name="tZ"/>)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3f(Rot3f rot, float tX, float tY, float tZ)
+        {
+            Rot = rot;
+            Trans = new V3f(tX, tY, tZ);
         }
 
         #endregion
@@ -902,6 +1017,87 @@ namespace Aardvark.Base
         public static Euclidean3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
             => FromM44f(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates an <see cref="Euclidean3f"/> transformation with the translational component given by 3 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f Translation(float tX, float tY, float tZ)
+            => new Euclidean3f(Rot3f.Identity, tX, tY, tZ);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean3f"/>transformation with the translational component given by a <see cref="V3f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f Translation(V3f vector)
+            => new Euclidean3f(Rot3f.Identity, vector);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean3f"/> transformation with the translational component given by a <see cref="Shift3f"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f Translation(Shift3f shift)
+            => new Euclidean3f(Rot3f.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f Rotation(Rot3f rot)
+            => new Euclidean3f(rot);
+
+        /// <summary>
+        /// Creates a rotation transformation from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f Rotation(V3f normalizedAxis, float angleRadians)
+            => new Euclidean3f(Rot3f.Rotation(normalizedAxis, angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f RotationEuler(float rollInRadians, float pitchInRadians, float yawInRadians)
+            => new Euclidean3f(Rot3f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f RotationEuler(V3f rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static Euclidean3f RotateInto(V3f from, V3f into)
+            => new Euclidean3f(Rot3f.RotateInto(from, into));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f RotationX(float angleRadians)
+            => new Euclidean3f(Rot3f.RotationX(angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f RotationY(float angleRadians)
+            => new Euclidean3f(Rot3f.RotationY(angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3f RotationZ(float angleRadians)
+            => new Euclidean3f(Rot3f.RotationZ(angleRadians));
+
         #endregion
 
         #region Conversion
@@ -1115,6 +1311,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2d(Rot2d rot)
+        {
+            Rot = rot;
+            Trans = V2d.Zero;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation <paramref name="trans"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2d(V2d trans)
+        {
+            Rot = Rot2d.Identity;
+            Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation by (<paramref name="tX"/>, <paramref name="tY"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2d(double tX, double tY)
+        {
+            Rot = Rot2d.Identity;
+            Trans = new V2d(tX, tY);
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1122,6 +1348,16 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation by (<paramref name="tX"/>, <paramref name="tY"/>)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2d(Rot2d rot, double tX, double tY)
+        {
+            Rot = rot;
+            Trans = new V2d(tX, tY);
         }
 
         #endregion
@@ -1430,6 +1666,41 @@ namespace Aardvark.Base
         public static Euclidean2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
             => FromM33d(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates an <see cref="Euclidean2d"/> transformation with the translational component given by 2 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d Translation(double tX, double tY)
+            => new Euclidean2d(Rot2d.Identity, tX, tY);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean2d"/>transformation with the translational component given by a <see cref="V2d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d Translation(V2d vector)
+            => new Euclidean2d(Rot2d.Identity, vector);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean2d"/> transformation with the translational component given by a <see cref="Shift2d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d Translation(Shift2d shift)
+            => new Euclidean2d(Rot2d.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d Rotation(Rot2d rot)
+            => new Euclidean2d(rot);
+
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean2d Rotation(double angleInRadians)
+            => new Euclidean2d(new Rot2d(angleInRadians));
+
         #endregion
 
         #region Conversion
@@ -1623,6 +1894,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3d(Rot3d rot)
+        {
+            Rot = rot;
+            Trans = V3d.Zero;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation <paramref name="trans"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3d(V3d trans)
+        {
+            Rot = Rot3d.Identity;
+            Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a translation by (<paramref name="tX"/>, <paramref name="tY"/>, <paramref name="tZ"/>).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3d(double tX, double tY, double tZ)
+        {
+            Rot = Rot3d.Identity;
+            Trans = new V3d(tX, tY, tZ);
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation <paramref name="trans"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1630,6 +1931,16 @@ namespace Aardvark.Base
         {
             Rot = rot;
             Trans = trans;
+        }
+
+        /// <summary>
+        /// Creates a rigid transformation from a rotation <paramref name="rot"/> and a (subsequent) translation by (<paramref name="tX"/>, <paramref name="tY"/>, <paramref name="tZ"/>)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3d(Rot3d rot, double tX, double tY, double tZ)
+        {
+            Rot = rot;
+            Trans = new V3d(tX, tY, tZ);
         }
 
         #endregion
@@ -1979,6 +2290,87 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
             => FromM44d(trafo.Forward, epsilon);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean3d"/> transformation with the translational component given by 3 scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d Translation(double tX, double tY, double tZ)
+            => new Euclidean3d(Rot3d.Identity, tX, tY, tZ);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean3d"/>transformation with the translational component given by a <see cref="V3d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d Translation(V3d vector)
+            => new Euclidean3d(Rot3d.Identity, vector);
+
+        /// <summary>
+        /// Creates an <see cref="Euclidean3d"/> transformation with the translational component given by a <see cref="Shift3d"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d Translation(Shift3d shift)
+            => new Euclidean3d(Rot3d.Identity, shift.V);
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d Rotation(Rot3d rot)
+            => new Euclidean3d(rot);
+
+        /// <summary>
+        /// Creates a rotation transformation from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d Rotation(V3d normalizedAxis, double angleRadians)
+            => new Euclidean3d(Rot3d.Rotation(normalizedAxis, angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d RotationEuler(double rollInRadians, double pitchInRadians, double yawInRadians)
+            => new Euclidean3d(Rot3d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
+        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d RotationEuler(V3d rollPitchYawInRadians)
+            => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        public static Euclidean3d RotateInto(V3d from, V3d into)
+            => new Euclidean3d(Rot3d.RotateInto(from, into));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d RotationX(double angleRadians)
+            => new Euclidean3d(Rot3d.RotationX(angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d RotationY(double angleRadians)
+            => new Euclidean3d(Rot3d.RotationY(angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Euclidean3d RotationZ(double angleRadians)
+            => new Euclidean3d(Rot3d.RotationZ(angleRadians));
 
         #endregion
 
