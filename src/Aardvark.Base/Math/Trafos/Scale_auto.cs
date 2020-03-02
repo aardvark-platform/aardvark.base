@@ -277,6 +277,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Multiplies a <see cref="M23f"/> with a <see cref="Scale2f"/> transformation (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f operator *(M23f matrix, Scale2f scale)
+        {
+            return new M23f(
+                matrix.M00 * scale.X, matrix.M01 * scale.Y, matrix.M02, 
+                matrix.M10 * scale.X, matrix.M11 * scale.Y, matrix.M12);
+        }
+
+        /// <summary>
         /// Multiplies a <see cref="Scale2f"/> transformation (as a 3x3 matrix) with a <see cref="M33f"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
@@ -300,47 +312,6 @@ namespace Aardvark.Base
                 matrix.M00 * scale.X, matrix.M01 * scale.Y, matrix.M02, 
                 matrix.M10 * scale.X, matrix.M11 * scale.Y, matrix.M12, 
                 matrix.M20 * scale.X, matrix.M21 * scale.Y, matrix.M22);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Scale2f"/> transformation (as a 3x3 matrix) with a <see cref="M34f"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f operator *(Scale2f scale, M34f matrix)
-        {
-            return new M34f(
-                scale.X * matrix.M00, scale.X * matrix.M01, scale.X * matrix.M02, scale.X * matrix.M03, 
-                scale.Y * matrix.M10, scale.Y * matrix.M11, scale.Y * matrix.M12, scale.Y * matrix.M13, 
-                matrix.M20, matrix.M21, matrix.M22, matrix.M23);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Scale2f"/> transformation (as a 4x4 matrix) with a <see cref="M44f"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f operator *(Scale2f scale, M44f matrix)
-        {
-            return new M44f(
-                scale.X * matrix.M00, scale.X * matrix.M01, scale.X * matrix.M02, scale.X * matrix.M03, 
-                scale.Y * matrix.M10, scale.Y * matrix.M11, scale.Y * matrix.M12, scale.Y * matrix.M13, 
-                matrix.M20, matrix.M21, matrix.M22, matrix.M23, 
-                matrix.M30, matrix.M31, matrix.M32, matrix.M33);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="M44f"/> with a <see cref="Scale2f"/> transformation (as a 4x4 matrix).
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f operator *(M44f matrix, Scale2f scale)
-        {
-            return new M44f(
-                matrix.M00 * scale.X, matrix.M01 * scale.Y, matrix.M02, matrix.M03, 
-                matrix.M10 * scale.X, matrix.M11 * scale.Y, matrix.M12, matrix.M13, 
-                matrix.M20 * scale.X, matrix.M21 * scale.Y, matrix.M22, matrix.M23, 
-                matrix.M30 * scale.X, matrix.M31 * scale.Y, matrix.M32, matrix.M33);
         }
 
         #endregion
@@ -931,42 +902,6 @@ namespace Aardvark.Base
         #region Scale / Matrix Multiplication
 
         /// <summary>
-        /// Multiplies a <see cref="Scale3f"/> transformation (as a 2x2 matrix) with a <see cref="M22f"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22f operator *(Scale3f scale, M22f matrix)
-        {
-            return new M22f(
-                scale.X * matrix.M00, scale.X * matrix.M01, 
-                scale.Y * matrix.M10, scale.Y * matrix.M11);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="M22f"/> with a <see cref="Scale3f"/> transformation (as a 2x2 matrix).
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22f operator *(M22f matrix, Scale3f scale)
-        {
-            return new M22f(
-                matrix.M00 * scale.X, matrix.M01 * scale.Y, 
-                matrix.M10 * scale.X, matrix.M11 * scale.Y);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Scale3f"/> transformation (as a 2x2 matrix) with a <see cref="M23f"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23f operator *(Scale3f scale, M23f matrix)
-        {
-            return new M23f(
-                scale.X * matrix.M00, scale.X * matrix.M01, scale.X * matrix.M02, 
-                scale.Y * matrix.M10, scale.Y * matrix.M11, scale.Y * matrix.M12);
-        }
-
-        /// <summary>
         /// Multiplies a <see cref="Scale3f"/> transformation (as a 3x3 matrix) with a <see cref="M33f"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
@@ -1003,6 +938,19 @@ namespace Aardvark.Base
                 scale.X * matrix.M00, scale.X * matrix.M01, scale.X * matrix.M02, scale.X * matrix.M03, 
                 scale.Y * matrix.M10, scale.Y * matrix.M11, scale.Y * matrix.M12, scale.Y * matrix.M13, 
                 scale.Z * matrix.M20, scale.Z * matrix.M21, scale.Z * matrix.M22, scale.Z * matrix.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34f"/> with a <see cref="Scale3f"/> transformation (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(M34f matrix, Scale3f scale)
+        {
+            return new M34f(
+                matrix.M00 * scale.X, matrix.M01 * scale.Y, matrix.M02 * scale.Z, matrix.M03, 
+                matrix.M10 * scale.X, matrix.M11 * scale.Y, matrix.M12 * scale.Z, matrix.M13, 
+                matrix.M20 * scale.X, matrix.M21 * scale.Y, matrix.M22 * scale.Z, matrix.M23);
         }
 
         /// <summary>
@@ -1626,6 +1574,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Multiplies a <see cref="M23d"/> with a <see cref="Scale2d"/> transformation (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d operator *(M23d matrix, Scale2d scale)
+        {
+            return new M23d(
+                matrix.M00 * scale.X, matrix.M01 * scale.Y, matrix.M02, 
+                matrix.M10 * scale.X, matrix.M11 * scale.Y, matrix.M12);
+        }
+
+        /// <summary>
         /// Multiplies a <see cref="Scale2d"/> transformation (as a 3x3 matrix) with a <see cref="M33d"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
@@ -1649,47 +1609,6 @@ namespace Aardvark.Base
                 matrix.M00 * scale.X, matrix.M01 * scale.Y, matrix.M02, 
                 matrix.M10 * scale.X, matrix.M11 * scale.Y, matrix.M12, 
                 matrix.M20 * scale.X, matrix.M21 * scale.Y, matrix.M22);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Scale2d"/> transformation (as a 3x3 matrix) with a <see cref="M34d"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d operator *(Scale2d scale, M34d matrix)
-        {
-            return new M34d(
-                scale.X * matrix.M00, scale.X * matrix.M01, scale.X * matrix.M02, scale.X * matrix.M03, 
-                scale.Y * matrix.M10, scale.Y * matrix.M11, scale.Y * matrix.M12, scale.Y * matrix.M13, 
-                matrix.M20, matrix.M21, matrix.M22, matrix.M23);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Scale2d"/> transformation (as a 4x4 matrix) with a <see cref="M44d"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d operator *(Scale2d scale, M44d matrix)
-        {
-            return new M44d(
-                scale.X * matrix.M00, scale.X * matrix.M01, scale.X * matrix.M02, scale.X * matrix.M03, 
-                scale.Y * matrix.M10, scale.Y * matrix.M11, scale.Y * matrix.M12, scale.Y * matrix.M13, 
-                matrix.M20, matrix.M21, matrix.M22, matrix.M23, 
-                matrix.M30, matrix.M31, matrix.M32, matrix.M33);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="M44d"/> with a <see cref="Scale2d"/> transformation (as a 4x4 matrix).
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d operator *(M44d matrix, Scale2d scale)
-        {
-            return new M44d(
-                matrix.M00 * scale.X, matrix.M01 * scale.Y, matrix.M02, matrix.M03, 
-                matrix.M10 * scale.X, matrix.M11 * scale.Y, matrix.M12, matrix.M13, 
-                matrix.M20 * scale.X, matrix.M21 * scale.Y, matrix.M22, matrix.M23, 
-                matrix.M30 * scale.X, matrix.M31 * scale.Y, matrix.M32, matrix.M33);
         }
 
         #endregion
@@ -2280,42 +2199,6 @@ namespace Aardvark.Base
         #region Scale / Matrix Multiplication
 
         /// <summary>
-        /// Multiplies a <see cref="Scale3d"/> transformation (as a 2x2 matrix) with a <see cref="M22d"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22d operator *(Scale3d scale, M22d matrix)
-        {
-            return new M22d(
-                scale.X * matrix.M00, scale.X * matrix.M01, 
-                scale.Y * matrix.M10, scale.Y * matrix.M11);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="M22d"/> with a <see cref="Scale3d"/> transformation (as a 2x2 matrix).
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22d operator *(M22d matrix, Scale3d scale)
-        {
-            return new M22d(
-                matrix.M00 * scale.X, matrix.M01 * scale.Y, 
-                matrix.M10 * scale.X, matrix.M11 * scale.Y);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Scale3d"/> transformation (as a 2x2 matrix) with a <see cref="M23d"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23d operator *(Scale3d scale, M23d matrix)
-        {
-            return new M23d(
-                scale.X * matrix.M00, scale.X * matrix.M01, scale.X * matrix.M02, 
-                scale.Y * matrix.M10, scale.Y * matrix.M11, scale.Y * matrix.M12);
-        }
-
-        /// <summary>
         /// Multiplies a <see cref="Scale3d"/> transformation (as a 3x3 matrix) with a <see cref="M33d"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
@@ -2352,6 +2235,19 @@ namespace Aardvark.Base
                 scale.X * matrix.M00, scale.X * matrix.M01, scale.X * matrix.M02, scale.X * matrix.M03, 
                 scale.Y * matrix.M10, scale.Y * matrix.M11, scale.Y * matrix.M12, scale.Y * matrix.M13, 
                 scale.Z * matrix.M20, scale.Z * matrix.M21, scale.Z * matrix.M22, scale.Z * matrix.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34d"/> with a <see cref="Scale3d"/> transformation (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(M34d matrix, Scale3d scale)
+        {
+            return new M34d(
+                matrix.M00 * scale.X, matrix.M01 * scale.Y, matrix.M02 * scale.Z, matrix.M03, 
+                matrix.M10 * scale.X, matrix.M11 * scale.Y, matrix.M12 * scale.Z, matrix.M13, 
+                matrix.M20 * scale.X, matrix.M21 * scale.Y, matrix.M22 * scale.Z, matrix.M23);
         }
 
         /// <summary>

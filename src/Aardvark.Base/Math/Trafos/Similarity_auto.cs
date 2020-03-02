@@ -174,7 +174,43 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Similarity2f"/> and a <see cref="M22f"/>.
+        /// Multiplies a <see cref="Similarity2f"/> transformation (as a 2x3 matrix) with a <see cref="M23f"/> (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f operator *(Similarity2f s, M23f m)
+        {
+            var t = (M23f)s;
+            return new M23f(
+                t.M00 * m.M00 + t.M01 * m.M10, 
+                t.M00 * m.M01 + t.M01 * m.M11, 
+                t.M00 * m.M02 + t.M01 * m.M12 + t.M02,
+
+                t.M10 * m.M00 + t.M11 * m.M10, 
+                t.M10 * m.M01 + t.M11 * m.M11, 
+                t.M10 * m.M02 + t.M11 * m.M12 + t.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M23f"/> with a <see cref="Similarity2f"/> transformation (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f operator *(M23f m, Similarity2f s)
+        {
+            var t = (M23f)s;
+            return new M23f(
+                m.M00 * t.M00 + m.M01 * t.M10, 
+                m.M00 * t.M01 + m.M01 * t.M11, 
+                m.M00 * t.M02 + m.M01 * t.M12 + m.M02,
+
+                m.M10 * t.M00 + m.M11 * t.M10, 
+                m.M10 * t.M01 + m.M11 * t.M11, 
+                m.M10 * t.M02 + m.M11 * t.M12 + m.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Similarity2f"/> (as a 2x3 matrix) and a <see cref="M22f"/> (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -182,7 +218,7 @@ namespace Aardvark.Base
             => new M23f(s.Rot * m * s.Scale, s.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M22f"/> and a <see cref="Similarity2f"/>.
+        /// Multiplies a <see cref="M22f"/> and a <see cref="Similarity2f"/> (as a 2x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -729,7 +765,57 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Similarity3f"/> and a <see cref="M33f"/>.
+        /// Multiplies a <see cref="Similarity3f"/> transformation (as a 3x4 matrix) with a <see cref="M34f"/> (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(Similarity3f s, M34f m)
+        {
+            var t = (M34f)s;
+            return new M34f(
+                t.M00 * m.M00 + t.M01 * m.M10 + t.M02 * m.M20, 
+                t.M00 * m.M01 + t.M01 * m.M11 + t.M02 * m.M21, 
+                t.M00 * m.M02 + t.M01 * m.M12 + t.M02 * m.M22, 
+                t.M00 * m.M03 + t.M01 * m.M13 + t.M02 * m.M23 + t.M03,
+
+                t.M10 * m.M00 + t.M11 * m.M10 + t.M12 * m.M20, 
+                t.M10 * m.M01 + t.M11 * m.M11 + t.M12 * m.M21, 
+                t.M10 * m.M02 + t.M11 * m.M12 + t.M12 * m.M22, 
+                t.M10 * m.M03 + t.M11 * m.M13 + t.M12 * m.M23 + t.M13,
+
+                t.M20 * m.M00 + t.M21 * m.M10 + t.M22 * m.M20, 
+                t.M20 * m.M01 + t.M21 * m.M11 + t.M22 * m.M21, 
+                t.M20 * m.M02 + t.M21 * m.M12 + t.M22 * m.M22, 
+                t.M20 * m.M03 + t.M21 * m.M13 + t.M22 * m.M23 + t.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34f"/> with a <see cref="Similarity3f"/> transformation (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(M34f m, Similarity3f s)
+        {
+            var t = (M34f)s;
+            return new M34f(
+                m.M00 * t.M00 + m.M01 * t.M10 + m.M02 * t.M20, 
+                m.M00 * t.M01 + m.M01 * t.M11 + m.M02 * t.M21, 
+                m.M00 * t.M02 + m.M01 * t.M12 + m.M02 * t.M22, 
+                m.M00 * t.M03 + m.M01 * t.M13 + m.M02 * t.M23 + m.M03,
+
+                m.M10 * t.M00 + m.M11 * t.M10 + m.M12 * t.M20, 
+                m.M10 * t.M01 + m.M11 * t.M11 + m.M12 * t.M21, 
+                m.M10 * t.M02 + m.M11 * t.M12 + m.M12 * t.M22, 
+                m.M10 * t.M03 + m.M11 * t.M13 + m.M12 * t.M23 + m.M13,
+
+                m.M20 * t.M00 + m.M21 * t.M10 + m.M22 * t.M20, 
+                m.M20 * t.M01 + m.M21 * t.M11 + m.M22 * t.M21, 
+                m.M20 * t.M02 + m.M21 * t.M12 + m.M22 * t.M22, 
+                m.M20 * t.M03 + m.M21 * t.M13 + m.M22 * t.M23 + m.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Similarity3f"/> (as a 3x4 matrix) and a <see cref="M33f"/> (as a 4x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -737,7 +823,7 @@ namespace Aardvark.Base
             => new M34f(s.Rot * m * s.Scale, s.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M33f"/> and a <see cref="Similarity3f"/>.
+        /// Multiplies a <see cref="M33f"/> and a <see cref="Similarity3f"/> (as a 3x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1286,7 +1372,43 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Similarity2d"/> and a <see cref="M22d"/>.
+        /// Multiplies a <see cref="Similarity2d"/> transformation (as a 2x3 matrix) with a <see cref="M23d"/> (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d operator *(Similarity2d s, M23d m)
+        {
+            var t = (M23d)s;
+            return new M23d(
+                t.M00 * m.M00 + t.M01 * m.M10, 
+                t.M00 * m.M01 + t.M01 * m.M11, 
+                t.M00 * m.M02 + t.M01 * m.M12 + t.M02,
+
+                t.M10 * m.M00 + t.M11 * m.M10, 
+                t.M10 * m.M01 + t.M11 * m.M11, 
+                t.M10 * m.M02 + t.M11 * m.M12 + t.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M23d"/> with a <see cref="Similarity2d"/> transformation (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d operator *(M23d m, Similarity2d s)
+        {
+            var t = (M23d)s;
+            return new M23d(
+                m.M00 * t.M00 + m.M01 * t.M10, 
+                m.M00 * t.M01 + m.M01 * t.M11, 
+                m.M00 * t.M02 + m.M01 * t.M12 + m.M02,
+
+                m.M10 * t.M00 + m.M11 * t.M10, 
+                m.M10 * t.M01 + m.M11 * t.M11, 
+                m.M10 * t.M02 + m.M11 * t.M12 + m.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Similarity2d"/> (as a 2x3 matrix) and a <see cref="M22d"/> (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1294,7 +1416,7 @@ namespace Aardvark.Base
             => new M23d(s.Rot * m * s.Scale, s.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M22d"/> and a <see cref="Similarity2d"/>.
+        /// Multiplies a <see cref="M22d"/> and a <see cref="Similarity2d"/> (as a 2x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1841,7 +1963,57 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Similarity3d"/> and a <see cref="M33d"/>.
+        /// Multiplies a <see cref="Similarity3d"/> transformation (as a 3x4 matrix) with a <see cref="M34d"/> (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(Similarity3d s, M34d m)
+        {
+            var t = (M34d)s;
+            return new M34d(
+                t.M00 * m.M00 + t.M01 * m.M10 + t.M02 * m.M20, 
+                t.M00 * m.M01 + t.M01 * m.M11 + t.M02 * m.M21, 
+                t.M00 * m.M02 + t.M01 * m.M12 + t.M02 * m.M22, 
+                t.M00 * m.M03 + t.M01 * m.M13 + t.M02 * m.M23 + t.M03,
+
+                t.M10 * m.M00 + t.M11 * m.M10 + t.M12 * m.M20, 
+                t.M10 * m.M01 + t.M11 * m.M11 + t.M12 * m.M21, 
+                t.M10 * m.M02 + t.M11 * m.M12 + t.M12 * m.M22, 
+                t.M10 * m.M03 + t.M11 * m.M13 + t.M12 * m.M23 + t.M13,
+
+                t.M20 * m.M00 + t.M21 * m.M10 + t.M22 * m.M20, 
+                t.M20 * m.M01 + t.M21 * m.M11 + t.M22 * m.M21, 
+                t.M20 * m.M02 + t.M21 * m.M12 + t.M22 * m.M22, 
+                t.M20 * m.M03 + t.M21 * m.M13 + t.M22 * m.M23 + t.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34d"/> with a <see cref="Similarity3d"/> transformation (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(M34d m, Similarity3d s)
+        {
+            var t = (M34d)s;
+            return new M34d(
+                m.M00 * t.M00 + m.M01 * t.M10 + m.M02 * t.M20, 
+                m.M00 * t.M01 + m.M01 * t.M11 + m.M02 * t.M21, 
+                m.M00 * t.M02 + m.M01 * t.M12 + m.M02 * t.M22, 
+                m.M00 * t.M03 + m.M01 * t.M13 + m.M02 * t.M23 + m.M03,
+
+                m.M10 * t.M00 + m.M11 * t.M10 + m.M12 * t.M20, 
+                m.M10 * t.M01 + m.M11 * t.M11 + m.M12 * t.M21, 
+                m.M10 * t.M02 + m.M11 * t.M12 + m.M12 * t.M22, 
+                m.M10 * t.M03 + m.M11 * t.M13 + m.M12 * t.M23 + m.M13,
+
+                m.M20 * t.M00 + m.M21 * t.M10 + m.M22 * t.M20, 
+                m.M20 * t.M01 + m.M21 * t.M11 + m.M22 * t.M21, 
+                m.M20 * t.M02 + m.M21 * t.M12 + m.M22 * t.M22, 
+                m.M20 * t.M03 + m.M21 * t.M13 + m.M22 * t.M23 + m.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Similarity3d"/> (as a 3x4 matrix) and a <see cref="M33d"/> (as a 4x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1849,7 +2021,7 @@ namespace Aardvark.Base
             => new M34d(s.Rot * m * s.Scale, s.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M33d"/> and a <see cref="Similarity3d"/>.
+        /// Multiplies a <see cref="M33d"/> and a <see cref="Similarity3d"/> (as a 3x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

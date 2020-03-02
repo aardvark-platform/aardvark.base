@@ -275,7 +275,7 @@ namespace Aardvark.Base
         #region Rot / Matrix Multiplication
 
         /// <summary>
-        /// Multiplies a <see cref="__type__"/> transformation with a <see cref="__m33t__"/>.
+        /// Multiplies a <see cref="__type__"/> transformation (as a 3x3 matrix) with a <see cref="__m33t__"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -285,13 +285,63 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="__m33t__"/> with a <see cref="__type__"/> transformation.
+        /// Multiplies a <see cref="__m33t__"/> with a <see cref="__type__"/> transformation (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __m33t__ operator *(__m33t__ m, __type__ rot)
         {
             return m * (__m33t__)rot;
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation (as a 4x4 matrix) with a <see cref="__m44t__"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __m44t__ operator *(__type__ rot, __m44t__ m)
+        {
+            var r = (__m33t__)rot;
+            return new __m44t__(/*# 3.ForEach(i => { 4.ForEach(j => {*/
+                /*# 3.ForEach(k => {*/r.M__i____k__ * m.M__k____j__/*# }, add); }, comma); }, commaln);*/,
+
+                /*# 4.ForEach(j => {*/m.M__3____j__/*# }, comma);*/);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__m44t__"/> with a <see cref="__type__"/> transformation (as a 4x4 matrix) .
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __m44t__ operator *(__m44t__ m, __type__ rot)
+        {
+            var r = (__m33t__)rot;
+            return new __m44t__(/*# 4.ForEach(i => { 3.ForEach(j => {*/
+                /*# 3.ForEach(k => {*/m.M__i____k__ * r.M__k____j__/*# }, add); }, comma);*/,
+                m.M__i____3__/*# }, commaln);*/);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> transformation (as a 3x3 matrix) with a <see cref="__m34t__"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __m34t__ operator *(__type__ rot, __m34t__ m)
+        {
+            return (__m33t__)rot * m;
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__m34t__"/> with a <see cref="__type__"/> transformation (as a 4x4 matrix) .
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __m34t__ operator *(__m34t__ m, __type__ rot)
+        {
+            var r = (__m33t__)rot;
+            return new __m34t__(/*# 3.ForEach(i => { 3.ForEach(j => {*/
+                /*# 3.ForEach(k => {*/m.M__i____k__ * r.M__k____j__/*# }, add); }, comma);*/,
+                m.M__i____3__/*# }, commaln);*/);
         }
 
         #endregion

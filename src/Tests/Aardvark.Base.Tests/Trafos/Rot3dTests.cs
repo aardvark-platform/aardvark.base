@@ -64,6 +64,35 @@ namespace Aardvark.Tests
             => TrafoTesting.GenericMultiplicationTest<Rot3d, Scale3d, Affine3d>(TrafoTesting.GetRandomRot3, TrafoTesting.GetRandomScale3, Affine.TransformPos);
 
         [Test]
+        public static void Multiplication3x3Test()
+            => TrafoTesting.Generic3x3MultiplicationTest(
+                TrafoTesting.GetRandomRot3,
+                Rot.Transform,
+                (r, v) => r * v);
+
+        [Test]
+        public static void Multiplication3x4Test()
+            => TrafoTesting.Generic3x4MultiplicationTest(
+                TrafoTesting.GetRandomRot3,
+                Rot.Transform,
+                (r, v) => r * v);
+
+        [Test]
+        public static void MultiplicationFull3x4Test()
+            => TrafoTesting.GenericFull3x4MultiplicationTest(TrafoTesting.GetRandomRot3);
+
+        [Test]
+        public static void Multiplication4x4Test()
+            => TrafoTesting.Generic4x4MultiplicationTest(
+                TrafoTesting.GetRandomRot3,
+                Rot.Transform,
+                (r, v) => r * v);
+
+        [Test]
+        public static void MultiplicationFull4x4Test()
+            => TrafoTesting.GenericFull3x4MultiplicationTest(TrafoTesting.GetRandomRot3);
+
+        [Test]
         public static void RotationXYZ()
         {
             TrafoTesting.GenericTest(rnd =>

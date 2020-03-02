@@ -13,6 +13,18 @@ namespace Aardvark.Tests
         public static void AreEqual(dynamic a, dynamic b)
             => Assert.IsTrue(Fun.ApproximateEquals(a, b, Epsilon), "{0} != {1}", a, b);
 
+        public static M23d GetRandom2x3(RandomSystem rnd)
+            => new M23d(rnd.CreateUniformDoubleArray(16));
+
+        public static M33d GetRandom3x3(RandomSystem rnd)
+            => new M33d(rnd.CreateUniformDoubleArray(16));
+
+        public static M34d GetRandom3x4(RandomSystem rnd)
+            => new M34d(rnd.CreateUniformDoubleArray(16));
+
+        public static M44d GetRandom4x4(RandomSystem rnd)
+            => new M44d(rnd.CreateUniformDoubleArray(16));
+
         public static Scale2d GetRandomScale2(RandomSystem rnd)
             => new Scale2d(rnd.UniformV2d() * 5);
 
@@ -136,6 +148,161 @@ namespace Aardvark.Tests
                 }
             });
         }
+
+        /// <summary>
+        /// Tests multiplication of T trafos with their M matrix representations.
+        /// </summary>
+        public static void GenericMatrixMultiplicationTest<T, M, M2>(
+                Func<RandomSystem, T> frnd,
+                Func<T, V3d, V3d> trafoTransform,
+                Func<M, V3d, V3d> matrixTransform,
+                Func<M2, V3d, V3d> matrixTransform2,
+                Func<T, V3d, V3d> trafoMul,
+                Func<M, V3d, V3d> matrixMul,
+                Func<M2, V3d, V3d> matrixMul2,
+                bool squareMatrix = true)
+            => GenericTest(rnd =>
+            {
+                dynamic a = frnd(rnd);
+                dynamic b = frnd(rnd);
+                dynamic ma = (M)a;
+                dynamic mb = (M)b;
+
+                var a_x_b = a * b;
+                var ma_x_b = ma * b;
+                var a_x_mb = a * mb;
+                var ma_x_mb = (squareMatrix) ? ma * mb : null;
+
+                var p = rnd.UniformV3d() * rnd.UniformInt(1000);
+
+                {
+                    var res = trafoTransform(a_x_b, p);
+                    var res2 = matrixTransform2(ma_x_b, p);
+                    var res3 = matrixTransform2(a_x_mb, p);
+                    var res4 = squareMatrix ? matrixTransform(ma_x_mb, p) : res3;
+
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                    TrafoTesting.AreEqual(res, res4);
+                }
+
+                {
+                    var res = trafoMul(a_x_b, p);
+                    var res2 = matrixMul2(ma_x_b, p);
+                    var res3 = matrixMul2(a_x_mb, p);
+                    var res4 = squareMatrix ? matrixMul(ma_x_mb, p) : res3;
+
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                    TrafoTesting.AreEqual(res, res4);
+                }
+            });
+
+        /// <summary>
+        /// Tests multiplication of T trafos with random M matrices.
+        /// </summary>
+        public static void GenericFullMatrixMultiplicationTest<T, M, MAugmented>(
+                Func<RandomSystem, T> frnd,
+                Func<RandomSystem, M> frndMatrix,
+                Func<M, V3d, V3d> matrixTransform,
+                Func<M, V3d, V3d> matrixMul)
+            => GenericTest(rnd =>
+            {
+                dynamic m = frndMatrix(rnd);
+                dynamic t = frnd(rnd);
+                dynamic maugm = (MAugmented)m;
+                dynamic maugt = (MAugmented)t;
+                dynamic mt = (M)t;
+
+                var m_x_t = m * t;
+                var t_x_m = t * m;
+
+                var m_x_t_ref = m * maugt;
+                var t_x_m_ref = mt * maugm;
+
+                var p = rnd.UniformV3d() * rnd.UniformInt(1000);
+
+                {
+                    var res_mt = matrixTransform(m_x_t, p);
+                    var res_mt_ref = matrixTransform(m_x_t_ref, p);
+                    var res_tm = matrixTransform(t_x_m, p);
+                    var res_tm_ref = matrixTransform(t_x_m_ref, p);
+
+                    TrafoTesting.AreEqual(res_mt, res_mt_ref);
+                    TrafoTesting.AreEqual(res_tm, res_tm_ref);
+                }
+
+                {
+                    var res_mt = matrixMul(m_x_t, p);
+                    var res_mt_ref = matrixMul(m_x_t_ref, p);
+                    var res_tm = matrixMul(t_x_m, p);
+                    var res_tm_ref = matrixMul(t_x_m_ref, p);
+
+                    TrafoTesting.AreEqual(res_mt, res_mt_ref);
+                    TrafoTesting.AreEqual(res_tm, res_tm_ref);
+                }
+            });
+
+
+        /// <summary>
+        /// Tests multiplication of T trafos with their 3x3 matrix representation.
+        /// </summary>
+        public static void Generic3x3MultiplicationTest<T>(Func<RandomSystem, T> frnd, Func<T, V3d, V3d> trafoTransform, Func<T, V3d, V3d> trafoMul)
+            => GenericMatrixMultiplicationTest<T, M33d, M33d>(
+                    frnd,
+                    trafoTransform,
+                    Mat.Transform,
+                    Mat.Transform, 
+                    trafoMul,
+                    (m, v) => m * v,
+                    (m, v) => m * v);
+
+        /// <summary>
+        /// Tests multiplication of T trafos with their 3x4 matrix representation.
+        /// </summary>
+        public static void Generic3x4MultiplicationTest<T>(Func<RandomSystem, T> frnd, Func<T, V3d, V3d> trafoTransform, Func<T, V3d, V3d> trafoMul)
+            => GenericMatrixMultiplicationTest<T, M34d, M34d>(
+                    frnd,
+                    trafoTransform,
+                    Mat.TransformPos,
+                    Mat.TransformPos,
+                    trafoMul,
+                    (m, v) => (m * new V4d(v, 1)),
+                    (m, v) => (m * new V4d(v, 1)),
+                    false);
+
+        /// <summary>
+        /// Tests multiplication of T trafos with random 3x4 matrices.
+        /// </summary>
+        public static void GenericFull3x4MultiplicationTest<T>(Func<RandomSystem, T> frnd)
+            => GenericFullMatrixMultiplicationTest<T, M34d, M44d>(
+                    frnd,
+                    GetRandom3x4,
+                    Mat.TransformPos,
+                    (m, v) => (m * new V4d(v, 1)));
+
+        /// <summary>
+        /// Tests multiplication of T trafos with their 4x4 matrix representation.
+        /// </summary>
+        public static void Generic4x4MultiplicationTest<T>(Func<RandomSystem, T> frnd, Func<T, V3d, V3d> trafoTransform, Func<T, V3d, V3d> trafoMul)
+            => GenericMatrixMultiplicationTest<T, M44d, M44d>(
+                    frnd,
+                    trafoTransform, 
+                    Mat.TransformPos,
+                    Mat.TransformPos,
+                    trafoMul,
+                    (m, v) => (m * new V4d(v, 1)).XYZ,
+                    (m, v) => (m * new V4d(v, 1)).XYZ);
+
+        /// <summary>
+        /// Tests multiplication of T trafos with random 4x4 matrices.
+        /// </summary>
+        public static void GenericFull4x4MultiplicationTest<T>(Func<RandomSystem, T> frnd)
+            => GenericFullMatrixMultiplicationTest<T, M44d, M44d>(
+                    frnd,
+                    GetRandom4x4,
+                    Mat.TransformPos,
+                    (m, v) => (m * new V4d(v, 1)).XYZ);
 
         /// <summary>
         /// Tests if a T trafo can be converted into its string representation and parsed from it again.

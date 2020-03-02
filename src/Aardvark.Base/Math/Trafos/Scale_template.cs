@@ -258,8 +258,8 @@ namespace Aardvark.Base
 
         #region Scale / Matrix Multiplication
 
-        //# for (int n = 2; n <= 4; n++) {
-        //# for (int m = n; m <= (n + 1) && m <= 4; m++) {
+        //# for (int n = d; n <= d+1; n++) {
+        //# for (int m = n; m <= (n + 1) && m <= d+1; m++) {
         //#     var mat = "M" + n + m + tc;
         //#     var nfields = dfields.Take(n);
         //#     var mfields = dfields.Take(m);
@@ -278,10 +278,9 @@ namespace Aardvark.Base
                 /*# var ipd = i + d; m.ForEach(j => { */matrix.M__ipd____j__/*# }, comma); }, comma); }*/);
         }
 
-        //# if (n == m) {
         //# var rem = m - d;
         /// <summary>
-        /// Multiplies a <see cref="__mat__"/> with a <see cref="__type__"/> transformation (as a __n__x__n__ matrix).
+        /// Multiplies a <see cref="__mat__"/> with a <see cref="__type__"/> transformation (as a __m__x__m__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -293,7 +292,6 @@ namespace Aardvark.Base
                   var jpd = j + d; */matrix.M__i____jpd__/*# }, comma); } }, comma);*/);
         }
 
-        //# }
         //# } }
         #endregion
 

@@ -151,7 +151,43 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Euclidean2f"/> and a <see cref="M22f"/>.
+        /// Multiplies a <see cref="Euclidean2f"/> transformation (as a 2x3 matrix) with a <see cref="M23f"/> (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f operator *(Euclidean2f e, M23f m)
+        {
+            var t = (M23f)e;
+            return new M23f(
+                t.M00 * m.M00 + t.M01 * m.M10, 
+                t.M00 * m.M01 + t.M01 * m.M11, 
+                t.M00 * m.M02 + t.M01 * m.M12 + t.M02,
+
+                t.M10 * m.M00 + t.M11 * m.M10, 
+                t.M10 * m.M01 + t.M11 * m.M11, 
+                t.M10 * m.M02 + t.M11 * m.M12 + t.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M23f"/> with a <see cref="Euclidean2f"/> transformation (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f operator *(M23f m, Euclidean2f e)
+        {
+            var t = (M23f)e;
+            return new M23f(
+                m.M00 * t.M00 + m.M01 * t.M10, 
+                m.M00 * t.M01 + m.M01 * t.M11, 
+                m.M00 * t.M02 + m.M01 * t.M12 + m.M02,
+
+                m.M10 * t.M00 + m.M11 * t.M10, 
+                m.M10 * t.M01 + m.M11 * t.M11, 
+                m.M10 * t.M02 + m.M11 * t.M12 + m.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Euclidean2f"/> (as a 2x3 matrix) and a <see cref="M22f"/> (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -159,7 +195,7 @@ namespace Aardvark.Base
             => new M23f(a.Rot * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M22f"/> and a <see cref="Euclidean2f"/>.
+        /// Multiplies a <see cref="M22f"/> and a <see cref="Euclidean2f"/> (as a 2x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -647,7 +683,57 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Euclidean3f"/> and a <see cref="M33f"/>.
+        /// Multiplies a <see cref="Euclidean3f"/> transformation (as a 3x4 matrix) with a <see cref="M34f"/> (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(Euclidean3f e, M34f m)
+        {
+            var t = (M34f)e;
+            return new M34f(
+                t.M00 * m.M00 + t.M01 * m.M10 + t.M02 * m.M20, 
+                t.M00 * m.M01 + t.M01 * m.M11 + t.M02 * m.M21, 
+                t.M00 * m.M02 + t.M01 * m.M12 + t.M02 * m.M22, 
+                t.M00 * m.M03 + t.M01 * m.M13 + t.M02 * m.M23 + t.M03,
+
+                t.M10 * m.M00 + t.M11 * m.M10 + t.M12 * m.M20, 
+                t.M10 * m.M01 + t.M11 * m.M11 + t.M12 * m.M21, 
+                t.M10 * m.M02 + t.M11 * m.M12 + t.M12 * m.M22, 
+                t.M10 * m.M03 + t.M11 * m.M13 + t.M12 * m.M23 + t.M13,
+
+                t.M20 * m.M00 + t.M21 * m.M10 + t.M22 * m.M20, 
+                t.M20 * m.M01 + t.M21 * m.M11 + t.M22 * m.M21, 
+                t.M20 * m.M02 + t.M21 * m.M12 + t.M22 * m.M22, 
+                t.M20 * m.M03 + t.M21 * m.M13 + t.M22 * m.M23 + t.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34f"/> with a <see cref="Euclidean3f"/> transformation (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(M34f m, Euclidean3f e)
+        {
+            var t = (M34f)e;
+            return new M34f(
+                m.M00 * t.M00 + m.M01 * t.M10 + m.M02 * t.M20, 
+                m.M00 * t.M01 + m.M01 * t.M11 + m.M02 * t.M21, 
+                m.M00 * t.M02 + m.M01 * t.M12 + m.M02 * t.M22, 
+                m.M00 * t.M03 + m.M01 * t.M13 + m.M02 * t.M23 + m.M03,
+
+                m.M10 * t.M00 + m.M11 * t.M10 + m.M12 * t.M20, 
+                m.M10 * t.M01 + m.M11 * t.M11 + m.M12 * t.M21, 
+                m.M10 * t.M02 + m.M11 * t.M12 + m.M12 * t.M22, 
+                m.M10 * t.M03 + m.M11 * t.M13 + m.M12 * t.M23 + m.M13,
+
+                m.M20 * t.M00 + m.M21 * t.M10 + m.M22 * t.M20, 
+                m.M20 * t.M01 + m.M21 * t.M11 + m.M22 * t.M21, 
+                m.M20 * t.M02 + m.M21 * t.M12 + m.M22 * t.M22, 
+                m.M20 * t.M03 + m.M21 * t.M13 + m.M22 * t.M23 + m.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Euclidean3f"/> (as a 3x4 matrix) and a <see cref="M33f"/> (as a 4x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -655,7 +741,7 @@ namespace Aardvark.Base
             => new M34f(a.Rot * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M33f"/> and a <see cref="Euclidean3f"/>.
+        /// Multiplies a <see cref="M33f"/> and a <see cref="Euclidean3f"/> (as a 3x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1143,7 +1229,43 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Euclidean2d"/> and a <see cref="M22d"/>.
+        /// Multiplies a <see cref="Euclidean2d"/> transformation (as a 2x3 matrix) with a <see cref="M23d"/> (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d operator *(Euclidean2d e, M23d m)
+        {
+            var t = (M23d)e;
+            return new M23d(
+                t.M00 * m.M00 + t.M01 * m.M10, 
+                t.M00 * m.M01 + t.M01 * m.M11, 
+                t.M00 * m.M02 + t.M01 * m.M12 + t.M02,
+
+                t.M10 * m.M00 + t.M11 * m.M10, 
+                t.M10 * m.M01 + t.M11 * m.M11, 
+                t.M10 * m.M02 + t.M11 * m.M12 + t.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M23d"/> with a <see cref="Euclidean2d"/> transformation (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d operator *(M23d m, Euclidean2d e)
+        {
+            var t = (M23d)e;
+            return new M23d(
+                m.M00 * t.M00 + m.M01 * t.M10, 
+                m.M00 * t.M01 + m.M01 * t.M11, 
+                m.M00 * t.M02 + m.M01 * t.M12 + m.M02,
+
+                m.M10 * t.M00 + m.M11 * t.M10, 
+                m.M10 * t.M01 + m.M11 * t.M11, 
+                m.M10 * t.M02 + m.M11 * t.M12 + m.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Euclidean2d"/> (as a 2x3 matrix) and a <see cref="M22d"/> (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1151,7 +1273,7 @@ namespace Aardvark.Base
             => new M23d(a.Rot * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M22d"/> and a <see cref="Euclidean2d"/>.
+        /// Multiplies a <see cref="M22d"/> and a <see cref="Euclidean2d"/> (as a 2x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1639,7 +1761,57 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Euclidean3d"/> and a <see cref="M33d"/>.
+        /// Multiplies a <see cref="Euclidean3d"/> transformation (as a 3x4 matrix) with a <see cref="M34d"/> (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(Euclidean3d e, M34d m)
+        {
+            var t = (M34d)e;
+            return new M34d(
+                t.M00 * m.M00 + t.M01 * m.M10 + t.M02 * m.M20, 
+                t.M00 * m.M01 + t.M01 * m.M11 + t.M02 * m.M21, 
+                t.M00 * m.M02 + t.M01 * m.M12 + t.M02 * m.M22, 
+                t.M00 * m.M03 + t.M01 * m.M13 + t.M02 * m.M23 + t.M03,
+
+                t.M10 * m.M00 + t.M11 * m.M10 + t.M12 * m.M20, 
+                t.M10 * m.M01 + t.M11 * m.M11 + t.M12 * m.M21, 
+                t.M10 * m.M02 + t.M11 * m.M12 + t.M12 * m.M22, 
+                t.M10 * m.M03 + t.M11 * m.M13 + t.M12 * m.M23 + t.M13,
+
+                t.M20 * m.M00 + t.M21 * m.M10 + t.M22 * m.M20, 
+                t.M20 * m.M01 + t.M21 * m.M11 + t.M22 * m.M21, 
+                t.M20 * m.M02 + t.M21 * m.M12 + t.M22 * m.M22, 
+                t.M20 * m.M03 + t.M21 * m.M13 + t.M22 * m.M23 + t.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34d"/> with a <see cref="Euclidean3d"/> transformation (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(M34d m, Euclidean3d e)
+        {
+            var t = (M34d)e;
+            return new M34d(
+                m.M00 * t.M00 + m.M01 * t.M10 + m.M02 * t.M20, 
+                m.M00 * t.M01 + m.M01 * t.M11 + m.M02 * t.M21, 
+                m.M00 * t.M02 + m.M01 * t.M12 + m.M02 * t.M22, 
+                m.M00 * t.M03 + m.M01 * t.M13 + m.M02 * t.M23 + m.M03,
+
+                m.M10 * t.M00 + m.M11 * t.M10 + m.M12 * t.M20, 
+                m.M10 * t.M01 + m.M11 * t.M11 + m.M12 * t.M21, 
+                m.M10 * t.M02 + m.M11 * t.M12 + m.M12 * t.M22, 
+                m.M10 * t.M03 + m.M11 * t.M13 + m.M12 * t.M23 + m.M13,
+
+                m.M20 * t.M00 + m.M21 * t.M10 + m.M22 * t.M20, 
+                m.M20 * t.M01 + m.M21 * t.M11 + m.M22 * t.M21, 
+                m.M20 * t.M02 + m.M21 * t.M12 + m.M22 * t.M22, 
+                m.M20 * t.M03 + m.M21 * t.M13 + m.M22 * t.M23 + m.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Euclidean3d"/> (as a 3x4 matrix) and a <see cref="M33d"/> (as a 4x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1647,7 +1819,7 @@ namespace Aardvark.Base
             => new M34d(a.Rot * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M33d"/> and a <see cref="Euclidean3d"/>.
+        /// Multiplies a <see cref="M33d"/> and a <see cref="Euclidean3d"/> (as a 3x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

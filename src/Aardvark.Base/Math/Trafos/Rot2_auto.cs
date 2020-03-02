@@ -154,6 +154,26 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Multiplies a <see cref="M23f"/> with a <see cref="Rot2f"/> transformation (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f operator *(M23f m, Rot2f r)
+        {
+            float a = Fun.Cos(r.Angle);
+            float b = Fun.Sin(r.Angle);
+
+            return new M23f(
+                m.M00 * a + m.M01 * b, 
+                m.M00 * -b + m.M01 * a,
+                m.M02,
+
+                m.M10 * a + m.M11 * b, 
+                m.M10 * -b + m.M11 * a,
+                m.M12);
+        }
+
+        /// <summary>
         /// Multiplies a <see cref="Rot2f"/> transformation (as a 3x3 matrix) with a <see cref="M33f"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
@@ -197,83 +217,6 @@ namespace Aardvark.Base
                 m.M20 * a + m.M21 * b, 
                 m.M20 * -b + m.M21 * a,
                 m.M22);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Rot2f"/> transformation (as a 3x3 matrix) with a <see cref="M34f"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f operator *(Rot2f r, M34f m)
-        {
-            float a = Fun.Cos(r.Angle);
-            float b = Fun.Sin(r.Angle);
-
-            return new M34f(
-                a * m.M00 + -b * m.M10, 
-                a * m.M01 + -b * m.M11, 
-                a * m.M02 + -b * m.M12, 
-                a * m.M03 + -b * m.M13,
-
-                b * m.M00 + a * m.M10, 
-                b * m.M01 + a * m.M11, 
-                b * m.M02 + a * m.M12, 
-                b * m.M03 + a * m.M13,
-                
-                m.M20, m.M21, m.M22, m.M23);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Rot2f"/> transformation (as a 4x4 matrix) with a <see cref="M44f"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f operator *(Rot2f r, M44f m)
-        {
-            float a = Fun.Cos(r.Angle);
-            float b = Fun.Sin(r.Angle);
-
-            return new M44f(
-                a * m.M00 + -b * m.M10, 
-                a * m.M01 + -b * m.M11, 
-                a * m.M02 + -b * m.M12, 
-                a * m.M03 + -b * m.M13,
-
-                b * m.M00 + a * m.M10, 
-                b * m.M01 + a * m.M11, 
-                b * m.M02 + a * m.M12, 
-                b * m.M03 + a * m.M13,
-                
-                m.M20, m.M21, m.M22, m.M23, 
-                m.M30, m.M31, m.M32, m.M33);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="M44f"/> with a <see cref="Rot2f"/> transformation (as a 4x4 matrix).
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f operator *(M44f m, Rot2f r)
-        {
-            float a = Fun.Cos(r.Angle);
-            float b = Fun.Sin(r.Angle);
-
-            return new M44f(
-                m.M00 * a + m.M01 * b, 
-                m.M00 * -b + m.M01 * a,
-                m.M02, m.M03,
-
-                m.M10 * a + m.M11 * b, 
-                m.M10 * -b + m.M11 * a,
-                m.M12, m.M13,
-
-                m.M20 * a + m.M21 * b, 
-                m.M20 * -b + m.M21 * a,
-                m.M22, m.M23,
-
-                m.M30 * a + m.M31 * b, 
-                m.M30 * -b + m.M31 * a,
-                m.M32, m.M33);
         }
 
         #endregion
@@ -793,6 +736,26 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Multiplies a <see cref="M23d"/> with a <see cref="Rot2d"/> transformation (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d operator *(M23d m, Rot2d r)
+        {
+            double a = Fun.Cos(r.Angle);
+            double b = Fun.Sin(r.Angle);
+
+            return new M23d(
+                m.M00 * a + m.M01 * b, 
+                m.M00 * -b + m.M01 * a,
+                m.M02,
+
+                m.M10 * a + m.M11 * b, 
+                m.M10 * -b + m.M11 * a,
+                m.M12);
+        }
+
+        /// <summary>
         /// Multiplies a <see cref="Rot2d"/> transformation (as a 3x3 matrix) with a <see cref="M33d"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
@@ -836,83 +799,6 @@ namespace Aardvark.Base
                 m.M20 * a + m.M21 * b, 
                 m.M20 * -b + m.M21 * a,
                 m.M22);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Rot2d"/> transformation (as a 3x3 matrix) with a <see cref="M34d"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d operator *(Rot2d r, M34d m)
-        {
-            double a = Fun.Cos(r.Angle);
-            double b = Fun.Sin(r.Angle);
-
-            return new M34d(
-                a * m.M00 + -b * m.M10, 
-                a * m.M01 + -b * m.M11, 
-                a * m.M02 + -b * m.M12, 
-                a * m.M03 + -b * m.M13,
-
-                b * m.M00 + a * m.M10, 
-                b * m.M01 + a * m.M11, 
-                b * m.M02 + a * m.M12, 
-                b * m.M03 + a * m.M13,
-                
-                m.M20, m.M21, m.M22, m.M23);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="Rot2d"/> transformation (as a 4x4 matrix) with a <see cref="M44d"/>.
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d operator *(Rot2d r, M44d m)
-        {
-            double a = Fun.Cos(r.Angle);
-            double b = Fun.Sin(r.Angle);
-
-            return new M44d(
-                a * m.M00 + -b * m.M10, 
-                a * m.M01 + -b * m.M11, 
-                a * m.M02 + -b * m.M12, 
-                a * m.M03 + -b * m.M13,
-
-                b * m.M00 + a * m.M10, 
-                b * m.M01 + a * m.M11, 
-                b * m.M02 + a * m.M12, 
-                b * m.M03 + a * m.M13,
-                
-                m.M20, m.M21, m.M22, m.M23, 
-                m.M30, m.M31, m.M32, m.M33);
-        }
-
-        /// <summary>
-        /// Multiplies a <see cref="M44d"/> with a <see cref="Rot2d"/> transformation (as a 4x4 matrix).
-        /// Attention: Multiplication is NOT commutative!
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d operator *(M44d m, Rot2d r)
-        {
-            double a = Fun.Cos(r.Angle);
-            double b = Fun.Sin(r.Angle);
-
-            return new M44d(
-                m.M00 * a + m.M01 * b, 
-                m.M00 * -b + m.M01 * a,
-                m.M02, m.M03,
-
-                m.M10 * a + m.M11 * b, 
-                m.M10 * -b + m.M11 * a,
-                m.M12, m.M13,
-
-                m.M20 * a + m.M21 * b, 
-                m.M20 * -b + m.M21 * a,
-                m.M22, m.M23,
-
-                m.M30 * a + m.M31 * b, 
-                m.M30 * -b + m.M31 * a,
-                m.M32, m.M33);
         }
 
         #endregion

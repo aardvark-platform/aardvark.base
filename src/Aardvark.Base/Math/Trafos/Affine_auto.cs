@@ -150,7 +150,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Affine2f"/> and a <see cref="M33f"/>.
+        /// Multiplies a <see cref="Affine2f"/> (as a 3x3 matrix) and a <see cref="M33f"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -169,7 +169,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="M33f"/> and a <see cref="Affine2f"/>.
+        /// Multiplies a <see cref="M33f"/> and a <see cref="Affine2f"/> (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -190,7 +190,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Affine2f"/> and a <see cref="M22f"/>.
+        /// Multiplies a <see cref="Affine2f"/> (as a 2x3 matrix) and a <see cref="M22f"/> (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -198,12 +198,46 @@ namespace Aardvark.Base
             => new M23f(a.Linear * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M22f"/> and a <see cref="Affine2f"/>.
+        /// Multiplies a <see cref="M22f"/> and a <see cref="Affine2f"/> (as a 2x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator *(M22f m, Affine2f a)
             => new M23f(m * a.Linear, m * a.Trans);
+
+        /// <summary>
+        /// Multiplies a <see cref="Affine2f"/> (as a 2x3 matrix) and a <see cref="M23f"/> (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f operator *(Affine2f a, M23f m)
+        {
+            return new M23f(
+                a.Linear.M00 * m.M00 + a.Linear.M01 * m.M10, 
+                a.Linear.M00 * m.M01 + a.Linear.M01 * m.M11,
+                a.Trans.X + a.Linear.M00 * m.M02 + a.Linear.M01 * m.M12,
+
+                a.Linear.M10 * m.M00 + a.Linear.M11 * m.M10, 
+                a.Linear.M10 * m.M01 + a.Linear.M11 * m.M11,
+                a.Trans.Y + a.Linear.M10 * m.M02 + a.Linear.M11 * m.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M23f"/> and a <see cref="Affine2f"/> (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f operator *(M23f m, Affine2f a)
+        {
+            return new M23f(
+                m.M00 * a.Linear.M00 + m.M01 * a.Linear.M10, 
+                m.M00 * a.Linear.M01 + m.M01 * a.Linear.M11,
+                m.M00 * a.Trans.X + m.M01 * a.Trans.Y + m.M02,
+
+                m.M10 * a.Linear.M00 + m.M11 * a.Linear.M10, 
+                m.M10 * a.Linear.M01 + m.M11 * a.Linear.M11,
+                m.M10 * a.Trans.X + m.M11 * a.Trans.Y + m.M12);
+        }
 
         /// <summary>
         /// Multiplies a <see cref="Affine2f"/> and a <see cref="Euclidean2f"/>.
@@ -736,7 +770,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Affine3f"/> and a <see cref="M44f"/>.
+        /// Multiplies a <see cref="Affine3f"/> (as a 4x4 matrix) and a <see cref="M44f"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -762,7 +796,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="M44f"/> and a <see cref="Affine3f"/>.
+        /// Multiplies a <see cref="M44f"/> and a <see cref="Affine3f"/> (as a 4x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -791,7 +825,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Affine3f"/> and a <see cref="M33f"/>.
+        /// Multiplies a <see cref="Affine3f"/> (as a 3x4 matrix) and a <see cref="M33f"/> (as a 4x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -799,12 +833,60 @@ namespace Aardvark.Base
             => new M34f(a.Linear * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M33f"/> and a <see cref="Affine3f"/>.
+        /// Multiplies a <see cref="M33f"/> and a <see cref="Affine3f"/> (as a 3x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator *(M33f m, Affine3f a)
             => new M34f(m * a.Linear, m * a.Trans);
+
+        /// <summary>
+        /// Multiplies a <see cref="Affine3f"/> (as a 3x4 matrix) and a <see cref="M34f"/> (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(Affine3f a, M34f m)
+        {
+            return new M34f(
+                a.Linear.M00 * m.M00 + a.Linear.M01 * m.M10 + a.Linear.M02 * m.M20, 
+                a.Linear.M00 * m.M01 + a.Linear.M01 * m.M11 + a.Linear.M02 * m.M21, 
+                a.Linear.M00 * m.M02 + a.Linear.M01 * m.M12 + a.Linear.M02 * m.M22,
+                a.Trans.X + a.Linear.M00 * m.M03 + a.Linear.M01 * m.M13 + a.Linear.M02 * m.M23,
+
+                a.Linear.M10 * m.M00 + a.Linear.M11 * m.M10 + a.Linear.M12 * m.M20, 
+                a.Linear.M10 * m.M01 + a.Linear.M11 * m.M11 + a.Linear.M12 * m.M21, 
+                a.Linear.M10 * m.M02 + a.Linear.M11 * m.M12 + a.Linear.M12 * m.M22,
+                a.Trans.Y + a.Linear.M10 * m.M03 + a.Linear.M11 * m.M13 + a.Linear.M12 * m.M23,
+
+                a.Linear.M20 * m.M00 + a.Linear.M21 * m.M10 + a.Linear.M22 * m.M20, 
+                a.Linear.M20 * m.M01 + a.Linear.M21 * m.M11 + a.Linear.M22 * m.M21, 
+                a.Linear.M20 * m.M02 + a.Linear.M21 * m.M12 + a.Linear.M22 * m.M22,
+                a.Trans.Z + a.Linear.M20 * m.M03 + a.Linear.M21 * m.M13 + a.Linear.M22 * m.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34f"/> and a <see cref="Affine3f"/> (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(M34f m, Affine3f a)
+        {
+            return new M34f(
+                m.M00 * a.Linear.M00 + m.M01 * a.Linear.M10 + m.M02 * a.Linear.M20, 
+                m.M00 * a.Linear.M01 + m.M01 * a.Linear.M11 + m.M02 * a.Linear.M21, 
+                m.M00 * a.Linear.M02 + m.M01 * a.Linear.M12 + m.M02 * a.Linear.M22,
+                m.M00 * a.Trans.X + m.M01 * a.Trans.Y + m.M02 * a.Trans.Z + m.M03,
+
+                m.M10 * a.Linear.M00 + m.M11 * a.Linear.M10 + m.M12 * a.Linear.M20, 
+                m.M10 * a.Linear.M01 + m.M11 * a.Linear.M11 + m.M12 * a.Linear.M21, 
+                m.M10 * a.Linear.M02 + m.M11 * a.Linear.M12 + m.M12 * a.Linear.M22,
+                m.M10 * a.Trans.X + m.M11 * a.Trans.Y + m.M12 * a.Trans.Z + m.M13,
+
+                m.M20 * a.Linear.M00 + m.M21 * a.Linear.M10 + m.M22 * a.Linear.M20, 
+                m.M20 * a.Linear.M01 + m.M21 * a.Linear.M11 + m.M22 * a.Linear.M21, 
+                m.M20 * a.Linear.M02 + m.M21 * a.Linear.M12 + m.M22 * a.Linear.M22,
+                m.M20 * a.Trans.X + m.M21 * a.Trans.Y + m.M22 * a.Trans.Z + m.M23);
+        }
 
         /// <summary>
         /// Multiplies a <see cref="Affine3f"/> and a <see cref="Euclidean3f"/>.
@@ -1388,7 +1470,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Affine2d"/> and a <see cref="M33d"/>.
+        /// Multiplies a <see cref="Affine2d"/> (as a 3x3 matrix) and a <see cref="M33d"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1407,7 +1489,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="M33d"/> and a <see cref="Affine2d"/>.
+        /// Multiplies a <see cref="M33d"/> and a <see cref="Affine2d"/> (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1428,7 +1510,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Affine2d"/> and a <see cref="M22d"/>.
+        /// Multiplies a <see cref="Affine2d"/> (as a 2x3 matrix) and a <see cref="M22d"/> (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1436,12 +1518,46 @@ namespace Aardvark.Base
             => new M23d(a.Linear * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M22d"/> and a <see cref="Affine2d"/>.
+        /// Multiplies a <see cref="M22d"/> and a <see cref="Affine2d"/> (as a 2x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator *(M22d m, Affine2d a)
             => new M23d(m * a.Linear, m * a.Trans);
+
+        /// <summary>
+        /// Multiplies a <see cref="Affine2d"/> (as a 2x3 matrix) and a <see cref="M23d"/> (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d operator *(Affine2d a, M23d m)
+        {
+            return new M23d(
+                a.Linear.M00 * m.M00 + a.Linear.M01 * m.M10, 
+                a.Linear.M00 * m.M01 + a.Linear.M01 * m.M11,
+                a.Trans.X + a.Linear.M00 * m.M02 + a.Linear.M01 * m.M12,
+
+                a.Linear.M10 * m.M00 + a.Linear.M11 * m.M10, 
+                a.Linear.M10 * m.M01 + a.Linear.M11 * m.M11,
+                a.Trans.Y + a.Linear.M10 * m.M02 + a.Linear.M11 * m.M12);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M23d"/> and a <see cref="Affine2d"/> (as a 3x3 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d operator *(M23d m, Affine2d a)
+        {
+            return new M23d(
+                m.M00 * a.Linear.M00 + m.M01 * a.Linear.M10, 
+                m.M00 * a.Linear.M01 + m.M01 * a.Linear.M11,
+                m.M00 * a.Trans.X + m.M01 * a.Trans.Y + m.M02,
+
+                m.M10 * a.Linear.M00 + m.M11 * a.Linear.M10, 
+                m.M10 * a.Linear.M01 + m.M11 * a.Linear.M11,
+                m.M10 * a.Trans.X + m.M11 * a.Trans.Y + m.M12);
+        }
 
         /// <summary>
         /// Multiplies a <see cref="Affine2d"/> and a <see cref="Euclidean2d"/>.
@@ -1974,7 +2090,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Affine3d"/> and a <see cref="M44d"/>.
+        /// Multiplies a <see cref="Affine3d"/> (as a 4x4 matrix) and a <see cref="M44d"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2000,7 +2116,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="M44d"/> and a <see cref="Affine3d"/>.
+        /// Multiplies a <see cref="M44d"/> and a <see cref="Affine3d"/> (as a 4x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2029,7 +2145,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="Affine3d"/> and a <see cref="M33d"/>.
+        /// Multiplies a <see cref="Affine3d"/> (as a 3x4 matrix) and a <see cref="M33d"/> (as a 4x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2037,12 +2153,60 @@ namespace Aardvark.Base
             => new M34d(a.Linear * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="M33d"/> and a <see cref="Affine3d"/>.
+        /// Multiplies a <see cref="M33d"/> and a <see cref="Affine3d"/> (as a 3x4 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator *(M33d m, Affine3d a)
             => new M34d(m * a.Linear, m * a.Trans);
+
+        /// <summary>
+        /// Multiplies a <see cref="Affine3d"/> (as a 3x4 matrix) and a <see cref="M34d"/> (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(Affine3d a, M34d m)
+        {
+            return new M34d(
+                a.Linear.M00 * m.M00 + a.Linear.M01 * m.M10 + a.Linear.M02 * m.M20, 
+                a.Linear.M00 * m.M01 + a.Linear.M01 * m.M11 + a.Linear.M02 * m.M21, 
+                a.Linear.M00 * m.M02 + a.Linear.M01 * m.M12 + a.Linear.M02 * m.M22,
+                a.Trans.X + a.Linear.M00 * m.M03 + a.Linear.M01 * m.M13 + a.Linear.M02 * m.M23,
+
+                a.Linear.M10 * m.M00 + a.Linear.M11 * m.M10 + a.Linear.M12 * m.M20, 
+                a.Linear.M10 * m.M01 + a.Linear.M11 * m.M11 + a.Linear.M12 * m.M21, 
+                a.Linear.M10 * m.M02 + a.Linear.M11 * m.M12 + a.Linear.M12 * m.M22,
+                a.Trans.Y + a.Linear.M10 * m.M03 + a.Linear.M11 * m.M13 + a.Linear.M12 * m.M23,
+
+                a.Linear.M20 * m.M00 + a.Linear.M21 * m.M10 + a.Linear.M22 * m.M20, 
+                a.Linear.M20 * m.M01 + a.Linear.M21 * m.M11 + a.Linear.M22 * m.M21, 
+                a.Linear.M20 * m.M02 + a.Linear.M21 * m.M12 + a.Linear.M22 * m.M22,
+                a.Trans.Z + a.Linear.M20 * m.M03 + a.Linear.M21 * m.M13 + a.Linear.M22 * m.M23);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34d"/> and a <see cref="Affine3d"/> (as a 4x4 matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(M34d m, Affine3d a)
+        {
+            return new M34d(
+                m.M00 * a.Linear.M00 + m.M01 * a.Linear.M10 + m.M02 * a.Linear.M20, 
+                m.M00 * a.Linear.M01 + m.M01 * a.Linear.M11 + m.M02 * a.Linear.M21, 
+                m.M00 * a.Linear.M02 + m.M01 * a.Linear.M12 + m.M02 * a.Linear.M22,
+                m.M00 * a.Trans.X + m.M01 * a.Trans.Y + m.M02 * a.Trans.Z + m.M03,
+
+                m.M10 * a.Linear.M00 + m.M11 * a.Linear.M10 + m.M12 * a.Linear.M20, 
+                m.M10 * a.Linear.M01 + m.M11 * a.Linear.M11 + m.M12 * a.Linear.M21, 
+                m.M10 * a.Linear.M02 + m.M11 * a.Linear.M12 + m.M12 * a.Linear.M22,
+                m.M10 * a.Trans.X + m.M11 * a.Trans.Y + m.M12 * a.Trans.Z + m.M13,
+
+                m.M20 * a.Linear.M00 + m.M21 * a.Linear.M10 + m.M22 * a.Linear.M20, 
+                m.M20 * a.Linear.M01 + m.M21 * a.Linear.M11 + m.M22 * a.Linear.M21, 
+                m.M20 * a.Linear.M02 + m.M21 * a.Linear.M12 + m.M22 * a.Linear.M22,
+                m.M20 * a.Trans.X + m.M21 * a.Trans.Y + m.M22 * a.Trans.Z + m.M23);
+        }
 
         /// <summary>
         /// Multiplies a <see cref="Affine3d"/> and a <see cref="Euclidean3d"/>.

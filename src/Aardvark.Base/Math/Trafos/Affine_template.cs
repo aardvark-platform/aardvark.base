@@ -181,7 +181,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="__type__"/> and a <see cref="__mmmt__"/>.
+        /// Multiplies a <see cref="__type__"/> (as a __m__x__m__ matrix) and a <see cref="__mmmt__"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -196,7 +196,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="__mmmt__"/> and a <see cref="__type__"/>.
+        /// Multiplies a <see cref="__mmmt__"/> and a <see cref="__type__"/> (as a __m__x__m__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -210,7 +210,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="__type__"/> and a <see cref="__mnnt__"/>.
+        /// Multiplies a <see cref="__type__"/> (as a __n__x__m__ matrix) and a <see cref="__mnnt__"/> (as a __m__x__m__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -218,12 +218,39 @@ namespace Aardvark.Base
             => new __mnmt__(a.Linear * m, a.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="__mnnt__"/> and a <see cref="__type__"/>.
+        /// Multiplies a <see cref="__mnnt__"/> and a <see cref="__type__"/> (as a __n__x__m__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __mnmt__ operator *(__mnnt__ m, __type__ a)
             => new __mnmt__(m * a.Linear, m * a.Trans);
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> (as a __n__x__m__ matrix) and a <see cref="__mnmt__"/> (as a __m__x__m__ matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mnmt__ operator *(__type__ a, __mnmt__ m)
+        {
+            return new __mnmt__(/*# nfields.ForEach((fi, i) => { nfields.ForEach((fj, j) => { */
+                /*# n.ForEach(k => {
+                */a.Linear.M__i____k__ * m.M__k____j__/*# }, add); }, comma);*/,
+                a.Trans.__fi__ + /*# n.ForEach(k => {*/a.Linear.M__i____k__ * m.M__k____n__/*# }, add); }, commaln);*/);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__mnmt__"/> and a <see cref="__type__"/> (as a __m__x__m__ matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mnmt__ operator *(__mnmt__ m, __type__ a)
+        {
+            return new __mnmt__(/*# nfields.ForEach((fi, i) => { nfields.ForEach((fj, j) => { */
+                /*# nfields.ForEach((fk, k) => {
+                */m.M__i____k__ * a.Linear.M__k____j__/*# }, add); }, comma);*/,
+                /*# nfields.ForEach((fk, k) => {
+                */m.M__i____k__ * a.Trans.__fk__/*# }, add);*/ + m.M__i____n__/*# }, commaln);*/);
+        }
 
         /// <summary>
         /// Multiplies a <see cref="__type__"/> and a <see cref="__euclideannt__"/>.

@@ -73,6 +73,56 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public static void Multiplication2x3Test()
+        {
+            TrafoTesting.GenericTest(rnd =>
+            {
+                var r1 = TrafoTesting.GetRandomRot2(rnd);
+                var r2 = TrafoTesting.GetRandomRot2(rnd);
+                var r = r1 * r2;
+                var rm = (M23d)r1 * r2;
+                var mr = r1 * (M23d)r2;
+
+                {
+                    var p = rnd.UniformV2d() * rnd.UniformInt(1000);
+                    var res = r.Transform(p);
+                    var res2 = rm.TransformPos(p);
+                    var res3 = mr.TransformPos(p);
+
+                    TrafoTesting.AreEqual(res, res2);
+                    TrafoTesting.AreEqual(res, res3);
+                }
+            });
+        }
+
+        [Test]
+        public static void MultiplicationFull2x3Test()
+        {
+            TrafoTesting.GenericTest(rnd =>
+            {
+                var m = TrafoTesting.GetRandom2x3(rnd);
+                var r = TrafoTesting.GetRandomRot2(rnd);
+
+                var mr = m * r;
+                var rm = r * m;
+
+                var mr_ref = m * (M33d)r;
+                var rm_ref = (M23d)r * (M33d)m;
+
+                {
+                    var p = rnd.UniformV2d() * rnd.UniformInt(1000);
+                    var res_mr = mr.TransformPos(p);
+                    var res_mr_ref = mr_ref.TransformPos(p);
+                    var res_rm = rm.TransformPos(p);
+                    var res_rm_ref = rm_ref.TransformPos(p);
+
+                    TrafoTesting.AreEqual(res_mr, res_mr_ref);
+                    TrafoTesting.AreEqual(res_rm, res_rm_ref);
+                }
+            });
+        }
+
+        [Test]
         public static void Multiplication3x3Test()
         {
             TrafoTesting.GenericTest(rnd =>

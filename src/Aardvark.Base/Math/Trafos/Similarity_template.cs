@@ -207,7 +207,35 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="__type__"/> and a <see cref="__mnnt__"/>.
+        /// Multiplies a <see cref="__type__"/> transformation (as a __n__x__m__ matrix) with a <see cref="__mnmt__"/> (as a __m__x__m__ matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mnmt__ operator *(__type__ s, __mnmt__ m)
+        {
+            var t = (__mnmt__)s;
+            return new __mnmt__(/*# n.ForEach(i => { m.ForEach(j => { */
+                /*# n.ForEach(k => {
+                */t.M__i____k__ * m.M__k____j__/*# }, add);
+                 if (j == n) {*/ + t.M__i____n__/*# } }, comma); }, commaln);*/);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__mnmt__"/> with a <see cref="__type__"/> transformation (as a __m__x__m__ matrix).
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mnmt__ operator *(__mnmt__ m, __type__ s)
+        {
+            var t = (__mnmt__)s;
+            return new __mnmt__(/*# n.ForEach(i => { m.ForEach(j => { */
+                /*# n.ForEach(k => {
+                */m.M__i____k__ * t.M__k____j__/*# }, add);
+                 if (j == n) {*/ + m.M__i____n__/*# } }, comma); }, commaln);*/);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="__type__"/> (as a __n__x__m__ matrix) and a <see cref="__mnnt__"/> (as a __m__x__m__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -215,7 +243,7 @@ namespace Aardvark.Base
             => new __mnmt__(s.Rot * m * s.Scale, s.Trans);
 
         /// <summary>
-        /// Multiplies a <see cref="__mnnt__"/> and a <see cref="__type__"/>.
+        /// Multiplies a <see cref="__mnnt__"/> and a <see cref="__type__"/> (as a __n__x__m__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

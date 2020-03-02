@@ -237,7 +237,7 @@ namespace Aardvark.Base
         #region Rot / Matrix Multiplication
 
         /// <summary>
-        /// Multiplies a <see cref="Rot3f"/> transformation with a <see cref="M33f"/>.
+        /// Multiplies a <see cref="Rot3f"/> transformation (as a 3x3 matrix) with a <see cref="M33f"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -247,13 +247,105 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="M33f"/> with a <see cref="Rot3f"/> transformation.
+        /// Multiplies a <see cref="M33f"/> with a <see cref="Rot3f"/> transformation (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator *(M33f m, Rot3f rot)
         {
             return m * (M33f)rot;
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot3f"/> transformation (as a 4x4 matrix) with a <see cref="M44f"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f operator *(Rot3f rot, M44f m)
+        {
+            var r = (M33f)rot;
+            return new M44f(
+                r.M00 * m.M00 + r.M01 * m.M10 + r.M02 * m.M20, 
+                r.M00 * m.M01 + r.M01 * m.M11 + r.M02 * m.M21, 
+                r.M00 * m.M02 + r.M01 * m.M12 + r.M02 * m.M22, 
+                r.M00 * m.M03 + r.M01 * m.M13 + r.M02 * m.M23,
+
+                r.M10 * m.M00 + r.M11 * m.M10 + r.M12 * m.M20, 
+                r.M10 * m.M01 + r.M11 * m.M11 + r.M12 * m.M21, 
+                r.M10 * m.M02 + r.M11 * m.M12 + r.M12 * m.M22, 
+                r.M10 * m.M03 + r.M11 * m.M13 + r.M12 * m.M23,
+
+                r.M20 * m.M00 + r.M21 * m.M10 + r.M22 * m.M20, 
+                r.M20 * m.M01 + r.M21 * m.M11 + r.M22 * m.M21, 
+                r.M20 * m.M02 + r.M21 * m.M12 + r.M22 * m.M22, 
+                r.M20 * m.M03 + r.M21 * m.M13 + r.M22 * m.M23,
+
+                m.M30, m.M31, m.M32, m.M33);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M44f"/> with a <see cref="Rot3f"/> transformation (as a 4x4 matrix) .
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f operator *(M44f m, Rot3f rot)
+        {
+            var r = (M33f)rot;
+            return new M44f(
+                m.M00 * r.M00 + m.M01 * r.M10 + m.M02 * r.M20, 
+                m.M00 * r.M01 + m.M01 * r.M11 + m.M02 * r.M21, 
+                m.M00 * r.M02 + m.M01 * r.M12 + m.M02 * r.M22,
+                m.M03,
+
+                m.M10 * r.M00 + m.M11 * r.M10 + m.M12 * r.M20, 
+                m.M10 * r.M01 + m.M11 * r.M11 + m.M12 * r.M21, 
+                m.M10 * r.M02 + m.M11 * r.M12 + m.M12 * r.M22,
+                m.M13,
+
+                m.M20 * r.M00 + m.M21 * r.M10 + m.M22 * r.M20, 
+                m.M20 * r.M01 + m.M21 * r.M11 + m.M22 * r.M21, 
+                m.M20 * r.M02 + m.M21 * r.M12 + m.M22 * r.M22,
+                m.M23,
+
+                m.M30 * r.M00 + m.M31 * r.M10 + m.M32 * r.M20, 
+                m.M30 * r.M01 + m.M31 * r.M11 + m.M32 * r.M21, 
+                m.M30 * r.M02 + m.M31 * r.M12 + m.M32 * r.M22,
+                m.M33);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot3f"/> transformation (as a 3x3 matrix) with a <see cref="M34f"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(Rot3f rot, M34f m)
+        {
+            return (M33f)rot * m;
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34f"/> with a <see cref="Rot3f"/> transformation (as a 4x4 matrix) .
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f operator *(M34f m, Rot3f rot)
+        {
+            var r = (M33f)rot;
+            return new M34f(
+                m.M00 * r.M00 + m.M01 * r.M10 + m.M02 * r.M20, 
+                m.M00 * r.M01 + m.M01 * r.M11 + m.M02 * r.M21, 
+                m.M00 * r.M02 + m.M01 * r.M12 + m.M02 * r.M22,
+                m.M03,
+
+                m.M10 * r.M00 + m.M11 * r.M10 + m.M12 * r.M20, 
+                m.M10 * r.M01 + m.M11 * r.M11 + m.M12 * r.M21, 
+                m.M10 * r.M02 + m.M11 * r.M12 + m.M12 * r.M22,
+                m.M13,
+
+                m.M20 * r.M00 + m.M21 * r.M10 + m.M22 * r.M20, 
+                m.M20 * r.M01 + m.M21 * r.M11 + m.M22 * r.M21, 
+                m.M20 * r.M02 + m.M21 * r.M12 + m.M22 * r.M22,
+                m.M23);
         }
 
         #endregion
@@ -1324,7 +1416,7 @@ namespace Aardvark.Base
         #region Rot / Matrix Multiplication
 
         /// <summary>
-        /// Multiplies a <see cref="Rot3d"/> transformation with a <see cref="M33d"/>.
+        /// Multiplies a <see cref="Rot3d"/> transformation (as a 3x3 matrix) with a <see cref="M33d"/>.
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1334,13 +1426,105 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Multiplies a <see cref="M33d"/> with a <see cref="Rot3d"/> transformation.
+        /// Multiplies a <see cref="M33d"/> with a <see cref="Rot3d"/> transformation (as a 3x3 matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator *(M33d m, Rot3d rot)
         {
             return m * (M33d)rot;
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot3d"/> transformation (as a 4x4 matrix) with a <see cref="M44d"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d operator *(Rot3d rot, M44d m)
+        {
+            var r = (M33d)rot;
+            return new M44d(
+                r.M00 * m.M00 + r.M01 * m.M10 + r.M02 * m.M20, 
+                r.M00 * m.M01 + r.M01 * m.M11 + r.M02 * m.M21, 
+                r.M00 * m.M02 + r.M01 * m.M12 + r.M02 * m.M22, 
+                r.M00 * m.M03 + r.M01 * m.M13 + r.M02 * m.M23,
+
+                r.M10 * m.M00 + r.M11 * m.M10 + r.M12 * m.M20, 
+                r.M10 * m.M01 + r.M11 * m.M11 + r.M12 * m.M21, 
+                r.M10 * m.M02 + r.M11 * m.M12 + r.M12 * m.M22, 
+                r.M10 * m.M03 + r.M11 * m.M13 + r.M12 * m.M23,
+
+                r.M20 * m.M00 + r.M21 * m.M10 + r.M22 * m.M20, 
+                r.M20 * m.M01 + r.M21 * m.M11 + r.M22 * m.M21, 
+                r.M20 * m.M02 + r.M21 * m.M12 + r.M22 * m.M22, 
+                r.M20 * m.M03 + r.M21 * m.M13 + r.M22 * m.M23,
+
+                m.M30, m.M31, m.M32, m.M33);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M44d"/> with a <see cref="Rot3d"/> transformation (as a 4x4 matrix) .
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d operator *(M44d m, Rot3d rot)
+        {
+            var r = (M33d)rot;
+            return new M44d(
+                m.M00 * r.M00 + m.M01 * r.M10 + m.M02 * r.M20, 
+                m.M00 * r.M01 + m.M01 * r.M11 + m.M02 * r.M21, 
+                m.M00 * r.M02 + m.M01 * r.M12 + m.M02 * r.M22,
+                m.M03,
+
+                m.M10 * r.M00 + m.M11 * r.M10 + m.M12 * r.M20, 
+                m.M10 * r.M01 + m.M11 * r.M11 + m.M12 * r.M21, 
+                m.M10 * r.M02 + m.M11 * r.M12 + m.M12 * r.M22,
+                m.M13,
+
+                m.M20 * r.M00 + m.M21 * r.M10 + m.M22 * r.M20, 
+                m.M20 * r.M01 + m.M21 * r.M11 + m.M22 * r.M21, 
+                m.M20 * r.M02 + m.M21 * r.M12 + m.M22 * r.M22,
+                m.M23,
+
+                m.M30 * r.M00 + m.M31 * r.M10 + m.M32 * r.M20, 
+                m.M30 * r.M01 + m.M31 * r.M11 + m.M32 * r.M21, 
+                m.M30 * r.M02 + m.M31 * r.M12 + m.M32 * r.M22,
+                m.M33);
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="Rot3d"/> transformation (as a 3x3 matrix) with a <see cref="M34d"/>.
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(Rot3d rot, M34d m)
+        {
+            return (M33d)rot * m;
+        }
+
+        /// <summary>
+        /// Multiplies a <see cref="M34d"/> with a <see cref="Rot3d"/> transformation (as a 4x4 matrix) .
+        /// Attention: Multiplication is NOT commutative!
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d operator *(M34d m, Rot3d rot)
+        {
+            var r = (M33d)rot;
+            return new M34d(
+                m.M00 * r.M00 + m.M01 * r.M10 + m.M02 * r.M20, 
+                m.M00 * r.M01 + m.M01 * r.M11 + m.M02 * r.M21, 
+                m.M00 * r.M02 + m.M01 * r.M12 + m.M02 * r.M22,
+                m.M03,
+
+                m.M10 * r.M00 + m.M11 * r.M10 + m.M12 * r.M20, 
+                m.M10 * r.M01 + m.M11 * r.M11 + m.M12 * r.M21, 
+                m.M10 * r.M02 + m.M11 * r.M12 + m.M12 * r.M22,
+                m.M13,
+
+                m.M20 * r.M00 + m.M21 * r.M10 + m.M22 * r.M20, 
+                m.M20 * r.M01 + m.M21 * r.M11 + m.M22 * r.M21, 
+                m.M20 * r.M02 + m.M21 * r.M12 + m.M22 * r.M22,
+                m.M23);
         }
 
         #endregion

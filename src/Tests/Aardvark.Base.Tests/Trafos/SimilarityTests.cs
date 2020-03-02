@@ -65,75 +65,32 @@ namespace Aardvark.Tests
 
         [Test]
         public static void Multiplication3x3Test()
-            => TrafoTesting.GenericTest(rnd =>
-            {
-                var s1 = TrafoTesting.GetRandomSimilarity(rnd, false);
-                var s2 = TrafoTesting.GetRandomSimilarity(rnd, false);
-                var s = s1 * s2;
-                var sm = (M33d)s1 * s2;
-                var ms = s1 * (M33d)s2;
-                var m = (M33d)s1 * (M33d)s2;
+            => TrafoTesting.GenericMatrixMultiplicationTest<Similarity3d, M33d, M34d>(
+                rnd => TrafoTesting.GetRandomSimilarity(rnd, false),
+                Similarity.TransformPos,
+                Mat.Transform,
+                Mat.TransformPos,
+                (a, v) => (a * new V4d(v, 1)).XYZ,
+                (m, v) => m * v,
+                (m, v) => m * new V4d(v, 1));
 
-                {
-                    var p = new V4d(rnd.UniformV3d() * rnd.UniformInt(1000), 1);
-                    var res = s.Transform(p).XYZ;
-                    var res2 = m.Transform(p).XYZ;
-                    var res3 = sm.Transform(p);
-                    var res4 = ms.Transform(p);
-
-                    TrafoTesting.AreEqual(res, res2);
-                    TrafoTesting.AreEqual(res, res3);
-                    TrafoTesting.AreEqual(res, res4);
-                }
-
-                {
-                    var p = new V4d(rnd.UniformV3d() * rnd.UniformInt(1000), 1);
-                    var res = (s * p).XYZ;
-                    var res2 = m * p.XYZ;
-                    var res3 = sm * p;
-                    var res4 = ms * p;
-
-                    TrafoTesting.AreEqual(res, res2);
-                    TrafoTesting.AreEqual(res, res3);
-                    TrafoTesting.AreEqual(res, res4);
-                }
-            });
+        [Test]
+        public static void Multiplication3x4Test()
+            => TrafoTesting.Generic3x4MultiplicationTest(
+                TrafoTesting.GetRandomSimilarity,
+                Similarity.TransformPos,
+                (a, v) => (a * new V4d(v, 1)).XYZ);
 
         [Test]
         public static void Multiplication4x4Test()
-            => TrafoTesting.GenericTest(rnd =>
-            {
-                var s1 = TrafoTesting.GetRandomSimilarity(rnd);
-                var s2 = TrafoTesting.GetRandomSimilarity(rnd);
-                var s = s1 * s2;
-                var sm = (M44d)s1 * s2;
-                var ms = s1 * (M44d)s2;
-                var m = (M44d)s1 * (M44d)s2;
+            => TrafoTesting.Generic4x4MultiplicationTest(
+                TrafoTesting.GetRandomSimilarity,
+                Similarity.TransformPos,
+                (a, v) => (a * new V4d(v, 1)).XYZ);
 
-                {
-                    var p = rnd.UniformV3d() * rnd.UniformInt(1000);
-                    var res = s.TransformPos(p);
-                    var res2 = m.TransformPos(p);
-                    var res3 = sm.TransformPos(p);
-                    var res4 = ms.TransformPos(p);
-
-                    TrafoTesting.AreEqual(res, res2);
-                    TrafoTesting.AreEqual(res, res3);
-                    TrafoTesting.AreEqual(res, res4);
-                }
-
-                {
-                    var p = rnd.UniformV4d() * rnd.UniformInt(1000);
-                    var res = s * p;
-                    var res2 = m * p;
-                    var res3 = sm * p;
-                    var res4 = ms * p;
-
-                    TrafoTesting.AreEqual(res, res2);
-                    TrafoTesting.AreEqual(res, res3);
-                    TrafoTesting.AreEqual(res, res4);
-                }
-            });
+        [Test]
+        public static void MultiplicationFull4x4Test()
+            => TrafoTesting.GenericFull4x4MultiplicationTest(TrafoTesting.GetRandomSimilarity);
 
         [Test]
         public static void ConsistentWithMatrixRotationShiftAndScaleTest()

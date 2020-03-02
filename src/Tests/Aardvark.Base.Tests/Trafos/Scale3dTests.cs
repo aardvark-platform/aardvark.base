@@ -61,82 +61,33 @@ namespace Aardvark.Tests
         }
 
         [Test]
-        public static void Multiplication2x2Test()
-        {
-            TrafoTesting.GenericTest(rnd =>
-            {
-                var s1 = TrafoTesting.GetRandomScale3(rnd);
-                var s2 = TrafoTesting.GetRandomScale3(rnd);
-                var r = s1 * s2;
-                var sm = (M22d)s1 * s2;
-                var ms = s1 * (M22d)s2;
-                var m = (M22d)s1 * (M22d)s2;
-
-                {
-                    var p = rnd.UniformV2d() * rnd.UniformInt(1000);
-                    var res = r.Transform(new V3d(p, 1)).XY;
-                    var res2 = m.Transform(p);
-                    var res3 = sm.Transform(p);
-                    var res4 = ms.Transform(p);
-
-                    TrafoTesting.AreEqual(res, res2);
-                    TrafoTesting.AreEqual(res, res3);
-                    TrafoTesting.AreEqual(res, res4);
-                }
-            });
-        }
+        public static void Multiplication3x3Test()
+            => TrafoTesting.Generic3x3MultiplicationTest(
+                TrafoTesting.GetRandomScale3,
+                Scale.Transform,
+                (r, v) => r * v);
 
         [Test]
-        public static void Multiplication3x3Test()
-        {
-            TrafoTesting.GenericTest(rnd =>
-            {
-                var r1 = TrafoTesting.GetRandomScale3(rnd);
-                var r2 = TrafoTesting.GetRandomScale3(rnd);
-                var r = r1 * r2;
-                var rm = (M33d)r1 * r2;
-                var mr = r1 * (M33d)r2;
-                var m = (M33d)r1 * (M33d)r2;
+        public static void Multiplication3x4Test()
+            => TrafoTesting.Generic3x4MultiplicationTest(
+                TrafoTesting.GetRandomScale3,
+                Scale.Transform,
+                (r, v) => r * v);
 
-                {
-                    var p = rnd.UniformV3d() * rnd.UniformInt(1000);
-                    var res = r.Transform(p);
-                    var res2 = m.Transform(p);
-                    var res3 = rm.Transform(p);
-                    var res4 = mr.Transform(p);
-
-                    TrafoTesting.AreEqual(res, res2);
-                    TrafoTesting.AreEqual(res, res3);
-                    TrafoTesting.AreEqual(res, res4);
-                }
-            });
-        }
+        [Test]
+        public static void MultiplicationFull3x4Test()
+            => TrafoTesting.GenericFull3x4MultiplicationTest(TrafoTesting.GetRandomScale3);
 
         [Test]
         public static void Multiplication4x4Test()
-        {
-            TrafoTesting.GenericTest(rnd =>
-            {
-                var r1 = TrafoTesting.GetRandomScale3(rnd);
-                var r2 = TrafoTesting.GetRandomScale3(rnd);
-                var r = r1 * r2;
-                var rm = (M44d)r1 * r2;
-                var mr = r1 * (M44d)r2;
-                var m = (M44d)r1 * (M44d)r2;
+            => TrafoTesting.Generic4x4MultiplicationTest(
+                TrafoTesting.GetRandomScale3,
+                Scale.Transform,
+                (r, v) => r * v);
 
-                {
-                    var p = rnd.UniformV3d() * rnd.UniformInt(1000);
-                    var res = r.Transform(p);
-                    var res2 = m.TransformPos(p);
-                    var res3 = rm.TransformPos(p);
-                    var res4 = mr.TransformPos(p);
-
-                    TrafoTesting.AreEqual(res, res2);
-                    TrafoTesting.AreEqual(res, res3);
-                    TrafoTesting.AreEqual(res, res4);
-                }
-            });
-        }
+        [Test]
+        public static void MultiplicationFull4x4Test()
+            => TrafoTesting.GenericFull3x4MultiplicationTest(TrafoTesting.GetRandomScale3);
 
         [Test]
         public static void MultiplicationScaleTest()

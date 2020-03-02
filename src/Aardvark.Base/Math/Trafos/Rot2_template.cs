@@ -124,8 +124,8 @@ namespace Aardvark.Base
 
         #region Rot / Matrix Multiplication
 
-        //# for (int n = 2; n <= 4; n++) {
-        //# for (int m = n; m <= (n+1) && m <= 4; m++) {
+        //# for (int n = 2; n <= 3; n++) {
+        //# for (int m = n; m <= (n+1) && m <= 3; m++) {
         //#     var mat = "M" + n + m + tc;
         //#     var nsub2 = n - 2;
         //#     var msub2 = m - 2;
@@ -147,9 +147,8 @@ namespace Aardvark.Base
                 /*# m.ForEach(j => { */m.M__ip2____j__/*# }, comma); }, comma); }*/);
         }
 
-        //# if (n == m) {
         /// <summary>
-        /// Multiplies a <see cref="__mat__"/> with a <see cref="__type__"/> transformation (as a __n__x__n__ matrix).
+        /// Multiplies a <see cref="__mat__"/> with a <see cref="__type__"/> transformation (as a __m__x__m__ matrix).
         /// Attention: Multiplication is NOT commutative!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -165,7 +164,6 @@ namespace Aardvark.Base
                 /*# msub2.ForEach(jj => { var jjp2 = jj + 2; */m.M__i____jjp2__/*# }, comma); } }, commaln);*/);
         }
 
-        //# }
         //# } }
         #endregion
 
