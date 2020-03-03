@@ -11,11 +11,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
-
-#if NETCOREAPP3_0
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
-#endif
 
 namespace Aardvark.Base
 {
@@ -573,7 +570,6 @@ namespace Aardvark.Base
 
         private static unsafe bool IsPlugin(string file)
         {
-#if NETCOREAPP3_0
             try
             {
                 using (var s = File.OpenRead(file))
@@ -662,47 +658,6 @@ namespace Aardvark.Base
                 Report.Warn("NO PLUGIN: {0}", file);
                 return false;
             }
-#else
-            try
-            {
-                var a = Assembly.LoadFrom(file);
-                var empty = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(a).IsEmpty();
-                if (!empty)
-                {
-                    Report.Line(5, "[GetPluginAssemblyPaths] found plugins in: {0}", file);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch(FileLoadException e)
-            {
-                Report.Line(5, "[GetPluginAssemblyPaths] IsPlugin({0}) failed.", file);
-                Report.Line(5, "[GetPluginAssemblyPaths] (FileLoad) Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
-                Report.Line(5, "[GetPluginAssemblyPaths] StackTrace (outer): {0}", e.StackTrace.ToString());
-                try {
-                    Report.Line(5, "[GetPluginAssemblyPaths] FusionLog: {0}", e.FusionLog);
-                    if (e.InnerException != null)
-                    {
-                        Report.Line(5, "[GetPluginAssemblyPaths] Inner message: {0}", e.InnerException.Message);
-                        Report.Line(5, "[GetPluginAssemblyPaths] Inner stackTrace: {0}", e.InnerException.StackTrace.ToString());
-                    }
-                } catch(Exception)
-                {
-                    Report.Line(5, "[GetPluginAssemblyPaths] could not print details for FileLoadException (most likely BadImageFormat)");
-                }
-                return false;
-            }
-            catch (Exception e)
-            {
-                Report.Line(5, "[GetPluginAssemblyPaths] IsPlugin({0}) failed.", file);
-                Report.Line(5, "[GetPluginAssemblyPaths] Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
-                Report.Line(5, "[GetPluginAssemblyPaths] {0}", e.StackTrace.ToString());
-                return false;
-            }
-#endif
         }
 
         public string[] GetPluginAssemblyPaths()
