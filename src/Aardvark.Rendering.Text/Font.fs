@@ -320,7 +320,7 @@ type CodePointStringExtensions private() =
 
         sb.ToString()
 
-type Glyph internal(g : Typography.OpenFont.Glyph, scale : float, advance : float, bearing : float, c : CodePoint) =
+type Glyph internal(g : Typography.OpenFont.Glyph, isValid : bool, scale : float, advance : float, bearing : float, c : CodePoint) =
     inherit Shape(Path.ofGlyph scale g)
 
     let widths = 
@@ -328,7 +328,7 @@ type Glyph internal(g : Typography.OpenFont.Glyph, scale : float, advance : floa
         V3d(bearing, width, advance - width - bearing)
         
     member x.CodePoint = c
-
+    member x.IsValid = isValid
     member x.Bounds = base.Path.bounds
 
     member x.Path = base.Path
@@ -393,7 +393,7 @@ type private FontImpl private(f : Typeface) =
                     let bearing = 
                         let a = f.GetHFrontSideBearingFromGlyphIndex(idx)
                         float a * scale
-                    Glyph(glyph, scale, advance, bearing, c)
+                    Glyph(glyph, idx > 0us, scale, advance, bearing, c)
             )
         )
 
