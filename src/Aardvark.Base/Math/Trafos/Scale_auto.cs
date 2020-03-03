@@ -362,6 +362,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="Scale2f"/> transformation from a scaling <see cref="M22f"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2f FromM22f(M22f m, float epsilon = (float)1e-6)
         {
             if (!(Fun.IsTiny(m.C0 * V2f.OI, epsilon) && Fun.IsTiny(m.C1 * V2f.IO, epsilon)))
@@ -375,6 +376,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2f FromM33f(M33f m, float epsilon = (float)1e-6)
         {
             if (!(Fun.IsTiny(m.C0.XY * V2f.OI, epsilon) && Fun.IsTiny(m.C1.XY * V2f.IO, epsilon)))
@@ -397,6 +399,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2f FromSimilarity2f(Similarity2f similarity, float epsilon = 1e-5f)
         {
             if (!similarity.Trans.IsTiny(epsilon))
@@ -413,6 +416,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2f FromAffine2f(Affine2f affine, float epsilon = 1e-5f)
             => FromM33f((M33f)affine, epsilon);
 
@@ -1029,6 +1033,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="Scale3f"/> transformation from a scaling <see cref="M33f"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3f FromM33f(M33f m, float epsilon = (float)1e-6)
         {
             if (!(Fun.IsTiny(m.C0 * V3f.OII, epsilon) && Fun.IsTiny(m.C1 * V3f.IOI, epsilon) && Fun.IsTiny(m.C2 * V3f.IIO, epsilon)))
@@ -1042,6 +1047,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3f FromM44f(M44f m, float epsilon = (float)1e-6)
         {
             if (!(Fun.IsTiny(m.C0.XYZ * V3f.OII, epsilon) && Fun.IsTiny(m.C1.XYZ * V3f.IOI, epsilon) && Fun.IsTiny(m.C2.XYZ * V3f.IIO, epsilon)))
@@ -1064,6 +1070,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3f FromSimilarity3f(Similarity3f similarity, float epsilon = 1e-5f)
         {
             if (!similarity.Trans.IsTiny(epsilon))
@@ -1080,6 +1087,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3f FromAffine3f(Affine3f affine, float epsilon = 1e-5f)
             => FromM44f((M44f)affine, epsilon);
 
@@ -1659,6 +1667,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="Scale2d"/> transformation from a scaling <see cref="M22d"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2d FromM22d(M22d m, double epsilon = (double)1e-6)
         {
             if (!(Fun.IsTiny(m.C0 * V2d.OI, epsilon) && Fun.IsTiny(m.C1 * V2d.IO, epsilon)))
@@ -1672,6 +1681,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2d FromM33d(M33d m, double epsilon = (double)1e-6)
         {
             if (!(Fun.IsTiny(m.C0.XY * V2d.OI, epsilon) && Fun.IsTiny(m.C1.XY * V2d.IO, epsilon)))
@@ -1694,6 +1704,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2d FromSimilarity2d(Similarity2d similarity, double epsilon = 1e-12)
         {
             if (!similarity.Trans.IsTiny(epsilon))
@@ -1710,6 +1721,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale2d FromAffine2d(Affine2d affine, double epsilon = 1e-12)
             => FromM33d((M33d)affine, epsilon);
 
@@ -2326,6 +2338,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="Scale3d"/> transformation from a scaling <see cref="M33d"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3d FromM33d(M33d m, double epsilon = (double)1e-6)
         {
             if (!(Fun.IsTiny(m.C0 * V3d.OII, epsilon) && Fun.IsTiny(m.C1 * V3d.IOI, epsilon) && Fun.IsTiny(m.C2 * V3d.IIO, epsilon)))
@@ -2339,6 +2352,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3d FromM44d(M44d m, double epsilon = (double)1e-6)
         {
             if (!(Fun.IsTiny(m.C0.XYZ * V3d.OII, epsilon) && Fun.IsTiny(m.C1.XYZ * V3d.IOI, epsilon) && Fun.IsTiny(m.C2.XYZ * V3d.IIO, epsilon)))
@@ -2361,6 +2375,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3d FromSimilarity3d(Similarity3d similarity, double epsilon = 1e-12)
         {
             if (!similarity.Trans.IsTiny(epsilon))
@@ -2377,6 +2392,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Scale3d FromAffine3d(Affine3d affine, double epsilon = 1e-12)
             => FromM44d((M44d)affine, epsilon);
 

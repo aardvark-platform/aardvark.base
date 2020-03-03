@@ -555,6 +555,7 @@ namespace Aardvark.Base
         /// Creates a rotation transformation which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotateInto(__vnt__ from, __vnt__ into)
             => new __type__(__mnnt__.RotateInto(from, into));
 
@@ -568,6 +569,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotationXInDegrees(__ftype__ angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
@@ -581,6 +583,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotationYInDegrees(__ftype__ angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
@@ -594,6 +597,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotationZInDegrees(__ftype__ angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -606,18 +610,21 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ ShearXY(__ftype__ factorX, __ftype__ factorY)
             => new __type__(__mnnt__.ShearXY(factorX, factorY));
 
         /// <summary>
         /// Creates a shear transformation along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ ShearXZ(__ftype__ factorX, __ftype__ factorZ)
             => new __type__(__mnnt__.ShearXZ(factorX, factorZ));
 
         /// <summary>
         /// Creates a shear transformation along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ ShearYZ(__ftype__ factorY, __ftype__ factorZ)
             => new __type__(__mnnt__.ShearYZ(factorY, factorZ));
 

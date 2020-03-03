@@ -367,6 +367,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean2f FromSimilarity2f(Similarity2f similarity, float epsilon = 1e-5f)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -380,6 +381,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean2f FromAffine2f(Affine2f affine, float epsilon = 1e-5f)
             => FromM33f((M33f)affine, epsilon);
 
@@ -1007,6 +1009,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3f FromSimilarity3f(Similarity3f similarity, float epsilon = 1e-5f)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -1020,6 +1023,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3f FromAffine3f(Affine3f affine, float epsilon = 1e-5f)
             => FromM44f((M44f)affine, epsilon);
 
@@ -1124,6 +1128,7 @@ namespace Aardvark.Base
         /// Creates a rotation transformation which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3f RotateInto(V3f from, V3f into)
             => new Euclidean3f(Rot3f.RotateInto(from, into));
 
@@ -1137,6 +1142,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3f RotationXInDegrees(float angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
@@ -1150,6 +1156,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3f RotationYInDegrees(float angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
@@ -1163,6 +1170,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3f RotationZInDegrees(float angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -1711,6 +1719,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean2d FromSimilarity2d(Similarity2d similarity, double epsilon = 1e-12)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -1724,6 +1733,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean2d FromAffine2d(Affine2d affine, double epsilon = 1e-12)
             => FromM33d((M33d)affine, epsilon);
 
@@ -2351,6 +2361,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3d FromSimilarity3d(Similarity3d similarity, double epsilon = 1e-12)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -2364,6 +2375,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a rotation and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3d FromAffine3d(Affine3d affine, double epsilon = 1e-12)
             => FromM44d((M44d)affine, epsilon);
 
@@ -2468,6 +2480,7 @@ namespace Aardvark.Base
         /// Creates a rotation transformation which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3d RotateInto(V3d from, V3d into)
             => new Euclidean3d(Rot3d.RotateInto(from, into));
 
@@ -2481,6 +2494,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3d RotationXInDegrees(double angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
@@ -2494,6 +2508,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3d RotationYInDegrees(double angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
@@ -2507,6 +2522,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Euclidean3d RotationZInDegrees(double angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 

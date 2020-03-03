@@ -12,10 +12,37 @@ namespace Aardvark.Tests
     public class TrafoTests : TestSuite
     {
         [Test]
+        public static void Comparison()
+            => TrafoTesting.GenericComparisonTest(TrafoTesting.GetRandomTrafo,
+                t => new Trafo3d(t.Forward + 1, t.Backward + 1));
+
+        [Test]
+        public static void InverseTest()
+            => TrafoTesting.GenericTest(rnd =>
+            {
+                var t = TrafoTesting.GetRandomTrafo(rnd, false);
+
+                var p = rnd.UniformV3d() * rnd.UniformInt(1000);
+                var q = t.Forward.TransformPos(p);
+
+                // Inverse property
+                var res = t.Inverse.Forward.TransformPos(q);
+
+                // Backward
+                var res2 = t.Backward.TransformPos(q);
+
+                TrafoTesting.AreEqual(p, res);
+                TrafoTesting.AreEqual(p, res2);
+            });
+
+        [Test]
+        public static void ToStringAndParse()
+            => TrafoTesting.GenericToStringAndParseTest(TrafoTesting.GetRandomTrafo, Trafo3d.Parse);
+
+        [Test]
         public void TrafoDecomposeCornerCasesTest()
         {
-            var rnd = new RandomSystem(1123);
-            for (int i = 0; i < 10000; i++)
+            TrafoTesting.GenericTest((rnd, i) =>
             {
                 var jitter = (i / 100) * 1e-15;
                 TestDecompose(Trafo3d.FromOrthoNormalBasis(V3d.XAxis, V3d.YAxis, V3d.ZAxis), Rot3d.Rotation(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
@@ -73,7 +100,7 @@ namespace Aardvark.Tests
                 TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.YAxis, -V3d.ZAxis, -V3d.XAxis), Rot3d.Rotation(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
                 TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.YAxis, -V3d.XAxis), Rot3d.Rotation(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
                 TestDecompose(Trafo3d.FromOrthoNormalBasis(-V3d.ZAxis, -V3d.XAxis, -V3d.YAxis), Rot3d.Rotation(rnd.UniformV3dDirection(), jitter * rnd.UniformDouble()));
-            }
+            });
         }
 
         void TestDecompose(Trafo3d trafo, Rot3d jitter)
@@ -103,15 +130,14 @@ namespace Aardvark.Tests
         [Test]
         public void TrafoDecomposeTest()
         {
-            var rnd = new RandomSystem(3);
-            for (int i = 0; i < 1000000; i ++)
+            TrafoTesting.GenericTest((rnd, i) =>
             {
                 var rot = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
                 var trans = rnd.UniformV3dFull() * 10 - 5;
                 var scale = rnd.UniformV3dFull() * 4 - 2;
 
                 TestDecompose(scale, rot, trans);
-            }
+            });
         }
 
         void TestDecompose(V3d scale, V3d rotation, V3d translation)
@@ -135,13 +161,11 @@ namespace Aardvark.Tests
         [Test]
         public void TrafoRotIntoTest()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < 500000; i++)
+            TrafoTesting.GenericTest((rnd, i) =>
             {
-                var rx = new V3d(rnd.NextDouble() * 1e-17, 0, 0) * (rnd.Next(100) >= 50 ? 1: -1);
-                var ry = new V3d(0, rnd.NextDouble() * 1e-17, 0) * (rnd.Next(100) >= 50 ? 1 : -1);
-                var rz = new V3d(0, 0, rnd.NextDouble() * 1e-17) * (rnd.Next(100) >= 50 ? 1 : -1);
+                var rx = new V3d(rnd.UniformDouble() * 1e-17, 0, 0) * (rnd.UniformDouble() > 0.5 ? 1 : -1);
+                var ry = new V3d(0, rnd.UniformDouble() * 1e-17, 0) * (rnd.UniformDouble() > 0.5 ? 1 : -1);
+                var rz = new V3d(0, 0, rnd.UniformDouble() * 1e-17) * (rnd.UniformDouble() > 0.5 ? 1 : -1);
 
                 // equal cases
                 var req = new[]
@@ -181,7 +205,7 @@ namespace Aardvark.Tests
                 };
                 foreach (var r in r90)
                     Assert.True(CheckForwardBackwardConsistency(r));
-            }
+            });
         }
         
         void ValidateTrafos(Trafo3d a, Trafo3d b)
@@ -239,8 +263,7 @@ namespace Aardvark.Tests
         [Test]
         public static void NormalFrame()
         {
-            var rnd = new RandomSystem(1337);
-            for (int i = 0; i < 1000000; i++)
+            TrafoTesting.GenericTest((rnd, i) =>
             {
                 var n = rnd.UniformV3d().Normalized;
 
@@ -253,7 +276,36 @@ namespace Aardvark.Tests
                 Assert.IsTrue(basis.C0.AngleBetween(basis.C1).ApproximateEquals(Constant.PiHalf, 1e-7));
                 Assert.IsTrue(basis.C0.AngleBetween(basis.C2).ApproximateEquals(Constant.PiHalf, 1e-7));
                 Assert.IsTrue(basis.C1.AngleBetween(basis.C2).ApproximateEquals(Constant.PiHalf, 1e-7));
-            }
+            });
+        }
+
+        [Test]
+        public static void OrthoNormalOrientation()
+        {
+            // Previous implementation
+            Func<Trafo3d, Trafo3d> reference = trafo =>
+            {
+                var x = trafo.Forward.C0.XYZ.Normalized; // TransformDir(V3f.XAxis)
+                var y = trafo.Forward.C1.XYZ.Normalized; // TransformDir(V3f.YAxis)
+                var z = trafo.Forward.C2.XYZ.Normalized; // TransformDir(V3f.ZAxis)
+
+                y = z.Cross(x).Normalized;
+                z = x.Cross(y).Normalized;
+
+                return Trafo3d.FromBasis(x, y, z, V3d.Zero);
+            };
+
+            var rnd = new RandomSystem(1);
+
+            TrafoTesting.GenericTest(rnd =>
+            {
+                var trafo = TrafoTesting.GetRandomTrafo(rnd);
+
+                var res = trafo.GetOrthoNormalOrientation();
+                var res_ref = reference(trafo);
+
+                TrafoTesting.AreEqual(res, res_ref);
+            });
         }
     }
 }

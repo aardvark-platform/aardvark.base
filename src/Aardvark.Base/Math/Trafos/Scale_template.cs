@@ -341,6 +341,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="__type__"/> transformation from a scaling <see cref="__mddt__"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__mddt__(__mddt__ m, __ftype__ epsilon = (__ftype__)1e-6)
         {
             if (!(/*# d.ForEach(i => {*/Fun.IsTiny(m.C__i__ * __vdt__./*#
@@ -355,6 +356,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__md1d1t__(__md1d1t__ m, __ftype__ epsilon = (__ftype__)1e-6)
         {
             if (!(/*# d.ForEach(i => {*/Fun.IsTiny(m.C__i__.__xyz__ * __vdt__./*#
@@ -378,6 +380,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__similaritydt__(__similaritydt__ similarity, __ftype__ epsilon = __eps__)
         {
             if (!similarity.Trans.IsTiny(epsilon))
@@ -394,6 +397,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__affinedt__(__affinedt__ affine, __ftype__ epsilon = __eps__)
             => From__md1d1t__((__md1d1t__)affine, epsilon);
 

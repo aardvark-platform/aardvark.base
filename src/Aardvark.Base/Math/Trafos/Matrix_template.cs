@@ -28,6 +28,7 @@ namespace Aardvark.Base
     //# for (int m = n; m <= (n+1) && m < 5; m++) { 
     //# for (int t = 0; t < tcharA.Length; t++) {
     //#     var msub1 = m - 1;
+    //#     var msub2 = m - 2;
     //#     var nsub1 = n - 1;
     //#     var tchar = tcharA[t];
     //#     var nm = n * m;
@@ -47,9 +48,13 @@ namespace Aardvark.Base
     //#     var mfields = fields.Take(m).ToArray();
     //#     var ftype = ftypeA[t];
     //#     var ctype = ctypeA[t];
+    //#     var vnctype = "V"+ n + ctype[0];
+    //#     var vnsub1ctype = "V"+ nsub1 + ctype[0];
     //#     var x2t = 2 + tchar;
     //#     var x3t = 3 + tchar;
     //#     var x4t = 4 + tchar;
+    //#     var xyznsub1 = "XYZW".Substring(0, nsub1);
+    //#     var xyzmsub1 = "XYZW".Substring(0, msub1);
     #region __nmtype__
 
     [DataContract]
@@ -458,6 +463,7 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotateInto(V__x3t__ from, V__x3t__ into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
@@ -468,6 +474,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotationX(__ftype__ angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -483,12 +490,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotationXInDegrees(__ftype__ angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotationY(__ftype__ angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -504,12 +513,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotationYInDegrees(__ftype__ angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotationZ(__ftype__ angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -525,6 +536,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotationZInDegrees(__ftype__ angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -538,6 +550,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ ShearXY(__ftype__ factorX, __ftype__ factorY)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
@@ -550,6 +563,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ ShearXZ(__ftype__ factorX, __ftype__ factorZ)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
@@ -562,6 +576,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ ShearYZ(__ftype__ factorY, __ftype__ factorZ)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
@@ -1219,19 +1234,106 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
-        //# if (n == 2 && m == 2 && t > 1) {
-        #region Rotation Angle
+        #region Transformation Extraction
 
+        //# if (t > 1 && n == 2) {
         /// <summary>
         /// Computes the (signed) angle in radians of a <see cref="__nmtype__"/> rotation matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ftype__ RotationAngle(this __nmtype__ m)
+        public static __ftype__ GetRotation(this __nmtype__ m)
             => Fun.Atan2(m.M10, m.M00);
 
-        #endregion
+        //# }
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ GetScale(this __nmtype__ m)
+            => (/*# n.ForEach(i => {*/m.C__i__.Length/*# }, add);*/) / __n__;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnctype__ GetScaleVector(this __nmtype__ m)
+            => new __vnctype__(/*# n.ForEach(i => {*/m.C__i__.Length/*# }, comma);*/);
+
+        //# if (n > 2 && n == m) {
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of __nsub1__D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ GetScale__nsub1__(this __nmtype__ m)
+            => (/*# nsub1.ForEach(i => {*/m.C__i__.__xyznsub1__.Length/*# }, add);*/) / __nsub1__;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the __nsub1__D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnsub1ctype__ GetScaleVector__nsub1__(this __nmtype__ m)
+            => new __vnsub1ctype__(/*# nsub1.ForEach(i => {*/m.C__i__.__xyznsub1__.Length/*# }, comma);*/);
 
         //# }
+        //# if (t > 1 && m == 4) {
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// where the view-space z-axis points in forward direction.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmsub1type__ GetViewDirectionLH(this __nmtype__ m)
+            => m.R__msub2__.__xyzmsub1__.Normalized;
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// the view-space z-axis points opposit the forward vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmsub1type__ GetViewDirectionRH(this __nmtype__ m)
+            => -m.R__msub2__.__xyzmsub1__.Normalized;
+
+        /// <summary>
+        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// a model transformation represents the model origin in world position.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmsub1type__ GetModelOrigin(this __nmtype__ m)
+            => m.C__msub1__/*# if (n != msub1) {*/.__xyzmsub1__/*#} */;
+
+        //# }
+        //# if (t == 3 && n == 4 && n == m) {
+        /// <summary>
+        /// Builds a hull from the given view-projection transformation matrix (left, right, bottom, top, near, far).
+        /// The view volume is assumed to be [-1, -1, -1] [1, 1, 1].
+        /// The normals of the hull planes point to the outside and are normalized. 
+        /// A point inside the visual hull will has negative height to all planes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Hull3d GetVisualHull(this __nmtype__ viewProj)
+        {
+            var r0 = viewProj.R0;
+            var r1 = viewProj.R1;
+            var r2 = viewProj.R2;
+            var r3 = viewProj.R3;
+
+            return new Hull3d(new[]
+            {
+                new Plane3d((-(r3 + r0))).Normalized, // left
+                new Plane3d((-(r3 - r0))).Normalized, // right
+                new Plane3d((-(r3 + r1))).Normalized, // bottom
+                new Plane3d((-(r3 - r1))).Normalized, // top
+                new Plane3d((-(r3 + r2))).Normalized, // near
+                new Plane3d((-(r3 - r2))).Normalized, // far
+            });
+        }
+
+        //# }
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -1553,8 +1655,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Transposed(__nmtype__ m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref __nmtype__ m)
         {
             //# for (int r = 1; r < n; r++) { r.ForEach(s => {
@@ -1563,6 +1673,14 @@ namespace Aardvark.Base
         }
 
         //# if (t > 1) {
+        /// <summary>
+        /// Returns the inverse of the given matrix. If the matrix is not invertible
+        /// __nmtype__.Zero is returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Inverse(__nmtype__ m)
+            => m.Inverse;
+
         /// <summary>
         /// Inverts the given matrix in place. Returns true if the matrix was invertible,
         /// otherwise the matrix remains unchanged.
@@ -1612,6 +1730,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __nmtype__ a, __nmtype__ b, __ftype__ epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.

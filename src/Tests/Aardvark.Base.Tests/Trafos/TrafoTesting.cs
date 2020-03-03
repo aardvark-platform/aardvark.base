@@ -64,6 +64,24 @@ namespace Aardvark.Tests
         public static Affine3d GetRandomAffine(RandomSystem rnd)
             => GetRandomAffine(rnd, true);
 
+        public static Trafo3d GetRandomTrafo(RandomSystem rnd, bool withPerspective)
+        {
+            var rot = rnd.UniformV3dFull() * Constant.PiTimesFour - Constant.PiTimesTwo;
+            var trans = rnd.UniformV3dFull() * 10 - 5;
+            var scale = rnd.UniformV3dFull() * 4 - 2;
+
+            var trafo = Trafo3d.FromComponents(scale, rot, trans);
+            if (withPerspective)
+            {
+                trafo *= Trafo3d.PerspectiveProjectionRH(-1, 1, -1, 1, rnd.UniformDouble(), rnd.UniformDouble() * 100);
+            }
+
+            return trafo;
+        }
+
+        public static Trafo3d GetRandomTrafo(RandomSystem rnd)
+            => GetRandomTrafo(rnd, true);
+
         /// <summary>
         /// Runs the given test function multiple times and provides a RandomSystem.
         /// </summary>

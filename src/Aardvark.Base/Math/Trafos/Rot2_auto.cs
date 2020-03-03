@@ -275,7 +275,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2f FromM22f(M22f m)
         {
-            return new Rot2f(m.RotationAngle());
+            return new Rot2f(m.GetRotation());
         }
 
         /// <summary>
@@ -303,6 +303,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2f FromEuclidean2f(Euclidean2f euclidean, float epsilon = 1e-5f)
         {
             if (!euclidean.Trans.ApproximateEquals(V2f.Zero, epsilon))
@@ -316,6 +317,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2f FromSimilarity2f(Similarity2f similarity, float epsilon = 1e-5f)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -332,6 +334,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2f FromAffine2f(Affine2f affine, float epsilon = 1e-5f)
             => FromM33f((M33f)affine, epsilon);
 
@@ -871,7 +874,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2d FromM22d(M22d m)
         {
-            return new Rot2d(m.RotationAngle());
+            return new Rot2d(m.GetRotation());
         }
 
         /// <summary>
@@ -899,6 +902,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2d FromEuclidean2d(Euclidean2d euclidean, double epsilon = 1e-12)
         {
             if (!euclidean.Trans.ApproximateEquals(V2d.Zero, epsilon))
@@ -912,6 +916,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2d FromSimilarity2d(Similarity2d similarity, double epsilon = 1e-12)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -928,6 +933,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2d FromAffine2d(Affine2d affine, double epsilon = 1e-12)
             => FromM33d((M33d)affine, epsilon);
 

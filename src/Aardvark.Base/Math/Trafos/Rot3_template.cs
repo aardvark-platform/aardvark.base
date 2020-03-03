@@ -618,6 +618,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__euclidean3t__(__euclidean3t__ euclidean, __ftype__ epsilon = __eps__)
         {
             if (!euclidean.Trans.ApproximateEquals(__v3t__.Zero, epsilon))
@@ -631,6 +632,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__similarity3t__(__similarity3t__ similarity, __ftype__ epsilon = __eps__)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -647,6 +649,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__affine3t__(__affine3t__ affine, __ftype__ epsilon = __eps__)
             => From__m44t__((__m44t__)affine, epsilon);
 

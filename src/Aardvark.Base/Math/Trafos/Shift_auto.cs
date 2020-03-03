@@ -396,6 +396,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="Shift2f"/> transformation from a translation <see cref="M23f"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2f FromM23f(M23f m, float epsilon = (float)1e-6)
         {
             if (!M22f.Identity.ApproximateEquals((M22f)m, epsilon))
@@ -409,6 +410,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2f FromM33f(M33f m, float epsilon = (float)1e-6)
         {
             if (!M22f.Identity.ApproximateEquals((M22f)m, epsilon))
@@ -428,6 +430,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2f FromEuclidean2f(Euclidean2f euclidean, float epsilon = 1e-5f)
         {
             if (!euclidean.Rot.ApproximateEquals(Rot2f.Identity, epsilon))
@@ -441,6 +444,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2f FromSimilarity2f(Similarity2f similarity, float epsilon = 1e-5f)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -457,6 +461,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2f FromAffine2f(Affine2f affine, float epsilon = 1e-5f)
             => FromM33f((M33f)affine, epsilon);
 
@@ -1128,6 +1133,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="Shift3f"/> transformation from a translation <see cref="M34f"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3f FromM34f(M34f m, float epsilon = (float)1e-6)
         {
             if (!M33f.Identity.ApproximateEquals((M33f)m, epsilon))
@@ -1141,6 +1147,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3f FromM44f(M44f m, float epsilon = (float)1e-6)
         {
             if (!M33f.Identity.ApproximateEquals((M33f)m, epsilon))
@@ -1160,6 +1167,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3f FromEuclidean3f(Euclidean3f euclidean, float epsilon = 1e-5f)
         {
             if (!euclidean.Rot.ApproximateEquals(Rot3f.Identity, epsilon))
@@ -1173,6 +1181,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3f FromSimilarity3f(Similarity3f similarity, float epsilon = 1e-5f)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -1189,6 +1198,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3f FromAffine3f(Affine3f affine, float epsilon = 1e-5f)
             => FromM44f((M44f)affine, epsilon);
 
@@ -1807,6 +1817,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="Shift2d"/> transformation from a translation <see cref="M23d"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2d FromM23d(M23d m, double epsilon = (double)1e-6)
         {
             if (!M22d.Identity.ApproximateEquals((M22d)m, epsilon))
@@ -1820,6 +1831,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2d FromM33d(M33d m, double epsilon = (double)1e-6)
         {
             if (!M22d.Identity.ApproximateEquals((M22d)m, epsilon))
@@ -1839,6 +1851,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2d FromEuclidean2d(Euclidean2d euclidean, double epsilon = 1e-12)
         {
             if (!euclidean.Rot.ApproximateEquals(Rot2d.Identity, epsilon))
@@ -1852,6 +1865,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2d FromSimilarity2d(Similarity2d similarity, double epsilon = 1e-12)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -1868,6 +1882,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift2d FromAffine2d(Affine2d affine, double epsilon = 1e-12)
             => FromM33d((M33d)affine, epsilon);
 
@@ -2539,6 +2554,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="Shift3d"/> transformation from a translation <see cref="M34d"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3d FromM34d(M34d m, double epsilon = (double)1e-6)
         {
             if (!M33d.Identity.ApproximateEquals((M33d)m, epsilon))
@@ -2552,6 +2568,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3d FromM44d(M44d m, double epsilon = (double)1e-6)
         {
             if (!M33d.Identity.ApproximateEquals((M33d)m, epsilon))
@@ -2571,6 +2588,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3d FromEuclidean3d(Euclidean3d euclidean, double epsilon = 1e-12)
         {
             if (!euclidean.Rot.ApproximateEquals(Rot3d.Identity, epsilon))
@@ -2584,6 +2602,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3d FromSimilarity3d(Similarity3d similarity, double epsilon = 1e-12)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -2600,6 +2619,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Shift3d FromAffine3d(Affine3d affine, double epsilon = 1e-12)
             => FromM44d((M44d)affine, epsilon);
 

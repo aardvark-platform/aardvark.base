@@ -406,6 +406,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__mnnt__And__vnt__(__mnnt__ m, __vnt__ trans, __ftype__ epsilon = __eps__)
         {
             //# n.ForEach(i => {
@@ -425,6 +426,7 @@ namespace Aardvark.Base
         /// The matrix must not contain a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__mnmt__(__mnmt__ m, __ftype__ epsilon = __eps__)
             => From__mnnt__And__vnt__((__mnnt__)m, m.C__n__/*# if (n > 2) {*/, epsilon/*# }*/);
 
@@ -434,6 +436,7 @@ namespace Aardvark.Base
         /// a non-uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__mmmt__(__mmmt__ m, __ftype__ epsilon = __eps__)
         {
             if (!(/*#n.ForEach(j => {*/m.M__n____j__.IsTiny(epsilon)/*# }, and);*/))
@@ -450,6 +453,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="scale"/> must represent a uniform scaling.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__scalent__(__scalent__ scale, __ftype__ epsilon = __eps__)
         {
             var s = (/*# nfields.ForEach(f => {*/scale.__f__/*# }, mul);*/).Pow(__one__ / __n__);
@@ -465,6 +469,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a uniform scale, rotation, and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__affinent__(__affinent__ affine, __ftype__ epsilon = __eps__)
             => From__mmmt__((__mmmt__)affine, epsilon);
 
@@ -473,6 +478,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="trafo"/> must only consist of a uniform scale, rotation, and translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__trafont__(__trafont__ trafo, __ftype__ epsilon = __eps__)
             => From__mmmt__(trafo.Forward, epsilon);
 
@@ -591,6 +597,7 @@ namespace Aardvark.Base
         /// Creates a rotation transformation which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotateInto(__vnt__ from, __vnt__ into)
             => new __type__(__rotnt__.RotateInto(from, into), __vnt__.Zero);
 
@@ -604,6 +611,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotationXInDegrees(__ftype__ angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
@@ -617,6 +625,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotationYInDegrees(__ftype__ angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
@@ -630,6 +639,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotationZInDegrees(__ftype__ angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 

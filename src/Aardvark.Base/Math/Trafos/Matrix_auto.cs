@@ -1670,6 +1670,25 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M22i m)
+            => (m.C0.Length + m.C1.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector(this M22i m)
+            => new V2d(m.C0.Length, m.C1.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -1910,8 +1929,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i Transposed(M22i m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M22i m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
@@ -1927,6 +1954,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M22i a, M22i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -3498,6 +3526,25 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M22l m)
+            => (m.C0.Length + m.C1.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector(this M22l m)
+            => new V2d(m.C0.Length, m.C1.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -3738,8 +3785,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l Transposed(M22l m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M22l m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
@@ -3755,6 +3810,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M22l a, M22l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -5309,14 +5365,29 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
-        #region Rotation Angle
+        #region Transformation Extraction
 
         /// <summary>
         /// Computes the (signed) angle in radians of a <see cref="M22f"/> rotation matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float RotationAngle(this M22f m)
+        public static float GetRotation(this M22f m)
             => Fun.Atan2(m.M10, m.M00);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetScale(this M22f m)
+            => (m.C0.Length + m.C1.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f GetScaleVector(this M22f m)
+            => new V2f(m.C0.Length, m.C1.Length);
 
         #endregion
 
@@ -5560,12 +5631,28 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f Transposed(M22f m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M22f m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
         }
+
+        /// <summary>
+        /// Returns the inverse of the given matrix. If the matrix is not invertible
+        /// M22f.Zero is returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f Inverse(M22f m)
+            => m.Inverse;
 
         /// <summary>
         /// Inverts the given matrix in place. Returns true if the matrix was invertible,
@@ -5614,6 +5701,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M22f a, M22f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -7070,14 +7158,29 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
-        #region Rotation Angle
+        #region Transformation Extraction
 
         /// <summary>
         /// Computes the (signed) angle in radians of a <see cref="M22d"/> rotation matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double RotationAngle(this M22d m)
+        public static double GetRotation(this M22d m)
             => Fun.Atan2(m.M10, m.M00);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M22d m)
+            => (m.C0.Length + m.C1.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector(this M22d m)
+            => new V2d(m.C0.Length, m.C1.Length);
 
         #endregion
 
@@ -7321,12 +7424,28 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d Transposed(M22d m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M22d m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
         }
+
+        /// <summary>
+        /// Returns the inverse of the given matrix. If the matrix is not invertible
+        /// M22d.Zero is returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d Inverse(M22d m)
+            => m.Inverse;
 
         /// <summary>
         /// Inverts the given matrix in place. Returns true if the matrix was invertible,
@@ -7375,6 +7494,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M22d a, M22d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -9083,6 +9203,25 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M23i m)
+            => (m.C0.Length + m.C1.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector(this M23i m)
+            => new V2d(m.C0.Length, m.C1.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -9311,6 +9450,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M23i a, M23i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -10921,6 +11061,25 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M23l m)
+            => (m.C0.Length + m.C1.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector(this M23l m)
+            => new V2d(m.C0.Length, m.C1.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -11149,6 +11308,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M23l a, M23l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -12715,6 +12875,32 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Computes the (signed) angle in radians of a <see cref="M23f"/> rotation matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetRotation(this M23f m)
+            => Fun.Atan2(m.M10, m.M00);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetScale(this M23f m)
+            => (m.C0.Length + m.C1.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f GetScaleVector(this M23f m)
+            => new V2f(m.C0.Length, m.C1.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -12943,6 +13129,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M23f a, M23f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -14411,6 +14598,32 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Computes the (signed) angle in radians of a <see cref="M23d"/> rotation matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetRotation(this M23d m)
+            => Fun.Atan2(m.M10, m.M00);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M23d m)
+            => (m.C0.Length + m.C1.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector(this M23d m)
+            => new V2d(m.C0.Length, m.C1.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -14639,6 +14852,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M23d a, M23d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -15422,6 +15636,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i ShearXY(int factorX, int factorY)
         {
             return new M33i(
@@ -15433,6 +15648,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i ShearXZ(int factorX, int factorZ)
         {
             return new M33i(
@@ -15444,6 +15660,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i ShearYZ(int factorY, int factorZ)
         {
             return new M33i(
@@ -16753,6 +16970,40 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M33i m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector(this M33i m)
+            => new V3d(m.C0.Length, m.C1.Length, m.C2.Length);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of 2D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale2(this M33i m)
+            => (m.C0.XY.Length + m.C1.XY.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the 2D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector2(this M33i m)
+            => new V2d(m.C0.XY.Length, m.C1.XY.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -17108,8 +17359,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i Transposed(M33i m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M33i m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
@@ -17127,6 +17386,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M33i a, M33i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -17910,6 +18170,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l ShearXY(long factorX, long factorY)
         {
             return new M33l(
@@ -17921,6 +18182,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l ShearXZ(long factorX, long factorZ)
         {
             return new M33l(
@@ -17932,6 +18194,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l ShearYZ(long factorY, long factorZ)
         {
             return new M33l(
@@ -19129,6 +19392,40 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M33l m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector(this M33l m)
+            => new V3d(m.C0.Length, m.C1.Length, m.C2.Length);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of 2D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale2(this M33l m)
+            => (m.C0.XY.Length + m.C1.XY.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the 2D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector2(this M33l m)
+            => new V2d(m.C0.XY.Length, m.C1.XY.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -19484,8 +19781,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l Transposed(M33l m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M33l m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
@@ -19503,6 +19808,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M33l a, M33l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -20421,6 +20727,7 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotateInto(V3f from, V3f into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
@@ -20431,6 +20738,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotationX(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -20445,12 +20753,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotationXInDegrees(float angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotationY(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -20465,12 +20775,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotationYInDegrees(float angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotationZ(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -20485,6 +20797,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotationZInDegrees(float angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -20495,6 +20808,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f ShearXY(float factorX, float factorY)
         {
             return new M33f(
@@ -20506,6 +20820,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f ShearXZ(float factorX, float factorZ)
         {
             return new M33f(
@@ -20517,6 +20832,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f ShearYZ(float factorY, float factorZ)
         {
             return new M33f(
@@ -21640,6 +21956,40 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetScale(this M33f m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetScaleVector(this M33f m)
+            => new V3f(m.C0.Length, m.C1.Length, m.C2.Length);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of 2D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetScale2(this M33f m)
+            => (m.C0.XY.Length + m.C1.XY.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the 2D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f GetScaleVector2(this M33f m)
+            => new V2f(m.C0.XY.Length, m.C1.XY.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -21995,14 +22345,30 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Transposed(M33f m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M33f m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
             Fun.Swap(ref m.M20, ref m.M02);
             Fun.Swap(ref m.M21, ref m.M12);
         }
+
+        /// <summary>
+        /// Returns the inverse of the given matrix. If the matrix is not invertible
+        /// M33f.Zero is returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Inverse(M33f m)
+            => m.Inverse;
 
         /// <summary>
         /// Inverts the given matrix in place. Returns true if the matrix was invertible,
@@ -22051,6 +22417,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M33f a, M33f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -22969,6 +23336,7 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotateInto(V3d from, V3d into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
@@ -22979,6 +23347,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotationX(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -22993,12 +23362,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotationXInDegrees(double angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotationY(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -23013,12 +23384,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotationYInDegrees(double angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotationZ(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -23033,6 +23406,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotationZInDegrees(double angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -23043,6 +23417,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d ShearXY(double factorX, double factorY)
         {
             return new M33d(
@@ -23054,6 +23429,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d ShearXZ(double factorX, double factorZ)
         {
             return new M33d(
@@ -23065,6 +23441,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d ShearYZ(double factorY, double factorZ)
         {
             return new M33d(
@@ -24076,6 +24453,40 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M33d m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector(this M33d m)
+            => new V3d(m.C0.Length, m.C1.Length, m.C2.Length);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of 2D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale2(this M33d m)
+            => (m.C0.XY.Length + m.C1.XY.Length) / 2;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the 2D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetScaleVector2(this M33d m)
+            => new V2d(m.C0.XY.Length, m.C1.XY.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -24431,14 +24842,30 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Transposed(M33d m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M33d m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
             Fun.Swap(ref m.M20, ref m.M02);
             Fun.Swap(ref m.M21, ref m.M12);
         }
+
+        /// <summary>
+        /// Returns the inverse of the given matrix. If the matrix is not invertible
+        /// M33d.Zero is returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Inverse(M33d m)
+            => m.Inverse;
 
         /// <summary>
         /// Inverts the given matrix in place. Returns true if the matrix was invertible,
@@ -24487,6 +24914,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M33d a, M33d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -25266,6 +25694,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i ShearXY(int factorX, int factorY)
         {
             return new M34i(
@@ -25277,6 +25706,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i ShearXZ(int factorX, int factorZ)
         {
             return new M34i(
@@ -25288,6 +25718,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i ShearYZ(int factorY, int factorZ)
         {
             return new M34i(
@@ -26596,6 +27027,25 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M34i m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector(this M34i m)
+            => new V3d(m.C0.Length, m.C1.Length, m.C2.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -26853,6 +27303,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M34i a, M34i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -27632,6 +28083,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l ShearXY(long factorX, long factorY)
         {
             return new M34l(
@@ -27643,6 +28095,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l ShearXZ(long factorX, long factorZ)
         {
             return new M34l(
@@ -27654,6 +28107,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l ShearYZ(long factorY, long factorZ)
         {
             return new M34l(
@@ -28850,6 +29304,25 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M34l m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector(this M34l m)
+            => new V3d(m.C0.Length, m.C1.Length, m.C2.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -29107,6 +29580,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M34l a, M34l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -29973,6 +30447,7 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotateInto(V3f from, V3f into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
@@ -29983,6 +30458,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotationX(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -29997,12 +30473,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotationXInDegrees(float angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotationY(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -30017,12 +30495,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotationYInDegrees(float angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotationZ(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -30037,6 +30517,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotationZInDegrees(float angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -30047,6 +30528,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f ShearXY(float factorX, float factorY)
         {
             return new M34f(
@@ -30058,6 +30540,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f ShearXZ(float factorX, float factorZ)
         {
             return new M34f(
@@ -30069,6 +30552,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f ShearYZ(float factorY, float factorZ)
         {
             return new M34f(
@@ -31153,6 +31637,51 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetScale(this M34f m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetScaleVector(this M34f m)
+            => new V3f(m.C0.Length, m.C1.Length, m.C2.Length);
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// where the view-space z-axis points in forward direction.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetViewDirectionLH(this M34f m)
+            => m.R2.XYZ.Normalized;
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// the view-space z-axis points opposit the forward vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetViewDirectionRH(this M34f m)
+            => -m.R2.XYZ.Normalized;
+
+        /// <summary>
+        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// a model transformation represents the model origin in world position.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetModelOrigin(this M34f m)
+            => m.C3;
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -31410,6 +31939,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M34f a, M34f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -32276,6 +32806,7 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotateInto(V3d from, V3d into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
@@ -32286,6 +32817,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotationX(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -32300,12 +32832,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotationXInDegrees(double angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotationY(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -32320,12 +32854,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotationYInDegrees(double angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotationZ(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -32340,6 +32876,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotationZInDegrees(double angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -32350,6 +32887,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d ShearXY(double factorX, double factorY)
         {
             return new M34d(
@@ -32361,6 +32899,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d ShearXZ(double factorX, double factorZ)
         {
             return new M34d(
@@ -32372,6 +32911,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d ShearYZ(double factorY, double factorZ)
         {
             return new M34d(
@@ -33344,6 +33884,51 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M34d m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector(this M34d m)
+            => new V3d(m.C0.Length, m.C1.Length, m.C2.Length);
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// where the view-space z-axis points in forward direction.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetViewDirectionLH(this M34d m)
+            => m.R2.XYZ.Normalized;
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// the view-space z-axis points opposit the forward vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetViewDirectionRH(this M34d m)
+            => -m.R2.XYZ.Normalized;
+
+        /// <summary>
+        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// a model transformation represents the model origin in world position.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetModelOrigin(this M34d m)
+            => m.C3;
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -33601,6 +34186,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M34d a, M34d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -34508,6 +35094,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i ShearXY(int factorX, int factorY)
         {
             return new M44i(
@@ -34520,6 +35107,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i ShearXZ(int factorX, int factorZ)
         {
             return new M44i(
@@ -34532,6 +35120,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i ShearYZ(int factorY, int factorZ)
         {
             return new M44i(
@@ -36129,6 +36718,40 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M44i m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length + m.C3.Length) / 4;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d GetScaleVector(this M44i m)
+            => new V4d(m.C0.Length, m.C1.Length, m.C2.Length, m.C3.Length);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of 3D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale3(this M44i m)
+            => (m.C0.XYZ.Length + m.C1.XYZ.Length + m.C2.XYZ.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the 3D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector3(this M44i m)
+            => new V3d(m.C0.XYZ.Length, m.C1.XYZ.Length, m.C2.XYZ.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -36508,8 +37131,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i Transposed(M44i m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M44i m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
@@ -36530,6 +37161,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M44i a, M44i b, int epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -37437,6 +38069,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l ShearXY(long factorX, long factorY)
         {
             return new M44l(
@@ -37449,6 +38082,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l ShearXZ(long factorX, long factorZ)
         {
             return new M44l(
@@ -37461,6 +38095,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l ShearYZ(long factorY, long factorZ)
         {
             return new M44l(
@@ -38932,6 +39567,40 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M44l m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length + m.C3.Length) / 4;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d GetScaleVector(this M44l m)
+            => new V4d(m.C0.Length, m.C1.Length, m.C2.Length, m.C3.Length);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of 3D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale3(this M44l m)
+            => (m.C0.XYZ.Length + m.C1.XYZ.Length + m.C2.XYZ.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the 3D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector3(this M44l m)
+            => new V3d(m.C0.XYZ.Length, m.C1.XYZ.Length, m.C2.XYZ.Length);
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -39311,8 +39980,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l Transposed(M44l m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M44l m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
@@ -39333,6 +40010,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M44l a, M44l b, long epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -40336,6 +41014,7 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotateInto(V3f from, V3f into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
@@ -40346,6 +41025,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotationX(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -40361,12 +41041,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotationXInDegrees(float angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotationY(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -40382,12 +41064,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotationYInDegrees(float angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotationZ(float angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -40403,6 +41087,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotationZInDegrees(float angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -40413,6 +41098,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f ShearXY(float factorX, float factorY)
         {
             return new M44f(
@@ -40425,6 +41111,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f ShearXZ(float factorX, float factorZ)
         {
             return new M44f(
@@ -40437,6 +41124,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f ShearYZ(float factorY, float factorZ)
         {
             return new M44f(
@@ -41820,6 +42508,66 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetScale(this M44f m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length + m.C3.Length) / 4;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f GetScaleVector(this M44f m)
+            => new V4f(m.C0.Length, m.C1.Length, m.C2.Length, m.C3.Length);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of 3D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetScale3(this M44f m)
+            => (m.C0.XYZ.Length + m.C1.XYZ.Length + m.C2.XYZ.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the 3D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetScaleVector3(this M44f m)
+            => new V3f(m.C0.XYZ.Length, m.C1.XYZ.Length, m.C2.XYZ.Length);
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// where the view-space z-axis points in forward direction.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetViewDirectionLH(this M44f m)
+            => m.R2.XYZ.Normalized;
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// the view-space z-axis points opposit the forward vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetViewDirectionRH(this M44f m)
+            => -m.R2.XYZ.Normalized;
+
+        /// <summary>
+        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// a model transformation represents the model origin in world position.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f GetModelOrigin(this M44f m)
+            => m.C3.XYZ;
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -42199,8 +42947,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Transposed(M44f m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M44f m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
@@ -42210,6 +42966,14 @@ namespace Aardvark.Base
             Fun.Swap(ref m.M31, ref m.M13);
             Fun.Swap(ref m.M32, ref m.M23);
         }
+
+        /// <summary>
+        /// Returns the inverse of the given matrix. If the matrix is not invertible
+        /// M44f.Zero is returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Inverse(M44f m)
+            => m.Inverse;
 
         /// <summary>
         /// Inverts the given matrix in place. Returns true if the matrix was invertible,
@@ -42258,6 +43022,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M44f a, M44f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -43261,6 +44026,7 @@ namespace Aardvark.Base
         /// Creates a 3D rotation matrix which rotates one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotateInto(V3d from, V3d into)
         {
             Debug.Assert(from.LengthSquared.ApproximateEquals(1));
@@ -43271,6 +44037,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotationX(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -43286,12 +44053,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotationXInDegrees(double angleDegrees)
             => RotationX(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotationY(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -43307,12 +44076,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotationYInDegrees(double angleDegrees)
             => RotationY(angleDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotationZ(double angleRadians)
         {
             var a = Fun.Cos(angleRadians);
@@ -43328,6 +44099,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotationZInDegrees(double angleDegrees)
             => RotationZ(angleDegrees.RadiansFromDegrees());
 
@@ -43338,6 +44110,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the z-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d ShearXY(double factorX, double factorY)
         {
             return new M44d(
@@ -43350,6 +44123,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the y-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d ShearXZ(double factorX, double factorZ)
         {
             return new M44d(
@@ -43362,6 +44136,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a shear transformation matrix along the x-axis.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d ShearYZ(double factorY, double factorZ)
         {
             return new M44d(
@@ -44619,6 +45394,91 @@ namespace Aardvark.Base
     /// </summary>
     public static partial class Mat
     {
+        #region Transformation Extraction
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale(this M44d m)
+            => (m.C0.Length + m.C1.Length + m.C2.Length + m.C3.Length) / 4;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d GetScaleVector(this M44d m)
+            => new V4d(m.C0.Length, m.C1.Length, m.C2.Length, m.C3.Length);
+
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of 3D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetScale3(this M44d m)
+            => (m.C0.XYZ.Length + m.C1.XYZ.Length + m.C2.XYZ.Length) / 3;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the 3D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetScaleVector3(this M44d m)
+            => new V3d(m.C0.XYZ.Length, m.C1.XYZ.Length, m.C2.XYZ.Length);
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// where the view-space z-axis points in forward direction.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetViewDirectionLH(this M44d m)
+            => m.R2.XYZ.Normalized;
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// the view-space z-axis points opposit the forward vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetViewDirectionRH(this M44d m)
+            => -m.R2.XYZ.Normalized;
+
+        /// <summary>
+        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// a model transformation represents the model origin in world position.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d GetModelOrigin(this M44d m)
+            => m.C3.XYZ;
+
+        /// <summary>
+        /// Builds a hull from the given view-projection transformation matrix (left, right, bottom, top, near, far).
+        /// The view volume is assumed to be [-1, -1, -1] [1, 1, 1].
+        /// The normals of the hull planes point to the outside and are normalized. 
+        /// A point inside the visual hull will has negative height to all planes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Hull3d GetVisualHull(this M44d viewProj)
+        {
+            var r0 = viewProj.R0;
+            var r1 = viewProj.R1;
+            var r2 = viewProj.R2;
+            var r3 = viewProj.R3;
+
+            return new Hull3d(new[]
+            {
+                new Plane3d((-(r3 + r0))).Normalized, // left
+                new Plane3d((-(r3 - r0))).Normalized, // right
+                new Plane3d((-(r3 + r1))).Normalized, // bottom
+                new Plane3d((-(r3 - r1))).Normalized, // top
+                new Plane3d((-(r3 + r2))).Normalized, // near
+                new Plane3d((-(r3 - r2))).Normalized, // far
+            });
+        }
+
+        #endregion
+
         #region Norms
 
         /// <summary>
@@ -44998,8 +45858,16 @@ namespace Aardvark.Base
             => m.Determinant;
 
         /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Transposed(M44d m)
+            => m.Transposed;
+
+        /// <summary>
         /// Transposes the given matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Transpose(this ref M44d m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
@@ -45009,6 +45877,14 @@ namespace Aardvark.Base
             Fun.Swap(ref m.M31, ref m.M13);
             Fun.Swap(ref m.M32, ref m.M23);
         }
+
+        /// <summary>
+        /// Returns the inverse of the given matrix. If the matrix is not invertible
+        /// M44d.Zero is returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Inverse(M44d m)
+            => m.Inverse;
 
         /// <summary>
         /// Inverts the given matrix in place. Returns true if the matrix was invertible,
@@ -45057,6 +45933,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M44d a, M44d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.

@@ -400,6 +400,7 @@ namespace Aardvark.Base
         /// Creates a <see cref="__type__"/> transformation from a translation <see cref="__mdd1t__"/> matrix.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__mdd1t__(__mdd1t__ m, __ftype__ epsilon = (__ftype__)1e-6)
         {
             if (!__mddt__.Identity.ApproximateEquals((__mddt__)m, epsilon))
@@ -413,6 +414,7 @@ namespace Aardvark.Base
         /// The matrix has to be homogeneous and must not contain perspective components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__md1d1t__(__md1d1t__ m, __ftype__ epsilon = (__ftype__)1e-6)
         {
             if (!__mddt__.Identity.ApproximateEquals((__mddt__)m, epsilon))
@@ -432,6 +434,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__euclideandt__(__euclideandt__ euclidean, __ftype__ epsilon = __eps__)
         {
             if (!euclidean.Rot.ApproximateEquals(__rotdt__.Identity, epsilon))
@@ -445,6 +448,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__similaritydt__(__similaritydt__ similarity, __ftype__ epsilon = __eps__)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -461,6 +465,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a translation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__affinedt__(__affinedt__ affine, __ftype__ epsilon = __eps__)
             => From__md1d1t__((__md1d1t__)affine, epsilon);
 

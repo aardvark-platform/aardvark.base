@@ -221,7 +221,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__m22t__(__m22t__ m)
         {
-            return new __type__(m.RotationAngle());
+            return new __type__(m.GetRotation());
         }
 
         /// <summary>
@@ -249,6 +249,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="euclidean"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__euclidean2t__(__euclidean2t__ euclidean, __ftype__ epsilon = __eps__)
         {
             if (!euclidean.Trans.ApproximateEquals(__v2t__.Zero, epsilon))
@@ -262,6 +263,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="similarity"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__similarity2t__(__similarity2t__ similarity, __ftype__ epsilon = __eps__)
         {
             if (!similarity.Scale.ApproximateEquals(1, epsilon))
@@ -278,6 +280,7 @@ namespace Aardvark.Base
         /// The transformation <paramref name="affine"/> must only consist of a rotation.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__affine2t__(__affine2t__ affine, __ftype__ epsilon = __eps__)
             => From__m33t__((__m33t__)affine, epsilon);
 
