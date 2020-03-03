@@ -43,6 +43,7 @@ namespace Aardvark.Base
         //# foreach (var isDouble in new[] { false, true }) {
         //#   var ft = isDouble ? "double" : "float";
         //#   var tc = isDouble ? "d" : "f";
+        //#   var zero = isDouble ? "0.0" : "0.0f";
         #region Vector Extensions
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __ft__ DotProduct(this Vector<__ft__> v0, Vector<__ft__> v1)
         {
-            __ft__ result = 0.0__tc__;
+            __ft__ result = __zero__;
             __ft__[] a0 = v0.Data, a1 = v1.Data;
             for (long i0 = v0.Origin, i1 = v1.Origin, e0 = i0 + v0.DSX, d0 = v0.D, d1 = v1.D;
                 i0 != e0; i0 += d0, i1 += d1)
@@ -65,12 +66,24 @@ namespace Aardvark.Base
         /// </summary>
         public static __ft__ NormSquared(this Vector<__ft__> v)
         {
-            __ft__ result = 0.0__tc__;
+            __ft__ result = __zero__;
             __ft__[] a = v.Data;
             for (long i = v.Origin, e = i + v.DSX, d = v.D; i != e; i += d)
                 result += a[i] * a[i];
             return result;
         }
+
+        public static __ft__ Dist1(this Vector<__ft__> v0, Vector<__ft__> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), __zero__, (s, p) => s + p);
+
+        public static __ft__ Dist2Squared(this Vector<__ft__> v0, Vector<__ft__> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Square(x1 - x0), __zero__, (s, p) => s + p);
+
+        public static __ft__ Dist2(this Vector<__ft__> v0, Vector<__ft__> v1)
+            => Fun.Sqrt(v0.Dist2Squared(v1));
+
+        public static __ft__ DistMax(this Vector<__ft__> v0, Vector<__ft__> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), __zero__, Fun.Max);
 
         public static Vector<__ft__> Multiply(this Vector<__ft__> a, Vector<__ft__> b)
         {
@@ -179,7 +192,7 @@ namespace Aardvark.Base
             for (long ri = 0, ye = mat.FirstIndex + mat.DSY, f0 = mat.FirstIndex, e0 = f0 + ds0;
                 f0 != ye; f0 += my0, e0 += my0, ri++)
             {
-                __ft__ dot = 0.0__tc__;
+                __ft__ dot = __zero__;
                 for (long i0 = f0, i1 = mf1; i0 != e0; i0 += d0, i1 += d1)
                     dot += data0[i0] * data1[i1];
 
@@ -203,7 +216,7 @@ namespace Aardvark.Base
                 i != ye; i += yj, f0 += my0, e0 += my0)
                 for (long xe = i + xs, f1 = mf1; i != xe; i += xj, f1 += mx1)
                 {
-                    __ft__ dot = 0.0__tc__;
+                    __ft__ dot = __zero__;
                     for (long i0 = f0, i1 = f1; i0 != e0; i0 += d0, i1 += d1)
                         dot += data0[i0] * data1[i1];
                     data[i] = dot;

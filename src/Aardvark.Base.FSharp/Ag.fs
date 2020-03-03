@@ -1,409 +1,698 @@
 ﻿namespace Aardvark.Base
 
-open System.Collections.Generic
+open System
 open System.Runtime.CompilerServices
-open Microsoft.FSharp.Reflection
+open System.Collections.Generic
 open Aardvark.Base
-open System.Threading
-open AgHelpers
+open System.Reflection
+open System.Runtime.InteropServices
 
+#nowarn "1337"
 
-// Implementation of an embedded domain specific language for attribute grammars. The library works with any types,
-// semantic functions can be added by defining modules annotated with [<Semantic>] attributes.
+[<AttributeUsage(AttributeTargets.Struct ||| AttributeTargets.Class ||| AttributeTargets.Method)>]
+type RuleAttribute() =
+    inherit Attribute()
+
 module Ag =
-    open System
 
-    type Semantic() =
-        inherit System.Attribute()
+    let internal anyObj = obj()
 
-    #if DEBUGSCOPES
-    let allScopes = HashSet<obj>()
-    #endif
-    
-    [<ReferenceEquality>]
-    type Scope = { parent       : Option<Scope>
-                   source       : obj
-                   children     : WeakTable<obj, Scope>
-                   cache        : Dictionary<string, Option<obj>>
-                   mutable path         : Option<string> } with
-
-
-        member x.GetChildScope(child : obj) =
-            lock x (fun () ->
-                        match x.children.TryGetValue child with
-                            | (true,c) -> c
-                            | _ -> let c = { parent = Some(x); source = child; children = newCWT(); cache = Dictionary(); path = None}
-                                   #if DEBUGSCOPES
-                                   allScopes.Add (System.WeakReference<obj>(x :> obj)) |> ignore
-                                   #endif
-                                   x.children.Add(child, c)
-                                   c
-                    )
-
-
-        member x.TryGetChildScope(child : obj) =
-            lock x (fun () ->
-                        match x.children.TryGetValue child with
-                            | (true,c) -> Some c
-                            | _ -> None
-                    )
-
-        member x.TryFindCacheValue (name : string) =
-            if enableCacheWrites then
-                match x.cache.TryGetValue name with
-                    | (true,v) -> Some v
-                    | _ -> None
-            else None
-
-        member x.AddCache (name : string) (value : Option<obj>) =
-            if enableCacheWrites then x.cache.[name] <- value
-            value
-
-        #if DEBUGSCOPES 
-        override x.Finalize() =
-            if not <| allScopes.Remove (System.WeakReference<_>(x :> obj)) then printfn "scope not registered"
-        #endif
-        
-        member x.Path = 
-            match x.path with
-                | Some p -> p
-                | None -> let p = match x.parent with 
-                                    | Some parent -> parent.Path
-                                    | None -> "Root"
-                          let p = sprintf "%s/%s(%d)" p (x.source.GetType().Name) (System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(x.source))
-                          x.path <- Some p
-                          p
-
-
-    #if DEBUGSCOPES
-    type Node (scope : Scope) =
-
-        let children = List<Node>()
-
-        member x.Scope = scope
-
-        member x.Children = children
-        
-
-    let mutable strong : HashSet<Node> = Unchecked.defaultof<_>
-                    
-    let makeStrongReferences() =
-        let roots =  HashSet<Node>()
-        let nodes = Dictionary<Scope, Node>()
-
-        for x in allScopes do
-            let wr = x :?> System.WeakReference<obj>
-            match wr.TryGetTarget() with
-                | (true, sr) -> 
-                    let scope = sr :?> Scope
-                                                    
-                    let n = match nodes.TryGetValue scope with
-                            | (true, n) -> n
-                            | _ -> let n = Node(scope)
-                                   nodes.Add(scope, n)
-                                   n
-
-                    match scope.parent with 
-                        | Some p -> 
-                            let pn = match nodes.TryGetValue p with
-                                       | (true, pn) -> pn
-                                       | _ -> let n = Node(p)
-                                              nodes.Add(p, n)
-                                              n
-                            pn.Children.Add(n)
-
-                        | _ ->  roots.Add(n) |> ignore
-                    ()
-                | _ -> ()
-            ()
-        strong <- roots
-
-    let clearStrongReferences() =
-        strong <- Unchecked.defaultof<_>
-    #endif
-    
-    type Root<'a>(child : obj) =
-        member x.Child = child
-
-    let rootType = typeof<Root<_>>.GetGenericTypeDefinition()
-
-    //since some use-cases may need to deferr attribute-evaluation we provide a
-    //mechanism to capture the state needed therefore. this is realized by simply
-    //capturing the current scope. 
-    type Captured = Scope
-
-    let emptyScope = { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root"}
-    
-    let mutable private rootScope = new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })
-
-    let mutable currentScope = new ThreadLocal<Scope>(fun () -> rootScope.Value)
-
-    //temporary storage for inherited values
-
-    let private unpack (o : obj) =
-        match o with
-        | :? FSharp.Data.Adaptive.IAdaptiveValue as o -> o.GetValueUntyped(FSharp.Data.Adaptive.AdaptiveToken.Top)
-        | o -> o
-
-    let internal anyObject = obj()
-    let private valueStore = new ThreadLocal<Dictionary<obj * string, obj>>(fun () -> Dictionary<obj * string, obj>())
-    let private setValueStore (node : obj) (name : string) (value : obj) = 
-        let node = unpack node
-        valueStore.Value.[(node,name)] <- value
-    let private getValueStore (node : obj) (name : string) = 
-        let node = unpack node
-        match valueStore.Value.TryGetValue((node, name)) with
-        | (true,v) -> Some v
-        | _ -> 
-            match valueStore.Value.TryGetValue((anyObject, name)) with
-            | (true, v) -> Some v
-            | _ -> 
-                match rootScope.Value.TryGetChildScope(node) with
-                | Some s -> 
-                    match s.TryFindCacheValue name with
-                    | Some v -> v
-                    | _ -> None
-                | None -> 
-                    None
-
-    let private clearValueStore() = valueStore.Value.Clear()
-    
-    type System.Object with
-        member x.AllChildren = anyObject
-
-
-    [<OnAardvarkInit>]
-    let initialize () : unit =  
-        AgHelpers.initializeAg<Semantic>()
-
-    let reinitialize () : unit =  
-        AgHelpers.reIninitializeAg<Semantic>()
-        rootScope.Dispose()
-        currentScope.Dispose()
-        rootScope <- new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })
-        currentScope <- new ThreadLocal<Scope>(fun () -> rootScope.Value)
-
-    let clearCaches () =    
-        rootScope.Dispose()
-        currentScope.Dispose()
-        rootScope <- new ThreadLocal<Scope>(fun () -> { parent = None; source = null; children = newCWT(); cache = null; path = Some "Root" })
-        currentScope <- new ThreadLocal<Scope>(fun () -> rootScope.Value)
-        System.GC.Collect()
-        System.GC.WaitForPendingFinalizers()
-        System.GC.WaitForFullGCApproach() |> ignore
-        
-
-    // this is for profiling only - old benchmarks use getAttributeValueCount to estimate cache efficiencies etc.
-    let mutable getAttributeValueCount = 0
-
-    //attribute-search functions
-    //since we don't have control over semantic functions all attribute-evaluations
-    //have to communicate through global variables (which are ThreadLocal in order
-    //to avoid concurrency-problems). Using this technique we maintain a "call-stack"
-    //representing the current trace in the evaluation-tree. (Scope)
-
-    //whenever we call a semantic-function the currentScope needs to be set
-    //correctly since the ?-operators used inside the function need to know
-    //their current scope. therefore useScope executes a function in the given 
-    //scope and restores everything afterwards.
-    let inline useScope (s : Scope) (f : unit -> 'a) : 'a =
-        let oldScope = currentScope.Value
-        if Object.ReferenceEquals(oldScope, s) then
-            f()
-        else
-            currentScope.Value <- s
-            let r = f()
-            currentScope.Value <- oldScope
-            r
-
-    let unscoped f = useScope rootScope.Value f
-
-    //given a scope we can search for inherited attributes by navigating to parent scopes 
-    //when needed.
-    let rec private tryGetInhAttributeScopeInternal (node : obj) (cacheScopes : List<Scope>) (scope : Scope) (name : string) : Option<obj> =
-        if logging then Log.start "tryGetInhAttributeScopeInternal %s on scope: %A " name scope.Path
-        match scope.TryFindCacheValue name with
-            //if the current scope contains a cache-value for <name> we may simply return it
-            | Some(v) -> if logging then Log.stop ()
-                         v
-
-            //otherwise we need to search upwards for the attribute
-            | _ -> let parent = scope.parent
-                   match parent with
-                        //if there is a valid parent-scope we continue the search
-                        | Some(parent) when not (isNull parent.source) ->
-                                let parentType = parent.source.GetType()
-                                match tryFindSemanticFunction(parentType, name) with
-                                    //if there is a semantic-function applicable to the parent-node
-                                    //we run it "hoping" that it will write the desired value to valueStore
-                                    | Some(f) -> useScope parent (fun () -> if logging then Log.start "invoking inh method for sem %s for type %A. sf=%A" name parentType f
-                                                                            let r = f.Fun parent.source |> ignore
-                                                                            if logging then Log.stop ())
-                                                
-                                                 //if the semantic-function did not write the value to valueStore
-                                                 //it's considered invalid
-                                                 match getValueStore scope.source name with
-                                                        | Some v -> clearValueStore()
-                                                                    if logging then Log.stop "no cache, direct match in parent, found inh sem, adding to scope cache"
-                                                                    scope.AddCache name (Some v)
-                                                        | _ -> if logging then Log.stop (); 
-                                                               let domeagain =  getValueStore scope.source name
-                                                               failwithf "invalid inherit method %A" f.Method
-
-                                    //if there is no such function we continue to search up
-                                    //the tree. (auto-inherit)
-                                    | _ -> cacheScopes.Add(scope)
-                                           if logging then Log.line "autoinh."
-                                           let r = tryGetInhAttributeScopeInternal parent.source cacheScopes parent name
-                                           if logging then Log.stop ()
-                                           r
-
-                        //otherwise the attribute could not be found
-                        | _ -> 
-                            // find root semantic function by querying Root<S>, where S :> sourceType.
-                            let sourceType = node.GetType()
-                            match tryFindRootSemantics(rootType,sourceType, name) with
-                                | Some(f,rootCreator) -> 
-                                    if logging then Log.line "invoking sem: %A" f
-                                    // TODO: further optimize this
-                                    let rootInstance = rootCreator.Invoke scope.source 
-                                    f.Fun(rootInstance) |> ignore
-                                    match getValueStore scope.source name with
-                                        | Some v -> clearValueStore()
-                                                    if logging then Log.stop "no cache, searched attrib, found inh sem, adding to scope cache"
-                                                    scope.AddCache name (Some v)
-                                        | _ -> failwithf "invalid inherit method %A" f.Method
-                                | None ->
-                                    if logging then Log.stop "sem fun not found. adding none."
-                                    scope.AddCache name None
-
-    let inline private tryGetInhAttributeScope (node : obj) (scope : Scope) (name : string) : Option<obj> =
-        if logging then Log.start "tryGetInhAttributeScope %s on scope: %A " name scope.Path
-        let l = List<Scope>()
-        let r = tryGetInhAttributeScopeInternal node l scope name
-        l |> Seq.iter (fun si -> si.AddCache name r |> ignore)
-        if logging then if r.IsNone then Log.stop " --> result: none" else Log.stop " --> result: some"
-        r 
-
-    //synthesized attributes can directly be found for any node. but since they can
-    //depend on inherited attributes (most likely) they also need their scope.
-    let private tryGetSynAttributeScope (scope : Scope) (name : string) =
-        if logging then Log.start "tryGetSynAttributeScope %s on scope: %A" name scope.Path
-        match scope.TryFindCacheValue name with
-            //if the current scope contains a cache-value for <name> we may simply return it
-            | Some v -> if logging then Log.stop "cache found."
-                        v
-
-            //otherwise there needs to be a semantic-function creating the attribute value
-            | _ -> let sourceNode = scope.source
-                   let sourceType = sourceNode.GetType()
-                   match tryFindSemanticFunction(sourceType, name) with
-                        //if there is a semantic-function we run it and add a cache entry
-                        | Some(sf) -> let result = useScope scope (fun () -> if logging then Log.start "invoking sf: %A" sf
-                                                                             let r = sf.Fun sourceNode
-                                                                             if logging then Log.stop ()
-                                                                             r)
-                                      if logging then Log.stop ()
-                                      scope.AddCache name (Some result)
-
-                        //otherwise the synthesized attribute cannot be calculated
-                        | None -> if logging then Log.stop "not found."
-                                  None
-
-
-    //when not given a scope we need to use the currentScope
-    //these functions are called by the ?-operator
-    let tryGetInhAttribute (node : obj) (name : string) =
-        let inline up () =  
-            match currentScope.Value.parent with
-                | Some parent -> tryGetInhAttributeScope node (parent.GetChildScope node) name
-                | None -> None
-        match node with
-            | :? Scope as scope -> tryGetInhAttributeScope node scope name
-            | _ -> 
-                match rootScope.Value.TryGetChildScope node with
-                 | Some s -> 
-                    match s.cache.TryGetValue name with
-                        | (true, v) -> v
-                        | _ ->
-                            up ()
-                 | None -> up ()
-
-    let tryGetSynAttribute (o : obj) (name : string) =
-        match o with
-            | :? Scope as scope -> tryGetSynAttributeScope scope name
-            | _ -> tryGetSynAttributeScope (currentScope.Value.GetChildScope o) name
-
-
-    let tryGetAttributeType (attribute : string) (nodeType : System.Type) =
-        match AgHelpers.tryFindSemanticFunction(nodeType, attribute) with
-            | Some sf -> Some sf.ReturnType
-            | None -> None
-
-    //dynamic operators
-    let (?<-) (node : obj) (name : string) (value : obj) : unit =
-        if logging then Log.line "top level inh write for sem: %s on syntactic entity: %A" name (node.GetType())
-        
-        if currentScope.Value = rootScope.Value then
-            let scope = currentScope.Value.GetChildScope(node)
-            scope.AddCache name (Some value) |> ignore
-        else
-            //simply write to valueStore since the caller will then get the desired
-            //value from there
-            setValueStore node name value
-
-   
-
-    let (?) (node : obj) (name : string) : 'a =
-        let t = typeof<'a>
-
-        //when using an attribute like a function e.g. "a?Att()" we search for synthesized attributes
-        //otherwise we search for inherited attributes.
-        //WARNING: Inherited attributes can currently not be Functions (obviously)
-        if t.Name.StartsWith "FSharpFunc" then
-            if logging then Log.line "top level syn seach for sem: %s on syntactic entity: %A" name ( node.GetType() )
-            match tryGetSynAttribute node name with
-                | Some v -> Delay.delay v
-                | None -> failwithf "synthesized attribute %A for type %A not found on path: %s \ncandidates: %s" name (node.GetType()) currentScope.Value.Path (AgHelpers.sprintSemanticFunctions name)
-        else
-            // in the case of an inherited attribute, check if the query is on the anyObject
-            // e.g.: x.AllChildren?AttName this way an inherited attribute can be queried directly on the
-            // applicator node (conversely to x.AllChildren?AttName <- att) in that case a temporary child scope 
-            // is used before the inherited attribute is queried, which will at first pop that scope again, 
-            // but uses the supplied scope for storage. since the attribute itself is given by the local object, 
-            // it is also used as scope in order to allow the garbage collection to dispose the attribute together with the object
-            // NOTE: does not work on <scope>.AllChildren?AttName, either use Ag.useScope or manually build the temporary child scope
-            if System.Object.ReferenceEquals(node, anyObject) then
-                let local = currentScope.Value
-                let fakeChild = local.GetChildScope(local.source)
-                match tryGetInhAttribute fakeChild name with
-                    | Some v -> v |> unbox<'a>
-                    | None -> failwithf "inherited attribute %A for type %A not found on path: %s\ncandidates: %s" name (node.GetType()) currentScope.Value.Path (AgHelpers.sprintSemanticFunctions name)
-            else
-                if logging then Log.line "top level inh seach for sem: %s on syntactic entity: %A" name ( node.GetType() )
-                match tryGetInhAttribute node name with
-                    | Some v -> v |> unbox<'a>
-                    | None -> failwithf "inherited attribute %A for type %A not found on path: %s\ncandidates: %s" name (node.GetType()) currentScope.Value.Path (AgHelpers.sprintSemanticFunctions name)
-
-
-    //public entry points            
-    let tryGetAttributeValue(o : obj) (name:string) : Error<'a> =
-        match tryGetSynAttribute o name with
-            | Some v -> Success (v |> unbox<'a>)
-            | None -> match tryGetInhAttribute o name with
-                        | Some v -> Success (v |> unbox<'a>)
-                        | _ -> sprintf "attribute %A not found" name |> Error
-
-    //the mod-system needs to be able to capture a Ag-State/Context for re-execution
-    let getContext() = currentScope.Value
-    let setContext(v) = currentScope.Value <- v
+    let private globalValues = ConditionalWeakTable<obj, Dictionary<string, obj>>()
 
     [<AutoOpen>]
-    module CapturedExtensions =
-        type Scope with
-            member x.TryGetAttributeValue(name : string) : Error<'a> =
-                match tryGetSynAttributeScope x name with
-                    | Some v -> Success (v |> unbox<'a>)
-                    | None -> match tryGetInhAttributeScope null x name with
-                                | Some v -> Success (v |> unbox<'a>)
-                                | None -> Error "not found"
+    module private TypeHelpers =
+        open Microsoft.FSharp.Reflection
+    
+        let private genRx = System.Text.RegularExpressions.Regex @"^([^`]*)`[0-9]+$"
+
+        let withBrackets (str : string) =
+            if str.Contains " " && not (str.StartsWith "(") then "(" + str + ")"
+            else str
+
+        let rec prettyName (t : Type) : string =
+            if t.IsByRef then
+                let t = prettyName (t.GetElementType())
+                sprintf "byref<%s>" t
+
+            elif t.IsArray then
+                let d = t.GetArrayRank()
+                let t = prettyName (t.GetElementType())
+                if d = 1 then sprintf "array<%s>" t
+                else sprintf "array%dd<%s>" d t
+
+            elif FSharpType.IsTuple(t) then
+                let elems = FSharpType.GetTupleElements t |> Seq.map (prettyName >> withBrackets) |> String.concat " * "
+                if t.IsValueType then sprintf "struct(%s)" elems
+                else sprintf "%s" elems
+
+            elif FSharpType.IsFunction(t) then
+                let a, b = FSharpType.GetFunctionElements t
+                sprintf "%s -> %s" (prettyName a) (prettyName b)
+
+            elif t.IsGenericType then
+                let def = t.GetGenericTypeDefinition().Name
+                let m = genRx.Match def
+                let clean = 
+                    if m.Success then m.Groups.[1].Value
+                    else def
+
+                sprintf "%s<%s>" clean (t.GetGenericArguments() |> Seq.map prettyName |> String.concat ", ")
+
+            else
+                t.Name     
+
+    type Scope private(parent : option<Scope>, node : obj, childScopes : ConditionalWeakTable<obj, Scope>) =  
+        let inherited = Dictionary<string, option<obj>>()
+        let anyChild = Dictionary<string, option<obj>>()
+
+        let name = 
+            lazy (
+                match parent with
+                | None -> "Root"
+                | Some p ->
+                    let self = sprintf "%s[H%X]" (prettyName(node.GetType())) (node.GetHashCode())
+                    p.Name + "/" + self
+            )
+
+        [<ThreadStatic; DefaultValue>]
+        static val mutable private CurrentScope_ : option<Scope>
+
+        static let root =
+            Scope(None, null, ConditionalWeakTable<obj, Scope>())
+
+        static member internal CurrentScope
+            with get() = Scope.CurrentScope_
+            and set v = Scope.CurrentScope_ <- v
+
+        member x.Node = node
+        member x.Parent = parent
+
+        member private x.TryGetAnyChildValue(name : string) =
+            lock inherited (fun () ->
+                match anyChild.TryGetValue(name) with
+                | (true, v) -> Some v
+                | _ -> None
+            )
+
+        static member internal Pseudo(node : obj, childScope : Scope) =
+            let cwt = ConditionalWeakTable<obj, Scope>()
+            cwt.Add(childScope.Node, childScope)
+            Scope(None, node, cwt)
+
+        member internal x.SetInherited(name : string, value : option<obj>) =
+            lock inherited (fun () ->
+                inherited.[name] <- value
+            )
+
+        member internal x.SetInheritedForChild(child : obj, name : string, value : option<obj>) =
+            lock inherited (fun () ->
+                if child = anyObj then
+                    anyChild.[name] <- value
+                else
+                    let c = x.GetChildScope(child)
+                    c.SetInherited(name, value)
+            )
+
+        member private x.TryGetGlobalValue(name : string) =
+            match lock globalValues (fun () -> globalValues.TryGetValue(node)) with
+            | (true, d) ->
+                match lock d (fun () -> d.TryGetValue(name)) with
+                | (true, v) -> 
+                    Some v
+                | _ -> 
+                    None
+            | _ ->
+                None
+
+
+        member internal x.TryGetInheritedCache(name : string) : option<option<obj>> =
+            lock inherited (fun () ->
+                match x.TryGetGlobalValue(name) with
+                | Some v -> Some (Some v)
+                | None -> 
+                    match inherited.TryGetValue name with
+                    | (true, v) -> Some v
+                    | _ ->
+                        match parent with
+                        | Some p ->
+                            match p.TryGetAnyChildValue(name) with
+                            | Some v ->
+                                inherited.[name] <- v
+                                Some v
+                            | None ->
+                                None
+                        | None ->
+                            None
+            )
+
+
+        member x.Name : string =
+            name.Value
+
+        override x.ToString() =
+            name.Value
+
+        /// the root scope
+        static member Root = root
+
+        /// get a (possibly cached) child scope for the given node
+        member x.GetChildScope<'a when 'a : not struct>(node : 'a) : Scope =
+            lock childScopes (fun () ->
+                if typeof<'a>.IsValueType then
+                    Scope(Some x, node :> obj, ConditionalWeakTable<obj, Scope>())
+                else
+                    match childScopes.TryGetValue(node :> obj) with
+                    | (true, s) -> s
+                    | _ ->
+                        let s = Scope(Some x, node :> obj, ConditionalWeakTable<obj, Scope>())
+                        childScopes.Add(node :> obj, s)
+                        s
+            )
+            
+        /// attach a global inherited value to a node (overrides any other inheritance mechanisms).
+        static member SetGlobalValue<'a when 'a : not struct>(node : 'a, name : string, value : obj) : unit =
+            let dict =
+                lock globalValues (fun () ->
+                    match globalValues.TryGetValue node with
+                    | (true, d) -> d
+                    | _ -> 
+                        let d = Dictionary()
+                        globalValues.Add(node, d)
+                        d
+                )
+            lock dict (fun () ->
+                dict.[name] <- value
+            )
+
+    type Root<'a>(child : 'a) =
+        member x.Child = child
+
+    [<AutoOpen>]
+    module private Helpers =
+        open System.Reflection.Emit
+        open Aardvark.Base.TypeInfo
+
+        type NewRootDelegate = delegate of obj -> obj
+        type SynDelegateStatic = delegate of obj * Scope -> obj
+        type SynDelegateInstance = delegate of obj * obj * Scope -> obj
+        type InhDelegateStatic = delegate of obj * Scope -> unit
+        type InhDelegateInstance = delegate of obj * obj * Scope -> unit
+
+        
+        [<StructuredFormatDisplay("{AsString}")>]
+        type InheritMethod(mi : MethodInfo, invoke : obj -> Scope -> unit) =
+            member x.MethodInfo = mi
+            member x.Invoke = invoke
+
+            member private x.AsString = x.ToString()
+            override x.ToString() =
+                let decl = prettyName mi.DeclaringType
+                let nodeType = prettyName (mi.GetParameters().[0].ParameterType)
+                sprintf "%s.%s(node : %s, _)" decl mi.Name nodeType
+                
+        [<StructuredFormatDisplay("{AsString}")>]
+        type SynMethod(mi : MethodInfo, invoke : obj -> Scope -> obj) =
+            member x.MethodInfo = mi
+            member x.Invoke = invoke
+            
+            member private x.AsString = 
+                x.ToString()
+
+            override x.ToString() =
+                let decl = prettyName mi.DeclaringType
+                let ret = prettyName mi.ReturnType
+                let nodeType = prettyName (mi.GetParameters().[0].ParameterType)
+                sprintf "%s %s.%s(node : %s, _)" ret decl mi.Name nodeType
+
+        let createSynMethod (self : obj) (mi : MethodInfo) (nodeType : Type) : SynMethod =
+            let name = sprintf "Syn%s_%s" mi.Name nodeType.Name
+            let dyn = 
+                DynamicMethod(
+                    name,
+                    MethodAttributes.Public ||| MethodAttributes.Static,
+                    CallingConventions.Standard,
+                    typeof<obj>,
+                    [| 
+                        if not mi.IsStatic then yield typeof<obj>
+                        yield typeof<obj>
+                        yield typeof<Scope>
+                    |],
+                    typeof<Scope>,
+                    true
+                )
+
+            let il = dyn.GetILGenerator()
+
+            if mi.IsStatic then
+                il.Emit(OpCodes.Ldarg, 0)
+                if nodeType.IsValueType then 
+                    il.Emit(OpCodes.Unbox, nodeType)
+                    il.Emit(OpCodes.Ldind_Ref)
+
+                il.Emit(OpCodes.Ldarg, 1)
+                il.EmitCall(OpCodes.Call, mi, null)
+                if mi.ReturnType.IsValueType then il.Emit(OpCodes.Box, mi.ReturnType)
+                il.Emit(OpCodes.Ret)
+
+                let del = dyn.CreateDelegate(typeof<SynDelegateStatic>) |> unbox<SynDelegateStatic>
+                SynMethod(mi, fun (node : obj) (scope : Scope) -> del.Invoke(node, scope))
+            else
+                il.Emit(OpCodes.Ldarg, 0)
+                if mi.DeclaringType.IsValueType then 
+                    il.Emit(OpCodes.Unbox, mi.DeclaringType)
+                    il.Emit(OpCodes.Ldind_Ref)
+
+                il.Emit(OpCodes.Ldarg, 1)
+                if nodeType.IsValueType then 
+                    il.Emit(OpCodes.Unbox, nodeType)
+                    il.Emit(OpCodes.Ldind_Ref)
+
+                il.Emit(OpCodes.Ldarg, 2)
+
+                if mi.IsVirtual then il.EmitCall(OpCodes.Callvirt, mi, null)
+                else il.EmitCall(OpCodes.Call, mi, null)
+
+                if mi.ReturnType.IsValueType then il.Emit(OpCodes.Box, mi.ReturnType)
+                il.Emit(OpCodes.Ret)
+                
+                let del = dyn.CreateDelegate(typeof<SynDelegateInstance>) |> unbox<SynDelegateInstance>
+                SynMethod(mi, fun (node : obj) (scope : Scope) -> del.Invoke(self, node, scope))
+
+        let createInhMethod (self : obj) (mi : MethodInfo) (nodeType : Type) : InheritMethod =
+            let name = sprintf "Inh%s_%s" mi.Name nodeType.Name
+            let dyn = 
+                DynamicMethod(
+                    name,
+                    MethodAttributes.Public ||| MethodAttributes.Static,
+                    CallingConventions.Standard,
+                    typeof<System.Void>,
+                    [| 
+                        if not mi.IsStatic then yield typeof<obj>
+                        yield typeof<obj>
+                        yield typeof<Scope>
+                    |],
+                    typeof<Scope>,
+                    true
+                )
+
+            let il = dyn.GetILGenerator()
+
+            if mi.IsStatic then
+                il.Emit(OpCodes.Ldarg, 0)
+                if nodeType.IsValueType then 
+                    il.Emit(OpCodes.Unbox, nodeType)
+                    il.Emit(OpCodes.Ldind_Ref)
+
+                il.Emit(OpCodes.Ldarg, 1)
+                il.EmitCall(OpCodes.Call, mi, null)
+                il.Emit(OpCodes.Ret)
+
+                let del = dyn.CreateDelegate(typeof<InhDelegateStatic>) |> unbox<InhDelegateStatic>
+                InheritMethod(mi, fun (node : obj) (scope : Scope) -> del.Invoke(node, scope))
+            else
+                il.Emit(OpCodes.Ldarg, 0)
+                if mi.DeclaringType.IsValueType then 
+                    il.Emit(OpCodes.Unbox, mi.DeclaringType)
+                    il.Emit(OpCodes.Ldind_Ref)
+
+                il.Emit(OpCodes.Ldarg, 1)
+                if nodeType.IsValueType then 
+                    il.Emit(OpCodes.Unbox, nodeType)
+                    il.Emit(OpCodes.Ldind_Ref)
+
+                il.Emit(OpCodes.Ldarg, 2)
+
+                if mi.IsVirtual then il.EmitCall(OpCodes.Callvirt, mi, null)
+                else il.EmitCall(OpCodes.Call, mi, null)
+
+                il.Emit(OpCodes.Ret)
+                
+                let del = dyn.CreateDelegate(typeof<InhDelegateInstance>) |> unbox<InhDelegateInstance>
+                InheritMethod(mi, fun (node : obj) (scope : Scope) -> del.Invoke(self, node, scope))
+
+        let private rootCreators = System.Collections.Concurrent.ConcurrentDictionary<Type, obj -> obj>()
+
+        let getRootCreator (t : Type) =
+            rootCreators.GetOrAdd(t, System.Func<Type,_>(fun nodeType ->
+                let name = sprintf "NewRoot%s" nodeType.Name
+
+                let res = typedefof<Root<_>>.MakeGenericType [| nodeType |]
+                let ctor = res.GetConstructor([| nodeType |])
+                let dyn = 
+                    DynamicMethod(
+                        name,
+                        MethodAttributes.Public ||| MethodAttributes.Static,
+                        CallingConventions.Standard,
+                        typeof<obj>,
+                        [| 
+                            typeof<obj>
+                        |],
+                        typeof<obj>,
+                        true
+                    )
+                let il = dyn.GetILGenerator()
+                il.Emit(OpCodes.Ldarg, 0)
+                il.Emit(OpCodes.Newobj, ctor)
+                il.Emit(OpCodes.Ret)
+
+                let del = dyn.CreateDelegate(typeof<NewRootDelegate>) |> unbox<NewRootDelegate>
+                del.Invoke
+            ))
+
+
+
+
+        let private instances = ConcurrentDict<Type, option<obj>>(Dict())
+
+        let tryCreateInstance (t : Type) =
+            instances.GetOrCreate(t, fun t ->
+                let ctor = t.GetConstructor(BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance, Type.DefaultBinder, [||], null)
+                if isNull ctor then 
+                    None
+                else 
+                    let v = ctor.Invoke([||])
+                    Some v
+            )
+                
+        let (|SynMethod|_|) (mi : MethodInfo) =
+            let pars = mi.GetParameters()
+            if pars.Length = 2 && mi.ReturnType <> typeof<System.Void> && mi.ReturnType <> typeof<unit> then
+                if pars.[1].ParameterType.IsAssignableFrom typeof<Scope> then
+                    Some(mi.Name, mi)
+                else
+                    None
+            else    
+                None
+
+        let (|InhMethod|_|) (mi : MethodInfo) =
+            let pars = mi.GetParameters()
+            if pars.Length = 2 && (mi.ReturnType = typeof<System.Void> || mi.ReturnType = typeof<unit>) then
+                if pars.[1].ParameterType.IsAssignableFrom typeof<Scope> then
+                    Some(mi.Name, mi)
+                else
+                    None
+            else    
+                None
+        
+
+        type RuleTable() = 
+            let all =
+                let semTypes =
+                    Introspection.GetAllTypesWithAttribute<RuleAttribute>()
+                    |> Seq.collect (fun struct (t,_) -> t.GetMethods(BindingFlags.Static ||| BindingFlags.Instance ||| BindingFlags.NonPublic ||| BindingFlags.Public))
+                let semMeths = 
+                    Introspection.GetAllMethodsWithAttribute<RuleAttribute>()
+                    |> Seq.map (fun struct (m,_) -> m)
+                Seq.append semTypes semMeths 
+                |> Seq.filter (fun m -> not m.DeclaringType.ContainsGenericParameters)
+                |> Seq.filter (fun m -> not (isNull (m.DeclaringType.GetConstructor(BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance, Type.DefaultBinder, [||], null))))
+                |> Seq.toArray
+
+            let synRules : Dictionary<string, MethodInfo[]> =
+                all
+                |> Seq.choose (function 
+                    | SynMethod(name, mi) -> 
+                        Some (name, mi)
+                    | _ ->
+                        None
+                )
+                |> Seq.groupBy fst
+                |> Seq.map (fun (g, meths) -> g, meths |> Seq.map snd |> Seq.toArray)
+                |> Dictionary.ofSeq
+            
+            let inhRules : Dictionary<string, MethodInfo[]> =
+                all
+                |> Seq.choose (function 
+                    | InhMethod(name, mi) -> 
+                        Some (name, mi)
+                    | _ ->
+                        None
+                )
+                |> Seq.groupBy fst
+                |> Seq.map (fun (g, meths) -> g, meths |> Seq.map snd |> Seq.toArray)
+                |> Dictionary.ofSeq
+
+            let synCache = ConcurrentDict(Dict<string * Type * Type, option<SynMethod>>())
+            let inhCache = ConcurrentDict(Dict<string * Type, option<InheritMethod>>())
+
+            member x.TryGetSynRule(name : string, nodeType : Type, expectedType : Type) : option<SynMethod> =
+                synCache.GetOrCreate((name, nodeType, expectedType), fun (name, nodeType, expectedType) ->
+                    match synRules.TryGetValue name with
+                    | (true, rules) ->
+                        let argTypes = [| nodeType; typeof<Scope> |]
+                        let applicable = rules |> Array.choose (fun m -> m.TrySpecialize(argTypes, expectedType))
+
+                        if applicable.Length = 0 then
+                            None
+                        elif applicable.Length = 1 then
+                            let m = applicable.[0]
+                        
+                            let instance =
+                                if m.IsStatic then Some null
+                                else tryCreateInstance m.DeclaringType
+                            match instance with
+                            | Some instance -> createSynMethod instance m nodeType |> Some
+                            | None -> None
+                        else
+                            let mb = applicable |> Array.map (fun m -> m :> MethodBase)
+                            try
+                                let selected = 
+                                    Type.DefaultBinder.SelectMethod(
+                                        BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance ||| BindingFlags.Static,
+                                        mb, argTypes, null
+                                    )
+                                match selected with
+                                | null -> None
+                                | :? MethodInfo as m ->
+                                    let instance =
+                                        if m.IsStatic then Some null
+                                        else tryCreateInstance m.DeclaringType
+                                    match instance with
+                                    | Some instance ->createSynMethod instance m nodeType |> Some
+                                    | None -> None
+                                | _ -> 
+                                    None
+                            with _ ->
+                                None
+                    | _ ->
+                        None
+                )
+         
+            member x.TryGetInhRule(name : string, nodeType : Type) : option<InheritMethod> =
+                inhCache.GetOrCreate((name, nodeType), fun (name, nodeType) ->
+                    match inhRules.TryGetValue name with
+                    | (true, rules) ->
+                        let argTypes = [| nodeType; typeof<Scope> |]
+                        let applicable = rules |> Array.choose (fun m -> m.TrySpecialize(argTypes, typeof<System.Void>))
+
+                        if applicable.Length = 0 then
+                            None
+                        elif applicable.Length = 1 then
+                            let m = applicable.[0]
+                        
+                            let instance =
+                                if m.IsStatic then Some null
+                                else tryCreateInstance m.DeclaringType
+                            match instance with
+                            | Some instance -> createInhMethod instance m nodeType |> Some
+                            | None -> None
+                        else
+                            let mb = applicable |> Array.map (fun m -> m :> MethodBase)
+                            try
+                                let selected = 
+                                    Type.DefaultBinder.SelectMethod(
+                                        BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance ||| BindingFlags.Static,
+                                        mb, argTypes, null
+                                    )
+                                match selected with
+                                | null -> None
+                                | :? MethodInfo as m ->
+                                    let instance =
+                                        if m.IsStatic then Some null
+                                        else tryCreateInstance m.DeclaringType
+                                    match instance with
+                                    | Some instance -> createInhMethod instance m nodeType |> Some
+                                    | None -> None
+                                | _ -> 
+                                    None
+                            with _ ->
+                                None
+                    | _ ->
+                        None
+                )
+
+        let table = lazy (RuleTable())
+
+    let rec internal runinh (scope : Scope) (name : string) =
+        match scope.TryGetInheritedCache(name) with
+        | Some v -> 
+            v
+        | None ->
+            match scope.Parent with
+            | Some p ->
+                if isNull p.Node then
+                    let self = scope.Node.GetType().GetAllBaseTypesAndSelf()
+
+                    let meth =
+                        self |> List.tryPick (fun t ->
+                            let pseudo = typedefof<Root<_>>.MakeGenericType [| t |]
+                            match table.Value.TryGetInhRule(name, pseudo) with
+                            | Some m -> Some (t, m)
+                            | None-> None
+                        )
+                    
+                    match meth with
+                    | Some (t, inh) ->
+                        let root = getRootCreator t scope.Node
+                        let pseudo = Scope.Pseudo(root, scope)
+                        let o = Scope.CurrentScope
+                        Scope.CurrentScope <- Some pseudo
+                        inh.Invoke root pseudo
+                        Scope.CurrentScope <- o
+                        match scope.TryGetInheritedCache(name) with
+                        | Some v ->     
+                            v
+                        | None -> 
+                            Log.warn "[Ag] bad root inherit method: %A" inh
+                            None
+                    | None ->
+                        // root
+                        None
+                else
+
+                    match table.Value.TryGetInhRule(name, p.Node.GetType()) with
+                    | Some inh ->
+                        let o = Scope.CurrentScope
+                        Scope.CurrentScope <- Some p
+                        inh.Invoke p.Node p
+                        Scope.CurrentScope <- o
+                        match scope.TryGetInheritedCache(name) with
+                        | Some v -> v
+                        | None -> 
+                            Log.warn "[Ag] bad inherit method: %A" inh
+                            None
+                    | None ->
+                        let res = runinh p name
+                        scope.SetInherited(name, res)
+                        res
+            | None ->
+                None
+
+    let internal syn (node : 'a) (scope : Scope) (name : string) (expectedType : Type) =
+        if isNull (node :> obj) then 
+            None
+        else
+            let t = node.GetType()
+            match table.Value.TryGetSynRule(name, t, expectedType)  with
+            | Some syn ->
+                let newScope = scope.GetChildScope(node)
+                syn.Invoke (node :> obj) newScope |> Some
+            | _ ->
+                None
+   
+    
+    type System.Object with
+        member x.AllChildren = anyObj
+
+    let internal set<'a, 'b when 'a : not struct> (target : 'a) (name : string) (value : 'b) =
+        let node = 
+            match target :> obj with
+            | :? FSharp.Data.Adaptive.IAdaptiveValue as v -> v.GetValueUntyped(FSharp.Data.Adaptive.AdaptiveToken.Top)
+            | n -> n
+        match Scope.CurrentScope with
+        | Some s -> 
+            // classic aval unpacking here
+            s.SetInheritedForChild(node, name, Some (value :> obj))
+        | None ->
+            Scope.SetGlobalValue(node, name, value :> obj)
+
+    let (?<-) (target : 'a) (name : string) (value : 'b) = set target name value
+
+    [<CompilerMessage("internal use only", 1337, IsHidden = true)>]
+    type Operators private() =
+        static member Get(scope : Scope, name : string) : 'a =
+            match runinh scope name with
+            | Some (:? 'a as v) -> v
+            | _ -> failwithf "[Ag] could not get inh attribute %s in scope %A" name scope
+
+        static member Get(node : 'a, name : string) : Scope -> 'b =
+            fun s -> 
+                match syn (node :> obj) s name typeof<'b> with
+                | Some (:? 'b as v) -> 
+                    v
+                | Some v ->
+                    failwithf "[Ag] invalid result for syn attribute %s on node %A: %A" name node v
+                | None ->
+                    failwithf "[Ag] could not get syn attribute %s on node %A" name node
+
+    let inline private opAux (_d : 'd) (a : 'a) (b : 'b) : 'c =
+        ((^a or ^b or ^d) : (static member Get : ^a * ^b -> ^c) (a, b))
+
+    let inline (?) a b = opAux Unchecked.defaultof<Operators> a b
+
+
+[<AbstractClass; Sealed; Extension>]
+type AgScopeExtensions private() =
+    [<Extension>]
+    static member TryGetInherited(this : Ag.Scope, name : string) =
+        Ag.runinh this name
+        
+    [<Extension>]
+    static member GetInherted(this : Ag.Scope, name : string) =
+        match Ag.runinh this name with
+        | Some v -> v
+        | None -> failwithf "[Ag] could not get inh attribute %s in scope %A" name this
+        
+    [<Extension>]
+    static member TryGetSynthesized<'a>(node : obj, name : string, scope : Ag.Scope) =
+        Ag.syn node scope name typeof<'a>
+        
+    [<Extension>]
+    static member GetSynthesized<'a>(node : obj, name : string, scope : Ag.Scope) =
+        match Ag.syn node scope name typeof<'a> with
+        | Some v -> v
+        | None -> failwithf "[Ag] could not get syn attribute %s on node %A" name node
+
+//[<AutoOpen>]
+//module AgOperators =    
+//    open Ag
+    
+//    type System.Object with
+//        member x.AllChildren = anyObj
+
+//    let internal set<'a, 'b when 'a : not struct> (target : 'a) (name : string) (value : 'b) =
+//        let node = 
+//            match target :> obj with
+//            | :? FSharp.Data.Adaptive.IAdaptiveValue as v -> v.GetValueUntyped(FSharp.Data.Adaptive.AdaptiveToken.Top)
+//            | n -> n
+//        match Scope.CurrentScope with
+//        | Some s -> 
+//            // classic aval unpacking here
+//            s.SetInheritedForChild(node, name, Some (value :> obj))
+//        | None ->
+//            Scope.SetGlobalValue(node, name, value :> obj)
+
+//    let (?<-) (target : 'a) (name : string) (value : 'b) = set target name value
+
+//    [<CompilerMessage("internal use only", 1337, IsHidden = true)>]
+//    type Operators private() =
+//        static member Get(scope : Scope, name : string) : 'a =
+//            match Ag.runinh scope name with
+//            | Some (:? 'a as v) -> v
+//            | _ -> failwithf "[Ag] could not get inh attribute %s in scope %A" name scope
+
+//        static member Get(node : 'a, name : string) : Scope -> 'b =
+//            fun s -> 
+//                match syn (node :> obj) s name typeof<'b> with
+//                | Some (:? 'b as v) -> 
+//                    v
+//                | Some v ->
+//                    failwithf "[Ag] invalid result for syn attribute %s on node %A: %A" name node v
+//                | None ->
+//                    failwithf "[Ag] could not get syn attribute %s on node %A" name node
+
+//    let inline private opAux (_d : 'd) (a : 'a) (b : 'b) : 'c =
+//        ((^a or ^b or ^d) : (static member Get : ^a * ^b -> ^c) (a, b))
+
+//    let inline (?) a b = opAux Unchecked.defaultof<Operators> a b
+

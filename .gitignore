@@ -1,3 +1,4 @@
+**/.DS_Store
 /.paket/paket.exe
 /src/Aardvark.Base/obj
 /src/*.suo

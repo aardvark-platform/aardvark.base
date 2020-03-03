@@ -11,6 +11,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 
 namespace Aardvark.Base
 {
@@ -150,11 +152,13 @@ namespace Aardvark.Base
             => GetAll___<(MethodInfo, T[])>(a, typeof(T).FullName,
                   lines => from line in lines
                            let t = Type.GetType(line)
+                           where t != null
                            from m in t.GetMethods()
                            let attribs = m.GetCustomAttributes(typeof(T), false)
                            where attribs.Length > 0
                            select (m, attribs.Select(x => (T)x).ToArray()),
                   types => from t in types
+                           where t != null
                            from m in t.GetMethods()
                            let attribs = m.GetCustomAttributes(typeof(T), false)
                            where attribs.Length > 0
@@ -562,51 +566,103 @@ namespace Aardvark.Base
             }
         }
 
-        private static bool IsPlugin(string file)
+        private static Regex versionRx = new Regex(@"^[ \t]*(?<name>[\.A-Za-z_0-9]+)[ \t]*,[ \t]*(v|V)ersion[ \t]*=[ \t]*(?<version>[\.A-Za-z_0-9]+)$");
+
+        private static unsafe bool IsPlugin(string file)
         {
             try
             {
-                var a = Assembly.LoadFile(file);
-                var empty = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(a).IsEmpty();
-                if (!empty)
+                using (var s = File.OpenRead(file))
+                using (var v = new System.Reflection.PortableExecutable.PEReader(s))
                 {
-                    Report.Line(3, "[GetPluginAssemblyPaths] found plugins in: {0}", file);
-                    return true;
-                }
-                else
-                {
+                    if (v.PEHeaders.CorHeader == null || !v.HasMetadata) return false;
+                    var data = v.GetMetadata();
+                    var m = new System.Reflection.Metadata.MetadataReader(data.Pointer, data.Length);
+
+
+                    var assdef = m.GetAssemblyDefinition();
+                    foreach (var att in assdef.GetCustomAttributes())
+                    {
+                        var attDef = m.GetCustomAttribute(att);
+                        if (attDef.Constructor.Kind == System.Reflection.Metadata.HandleKind.MemberReference)
+                        {
+                            var hh = (System.Reflection.Metadata.MemberReferenceHandle)attDef.Constructor;
+                            var e = m.GetMemberReference(hh);
+                            var pp = e.Parent;
+                            if (pp.Kind == System.Reflection.Metadata.HandleKind.TypeReference)
+                            {
+                                var attType = m.GetTypeReference((System.Reflection.Metadata.TypeReferenceHandle)pp);
+                                var nameStr = m.GetString(attType.Name);
+                                var nsStr = m.GetString(attType.Namespace);
+                                if (nsStr == "System.Runtime.Versioning" && nameStr == "TargetFrameworkAttribute")
+                                {
+                                    var reader = m.GetBlobReader(attDef.Value);
+                                    if (reader.ReadUInt16() == 1)
+                                    {
+                                        var version = reader.ReadSerializedString();
+                                        var match = versionRx.Match(version);
+                                        if (match.Success)
+                                        {
+                                            var fwName = match.Groups["name"].Value;
+                                            var isLoadable =
+                                                (fwName == ".NETCoreApp") ||
+                                                (fwName == ".NETStandard");
+                                            if (!isLoadable) return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (var t in m.TypeDefinitions)
+                    {
+                        var def = m.GetTypeDefinition(t);
+                        foreach (var meth in def.GetMethods())
+                        {
+                            var mdef = m.GetMethodDefinition(meth);
+                            var hasInitAtt =
+                                mdef.GetCustomAttributes().Any(att =>
+                                {
+                                    var attDef = m.GetCustomAttribute(att);
+                                    if (attDef.Constructor.Kind == System.Reflection.Metadata.HandleKind.MemberReference)
+                                    {
+                                        var hh = (System.Reflection.Metadata.MemberReferenceHandle)attDef.Constructor;
+                                        var e = m.GetMemberReference(hh);
+                                        var pp = e.Parent;
+                                        if (pp.Kind == System.Reflection.Metadata.HandleKind.TypeReference)
+                                        {
+                                            var attType = m.GetTypeReference((System.Reflection.Metadata.TypeReferenceHandle)pp);
+                                            var nameStr = m.GetString(attType.Name);
+                                            var nsStr = m.GetString(attType.Namespace);
+                                            if (nsStr == "Aardvark.Base" && nameStr == "OnAardvarkInitAttribute") 
+                                            {
+                                                return true;
+                                            }
+                                            else return false;
+                                        }
+                                        else return false;
+                                    }
+                                    else return false;
+                                });
+
+                            if (hasInitAtt) return true;
+                        }
+                    }
+
                     return false;
                 }
             }
-            catch(FileLoadException e)
+            catch(Exception)
             {
-                Report.Line(3, "[GetPluginAssemblyPaths] IsPlugin({0}) failed.", file);
-                Report.Line(3, "[GetPluginAssemblyPaths] (FileLoad) Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
-                Report.Line(5, "[GetPluginAssemblyPaths] StackTrace (outer): {0}", e.StackTrace.ToString());
-                try {
-                    Report.Line(5, "[GetPluginAssemblyPaths] FusionLog: {0}", e.FusionLog);
-                    if (e.InnerException != null)
-                    {
-                        Report.Line(5, "[GetPluginAssemblyPaths] Inner message: {0}", e.InnerException.Message);
-                        Report.Line(5, "[GetPluginAssemblyPaths] Inner stackTrace: {0}", e.InnerException.StackTrace.ToString());
-                    }
-                } catch(Exception)
-                {
-                    Report.Line(5, "[GetPluginAssemblyPaths] could not print details for FileLoadException (most likely BadImageFormat)");
-                }
-                return false;
-            }
-            catch (Exception e)
-            {
-                Report.Line(3, "[GetPluginAssemblyPaths] IsPlugin({0}) failed.", file);
-                Report.Line(3, "[GetPluginAssemblyPaths] Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
-                Report.Line(5, "[GetPluginAssemblyPaths] {0}", e.StackTrace.ToString());
+                Report.Warn("NO PLUGIN: {0}", file);
                 return false;
             }
         }
 
         public string[] GetPluginAssemblyPaths()
         {
+
             var cache = ReadCacheFile();
             var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
 
@@ -670,6 +726,7 @@ namespace Aardvark.Base
             return paths.ToArray();
         }
 
+
         public static List<Assembly> LoadPlugins()
         {
             //Note: I removed the separate AppDomain for Plugin probing because:
@@ -678,6 +735,7 @@ namespace Aardvark.Base
             //   var paths = aardvark.GetPluginAssemblyPaths();
             //   was actually executed in this AppDomain.
             //Changes are marked with APPD
+
 
             //APPD var setup = new AppDomainSetup();
             //APPD setup.ApplicationBase = IntrospectionProperties.CurrentEntryPath;
@@ -691,6 +749,7 @@ namespace Aardvark.Base
                 aardvark.CacheFile = Aardvark.s_cacheFile;
                 var paths = aardvark.GetPluginAssemblyPaths();
                 //APPD AppDomain.Unload(d);
+
 
                 var assemblies = new List<Assembly>();
 
@@ -1497,12 +1556,6 @@ namespace Aardvark.Base
             Report.Line("Processor:   {0} core {1}", Environment.ProcessorCount, ArchitectureString(RuntimeInformation.OSArchitecture));
             Report.Line("Process:     {0}", ArchitectureString(RuntimeInformation.ProcessArchitecture));
             Report.Line("Framework:   {0}", RuntimeInformation.FrameworkDescription);
-
-            if (RuntimeInformation.OSDescription.StartsWith("Darwin"))
-            {
-                Report.Error("Sorry, MacOS is not supported yet!");
-                Environment.Exit(1);
-            }
 
             if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
             {
