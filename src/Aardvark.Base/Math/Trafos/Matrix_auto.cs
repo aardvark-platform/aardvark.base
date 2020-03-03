@@ -4395,6 +4395,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f RotationInDegrees(float angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 2D rotation matrix from a <see cref="Rot2f"/>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6245,6 +6252,13 @@ namespace Aardvark.Base
                  a, -b, 
                  b,  a);
         }
+
+        /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d RotationInDegrees(double angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 2D rotation matrix from a <see cref="Rot2d"/>
@@ -11832,6 +11846,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f RotationInDegrees(float angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 2D rotation matrix from a <see cref="Rot2f"/>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13617,6 +13638,13 @@ namespace Aardvark.Base
                  a, -b,  0, 
                  b,  a,  0);
         }
+
+        /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d RotationInDegrees(double angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
         /// Creates a 2D rotation matrix from a <see cref="Rot2d"/>
@@ -20307,6 +20335,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f RotationInDegrees(float angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix from a <see cref="Rot3f"/>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20332,7 +20367,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a 3D rotation matrix from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f RotationInDegrees(V3f normalizedAxis, float angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20342,17 +20385,37 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f RotationEuler(V3f roll_pitch_yaw_inRadians)
-        {
-            return (M33f)(Rot3f.RotationEuler(
-                roll_pitch_yaw_inRadians.X,
-                roll_pitch_yaw_inRadians.Y,
-                roll_pitch_yaw_inRadians.Z));
-        }
+        public static M33f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(), 
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f RotationEuler(V3f rollPitchYawInRadians)
+            => RotationEuler(
+                rollPitchYawInRadians.X,
+                rollPitchYawInRadians.Y,
+                rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f RotationEulerInDegrees(V3f rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a 3D rotation matrix which rotates one vector into another.
@@ -20380,6 +20443,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static M33f RotationXInDegrees(float angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M33f RotationY(float angleRadians)
@@ -20394,6 +20463,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static M33f RotationYInDegrees(float angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M33f RotationZ(float angleRadians)
@@ -20406,6 +20481,12 @@ namespace Aardvark.Base
                  b,  a,  0, 
                  0,  0,  1);
         }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static M33f RotationZInDegrees(float angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
 
         #endregion
 
@@ -22802,6 +22883,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d RotationInDegrees(double angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix from a <see cref="Rot3d"/>
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22827,7 +22915,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a 3D rotation matrix from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d RotationInDegrees(V3d normalizedAxis, double angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22837,17 +22933,37 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d RotationEuler(V3d roll_pitch_yaw_inRadians)
-        {
-            return (M33d)(Rot3d.RotationEuler(
-                roll_pitch_yaw_inRadians.X,
-                roll_pitch_yaw_inRadians.Y,
-                roll_pitch_yaw_inRadians.Z));
-        }
+        public static M33d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(), 
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d RotationEuler(V3d rollPitchYawInRadians)
+            => RotationEuler(
+                rollPitchYawInRadians.X,
+                rollPitchYawInRadians.Y,
+                rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d RotationEulerInDegrees(V3d rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a 3D rotation matrix which rotates one vector into another.
@@ -22875,6 +22991,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static M33d RotationXInDegrees(double angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M33d RotationY(double angleRadians)
@@ -22889,6 +23011,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static M33d RotationYInDegrees(double angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M33d RotationZ(double angleRadians)
@@ -22901,6 +23029,12 @@ namespace Aardvark.Base
                  b,  a,  0, 
                  0,  0,  1);
         }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static M33d RotationZInDegrees(double angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
 
         #endregion
 
@@ -29785,7 +29919,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a 3D rotation matrix from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f RotationInDegrees(V3f normalizedAxis, float angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29795,17 +29937,37 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f RotationEuler(V3f roll_pitch_yaw_inRadians)
-        {
-            return (M34f)(Rot3f.RotationEuler(
-                roll_pitch_yaw_inRadians.X,
-                roll_pitch_yaw_inRadians.Y,
-                roll_pitch_yaw_inRadians.Z));
-        }
+        public static M34f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(), 
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f RotationEuler(V3f rollPitchYawInRadians)
+            => RotationEuler(
+                rollPitchYawInRadians.X,
+                rollPitchYawInRadians.Y,
+                rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f RotationEulerInDegrees(V3f rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a 3D rotation matrix which rotates one vector into another.
@@ -29833,6 +29995,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static M34f RotationXInDegrees(float angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M34f RotationY(float angleRadians)
@@ -29847,6 +30015,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static M34f RotationYInDegrees(float angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M34f RotationZ(float angleRadians)
@@ -29859,6 +30033,12 @@ namespace Aardvark.Base
                  b,  a,  0,  0, 
                  0,  0,  1,  0);
         }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static M34f RotationZInDegrees(float angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
 
         #endregion
 
@@ -32042,7 +32222,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a 3D rotation matrix from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d RotationInDegrees(V3d normalizedAxis, double angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32052,17 +32240,37 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d RotationEuler(V3d roll_pitch_yaw_inRadians)
-        {
-            return (M34d)(Rot3d.RotationEuler(
-                roll_pitch_yaw_inRadians.X,
-                roll_pitch_yaw_inRadians.Y,
-                roll_pitch_yaw_inRadians.Z));
-        }
+        public static M34d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(), 
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d RotationEuler(V3d rollPitchYawInRadians)
+            => RotationEuler(
+                rollPitchYawInRadians.X,
+                rollPitchYawInRadians.Y,
+                rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d RotationEulerInDegrees(V3d rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a 3D rotation matrix which rotates one vector into another.
@@ -32090,6 +32298,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static M34d RotationXInDegrees(double angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M34d RotationY(double angleRadians)
@@ -32104,6 +32318,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static M34d RotationYInDegrees(double angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M34d RotationZ(double angleRadians)
@@ -32116,6 +32336,12 @@ namespace Aardvark.Base
                  b,  a,  0,  0, 
                  0,  0,  1,  0);
         }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static M34d RotationZInDegrees(double angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
 
         #endregion
 
@@ -40056,7 +40282,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a 3D rotation matrix from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f RotationInDegrees(V3f normalizedAxis, float angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40066,17 +40300,37 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f RotationEuler(V3f roll_pitch_yaw_inRadians)
-        {
-            return (M44f)(Rot3f.RotationEuler(
-                roll_pitch_yaw_inRadians.X,
-                roll_pitch_yaw_inRadians.Y,
-                roll_pitch_yaw_inRadians.Z));
-        }
+        public static M44f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(), 
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f RotationEuler(V3f rollPitchYawInRadians)
+            => RotationEuler(
+                rollPitchYawInRadians.X,
+                rollPitchYawInRadians.Y,
+                rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f RotationEulerInDegrees(V3f rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a 3D rotation matrix which rotates one vector into another.
@@ -40105,6 +40359,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static M44f RotationXInDegrees(float angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M44f RotationY(float angleRadians)
@@ -40120,6 +40380,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static M44f RotationYInDegrees(float angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M44f RotationZ(float angleRadians)
@@ -40133,6 +40399,12 @@ namespace Aardvark.Base
                  0,  0,  1,  0, 
                  0,  0,  0,  1);
         }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static M44f RotationZInDegrees(float angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
 
         #endregion
 
@@ -42935,7 +43207,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a 3D rotation matrix from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d RotationInDegrees(V3d normalizedAxis, double angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42945,17 +43225,37 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) Vector.
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d RotationEuler(V3d roll_pitch_yaw_inRadians)
-        {
-            return (M44d)(Rot3d.RotationEuler(
-                roll_pitch_yaw_inRadians.X,
-                roll_pitch_yaw_inRadians.Y,
-                roll_pitch_yaw_inRadians.Z));
-        }
+        public static M44d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(), 
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d RotationEuler(V3d rollPitchYawInRadians)
+            => RotationEuler(
+                rollPitchYawInRadians.X,
+                rollPitchYawInRadians.Y,
+                rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d RotationEulerInDegrees(V3d rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a 3D rotation matrix which rotates one vector into another.
@@ -42984,6 +43284,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static M44d RotationXInDegrees(double angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         public static M44d RotationY(double angleRadians)
@@ -42999,6 +43305,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static M44d RotationYInDegrees(double angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         public static M44d RotationZ(double angleRadians)
@@ -43012,6 +43324,12 @@ namespace Aardvark.Base
                  0,  0,  1,  0, 
                  0,  0,  0,  1);
         }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static M44d RotationZInDegrees(double angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
 
         #endregion
 

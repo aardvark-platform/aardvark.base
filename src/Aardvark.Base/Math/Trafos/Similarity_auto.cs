@@ -453,6 +453,15 @@ namespace Aardvark.Base
             => FromM33f(trafo.Forward, epsilon);
 
         /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2f Scaling(float scaleFactor)
+            => new Similarity2f(scaleFactor);
+
+        #region Translation
+
+        /// <summary>
         /// Creates a <see cref="Similarity2f"/> transformation with the translational component given by 2 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -460,25 +469,22 @@ namespace Aardvark.Base
             => new Similarity2f(Rot2f.Identity, tX, tY);
 
         /// <summary>
-        /// Creates a <see cref="Similarity2f"/>transformation with the translational component given by a <see cref="V2f"/> vector.
+        /// Creates a <see cref="Similarity2f"/> transformation with the translational component given by a <see cref="V2f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity2f Translation(V2f vector)
             => new Similarity2f(Rot2f.Identity, vector);
 
         /// <summary>
-        /// Creates a <see cref="Similarity2f"/> transformation with the translational component given by a <see cref="Shift2f"/> vector.
+        /// Creates an <see cref="Similarity2f"/> transformation with the translational component given by a <see cref="Shift2f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity2f Translation(Shift2f shift)
             => new Similarity2f(Rot2f.Identity, shift.V);
 
-        /// <summary>
-        /// Creates a scaling transformation using a uniform scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Similarity2f Scaling(float scaleFactor)
-            => new Similarity2f(scaleFactor);
+        #endregion
+
+        #region Rotation
 
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot2f"/>.
@@ -493,6 +499,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity2f Rotation(float angleInRadians)
             => new Similarity2f(new Rot2f(angleInRadians), V2f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2f RotationInDegrees(float angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        #endregion
 
         #endregion
 
@@ -1155,6 +1170,15 @@ namespace Aardvark.Base
             => FromM44f(trafo.Forward, epsilon);
 
         /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f Scaling(float scaleFactor)
+            => new Similarity3f(scaleFactor);
+
+        #region Translation
+
+        /// <summary>
         /// Creates a <see cref="Similarity3f"/> transformation with the translational component given by 3 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1162,25 +1186,22 @@ namespace Aardvark.Base
             => new Similarity3f(Rot3f.Identity, tX, tY, tZ);
 
         /// <summary>
-        /// Creates a <see cref="Similarity3f"/>transformation with the translational component given by a <see cref="V3f"/> vector.
+        /// Creates a <see cref="Similarity3f"/> transformation with the translational component given by a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity3f Translation(V3f vector)
             => new Similarity3f(Rot3f.Identity, vector);
 
         /// <summary>
-        /// Creates a <see cref="Similarity3f"/> transformation with the translational component given by a <see cref="Shift3f"/> vector.
+        /// Creates an <see cref="Similarity3f"/> transformation with the translational component given by a <see cref="Shift3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity3f Translation(Shift3f shift)
             => new Similarity3f(Rot3f.Identity, shift.V);
 
-        /// <summary>
-        /// Creates a scaling transformation using a uniform scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Similarity3f Scaling(float scaleFactor)
-            => new Similarity3f(scaleFactor);
+        #endregion
+
+        #region Rotation
 
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot3f"/>.
@@ -1198,7 +1219,15 @@ namespace Aardvark.Base
             => new Similarity3f(Rot3f.Rotation(normalizedAxis, angleRadians), V3f.Zero);
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a rotation transformation from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f RotationInDegrees(V3f normalizedAxis, float angleDegrees)
+            => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1206,13 +1235,34 @@ namespace Aardvark.Base
             => new Similarity3f(Rot3f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians), V3f.Zero);
 
         /// <summary>
-        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
-        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(),
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity3f RotationEuler(V3f rollPitchYawInRadians)
             => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3f RotationEulerInDegrees(V3f rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a rotation transformation which rotates one vector into another.
@@ -1229,6 +1279,12 @@ namespace Aardvark.Base
             => new Similarity3f(Rot3f.RotationX(angleRadians), V3f.Zero);
 
         /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static Similarity3f RotationXInDegrees(float angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1236,11 +1292,25 @@ namespace Aardvark.Base
             => new Similarity3f(Rot3f.RotationY(angleRadians), V3f.Zero);
 
         /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static Similarity3f RotationYInDegrees(float angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity3f RotationZ(float angleRadians)
             => new Similarity3f(Rot3f.RotationZ(angleRadians), V3f.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static Similarity3f RotationZInDegrees(float angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
+
+        #endregion
 
         #endregion
 
@@ -1885,6 +1955,15 @@ namespace Aardvark.Base
             => FromM33d(trafo.Forward, epsilon);
 
         /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2d Scaling(double scaleFactor)
+            => new Similarity2d(scaleFactor);
+
+        #region Translation
+
+        /// <summary>
         /// Creates a <see cref="Similarity2d"/> transformation with the translational component given by 2 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1892,25 +1971,22 @@ namespace Aardvark.Base
             => new Similarity2d(Rot2d.Identity, tX, tY);
 
         /// <summary>
-        /// Creates a <see cref="Similarity2d"/>transformation with the translational component given by a <see cref="V2d"/> vector.
+        /// Creates a <see cref="Similarity2d"/> transformation with the translational component given by a <see cref="V2d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity2d Translation(V2d vector)
             => new Similarity2d(Rot2d.Identity, vector);
 
         /// <summary>
-        /// Creates a <see cref="Similarity2d"/> transformation with the translational component given by a <see cref="Shift2d"/> vector.
+        /// Creates an <see cref="Similarity2d"/> transformation with the translational component given by a <see cref="Shift2d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity2d Translation(Shift2d shift)
             => new Similarity2d(Rot2d.Identity, shift.V);
 
-        /// <summary>
-        /// Creates a scaling transformation using a uniform scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Similarity2d Scaling(double scaleFactor)
-            => new Similarity2d(scaleFactor);
+        #endregion
+
+        #region Rotation
 
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot2d"/>.
@@ -1925,6 +2001,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity2d Rotation(double angleInRadians)
             => new Similarity2d(new Rot2d(angleInRadians), V2d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity2d RotationInDegrees(double angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        #endregion
 
         #endregion
 
@@ -2587,6 +2672,15 @@ namespace Aardvark.Base
             => FromM44d(trafo.Forward, epsilon);
 
         /// <summary>
+        /// Creates a scaling transformation using a uniform scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d Scaling(double scaleFactor)
+            => new Similarity3d(scaleFactor);
+
+        #region Translation
+
+        /// <summary>
         /// Creates a <see cref="Similarity3d"/> transformation with the translational component given by 3 scalars.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2594,25 +2688,22 @@ namespace Aardvark.Base
             => new Similarity3d(Rot3d.Identity, tX, tY, tZ);
 
         /// <summary>
-        /// Creates a <see cref="Similarity3d"/>transformation with the translational component given by a <see cref="V3d"/> vector.
+        /// Creates a <see cref="Similarity3d"/> transformation with the translational component given by a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity3d Translation(V3d vector)
             => new Similarity3d(Rot3d.Identity, vector);
 
         /// <summary>
-        /// Creates a <see cref="Similarity3d"/> transformation with the translational component given by a <see cref="Shift3d"/> vector.
+        /// Creates an <see cref="Similarity3d"/> transformation with the translational component given by a <see cref="Shift3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity3d Translation(Shift3d shift)
             => new Similarity3d(Rot3d.Identity, shift.V);
 
-        /// <summary>
-        /// Creates a scaling transformation using a uniform scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Similarity3d Scaling(double scaleFactor)
-            => new Similarity3d(scaleFactor);
+        #endregion
+
+        #region Rotation
 
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot3d"/>.
@@ -2630,7 +2721,15 @@ namespace Aardvark.Base
             => new Similarity3d(Rot3d.Rotation(normalizedAxis, angleRadians), V3d.Zero);
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a rotation transformation from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d RotationInDegrees(V3d normalizedAxis, double angleDegrees)
+            => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2638,13 +2737,34 @@ namespace Aardvark.Base
             => new Similarity3d(Rot3d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians), V3d.Zero);
 
         /// <summary>
-        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
-        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(),
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity3d RotationEuler(V3d rollPitchYawInRadians)
             => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Similarity3d RotationEulerInDegrees(V3d rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a rotation transformation which rotates one vector into another.
@@ -2661,6 +2781,12 @@ namespace Aardvark.Base
             => new Similarity3d(Rot3d.RotationX(angleRadians), V3d.Zero);
 
         /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static Similarity3d RotationXInDegrees(double angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2668,11 +2794,25 @@ namespace Aardvark.Base
             => new Similarity3d(Rot3d.RotationY(angleRadians), V3d.Zero);
 
         /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static Similarity3d RotationYInDegrees(double angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Similarity3d RotationZ(double angleRadians)
             => new Similarity3d(Rot3d.RotationZ(angleRadians), V3d.Zero);
+
+        /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static Similarity3d RotationZInDegrees(double angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
+
+        #endregion
 
         #endregion
 

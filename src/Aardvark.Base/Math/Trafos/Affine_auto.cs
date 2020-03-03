@@ -404,6 +404,8 @@ namespace Aardvark.Base
         public static Affine2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
             => FromM33f(trafo.Forward, epsilon);
 
+        #region Translation
+
         /// <summary>
         /// Creates an <see cref="Affine2f"/> transformation with the translational component given by 2 scalars.
         /// </summary>
@@ -412,7 +414,7 @@ namespace Aardvark.Base
             => new Affine2f(M22f.Identity, tX, tY);
 
         /// <summary>
-        /// Creates an <see cref="Affine2f"/>transformation with the translational component given by a <see cref="V2f"/> vector.
+        /// Creates an <see cref="Affine2f"/> transformation with the translational component given by a <see cref="V2f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2f Translation(V2f vector)
@@ -424,6 +426,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2f Translation(Shift2f shift)
             => new Affine2f(M22f.Identity, shift.V);
+
+        #endregion
+
+        #region Scale
 
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
@@ -453,6 +459,10 @@ namespace Aardvark.Base
         public static Affine2f Scale(Scale2f scale)
             => new Affine2f(M22f.Scale(scale));
 
+        #endregion
+
+        #region Rotation
+
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot2f"/>.
         /// </summary>
@@ -466,6 +476,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2f Rotation(float angleInRadians)
             => new Affine2f(M22f.Rotation(angleInRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2f RotationInDegrees(float angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        #endregion
 
         #endregion
 
@@ -1062,6 +1081,8 @@ namespace Aardvark.Base
         public static Affine3f FromTrafo3f(Trafo3f trafo, float epsilon = 1e-5f)
             => FromM44f(trafo.Forward, epsilon);
 
+        #region Translation
+
         /// <summary>
         /// Creates an <see cref="Affine3f"/> transformation with the translational component given by 3 scalars.
         /// </summary>
@@ -1070,7 +1091,7 @@ namespace Aardvark.Base
             => new Affine3f(M33f.Identity, tX, tY, tZ);
 
         /// <summary>
-        /// Creates an <see cref="Affine3f"/>transformation with the translational component given by a <see cref="V3f"/> vector.
+        /// Creates an <see cref="Affine3f"/> transformation with the translational component given by a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f Translation(V3f vector)
@@ -1082,6 +1103,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f Translation(Shift3f shift)
             => new Affine3f(M33f.Identity, shift.V);
+
+        #endregion
+
+        #region Scale
 
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
@@ -1111,6 +1136,10 @@ namespace Aardvark.Base
         public static Affine3f Scale(Scale3f scale)
             => new Affine3f(M33f.Scale(scale));
 
+        #endregion
+
+        #region Rotation
+
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot3f"/>.
         /// </summary>
@@ -1127,7 +1156,15 @@ namespace Aardvark.Base
             => new Affine3f(M33f.Rotation(normalizedAxis, angleRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a rotation transformation from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f RotationInDegrees(V3f normalizedAxis, float angleDegrees)
+            => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1135,13 +1172,34 @@ namespace Aardvark.Base
             => new Affine3f(M33f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
-        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(),
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f RotationEuler(V3f rollPitchYawInRadians)
             => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3f RotationEulerInDegrees(V3f rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a rotation transformation which rotates one vector into another.
@@ -1158,6 +1216,12 @@ namespace Aardvark.Base
             => new Affine3f(M33f.RotationX(angleRadians));
 
         /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static Affine3f RotationXInDegrees(float angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1165,11 +1229,27 @@ namespace Aardvark.Base
             => new Affine3f(M33f.RotationY(angleRadians));
 
         /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static Affine3f RotationYInDegrees(float angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f RotationZ(float angleRadians)
             => new Affine3f(M33f.RotationZ(angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static Affine3f RotationZInDegrees(float angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
+
+        #endregion
+
+        #region Shear
 
         /// <summary>
         /// Creates a shear transformation along the z-axis.
@@ -1188,6 +1268,8 @@ namespace Aardvark.Base
         /// </summary>
         public static Affine3f ShearYZ(float factorY, float factorZ)
             => new Affine3f(M33f.ShearYZ(factorY, factorZ));
+
+        #endregion
 
         #endregion
 
@@ -1756,6 +1838,8 @@ namespace Aardvark.Base
         public static Affine2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
             => FromM33d(trafo.Forward, epsilon);
 
+        #region Translation
+
         /// <summary>
         /// Creates an <see cref="Affine2d"/> transformation with the translational component given by 2 scalars.
         /// </summary>
@@ -1764,7 +1848,7 @@ namespace Aardvark.Base
             => new Affine2d(M22d.Identity, tX, tY);
 
         /// <summary>
-        /// Creates an <see cref="Affine2d"/>transformation with the translational component given by a <see cref="V2d"/> vector.
+        /// Creates an <see cref="Affine2d"/> transformation with the translational component given by a <see cref="V2d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d Translation(V2d vector)
@@ -1776,6 +1860,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d Translation(Shift2d shift)
             => new Affine2d(M22d.Identity, shift.V);
+
+        #endregion
+
+        #region Scale
 
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
@@ -1805,6 +1893,10 @@ namespace Aardvark.Base
         public static Affine2d Scale(Scale2d scale)
             => new Affine2d(M22d.Scale(scale));
 
+        #endregion
+
+        #region Rotation
+
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot2d"/>.
         /// </summary>
@@ -1818,6 +1910,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d Rotation(double angleInRadians)
             => new Affine2d(M22d.Rotation(angleInRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine2d RotationInDegrees(double angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        #endregion
 
         #endregion
 
@@ -2414,6 +2515,8 @@ namespace Aardvark.Base
         public static Affine3d FromTrafo3d(Trafo3d trafo, double epsilon = 1e-12)
             => FromM44d(trafo.Forward, epsilon);
 
+        #region Translation
+
         /// <summary>
         /// Creates an <see cref="Affine3d"/> transformation with the translational component given by 3 scalars.
         /// </summary>
@@ -2422,7 +2525,7 @@ namespace Aardvark.Base
             => new Affine3d(M33d.Identity, tX, tY, tZ);
 
         /// <summary>
-        /// Creates an <see cref="Affine3d"/>transformation with the translational component given by a <see cref="V3d"/> vector.
+        /// Creates an <see cref="Affine3d"/> transformation with the translational component given by a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d Translation(V3d vector)
@@ -2434,6 +2537,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d Translation(Shift3d shift)
             => new Affine3d(M33d.Identity, shift.V);
+
+        #endregion
+
+        #region Scale
 
         /// <summary>
         /// Creates a scaling transformation using a uniform scaling factor.
@@ -2463,6 +2570,10 @@ namespace Aardvark.Base
         public static Affine3d Scale(Scale3d scale)
             => new Affine3d(M33d.Scale(scale));
 
+        #endregion
+
+        #region Rotation
+
         /// <summary>
         /// Creates a rotation transformation from a <see cref="Rot3d"/>.
         /// </summary>
@@ -2479,7 +2590,15 @@ namespace Aardvark.Base
             => new Affine3d(M33d.Rotation(normalizedAxis, angleRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z). 
+        /// Creates a rotation transformation from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d RotationInDegrees(V3d normalizedAxis, double angleDegrees)
+            => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2487,13 +2606,34 @@ namespace Aardvark.Base
             => new Affine3d(M33d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from euler angles as a vector [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
-        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(),
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d RotationEuler(V3d rollPitchYawInRadians)
             => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Affine3d RotationEulerInDegrees(V3d rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
 
         /// <summary>
         /// Creates a rotation transformation which rotates one vector into another.
@@ -2510,6 +2650,12 @@ namespace Aardvark.Base
             => new Affine3d(M33d.RotationX(angleRadians));
 
         /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        public static Affine3d RotationXInDegrees(double angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the y-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2517,11 +2663,27 @@ namespace Aardvark.Base
             => new Affine3d(M33d.RotationY(angleRadians));
 
         /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        public static Affine3d RotationYInDegrees(double angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a rotation transformation by <paramref name="angleRadians"/> radians around the z-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d RotationZ(double angleRadians)
             => new Affine3d(M33d.RotationZ(angleRadians));
+
+        /// <summary>
+        /// Creates a rotation transformation for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        public static Affine3d RotationZInDegrees(double angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
+
+        #endregion
+
+        #region Shear
 
         /// <summary>
         /// Creates a shear transformation along the z-axis.
@@ -2540,6 +2702,8 @@ namespace Aardvark.Base
         /// </summary>
         public static Affine3d ShearYZ(double factorY, double factorZ)
             => new Affine3d(M33d.ShearYZ(factorY, factorZ));
+
+        #endregion
 
         #endregion
 

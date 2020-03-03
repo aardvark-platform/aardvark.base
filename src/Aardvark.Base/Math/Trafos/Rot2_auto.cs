@@ -22,7 +22,7 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
-        /// Constructs a <see cref="Rot2f"/> transformation given an rotation angle in radians.
+        /// Constructs a <see cref="Rot2f"/> transformation given a rotation angle in radians.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Rot2f(float angleInRadians)
@@ -344,6 +344,20 @@ namespace Aardvark.Base
         public static Rot2f FromTrafo2f(Trafo2f trafo, float epsilon = 1e-5f)
             => FromM33f(trafo.Forward, epsilon);
 
+        /// <summary>
+        /// Creates a <see cref="Rot2f"/> transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot2f FromRadians(float angleInRadians)
+            => new Rot2f(angleInRadians);
+
+        /// <summary>
+        /// Creates a <see cref="Rot2f"/> transformation with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot2f FromDegrees(float angleInDegrees)
+            => new Rot2f(angleInDegrees.RadiansFromDegrees());
+
         #endregion
 
         #region Conversion Operators
@@ -604,7 +618,7 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
-        /// Constructs a <see cref="Rot2d"/> transformation given an rotation angle in radians.
+        /// Constructs a <see cref="Rot2d"/> transformation given a rotation angle in radians.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Rot2d(double angleInRadians)
@@ -925,6 +939,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot2d FromTrafo2d(Trafo2d trafo, double epsilon = 1e-12)
             => FromM33d(trafo.Forward, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="Rot2d"/> transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot2d FromRadians(double angleInRadians)
+            => new Rot2d(angleInRadians);
+
+        /// <summary>
+        /// Creates a <see cref="Rot2d"/> transformation with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot2d FromDegrees(double angleInDegrees)
+            => new Rot2d(angleInDegrees.RadiansFromDegrees());
 
         #endregion
 

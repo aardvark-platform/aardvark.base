@@ -49,7 +49,7 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
-        /// Constructs a <see cref="__type__"/> transformation given an rotation angle in radians.
+        /// Constructs a <see cref="__type__"/> transformation given a rotation angle in radians.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__ angleInRadians)
@@ -289,6 +289,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ From__trafo2t__(__trafo2t__ trafo, __ftype__ epsilon = __eps__)
             => From__m33t__(trafo.Forward, epsilon);
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ FromRadians(__ftype__ angleInRadians)
+            => new __type__(angleInRadians);
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> transformation with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ FromDegrees(__ftype__ angleInDegrees)
+            => new __type__(angleInDegrees.RadiansFromDegrees());
 
         #endregion
 

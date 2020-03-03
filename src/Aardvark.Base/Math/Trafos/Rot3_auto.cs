@@ -678,6 +678,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="Rot3f"/> transformation representing a rotation around 
+        /// an axis by an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3f RotationInDegrees(V3f normalizedAxis, float angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a <see cref="Rot3f"/> transformation representing a rotation from one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
@@ -706,8 +715,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3f"/> rotation around the x-axis.
-        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// Creates a <see cref="Rot3f"/> transformation by <paramref name="angleInRadians"/> radians around the x-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3f RotationX(float angleInRadians)
@@ -717,8 +725,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3f"/> rotation around the y-axis.
-        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// Creates a <see cref="Rot3f"/> transformation by <paramref name="angleInDegrees"/> degrees around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3f RotationXInDegrees(float angleInDegrees)
+            => RotationX(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a <see cref="Rot3f"/> transformation by <paramref name="angleInRadians"/> radians around the y-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3f RotationY(float angleInRadians)
@@ -728,8 +742,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3f"/> rotation around the z-axis.
-        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// Creates a <see cref="Rot3f"/> transformation by <paramref name="angleInDegrees"/> degrees around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3f RotationYInDegrees(float angleInDegrees)
+            => RotationY(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a <see cref="Rot3f"/> transformation by <paramref name="angleInRadians"/> radians around the z-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3f RotationZ(float angleInRadians)
@@ -739,12 +759,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3f"/> transformation from euler angles [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// Creates a <see cref="Rot3f"/> transformation by <paramref name="angleInDegrees"/> radians around the z-axis.
         /// </summary>
-        /// <param name="rollInRadians">Rotation in radians around X</param>
-        /// <param name="pitchInRadians">Rotation in radians around Y</param>
-        /// <param name="yawInRadians">Rotation in radians around Z</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3f RotationZInDegrees(float angleInDegrees)
+            => RotationZ(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3f RotationEuler(float rollInRadians, float pitchInRadians, float yawInRadians)
         {
@@ -766,13 +790,31 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3f"/> rotation from euler angles as a vector [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
-        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(),
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3f RotationEuler(V3f rollPitchYawInRadians)
             => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3f RotationEulerInDegrees(V3f rollPitchYawInDegrees)
+            => RotationEulerInDegrees(rollPitchYawInDegrees.X, rollPitchYawInDegrees.Y, rollPitchYawInDegrees.Z);
 
         #endregion
 
@@ -1857,6 +1899,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="Rot3d"/> transformation representing a rotation around 
+        /// an axis by an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3d RotationInDegrees(V3d normalizedAxis, double angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
         /// Creates a <see cref="Rot3d"/> transformation representing a rotation from one vector into another.
         /// The input vectors have to be normalized.
         /// </summary>
@@ -1885,8 +1936,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3d"/> rotation around the x-axis.
-        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// Creates a <see cref="Rot3d"/> transformation by <paramref name="angleInRadians"/> radians around the x-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3d RotationX(double angleInRadians)
@@ -1896,8 +1946,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3d"/> rotation around the y-axis.
-        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// Creates a <see cref="Rot3d"/> transformation by <paramref name="angleInDegrees"/> degrees around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3d RotationXInDegrees(double angleInDegrees)
+            => RotationX(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a <see cref="Rot3d"/> transformation by <paramref name="angleInRadians"/> radians around the y-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3d RotationY(double angleInRadians)
@@ -1907,8 +1963,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3d"/> rotation around the z-axis.
-        /// <param name="angleInRadians">Rotation angle in radians</param>
+        /// Creates a <see cref="Rot3d"/> transformation by <paramref name="angleInDegrees"/> degrees around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3d RotationYInDegrees(double angleInDegrees)
+            => RotationY(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a <see cref="Rot3d"/> transformation by <paramref name="angleInRadians"/> radians around the z-axis.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3d RotationZ(double angleInRadians)
@@ -1918,12 +1980,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3d"/> transformation from euler angles [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
+        /// Creates a <see cref="Rot3d"/> transformation by <paramref name="angleInDegrees"/> radians around the z-axis.
         /// </summary>
-        /// <param name="rollInRadians">Rotation in radians around X</param>
-        /// <param name="pitchInRadians">Rotation in radians around Y</param>
-        /// <param name="yawInRadians">Rotation in radians around Z</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3d RotationZInDegrees(double angleInDegrees)
+            => RotationZ(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3d RotationEuler(double rollInRadians, double pitchInRadians, double yawInRadians)
         {
@@ -1945,13 +2011,31 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3d"/> rotation from euler angles as a vector [roll, pitch, yaw].
-        /// The rotation order is yaw (Z), pitch (Y), roll (X).
-        /// <param name="rollPitchYawInRadians">[roll, pitch, yaw] in radians</param>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(),
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3d RotationEuler(V3d rollPitchYawInRadians)
             => RotationEuler(rollPitchYawInRadians.X, rollPitchYawInRadians.Y, rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Rot3d RotationEulerInDegrees(V3d rollPitchYawInDegrees)
+            => RotationEulerInDegrees(rollPitchYawInDegrees.X, rollPitchYawInDegrees.Y, rollPitchYawInDegrees.Z);
 
         #endregion
 
