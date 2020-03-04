@@ -399,13 +399,36 @@ module Ag =
             let all =
                 let semTypes =
                     Introspection.GetAllTypesWithAttribute<RuleAttribute>()
-                    |> Seq.collect (fun struct (t,_) -> t.GetMethods(BindingFlags.Static ||| BindingFlags.Instance ||| BindingFlags.NonPublic ||| BindingFlags.Public))
+                    |> Seq.collect (fun struct (t,_) -> t.GetMethods(BindingFlags.Static ||| BindingFlags.Instance ||| BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.DeclaredOnly))
                 let semMeths = 
                     Introspection.GetAllMethodsWithAttribute<RuleAttribute>()
                     |> Seq.map (fun struct (m,_) -> m)
+
                 Seq.append semTypes semMeths 
-                |> Seq.filter (fun m -> not m.DeclaringType.ContainsGenericParameters)
-                |> Seq.filter (fun m -> not (isNull (m.DeclaringType.GetConstructor(BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance, Type.DefaultBinder, [||], null))))
+                |> Seq.filter (fun m -> 
+                    let decl = m.DeclaringType
+                    let ps = m.GetParameters()
+
+                    let generated = m.GetCustomAttribute<System.Runtime.CompilerServices.CompilerGeneratedAttribute>()
+
+                    if not (isNull generated) then
+                        false
+                    elif decl.ContainsGenericParameters then
+                        Log.warn "unexpected generic rule-type: %A" decl
+                        false
+                    elif ps.Length <> 2 || (ps.Length = 2 && ps.[1].ParameterType <> typeof<Scope>) then
+                        Log.warn "unexpected rule: %A" m
+                        false
+                    elif not m.IsStatic then
+                        let ctor = decl.GetConstructor(BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance, Type.DefaultBinder, [||], null)
+                        if isNull ctor then
+                            Log.warn "cannot construct rule type: %A" decl
+                            false
+                        else
+                            true
+                    else
+                        true
+                )
                 |> Seq.toArray
 
             let synRules : Dictionary<string, MethodInfo[]> =
@@ -523,6 +546,11 @@ module Ag =
 
         let table = lazy (RuleTable())
 
+    let hasSynRule (nodeType : Type) (expected : Type) (name : string) =
+        match table.Value.TryGetSynRule(name, nodeType, expected) with
+        | Some _ -> true
+        | None -> false
+
     let rec internal runinh (scope : Scope) (name : string) =
         match scope.TryGetInheritedCache(name) with
         | Some v -> 
@@ -638,20 +666,54 @@ type AgScopeExtensions private() =
         Ag.runinh this name
         
     [<Extension>]
+    static member TryGetInherited<'a>(this : Ag.Scope, name : string) =
+        match Ag.runinh this name with
+        | Some (:? 'a as res) -> Some res
+        | _ -> None
+        
+    [<Extension>]
     static member GetInherted(this : Ag.Scope, name : string) =
         match Ag.runinh this name with
         | Some v -> v
         | None -> failwithf "[Ag] could not get inh attribute %s in scope %A" name this
         
     [<Extension>]
-    static member TryGetSynthesized<'a>(node : obj, name : string, scope : Ag.Scope) =
-        Ag.syn node scope name typeof<'a>
+    static member GetInherted<'a>(this : Ag.Scope, name : string) =
+        match Ag.runinh this name with
+        | Some (:? 'a as res) -> res
+        | _ -> failwithf "[Ag] could not get inh attribute %s in scope %A" name this
         
+    [<Extension>]
+    static member TryGetSynthesized<'a>(node : obj, name : string, scope : Ag.Scope) =
+        match Ag.syn node scope name typeof<'a> with
+        | Some (:? 'a as res) -> Some res 
+        | _ -> None
+        
+    [<Extension>]
+    static member TryGetSynthesized<'a>(scope : Ag.Scope, name : string) =
+        if isNull scope.Node then failwithf "[Ag] cannot get syn attribute for scope with no node: %A" scope
+        match scope.Parent with
+        | Some p -> scope.Node.TryGetSynthesized<'a>(name, p)
+        | None -> scope.Node.TryGetSynthesized<'a>(name, Ag.Scope.Root)
+
     [<Extension>]
     static member GetSynthesized<'a>(node : obj, name : string, scope : Ag.Scope) =
         match Ag.syn node scope name typeof<'a> with
-        | Some v -> v
-        | None -> failwithf "[Ag] could not get syn attribute %s on node %A" name node
+        | Some (:? 'a as res) -> res
+        | _ -> failwithf "[Ag] could not get syn attribute %s on node %A" name node
+        
+    [<Extension>]
+    static member TryGetAttributeValue(scope : Ag.Scope, name : string) =
+        match scope.TryGetSynthesized(name) with
+        | Some v -> Some v
+        | None -> scope.TryGetInherited(name)
+
+    [<Extension>]
+    static member TryGetAttributeValue<'a>(scope : Ag.Scope, name : string) =
+        match scope.TryGetSynthesized<'a>(name) with
+        | Some v -> Some v
+        | None -> scope.TryGetInherited<'a>(name)
+
 
 //[<AutoOpen>]
 //module AgOperators =    
