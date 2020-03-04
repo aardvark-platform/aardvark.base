@@ -2248,7 +2248,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Square and Power
+        #region Square
 
         /// <summary>
         /// Returns the square of the specified number.
@@ -2338,18 +2338,41 @@ namespace Aardvark.Base
         public static decimal Square(this decimal x)
             => (decimal)(x * x);
 
+
+        #endregion
+
+        #region Power
+
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this byte x, float y)
+        public static float Power(this byte x, float y)
         {
             #if NETCOREAPP3_0
                 return MathF.Pow(x, y);
             #else
                 return (float)Math.Pow(x, y);
             #endif
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this byte x, float y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this byte x, double y)
+        {
+            return Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2358,8 +2381,43 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this byte x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Pown(this byte x, byte y)
         {
-            return Math.Pow(x, y);
+            return (byte)Pown((uint)x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Pown(this byte x, int y)
+        {
+            return (byte)Pown((uint)x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this sbyte x, float y)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(x, y);
+            #else
+                return (float)Math.Pow(x, y);
+            #endif
         }
 
         /// <summary>
@@ -2368,12 +2426,16 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this sbyte x, float y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this sbyte x, double y)
         {
-            #if NETCOREAPP3_0
-                return MathF.Pow(x, y);
-            #else
-                return (float)Math.Pow(x, y);
-            #endif
+            return Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2382,8 +2444,44 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this sbyte x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Pown(this sbyte x, sbyte y)
         {
-            return Math.Pow(x, y);
+            return (sbyte)Pown((int)x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Pown(this sbyte x, int y)
+        {
+            return (sbyte)Pown((int)x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this short x, float y)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Pow(x, y);
+            #else
+                return (float)Math.Pow(x, y);
+            #endif
         }
 
         /// <summary>
@@ -2392,12 +2490,16 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this short x, float y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this short x, double y)
         {
-            #if NETCOREAPP3_0
-                return MathF.Pow(x, y);
-            #else
-                return (float)Math.Pow(x, y);
-            #endif
+            return Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2406,8 +2508,30 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this short x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Pown(this short x, short y)
         {
-            return Math.Pow(x, y);
+            return (short)Pown((int)x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Pown(this short x, int y)
+        {
+            return (short)Pown((int)x, y);
         }
 
         /// <summary>
@@ -2415,7 +2539,7 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this ushort x, float y)
+        public static float Power(this ushort x, float y)
         {
             #if NETCOREAPP3_0
                 return MathF.Pow(x, y);
@@ -2429,9 +2553,58 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this ushort x, double y)
+        public static float Pow(this ushort x, float y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this ushort x, double y)
         {
             return Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this ushort x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Pown(this ushort x, ushort y)
+        {
+            return (ushort)Pown((uint)x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Pown(this ushort x, int y)
+        {
+            return (ushort)Pown((uint)x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this int x, float y)
+        {
+            return (float)Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2440,8 +2613,16 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this int x, float y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this int x, double y)
         {
-            return (float)Math.Pow(x, y);
+            return Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2450,8 +2631,36 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this int x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Pown(this int x, int y)
         {
-            return Math.Pow(x, y);
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this uint x, float y)
+        {
+            return (float)Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2460,16 +2669,14 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this uint x, float y)
-        {
-            return (float)Math.Pow(x, y);
-        }
+            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this uint x, double y)
+        public static double Power(this uint x, double y)
         {
             return Math.Pow(x, y);
         }
@@ -2479,9 +2686,75 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this long x, float y)
+        public static double Pow(this uint x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Pown(this uint x, uint y)
+        {
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Pown(this uint x, int y)
+        {
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this long x, float y)
         {
             return (float)Math.Pow(x, y);
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pow(this long x, float y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double. 
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this long x, double y)
+        {
+            return Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2491,8 +2764,56 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this long x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Pown(this long x, long y)
         {
-            return Math.Pow(x, y);
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Pown(this long x, int y)
+        {
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this ulong x, float y)
+        {
+            return (float)Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2501,8 +2822,17 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this ulong x, float y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double. 
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this ulong x, double y)
         {
-            return (float)Math.Pow(x, y);
+            return Math.Pow(x, y);
         }
 
         /// <summary>
@@ -2512,8 +2842,45 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this ulong x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Pown(this ulong x, ulong y)
         {
-            return Math.Pow(x, y);
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Pown(this ulong x, int y)
+        {
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
         }
 
         /// <summary>
@@ -2521,7 +2888,7 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this float x, float y)
+        public static float Power(this float x, float y)
         {
             #if NETCOREAPP3_0
                 return MathF.Pow(x, y);
@@ -2535,10 +2902,67 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this double x, double y)
+        public static float Pow(this float x, float y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Pown(this float x, int y)
+        {
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+        }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this double x, double y)
         {
             return Math.Pow(x, y);
         }
+
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pow(this double x, double y)
+            => Power(x, y);
+
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Pown(this double x, int y)
+        {
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+        }
+
 
         #endregion
 

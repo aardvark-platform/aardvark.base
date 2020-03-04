@@ -652,7 +652,7 @@ namespace Aardvark.Base
         //# });
         #endregion
 
-        #region Square and Power
+        #region Square
 
         //# numdectypes.ForEach(t => {
         /// <summary>
@@ -664,8 +664,12 @@ namespace Aardvark.Base
             => (__t.Name__)(x * x);
 
         //# });
+
+        #endregion
+
+        #region Power
+
         //# numtypes.ForEach(t => {
-        //# var fname = "Pow";
         //# fdtypes.ForEach(rt => {
         //# var rcast = (rt != Meta.DoubleType) ? "(" + rt.Name + ")" : "";
         //# if (!fdtypes.Contains(t) || t == rt) {
@@ -677,20 +681,88 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rt.Name__ Pow(this __t.Name__ x, __rt.Name__ y)
+        public static __rt.Name__ Power(this __t.Name__ x, __rt.Name__ y)
         {
             //# if (rt != Meta.FloatType || !freptypes.Contains(t)) {
-            return __rcast__Math.__fname__(x, y);
+            return __rcast__Math.Pow(x, y);
             //# } else {
             #if NETCOREAPP3_0
-                return MathF.__fname__(x, y);
+                return MathF.Pow(x, y);
             #else
-                return __rcast__Math.__fname__(x, y);
+                return __rcast__Math.Pow(x, y);
             #endif
             //# }
         }
 
-        //# } }); });
+        /// <summary>
+        /// Returns the number raised to the specified power.
+        //# if (rt == Meta.DoubleType && !dreptypes.Contains(t)) {
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double. 
+        //# }
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rt.Name__ Pow(this __t.Name__ x, __rt.Name__ y)
+            => Power(x, y);
+
+        //# } 
+        //# });
+        //# if (!fdtypes.Contains(t) && t != Meta.IntType) {
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        //# if (signedtypes.Contains(t)) {
+        /// The exponent <paramref name="y"/> must not be negative.
+        //# }
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Pown(this __t.Name__ x, __t.Name__ y)
+        {
+            //# if (smalltypes.Contains(t)) {
+            //# var cast = Meta.UnsignedTypes.Contains(t) ? "(uint)" : "(int)";
+            return (__t.Name__)Pown(__cast__x, y);
+            //# } else {
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+            //# }
+        }
+
+        //# }
+        /// <summary>
+        /// Returns the number raised to the specified integer power.
+        /// The exponent <paramref name="y"/> must not be negative.
+        /// </summary>
+        // Based on the F# core library implementation (ComputePowerGenericInlined)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Pown(this __t.Name__ x, int y)
+        {
+            //# if (smalltypes.Contains(t)) {
+            //# var cast = Meta.UnsignedTypes.Contains(t) ? "(uint)" : "(int)";
+            return (__t.Name__)Pown(__cast__x, y);
+            //# } else {
+            if (y == 0) return 1;
+            if (y == 1) return x;
+            if (y == 2) return x * x;
+            if (y == 3) return x * x * x;
+            if (y == 4) { var xx = x * x; return xx * xx; }
+
+            var v = Pown(x, y / 2);
+            v *= v;
+            return (y % 2 == 0) ? v : v * x;
+            //# }
+        }
+
+        //# });
+
         #endregion
 
         #region Exp and Log

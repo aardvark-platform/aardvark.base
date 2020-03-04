@@ -975,6 +975,9 @@ namespace Aardvark.Base
             SimpleType[] AllExcept(params SimpleType[] types)
                 => types.FoldLeft(VecFieldTypes, (arr, t) => arr.WithRemoved(t));
 
+            SimpleType[] OnlyReal()
+                => Domain(FloatType, DoubleType);
+
             SimpleType[] NotReal()
                 => AllExcept(FloatType, DoubleType);
 
@@ -1058,13 +1061,40 @@ namespace Aardvark.Base
             );
             #endregion
 
-            #region Square and Power
-            Add("Square and Power",
-                Method("Square", Tensor("x")),
-                Method("Pow", FloatType, AllExcept(DoubleType), Tensor("x"), Tensor("y", FloatType)),
-                Method("Pow", FloatType, AllExcept(DoubleType), Tensor("x"), Scalar("y", FloatType)),
-                Method("Pow", DoubleType, AllExcept(FloatType), Tensor("x"), Tensor("y", DoubleType)),
-                Method("Pow", DoubleType, AllExcept(FloatType), Tensor("x"), Scalar("y", DoubleType))
+            #region Square
+            Add("Square",
+                Method("Square", Tensor("x"))
+            );
+            #endregion
+
+            #region Power
+            Add("Power",
+                Method("Pown", NotReal(), Tensor("x"), Tensor("y")),
+                Method("Pown", NotReal(), Tensor("x"), Scalar("y")),
+                Method("Pown", NotReal(), Scalar("x"), Tensor("y")),
+                Method("Pown", AllExcept(IntType), Tensor("x"), Tensor("y", IntType)),
+                Method("Pown", AllExcept(IntType), Tensor("x"), Scalar("y", IntType)),
+                Method("Pown", AllExcept(IntType), Scalar("x"), Tensor("y", IntType)),
+
+                Method("Pow",   OnlyReal(), Tensor("x"), Tensor("y")),
+                Method("Power", OnlyReal(), Tensor("x"), Tensor("y")),
+                Method("Pow",   OnlyReal(), Tensor("x"), Scalar("y")),
+                Method("Power", OnlyReal(), Tensor("x"), Scalar("y")),
+                Method("Pow",   OnlyReal(), Scalar("x"), Tensor("y")),
+                Method("Power", OnlyReal(), Scalar("x"), Tensor("y")),
+
+                Method("Pow",   FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
+                Method("Power", FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
+                Method("Pow",   FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
+                Method("Power", FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
+                Method("Pow",   FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
+                Method("Power", FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
+                Method("Pow",   DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
+                Method("Power", DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
+                Method("Pow",   DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
+                Method("Power", DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
+                Method("Pow",   DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType)),
+                Method("Power", DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType))
             );
             #endregion
 

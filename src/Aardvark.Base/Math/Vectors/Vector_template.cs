@@ -60,6 +60,7 @@ namespace Aardvark.Base
     //#     var ctype = ct.Name;
     //#     var htype = ht.Name;
     //#     var vctype = vct.Name;
+    //#     var vitype = Meta.VecTypeOf(d, Meta.IntType).Name;
     //#     var v2type = Meta.VecTypeOf(2, ft).Name;
     //#     var v3type = Meta.VecTypeOf(3, ft).Name;
     //#     var v4type = Meta.VecTypeOf(4, ft).Name;
@@ -990,18 +991,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Abs(__vtype__ v)
-        {
-            return v.Abs();
-        }
-
-        /// <summary>
-        /// Returns a vector, with each element being the result of pow() applied
-        /// to each element pair of the given vectors.
-        /// </summary>
-        public static __vtype__ Power(__vtype__ a, __vtype__ b)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Pow(a.__f__, b.__f__)/*# }, comma); */);
-        }
+            => v.Abs();
 
         //# if (ft.IsReal) {
         /// <summary>
@@ -1010,9 +1000,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Floor(__vtype__ v)
-        {
-            return v.Floor();
-        }
+            => v.Floor();
 
         /// <summary>
         /// Returns a copy of the given vector, with each element set to the smallest integer
@@ -1020,90 +1008,70 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Ceiling(__vtype__ v)
-        {
-            return v.Ceiling();
-        }
+            => v.Ceiling();
 
         /// <summary>
         /// Returns a copy of the given vector, with each element rounded to the nearest integer.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Round(__vtype__ v)
-        {
-            return v.Round();
-        }
+            => v.Round();
 
         /// <summary>
         /// Returns a copy of the given vector, with each element rounded to the nearest integer towards zero.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Truncate(__vtype__ v)
-        {
-            return v.Truncate();
-        }
+            => v.Truncate();
 
         /// <summary>
         /// Returns a copy of the given vector, with acos() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Acos(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Acos(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Acos(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with cos() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Cos(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Cos(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Cos(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with cosh() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Cosh(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Cosh(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Cosh(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with asin() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Asin(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Asin(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Asin(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with sin() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sin(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Sin(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Sin(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with sinh() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sinh(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Sinh(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Sinh(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with atan() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Atan(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Atan(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Atan(v);
 
         /// <summary>
         /// Returns a vector, with each element being the result of atan2() applied
@@ -1111,73 +1079,49 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Atan2(__vtype__ a, __vtype__ b)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Atan2(a.__f__, b.__f__)/*# }, comma); */);
-        }
+            => Fun.Atan2(a, b);
 
         /// <summary>
         /// Returns a copy of the given vector, with tan() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Tan(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Tan(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Tan(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with tanh() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Tanh(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Tanh(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Tanh(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with sqrt() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sqrt(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Sqrt(v.__f__)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns a vector, with each element being the result of pow() applied
-        /// to each element pair of the given vectors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Pow(__vtype__ a, __vtype__ b)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Pow(a.__f__, b.__f__)/*# }, comma); */);
-        }
+            => Fun.Sqrt(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with exp() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Exp(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Exp(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Exp(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with log() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Log(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Log(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Log(v);
 
         /// <summary>
         /// Returns a copy of the given vector, with log10() applied to each element.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Log10(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Log10(v.__f__)/*# }, comma); */);
-        }
+            => Fun.Log10(v);
 
         //# } // ft.IsReal
         /// <summary>
@@ -1185,45 +1129,35 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Min(__vtype__ v0, __vtype__ v1)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Min(v0.__f__, v1.__f__)/*# }, comma); */);
-        }
+            => Fun.Min(v0, v1);
 
         /// <summary>
         /// Returns the componentwise minimum vector compared with a scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Min(__vtype__ v, __ftype__ x)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Min(v.__f__, x)/*# }, comma); */);
-        }
+            => Fun.Min(v, x);
 
         /// <summary>
         /// Returns the componentwise maximum vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Max(__vtype__ v0, __vtype__ v1)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Max(v0.__f__, v1.__f__)/*# }, comma); */);
-        }
+            => Fun.Max(v0, v1);
 
         /// <summary>
         /// Returns the componentwise maximum vector compared with a scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Max(__vtype__ v, __ftype__ x)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */Fun.Max(v.__f__, x)/*# }, comma); */);
-        }
+            => Fun.Max(v, x);
 
         /// <summary>
         /// Returns the given vector, with each element clamped to the interval [0, 1].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Saturate(__vtype__ x)
-        {
-            return Min(Max(x, (__ftype__) 0), (__ftype__) 1);
-        }
+        public static __vtype__ Saturate(__vtype__ v)
+            => Fun.Saturate(v);
 
         #endregion
 
@@ -1581,10 +1515,10 @@ namespace Aardvark.Base
         //#    };
         //# foreach (var group in Meta.ElementwiseFuns.Keys) {
         #region __group__
+        
         //# foreach (var fun in Meta.ElementwiseFuns[group]) {
         //# if (!fun.Domain.Contains(ft)) continue;
         //# var retType = Meta.VecTypeOf(d, fun.ReturnType ?? ft).Name;
-
         /// <summary>
         /// Applies Fun.__fun.Name__ to each element of the given vector(s).
         /// </summary>
@@ -1599,6 +1533,7 @@ namespace Aardvark.Base
             return new __retType__(/*# fields.ForEach(f => {*/__fun.Name__(/*# fun.Parameters.ForEach(p => { 
             */__p.Name__/*#if (!p.IsScalar()) {*/.__f__/*#} }, comma); */)/*#}, comma); */);
         }
+
         //# }
         #endregion
 
@@ -1631,7 +1566,7 @@ namespace Aardvark.Base
     }
 
     /// <summary>
-    /// Contains static methods 
+    /// Contains static methods
     /// </summary>
     public static partial class Vec
     {

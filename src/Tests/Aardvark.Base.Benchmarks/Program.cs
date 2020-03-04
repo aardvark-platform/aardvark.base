@@ -22,7 +22,11 @@ namespace Aardvark.Base.Benchmarks
 
             //BenchmarkRunner.Run<Rot3dTransform>();
             //BenchmarkRunner.Run<StaticConstants>();
-            BenchmarkRunner.Run<MatrixMultiply>();
+            //BenchmarkRunner.Run<MatrixMultiply>();
+            BenchmarkRunner.Run<IntegerPowerFloat>();
+            BenchmarkRunner.Run<IntegerPowerDouble>();
+            BenchmarkRunner.Run<IntegerPowerInt>();
+            BenchmarkRunner.Run<IntegerPowerLong>();
         }
     }
 }

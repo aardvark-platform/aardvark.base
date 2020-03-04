@@ -9,18 +9,6 @@ open System
 module FSharpMath =
 
     module Helpers =
-        type Power() =
-            static member inline Power(x : sbyte, y : sbyte) = pown x (int y)
-            static member inline Power(x : int16, y : int16) = pown x (int y)
-            static member inline Power(x : int32, y : int32) = pown x y
-
-            static member inline Power(x : byte, y : byte) = pown x (int y)
-            static member inline Power(x : uint16, y : uint16) = pown x (int y)
-            static member inline Power(x : uint32, y : uint32) = Fun.Pow(x, float y) |> uint32
-
-            static member inline Power(x : float, y : float) = x ** y
-            static member inline Power(x : float32, y : float32) = x ** y
-
         type Comparison() =
             static member inline Min< ^a when ^a : comparison>(a : ^a, b : ^a) = Operators.min a b
 
@@ -76,8 +64,11 @@ module FSharpMath =
         let inline signumiAux (_ : ^z) (x : ^a) =
             ((^z or ^a) : (static member Signumi : ^a  -> ^b) x)
 
-        let inline powerAux (_ : ^z) (x : ^a) (y : ^a) =
-            ((^z or ^a) : (static member Power : ^a * ^a -> ^a) (x, y))
+        let inline powAux (_ : ^z) (x : ^a) (y : ^b) =
+            ((^z or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^c) (x, y))
+
+        let inline pownAux (_ : ^z) (x : ^a) (y : ^b) =
+            ((^z or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^c) (x, y))
 
         let inline log2Aux (_ : ^z) (x : ^a) =
             ((^z or ^a) : (static member Log2 : ^a  -> ^a) x)
@@ -122,10 +113,20 @@ module FSharpMath =
     let inline signumi x =
         signumiAux Unchecked.defaultof<Fun> x
 
-    /// Returns x raised by the power of y.
+    /// Returns x raised by the power of y (must be float or double).
     // F# variant does not support integers!
     let inline pow x y =
-        powerAux Unchecked.defaultof<Helpers.Power> x y
+        powAux Unchecked.defaultof<Fun> x y
+
+    /// Returns x raised by the integer power of y (must not be negative).
+    // F# variant does not support integers!
+    let inline pown x y =
+        pownAux Unchecked.defaultof<Fun> x y
+
+    /// Returns x raised by the power of y.
+    // F# variant does not support integers!
+    let inline ( ** ) x y =
+        powAux Unchecked.defaultof<Fun> x y
 
     /// Returns the base 2 logarithm of x.
     let inline log2 x =
@@ -147,7 +148,6 @@ module FSharpMath =
     /// Clamps x to the interval [a, b].
     let inline clamp a b x =
         x |> max a |> min b
-        //clampAux Unchecked.defaultof<Helpers.Comparison> a b x
 
     /// Clamps x to the interval [0, 1].
     let inline saturate (x : ^a) =
@@ -173,16 +173,19 @@ module FSharpMath =
             let acosWorking() =
                 let a : V2f = acos V2f.One
                 let a : V3d = acos V3d.One
+                let a : ComplexD = acos ComplexD.One
                 ()
 
             let asinWorking() =
                 let a : V2f = asin V2f.One
                 let a : V3d = asin V3d.One
+                let a : ComplexD = asin ComplexD.One
                 ()
 
             let atanWorking() =
                 let a : V2f = atan V2f.One
                 let a : V3d = atan V3d.One
+                let a : ComplexD = atan ComplexD.One
                 ()
 
             let atan2Working() =
@@ -198,6 +201,7 @@ module FSharpMath =
             let expWorking() =
                 let a : V2f = exp V2f.One
                 let a : V3d = exp V3d.One
+                let a : ComplexD = exp ComplexD.One
                 ()
 
             let floorWorking() =
@@ -218,51 +222,55 @@ module FSharpMath =
             let logWorking() =
                 let a : V2f = log V2f.One
                 let a : V3d = log V3d.One
+                let a : ComplexD = log ComplexD.One
                 ()
 
             let log10Working() =
                 let a : V2f = log10 V2f.One
                 let a : V3d = log10 V3d.One
+                let a : ComplexD = log10 ComplexD.One
                 ()
 
             let sqrtWorking() =
                 let a : V2f = sqrt V2f.One
                 let a : V3d = sqrt V3d.One
+                let a : ComplexD = sqrt ComplexD.One
                 ()
 
             let cosWorking() =
                 let a : V2f = cos V2f.One
                 let a : V3d = cos V3d.One
+                let a : ComplexD = cos ComplexD.One
                 ()
 
             let coshWorking() =
                 let a : V2f = cosh V2f.One
                 let a : V3d = cosh V3d.One
+                let a : ComplexD = cosh ComplexD.One
                 ()
 
             let sinWorking() =
                 let a : V2f = sin V2f.One
                 let a : V3d = sin V3d.One
+                let a : ComplexD = sin ComplexD.One
                 ()
 
             let sinhWorking() =
                 let a : V2f = sinh V2f.One
                 let a : V3d = sinh V3d.One
+                let a : ComplexD = sinh ComplexD.One
                 ()
 
             let tanWorking() =
                 let a : V2f = tan V2f.One
                 let a : V3d = tan V3d.One
+                let a : ComplexD = tan ComplexD.One
                 ()
 
             let tanhWorking() =
                 let a : V2f = tanh V2f.One
                 let a : V3d = tanh V3d.One
-                ()
-
-            let powOpWorking() =
-                let a : V2f = V2f.One ** V2f.Zero
-                let a : V3d = V3d.One ** V3d.Zero
+                let a : ComplexD = tanh ComplexD.One
                 ()
 
             ()
@@ -271,12 +279,14 @@ module FSharpMath =
             let a : int = zero
             let a : float = zero
             let a : V2d = zero
+            let a : ComplexD = zero
             ()
 
         let oneWorking() =
             let a : int = one
             let a : float = one
             let a : V2d = one
+            let a : ComplexD = one
             ()
 
         let signumWorking() =
@@ -292,22 +302,101 @@ module FSharpMath =
             let s : V2i = signumi V2d.II
             ()
 
-        let powerWorking() =
+        let pownWorking() =
+            let a : float = pown 1.0 2
+            let a : int = pown 1 2
+            let a : uint16 = pown 1us 2
+            let a : uint16 = pown 1us 2us
+            let a : int64 = pown 1L 2
+            let a : int64 = pown 1L 2L
+
+            let a : V2f = pown V2f.One 1
+            let a : V2f = pown 1.0f V2i.One
+            let a : V2f = pown V2f.One V2i.One
+            
+            let a : V2i = pown V2i.One 1
+            let a : V2i = pown 1 V2i.One
+            let a : V2i = pown V2i.One V2i.One
+
+            let a : V2l = pown V2l.One 1
+            let a : V2l = pown 1L V2i.One
+            let a : V2l = pown V2l.One 1L
+            let a : V2l = pown 1L V2l.One
+            let a : V2l = pown V2l.One V2i.One
+            let a : V2l = pown V2l.One V2l.One
+
+            ()
+
+        let powWorking() =
             let a : float = pow 1.0 2.0
+            let a : float = pow 1 2.0
+            let a : float = pow 1uy 2.0
+            let a : float = pow 1s 2.0
+            let a : float = pow 1L 2.0
+
             let a : V2d = pow V2d.II V2d.II
-            let a : int = pow 1 2
-            let a : V2i = pow V2i.II V2i.II
-            let a : V3l = pow V3l.III V3l.III
+            let a : V2d = pow V2d.II 1.0
+            let a : V2d = pow 1.0 V2d.II
+
+            let a : V2d = pow V2i.II 1.0
+            let a : V2d = pow 1 V2d.II
+            let a : V2d = pow V2i.II V2d.II
+            let a : V2f = pow V2i.II 1.0f
+            let a : V2f = pow 1 V2f.II
+            let a : V2f = pow V2i.II V2f.II
+
+            let a : V3d = pow V3l.III 1.0
+            let a : V3d = pow 1L V3d.III
+            let a : V3d = pow V3l.III V3d.III
+            let a : V3f = pow V3l.III 1.0f
+            let a : V3f = pow 1L V3f.III
+            let a : V3f = pow V3l.III V3f.III
+
+            let a : ComplexD = pow ComplexD.One ComplexD.One
+            let a : ComplexD = pow ComplexD.One 1.0
+            let a : ComplexD = pow 1.0 ComplexD.One
+            ()
+
+        let powOpWorking() =
+            let a : float = 1.0 ** 2.0
+            let a : float = 1 ** 2.0
+            let a : float = 1uy ** 2.0
+            let a : float = 1s ** 2.0
+            let a : float = 1L ** 2.0
+
+            let a : V2d = V2d.II ** V2d.II
+            let a : V2d = V2d.II ** 1.0
+            let a : V2d = 1.0 ** V2d.II
+
+            let a : V2d = V2i.II ** 1.0
+            let a : V2d = 1 ** V2d.II
+            let a : V2d = V2i.II ** V2d.II
+            let a : V2f = V2i.II ** 1.0f
+            let a : V2f = 1 ** V2f.II
+            let a : V2f = V2i.II ** V2f.II
+
+            let a : V3d = V3l.III ** 1.0
+            let a : V3d = 1L ** V3d.III
+            let a : V3d = V3l.III ** V3d.III
+            let a : V3f = V3l.III ** 1.0f
+            let a : V3f = 1L ** V3f.III
+            let a : V3f = V3l.III ** V3f.III
+
+            let a : ComplexD = ComplexD.One ** ComplexD.One
+            let a : ComplexD = ComplexD.One ** 1.0
+            let a : ComplexD = 1.0 ** ComplexD.One
             ()
             
         let log2Working() =
             let a : float = log2 10.0
             let a : V2d =  log2 V2d.II
+            let a : ComplexD = log2 ComplexD.One
             ()
             
         let cbrtWorking() =
             let a : float = cbrt 10.0
             let a : V2d =  cbrt V2d.II
+            let a : ComplexD = cbrt ComplexD.One
             ()
             
         let sqrWorking() =
@@ -315,6 +404,7 @@ module FSharpMath =
             let a : float = sqr 10.0
             let a : V2d = sqr V2d.II
             let a : V2i = sqr V2i.II
+            let a : ComplexD = sqr ComplexD.One
             ()
 
         let clampWorking() =
