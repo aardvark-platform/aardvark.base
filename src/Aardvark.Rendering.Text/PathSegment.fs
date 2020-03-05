@@ -958,17 +958,64 @@ module PathSegment =
 
     /// creates a cubic bezier segment (if not degenerate)
     let tryBezier3 (p0 : V2d) (p1 : V2d) (p2 : V2d) (p3 : V2d) =
-        let areaBetween = 
-            sqrt(
-                let vec = p0 - 3.0*p1 + 3.0*p2 - p3 
-                Vec.dot vec vec / 840.0
-            )
-
-        if Fun.IsTiny(areaBetween, epsilon) then
-            let pc = (3.0*(p1 + p2) - p0 - p3)/4.0
-            tryBezier2 p0 pc p3
+        if Fun.ApproximateEquals(p0, p1, epsilon) && Fun.ApproximateEquals(p1, p2, epsilon) && Fun.ApproximateEquals(p2, p3, epsilon) then
+            None
         else
-            Bezier3Seg(p0, p1, p2, p3) |> Some
+            let dd = (p3 - p0)
+            let len = Vec.length dd
+            let d03 = dd / len
+            let d01 = Vec.normalize (p1 - p0)
+            let d23 = Vec.normalize (p3 - p2)
+
+            let n = V2d(-d03.Y, d03.X)
+            let h1 = Vec.dot (p1 - p0) n
+            let h2 = Vec.dot (p2 - p0) n
+
+            if Fun.IsTiny(h1, len * epsilon) && Fun.IsTiny(h2, len * epsilon) then
+                tryLine p0 p1
+            else
+                let r0 = Ray2d(p0, d01)
+                let r1 = Ray2d(p3, -d23)
+                let mutable t = 0.0
+                if r0.Intersects(r1, &t) then
+                    let pc = r0.GetPointOnRay t
+                    let pm3 = p0/4.0 + pc/2.0 + p3/4.0
+                    let pm2 = p0/8.0 + 3.0*p1/8.0 + 3.0*p2/8.0 + p3/8.0
+                    if Fun.ApproximateEquals(pm3, pm2, len * epsilon) then
+                        tryBezier2 p0 pc p3
+                    else
+                        Bezier3Seg(p0, p1, p2, p3) |> Some
+                else
+                    Bezier3Seg(p0, p1, p2, p3) |> Some
+                
+
+
+        //p3 - 3*p2 + 3*p1 - p0 = 0
+
+        // (p3 - 3*p2 + 3*p1 - p0)*t^3 + (3*p0 - 6*p1 + 3*p2)*t^2 + (3*p1 - 3*p0)*t + p0 =
+        //                               (p0 - 2*pc + p3)*t^2     + (2*pc - 2*p0)*t + p0
+        
+        // (3*p0 - 6*p1 + 3*p2)*t + (3*p1 - 3*p0) =
+        // (p0 - 2*pc + p3)*t     + (2*pc - 2*p0)
+        
+        // 1.5*p0 - 3*p1 + 1.5*p2 + 3*p1 - 3*p0 = 0.5*p0 - pc + 0.5*p3 + 2*pc - 2*p0
+
+        // -4.5*p0 + 1.5*p2 = pc 
+        
+
+
+        //let areaBetween = 
+        //    sqrt(
+        //        let vec = p0 - 3.0*p1 + 3.0*p2 - p3 
+        //        Vec.dot vec vec / 840.0
+        //    )
+
+        //if Fun.IsTiny(areaBetween, epsilon) then
+        //    let pc = 1.5*p2-0.5*p3
+        //    //let pc = (3.0*(p1 + p2) - p0 - p3)/4.0
+        //    tryBezier2 p0 pc p3
+        //else
+        //Bezier3Seg(p0, p1, p2, p3) |> Some
 
 
     let private createArc (p0 : V2d) (p1 : V2d) (alpha0 : float) (dAlpha : float) (ellipse : Ellipse2d) =

@@ -61,9 +61,12 @@ module private Typography =
         type PathTranslator(scale : float) =
             let mutable start : Option<V2d> = None
             let mutable pos : Option<V2d> = None
+            let mutable bb = Box2d.Invalid
             let list = System.Collections.Generic.List<PathSegment>()
 
             member x.ToArray() = list.ToArray()
+
+            member x.Bounds = (Box2d.Invalid, list) ||> Seq.fold (fun b s -> Box.Union(b, PathSegment.bounds s))
 
             interface IGlyphTranslator with
                 member x.BeginRead(_) = ()
@@ -72,7 +75,7 @@ module private Typography =
                 member x.CloseContour() = 
                     match start, pos with
                         | Some s, Some p ->
-                            if p <> s then
+                            if not (Fun.ApproximateEquals(p, s, bb.Size.NormMax * 1E-8)) then
                                 match PathSegment.tryLine p s with
                                 | Some l -> list.Add l
                                 | None -> ()
@@ -84,6 +87,7 @@ module private Typography =
 
                 member x.MoveTo(xa,ya) =
                     let pa = V2d(xa, ya) * scale
+                    bb.ExtendBy pa
                     pos <- Some pa
                     match start with
                         | None -> start <- Some pa
@@ -93,6 +97,7 @@ module private Typography =
                     match pos with
                         | Some p0 ->
                             let pa = V2d(xa, ya) * scale
+                            bb.ExtendBy pa
                             match PathSegment.tryLine p0 pa with
                             | Some l -> list.Add(l)
                             | None -> ()
@@ -105,6 +110,8 @@ module private Typography =
                         | Some p0 ->
                             let pa = V2d(xa, ya) * scale
                             let pb = V2d(xb, yb) * scale
+                            bb.ExtendBy pa
+                            bb.ExtendBy pb
                             match PathSegment.tryBezier2 p0 pa pb with
                             | Some b -> list.Add b
                             | None -> ()
@@ -119,6 +126,9 @@ module private Typography =
                             let pa = V2d(xa, ya) * scale
                             let pb = V2d(xb, yb) * scale
                             let pc = V2d(xc, yc) * scale
+                            bb.ExtendBy pa
+                            bb.ExtendBy pb
+                            bb.ExtendBy pc
                             
                             match PathSegment.tryBezier3 p0 pa pb pc with
                             | Some b -> list.Add b
@@ -132,7 +142,14 @@ module private Typography =
                 let tx = PathTranslator(scale)
                 tx.Read(g.GlyphPoints, g.EndPoints)
                 let segments = tx.ToArray()
-                { bounds = Bounds.toBox2d scale g.Bounds; outline = segments }
+                { bounds = tx.Bounds; outline = segments }
+            elif g.IsCffGlyph then
+                let data = g.GetCff1GlyphData()
+                let tx = PathTranslator(scale / 1000.0)
+                let e : Typography.OpenFont.CFF.CffEvaluationEngine = Typography.OpenFont.CFF.CffEvaluationEngine()
+                e.Run(tx, g.GetOwnerCff(), data, 1000.0f)
+                let segments = tx.ToArray()
+                { bounds = tx.Bounds; outline = segments }
             else
                 { bounds = Bounds.toBox2d scale g.Bounds; outline = [||] }
                 //[|
