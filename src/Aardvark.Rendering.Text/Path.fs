@@ -191,6 +191,7 @@ module Path =
         type Frag =
             {
                 [<Color>] color : V4d
+                [<Depth>] depth : float
             }
 
         let pathFragment(v : Vertex) =
@@ -231,7 +232,7 @@ module Path =
 
                 let sp = 0.5 * v.p.Z / v.p.W + 0.5
                 let bias = 255.0 * v.layer * uniform.DepthBias
-                return { color = color }
+                return { color = color; depth = sp - bias }
                     
             }
         
