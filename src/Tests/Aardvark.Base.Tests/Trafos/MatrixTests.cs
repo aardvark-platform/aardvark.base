@@ -14,6 +14,18 @@ namespace Aardvark.Tests
         public MatrixTests(TestSuite.Options options) : base(options) { }
 
         [Test]
+        public void InPlaceTransposeTest()
+        {
+            var rand = new RandomSystem();
+
+            var m = new M44d(rand.CreateUniformDoubleArray(16));
+            var transposed = m.Transposed;
+            Mat.Transpose(ref m);
+
+            Assert.IsTrue(Fun.ApproximateEquals(m, transposed, 0.0001));
+        }
+
+        [Test]
         public void InverseTest()
         {
             MatrixInverseTest(1, 1 << 16);
@@ -194,7 +206,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < count; i++)
                 {
                     M44d luid = mats[i] * luis[i];
-                    double plErr = M44d.DistanceMax(luid, M44d.Identity);
+                    double plErr = Mat.DistanceMax(luid, M44d.Identity);
                     Test.IsTrue(plErr < luEpsilon);
                     luiHistoStats.AddLog10Hist(plErr, mats[i]);
                     luiTypeStats[types[i]].Add(plErr);
@@ -203,7 +215,7 @@ namespace Aardvark.Tests
                         var m0 = new Matrix<double>((double[])mats[i], 4, 4);
                         var m1 = new Matrix<double>((double[])luis[i], 4, 4);
                         var id = m0.Multiply(m1);
-                        double deltaErr = M44d.Distance1(luid, new M44d(id.Data));
+                        double deltaErr = Mat.Distance1(luid, new M44d(id.Data));
                         Test.IsTrue(deltaErr == 0.0);
                     }
 
@@ -211,41 +223,41 @@ namespace Aardvark.Tests
                     if (doLuM)
                     {
                         M44d msid = mats[i] * lums[i];
-                        double error = M44d.DistanceMax(msid, M44d.Identity);
+                        double error = Mat.DistanceMax(msid, M44d.Identity);
                         lumHistoStats.AddLog10Hist(error, mats[i]);
                         lumTypeStats[types[i]].Add(error);
-                        double deltaErr = M44d.Distance1(luis[i], lums[i]);
+                        double deltaErr = Mat.Distance1(luis[i], lums[i]);
                         if (!Test.IsTrue(deltaErr == 0.0)) failedLuM = true;
                     }
                     if (doLuV)
                     {
                         M44d vsid = mats[i] * luvs[i];
-                        double error = M44d.DistanceMax(vsid, M44d.Identity);
+                        double error = Mat.DistanceMax(vsid, M44d.Identity);
                         luvHistoStats.AddLog10Hist(error, mats[i]);
                         luvTypeStats[types[i]].Add(error);
-                        double deltaErr = M44d.Distance1(luis[i], luvs[i]);
+                        double deltaErr = Mat.Distance1(luis[i], luvs[i]);
                         if (!Test.IsTrue(deltaErr == 0.0)) failedLuV = true;
                     }
                     if (doLu2)
                     {
                         M44d a2id = mats[i] * lu2s[i];
-                        double error = M44d.DistanceMax(a2id, M44d.Identity);
+                        double error = Mat.DistanceMax(a2id, M44d.Identity);
                         lu2HistoStats.AddLog10Hist(error, mats[i]);
                         lu2TypeStats[types[i]].Add(error);
-                        double deltaErr = M44d.Distance1(luis[i], lu2s[i]);
+                        double deltaErr = Mat.Distance1(luis[i], lu2s[i]);
                         if (!Test.IsTrue(deltaErr == 0.0)) failedLu2 = true;
                     }
                     if (doGj2)
                     {
                         M44d gjid = mats[i] * gj2s[i];
-                        double error = M44d.DistanceMax(gjid, M44d.Identity);
+                        double error = Mat.DistanceMax(gjid, M44d.Identity);
                         gj2HistoStats.AddLog10Hist(error, mats[i]);
                         gj2TypeStats[types[i]].Add(error);
                     }
                     if (doQrI)
                     {
                         M44d qrid = mats[i] * qris[i];
-                        double error = M44d.DistanceMax(qrid, M44d.Identity);
+                        double error = Mat.DistanceMax(qrid, M44d.Identity);
                         qriHistoStats.AddLog10Hist(error, mats[i]);
                         qriTypeStats[types[i]].Add(error);
                         Test.IsTrue(error < qrEpsilon);
@@ -253,10 +265,10 @@ namespace Aardvark.Tests
                     if (doQr2)
                     {
                         M44d qrid = mats[i] * qr2s[i];
-                        double error = M44d.DistanceMax(qrid, M44d.Identity);
+                        double error = Mat.DistanceMax(qrid, M44d.Identity);
                         qr2HistoStats.AddLog10Hist(error, mats[i]);
                         qr2TypeStats[types[i]].Add(error);
-                        double deltaErr = M44d.Distance1(qris[i], qr2s[i]);
+                        double deltaErr = Mat.Distance1(qris[i], qr2s[i]);
                         if (!Test.IsTrue(deltaErr == 0.0)) failedQr2 = true;
                     }
                 }

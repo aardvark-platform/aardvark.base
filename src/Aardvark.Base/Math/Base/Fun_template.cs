@@ -528,25 +528,27 @@ namespace Aardvark.Base
 
         #region Comparisons
 
-        //# fdtypes.ForEach(t => {
+        //# numtypes.ForEach(t => {
+        //# var abs = signedtypes.Contains(t) ? ".Abs()" : "";
+        //# var absValue = signedtypes.Contains(t) ? "the absolute value of " : "";
         /// <summary>
-        /// Returns true if the absolulte value of the supplied float is
-        /// smaller than 4 times the machine epsilon.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this __t.Name__ x)
-            => x.Abs() < Constant<__t.Name__>.PositiveTinyValue;
-
-        /// <summary>
-        /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
-        /// smaller than the supplied <paramref name="epsilon"/> .
+        /// Returns whether __absValue__<paramref name="x"/> is smaller than <paramref name="epsilon"/>.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this __t.Name__ x, __t.Name__ epsilon)
-            => x.Abs() < epsilon;
+            => x__abs__ < epsilon;
 
+        //# if (fdtypes.Contains(t)) {
+        /// <summary>
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than Constant&lt;__t.Name__&gt;.PositiveTinyValue.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this __t.Name__ x)
+            => x__abs__ < Constant<__t.Name__>.PositiveTinyValue;
+
+        //# }
         //# });
         #endregion
 

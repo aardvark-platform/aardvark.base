@@ -618,18 +618,18 @@ namespace Aardvark.Base
                 return false;
             }
 
-            var m12 = new M22d(line0.P0.X, line0.P0.Y, line0.P1.X, line0.P1.Y).Det;
-            var m34 = new M22d(line1.P0.X, line1.P0.Y, line1.P1.X, line1.P1.Y).Det;
-            var mx12 = new M22d(line0.P0.X, 1, line0.P1.X, 1).Det;
-            var mx34 = new M22d(line1.P0.X, 1, line1.P1.X, 1).Det;
-            var my12 = new M22d(line0.P0.Y, 1, line0.P1.Y, 1).Det;
-            var my34 = new M22d(line1.P0.Y, 1, line1.P1.Y, 1).Det;
+            var m12 = new M22d(line0.P0.X, line0.P0.Y, line0.P1.X, line0.P1.Y).Determinant;
+            var m34 = new M22d(line1.P0.X, line1.P0.Y, line1.P1.X, line1.P1.Y).Determinant;
+            var mx12 = new M22d(line0.P0.X, 1, line0.P1.X, 1).Determinant;
+            var mx34 = new M22d(line1.P0.X, 1, line1.P1.X, 1).Determinant;
+            var my12 = new M22d(line0.P0.Y, 1, line0.P1.Y, 1).Determinant;
+            var my34 = new M22d(line1.P0.Y, 1, line1.P1.Y, 1).Determinant;
 
-            var d = new M22d(mx12, my12, mx34, my34).Det;
+            var d = new M22d(mx12, my12, mx34, my34).Determinant;
             if (Fun.IsTiny(d))
                 return false;
-            var x = new M22d(m12, mx12, m34, mx34).Det;
-            var y = new M22d(m12, my12, m34, my34).Det;
+            var x = new M22d(m12, mx12, m34, mx34).Determinant;
+            var y = new M22d(m12, my12, m34, my34).Determinant;
             p = new V2d(x / d, y / d);
             return true;
         }
