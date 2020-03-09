@@ -1006,7 +1006,7 @@ NUGET
       System.Runtime.Handles (>= 4.3)
 GITHUB
   remote: aardvark-platform/aardvark.fake
-    FULLPROJECT (9f1132fce02fa05efda9098bbd0ea0fe4ee3c5f8)
+    FULLPROJECT (963699af52d5833acfebb4d6d06c2677db4f6c00)
       Argu (>= 5.5 < 5.6)
       fake-cli (>= 5.19 < 5.20)
       Fake.Core.Target (>= 5.19 < 5.20)
