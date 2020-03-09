@@ -907,39 +907,23 @@ module PathSegment =
 
     /// creates a cubic bezier segment
     let bezier3 (p0 : V2d) (p1 : V2d) (p2 : V2d) (p3 : V2d) =
-        // check if the cubic spline is actually quadratic
-        // in order to do so let's start by getting the potential control-point by setting the difference
-        // of both curves to zero:
-        //   p0*(1-t)^3 + 3*p1*(1-t)^2*t + 3*p2*(1-t)*t^2 + p3*t^3 - p0*(1-t)^2 - 2*(1-t)*t*pc - p3*t^2 = 0
-
-        // so let's insert "t = 0.5" :
-        //   p0*0.5^3 + 3*p1*0.5^3 + 3*p2*0.5^3 + p3*0.5^3 - p0*0.5^2 - 2*0.5^2*pc - p3*0.5^2 = 0  
-        //   p0*0.5^2 + 3*p1*0.5^2 + 3*p2*0.5^2 + p3*0.5^2 - p0*0.5 - 2*0.5*pc - p3*0.5 = 0  
-        //   p0*(0.5^2 - 0.5) + p1*(3*0.5^2) + p2*(3*0.5^2) + p3*(0.5^2 - 0.5) - pc = 0
-        //   pc = -p0/4 + p1*(3/4) + p2*(3/4) - p3/4
-
-
-        // in order to determine the quality of the approximation we use the distance function:
-        // distance(t) = cubic(t) - approximatedquadratic(t)
-        //   distance(t) = p0*(1-t)^3 + 3*p1*(1-t)^2*t + 3*p2*(1-t)*t^2 + p3*t^3 - p0*(1-t)^2 - 2*t*(1-t)*(-p0/4 + p1*(3/4) + p2*(3/4) - p3/4) - p3*t^2 = 0
-        // since distance might erase itself (negative values, etc.) we want to calculate the area between both curves and
-        // therefore use the formula:
-        //   F = integrate [ distance(t)^2; 0; 1] = 0      
-        // which can be integrated using Wolframalpha and yields the simple forumla:
-        // http://www.wolframalpha.com/input/?i=integrate+(p0*(1-t)%5E3+%2B+3*p1*(1-t)%5E2*t+%2B+3*p2*(1-t)*t%5E2+%2B+p3*t%5E3+-+p0*(1-t)%5E2+-+2*t*(1-t)*(-p0%2F4+%2B+p1*(3%2F4)+%2B+p2*(3%2F4)+-+p3%2F4)+-+p3*t%5E2)%5E2+from+0+to+1
-        //   F = (1 / 840) * (p0 - 3*p1 + 3*p2 - p3)^2 
-        // finally (in order to get the area) we need to compute the sqrt of F
-        let areaBetween = 
-            sqrt(
-                let vec = p0 - 3.0*p1 + 3.0*p2 - p3 
-                Vec.dot vec vec / 840.0
-            )
-
-        if Fun.IsTiny(areaBetween, epsilon) then
-            let pc = (3.0*(p1 + p2) - p0 - p3)/4.0
-            Bezier2Seg(p0, pc, p3)
+        if Fun.ApproximateEquals(p0, p1, epsilon) && Fun.ApproximateEquals(p1, p2, epsilon) && Fun.ApproximateEquals(p2, p3, epsilon) then
+            failwithf "[PathSegment] degenerate line at: %A" p0
         else
-            Bezier3Seg(p0, p1, p2, p3)
+            let dd = (p3 - p0)
+            let len = Vec.length dd
+            let d03 = dd / len
+            let d01 = Vec.normalize (p1 - p0)
+            let d23 = Vec.normalize (p3 - p2)
+
+            let n = V2d(-d03.Y, d03.X)
+            let h1 = Vec.dot (p1 - p0) n
+            let h2 = Vec.dot (p2 - p0) n
+
+            if Fun.IsTiny(h1, len * epsilon) && Fun.IsTiny(h2, len * epsilon) then
+                line p0 p1
+            else
+                Bezier3Seg(p0, p1, p2, p3)
             
 
 
@@ -974,49 +958,7 @@ module PathSegment =
             if Fun.IsTiny(h1, len * epsilon) && Fun.IsTiny(h2, len * epsilon) then
                 tryLine p0 p1
             else
-                let r0 = Ray2d(p0, d01)
-                let r1 = Ray2d(p3, -d23)
-                let mutable t = 0.0
-                if r0.Intersects(r1, &t) then
-                    let pc = r0.GetPointOnRay t
-                    let pm3 = p0/4.0 + pc/2.0 + p3/4.0
-                    let pm2 = p0/8.0 + 3.0*p1/8.0 + 3.0*p2/8.0 + p3/8.0
-                    if Fun.ApproximateEquals(pm3, pm2, len * epsilon) then
-                        tryBezier2 p0 pc p3
-                    else
-                        Bezier3Seg(p0, p1, p2, p3) |> Some
-                else
-                    Bezier3Seg(p0, p1, p2, p3) |> Some
-                
-
-
-        //p3 - 3*p2 + 3*p1 - p0 = 0
-
-        // (p3 - 3*p2 + 3*p1 - p0)*t^3 + (3*p0 - 6*p1 + 3*p2)*t^2 + (3*p1 - 3*p0)*t + p0 =
-        //                               (p0 - 2*pc + p3)*t^2     + (2*pc - 2*p0)*t + p0
-        
-        // (3*p0 - 6*p1 + 3*p2)*t + (3*p1 - 3*p0) =
-        // (p0 - 2*pc + p3)*t     + (2*pc - 2*p0)
-        
-        // 1.5*p0 - 3*p1 + 1.5*p2 + 3*p1 - 3*p0 = 0.5*p0 - pc + 0.5*p3 + 2*pc - 2*p0
-
-        // -4.5*p0 + 1.5*p2 = pc 
-        
-
-
-        //let areaBetween = 
-        //    sqrt(
-        //        let vec = p0 - 3.0*p1 + 3.0*p2 - p3 
-        //        Vec.dot vec vec / 840.0
-        //    )
-
-        //if Fun.IsTiny(areaBetween, epsilon) then
-        //    let pc = 1.5*p2-0.5*p3
-        //    //let pc = (3.0*(p1 + p2) - p0 - p3)/4.0
-        //    tryBezier2 p0 pc p3
-        //else
-        //Bezier3Seg(p0, p1, p2, p3) |> Some
-
+                Bezier3Seg(p0, p1, p2, p3) |> Some
 
     let private createArc (p0 : V2d) (p1 : V2d) (alpha0 : float) (dAlpha : float) (ellipse : Ellipse2d) =
         let newEllipse = createEllipse ellipse.Center ellipse.Axis0 ellipse.Axis1
@@ -1315,7 +1257,6 @@ module PathSegment =
                 else da
             let a0 = e.GetAlpha q0
             arcWithPoints q0 q1 a0 da e
-
 
     /// tries to create a sub-segment from range [0;t1] and returns None whenever the result would be degenerate.
     let withT1 (t1 : float) (s : PathSegment) =

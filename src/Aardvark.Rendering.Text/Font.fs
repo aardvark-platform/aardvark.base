@@ -21,15 +21,18 @@ type FontStyle =
     | Italic = 2
     | BoldItalic = 3
 
-type Shape(path : Path) =
+type Shape(path : Path, windingRule : WindingRule) =
 
     static let quad = 
-        Path.ofList [
-            PathSegment.line V2d.OO V2d.OI
-            PathSegment.line V2d.OI V2d.II
-            PathSegment.line V2d.II V2d.IO
-            PathSegment.line V2d.IO V2d.OO
-        ] |> Shape
+        Shape(
+            Path.ofList [
+                PathSegment.line V2d.OO V2d.OI
+                PathSegment.line V2d.OI V2d.II
+                PathSegment.line V2d.II V2d.IO
+                PathSegment.line V2d.IO V2d.OO
+            ],
+            WindingRule.NonZero
+        )
 
     let mutable geometry = None
     
@@ -41,9 +44,11 @@ type Shape(path : Path) =
         match geometry with
             | Some g -> g
             | None ->
-                let g = Path.toGeometry path
+                let g = Path.toGeometry windingRule path
                 geometry <- Some g
                 g
+
+    new(path : Path) = Shape(path, WindingRule.NonZero)
 
 open Typography.OpenFont
 
@@ -338,7 +343,7 @@ type CodePointStringExtensions private() =
         sb.ToString()
 
 type Glyph internal(g : Typography.OpenFont.Glyph, isValid : bool, scale : float, advance : float, bearing : float, c : CodePoint) =
-    inherit Shape(Path.ofGlyph scale g)
+    inherit Shape(Path.ofGlyph scale g, WindingRule.NonZero)
 
     let widths = 
         let width = float (g.MaxX - g.MinX) * scale

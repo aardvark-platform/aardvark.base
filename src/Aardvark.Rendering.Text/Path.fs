@@ -5,6 +5,14 @@ open System.Collections.Generic
 open Aardvark.Base
 open Aardvark.Base.Rendering
 
+[<RequireQualifiedAccess>]
+type WindingRule =
+    | NonZero
+    | Positive
+    | Negative
+    | EvenOdd
+    | AbsGreaterEqualTwo
+
 type Path = private { bounds : Box2d; outline : PathSegment[] }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -406,6 +414,14 @@ module Path =
     /// The returned geometry contains Positions and a 4-dimensional vector (KLMKind) describing the
     /// (k,l,m) coordinates for boundary triangles in its xyz components and
     /// the kind of the triangle (inner = 0, boundary = 1) in its w component
-    let toGeometry (p : Path) =
-        Tessellator.toGeometry LibTessDotNet.Double.WindingRule.NonZero p.outline
+    let toGeometry (rule : WindingRule) (p : Path) =
+        let rule =
+            match rule with
+            | WindingRule.Positive -> LibTessDotNet.Double.WindingRule.Positive
+            | WindingRule.Negative -> LibTessDotNet.Double.WindingRule.Negative
+            | WindingRule.NonZero -> LibTessDotNet.Double.WindingRule.NonZero
+            | WindingRule.EvenOdd -> LibTessDotNet.Double.WindingRule.EvenOdd
+            | WindingRule.AbsGreaterEqualTwo -> LibTessDotNet.Double.WindingRule.AbsGeqTwo
+
+        Tessellator.toGeometry rule p.bounds p.outline
        

@@ -225,7 +225,7 @@ module internal Tessellator =
             let b = Box2d.FromCenterAndSize(pt, V2d.II * 1E-5)
 
             let contains (t : Triangle2d) (pt : V2d) =
-                let eps = 1E-20
+                let eps = 1E-9
 
                 let a = pt.PosLeftOfLineValue(t.P0, t.P1)
                 let b = pt.PosLeftOfLineValue(t.P1, t.P2)
@@ -267,7 +267,7 @@ module internal Tessellator =
 
         let hasPoint (bvh : BvhTree2d<int, Triangle2d>) (pt : V2d) =
             let b = Box2d.FromCenterAndSize(pt, V2d.II * 1E-3)
-            bvh.GetIntersecting(b, fun _ _ t -> if Fun.ApproximateEquals(t.P0, pt) || Fun.ApproximateEquals(t.P1, pt) || Fun.ApproximateEquals(t.P2, pt) then Some t else None)
+            bvh.GetIntersecting(b, fun _ _ t -> if Fun.ApproximateEquals(t.P0, pt, 1E-9) || Fun.ApproximateEquals(t.P1, pt, 1E-9) || Fun.ApproximateEquals(t.P2, pt, 1E-9) then Some t else None)
             |> HashMap.isEmpty
             |> not
                
@@ -284,15 +284,27 @@ module internal Tessellator =
         let hasEdge (bvh : BvhTree2d<Line2d, Line2d>) (p0 : V2d) (p1 : V2d) =
             let edge = Line2d(p0, p1)
             let b = edge.BoundingBox2d.EnlargedBy(1E-6)
-            bvh.GetIntersecting(b, fun _ _ t -> 
-                if (Fun.ApproximateEquals(t.P0, edge.P0) && Fun.ApproximateEquals(t.P1, edge.P1)) || 
-                   (Fun.ApproximateEquals(t.P1, edge.P0) && Fun.ApproximateEquals(t.P0, edge.P1)) then 
-                    Some t 
-                else 
-                    None
-            )
-            |> HashMap.isEmpty
-            |> not
+
+            if Fun.ApproximateEquals(p0, p1, 1E-9) then
+                // has point
+                bvh.GetIntersecting(b, fun _ _ t -> 
+                    if (Fun.ApproximateEquals(t.P0, edge.P0, 1E-9) || Fun.ApproximateEquals(t.P1, edge.P1, 1E-9)) then 
+                        Some t 
+                    else 
+                        None
+                )
+                |> HashMap.isEmpty
+                |> not
+            else
+                bvh.GetIntersecting(b, fun _ _ t -> 
+                    if (Fun.ApproximateEquals(t.P0, edge.P0, 1E-9) && Fun.ApproximateEquals(t.P1, edge.P1, 1E-9)) || 
+                       (Fun.ApproximateEquals(t.P1, edge.P0, 1E-9) && Fun.ApproximateEquals(t.P0, edge.P1, 1E-9)) then 
+                        Some t 
+                    else 
+                        None
+                )
+                |> HashMap.isEmpty
+                |> not
 
         let private turningAngle (t0 : V2d) (t1 : V2d) =
             let a = t0.X * t1.Y - t0.Y * t1.X
@@ -625,7 +637,19 @@ module internal Tessellator =
         self, others
 
 
-    let toGeometry (rule : WindingRule) (path : seq<PathSegment>) =
+    let toGeometry (rule : WindingRule) (bounds : Box2d) (path : seq<PathSegment>) =
+        let trafo =
+            let size = bounds.Size.Length
+            let scale = 
+                if Fun.IsTiny size then 1.0
+                else 1.0 / size
+            Trafo2d.Translation(-bounds.Center) *
+            Trafo2d.Scale scale
+        
+        let path =
+            let trafo (pt : V2d) = trafo.Forward.TransformPos pt
+            path |> Seq.map (PathSegment.transform trafo) |> Seq.toList
+
         let split (part : Part) =
             match part with
             | PolygonalPart(s, _) ->
@@ -764,7 +788,7 @@ module internal Tessellator =
             | [] ->
                 result, bvh
 
-        let path1,_ = nonIntersecting IndexList.empty BvhTree2d.empty (Seq.toList path)
+        let path1,_ = nonIntersecting IndexList.empty BvhTree2d.empty path
 
         // get rid of overlapping triangulations
         let rec nonOverlapping (result : IndexList<Part>) (bvh : BvhTree2d<Index, Part>) (stack : list<PathSegment>) =
@@ -917,9 +941,15 @@ module internal Tessellator =
                                 add p0
                                 if containsPoint nonCurved p1 then add p1
                             | Bezier3(p0, p1, p2, p3) ->
+
+                                
+                                let points = [|p0;p1;p2;p3|]
+                                let hull = Polygon2d(points).ComputeConvexHullIndexPolygon().Indices |> Seq.toArray 
+                                    
+
                                 add p0
-                                if containsPoint nonCurved p1 then add p1
-                                if containsPoint nonCurved p2 then add p2
+                                if Array.contains 1 hull && containsPoint nonCurved p1 then add p1
+                                if Array.contains 2 hull && containsPoint nonCurved p2 then add p2
 
                             | Arc(p0, p2, alpha0, dAlpha, ellipse) ->
                                 let p1 = ellipse.GetControlPoint(alpha0, alpha0 + dAlpha)
@@ -964,8 +994,32 @@ module internal Tessellator =
             boundary
             |> triangulate WindingRule.Positive
 
-        let positions = idx |> Seq.map (fun i -> V3f(V2f pos.[i], 0.0f)) |> System.Collections.Generic.List
-        let coords = Seq.init positions.Count (fun _ -> V4f.Zero) |> System.Collections.Generic.List
+
+        let toGlobal = trafo.Backward
+
+        let mutable cnt = 0
+        let mutable positions : V3f[]   = Array.zeroCreate (if idx.Length > 1024 then Fun.NextPowerOfTwo idx.Length else 1024)
+        let mutable coords    : V4f[]   = Array.zeroCreate positions.Length
+
+        for i in idx do
+            let pt = V3f(V2f(toGlobal.TransformPos pos.[i]), 0.0f)
+            positions.[cnt] <- pt
+            coords.[cnt] <- V4f.Zero
+            cnt <- cnt + 1
+
+        let inline add (pts : array<V2d>) (cs : array<V4f>) =
+            let newCnt = cnt + pts.Length
+            if newCnt > positions.Length then
+                System.Array.Resize(&positions, Fun.NextPowerOfTwo newCnt)
+                System.Array.Resize(&coords, positions.Length)
+
+            for i in 0 .. pts.Length - 1 do
+                let pt = V3f(V2f(toGlobal.TransformPos pts.[i]), 0.0f)
+                let c = cs.[i]
+                positions.[cnt] <- pt
+                coords.[cnt] <- c
+                cnt <- cnt + 1
+                
 
 
         let edges = toBvhLine boundary
@@ -973,7 +1027,7 @@ module internal Tessellator =
         // since all polygonal parts are non-overlapping, convex and are connected to at least two boundary points
         // it should be sufficient to test whether or not their "center" point is covered by the solid part.
         let solid = toBvh (pos, idx)
-        for (_,path) in parts do
+        for (extAngle,path) in parts do    
             for s in path do
                 match s with
                 | PolygonalPart(s, _) ->
@@ -986,12 +1040,14 @@ module internal Tessellator =
 
                         | Bezier2(p0, p1, p2) ->
                             if hasEdge edges p0 p2 || (hasEdge edges p0 p1 && hasEdge edges p1 p2) then
-                                positions.AddRange [| V3f(V2f p0, 0.0f); V3f(V2f p1, 0.0f); V3f(V2f p2, 0.0f) |]
-
                                 if containsPoint nonCurved p1 then 
-                                    coords.AddRange [| V4f(0,0,-1,2); V4f(-0.5, 0.0,-1.0, 2.0); V4f(-1,1,-1,2)|]
+                                    add     
+                                        [| p0; p1; p2 |] 
+                                        [| V4f(0,0,-1,2); V4f(-0.5, 0.0,-1.0, 2.0); V4f(-1,1,-1,2)|]
                                 else
-                                    coords.AddRange [|V4f(0,0,1,3); V4f(0.5, 0.0, 1.0,3.0); V4f(1,1,1,3)|]
+                                    add 
+                                        [| p0; p1; p2 |] 
+                                        [|V4f(0,0,1,3); V4f(0.5, 0.0, 1.0,3.0); V4f(1,1,1,3)|]
 
                         | Arc(p0, p2, alpha0, dAlpha, ellipse) ->   
                             let uv2World = M33d.FromCols(V3d(ellipse.Axis0, 0.0), V3d(ellipse.Axis1, 0.0), V3d(ellipse.Center, 1.0))
@@ -1003,32 +1059,61 @@ module internal Tessellator =
                                 let c1 = world2UV.TransformPos p1
                                 let c2 = world2UV.TransformPos p2
 
-                                positions.AddRange [  V3f(V2f p0, 0.0f); V3f(V2f p1, 0.0f); V3f(V2f p2, 0.0f) ]
                                 if containsPoint nonCurved p1 then
-                                    coords.AddRange [V4f(c0.X, c0.Y,-1.0, 4.0); V4f(c1.X, c1.Y,-1.0, 4.0); V4f(c2.X, c2.Y,-1.0,4.0)]
+                                    add 
+                                        [| p0; p1; p2 |]
+                                        [| V4f(c0.X, c0.Y,-1.0, 4.0); V4f(c1.X, c1.Y,-1.0, 4.0); V4f(c2.X, c2.Y,-1.0,4.0) |]
                                 else
-                                    coords.AddRange [V4f(c0.X, c0.Y,1.0, 5.0); V4f(c1.X, c1.Y,1.0, 5.0); V4f(c2.X, c2.Y,1.0,5.0)]
+                                    add 
+                                        [| p0; p1; p2 |]
+                                        [| V4f(c0.X, c0.Y,1.0, 5.0); V4f(c1.X, c1.Y,1.0, 5.0); V4f(c2.X, c2.Y,1.0,5.0) |]
                     
 
                         | Bezier3(p0, p1, p2, p3) ->
                             match Coords.bezier3 p0 p1 p2 p3 with
                             | Choice1Of2(k, c0, c1, c2, c3) ->
-                    
-                                if hasEdge edges p0 p3 || (hasEdge edges p0 p1 && hasEdge edges p1 p2 && hasEdge edges p2 p3) then
-                                    let c1Inside = c1.X*c1.X*c1.X - c1.Y*c1.Z < 0.0
-                                    let c2Inside = c2.X*c2.X*c2.X - c2.Y*c2.Z < 0.0
+                                
+                                let touching =  
+                                    hasEdge edges p0 p3 || (
+                                        let e01 = hasEdge edges p0 p1
+                                        let e12 = hasEdge edges p1 p2
+                                        let e23 = hasEdge edges p2 p3
+                                        (e01 && e12 && e23) || 
+                                        (e01 && hasEdge edges p1 p3) || 
+                                        (e23 && hasEdge edges p0 p2)
+                                    )
+
+                                if touching then
+                                    
+                                    let points  = [|p0;p1;p2;p3|]
+                                    let weights = [|c0;c1;c2;c3|]
+                                    let hull = Polygon2d(points).ComputeConvexHullIndexPolygon().Indices |> Seq.toArray 
+                                    
+                                    let ws = hull |> Array.map (fun i -> weights.[i])
+                                    let ps = hull |> Array.map (fun i -> points.[i])
+
+                                    //let pc, cc =
+                                    //    if Fun.ApproximateEquals(p0, p1, 1E-9) then p2, c2
+                                    //    else p1, c2
+
+                                    //let ccInside = cc.X*cc.X*cc.X - cc.Y*cc.Z < 0.0
+                                    //let pcInside = containsPoint nonCurved pc
 
                                     let inline flip (v : V3d) = V3d(-v.XY, v.Z)
+                                    let ws = if extAngle > 0.0 then Array.map flip ws else ws
 
-                                    positions.AddRange [ V3f(V2f p0, 0.0f); V3f(V2f p1, 0.0f); V3f(V2f p2, 0.0f) ]
-                                    positions.AddRange [ V3f(V2f p0, 0.0f); V3f(V2f p2, 0.0f); V3f(V2f p3, 0.0f) ]
-
-                                    if containsPoint nonCurved p1 <> c1Inside then
-                                        coords.AddRange [V4f(flip c0, float k); V4f(flip c1, float k); V4f(flip c2,float k)]
-                                        coords.AddRange [V4f(flip c0, float k); V4f(flip c2, float k); V4f(flip c3,float k)]
-                                    else
-                                        coords.AddRange [V4f(c0, float k); V4f(c1, float k); V4f(c2,float k)]
-                                        coords.AddRange [V4f(c0, float k); V4f(c2, float k); V4f(c3,float k)]
+                                    if hull.Length = 3 then
+                                        add 
+                                            [| ps.[0]; ps.[1]; ps.[2] |]
+                                            [| V4f(ws.[0], float k); V4f(ws.[1], float k); V4f(ws.[2],float k) |]
+                                    else 
+                                        add 
+                                            [| ps.[0]; ps.[1]; ps.[3] |]
+                                            [| V4f(ws.[0], float k); V4f(ws.[1], float k); V4f(ws.[3],float k) |]
+                                        add 
+                                            [| ps.[3]; ps.[1]; ps.[2] |]
+                                            [| V4f(ws.[3], float k); V4f(ws.[1], float k); V4f(ws.[2],float k) |]
+                                 
                         
                             | _ -> 
                                 failwith "should have been subdivided"
@@ -1038,12 +1123,16 @@ module internal Tessellator =
                     ()
 
 
+        if cnt < positions.Length then
+            System.Array.Resize(&positions, cnt)
+            System.Array.Resize(&coords, cnt)
+
         IndexedGeometry(
             Mode = IndexedGeometryMode.TriangleList,
             IndexedAttributes =
                 SymDict.ofList [
-                    DefaultSemantic.Positions, positions.ToArray() :> System.Array
-                    Symbol.Create "KLMKind", coords.ToArray() :> System.Array
+                    DefaultSemantic.Positions, positions :> System.Array
+                    Symbol.Create "KLMKind", coords :> System.Array
                 ]
         )
 
