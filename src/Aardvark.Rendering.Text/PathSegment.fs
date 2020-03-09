@@ -960,7 +960,7 @@ module PathSegment =
             else
                 Bezier3Seg(p0, p1, p2, p3) |> Some
 
-    let private createArc (p0 : V2d) (p1 : V2d) (alpha0 : float) (dAlpha : float) (ellipse : Ellipse2d) =
+    let private createArc (force : bool) (p0 : V2d) (p1 : V2d) (alpha0 : float) (dAlpha : float) (ellipse : Ellipse2d) =
         let newEllipse = createEllipse ellipse.Center ellipse.Axis0 ellipse.Axis1
         let a0 = newEllipse.GetAlpha p0
         let da =
@@ -968,7 +968,7 @@ module PathSegment =
             else dAlpha
 
         let pm = newEllipse.GetPoint(a0 + da / 2.0)
-        if not (Fun.ApproximateEquals(p0, p1, epsilon)) && Fun.IsTiny(pm.PosLeftOfLineValue(p0, p1), epsilon) then
+        if not force && not (Fun.ApproximateEquals(p0, p1, epsilon)) && Fun.IsTiny(pm.PosLeftOfLineValue(p0, p1), epsilon) then
             tryLine p0 p1
         else
             ArcSeg(p0, p1, a0, da, newEllipse) |> Some
@@ -981,14 +981,17 @@ module PathSegment =
         if Fun.ApproximateEquals(p0, p1, epsilon) then
             None
         elif Fun.ApproximateEquals(p0, ellipse.GetPoint alpha0, epsilon) && Fun.ApproximateEquals(p1, ellipse.GetPoint (alpha0 + dAlpha), epsilon) then
-            createArc p0 p1 alpha0 dAlpha ellipse
+            createArc false p0 p1 alpha0 dAlpha ellipse
         else
             None
     /// creates an arc using the an angle alpha0 and a (signed) dAlpha.
     /// in order to avoid precision issues p0,p1 users may redundantly supply p0 and p1.
     /// the implementation validates that p0~ellipse.GetPoint(alpha0) and p1~ellipse.GetPoint(alpha0+dAlpha) respectively.
     let arcWithPoints (p0 : V2d) (p1 : V2d) (alpha0 : float) (dAlpha : float) (ellipse : Ellipse2d) =
-        tryArcWithPoints p0 p1 alpha0 dAlpha ellipse |> Option.get
+        if Fun.ApproximateEquals(p0, ellipse.GetPoint alpha0, epsilon) && Fun.ApproximateEquals(p1, ellipse.GetPoint (alpha0 + dAlpha), epsilon) then
+            createArc true p0 p1 alpha0 dAlpha ellipse |> Option.get
+        else
+            failwith "bad points for arc"
 
     /// creates an arc using the an angle alpha0 and a (signed) dAlpha
     let tryArc (alpha0 : float) (dAlpha : float) (ellipse : Ellipse2d) =
@@ -997,7 +1000,7 @@ module PathSegment =
         else
             let p0 = ellipse.GetPoint alpha0
             let p1 = ellipse.GetPoint (alpha0 + dAlpha)
-            createArc p0 p1 alpha0 dAlpha ellipse
+            createArc false p0 p1 alpha0 dAlpha ellipse
             
     /// creates an arc using the an angle alpha0 and a (signed) dAlpha
     let arc (alpha0 : float) (dAlpha : float) (ellipse : Ellipse2d) =
@@ -1249,7 +1252,7 @@ module PathSegment =
             let c = f ellipse.Center
             let ax0 = f (ellipse.Center + ellipse.Axis0) - c
             let ax1 = f (ellipse.Center + ellipse.Axis1) - c
-            let e = Ellipse2d(c, ax0, ax1)
+            let e = Ellipse2d.FromConjugateDiameters(c, ax0, ax1)
             let q0 = f p0
             let q1 = f p1
             let da = 
