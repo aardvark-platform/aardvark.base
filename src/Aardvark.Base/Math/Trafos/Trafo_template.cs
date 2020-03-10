@@ -290,7 +290,7 @@ namespace Aardvark.Base
         public static __type__ Scale(__rtype__ s)
         {
             var t = 1 / s;
-            return new __type__(__mmmt__.Scale(s, s, s), __mmmt__.Scale(t, t, t));
+            return new __type__(__mmmt__.Scale(s), __mmmt__.Scale(t));
         }
 
         #endregion

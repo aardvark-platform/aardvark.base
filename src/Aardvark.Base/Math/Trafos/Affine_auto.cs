@@ -436,28 +436,28 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2f Scale(float scaleFactor)
-            => new Affine2f(M22f.Scale(scaleFactor, scaleFactor));
+            => new Affine2f(M22f.Diagonal(scaleFactor, scaleFactor));
 
         /// <summary>
         /// Creates a scaling transformation using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2f Scale(float sX, float sY)
-            => new Affine2f(M22f.Scale(sX, sY));
+            => new Affine2f(M22f.Diagonal(sX, sY));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="V2f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2f Scale(V2f scaleFactors)
-            => new Affine2f(M22f.Scale(scaleFactors));
+            => new Affine2f(M22f.Diagonal(scaleFactors));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="Scale2f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2f Scale(Scale2f scale)
-            => new Affine2f(M22f.Scale(scale));
+            => new Affine2f(M22f.Diagonal(scale));
 
         #endregion
 
@@ -1113,28 +1113,28 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f Scale(float scaleFactor)
-            => new Affine3f(M33f.Scale(scaleFactor, scaleFactor, scaleFactor));
+            => new Affine3f(M33f.Diagonal(scaleFactor, scaleFactor, scaleFactor));
 
         /// <summary>
         /// Creates a scaling transformation using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f Scale(float sX, float sY, float sZ)
-            => new Affine3f(M33f.Scale(sX, sY, sZ));
+            => new Affine3f(M33f.Diagonal(sX, sY, sZ));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="V3f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f Scale(V3f scaleFactors)
-            => new Affine3f(M33f.Scale(scaleFactors));
+            => new Affine3f(M33f.Diagonal(scaleFactors));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="Scale3f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3f Scale(Scale3f scale)
-            => new Affine3f(M33f.Scale(scale));
+            => new Affine3f(M33f.Diagonal(scale));
 
         #endregion
 
@@ -1877,28 +1877,28 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d Scale(double scaleFactor)
-            => new Affine2d(M22d.Scale(scaleFactor, scaleFactor));
+            => new Affine2d(M22d.Diagonal(scaleFactor, scaleFactor));
 
         /// <summary>
         /// Creates a scaling transformation using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d Scale(double sX, double sY)
-            => new Affine2d(M22d.Scale(sX, sY));
+            => new Affine2d(M22d.Diagonal(sX, sY));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="V2d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d Scale(V2d scaleFactors)
-            => new Affine2d(M22d.Scale(scaleFactors));
+            => new Affine2d(M22d.Diagonal(scaleFactors));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="Scale2d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine2d Scale(Scale2d scale)
-            => new Affine2d(M22d.Scale(scale));
+            => new Affine2d(M22d.Diagonal(scale));
 
         #endregion
 
@@ -2554,28 +2554,28 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d Scale(double scaleFactor)
-            => new Affine3d(M33d.Scale(scaleFactor, scaleFactor, scaleFactor));
+            => new Affine3d(M33d.Diagonal(scaleFactor, scaleFactor, scaleFactor));
 
         /// <summary>
         /// Creates a scaling transformation using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d Scale(double sX, double sY, double sZ)
-            => new Affine3d(M33d.Scale(sX, sY, sZ));
+            => new Affine3d(M33d.Diagonal(sX, sY, sZ));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="V3d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d Scale(V3d scaleFactors)
-            => new Affine3d(M33d.Scale(scaleFactors));
+            => new Affine3d(M33d.Diagonal(scaleFactors));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="Scale3d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Affine3d Scale(Scale3d scale)
-            => new Affine3d(M33d.Scale(scale));
+            => new Affine3d(M33d.Diagonal(scale));
 
         #endregion
 

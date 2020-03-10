@@ -247,7 +247,7 @@ namespace Aardvark.Base
         public static Trafo2f Scale(float s)
         {
             var t = 1 / s;
-            return new Trafo2f(M33f.Scale(s, s, s), M33f.Scale(t, t, t));
+            return new Trafo2f(M33f.Scale(s), M33f.Scale(t));
         }
 
         #endregion
@@ -597,7 +597,7 @@ namespace Aardvark.Base
         public static Trafo3f Scale(float s)
         {
             var t = 1 / s;
-            return new Trafo3f(M44f.Scale(s, s, s), M44f.Scale(t, t, t));
+            return new Trafo3f(M44f.Scale(s), M44f.Scale(t));
         }
 
         #endregion
@@ -1306,7 +1306,7 @@ namespace Aardvark.Base
         public static Trafo2d Scale(double s)
         {
             var t = 1 / s;
-            return new Trafo2d(M33d.Scale(s, s, s), M33d.Scale(t, t, t));
+            return new Trafo2d(M33d.Scale(s), M33d.Scale(t));
         }
 
         #endregion
@@ -1656,7 +1656,7 @@ namespace Aardvark.Base
         public static Trafo3d Scale(double s)
         {
             var t = 1 / s;
-            return new Trafo3d(M44d.Scale(s, s, s), M44d.Scale(t, t, t));
+            return new Trafo3d(M44d.Scale(s), M44d.Scale(t));
         }
 
         #endregion

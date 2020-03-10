@@ -40,7 +40,9 @@ namespace Aardvark.Base
     //#     var vntype = "V"+ n + tchar;
     //#     var vnsub1type = "V"+ nsub1 + tchar;
     //#     var scalent = "Scale" + n + tchar;
+    //#     var scalemt = "Scale" + m + tchar;
     //#     var scalensub1t = "Scale" + (n - 1) + tchar;
+    //#     var scalemsub1t = "Scale" + (m - 1) + tchar;
     //#     var shiftmsub1t = "Shift" + (m - 1) + tchar;
     //#     var rotnt = "Rot" + n + tchar;
     //#     var rotnsub1t = "Rot" + (n - 1) + tchar;
@@ -250,7 +252,7 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="__nmtype__"/> using __n__ scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(/*# nfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
+        public static __nmtype__ Diagonal(/*# nfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
                 /*# m.ForEach(j => { var v = i == j ? "s" + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
@@ -260,7 +262,7 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vntype__"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(__vntype__ s)
+        public static __nmtype__ Diagonal(__vntype__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
                 /*# m.ForEach(j => { var v = i == j ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
@@ -271,43 +273,54 @@ namespace Aardvark.Base
         /// Creates a transformation <see cref="__nmtype__"/> from a <see cref="__scalent__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(__scalent__ s)
+        public static __nmtype__ Diagonal(__scalent__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
                 /*# m.ForEach(j => { var v = (i == j) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
         //# } // isReal
-        //# if (n > 2 && n == m) {
+        //# if (n > 2 && Math.Abs(n-m) <= 1) {
+
         /// <summary>
-        /// Creates a transformation <see cref="__nmtype__"/> using __nsub1__ scalars as scaling factors.
+        /// Creates a homogenous transformation <see cref="__nmtype__"/> using a uniform scale.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(/*# nfields.Take(n - 1).ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
+        public static __nmtype__ Scale(__ftype__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "s" + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+                /*# m.ForEach(j => { var v = i == j ? ((i == m-1) ? "1" : "s") : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
         /// <summary>
-        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vnsub1type__"/> as scaling factor.
+        /// Creates a transformation <see cref="__nmtype__"/> using __msub1__ scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(__vnsub1type__ s)
+        public static __nmtype__ Scale(/*# nfields.Take(m - 1).ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < m - 1) ? "s" + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vmsub1type__"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(__vmsub1type__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < m - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
         //# if (t > 1) {
         /// <summary>
-        /// Creates a scaling transformation <see cref="__nmtype__"/> from a <see cref="__scalensub1t__"/> transformation.
+        /// Creates a scaling transformation <see cref="__nmtype__"/> from a <see cref="__scalemsub1t__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Scale(__scalensub1t__ s)
+        public static __nmtype__ Scale(__scalemsub1t__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = (i == j) ? ((i < n - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < m - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
         //# } // isReal

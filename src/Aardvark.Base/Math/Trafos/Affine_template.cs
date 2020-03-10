@@ -447,28 +447,28 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Scale(__ftype__ scaleFactor)
-            => new __type__(__mnnt__.Scale(/*# nfields.ForEach(f => { */scaleFactor/*# }, comma); */));
+            => new __type__(__mnnt__.Diagonal(/*# nfields.ForEach(f => { */scaleFactor/*# }, comma); */));
 
         /// <summary>
         /// Creates a scaling transformation using __n__ scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Scale(/*# nfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
-            => new __type__(__mnnt__.Scale(/*# nfields.ForEach(f => { */s__f__/*# }, comma); */));
+            => new __type__(__mnnt__.Diagonal(/*# nfields.ForEach(f => { */s__f__/*# }, comma); */));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="__vnt__"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Scale(__vnt__ scaleFactors)
-            => new __type__(__mnnt__.Scale(scaleFactors));
+            => new __type__(__mnnt__.Diagonal(scaleFactors));
 
         /// <summary>
         /// Creates a scaling transformation using a <see cref="__scalent__"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Scale(__scalent__ scale)
-            => new __type__(__mnnt__.Scale(scale));
+            => new __type__(__mnnt__.Diagonal(scale));
 
         #endregion
 
