@@ -74,8 +74,8 @@ namespace Aardvark.Base.Coder
         public void Write(Scale3d t) { Write(t.V); }
         public void Write(Shift3f t) { Write(t.V); }
         public void Write(Shift3d t) { Write(t.V); }
-        public void Write(Similarity3f t) { Write(t.Scale); Write(t.EuclideanTransformation); }
-        public void Write(Similarity3d t) { Write(t.Scale); Write(t.EuclideanTransformation); }
+        public void Write(Similarity3f t) { Write(t.Scale); Write(t.Euclidean); }
+        public void Write(Similarity3d t) { Write(t.Scale); Write(t.Euclidean); }
         public void Write(Trafo2f t) { Write(t.Forward); Write(t.Backward); }
         public void Write(Trafo2d t) { Write(t.Forward); Write(t.Backward); }
         public void Write(Trafo3f t) { Write(t.Forward); Write(t.Backward); }

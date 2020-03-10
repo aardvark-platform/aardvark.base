@@ -55,23 +55,45 @@ module FSharpMath =
             static member inline Saturate(x : float) = x |> max 0.0 |> min 1.0
             static member inline Saturate(x : float32) = x |> max 0.0f |> min 1.0f
             static member inline Saturate(x : decimal) = x |> max 0m |> min 1m
+            
+        type Signs =
+            static member inline Signum (a : ^a) =
+                if a < LanguagePrimitives.GenericZero< ^a> then -LanguagePrimitives.GenericOne
+                elif a > LanguagePrimitives.GenericZero< ^a> then LanguagePrimitives.GenericOne
+                else LanguagePrimitives.GenericZero< ^a >
+                
+            static member inline Signumi (a : ^a) =
+                if a < LanguagePrimitives.GenericZero< ^a> then -1
+                elif a > LanguagePrimitives.GenericZero< ^a> then 1
+                else 0
+
+        type Power() =
+            static member inline Power(a : ^a, b : ^b) = Operators.( ** ) a b
+            
+            static member inline Pown(a : ^a, b : int) = Operators.pown a b
+
+        
+        type Log2() =
+            static member inline Log2(a : ^a) =
+                log a / log (LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne)
+            
 
     [<AutoOpen>]
     module private Aux =
-        let inline signumAux (_ : ^z) (x : ^a) =
-            ((^z or ^a) : (static member Signum : ^a  -> ^a) x)
+        let inline signumAux (_ : ^z) (_ : ^y) (x : ^a) =
+            ((^z or ^y or ^a) : (static member Signum : ^a  -> ^a) x)
 
-        let inline signumiAux (_ : ^z) (x : ^a) =
-            ((^z or ^a) : (static member Signumi : ^a  -> ^b) x)
+        let inline signumiAux (_ : ^z) (_ : ^y) (x : ^a) =
+            ((^z or ^y or ^a) : (static member Signumi : ^a  -> ^b) x)
 
-        let inline powAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^c) (x, y))
+        let inline powAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
+            ((^z or ^y or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^c) (x, y))
 
-        let inline pownAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^c) (x, y))
+        let inline pownAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
+            ((^z or ^y or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^c) (x, y))
 
-        let inline log2Aux (_ : ^z) (x : ^a) =
-            ((^z or ^a) : (static member Log2 : ^a  -> ^a) x)
+        let inline log2Aux (_ : ^z) (_ : ^y) (x : ^a) =
+            ((^z or ^y or ^a) : (static member Log2 : ^a  -> ^a) x)
 
         let inline cbrtAux (_ : ^z) (x : ^a) =
             ((^z or ^a) : (static member Cbrt : ^a  -> ^a) x)
@@ -106,31 +128,31 @@ module FSharpMath =
     /// Returns -1 if x is less than zero, 0 if x is equal to zero, and 1 if
     /// x is greater than zero. The result has the same type as the input.
     let inline signum x =
-        signumAux Unchecked.defaultof<Fun> x
+        signumAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Signs> x
 
     /// Returns -1 if x is less than zero, 0 if x is equal to zero, and 1 if
     /// x is greater than zero.
     let inline signumi x =
-        signumiAux Unchecked.defaultof<Fun> x
+        signumiAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Signs> x
 
     /// Returns x raised by the power of y (must be float or double).
     // F# variant does not support integers!
     let inline pow x y =
-        powAux Unchecked.defaultof<Fun> x y
+        powAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
 
     /// Returns x raised by the integer power of y (must not be negative).
     // F# variant has signature a' -> b' -> 'a, which does not permit for example float32 -> V2i -> V2f
     let inline pown x y =
-        pownAux Unchecked.defaultof<Fun> x y
+        pownAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
 
     /// Returns x raised by the power of y.
     // F# variant does not support integers!
     let inline ( ** ) x y =
-        powAux Unchecked.defaultof<Fun> x y
+        powAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
 
     /// Returns the base 2 logarithm of x.
-    let inline log2 x =
-        log2Aux Unchecked.defaultof<Fun> x
+    let inline log2 x = 
+        log2Aux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Log2> x
 
     /// Returns x^2
     let inline sqr x = x * x
@@ -161,7 +183,21 @@ module FSharpMath =
     let inline smoothstep (edge0 : ^a) (edge1 : ^a) (x : ^b) =
         smoothstepAux Unchecked.defaultof<Fun> edge0 edge1 x
 
-    module private CompilerTests =
+
+    [<CompilerMessage("testing purposes", 1337, IsHidden = true)>]
+    module ``Math compiler tests 😀😁`` = 
+        type MyCustomNumericTypeExtensionTestTypeForInternalTesting() =
+            static member Pow(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : float) = h
+            static member (*)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member (/)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member One = MyCustomNumericTypeExtensionTestTypeForInternalTesting()
+
+            static member Signum(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member Signumi(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = 0
+            static member Cbrt(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+
+            static member Log(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member Log2(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
         let fsharpCoreWorking() =
 
@@ -294,15 +330,18 @@ module FSharpMath =
             let b : int = signum 1
             let s : V2d = signum V2d.II
             let a : decimal = signum 1.0m
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = signum (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
 
         let signumIntWorking() =
             let a : int = signumi 1.0
             let b : int = signumi 1
             let s : V2i = signumi V2d.II
+            let a : int = signumi (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
 
         let pownWorking() =
+            let a = pown (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 6
             let a : float = pown 1.0 2
             let a : int = pown 1 2
             let a : uint16 = pown 1us 2
@@ -334,6 +373,8 @@ module FSharpMath =
             let a : float = pow 1s 2.0
             let a : float = pow 1L 2.0
 
+            let a = pow (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 12.0
+
             let a : V2d = pow V2d.II V2d.II
             let a : V2d = pow V2d.II 1.0
             let a : V2d = pow 1.0 V2d.II
@@ -363,6 +404,8 @@ module FSharpMath =
             let a : float = 1uy ** 2.0
             let a : float = 1s ** 2.0
             let a : float = 1L ** 2.0
+            
+            let a = MyCustomNumericTypeExtensionTestTypeForInternalTesting() ** 12.0
 
             let a : V2d = V2d.II ** V2d.II
             let a : V2d = V2d.II ** 1.0
@@ -391,12 +434,14 @@ module FSharpMath =
             let a : float = log2 10.0
             let a : V2d =  log2 V2d.II
             let a : ComplexD = log2 ComplexD.One
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = log2 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
             
         let cbrtWorking() =
             let a : float = cbrt 10.0
             let a : V2d =  cbrt V2d.II
             let a : ComplexD = cbrt ComplexD.One
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = cbrt (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
             
         let sqrWorking() =

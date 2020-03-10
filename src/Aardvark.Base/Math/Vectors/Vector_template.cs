@@ -1590,6 +1590,28 @@ namespace Aardvark.Base
         //# }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="__vtype__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this __vtype__ v, __ftype__ epsilon)
+            => /*# fields.ForEach(f => { */v.__f__.IsTiny(epsilon)/*# }, andand);*/;
+
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="__vtype__"/> is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this __vtype__ v)
+            => /*# fields.ForEach(f => { */v.__f__.IsTiny()/*# }, andand);*/;
+
+        //# }
+        #endregion
     }
 
     /// <summary>

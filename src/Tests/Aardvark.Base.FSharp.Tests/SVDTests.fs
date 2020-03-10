@@ -849,23 +849,23 @@ module ExpectoSvdTests =
                 | M22 mat ->      
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M22d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
                 | M33 mat -> 
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M33d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
                 | M44 mat -> 
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M44d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
                 | M23 mat -> 
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M23d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
                 | M34 mat ->
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M34d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
             )
 
             testPropertyWithConfig cfg "[QR64] Q*Qt = ID" (fun (mat : PrettyMatrix<float> ) -> 
@@ -924,23 +924,23 @@ module ExpectoSvdTests =
                 | M22 mat ->      
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M22d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
                 | M33 mat -> 
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M33d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
                 | M44 mat -> 
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M44d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
                 | M23 mat -> 
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M23d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
                 | M34 mat ->
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M34d.DistanceMax(res,mat) < epsilon
+                    Mat.DistanceMax(res,mat) < epsilon
             )
 
             testPropertyWithConfig cfg "[RQ64] Q*Qt = ID" (fun (mat : WideMatrix<float> ) -> 
@@ -1239,23 +1239,23 @@ module ExpectoSvdTests =
                 | FM22 mat ->      
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M22f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
                 | FM33 mat -> 
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M33f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
                 | FM44 mat -> 
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M44f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
                 | FM23 mat -> 
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M23f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
                 | FM34 mat ->
                     let (q,r) = QR.decompose mat
                     let res = q * r
-                    M34f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
             )
 
             testPropertyWithConfig cfg "[QR32] Q*Qt = ID" (fun (mat : PrettyMatrix32<float32> ) -> 
@@ -1314,23 +1314,23 @@ module ExpectoSvdTests =
                 | FM22 mat ->      
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M22f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
                 | FM33 mat -> 
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M33f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
                 | FM44 mat -> 
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M44f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
                 | FM23 mat -> 
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M23f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
                 | FM34 mat ->
                     let (r,q) = RQ.decompose mat
                     let res = r * q
-                    M34f.DistanceMax(res,mat) < floatEpsilon
+                    Mat.DistanceMax(res,mat) < floatEpsilon
             )
 
             testPropertyWithConfig cfg "[RQ32] Q*Qt = ID" (fun (mat : WideMatrix32<float32> ) -> 

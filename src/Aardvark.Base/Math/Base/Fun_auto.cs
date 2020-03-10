@@ -1767,17 +1767,71 @@ namespace Aardvark.Base
         #region Comparisons
 
         /// <summary>
-        /// Returns true if the absolulte value of the supplied float is
-        /// smaller than 4 times the machine epsilon.
+        /// Returns whether <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this float x)
-            => x.Abs() < Constant<float>.PositiveTinyValue;
+        public static bool IsTiny(this byte x, byte epsilon)
+            => x < epsilon;
 
         /// <summary>
-        /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
-        /// smaller than the supplied <paramref name="epsilon"/> .
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this sbyte x, sbyte epsilon)
+            => x.Abs() < epsilon;
+
+        /// <summary>
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this short x, short epsilon)
+            => x.Abs() < epsilon;
+
+        /// <summary>
+        /// Returns whether <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this ushort x, ushort epsilon)
+            => x < epsilon;
+
+        /// <summary>
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this int x, int epsilon)
+            => x.Abs() < epsilon;
+
+        /// <summary>
+        /// Returns whether <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this uint x, uint epsilon)
+            => x < epsilon;
+
+        /// <summary>
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this long x, long epsilon)
+            => x.Abs() < epsilon;
+
+        /// <summary>
+        /// Returns whether <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this ulong x, ulong epsilon)
+            => x < epsilon;
+
+        /// <summary>
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1785,22 +1839,28 @@ namespace Aardvark.Base
             => x.Abs() < epsilon;
 
         /// <summary>
-        /// Returns true if the absolulte value of the supplied float is
-        /// smaller than 4 times the machine epsilon.
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than Constant&lt;float&gt;.PositiveTinyValue.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this double x)
-            => x.Abs() < Constant<double>.PositiveTinyValue;
+        public static bool IsTiny(this float x)
+            => x.Abs() < Constant<float>.PositiveTinyValue;
 
         /// <summary>
-        /// Returns true if the absolulte value of the supplied float <paramref name="x"/> is
-        /// smaller than the supplied <paramref name="epsilon"/> .
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than <paramref name="epsilon"/>.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this double x, double epsilon)
             => x.Abs() < epsilon;
+
+        /// <summary>
+        /// Returns whether the absolute value of <paramref name="x"/> is smaller than Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this double x)
+            => x.Abs() < Constant<double>.PositiveTinyValue;
 
         #endregion
 
