@@ -386,7 +386,7 @@ module ExpectoSvdTests =
     type Arbitraries () = 
 
         static let properFloat =
-            Arb.generate |> Gen.filter (fun v -> not (System.Double.IsNaN(v) || System.Double.IsInfinity(v) || abs(v) > 1E20 || abs(v) < 1E-20))
+            Arb.generate |> Gen.filter (fun v -> not (isNaN(v) || isInfinity(v) || abs(v) > 1E20 || abs(v) < 1E-20))
 
         static let arrayGen (k : MatrixKind<float>) (len : int)=
             match k with
