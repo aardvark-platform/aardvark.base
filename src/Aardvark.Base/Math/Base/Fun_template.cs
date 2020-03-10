@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
@@ -680,6 +681,7 @@ namespace Aardvark.Base
         //# }
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rt.Name__ Power(this __t.Name__ x, __rt.Name__ y)
         {
@@ -842,10 +844,21 @@ namespace Aardvark.Base
         /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
         //# }
         /// </summary>
+        //# fname = "Log2";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rtype.Name__ Log2(this __t.Name__ x) =>
-            x.Log() * __rcast__Constant.Ln2Inv;
+        public static __rtype.Name__ __fname__(this __t.Name__ x)
+        {
+            #if NETCOREAPP3_0
+            //# if (t != Meta.FloatType) {
+                return Math.__fname__(x);
+            //# } else {
+                return MathF.__fname__(x);
+            //# }
+            #else
+                return x.Log() * __rcast__Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
@@ -853,10 +866,21 @@ namespace Aardvark.Base
         /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
         //# }
         /// </summary>
+        //# fname = "Log";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rtype.Name__ Log(this __t.Name__ x, __rtype.Name__ basis) =>
-            x.Log() / basis.Log();
+        public static __rtype.Name__ __fname__(this __t.Name__ x, __rtype.Name__ basis)
+        {
+            //# if (t != Meta.FloatType) {
+            return Math.__fname__(x, basis);
+            //# } else {
+            #if NETCOREAPP3_0
+                return MathF.__fname__(x, basis);
+            #else
+                return (float)Math.__fname__(x, basis);
+            #endif
+            //# }
+        }
 
         //# });
         #endregion

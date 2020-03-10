@@ -989,6 +989,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector with all elements set to their absolute value.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Abs(__vtype__ v)
             => v.Abs();
@@ -998,6 +999,7 @@ namespace Aardvark.Base
         /// Returns a copy of the given vector, with each element set to the largest integer
         /// less than or equal to the element's current value.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Floor(__vtype__ v)
             => v.Floor();
@@ -1006,6 +1008,7 @@ namespace Aardvark.Base
         /// Returns a copy of the given vector, with each element set to the smallest integer
         /// greater than or equal to the element's current value.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Ceiling(__vtype__ v)
             => v.Ceiling();
@@ -1013,6 +1016,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with each element rounded to the nearest integer.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Round(__vtype__ v)
             => v.Round();
@@ -1020,6 +1024,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with each element rounded to the nearest integer towards zero.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Truncate(__vtype__ v)
             => v.Truncate();
@@ -1027,6 +1032,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with acos() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Acos(__vtype__ v)
             => Fun.Acos(v);
@@ -1034,6 +1040,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with cos() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Cos(__vtype__ v)
             => Fun.Cos(v);
@@ -1041,6 +1048,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with cosh() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Cosh(__vtype__ v)
             => Fun.Cosh(v);
@@ -1048,6 +1056,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with asin() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Asin(__vtype__ v)
             => Fun.Asin(v);
@@ -1055,6 +1064,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with sin() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sin(__vtype__ v)
             => Fun.Sin(v);
@@ -1062,6 +1072,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with sinh() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sinh(__vtype__ v)
             => Fun.Sinh(v);
@@ -1069,6 +1080,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with atan() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Atan(__vtype__ v)
             => Fun.Atan(v);
@@ -1077,6 +1089,7 @@ namespace Aardvark.Base
         /// Returns a vector, with each element being the result of atan2() applied
         /// to each element pair of the given vectors.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Atan2(__vtype__ a, __vtype__ b)
             => Fun.Atan2(a, b);
@@ -1084,6 +1097,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with tan() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Tan(__vtype__ v)
             => Fun.Tan(v);
@@ -1091,6 +1105,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with tanh() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Tanh(__vtype__ v)
             => Fun.Tanh(v);
@@ -1098,6 +1113,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with sqrt() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Sqrt(__vtype__ v)
             => Fun.Sqrt(v);
@@ -1105,6 +1121,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with exp() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Exp(__vtype__ v)
             => Fun.Exp(v);
@@ -1112,6 +1129,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with log() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Log(__vtype__ v)
             => Fun.Log(v);
@@ -1119,6 +1137,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the given vector, with log10() applied to each element.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Log10(__vtype__ v)
             => Fun.Log10(v);
@@ -1127,6 +1146,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the componentwise minimum vector.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Min(__vtype__ v0, __vtype__ v1)
             => Fun.Min(v0, v1);
@@ -1134,6 +1154,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the componentwise minimum vector compared with a scalar.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Min(__vtype__ v, __ftype__ x)
             => Fun.Min(v, x);
@@ -1141,6 +1162,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the componentwise maximum vector.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Max(__vtype__ v0, __vtype__ v1)
             => Fun.Max(v0, v1);
@@ -1148,6 +1170,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the componentwise maximum vector compared with a scalar.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Max(__vtype__ v, __ftype__ x)
             => Fun.Max(v, x);
@@ -1155,6 +1178,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the given vector, with each element clamped to the interval [0, 1].
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Saturate(__vtype__ v)
             => Fun.Saturate(v);
@@ -1523,6 +1547,9 @@ namespace Aardvark.Base
         /// Applies Fun.__fun.Name__ to each element of the given vector(s).
         /// </summary>
         [Pure]
+        //# if (fun.EditorBrowsable) {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __retType__ __fun.Name__(/*# fun.Parameters.ForEach((p, i) => {
         var name = p.Name;
@@ -2356,6 +2383,15 @@ namespace Aardvark.Base
         public static __vtype__ Uniform__vtype__(this IRandomUniform rnd, __ftype__ size)
         {
             return new __vtype__(/*# fields.ForEach(f => { */rnd.Uniform__fcaps__(size)/*#  }, comma); */);
+        }
+
+        /// <summary>
+        /// Uses Uniform__fcaps__(__ftype__) to generate the elements of a __vtype__ vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Uniform__vtype__(this IRandomUniform rnd, __vtype__ size)
+        {
+            return new __vtype__(/*# fields.ForEach(f => { */rnd.Uniform__fcaps__(size.__f__)/*#  }, comma); */);
         }
 
         //# }

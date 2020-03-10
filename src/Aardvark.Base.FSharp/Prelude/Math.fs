@@ -119,7 +119,7 @@ module FSharpMath =
         powAux Unchecked.defaultof<Fun> x y
 
     /// Returns x raised by the integer power of y (must not be negative).
-    // F# variant does not support integers!
+    // F# variant has signature a' -> b' -> 'a, which does not permit for example float32 -> V2i -> V2f
     let inline pown x y =
         pownAux Unchecked.defaultof<Fun> x y
 

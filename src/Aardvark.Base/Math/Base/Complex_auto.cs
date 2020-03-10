@@ -1,4 +1,6 @@
 using System;
+using System.Globalization;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
@@ -67,6 +69,42 @@ namespace Aardvark.Base
             get => new ComplexF(0, 1);
         }
 
+        /// <summary>
+        /// Returns ∞ + 0i.
+        /// </summary>
+        public static ComplexF PositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ComplexF(float.PositiveInfinity);
+        }
+
+        /// <summary>
+        /// Returns -∞ + 0i.
+        /// </summary>
+        public static ComplexF NegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ComplexF(float.NegativeInfinity);
+        }
+
+        /// <summary>
+        /// Returns 0 + ∞i.
+        /// </summary>
+        public static ComplexF PositiveInfinityI
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ComplexF(0, float.PositiveInfinity);
+        }
+
+        /// <summary>
+        /// Returns 0 - ∞i.
+        /// </summary>
+        public static ComplexF NegativeInfinityI
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ComplexF(0, float.NegativeInfinity);
+        }
+
         #endregion
 
         #region Properties
@@ -94,7 +132,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Squared gaussian Norm (modulus) of the complex number.
+        /// Returns the squared Gaussian Norm (modulus) of the complex number.
         /// </summary>
         public float NormSquared
         {
@@ -103,7 +141,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gaussian Norm (modulus) of the complex number.
+        /// Returns the Gaussian Norm (modulus) of the complex number.
         /// </summary>
         public float Norm
         {
@@ -119,7 +157,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Argument of the complex number.
+        /// Retruns the argument of the complex number.
         /// </summary>
         public float Argument
         {
@@ -183,7 +221,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has a part that is NaN.
         /// </summary>
-        public bool IsNan
+        public bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (float.IsNaN(Real) || float.IsNaN(Imag)); }
@@ -220,6 +258,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Acos(ComplexF x)
             => x.Acos();
@@ -227,6 +266,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Cos(ComplexF x)
             => x.Cos();
@@ -234,6 +274,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Cosh(ComplexF x)
             => x.Cosh();
@@ -241,6 +282,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Asin(ComplexF x)
             => x.Asin();
@@ -248,6 +290,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sin(ComplexF x)
             => x.Sin();
@@ -255,6 +298,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sinh(ComplexF x)
             => x.Sinh();
@@ -262,6 +306,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Atan(ComplexF x)
             => x.Atan();
@@ -269,6 +314,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Tan(ComplexF x)
             => x.Tan();
@@ -276,6 +322,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Tanh(ComplexF x)
             => x.Tanh();
@@ -283,6 +330,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the square root of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sqrt(ComplexF x)
             => x.Sqrt();
@@ -290,6 +338,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns e raised to the power of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Exp(ComplexF x)
             => x.Exp();
@@ -297,6 +346,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the natural logarithm of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log(ComplexF x)
             => x.Log();
@@ -304,6 +354,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log10(ComplexF x)
             => x.Log10();
@@ -312,48 +363,81 @@ namespace Aardvark.Base
 
         #region Operators
 
+        /// <summary>
+        /// Implicit conversion from a <see cref="float"/> to a <see cref="ComplexF"/>.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ComplexF(float a)
             => new ComplexF(a);
 
+        /// <summary>
+        /// Adds two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator +(ComplexF a, ComplexF b)
             => new ComplexF(a.Real + b.Real, a.Imag + b.Imag);
 
+        /// <summary>
+        /// Adds a complex number and a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator +(ComplexF a, float b)
             => new ComplexF(a.Real + b, a.Imag);
 
+        /// <summary>
+        /// Adds a real number and a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator +(float a, ComplexF b)
             => new ComplexF(a + b.Real, b.Imag);
 
+        /// <summary>
+        /// Subtracts two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator -(ComplexF a, ComplexF b)
             => new ComplexF(a.Real - b.Real, a.Imag - b.Imag);
 
+        /// <summary>
+        /// Subtracts a real number from a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator -(ComplexF a, float b)
             => new ComplexF(a.Real - b, a.Imag);
 
+        /// <summary>
+        /// Subtracts a complex number from a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator -(float a, ComplexF b)
             => new ComplexF(a - b.Real, -b.Imag);
 
+        /// <summary>
+        /// Multiplies two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator *(ComplexF a, ComplexF b)
             => new ComplexF(
                 a.Real * b.Real - a.Imag * b.Imag,
                 a.Real * b.Imag + a.Imag * b.Real);
 
+        /// <summary>
+        /// Multiplies a complex number and a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator *(ComplexF a, float b)
             => new ComplexF(a.Real * b, a.Imag * b);
 
+        /// <summary>
+        /// Multiplies a real number and a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator *(float a, ComplexF b)
             => new ComplexF(a * b.Real, a * b.Imag);
 
+        /// <summary>
+        /// Divides two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator /(ComplexF a, ComplexF b)
         {
@@ -363,10 +447,16 @@ namespace Aardvark.Base
                 t * (a.Imag * b.Real - a.Real * b.Imag));
         }
 
+        /// <summary>
+        /// Divides a complex number by a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator /(ComplexF a, float b)
             => new ComplexF(a.Real / b, a.Imag / b);
 
+        /// <summary>
+        /// Divides a real number by a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator /(float a, ComplexF b)
         {
@@ -376,26 +466,62 @@ namespace Aardvark.Base
                 t * (-a * b.Imag));
         }
 
+        /// <summary>
+        /// Negates a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator -(ComplexF a)
             => new ComplexF(-a.Real, -a.Imag);
 
+        /// <summary>
+        /// Returns the conjugate of a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator !(ComplexF a)
             => a.Conjugated;
 
         #endregion
 
+        #region Comparison Operators
+
+        /// <summary>
+        /// Returns whether two <see cref="ComplexF"/> are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(ComplexF a, ComplexF b)
+            => a.Real == b.Real && a.Imag == b.Imag;
+
+        /// <summary>
+        /// Returns whether two <see cref="ComplexF"/> are not equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(ComplexF a, ComplexF b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
-        public override string ToString()
+        public override int GetHashCode()
+            => HashCode.GetCombined(Real, Imag);
+
+        public override bool Equals(object other)
         {
-            return ToString("");
+            if (other is ComplexF obj)
+                return Real.Equals(obj.Real) && Imag.Equals(obj.Imag);
+            else
+                return false;
         }
 
-        public string ToString(string format)
+        /*public override string ToString()
         {
-            if (!Fun.IsTiny(Real))
+            return ToString("");
+        }*/
+
+        public override string ToString(/*string format*/)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "({0}, {1})", Real, Imag);
+            /*if (!Fun.IsTiny(Real))
             {
                 if (Imag > 0.0f)
                 {
@@ -419,28 +545,80 @@ namespace Aardvark.Base
                     return Imag.ToString(format) + "i";
                 }
                 else return "0";
-            }
-
+            }*/
         }
+
+        #endregion
+    }
+
+    public static partial class Complex
+    {
+        #region Conjugate
+
+        /// <summary>
+        /// Returns the conjugate of a complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Conjugated(ComplexF c)
+            => c.Conjugated;
+
+        #endregion
+
+        #region Norm
+
+        /// <summary>
+        /// Returns the squared Gaussian Norm (modulus) of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float NormSquared(ComplexF c)
+            => c.NormSquared;
+
+        /// <summary>
+        /// Returns the Gaussian Norm (modulus) of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Norm(ComplexF c)
+            => c.Norm;
+
+        #endregion
+
+        #region Argument
+
+        /// <summary>
+        /// Retruns the argument of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Argument(ComplexF c)
+            => c.Argument;
 
         #endregion
     }
 
     public static partial class Fun
     {
+        #region Power
+
         /// <summary>
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Power(this ComplexF number, ComplexF exponent)
-        {
-            float r = number.Norm;
-            float phi = number.Argument;
+        {    
+            if (number.IsZero)
+                return ComplexF.Zero;
+            else if (exponent.IsZero)
+                return ComplexF.One;
+            else
+            {
+                float r = number.Norm;
+                float phi = number.Argument;
 
-            float a = exponent.Real;
-            float b = exponent.Imag;
+                float a = exponent.Real;
+                float b = exponent.Imag;
 
-            return ComplexF.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+                return ComplexF.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+            }
         }
 
         /// <summary>
@@ -453,16 +631,18 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Power(this ComplexF number, float exponent)
         {
-            float r = number.NormSquared;
-            float phi = Atan2(number.Imag, number.Real);
-
-            r = Pow(r, exponent);
-            phi *= exponent;
-
-            return new ComplexF(r * Cos(phi), r * Sin(phi));
+            if (number.IsZero)
+                return ComplexF.Zero;
+            else
+            {
+                float r = number.Norm;
+                float phi = number.Argument;
+                return ComplexF.CreateRadial(Pow(r, exponent), exponent * phi);
+            }
         }
 
         /// <summary>
@@ -475,16 +655,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Power(this float number, ComplexF exponent)
         {
-            float r = number;
-            float phi = (number < 0) ? (float)Constant.Pi : 0;
+            if (number == 0)
+                return ComplexF.Zero;
+            else
+            {
+                float a = exponent.Real;
+                float b = exponent.Imag;
 
-            float a = exponent.Real;
-            float b = exponent.Imag;
-
-            return ComplexF.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+                if (number < 0)
+                {
+                    var phi = (float)Constant.Pi;
+                    return ComplexF.CreateRadial(Exp(Log(-number) * a - b * phi), a * phi + b * Log(-number));
+                }
+                else
+                    return ComplexF.CreateRadial(Pow(number, a), b * Log(number));
+            }
         }
 
         /// <summary>
@@ -494,75 +683,112 @@ namespace Aardvark.Base
         public static ComplexF Pow(this float number, ComplexF exponent)
             => Power(number, exponent);
 
+        #endregion
+
+        #region Trigonometry
+
         /// <summary>
         /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Acos(this ComplexF x)
-            => throw new NotImplementedException();
+        {
+            var t = Log(new ComplexF(-x.Imag, x.Real) + Sqrt(1 - x * x));
+            return new ComplexF(-t.Imag + (float)Constant.PiHalf, t.Real);
+        }
 
         /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Cos(this ComplexF x)
-            => throw new NotImplementedException();
+            => (
+                Exp(new ComplexF(-x.Imag, x.Real)) +
+                Exp(new ComplexF(x.Imag, -x.Real))
+            ) * 0.5f;
 
         /// <summary>
         /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Cosh(this ComplexF x)
-            => throw new NotImplementedException();
+            => Cos(new ComplexF(-x.Imag, x.Real));
 
         /// <summary>
         /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Asin(this ComplexF x)
-            => throw new NotImplementedException();
+        {
+            var t = Log(new ComplexF(-x.Imag, x.Real) + Sqrt(1 - x * x));
+            return new ComplexF(t.Imag, -t.Real);
+        }
 
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sin(this ComplexF x)
-            => throw new NotImplementedException();
+        {
+            var a = Exp(new ComplexF(-x.Imag, x.Real)) - Exp(new ComplexF(x.Imag, -x.Real));
+            return new ComplexF(a.Imag, -a.Real) * 0.5f;
+        }
 
         /// <summary>
         /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sinh(this ComplexF x)
-            => throw new NotImplementedException();
+        {
+            var sin = Sin(new ComplexF(-x.Imag, x.Real));
+            return new ComplexF(sin.Imag, -sin.Real);
+        }
 
         /// <summary>
         /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Atan(this ComplexF x)
-            => throw new NotImplementedException();
+        {
+            if (x == ComplexF.I)
+                return ComplexF.PositiveInfinityI;
+            else if (x == -ComplexF.I)
+                return ComplexF.NegativeInfinityI;
+            else if (x == ComplexF.PositiveInfinity)
+                return new ComplexF((float)Constant.PiHalf);
+            else if (x == ComplexF.NegativeInfinity)
+                return new ComplexF(-(float)Constant.PiHalf);
+            else
+                return new ComplexF(0, 0.5f) * Log((ComplexF.I + x) / (ComplexF.I - x));
+        }
 
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Tan(this ComplexF x)
-            => throw new NotImplementedException();
+        {
+            if (x == ComplexF.PositiveInfinityI)
+                return ComplexF.I;
+            else if (x == ComplexF.NegativeInfinityI)
+                return -ComplexF.I;
+            else
+                return Sin(x) / Cos(x);
+        }
 
         /// <summary>
         /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Tanh(this ComplexF x)
-            => throw new NotImplementedException();
+        {
+            var tan = Tan(new ComplexF(-x.Imag, x.Real));
+            return new ComplexF(tan.Imag, -tan.Real);
+        }
 
-        /// <summary>
-        /// Returns the square root of the complex number <paramref name="x"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Sqrt(this ComplexF x)
-            => throw new NotImplementedException();
+        #endregion
+
+        #region Exp, Log
 
         /// <summary>
         /// Returns e raised to the power of the complex number <paramref name="x"/>.
@@ -579,25 +805,59 @@ namespace Aardvark.Base
             => new ComplexF(Log(x.Norm), x.Argument);
 
         /// <summary>
+        /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Log(this ComplexF x, float basis)
+            => x.Log() / basis.Log();
+
+        /// <summary>
         /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log10(this ComplexF x)
-            => throw new NotImplementedException();
+            => Log(x, 10);
 
         /// <summary>
         /// Returns the base-2 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log2(this ComplexF x)
-            => throw new NotImplementedException();
+            => x.Log() * (float)Constant.Ln2Inv;
+
+        #endregion
+
+        #region Roots
 
         /// <summary>
-        /// Returns the cubic root of the complex number <paramref name="x"/>.
+        /// Returns the principal square root of the complex number <paramref name="x"/>.
+        /// </summary>
+        // https://math.stackexchange.com/a/44500
+        // TODO: Check if this is actually better than the naive implementation
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Sqrt(this ComplexF x)
+        {
+            if (x.Imag == 0)
+            {
+                if (x.Real < 0)
+                    return new ComplexF(0, Sqrt(-x.Real));
+                else
+                    return new ComplexF(Sqrt(x.Real), 0);
+            }
+            else
+            {
+                var a = x.Norm;
+                var b = x + a;
+                return a.Sqrt() * (b / b.Norm);
+            }
+        }
+
+        /// <summary>
+        /// Returns the principal cubic root of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Cbrt(this ComplexF x)
-            => throw new NotImplementedException();
+            => ComplexF.CreateRadial(Cbrt(x.Norm), x.Argument / 3);
 
         /// <summary>
         /// Returns the square root of the given real number and returns a complex number.
@@ -616,7 +876,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates both square roots of a complex number-
+        /// Calculates both square roots of a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF[] Csqrt(this ComplexF number)
@@ -635,17 +895,43 @@ namespace Aardvark.Base
         {
             ComplexF[] values = new ComplexF[n];
 
-            float phi = number.Argument / 2;
-            float dphi = (float)Constant.PiTimesTwo / (float)n;
-            float r = Pow(number.Norm, 1 / n);
+            float invN = 1 / (float)n;
+            float phi = number.Argument / n;
+            float dphi = (float)Constant.PiTimesTwo * invN;
+            float r = Pow(number.Norm, invN);
 
-            for (int i = 1; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
                 values[i] = ComplexF.CreateRadial(r, phi + dphi * i);
             }
 
             return values;
         }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        /// <summary>
+        /// Returns whether the given complex numbers are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this ComplexF a, ComplexF b, float tolerance)
+        {
+            return ApproximateEquals(a.Real, b.Real, tolerance) && ApproximateEquals(a.Imag, b.Imag, tolerance);
+        }
+
+        /// <summary>
+        /// Returns whether the given complex numbers are equal within
+        /// Constant{float}.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this ComplexF a, ComplexF b)
+        {
+            return ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+        }
+
+        #endregion
     }
 
     [DataContract]
@@ -710,6 +996,42 @@ namespace Aardvark.Base
             get => new ComplexD(0, 1);
         }
 
+        /// <summary>
+        /// Returns ∞ + 0i.
+        /// </summary>
+        public static ComplexD PositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ComplexD(double.PositiveInfinity);
+        }
+
+        /// <summary>
+        /// Returns -∞ + 0i.
+        /// </summary>
+        public static ComplexD NegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ComplexD(double.NegativeInfinity);
+        }
+
+        /// <summary>
+        /// Returns 0 + ∞i.
+        /// </summary>
+        public static ComplexD PositiveInfinityI
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ComplexD(0, double.PositiveInfinity);
+        }
+
+        /// <summary>
+        /// Returns 0 - ∞i.
+        /// </summary>
+        public static ComplexD NegativeInfinityI
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ComplexD(0, double.NegativeInfinity);
+        }
+
         #endregion
 
         #region Properties
@@ -737,7 +1059,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Squared gaussian Norm (modulus) of the complex number.
+        /// Returns the squared Gaussian Norm (modulus) of the complex number.
         /// </summary>
         public double NormSquared
         {
@@ -746,7 +1068,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gaussian Norm (modulus) of the complex number.
+        /// Returns the Gaussian Norm (modulus) of the complex number.
         /// </summary>
         public double Norm
         {
@@ -762,7 +1084,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Argument of the complex number.
+        /// Retruns the argument of the complex number.
         /// </summary>
         public double Argument
         {
@@ -826,7 +1148,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has a part that is NaN.
         /// </summary>
-        public bool IsNan
+        public bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (double.IsNaN(Real) || double.IsNaN(Imag)); }
@@ -863,6 +1185,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Acos(ComplexD x)
             => x.Acos();
@@ -870,6 +1193,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Cos(ComplexD x)
             => x.Cos();
@@ -877,6 +1201,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Cosh(ComplexD x)
             => x.Cosh();
@@ -884,6 +1209,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Asin(ComplexD x)
             => x.Asin();
@@ -891,6 +1217,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sin(ComplexD x)
             => x.Sin();
@@ -898,6 +1225,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sinh(ComplexD x)
             => x.Sinh();
@@ -905,6 +1233,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Atan(ComplexD x)
             => x.Atan();
@@ -912,6 +1241,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Tan(ComplexD x)
             => x.Tan();
@@ -919,6 +1249,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Tanh(ComplexD x)
             => x.Tanh();
@@ -926,6 +1257,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the square root of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sqrt(ComplexD x)
             => x.Sqrt();
@@ -933,6 +1265,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns e raised to the power of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Exp(ComplexD x)
             => x.Exp();
@@ -940,6 +1273,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the natural logarithm of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log(ComplexD x)
             => x.Log();
@@ -947,6 +1281,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log10(ComplexD x)
             => x.Log10();
@@ -955,48 +1290,81 @@ namespace Aardvark.Base
 
         #region Operators
 
+        /// <summary>
+        /// Implicit conversion from a <see cref="double"/> to a <see cref="ComplexD"/>.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ComplexD(double a)
             => new ComplexD(a);
 
+        /// <summary>
+        /// Adds two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator +(ComplexD a, ComplexD b)
             => new ComplexD(a.Real + b.Real, a.Imag + b.Imag);
 
+        /// <summary>
+        /// Adds a complex number and a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator +(ComplexD a, double b)
             => new ComplexD(a.Real + b, a.Imag);
 
+        /// <summary>
+        /// Adds a real number and a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator +(double a, ComplexD b)
             => new ComplexD(a + b.Real, b.Imag);
 
+        /// <summary>
+        /// Subtracts two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator -(ComplexD a, ComplexD b)
             => new ComplexD(a.Real - b.Real, a.Imag - b.Imag);
 
+        /// <summary>
+        /// Subtracts a real number from a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator -(ComplexD a, double b)
             => new ComplexD(a.Real - b, a.Imag);
 
+        /// <summary>
+        /// Subtracts a complex number from a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator -(double a, ComplexD b)
             => new ComplexD(a - b.Real, -b.Imag);
 
+        /// <summary>
+        /// Multiplies two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator *(ComplexD a, ComplexD b)
             => new ComplexD(
                 a.Real * b.Real - a.Imag * b.Imag,
                 a.Real * b.Imag + a.Imag * b.Real);
 
+        /// <summary>
+        /// Multiplies a complex number and a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator *(ComplexD a, double b)
             => new ComplexD(a.Real * b, a.Imag * b);
 
+        /// <summary>
+        /// Multiplies a real number and a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator *(double a, ComplexD b)
             => new ComplexD(a * b.Real, a * b.Imag);
 
+        /// <summary>
+        /// Divides two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator /(ComplexD a, ComplexD b)
         {
@@ -1006,10 +1374,16 @@ namespace Aardvark.Base
                 t * (a.Imag * b.Real - a.Real * b.Imag));
         }
 
+        /// <summary>
+        /// Divides a complex number by a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator /(ComplexD a, double b)
             => new ComplexD(a.Real / b, a.Imag / b);
 
+        /// <summary>
+        /// Divides a real number by a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator /(double a, ComplexD b)
         {
@@ -1019,26 +1393,62 @@ namespace Aardvark.Base
                 t * (-a * b.Imag));
         }
 
+        /// <summary>
+        /// Negates a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator -(ComplexD a)
             => new ComplexD(-a.Real, -a.Imag);
 
+        /// <summary>
+        /// Returns the conjugate of a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator !(ComplexD a)
             => a.Conjugated;
 
         #endregion
 
+        #region Comparison Operators
+
+        /// <summary>
+        /// Returns whether two <see cref="ComplexD"/> are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(ComplexD a, ComplexD b)
+            => a.Real == b.Real && a.Imag == b.Imag;
+
+        /// <summary>
+        /// Returns whether two <see cref="ComplexD"/> are not equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(ComplexD a, ComplexD b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
-        public override string ToString()
+        public override int GetHashCode()
+            => HashCode.GetCombined(Real, Imag);
+
+        public override bool Equals(object other)
         {
-            return ToString("");
+            if (other is ComplexD obj)
+                return Real.Equals(obj.Real) && Imag.Equals(obj.Imag);
+            else
+                return false;
         }
 
-        public string ToString(string format)
+        /*public override string ToString()
         {
-            if (!Fun.IsTiny(Real))
+            return ToString("");
+        }*/
+
+        public override string ToString(/*string format*/)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "({0}, {1})", Real, Imag);
+            /*if (!Fun.IsTiny(Real))
             {
                 if (Imag > 0.0f)
                 {
@@ -1062,28 +1472,80 @@ namespace Aardvark.Base
                     return Imag.ToString(format) + "i";
                 }
                 else return "0";
-            }
-
+            }*/
         }
+
+        #endregion
+    }
+
+    public static partial class Complex
+    {
+        #region Conjugate
+
+        /// <summary>
+        /// Returns the conjugate of a complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Conjugated(ComplexD c)
+            => c.Conjugated;
+
+        #endregion
+
+        #region Norm
+
+        /// <summary>
+        /// Returns the squared Gaussian Norm (modulus) of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double NormSquared(ComplexD c)
+            => c.NormSquared;
+
+        /// <summary>
+        /// Returns the Gaussian Norm (modulus) of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Norm(ComplexD c)
+            => c.Norm;
+
+        #endregion
+
+        #region Argument
+
+        /// <summary>
+        /// Retruns the argument of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Argument(ComplexD c)
+            => c.Argument;
 
         #endregion
     }
 
     public static partial class Fun
     {
+        #region Power
+
         /// <summary>
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Power(this ComplexD number, ComplexD exponent)
-        {
-            double r = number.Norm;
-            double phi = number.Argument;
+        {    
+            if (number.IsZero)
+                return ComplexD.Zero;
+            else if (exponent.IsZero)
+                return ComplexD.One;
+            else
+            {
+                double r = number.Norm;
+                double phi = number.Argument;
 
-            double a = exponent.Real;
-            double b = exponent.Imag;
+                double a = exponent.Real;
+                double b = exponent.Imag;
 
-            return ComplexD.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+                return ComplexD.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+            }
         }
 
         /// <summary>
@@ -1096,16 +1558,18 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Power(this ComplexD number, double exponent)
         {
-            double r = number.NormSquared;
-            double phi = Atan2(number.Imag, number.Real);
-
-            r = Pow(r, exponent);
-            phi *= exponent;
-
-            return new ComplexD(r * Cos(phi), r * Sin(phi));
+            if (number.IsZero)
+                return ComplexD.Zero;
+            else
+            {
+                double r = number.Norm;
+                double phi = number.Argument;
+                return ComplexD.CreateRadial(Pow(r, exponent), exponent * phi);
+            }
         }
 
         /// <summary>
@@ -1118,16 +1582,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Power(this double number, ComplexD exponent)
         {
-            double r = number;
-            double phi = (number < 0) ? Constant.Pi : 0;
+            if (number == 0)
+                return ComplexD.Zero;
+            else
+            {
+                double a = exponent.Real;
+                double b = exponent.Imag;
 
-            double a = exponent.Real;
-            double b = exponent.Imag;
-
-            return ComplexD.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+                if (number < 0)
+                {
+                    var phi = Constant.Pi;
+                    return ComplexD.CreateRadial(Exp(Log(-number) * a - b * phi), a * phi + b * Log(-number));
+                }
+                else
+                    return ComplexD.CreateRadial(Pow(number, a), b * Log(number));
+            }
         }
 
         /// <summary>
@@ -1137,75 +1610,112 @@ namespace Aardvark.Base
         public static ComplexD Pow(this double number, ComplexD exponent)
             => Power(number, exponent);
 
+        #endregion
+
+        #region Trigonometry
+
         /// <summary>
         /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Acos(this ComplexD x)
-            => throw new NotImplementedException();
+        {
+            var t = Log(new ComplexD(-x.Imag, x.Real) + Sqrt(1 - x * x));
+            return new ComplexD(-t.Imag + Constant.PiHalf, t.Real);
+        }
 
         /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Cos(this ComplexD x)
-            => throw new NotImplementedException();
+            => (
+                Exp(new ComplexD(-x.Imag, x.Real)) +
+                Exp(new ComplexD(x.Imag, -x.Real))
+            ) * 0.5;
 
         /// <summary>
         /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Cosh(this ComplexD x)
-            => throw new NotImplementedException();
+            => Cos(new ComplexD(-x.Imag, x.Real));
 
         /// <summary>
         /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Asin(this ComplexD x)
-            => throw new NotImplementedException();
+        {
+            var t = Log(new ComplexD(-x.Imag, x.Real) + Sqrt(1 - x * x));
+            return new ComplexD(t.Imag, -t.Real);
+        }
 
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sin(this ComplexD x)
-            => throw new NotImplementedException();
+        {
+            var a = Exp(new ComplexD(-x.Imag, x.Real)) - Exp(new ComplexD(x.Imag, -x.Real));
+            return new ComplexD(a.Imag, -a.Real) * 0.5;
+        }
 
         /// <summary>
         /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sinh(this ComplexD x)
-            => throw new NotImplementedException();
+        {
+            var sin = Sin(new ComplexD(-x.Imag, x.Real));
+            return new ComplexD(sin.Imag, -sin.Real);
+        }
 
         /// <summary>
         /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Atan(this ComplexD x)
-            => throw new NotImplementedException();
+        {
+            if (x == ComplexD.I)
+                return ComplexD.PositiveInfinityI;
+            else if (x == -ComplexD.I)
+                return ComplexD.NegativeInfinityI;
+            else if (x == ComplexD.PositiveInfinity)
+                return new ComplexD(Constant.PiHalf);
+            else if (x == ComplexD.NegativeInfinity)
+                return new ComplexD(-Constant.PiHalf);
+            else
+                return new ComplexD(0, 0.5) * Log((ComplexD.I + x) / (ComplexD.I - x));
+        }
 
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Tan(this ComplexD x)
-            => throw new NotImplementedException();
+        {
+            if (x == ComplexD.PositiveInfinityI)
+                return ComplexD.I;
+            else if (x == ComplexD.NegativeInfinityI)
+                return -ComplexD.I;
+            else
+                return Sin(x) / Cos(x);
+        }
 
         /// <summary>
         /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Tanh(this ComplexD x)
-            => throw new NotImplementedException();
+        {
+            var tan = Tan(new ComplexD(-x.Imag, x.Real));
+            return new ComplexD(tan.Imag, -tan.Real);
+        }
 
-        /// <summary>
-        /// Returns the square root of the complex number <paramref name="x"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Sqrt(this ComplexD x)
-            => throw new NotImplementedException();
+        #endregion
+
+        #region Exp, Log
 
         /// <summary>
         /// Returns e raised to the power of the complex number <paramref name="x"/>.
@@ -1222,25 +1732,59 @@ namespace Aardvark.Base
             => new ComplexD(Log(x.Norm), x.Argument);
 
         /// <summary>
+        /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Log(this ComplexD x, double basis)
+            => x.Log() / basis.Log();
+
+        /// <summary>
         /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log10(this ComplexD x)
-            => throw new NotImplementedException();
+            => Log(x, 10);
 
         /// <summary>
         /// Returns the base-2 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log2(this ComplexD x)
-            => throw new NotImplementedException();
+            => x.Log() * Constant.Ln2Inv;
+
+        #endregion
+
+        #region Roots
 
         /// <summary>
-        /// Returns the cubic root of the complex number <paramref name="x"/>.
+        /// Returns the principal square root of the complex number <paramref name="x"/>.
+        /// </summary>
+        // https://math.stackexchange.com/a/44500
+        // TODO: Check if this is actually better than the naive implementation
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Sqrt(this ComplexD x)
+        {
+            if (x.Imag == 0)
+            {
+                if (x.Real < 0)
+                    return new ComplexD(0, Sqrt(-x.Real));
+                else
+                    return new ComplexD(Sqrt(x.Real), 0);
+            }
+            else
+            {
+                var a = x.Norm;
+                var b = x + a;
+                return a.Sqrt() * (b / b.Norm);
+            }
+        }
+
+        /// <summary>
+        /// Returns the principal cubic root of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Cbrt(this ComplexD x)
-            => throw new NotImplementedException();
+            => ComplexD.CreateRadial(Cbrt(x.Norm), x.Argument / 3);
 
         /// <summary>
         /// Returns the square root of the given real number and returns a complex number.
@@ -1320,7 +1864,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Calculates both square roots of a complex number-
+        /// Calculates both square roots of a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD[] Csqrt(this ComplexD number)
@@ -1339,17 +1883,43 @@ namespace Aardvark.Base
         {
             ComplexD[] values = new ComplexD[n];
 
-            double phi = number.Argument / 2;
-            double dphi = (double)Constant.PiTimesTwo / (double)n;
-            double r = Pow(number.Norm, 1 / n);
+            double invN = 1 / (double)n;
+            double phi = number.Argument / n;
+            double dphi = Constant.PiTimesTwo * invN;
+            double r = Pow(number.Norm, invN);
 
-            for (int i = 1; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
                 values[i] = ComplexD.CreateRadial(r, phi + dphi * i);
             }
 
             return values;
         }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        /// <summary>
+        /// Returns whether the given complex numbers are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this ComplexD a, ComplexD b, double tolerance)
+        {
+            return ApproximateEquals(a.Real, b.Real, tolerance) && ApproximateEquals(a.Imag, b.Imag, tolerance);
+        }
+
+        /// <summary>
+        /// Returns whether the given complex numbers are equal within
+        /// Constant{double}.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this ComplexD a, ComplexD b)
+        {
+            return ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+        }
+
+        #endregion
     }
 
 }

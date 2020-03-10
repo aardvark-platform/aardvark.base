@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
@@ -2347,6 +2348,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this byte x, float y)
         {
@@ -2369,6 +2371,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this byte x, double y)
         {
@@ -2410,6 +2413,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this sbyte x, float y)
         {
@@ -2432,6 +2436,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this sbyte x, double y)
         {
@@ -2474,6 +2479,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this short x, float y)
         {
@@ -2496,6 +2502,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this short x, double y)
         {
@@ -2538,6 +2545,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this ushort x, float y)
         {
@@ -2560,6 +2568,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this ushort x, double y)
         {
@@ -2601,6 +2610,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this int x, float y)
         {
@@ -2619,6 +2629,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this int x, double y)
         {
@@ -2657,6 +2668,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this uint x, float y)
         {
@@ -2675,6 +2687,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this uint x, double y)
         {
@@ -2732,6 +2745,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this long x, float y)
         {
@@ -2751,6 +2765,7 @@ namespace Aardvark.Base
         /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double. 
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this long x, double y)
         {
@@ -2810,6 +2825,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this ulong x, float y)
         {
@@ -2829,6 +2845,7 @@ namespace Aardvark.Base
         /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double. 
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this ulong x, double y)
         {
@@ -2887,6 +2904,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Power(this float x, float y)
         {
@@ -2929,6 +2947,7 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Power(this double x, double y)
         {
@@ -3003,16 +3022,24 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this byte x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this byte x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this byte x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this byte x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3049,16 +3076,24 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this sbyte x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this sbyte x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this sbyte x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this sbyte x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3095,16 +3130,24 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this short x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this short x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this short x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this short x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3141,16 +3184,24 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this ushort x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this ushort x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this ushort x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this ushort x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3187,16 +3238,24 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this int x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this int x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this int x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this int x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3233,16 +3292,24 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this uint x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this uint x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this uint x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this uint x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3283,8 +3350,14 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this long x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this long x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
@@ -3292,8 +3365,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this long x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this long x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3334,8 +3409,14 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this ulong x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this ulong x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
@@ -3343,8 +3424,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this ulong x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this ulong x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3393,16 +3476,28 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Log2(this float x) =>
-            x.Log() * (float)Constant.Ln2Inv;
+        public static float Log2(this float x)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Log2(x);
+            #else
+                return x.Log() * (float)Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Log(this float x, float basis) =>
-            x.Log() / basis.Log();
+        public static float Log(this float x, float basis)
+        {
+            #if NETCOREAPP3_0
+                return MathF.Log(x, basis);
+            #else
+                return (float)Math.Log(x, basis);
+            #endif
+        }
 
         /// <summary>
         /// Returns e raised to the specified number. 
@@ -3439,16 +3534,24 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log2(this double x) =>
-            x.Log() * Constant.Ln2Inv;
+        public static double Log2(this double x)
+        {
+            #if NETCOREAPP3_0
+                return Math.Log2(x);
+            #else
+                return x.Log() * Constant.Ln2Inv;
+            #endif
+        }
 
         /// <summary>
         /// Returns the values logarithm of the specified basis.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Log(this double x, double basis) =>
-            x.Log() / basis.Log();
+        public static double Log(this double x, double basis)
+        {
+            return Math.Log(x, basis);
+        }
 
         #endregion
 

@@ -895,17 +895,21 @@ namespace Aardvark.Base
 
             public bool IsExtension { get; set; }
 
+            public bool EditorBrowsable { get; set; }
+
             // Only valid for the given element types
             public SimpleType[] Domain { get; set; }
 
             public ElementwiseFun(string name, SimpleType returnType, bool extension,
-                                    SimpleType[] domain, params Parameter[] parameters)
+                                    SimpleType[] domain, bool editorBrowsable,
+                                    params Parameter[] parameters)
             {
                 Name = name;
                 ReturnType = returnType;
                 Parameters = parameters;
                 IsExtension = extension;
                 Domain = domain;
+                EditorBrowsable = editorBrowsable;
             }
         }
 
@@ -937,7 +941,13 @@ namespace Aardvark.Base
         private static ElementwiseFun Method(string name, SimpleType returnType,
                                                 SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
         {
-            return new ElementwiseFun(name, returnType, true, domain, parameters);
+            return new ElementwiseFun(name, returnType, true, domain, true, parameters);
+        }
+
+        private static ElementwiseFun MethodHidden(string name, SimpleType returnType,
+                                        SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, returnType, true, domain, false, parameters);
         }
 
         private static ElementwiseFun Method(string name, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
@@ -945,14 +955,19 @@ namespace Aardvark.Base
             return Method(name, null, domain, parameters);
         }
 
+        private static ElementwiseFun MethodHidden(string name, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, null, true, domain, false, parameters);
+        }
+
         private static ElementwiseFun Method(string name, bool isExtension, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
         {
-            return new ElementwiseFun(name, null, isExtension, domain, parameters);
+            return new ElementwiseFun(name, null, isExtension, domain, true, parameters);
         }
 
         private static ElementwiseFun Method(string name, SimpleType returnType, params ElementwiseFun.Parameter[] parameters)
         {
-            return new ElementwiseFun(name, returnType, true, VecFieldTypes, parameters);
+            return new ElementwiseFun(name, returnType, true, VecFieldTypes, true, parameters);
         }
 
         private static ElementwiseFun Method(string name, params ElementwiseFun.Parameter[] parameters)
@@ -1076,25 +1091,25 @@ namespace Aardvark.Base
                 Method("Pown", AllExcept(IntType), Tensor("x"), Scalar("y", IntType)),
                 Method("Pown", AllExcept(IntType), Scalar("x"), Tensor("y", IntType)),
 
-                Method("Pow",   OnlyReal(), Tensor("x"), Tensor("y")),
-                Method("Power", OnlyReal(), Tensor("x"), Tensor("y")),
-                Method("Pow",   OnlyReal(), Tensor("x"), Scalar("y")),
-                Method("Power", OnlyReal(), Tensor("x"), Scalar("y")),
-                Method("Pow",   OnlyReal(), Scalar("x"), Tensor("y")),
-                Method("Power", OnlyReal(), Scalar("x"), Tensor("y")),
+                Method      ("Pow",   OnlyReal(), Tensor("x"), Tensor("y")),
+                MethodHidden("Power", OnlyReal(), Tensor("x"), Tensor("y")),
+                Method      ("Pow",   OnlyReal(), Tensor("x"), Scalar("y")),
+                MethodHidden("Power", OnlyReal(), Tensor("x"), Scalar("y")),
+                Method      ("Pow",   OnlyReal(), Scalar("x"), Tensor("y")),
+                MethodHidden("Power", OnlyReal(), Scalar("x"), Tensor("y")),
 
-                Method("Pow",   FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
-                Method("Power", FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
-                Method("Pow",   FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
-                Method("Power", FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
-                Method("Pow",   FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
-                Method("Power", FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
-                Method("Pow",   DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
-                Method("Power", DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
-                Method("Pow",   DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
-                Method("Power", DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
-                Method("Pow",   DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType)),
-                Method("Power", DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType))
+                Method      ("Pow",   FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
+                MethodHidden("Power", FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
+                Method      ("Pow",   FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
+                MethodHidden("Power", FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
+                Method      ("Pow",   FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
+                MethodHidden("Power", FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
+                Method      ("Pow",   DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
+                MethodHidden("Power", DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
+                Method      ("Pow",   DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
+                MethodHidden("Power", DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
+                Method      ("Pow",   DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType)),
+                MethodHidden("Power", DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType))
             );
             #endregion
 

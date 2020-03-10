@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
@@ -13,6 +15,7 @@ namespace Aardvark.Base
     //#   var ft = ftype.Name;
     //#   var ct = isDouble ? "ComplexD" : "ComplexF";
     //#   var cast = isDouble ? "" : "(" + ft + ")";
+    //#   var half = isDouble ? "0.5" : "0.5f";
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct __ct__
@@ -75,6 +78,42 @@ namespace Aardvark.Base
             get => new __ct__(0, 1);
         }
 
+        /// <summary>
+        /// Returns ∞ + 0i.
+        /// </summary>
+        public static __ct__ PositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __ct__(__ft__.PositiveInfinity);
+        }
+
+        /// <summary>
+        /// Returns -∞ + 0i.
+        /// </summary>
+        public static __ct__ NegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __ct__(__ft__.NegativeInfinity);
+        }
+
+        /// <summary>
+        /// Returns 0 + ∞i.
+        /// </summary>
+        public static __ct__ PositiveInfinityI
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __ct__(0, __ft__.PositiveInfinity);
+        }
+
+        /// <summary>
+        /// Returns 0 - ∞i.
+        /// </summary>
+        public static __ct__ NegativeInfinityI
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __ct__(0, __ft__.NegativeInfinity);
+        }
+
         #endregion
 
         #region Properties
@@ -102,7 +141,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Squared gaussian Norm (modulus) of the complex number.
+        /// Returns the squared Gaussian Norm (modulus) of the complex number.
         /// </summary>
         public __ft__ NormSquared
         {
@@ -111,7 +150,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gaussian Norm (modulus) of the complex number.
+        /// Returns the Gaussian Norm (modulus) of the complex number.
         /// </summary>
         public __ft__ Norm
         {
@@ -127,7 +166,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Argument of the complex number.
+        /// Retruns the argument of the complex number.
         /// </summary>
         public __ft__ Argument
         {
@@ -191,7 +230,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has a part that is NaN.
         /// </summary>
-        public bool IsNan
+        public bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (__ft__.IsNaN(Real) || __ft__.IsNaN(Imag)); }
@@ -228,6 +267,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Acos(__ct__ x)
             => x.Acos();
@@ -235,6 +275,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cos(__ct__ x)
             => x.Cos();
@@ -242,6 +283,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cosh(__ct__ x)
             => x.Cosh();
@@ -249,6 +291,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Asin(__ct__ x)
             => x.Asin();
@@ -256,6 +299,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sin(__ct__ x)
             => x.Sin();
@@ -263,6 +307,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sinh(__ct__ x)
             => x.Sinh();
@@ -270,6 +315,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Atan(__ct__ x)
             => x.Atan();
@@ -277,6 +323,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Tan(__ct__ x)
             => x.Tan();
@@ -284,6 +331,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Tanh(__ct__ x)
             => x.Tanh();
@@ -291,6 +339,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the square root of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sqrt(__ct__ x)
             => x.Sqrt();
@@ -298,6 +347,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns e raised to the power of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Exp(__ct__ x)
             => x.Exp();
@@ -305,6 +355,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the natural logarithm of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log(__ct__ x)
             => x.Log();
@@ -312,6 +363,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log10(__ct__ x)
             => x.Log10();
@@ -320,48 +372,81 @@ namespace Aardvark.Base
 
         #region Operators
 
+        /// <summary>
+        /// Implicit conversion from a <see cref="__ft__"/> to a <see cref="__ct__"/>.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator __ct__(__ft__ a)
             => new __ct__(a);
 
+        /// <summary>
+        /// Adds two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator +(__ct__ a, __ct__ b)
             => new __ct__(a.Real + b.Real, a.Imag + b.Imag);
 
+        /// <summary>
+        /// Adds a complex number and a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator +(__ct__ a, __ft__ b)
             => new __ct__(a.Real + b, a.Imag);
 
+        /// <summary>
+        /// Adds a real number and a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator +(__ft__ a, __ct__ b)
             => new __ct__(a + b.Real, b.Imag);
 
+        /// <summary>
+        /// Subtracts two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator -(__ct__ a, __ct__ b)
             => new __ct__(a.Real - b.Real, a.Imag - b.Imag);
 
+        /// <summary>
+        /// Subtracts a real number from a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator -(__ct__ a, __ft__ b)
             => new __ct__(a.Real - b, a.Imag);
 
+        /// <summary>
+        /// Subtracts a complex number from a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator -(__ft__ a, __ct__ b)
             => new __ct__(a - b.Real, -b.Imag);
 
+        /// <summary>
+        /// Multiplies two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator *(__ct__ a, __ct__ b)
             => new __ct__(
                 a.Real * b.Real - a.Imag * b.Imag,
                 a.Real * b.Imag + a.Imag * b.Real);
 
+        /// <summary>
+        /// Multiplies a complex number and a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator *(__ct__ a, __ft__ b)
             => new __ct__(a.Real * b, a.Imag * b);
 
+        /// <summary>
+        /// Multiplies a real number and a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator *(__ft__ a, __ct__ b)
             => new __ct__(a * b.Real, a * b.Imag);
 
+        /// <summary>
+        /// Divides two complex numbers.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator /(__ct__ a, __ct__ b)
         {
@@ -371,10 +456,16 @@ namespace Aardvark.Base
                 t * (a.Imag * b.Real - a.Real * b.Imag));
         }
 
+        /// <summary>
+        /// Divides a complex number by a real number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator /(__ct__ a, __ft__ b)
             => new __ct__(a.Real / b, a.Imag / b);
 
+        /// <summary>
+        /// Divides a real number by a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator /(__ft__ a, __ct__ b)
         {
@@ -384,26 +475,62 @@ namespace Aardvark.Base
                 t * (-a * b.Imag));
         }
 
+        /// <summary>
+        /// Negates a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator -(__ct__ a)
             => new __ct__(-a.Real, -a.Imag);
 
+        /// <summary>
+        /// Returns the conjugate of a complex number.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator !(__ct__ a)
             => a.Conjugated;
 
         #endregion
 
+        #region Comparison Operators
+
+        /// <summary>
+        /// Returns whether two <see cref="__ct__"/> are equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(__ct__ a, __ct__ b)
+            => a.Real == b.Real && a.Imag == b.Imag;
+
+        /// <summary>
+        /// Returns whether two <see cref="__ct__"/> are not equal.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(__ct__ a, __ct__ b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
-        public override string ToString()
+        public override int GetHashCode()
+            => HashCode.GetCombined(Real, Imag);
+
+        public override bool Equals(object other)
         {
-            return ToString("");
+            if (other is __ct__ obj)
+                return Real.Equals(obj.Real) && Imag.Equals(obj.Imag);
+            else
+                return false;
         }
 
-        public string ToString(string format)
+        /*public override string ToString()
         {
-            if (!Fun.IsTiny(Real))
+            return ToString("");
+        }*/
+
+        public override string ToString(/*string format*/)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "({0}, {1})", Real, Imag);
+            /*if (!Fun.IsTiny(Real))
             {
                 if (Imag > 0.0f)
                 {
@@ -427,28 +554,80 @@ namespace Aardvark.Base
                     return Imag.ToString(format) + "i";
                 }
                 else return "0";
-            }
-
+            }*/
         }
+
+        #endregion
+    }
+
+    public static partial class Complex
+    {
+        #region Conjugate
+
+        /// <summary>
+        /// Returns the conjugate of a complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Conjugated(__ct__ c)
+            => c.Conjugated;
+
+        #endregion
+
+        #region Norm
+
+        /// <summary>
+        /// Returns the squared Gaussian Norm (modulus) of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ft__ NormSquared(__ct__ c)
+            => c.NormSquared;
+
+        /// <summary>
+        /// Returns the Gaussian Norm (modulus) of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ft__ Norm(__ct__ c)
+            => c.Norm;
+
+        #endregion
+
+        #region Argument
+
+        /// <summary>
+        /// Retruns the argument of the complex number.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ft__ Argument(__ct__ c)
+            => c.Argument;
 
         #endregion
     }
 
     public static partial class Fun
     {
+        #region Power
+
         /// <summary>
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Power(this __ct__ number, __ct__ exponent)
-        {
-            __ft__ r = number.Norm;
-            __ft__ phi = number.Argument;
+        {    
+            if (number.IsZero)
+                return __ct__.Zero;
+            else if (exponent.IsZero)
+                return __ct__.One;
+            else
+            {
+                __ft__ r = number.Norm;
+                __ft__ phi = number.Argument;
 
-            __ft__ a = exponent.Real;
-            __ft__ b = exponent.Imag;
+                __ft__ a = exponent.Real;
+                __ft__ b = exponent.Imag;
 
-            return __ct__.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+                return __ct__.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+            }
         }
 
         /// <summary>
@@ -461,16 +640,18 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Power(this __ct__ number, __ft__ exponent)
         {
-            __ft__ r = number.NormSquared;
-            __ft__ phi = Atan2(number.Imag, number.Real);
-
-            r = Pow(r, exponent);
-            phi *= exponent;
-
-            return new __ct__(r * Cos(phi), r * Sin(phi));
+            if (number.IsZero)
+                return __ct__.Zero;
+            else
+            {
+                __ft__ r = number.Norm;
+                __ft__ phi = number.Argument;
+                return __ct__.CreateRadial(Pow(r, exponent), exponent * phi);
+            }
         }
 
         /// <summary>
@@ -483,16 +664,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Power(this __ft__ number, __ct__ exponent)
         {
-            __ft__ r = number;
-            __ft__ phi = (number < 0) ? __cast__Constant.Pi : 0;
+            if (number == 0)
+                return __ct__.Zero;
+            else
+            {
+                __ft__ a = exponent.Real;
+                __ft__ b = exponent.Imag;
 
-            __ft__ a = exponent.Real;
-            __ft__ b = exponent.Imag;
-
-            return __ct__.CreateRadial(Exp(Log(r) * a - b * phi), a * phi + b * Log(r));
+                if (number < 0)
+                {
+                    var phi = __cast__Constant.Pi;
+                    return __ct__.CreateRadial(Exp(Log(-number) * a - b * phi), a * phi + b * Log(-number));
+                }
+                else
+                    return __ct__.CreateRadial(Pow(number, a), b * Log(number));
+            }
         }
 
         /// <summary>
@@ -502,75 +692,112 @@ namespace Aardvark.Base
         public static __ct__ Pow(this __ft__ number, __ct__ exponent)
             => Power(number, exponent);
 
+        #endregion
+
+        #region Trigonometry
+
         /// <summary>
         /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Acos(this __ct__ x)
-            => throw new NotImplementedException();
+        {
+            var t = Log(new __ct__(-x.Imag, x.Real) + Sqrt(1 - x * x));
+            return new __ct__(-t.Imag + __cast__Constant.PiHalf, t.Real);
+        }
 
         /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cos(this __ct__ x)
-            => throw new NotImplementedException();
+            => (
+                Exp(new __ct__(-x.Imag, x.Real)) +
+                Exp(new __ct__(x.Imag, -x.Real))
+            ) * __half__;
 
         /// <summary>
         /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cosh(this __ct__ x)
-            => throw new NotImplementedException();
+            => Cos(new __ct__(-x.Imag, x.Real));
 
         /// <summary>
         /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Asin(this __ct__ x)
-            => throw new NotImplementedException();
+        {
+            var t = Log(new __ct__(-x.Imag, x.Real) + Sqrt(1 - x * x));
+            return new __ct__(t.Imag, -t.Real);
+        }
 
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sin(this __ct__ x)
-            => throw new NotImplementedException();
+        {
+            var a = Exp(new __ct__(-x.Imag, x.Real)) - Exp(new __ct__(x.Imag, -x.Real));
+            return new __ct__(a.Imag, -a.Real) * __half__;
+        }
 
         /// <summary>
         /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sinh(this __ct__ x)
-            => throw new NotImplementedException();
+        {
+            var sin = Sin(new __ct__(-x.Imag, x.Real));
+            return new __ct__(sin.Imag, -sin.Real);
+        }
 
         /// <summary>
         /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Atan(this __ct__ x)
-            => throw new NotImplementedException();
+        {
+            if (x == __ct__.I)
+                return __ct__.PositiveInfinityI;
+            else if (x == -__ct__.I)
+                return __ct__.NegativeInfinityI;
+            else if (x == __ct__.PositiveInfinity)
+                return new __ct__(__cast__Constant.PiHalf);
+            else if (x == __ct__.NegativeInfinity)
+                return new __ct__(-__cast__Constant.PiHalf);
+            else
+                return new __ct__(0, __half__) * Log((__ct__.I + x) / (__ct__.I - x));
+        }
 
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Tan(this __ct__ x)
-            => throw new NotImplementedException();
+        {
+            if (x == __ct__.PositiveInfinityI)
+                return __ct__.I;
+            else if (x == __ct__.NegativeInfinityI)
+                return -__ct__.I;
+            else
+                return Sin(x) / Cos(x);
+        }
 
         /// <summary>
         /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Tanh(this __ct__ x)
-            => throw new NotImplementedException();
+        {
+            var tan = Tan(new __ct__(-x.Imag, x.Real));
+            return new __ct__(tan.Imag, -tan.Real);
+        }
 
-        /// <summary>
-        /// Returns the square root of the complex number <paramref name="x"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct__ Sqrt(this __ct__ x)
-            => throw new NotImplementedException();
+        #endregion
+
+        #region Exp, Log
 
         /// <summary>
         /// Returns e raised to the power of the complex number <paramref name="x"/>.
@@ -587,25 +814,59 @@ namespace Aardvark.Base
             => new __ct__(Log(x.Norm), x.Argument);
 
         /// <summary>
+        /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Log(this __ct__ x, __ft__ basis)
+            => x.Log() / basis.Log();
+
+        /// <summary>
         /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log10(this __ct__ x)
-            => throw new NotImplementedException();
+            => Log(x, 10);
 
         /// <summary>
         /// Returns the base-2 logarithm of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log2(this __ct__ x)
-            => throw new NotImplementedException();
+            => x.Log() * __cast__Constant.Ln2Inv;
+
+        #endregion
+
+        #region Roots
 
         /// <summary>
-        /// Returns the cubic root of the complex number <paramref name="x"/>.
+        /// Returns the principal square root of the complex number <paramref name="x"/>.
+        /// </summary>
+        // https://math.stackexchange.com/a/44500
+        // TODO: Check if this is actually better than the naive implementation
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Sqrt(this __ct__ x)
+        {
+            if (x.Imag == 0)
+            {
+                if (x.Real < 0)
+                    return new __ct__(0, Sqrt(-x.Real));
+                else
+                    return new __ct__(Sqrt(x.Real), 0);
+            }
+            else
+            {
+                var a = x.Norm;
+                var b = x + a;
+                return a.Sqrt() * (b / b.Norm);
+            }
+        }
+
+        /// <summary>
+        /// Returns the principal cubic root of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cbrt(this __ct__ x)
-            => throw new NotImplementedException();
+            => __ct__.CreateRadial(Cbrt(x.Norm), x.Argument / 3);
 
         //# signedtypes.ForEach(t => { if (t != Meta.DecimalType) {
         //# if (ftype == Meta.DoubleType ^ t == Meta.FloatType) {
@@ -630,7 +891,7 @@ namespace Aardvark.Base
         //# }}});
 
         /// <summary>
-        /// Calculates both square roots of a complex number-
+        /// Calculates both square roots of a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__[] Csqrt(this __ct__ number)
@@ -649,17 +910,43 @@ namespace Aardvark.Base
         {
             __ct__[] values = new __ct__[n];
 
-            __ft__ phi = number.Argument / 2;
-            __ft__ dphi = (__ft__)Constant.PiTimesTwo / (__ft__)n;
-            __ft__ r = Pow(number.Norm, 1 / n);
+            __ft__ invN = 1 / (__ft__)n;
+            __ft__ phi = number.Argument / n;
+            __ft__ dphi = __cast__Constant.PiTimesTwo * invN;
+            __ft__ r = Pow(number.Norm, invN);
 
-            for (int i = 1; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
                 values[i] = __ct__.CreateRadial(r, phi + dphi * i);
             }
 
             return values;
         }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        /// <summary>
+        /// Returns whether the given complex numbers are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __ct__ a, __ct__ b, __ft__ tolerance)
+        {
+            return ApproximateEquals(a.Real, b.Real, tolerance) && ApproximateEquals(a.Imag, b.Imag, tolerance);
+        }
+
+        /// <summary>
+        /// Returns whether the given complex numbers are equal within
+        /// Constant{__ft__}.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __ct__ a, __ct__ b)
+        {
+            return ApproximateEquals(a, b, Constant<__ft__>.PositiveTinyValue);
+        }
+
+        #endregion
     }
 
     //# } // isDouble
