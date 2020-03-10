@@ -410,10 +410,10 @@ module internal Tessellator =
             let p2 = bla.R2.XYW
             let p3 = bla.R3.XYW
 
-            let d0 =  M33d.FromRows(p3, p2, p1).Det
-            let d1 = -M33d.FromRows(p3, p2, p0).Det
-            let d2 =  M33d.FromRows(p3, p1, p0).Det
-            let d3 = -M33d.FromRows(p2, p1, p0).Det
+            let d0 =  M33d.FromRows(p3, p2, p1).Determinant
+            let d1 = -M33d.FromRows(p3, p2, p0).Determinant
+            let d2 =  M33d.FromRows(p3, p1, p0).Determinant
+            let d3 = -M33d.FromRows(p2, p1, p0).Determinant
 
             let delta1 = d0*d2 - d1*d1
             let delta2 = d1*d2 - d0*d3
@@ -637,8 +637,8 @@ module internal Tessellator =
         self, others
 
 
-    let toGeometry (rule : WindingRule) (bounds : Box2d) (path : seq<PathSegment>) =
-        let trafo =
+    let toGeometry (rule : WindingRule) (bounds : Box2d) (inputPath : seq<PathSegment>) =
+        let trafo = 
             let size = bounds.Size.Length
             let scale = 
                 if Fun.IsTiny size then 1.0
@@ -648,7 +648,7 @@ module internal Tessellator =
         
         let path =
             let trafo (pt : V2d) = trafo.Forward.TransformPos pt
-            path |> Seq.map (PathSegment.transform trafo) |> Seq.toList
+            inputPath |> Seq.map (PathSegment.transform trafo) |> Seq.toList
 
         let split (part : Part) =
             match part with
