@@ -71,12 +71,10 @@ module FSharpMath =
             static member inline Power(a : ^a, b : ^b) = Operators.( ** ) a b
             
             static member inline Pown(a : ^a, b : int) = Operators.pown a b
-
         
         type Log2() =
             static member inline Log2(a : ^a) =
                 log a / log (LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne)
-            
 
     [<AutoOpen>]
     module private Aux =
@@ -183,6 +181,25 @@ module FSharpMath =
     let inline smoothstep (edge0 : ^a) (edge1 : ^a) (x : ^b) =
         smoothstepAux Unchecked.defaultof<Fun> edge0 edge1 x
 
+    /// Returns whether x is NaN.
+    let inline isNaN (x : ^a) =
+        (^a : (static member IsNaN: ^a -> bool) x)
+
+    /// Returns whether x is infinity (positive or negative).
+    let inline isInfinity (x : ^a) =
+        (^a : (static member IsInfinity : ^a -> bool) x)
+
+    /// Returns whether x is positive infinity.
+    let inline isPositiveInfinity (x : ^a) =
+        (^a : (static member IsPositiveInfinity : ^a -> bool) x)
+
+    /// Returns whether x is negative infinity.
+    let inline isNegativeInfinity (x : ^a) =
+        (^a : (static member IsNegativeInfinity : ^a -> bool) x)
+
+    /// Returns whether x is finite (i.e. not NaN and not infinity).
+    let inline isFinite (x : ^a) =
+        (x |> isInfinity |> not) && (x |> isNaN |> not)
 
     [<CompilerMessage("testing purposes", 1337, IsHidden = true)>]
     module ``Math compiler tests 😀😁`` = 
@@ -504,4 +521,17 @@ module FSharpMath =
             let a : float32 = smoothstep 0.0f 1.0f 0.5f
             let a : V2f = smoothstep 0.0f 1.0f V2f.Half
             let a : V4d = smoothstep V4d.Zero V4d.One V4d.Half
+            ()
+
+        let specialFloatingPointValuesWorking() =
+            let a : bool = isNaN 0.0
+            let a : bool = isNaN 0.0f
+            let a : bool = isFinite 0.0
+            let a : bool = isFinite 0.0f
+            let a : bool = isInfinity 0.0
+            let a : bool = isInfinity 0.0f
+            let a : bool = isPositiveInfinity 0.0
+            let a : bool = isPositiveInfinity 0.0f
+            let a : bool = isNegativeInfinity 0.0
+            let a : bool = isNegativeInfinity 0.0f
             ()
