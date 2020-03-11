@@ -155,6 +155,21 @@ namespace Aardvark.Tests
                     AreEqual(x / y, ComplexD.One);
             });
 
+        #region ToString and Parse
+
+        [Test]
+        public static void ToStringAndParse()
+            => GenericTest(rnd =>
+            {
+                GetRandomComplex(rnd, out Num.Complex _, out ComplexD c);
+                var str = c.ToString();
+                var x = ComplexD.Parse(str);
+
+                AreEqual(c, x);
+            });
+
+        #endregion
+
         #region Properties
 
         [Test]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Globalization;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -531,39 +532,18 @@ namespace Aardvark.Base
                 return false;
         }
 
-        /*public override string ToString()
+        public override string ToString()
         {
-            return ToString("");
-        }*/
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Real, Imag);
+        }
 
-        public override string ToString(/*string format*/)
+        public static __ct__ Parse(string s)
         {
-            return string.Format(CultureInfo.InvariantCulture, "({0}, {1})", Real, Imag);
-            /*if (!Fun.IsTiny(Real))
-            {
-                if (Imag > 0.0f)
-                {
-                    return Real.ToString(format) + " + i" + Imag.ToString(format);
-                }
-                else if (Fun.IsTiny(Imag))
-                {
-                    return Real.ToString(format);
-                }
-                else
-                {
-                    return Real.ToString(format) + " - i" + Fun.Abs(Imag).ToString(format);
-                }
-            }
-            else
-            {
-                if (Fun.IsTiny(Imag - 1.00)) return "i";
-                else if (Fun.IsTiny(Imag + 1.00)) return "-i";
-                if (!Fun.IsTiny(Imag))
-                {
-                    return Imag.ToString(format) + "i";
-                }
-                else return "0";
-            }*/
+            var x = s.NestedBracketSplitLevelOne().ToArray(2);
+            return new __ct__(
+                __ft__.Parse(x[0], CultureInfo.InvariantCulture), 
+                __ft__.Parse(x[1], CultureInfo.InvariantCulture)
+            );
         }
 
         #endregion
