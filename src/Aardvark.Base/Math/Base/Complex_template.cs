@@ -936,6 +936,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether the given <see cref="__ct__"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(this __ct__ v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether the given <see cref="__ct__"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(this __ct__ v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether the given <see cref="__ct__"/> is finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(this __ct__ v)
+            => !(v.IsNaN || v.IsInfinity);
+
+        #endregion
     }
 
     //# } // isDouble

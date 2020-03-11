@@ -549,6 +549,15 @@ namespace Aardvark.Base
             get => AnyInfinity;
         }
 
+        /// <summary>
+        /// Returns whether all components of the vector are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
+        }
+
         //# } // ft.IsReal
         #endregion
 
@@ -1634,6 +1643,33 @@ namespace Aardvark.Base
 
         //# }
         #endregion
+        //# if (ft.IsReal) {
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any component of the given <see cref="__vtype__"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(__vtype__ v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="__vtype__"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(__vtype__ v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all components of the the given <see cref="__vtype__"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(__vtype__ v)
+            => v.IsFinite;
+
+        #endregion
+        //# }
     }
 
     /// <summary>

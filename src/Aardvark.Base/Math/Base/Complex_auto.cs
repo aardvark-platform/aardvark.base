@@ -921,6 +921,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexF"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(this ComplexF v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexF"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(this ComplexF v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexF"/> is finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(this ComplexF v)
+            => !(v.IsNaN || v.IsInfinity);
+
+        #endregion
     }
 
     [DataContract]
@@ -1895,6 +1920,31 @@ namespace Aardvark.Base
         {
             return ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
         }
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexD"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(this ComplexD v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexD"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(this ComplexD v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexD"/> is finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(this ComplexD v)
+            => !(v.IsNaN || v.IsInfinity);
 
         #endregion
     }

@@ -5676,5 +5676,91 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether the given <see cref="float"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(this float v)
+            => Single.IsNaN(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="float"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(this float v)
+            => Single.IsInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="float"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(this float v)
+            => Single.IsNegativeInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="float"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(this float v)
+            => Single.IsPositiveInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="float"/> is finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(this float v)
+        {
+            #if NETCOREAPP3_0
+                return Single.IsFinite(v);
+            #else
+                return !(IsNaN(v) || IsInfinity(v));
+            #endif
+        }
+
+        /// <summary>
+        /// Returns whether the given <see cref="double"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(this double v)
+            => Double.IsNaN(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="double"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(this double v)
+            => Double.IsInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="double"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(this double v)
+            => Double.IsNegativeInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="double"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(this double v)
+            => Double.IsPositiveInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="double"/> is finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(this double v)
+        {
+            #if NETCOREAPP3_0
+                return Double.IsFinite(v);
+            #else
+                return !(IsNaN(v) || IsInfinity(v));
+            #endif
+        }
+
+        #endregion
     }
 }

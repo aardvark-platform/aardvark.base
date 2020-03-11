@@ -636,50 +636,6 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region IsNaN, Infinity, +/-Infinity
-
-        public static bool IsNaN(this double v)
-        {
-            return Double.IsNaN(v);
-        }
-
-        public static bool IsInfinity(this double v)
-        {
-            return Double.IsInfinity(v);
-        }
-
-        public static bool IsNegativeInfinity(this double v)
-        {
-            return Double.IsNegativeInfinity(v);
-        }
-
-        public static bool IsPositiveInfinity(this double v)
-        {
-            return Double.IsPositiveInfinity(v);
-        }
-
-        public static bool IsNaN(this float v)
-        {
-            return Single.IsNaN(v);
-        }
-
-        public static bool IsInfinity(this float v)
-        {
-            return Single.IsInfinity(v);
-        }
-
-        public static bool IsNegativeInfinity(this float v)
-        {
-            return Single.IsNegativeInfinity(v);
-        }
-
-        public static bool IsPositiveInfinity(this float v)
-        {
-            return Single.IsPositiveInfinity(v);
-        }
-
-        #endregion IsNaN
-
         #region Log2Int
 
         /// <summary>

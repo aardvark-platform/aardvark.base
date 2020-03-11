@@ -617,11 +617,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<int> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -633,6 +643,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2i> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -642,6 +653,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2i> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -651,7 +663,9 @@ namespace Aardvark.Base
 
         public V2i R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2i( M00,  M01); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -661,7 +675,9 @@ namespace Aardvark.Base
 
         public V2i R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2i( M10,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -671,7 +687,9 @@ namespace Aardvark.Base
 
         public V2i C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2i( M00,  M10); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -681,7 +699,9 @@ namespace Aardvark.Base
 
         public V2i C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2i( M01,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -691,6 +711,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -702,6 +723,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -717,6 +739,7 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -736,6 +759,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -2571,11 +2595,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<long> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -2587,6 +2621,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2l> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -2596,6 +2631,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2l> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -2605,7 +2641,9 @@ namespace Aardvark.Base
 
         public V2l R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2l( M00,  M01); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -2615,7 +2653,9 @@ namespace Aardvark.Base
 
         public V2l R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2l( M10,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -2625,7 +2665,9 @@ namespace Aardvark.Base
 
         public V2l C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2l( M00,  M10); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -2635,7 +2677,9 @@ namespace Aardvark.Base
 
         public V2l C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2l( M01,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -2645,6 +2689,7 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -2656,6 +2701,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -2671,6 +2717,7 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -2690,6 +2737,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -4470,11 +4518,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<float> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -4486,6 +4544,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2f> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -4495,6 +4554,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2f> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -4504,7 +4564,9 @@ namespace Aardvark.Base
 
         public V2f R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2f( M00,  M01); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -4514,7 +4576,9 @@ namespace Aardvark.Base
 
         public V2f R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2f( M10,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -4524,7 +4588,9 @@ namespace Aardvark.Base
 
         public V2f C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2f( M00,  M10); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -4534,7 +4600,9 @@ namespace Aardvark.Base
 
         public V2f C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2f( M01,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -4544,6 +4612,7 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -4555,6 +4624,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -4570,6 +4640,7 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -4589,6 +4660,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -4608,6 +4680,143 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) || float.IsNaN(M01) || 
+                    float.IsNaN(M10) || float.IsNaN(M11);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) && float.IsNaN(M01) && 
+                    float.IsNaN(M10) && float.IsNaN(M11);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) || float.IsInfinity(M01) || 
+                    float.IsInfinity(M10) || float.IsInfinity(M11);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) && float.IsInfinity(M01) && 
+                    float.IsInfinity(M10) && float.IsInfinity(M11);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) || float.IsPositiveInfinity(M01) || 
+                    float.IsPositiveInfinity(M10) || float.IsPositiveInfinity(M11);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) && float.IsPositiveInfinity(M01) && 
+                    float.IsPositiveInfinity(M10) && float.IsPositiveInfinity(M11);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) || float.IsNegativeInfinity(M01) || 
+                    float.IsNegativeInfinity(M10) || float.IsNegativeInfinity(M11);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) && float.IsNegativeInfinity(M01) && 
+                    float.IsNegativeInfinity(M10) && float.IsNegativeInfinity(M11);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -5708,6 +5917,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M22f"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M22f v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M22f"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M22f v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M22f"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M22f v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -6361,11 +6595,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<double> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -6377,6 +6621,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2d> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -6386,6 +6631,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2d> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -6395,7 +6641,9 @@ namespace Aardvark.Base
 
         public V2d R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2d( M00,  M01); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -6405,7 +6653,9 @@ namespace Aardvark.Base
 
         public V2d R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2d( M10,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -6415,7 +6665,9 @@ namespace Aardvark.Base
 
         public V2d C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2d( M00,  M10); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -6425,7 +6677,9 @@ namespace Aardvark.Base
 
         public V2d C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2d( M01,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -6435,6 +6689,7 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -6446,6 +6701,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -6461,6 +6717,7 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -6480,6 +6737,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -6499,6 +6757,143 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) || double.IsNaN(M01) || 
+                    double.IsNaN(M10) || double.IsNaN(M11);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) && double.IsNaN(M01) && 
+                    double.IsNaN(M10) && double.IsNaN(M11);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) || double.IsInfinity(M01) || 
+                    double.IsInfinity(M10) || double.IsInfinity(M11);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) && double.IsInfinity(M01) && 
+                    double.IsInfinity(M10) && double.IsInfinity(M11);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) || double.IsPositiveInfinity(M01) || 
+                    double.IsPositiveInfinity(M10) || double.IsPositiveInfinity(M11);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) && double.IsPositiveInfinity(M01) && 
+                    double.IsPositiveInfinity(M10) && double.IsPositiveInfinity(M11);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) || double.IsNegativeInfinity(M01) || 
+                    double.IsNegativeInfinity(M10) || double.IsNegativeInfinity(M11);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) && double.IsNegativeInfinity(M01) && 
+                    double.IsNegativeInfinity(M10) && double.IsNegativeInfinity(M11);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -7501,6 +7896,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M22d"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M22d v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M22d"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M22d v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M22d"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M22d v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -8157,11 +8577,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<int> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -8175,6 +8605,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3i> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -8184,6 +8615,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2i> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -8194,7 +8626,9 @@ namespace Aardvark.Base
 
         public V3i R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M00,  M01,  M02); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -8205,7 +8639,9 @@ namespace Aardvark.Base
 
         public V3i R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M10,  M11,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -8216,7 +8652,9 @@ namespace Aardvark.Base
 
         public V2i C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2i( M00,  M10); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -8226,7 +8664,9 @@ namespace Aardvark.Base
 
         public V2i C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2i( M01,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -8236,7 +8676,9 @@ namespace Aardvark.Base
 
         public V2i C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2i( M02,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -8246,6 +8688,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -8259,6 +8702,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -8276,6 +8720,7 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -8297,6 +8742,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -10113,11 +10559,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<long> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -10131,6 +10587,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3l> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -10140,6 +10597,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2l> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -10150,7 +10608,9 @@ namespace Aardvark.Base
 
         public V3l R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M00,  M01,  M02); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -10161,7 +10621,9 @@ namespace Aardvark.Base
 
         public V3l R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M10,  M11,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -10172,7 +10634,9 @@ namespace Aardvark.Base
 
         public V2l C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2l( M00,  M10); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -10182,7 +10646,9 @@ namespace Aardvark.Base
 
         public V2l C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2l( M01,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -10192,7 +10658,9 @@ namespace Aardvark.Base
 
         public V2l C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2l( M02,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -10202,6 +10670,7 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -10215,6 +10684,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -10232,6 +10702,7 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -10253,6 +10724,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -12025,11 +12497,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<float> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -12043,6 +12525,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3f> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -12052,6 +12535,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2f> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -12062,7 +12546,9 @@ namespace Aardvark.Base
 
         public V3f R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M00,  M01,  M02); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -12073,7 +12559,9 @@ namespace Aardvark.Base
 
         public V3f R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M10,  M11,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -12084,7 +12572,9 @@ namespace Aardvark.Base
 
         public V2f C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2f( M00,  M10); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -12094,7 +12584,9 @@ namespace Aardvark.Base
 
         public V2f C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2f( M01,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -12104,7 +12596,9 @@ namespace Aardvark.Base
 
         public V2f C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2f( M02,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -12114,6 +12608,7 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -12127,6 +12622,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -12144,6 +12640,7 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -12165,6 +12662,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -12186,6 +12684,143 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) || float.IsNaN(M01) || float.IsNaN(M02) || 
+                    float.IsNaN(M10) || float.IsNaN(M11) || float.IsNaN(M12);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) && float.IsNaN(M01) && float.IsNaN(M02) && 
+                    float.IsNaN(M10) && float.IsNaN(M11) && float.IsNaN(M12);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) || float.IsInfinity(M01) || float.IsInfinity(M02) || 
+                    float.IsInfinity(M10) || float.IsInfinity(M11) || float.IsInfinity(M12);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) && float.IsInfinity(M01) && float.IsInfinity(M02) && 
+                    float.IsInfinity(M10) && float.IsInfinity(M11) && float.IsInfinity(M12);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) || float.IsPositiveInfinity(M01) || float.IsPositiveInfinity(M02) || 
+                    float.IsPositiveInfinity(M10) || float.IsPositiveInfinity(M11) || float.IsPositiveInfinity(M12);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) && float.IsPositiveInfinity(M01) && float.IsPositiveInfinity(M02) && 
+                    float.IsPositiveInfinity(M10) && float.IsPositiveInfinity(M11) && float.IsPositiveInfinity(M12);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) || float.IsNegativeInfinity(M01) || float.IsNegativeInfinity(M02) || 
+                    float.IsNegativeInfinity(M10) || float.IsNegativeInfinity(M11) || float.IsNegativeInfinity(M12);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) && float.IsNegativeInfinity(M01) && float.IsNegativeInfinity(M02) && 
+                    float.IsNegativeInfinity(M10) && float.IsNegativeInfinity(M11) && float.IsNegativeInfinity(M12);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || Fun.IsTiny(M02) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11) || Fun.IsTiny(M12);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && Fun.IsTiny(M02) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11) && Fun.IsTiny(M12);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -13136,6 +13771,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M23f"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M23f v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M23f"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M23f v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M23f"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M23f v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -13846,11 +14506,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<double> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -13864,6 +14534,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3d> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -13873,6 +14544,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V2d> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -13883,7 +14555,9 @@ namespace Aardvark.Base
 
         public V3d R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M00,  M01,  M02); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -13894,7 +14568,9 @@ namespace Aardvark.Base
 
         public V3d R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M10,  M11,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -13905,7 +14581,9 @@ namespace Aardvark.Base
 
         public V2d C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2d( M00,  M10); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -13915,7 +14593,9 @@ namespace Aardvark.Base
 
         public V2d C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2d( M01,  M11); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -13925,7 +14605,9 @@ namespace Aardvark.Base
 
         public V2d C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V2d( M02,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -13935,6 +14617,7 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -13948,6 +14631,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -13965,6 +14649,7 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -13986,6 +14671,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -14007,6 +14693,143 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) || double.IsNaN(M01) || double.IsNaN(M02) || 
+                    double.IsNaN(M10) || double.IsNaN(M11) || double.IsNaN(M12);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) && double.IsNaN(M01) && double.IsNaN(M02) && 
+                    double.IsNaN(M10) && double.IsNaN(M11) && double.IsNaN(M12);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) || double.IsInfinity(M01) || double.IsInfinity(M02) || 
+                    double.IsInfinity(M10) || double.IsInfinity(M11) || double.IsInfinity(M12);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) && double.IsInfinity(M01) && double.IsInfinity(M02) && 
+                    double.IsInfinity(M10) && double.IsInfinity(M11) && double.IsInfinity(M12);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) || double.IsPositiveInfinity(M01) || double.IsPositiveInfinity(M02) || 
+                    double.IsPositiveInfinity(M10) || double.IsPositiveInfinity(M11) || double.IsPositiveInfinity(M12);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) && double.IsPositiveInfinity(M01) && double.IsPositiveInfinity(M02) && 
+                    double.IsPositiveInfinity(M10) && double.IsPositiveInfinity(M11) && double.IsPositiveInfinity(M12);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) || double.IsNegativeInfinity(M01) || double.IsNegativeInfinity(M02) || 
+                    double.IsNegativeInfinity(M10) || double.IsNegativeInfinity(M11) || double.IsNegativeInfinity(M12);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) && double.IsNegativeInfinity(M01) && double.IsNegativeInfinity(M02) && 
+                    double.IsNegativeInfinity(M10) && double.IsNegativeInfinity(M11) && double.IsNegativeInfinity(M12);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || Fun.IsTiny(M02) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11) || Fun.IsTiny(M12);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && Fun.IsTiny(M02) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11) && Fun.IsTiny(M12);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -14859,6 +15682,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M23d"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M23d v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M23d"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M23d v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M23d"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M23d v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -15688,11 +16536,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<int> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -15709,6 +16567,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3i> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -15719,6 +16578,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3i> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -15729,7 +16589,9 @@ namespace Aardvark.Base
 
         public V3i R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M00,  M01,  M02); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -15740,7 +16602,9 @@ namespace Aardvark.Base
 
         public V3i R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M10,  M11,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -15751,7 +16615,9 @@ namespace Aardvark.Base
 
         public V3i R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M20,  M21,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -15762,7 +16628,9 @@ namespace Aardvark.Base
 
         public V3i C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M00,  M10,  M20); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -15773,7 +16641,9 @@ namespace Aardvark.Base
 
         public V3i C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M01,  M11,  M21); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -15784,7 +16654,9 @@ namespace Aardvark.Base
 
         public V3i C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M02,  M12,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -15795,6 +16667,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -15811,6 +16684,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -15831,6 +16705,7 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -15859,6 +16734,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -18235,11 +19111,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<long> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -18256,6 +19142,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3l> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -18266,6 +19153,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3l> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -18276,7 +19164,9 @@ namespace Aardvark.Base
 
         public V3l R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M00,  M01,  M02); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -18287,7 +19177,9 @@ namespace Aardvark.Base
 
         public V3l R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M10,  M11,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -18298,7 +19190,9 @@ namespace Aardvark.Base
 
         public V3l R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M20,  M21,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -18309,7 +19203,9 @@ namespace Aardvark.Base
 
         public V3l C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M00,  M10,  M20); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -18320,7 +19216,9 @@ namespace Aardvark.Base
 
         public V3l C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M01,  M11,  M21); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -18331,7 +19229,9 @@ namespace Aardvark.Base
 
         public V3l C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M02,  M12,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -18342,6 +19242,7 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -18358,6 +19259,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -18378,6 +19280,7 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -18406,6 +19309,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -20886,11 +21790,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<float> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -20907,6 +21821,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3f> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -20917,6 +21832,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3f> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -20927,7 +21843,9 @@ namespace Aardvark.Base
 
         public V3f R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M00,  M01,  M02); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -20938,7 +21856,9 @@ namespace Aardvark.Base
 
         public V3f R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M10,  M11,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -20949,7 +21869,9 @@ namespace Aardvark.Base
 
         public V3f R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M20,  M21,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -20960,7 +21882,9 @@ namespace Aardvark.Base
 
         public V3f C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M00,  M10,  M20); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -20971,7 +21895,9 @@ namespace Aardvark.Base
 
         public V3f C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M01,  M11,  M21); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -20982,7 +21908,9 @@ namespace Aardvark.Base
 
         public V3f C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M02,  M12,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -20993,6 +21921,7 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -21009,6 +21938,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -21029,6 +21959,7 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -21057,6 +21988,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -21085,6 +22017,153 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) || float.IsNaN(M01) || float.IsNaN(M02) || 
+                    float.IsNaN(M10) || float.IsNaN(M11) || float.IsNaN(M12) || 
+                    float.IsNaN(M20) || float.IsNaN(M21) || float.IsNaN(M22);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) && float.IsNaN(M01) && float.IsNaN(M02) && 
+                    float.IsNaN(M10) && float.IsNaN(M11) && float.IsNaN(M12) && 
+                    float.IsNaN(M20) && float.IsNaN(M21) && float.IsNaN(M22);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) || float.IsInfinity(M01) || float.IsInfinity(M02) || 
+                    float.IsInfinity(M10) || float.IsInfinity(M11) || float.IsInfinity(M12) || 
+                    float.IsInfinity(M20) || float.IsInfinity(M21) || float.IsInfinity(M22);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) && float.IsInfinity(M01) && float.IsInfinity(M02) && 
+                    float.IsInfinity(M10) && float.IsInfinity(M11) && float.IsInfinity(M12) && 
+                    float.IsInfinity(M20) && float.IsInfinity(M21) && float.IsInfinity(M22);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) || float.IsPositiveInfinity(M01) || float.IsPositiveInfinity(M02) || 
+                    float.IsPositiveInfinity(M10) || float.IsPositiveInfinity(M11) || float.IsPositiveInfinity(M12) || 
+                    float.IsPositiveInfinity(M20) || float.IsPositiveInfinity(M21) || float.IsPositiveInfinity(M22);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) && float.IsPositiveInfinity(M01) && float.IsPositiveInfinity(M02) && 
+                    float.IsPositiveInfinity(M10) && float.IsPositiveInfinity(M11) && float.IsPositiveInfinity(M12) && 
+                    float.IsPositiveInfinity(M20) && float.IsPositiveInfinity(M21) && float.IsPositiveInfinity(M22);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) || float.IsNegativeInfinity(M01) || float.IsNegativeInfinity(M02) || 
+                    float.IsNegativeInfinity(M10) || float.IsNegativeInfinity(M11) || float.IsNegativeInfinity(M12) || 
+                    float.IsNegativeInfinity(M20) || float.IsNegativeInfinity(M21) || float.IsNegativeInfinity(M22);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) && float.IsNegativeInfinity(M01) && float.IsNegativeInfinity(M02) && 
+                    float.IsNegativeInfinity(M10) && float.IsNegativeInfinity(M11) && float.IsNegativeInfinity(M12) && 
+                    float.IsNegativeInfinity(M20) && float.IsNegativeInfinity(M21) && float.IsNegativeInfinity(M22);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || Fun.IsTiny(M02) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11) || Fun.IsTiny(M12) || 
+                    Fun.IsTiny(M20) || Fun.IsTiny(M21) || Fun.IsTiny(M22);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && Fun.IsTiny(M02) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11) && Fun.IsTiny(M12) && 
+                    Fun.IsTiny(M20) && Fun.IsTiny(M21) && Fun.IsTiny(M22);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -22463,6 +23542,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M33f"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M33f v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M33f"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M33f v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M33f"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M33f v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -23508,11 +24612,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<double> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -23529,6 +24643,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3d> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -23539,6 +24654,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3d> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -23549,7 +24665,9 @@ namespace Aardvark.Base
 
         public V3d R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M00,  M01,  M02); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -23560,7 +24678,9 @@ namespace Aardvark.Base
 
         public V3d R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M10,  M11,  M12); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -23571,7 +24691,9 @@ namespace Aardvark.Base
 
         public V3d R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M20,  M21,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -23582,7 +24704,9 @@ namespace Aardvark.Base
 
         public V3d C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M00,  M10,  M20); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -23593,7 +24717,9 @@ namespace Aardvark.Base
 
         public V3d C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M01,  M11,  M21); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -23604,7 +24730,9 @@ namespace Aardvark.Base
 
         public V3d C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M02,  M12,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -23615,6 +24743,7 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -23631,6 +24760,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -23651,6 +24781,7 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -23679,6 +24810,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -23707,6 +24839,153 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) || double.IsNaN(M01) || double.IsNaN(M02) || 
+                    double.IsNaN(M10) || double.IsNaN(M11) || double.IsNaN(M12) || 
+                    double.IsNaN(M20) || double.IsNaN(M21) || double.IsNaN(M22);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) && double.IsNaN(M01) && double.IsNaN(M02) && 
+                    double.IsNaN(M10) && double.IsNaN(M11) && double.IsNaN(M12) && 
+                    double.IsNaN(M20) && double.IsNaN(M21) && double.IsNaN(M22);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) || double.IsInfinity(M01) || double.IsInfinity(M02) || 
+                    double.IsInfinity(M10) || double.IsInfinity(M11) || double.IsInfinity(M12) || 
+                    double.IsInfinity(M20) || double.IsInfinity(M21) || double.IsInfinity(M22);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) && double.IsInfinity(M01) && double.IsInfinity(M02) && 
+                    double.IsInfinity(M10) && double.IsInfinity(M11) && double.IsInfinity(M12) && 
+                    double.IsInfinity(M20) && double.IsInfinity(M21) && double.IsInfinity(M22);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) || double.IsPositiveInfinity(M01) || double.IsPositiveInfinity(M02) || 
+                    double.IsPositiveInfinity(M10) || double.IsPositiveInfinity(M11) || double.IsPositiveInfinity(M12) || 
+                    double.IsPositiveInfinity(M20) || double.IsPositiveInfinity(M21) || double.IsPositiveInfinity(M22);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) && double.IsPositiveInfinity(M01) && double.IsPositiveInfinity(M02) && 
+                    double.IsPositiveInfinity(M10) && double.IsPositiveInfinity(M11) && double.IsPositiveInfinity(M12) && 
+                    double.IsPositiveInfinity(M20) && double.IsPositiveInfinity(M21) && double.IsPositiveInfinity(M22);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) || double.IsNegativeInfinity(M01) || double.IsNegativeInfinity(M02) || 
+                    double.IsNegativeInfinity(M10) || double.IsNegativeInfinity(M11) || double.IsNegativeInfinity(M12) || 
+                    double.IsNegativeInfinity(M20) || double.IsNegativeInfinity(M21) || double.IsNegativeInfinity(M22);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) && double.IsNegativeInfinity(M01) && double.IsNegativeInfinity(M02) && 
+                    double.IsNegativeInfinity(M10) && double.IsNegativeInfinity(M11) && double.IsNegativeInfinity(M12) && 
+                    double.IsNegativeInfinity(M20) && double.IsNegativeInfinity(M21) && double.IsNegativeInfinity(M22);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || Fun.IsTiny(M02) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11) || Fun.IsTiny(M12) || 
+                    Fun.IsTiny(M20) || Fun.IsTiny(M21) || Fun.IsTiny(M22);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && Fun.IsTiny(M02) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11) && Fun.IsTiny(M12) && 
+                    Fun.IsTiny(M20) && Fun.IsTiny(M21) && Fun.IsTiny(M22);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -24973,6 +26252,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M33d"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M33d v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M33d"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M33d v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M33d"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M33d v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -25822,11 +27126,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<int> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -25846,6 +27160,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4i> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -25856,6 +27171,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3i> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -25867,7 +27183,9 @@ namespace Aardvark.Base
 
         public V4i R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M00,  M01,  M02,  M03); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -25879,7 +27197,9 @@ namespace Aardvark.Base
 
         public V4i R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M10,  M11,  M12,  M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -25891,7 +27211,9 @@ namespace Aardvark.Base
 
         public V4i R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M20,  M21,  M22,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -25903,7 +27225,9 @@ namespace Aardvark.Base
 
         public V3i C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M00,  M10,  M20); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -25914,7 +27238,9 @@ namespace Aardvark.Base
 
         public V3i C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M01,  M11,  M21); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -25925,7 +27251,9 @@ namespace Aardvark.Base
 
         public V3i C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M02,  M12,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -25936,7 +27264,9 @@ namespace Aardvark.Base
 
         public V3i C3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3i( M03,  M13,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M03 = value.X;
@@ -25947,6 +27277,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -25966,6 +27297,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -25989,6 +27321,7 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -26020,6 +27353,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -28248,11 +29582,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<long> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -28272,6 +29616,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4l> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -28282,6 +29627,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3l> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -28293,7 +29639,9 @@ namespace Aardvark.Base
 
         public V4l R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M00,  M01,  M02,  M03); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -28305,7 +29653,9 @@ namespace Aardvark.Base
 
         public V4l R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M10,  M11,  M12,  M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -28317,7 +29667,9 @@ namespace Aardvark.Base
 
         public V4l R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M20,  M21,  M22,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -28329,7 +29681,9 @@ namespace Aardvark.Base
 
         public V3l C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M00,  M10,  M20); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -28340,7 +29694,9 @@ namespace Aardvark.Base
 
         public V3l C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M01,  M11,  M21); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -28351,7 +29707,9 @@ namespace Aardvark.Base
 
         public V3l C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M02,  M12,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -28362,7 +29720,9 @@ namespace Aardvark.Base
 
         public V3l C3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3l( M03,  M13,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M03 = value.X;
@@ -28373,6 +29733,7 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -28392,6 +29753,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -28415,6 +29777,7 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -28446,6 +29809,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -30742,11 +32106,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<float> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -30766,6 +32140,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4f> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -30776,6 +32151,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3f> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -30787,7 +32163,9 @@ namespace Aardvark.Base
 
         public V4f R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M00,  M01,  M02,  M03); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -30799,7 +32177,9 @@ namespace Aardvark.Base
 
         public V4f R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M10,  M11,  M12,  M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -30811,7 +32191,9 @@ namespace Aardvark.Base
 
         public V4f R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M20,  M21,  M22,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -30823,7 +32205,9 @@ namespace Aardvark.Base
 
         public V3f C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M00,  M10,  M20); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -30834,7 +32218,9 @@ namespace Aardvark.Base
 
         public V3f C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M01,  M11,  M21); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -30845,7 +32231,9 @@ namespace Aardvark.Base
 
         public V3f C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M02,  M12,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -30856,7 +32244,9 @@ namespace Aardvark.Base
 
         public V3f C3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3f( M03,  M13,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M03 = value.X;
@@ -30867,6 +32257,7 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -30886,6 +32277,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -30909,6 +32301,7 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -30940,6 +32333,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -30971,6 +32365,153 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) || float.IsNaN(M01) || float.IsNaN(M02) || float.IsNaN(M03) || 
+                    float.IsNaN(M10) || float.IsNaN(M11) || float.IsNaN(M12) || float.IsNaN(M13) || 
+                    float.IsNaN(M20) || float.IsNaN(M21) || float.IsNaN(M22) || float.IsNaN(M23);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) && float.IsNaN(M01) && float.IsNaN(M02) && float.IsNaN(M03) && 
+                    float.IsNaN(M10) && float.IsNaN(M11) && float.IsNaN(M12) && float.IsNaN(M13) && 
+                    float.IsNaN(M20) && float.IsNaN(M21) && float.IsNaN(M22) && float.IsNaN(M23);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) || float.IsInfinity(M01) || float.IsInfinity(M02) || float.IsInfinity(M03) || 
+                    float.IsInfinity(M10) || float.IsInfinity(M11) || float.IsInfinity(M12) || float.IsInfinity(M13) || 
+                    float.IsInfinity(M20) || float.IsInfinity(M21) || float.IsInfinity(M22) || float.IsInfinity(M23);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) && float.IsInfinity(M01) && float.IsInfinity(M02) && float.IsInfinity(M03) && 
+                    float.IsInfinity(M10) && float.IsInfinity(M11) && float.IsInfinity(M12) && float.IsInfinity(M13) && 
+                    float.IsInfinity(M20) && float.IsInfinity(M21) && float.IsInfinity(M22) && float.IsInfinity(M23);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) || float.IsPositiveInfinity(M01) || float.IsPositiveInfinity(M02) || float.IsPositiveInfinity(M03) || 
+                    float.IsPositiveInfinity(M10) || float.IsPositiveInfinity(M11) || float.IsPositiveInfinity(M12) || float.IsPositiveInfinity(M13) || 
+                    float.IsPositiveInfinity(M20) || float.IsPositiveInfinity(M21) || float.IsPositiveInfinity(M22) || float.IsPositiveInfinity(M23);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) && float.IsPositiveInfinity(M01) && float.IsPositiveInfinity(M02) && float.IsPositiveInfinity(M03) && 
+                    float.IsPositiveInfinity(M10) && float.IsPositiveInfinity(M11) && float.IsPositiveInfinity(M12) && float.IsPositiveInfinity(M13) && 
+                    float.IsPositiveInfinity(M20) && float.IsPositiveInfinity(M21) && float.IsPositiveInfinity(M22) && float.IsPositiveInfinity(M23);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) || float.IsNegativeInfinity(M01) || float.IsNegativeInfinity(M02) || float.IsNegativeInfinity(M03) || 
+                    float.IsNegativeInfinity(M10) || float.IsNegativeInfinity(M11) || float.IsNegativeInfinity(M12) || float.IsNegativeInfinity(M13) || 
+                    float.IsNegativeInfinity(M20) || float.IsNegativeInfinity(M21) || float.IsNegativeInfinity(M22) || float.IsNegativeInfinity(M23);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) && float.IsNegativeInfinity(M01) && float.IsNegativeInfinity(M02) && float.IsNegativeInfinity(M03) && 
+                    float.IsNegativeInfinity(M10) && float.IsNegativeInfinity(M11) && float.IsNegativeInfinity(M12) && float.IsNegativeInfinity(M13) && 
+                    float.IsNegativeInfinity(M20) && float.IsNegativeInfinity(M21) && float.IsNegativeInfinity(M22) && float.IsNegativeInfinity(M23);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || Fun.IsTiny(M02) || Fun.IsTiny(M03) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11) || Fun.IsTiny(M12) || Fun.IsTiny(M13) || 
+                    Fun.IsTiny(M20) || Fun.IsTiny(M21) || Fun.IsTiny(M22) || Fun.IsTiny(M23);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && Fun.IsTiny(M02) && Fun.IsTiny(M03) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11) && Fun.IsTiny(M12) && Fun.IsTiny(M13) && 
+                    Fun.IsTiny(M20) && Fun.IsTiny(M21) && Fun.IsTiny(M22) && Fun.IsTiny(M23);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -32121,6 +33662,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M34f"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M34f v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M34f"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M34f v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M34f"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M34f v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -33150,11 +34716,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<double> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -33174,6 +34750,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4d> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -33184,6 +34761,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V3d> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -33195,7 +34773,9 @@ namespace Aardvark.Base
 
         public V4d R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M00,  M01,  M02,  M03); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -33207,7 +34787,9 @@ namespace Aardvark.Base
 
         public V4d R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M10,  M11,  M12,  M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -33219,7 +34801,9 @@ namespace Aardvark.Base
 
         public V4d R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M20,  M21,  M22,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -33231,7 +34815,9 @@ namespace Aardvark.Base
 
         public V3d C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M00,  M10,  M20); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -33242,7 +34828,9 @@ namespace Aardvark.Base
 
         public V3d C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M01,  M11,  M21); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -33253,7 +34841,9 @@ namespace Aardvark.Base
 
         public V3d C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M02,  M12,  M22); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -33264,7 +34854,9 @@ namespace Aardvark.Base
 
         public V3d C3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V3d( M03,  M13,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M03 = value.X;
@@ -33275,6 +34867,7 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -33294,6 +34887,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -33317,6 +34911,7 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -33348,6 +34943,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -33379,6 +34975,153 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) || double.IsNaN(M01) || double.IsNaN(M02) || double.IsNaN(M03) || 
+                    double.IsNaN(M10) || double.IsNaN(M11) || double.IsNaN(M12) || double.IsNaN(M13) || 
+                    double.IsNaN(M20) || double.IsNaN(M21) || double.IsNaN(M22) || double.IsNaN(M23);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) && double.IsNaN(M01) && double.IsNaN(M02) && double.IsNaN(M03) && 
+                    double.IsNaN(M10) && double.IsNaN(M11) && double.IsNaN(M12) && double.IsNaN(M13) && 
+                    double.IsNaN(M20) && double.IsNaN(M21) && double.IsNaN(M22) && double.IsNaN(M23);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) || double.IsInfinity(M01) || double.IsInfinity(M02) || double.IsInfinity(M03) || 
+                    double.IsInfinity(M10) || double.IsInfinity(M11) || double.IsInfinity(M12) || double.IsInfinity(M13) || 
+                    double.IsInfinity(M20) || double.IsInfinity(M21) || double.IsInfinity(M22) || double.IsInfinity(M23);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) && double.IsInfinity(M01) && double.IsInfinity(M02) && double.IsInfinity(M03) && 
+                    double.IsInfinity(M10) && double.IsInfinity(M11) && double.IsInfinity(M12) && double.IsInfinity(M13) && 
+                    double.IsInfinity(M20) && double.IsInfinity(M21) && double.IsInfinity(M22) && double.IsInfinity(M23);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) || double.IsPositiveInfinity(M01) || double.IsPositiveInfinity(M02) || double.IsPositiveInfinity(M03) || 
+                    double.IsPositiveInfinity(M10) || double.IsPositiveInfinity(M11) || double.IsPositiveInfinity(M12) || double.IsPositiveInfinity(M13) || 
+                    double.IsPositiveInfinity(M20) || double.IsPositiveInfinity(M21) || double.IsPositiveInfinity(M22) || double.IsPositiveInfinity(M23);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) && double.IsPositiveInfinity(M01) && double.IsPositiveInfinity(M02) && double.IsPositiveInfinity(M03) && 
+                    double.IsPositiveInfinity(M10) && double.IsPositiveInfinity(M11) && double.IsPositiveInfinity(M12) && double.IsPositiveInfinity(M13) && 
+                    double.IsPositiveInfinity(M20) && double.IsPositiveInfinity(M21) && double.IsPositiveInfinity(M22) && double.IsPositiveInfinity(M23);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) || double.IsNegativeInfinity(M01) || double.IsNegativeInfinity(M02) || double.IsNegativeInfinity(M03) || 
+                    double.IsNegativeInfinity(M10) || double.IsNegativeInfinity(M11) || double.IsNegativeInfinity(M12) || double.IsNegativeInfinity(M13) || 
+                    double.IsNegativeInfinity(M20) || double.IsNegativeInfinity(M21) || double.IsNegativeInfinity(M22) || double.IsNegativeInfinity(M23);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) && double.IsNegativeInfinity(M01) && double.IsNegativeInfinity(M02) && double.IsNegativeInfinity(M03) && 
+                    double.IsNegativeInfinity(M10) && double.IsNegativeInfinity(M11) && double.IsNegativeInfinity(M12) && double.IsNegativeInfinity(M13) && 
+                    double.IsNegativeInfinity(M20) && double.IsNegativeInfinity(M21) && double.IsNegativeInfinity(M22) && double.IsNegativeInfinity(M23);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || Fun.IsTiny(M02) || Fun.IsTiny(M03) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11) || Fun.IsTiny(M12) || Fun.IsTiny(M13) || 
+                    Fun.IsTiny(M20) || Fun.IsTiny(M21) || Fun.IsTiny(M22) || Fun.IsTiny(M23);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && Fun.IsTiny(M02) && Fun.IsTiny(M03) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11) && Fun.IsTiny(M12) && Fun.IsTiny(M13) && 
+                    Fun.IsTiny(M20) && Fun.IsTiny(M21) && Fun.IsTiny(M22) && Fun.IsTiny(M23);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -34417,6 +36160,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M34d"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M34d v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M34d"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M34d v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M34d"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M34d v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -35374,11 +37142,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<int> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -35402,6 +37180,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4i> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -35413,6 +37192,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4i> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -35424,7 +37204,9 @@ namespace Aardvark.Base
 
         public V4i R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M00,  M01,  M02,  M03); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -35436,7 +37218,9 @@ namespace Aardvark.Base
 
         public V4i R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M10,  M11,  M12,  M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -35448,7 +37232,9 @@ namespace Aardvark.Base
 
         public V4i R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M20,  M21,  M22,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -35460,7 +37246,9 @@ namespace Aardvark.Base
 
         public V4i R3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M30,  M31,  M32,  M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M30 = value.X;
@@ -35472,7 +37260,9 @@ namespace Aardvark.Base
 
         public V4i C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M00,  M10,  M20,  M30); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -35484,7 +37274,9 @@ namespace Aardvark.Base
 
         public V4i C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M01,  M11,  M21,  M31); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -35496,7 +37288,9 @@ namespace Aardvark.Base
 
         public V4i C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M02,  M12,  M22,  M32); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -35508,7 +37302,9 @@ namespace Aardvark.Base
 
         public V4i C3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4i( M03,  M13,  M23,  M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M03 = value.X;
@@ -35520,6 +37316,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -35543,6 +37340,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -35570,6 +37368,7 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -35609,6 +37408,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -38363,11 +40163,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<long> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -38391,6 +40201,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4l> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -38402,6 +40213,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4l> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -38413,7 +40225,9 @@ namespace Aardvark.Base
 
         public V4l R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M00,  M01,  M02,  M03); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -38425,7 +40239,9 @@ namespace Aardvark.Base
 
         public V4l R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M10,  M11,  M12,  M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -38437,7 +40253,9 @@ namespace Aardvark.Base
 
         public V4l R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M20,  M21,  M22,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -38449,7 +40267,9 @@ namespace Aardvark.Base
 
         public V4l R3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M30,  M31,  M32,  M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M30 = value.X;
@@ -38461,7 +40281,9 @@ namespace Aardvark.Base
 
         public V4l C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M00,  M10,  M20,  M30); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -38473,7 +40295,9 @@ namespace Aardvark.Base
 
         public V4l C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M01,  M11,  M21,  M31); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -38485,7 +40309,9 @@ namespace Aardvark.Base
 
         public V4l C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M02,  M12,  M22,  M32); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -38497,7 +40323,9 @@ namespace Aardvark.Base
 
         public V4l C3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4l( M03,  M13,  M23,  M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M03 = value.X;
@@ -38509,6 +40337,7 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -38532,6 +40361,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -38559,6 +40389,7 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -38598,6 +40429,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -41406,11 +43238,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<float> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -41434,6 +43276,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4f> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -41445,6 +43288,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4f> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -41456,7 +43300,9 @@ namespace Aardvark.Base
 
         public V4f R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M00,  M01,  M02,  M03); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -41468,7 +43314,9 @@ namespace Aardvark.Base
 
         public V4f R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M10,  M11,  M12,  M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -41480,7 +43328,9 @@ namespace Aardvark.Base
 
         public V4f R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M20,  M21,  M22,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -41492,7 +43342,9 @@ namespace Aardvark.Base
 
         public V4f R3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M30,  M31,  M32,  M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M30 = value.X;
@@ -41504,7 +43356,9 @@ namespace Aardvark.Base
 
         public V4f C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M00,  M10,  M20,  M30); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -41516,7 +43370,9 @@ namespace Aardvark.Base
 
         public V4f C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M01,  M11,  M21,  M31); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -41528,7 +43384,9 @@ namespace Aardvark.Base
 
         public V4f C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M02,  M12,  M22,  M32); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -41540,7 +43398,9 @@ namespace Aardvark.Base
 
         public V4f C3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4f( M03,  M13,  M23,  M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M03 = value.X;
@@ -41552,6 +43412,7 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -41575,6 +43436,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -41602,6 +43464,7 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -41641,6 +43504,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -41680,6 +43544,163 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) || float.IsNaN(M01) || float.IsNaN(M02) || float.IsNaN(M03) || 
+                    float.IsNaN(M10) || float.IsNaN(M11) || float.IsNaN(M12) || float.IsNaN(M13) || 
+                    float.IsNaN(M20) || float.IsNaN(M21) || float.IsNaN(M22) || float.IsNaN(M23) || 
+                    float.IsNaN(M30) || float.IsNaN(M31) || float.IsNaN(M32) || float.IsNaN(M33);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNaN(M00) && float.IsNaN(M01) && float.IsNaN(M02) && float.IsNaN(M03) && 
+                    float.IsNaN(M10) && float.IsNaN(M11) && float.IsNaN(M12) && float.IsNaN(M13) && 
+                    float.IsNaN(M20) && float.IsNaN(M21) && float.IsNaN(M22) && float.IsNaN(M23) && 
+                    float.IsNaN(M30) && float.IsNaN(M31) && float.IsNaN(M32) && float.IsNaN(M33);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) || float.IsInfinity(M01) || float.IsInfinity(M02) || float.IsInfinity(M03) || 
+                    float.IsInfinity(M10) || float.IsInfinity(M11) || float.IsInfinity(M12) || float.IsInfinity(M13) || 
+                    float.IsInfinity(M20) || float.IsInfinity(M21) || float.IsInfinity(M22) || float.IsInfinity(M23) || 
+                    float.IsInfinity(M30) || float.IsInfinity(M31) || float.IsInfinity(M32) || float.IsInfinity(M33);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsInfinity(M00) && float.IsInfinity(M01) && float.IsInfinity(M02) && float.IsInfinity(M03) && 
+                    float.IsInfinity(M10) && float.IsInfinity(M11) && float.IsInfinity(M12) && float.IsInfinity(M13) && 
+                    float.IsInfinity(M20) && float.IsInfinity(M21) && float.IsInfinity(M22) && float.IsInfinity(M23) && 
+                    float.IsInfinity(M30) && float.IsInfinity(M31) && float.IsInfinity(M32) && float.IsInfinity(M33);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) || float.IsPositiveInfinity(M01) || float.IsPositiveInfinity(M02) || float.IsPositiveInfinity(M03) || 
+                    float.IsPositiveInfinity(M10) || float.IsPositiveInfinity(M11) || float.IsPositiveInfinity(M12) || float.IsPositiveInfinity(M13) || 
+                    float.IsPositiveInfinity(M20) || float.IsPositiveInfinity(M21) || float.IsPositiveInfinity(M22) || float.IsPositiveInfinity(M23) || 
+                    float.IsPositiveInfinity(M30) || float.IsPositiveInfinity(M31) || float.IsPositiveInfinity(M32) || float.IsPositiveInfinity(M33);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsPositiveInfinity(M00) && float.IsPositiveInfinity(M01) && float.IsPositiveInfinity(M02) && float.IsPositiveInfinity(M03) && 
+                    float.IsPositiveInfinity(M10) && float.IsPositiveInfinity(M11) && float.IsPositiveInfinity(M12) && float.IsPositiveInfinity(M13) && 
+                    float.IsPositiveInfinity(M20) && float.IsPositiveInfinity(M21) && float.IsPositiveInfinity(M22) && float.IsPositiveInfinity(M23) && 
+                    float.IsPositiveInfinity(M30) && float.IsPositiveInfinity(M31) && float.IsPositiveInfinity(M32) && float.IsPositiveInfinity(M33);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) || float.IsNegativeInfinity(M01) || float.IsNegativeInfinity(M02) || float.IsNegativeInfinity(M03) || 
+                    float.IsNegativeInfinity(M10) || float.IsNegativeInfinity(M11) || float.IsNegativeInfinity(M12) || float.IsNegativeInfinity(M13) || 
+                    float.IsNegativeInfinity(M20) || float.IsNegativeInfinity(M21) || float.IsNegativeInfinity(M22) || float.IsNegativeInfinity(M23) || 
+                    float.IsNegativeInfinity(M30) || float.IsNegativeInfinity(M31) || float.IsNegativeInfinity(M32) || float.IsNegativeInfinity(M33);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    float.IsNegativeInfinity(M00) && float.IsNegativeInfinity(M01) && float.IsNegativeInfinity(M02) && float.IsNegativeInfinity(M03) && 
+                    float.IsNegativeInfinity(M10) && float.IsNegativeInfinity(M11) && float.IsNegativeInfinity(M12) && float.IsNegativeInfinity(M13) && 
+                    float.IsNegativeInfinity(M20) && float.IsNegativeInfinity(M21) && float.IsNegativeInfinity(M22) && float.IsNegativeInfinity(M23) && 
+                    float.IsNegativeInfinity(M30) && float.IsNegativeInfinity(M31) && float.IsNegativeInfinity(M32) && float.IsNegativeInfinity(M33);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || Fun.IsTiny(M02) || Fun.IsTiny(M03) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11) || Fun.IsTiny(M12) || Fun.IsTiny(M13) || 
+                    Fun.IsTiny(M20) || Fun.IsTiny(M21) || Fun.IsTiny(M22) || Fun.IsTiny(M23) || 
+                    Fun.IsTiny(M30) || Fun.IsTiny(M31) || Fun.IsTiny(M32) || Fun.IsTiny(M33);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && Fun.IsTiny(M02) && Fun.IsTiny(M03) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11) && Fun.IsTiny(M12) && Fun.IsTiny(M13) && 
+                    Fun.IsTiny(M20) && Fun.IsTiny(M21) && Fun.IsTiny(M22) && Fun.IsTiny(M23) && 
+                    Fun.IsTiny(M30) && Fun.IsTiny(M31) && Fun.IsTiny(M32) && Fun.IsTiny(M33);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -43295,6 +45316,31 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M44f"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M44f v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M44f"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M44f v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M44f"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M44f v)
+            => v.IsFinite;
+
+        #endregion
     }
 
     #endregion
@@ -44432,11 +46478,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<double> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return M00;
@@ -44460,6 +46516,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4d> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return R0;
@@ -44471,6 +46528,7 @@ namespace Aardvark.Base
 
         public IEnumerable<V4d> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 yield return C0;
@@ -44482,7 +46540,9 @@ namespace Aardvark.Base
 
         public V4d R0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M00,  M01,  M02,  M03); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -44494,7 +46554,9 @@ namespace Aardvark.Base
 
         public V4d R1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M10,  M11,  M12,  M13); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M10 = value.X;
@@ -44506,7 +46568,9 @@ namespace Aardvark.Base
 
         public V4d R2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M20,  M21,  M22,  M23); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M20 = value.X;
@@ -44518,7 +46582,9 @@ namespace Aardvark.Base
 
         public V4d R3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M30,  M31,  M32,  M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M30 = value.X;
@@ -44530,7 +46596,9 @@ namespace Aardvark.Base
 
         public V4d C0
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M00,  M10,  M20,  M30); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M00 = value.X;
@@ -44542,7 +46610,9 @@ namespace Aardvark.Base
 
         public V4d C1
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M01,  M11,  M21,  M31); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M01 = value.X;
@@ -44554,7 +46624,9 @@ namespace Aardvark.Base
 
         public V4d C2
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M02,  M12,  M22,  M32); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M02 = value.X;
@@ -44566,7 +46638,9 @@ namespace Aardvark.Base
 
         public V4d C3
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new V4d( M03,  M13,  M23,  M33); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 M03 = value.X;
@@ -44578,6 +46652,7 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -44601,6 +46676,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -44628,6 +46704,7 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -44667,6 +46744,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -44706,6 +46784,163 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+        }
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) || double.IsNaN(M01) || double.IsNaN(M02) || double.IsNaN(M03) || 
+                    double.IsNaN(M10) || double.IsNaN(M11) || double.IsNaN(M12) || double.IsNaN(M13) || 
+                    double.IsNaN(M20) || double.IsNaN(M21) || double.IsNaN(M22) || double.IsNaN(M23) || 
+                    double.IsNaN(M30) || double.IsNaN(M31) || double.IsNaN(M32) || double.IsNaN(M33);
+            }
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNaN(M00) && double.IsNaN(M01) && double.IsNaN(M02) && double.IsNaN(M03) && 
+                    double.IsNaN(M10) && double.IsNaN(M11) && double.IsNaN(M12) && double.IsNaN(M13) && 
+                    double.IsNaN(M20) && double.IsNaN(M21) && double.IsNaN(M22) && double.IsNaN(M23) && 
+                    double.IsNaN(M30) && double.IsNaN(M31) && double.IsNaN(M32) && double.IsNaN(M33);
+            }
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) || double.IsInfinity(M01) || double.IsInfinity(M02) || double.IsInfinity(M03) || 
+                    double.IsInfinity(M10) || double.IsInfinity(M11) || double.IsInfinity(M12) || double.IsInfinity(M13) || 
+                    double.IsInfinity(M20) || double.IsInfinity(M21) || double.IsInfinity(M22) || double.IsInfinity(M23) || 
+                    double.IsInfinity(M30) || double.IsInfinity(M31) || double.IsInfinity(M32) || double.IsInfinity(M33);
+            }
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsInfinity(M00) && double.IsInfinity(M01) && double.IsInfinity(M02) && double.IsInfinity(M03) && 
+                    double.IsInfinity(M10) && double.IsInfinity(M11) && double.IsInfinity(M12) && double.IsInfinity(M13) && 
+                    double.IsInfinity(M20) && double.IsInfinity(M21) && double.IsInfinity(M22) && double.IsInfinity(M23) && 
+                    double.IsInfinity(M30) && double.IsInfinity(M31) && double.IsInfinity(M32) && double.IsInfinity(M33);
+            }
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) || double.IsPositiveInfinity(M01) || double.IsPositiveInfinity(M02) || double.IsPositiveInfinity(M03) || 
+                    double.IsPositiveInfinity(M10) || double.IsPositiveInfinity(M11) || double.IsPositiveInfinity(M12) || double.IsPositiveInfinity(M13) || 
+                    double.IsPositiveInfinity(M20) || double.IsPositiveInfinity(M21) || double.IsPositiveInfinity(M22) || double.IsPositiveInfinity(M23) || 
+                    double.IsPositiveInfinity(M30) || double.IsPositiveInfinity(M31) || double.IsPositiveInfinity(M32) || double.IsPositiveInfinity(M33);
+            }
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsPositiveInfinity(M00) && double.IsPositiveInfinity(M01) && double.IsPositiveInfinity(M02) && double.IsPositiveInfinity(M03) && 
+                    double.IsPositiveInfinity(M10) && double.IsPositiveInfinity(M11) && double.IsPositiveInfinity(M12) && double.IsPositiveInfinity(M13) && 
+                    double.IsPositiveInfinity(M20) && double.IsPositiveInfinity(M21) && double.IsPositiveInfinity(M22) && double.IsPositiveInfinity(M23) && 
+                    double.IsPositiveInfinity(M30) && double.IsPositiveInfinity(M31) && double.IsPositiveInfinity(M32) && double.IsPositiveInfinity(M33);
+            }
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) || double.IsNegativeInfinity(M01) || double.IsNegativeInfinity(M02) || double.IsNegativeInfinity(M03) || 
+                    double.IsNegativeInfinity(M10) || double.IsNegativeInfinity(M11) || double.IsNegativeInfinity(M12) || double.IsNegativeInfinity(M13) || 
+                    double.IsNegativeInfinity(M20) || double.IsNegativeInfinity(M21) || double.IsNegativeInfinity(M22) || double.IsNegativeInfinity(M23) || 
+                    double.IsNegativeInfinity(M30) || double.IsNegativeInfinity(M31) || double.IsNegativeInfinity(M32) || double.IsNegativeInfinity(M33);
+            }
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    double.IsNegativeInfinity(M00) && double.IsNegativeInfinity(M01) && double.IsNegativeInfinity(M02) && double.IsNegativeInfinity(M03) && 
+                    double.IsNegativeInfinity(M10) && double.IsNegativeInfinity(M11) && double.IsNegativeInfinity(M12) && double.IsNegativeInfinity(M13) && 
+                    double.IsNegativeInfinity(M20) && double.IsNegativeInfinity(M21) && double.IsNegativeInfinity(M22) && double.IsNegativeInfinity(M23) && 
+                    double.IsNegativeInfinity(M30) && double.IsNegativeInfinity(M31) && double.IsNegativeInfinity(M32) && double.IsNegativeInfinity(M33);
+            }
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) || Fun.IsTiny(M01) || Fun.IsTiny(M02) || Fun.IsTiny(M03) || 
+                    Fun.IsTiny(M10) || Fun.IsTiny(M11) || Fun.IsTiny(M12) || Fun.IsTiny(M13) || 
+                    Fun.IsTiny(M20) || Fun.IsTiny(M21) || Fun.IsTiny(M22) || Fun.IsTiny(M23) || 
+                    Fun.IsTiny(M30) || Fun.IsTiny(M31) || Fun.IsTiny(M32) || Fun.IsTiny(M33);
+            }
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsTiny(M00) && Fun.IsTiny(M01) && Fun.IsTiny(M02) && Fun.IsTiny(M03) && 
+                    Fun.IsTiny(M10) && Fun.IsTiny(M11) && Fun.IsTiny(M12) && Fun.IsTiny(M13) && 
+                    Fun.IsTiny(M20) && Fun.IsTiny(M21) && Fun.IsTiny(M22) && Fun.IsTiny(M23) && 
+                    Fun.IsTiny(M30) && Fun.IsTiny(M31) && Fun.IsTiny(M32) && Fun.IsTiny(M33);
+            }
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -46218,6 +48453,31 @@ namespace Aardvark.Base
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M44d"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(M44d v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M44d"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(M44d v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="M44d"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(M44d v)
+            => v.IsFinite;
 
         #endregion
     }

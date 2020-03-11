@@ -16,6 +16,7 @@ namespace Aardvark.Base
     //# Action xor = () => Out(" ^ ");
     //# Action andLit = () => Out(" and ");
     //# Action andand = () => Out(" && ");
+    //# Action oror = () => Out(" || ");
     //# Action addqcomma = () => Out(" + \",\" ");
     //# Action addbetweenM = () => Out(" + betweenM ");
     //# var tcharA = new[] { "i", "l", "f", "d" };
@@ -48,6 +49,7 @@ namespace Aardvark.Base
     //#     var rotnsub1t = "Rot" + (n - 1) + tchar;
     //#     var nfields = fields.Take(n).ToArray();
     //#     var mfields = fields.Take(m).ToArray();
+    //#     var isReal = t > 1;    
     //#     var ftype = ftypeA[t];
     //#     var ctype = ctypeA[t];
     //#     var vnctype = "V"+ n + ctype[0];
@@ -606,11 +608,21 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<__ftype__> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# n.ForEach(j => { m.ForEach(k => {
@@ -621,6 +633,7 @@ namespace Aardvark.Base
 
         public IEnumerable<__vmtype__> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# n.ForEach(k => { 
@@ -631,6 +644,7 @@ namespace Aardvark.Base
 
         public IEnumerable<__vntype__> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# m.ForEach(k => { 
@@ -642,7 +656,9 @@ namespace Aardvark.Base
         //# n.ForEach(k => { 
         public __vmtype__ R__k__
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new __vmtype__(/*# m.ForEach(f => {*/ M__k____f__/*#}, comma); */); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 //# mfields.ForEach((f, j) => { 
@@ -655,7 +671,9 @@ namespace Aardvark.Base
         //# m.ForEach(k => {
         public __vntype__ C__k__
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new __vntype__(/*# n.ForEach(f => {*/ M__f____k__/*#}, comma); */); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 //# nfields.ForEach((f, j) => { 
@@ -667,6 +685,7 @@ namespace Aardvark.Base
         //# });
         public __ftype__ this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -678,6 +697,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -693,6 +713,7 @@ namespace Aardvark.Base
 
         public __ftype__ this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -709,6 +730,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -727,6 +749,53 @@ namespace Aardvark.Base
             }
         }
 
+        //# if (isReal) {
+        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var quantArray = new[] { "Any", "All" };
+        //# var actArray = new[] { oror, andand };
+        //# condArray.ForEach(scopeArray, (cond, scope) => {
+        //# quantArray.ForEach(actArray, (qant, act) => {
+        public bool __qant____cond__
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return /*# n.ForEach(i => {*/
+                    /*#m.ForEach(j => { */__scope__.Is__cond__(M__i____j__)/*# }, act); }, act); */;
+            }
+        }
+
+        //# }); // quantArray
+        //# }); // condArray 
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
+        }
+
+        //# } // isReal
         #endregion
 
         #region Constants
@@ -1750,6 +1819,33 @@ namespace Aardvark.Base
         }
 
         #endregion
+        //# if (isReal) {
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="__nmtype__"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(__nmtype__ v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="__nmtype__"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(__nmtype__ v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="__nmtype__"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(__nmtype__ v)
+            => v.IsFinite;
+
+        #endregion
+        //# }
     }
 
     #endregion

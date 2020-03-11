@@ -1654,5 +1654,54 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Special Floating Point Value Checks
+
+        //# fdtypes.ForEach(t => {
+        //# var type = t.Name;
+        //# var clsnm = (t == Meta.DoubleType) ? "Double" : "Single";
+        /// <summary>
+        /// Returns whether the given <see cref="__type__"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(this __type__ v)
+            => __clsnm__.IsNaN(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="__type__"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(this __type__ v)
+            => __clsnm__.IsInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="__type__"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(this __type__ v)
+            => __clsnm__.IsNegativeInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="__type__"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(this __type__ v)
+            => __clsnm__.IsPositiveInfinity(v);
+
+        /// <summary>
+        /// Returns whether the given <see cref="__type__"/> is finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(this __type__ v)
+        {
+            #if NETCOREAPP3_0
+                return __clsnm__.IsFinite(v);
+            #else
+                return !(IsNaN(v) || IsInfinity(v));
+            #endif
+        }
+
+        //# });
+        #endregion
     }
 }
