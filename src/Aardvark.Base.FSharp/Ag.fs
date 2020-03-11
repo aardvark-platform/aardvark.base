@@ -559,16 +559,16 @@ module Ag =
             match scope.Parent with
             | Some p ->
                 if isNull p.Node then
-                    let self = scope.Node.GetType().GetAllBaseTypesAndSelf()
+                    let self = scope.Node.GetType().GetBaseTypesAndSelf()
 
                     let meth =
-                        self |> List.tryPick (fun t ->
+                        self |> Array.tryPick (fun t ->
                             let pseudo = typedefof<Root<_>>.MakeGenericType [| t |]
                             match table.Value.TryGetInhRule(name, pseudo) with
                             | Some m -> Some (t, m)
-                            | None-> None
+                            | None -> None
                         )
-                    
+                            
                     match meth with
                     | Some (t, inh) ->
                         let root = getRootCreator t scope.Node
