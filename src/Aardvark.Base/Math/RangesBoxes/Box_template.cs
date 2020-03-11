@@ -428,7 +428,7 @@ namespace Aardvark.Base
         public bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return /*# if (dim == 1) { */Min > Max;/*# } else { */Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN;/*# } */ }
+            get { return /*# if (dim == 1) { */Min > Max;/*# } else { */Min.AnyGreater(Max)/*# if (ft.IsReal) {*/ || Min.IsNaN || Max.IsNaN/*# }*/;/*# } */ }
         }
 
         /// <summary>

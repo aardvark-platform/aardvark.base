@@ -10138,7 +10138,7 @@ namespace Aardvark.Base
         public bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
+            get { return Min.AnyGreater(Max); }
         }
 
         /// <summary>
@@ -11633,7 +11633,7 @@ namespace Aardvark.Base
         public bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
+            get { return Min.AnyGreater(Max); }
         }
 
         /// <summary>
@@ -16334,7 +16334,7 @@ namespace Aardvark.Base
         public bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
+            get { return Min.AnyGreater(Max); }
         }
 
         /// <summary>
@@ -18158,7 +18158,7 @@ namespace Aardvark.Base
         public bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
+            get { return Min.AnyGreater(Max); }
         }
 
         /// <summary>

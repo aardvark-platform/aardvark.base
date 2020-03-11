@@ -412,10 +412,12 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __ftype__ __pf__
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 return __f__;
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 __f__ = value;
@@ -428,6 +430,7 @@ namespace Aardvark.Base
         /// </summary>
         public IEnumerable<__ftype__> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# fields.ForEach(f => {
@@ -442,6 +445,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ftype__ this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -452,6 +456,7 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -469,6 +474,7 @@ namespace Aardvark.Base
         /// </summary>
         public int MajorDim
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# if (d == 2) {
@@ -490,6 +496,7 @@ namespace Aardvark.Base
         /// </summary>
         public int MinorDim
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# if (d == 2) {
@@ -515,6 +522,7 @@ namespace Aardvark.Base
         //# quantArray.ForEach(actArray, (qant, act) => {
         public bool __qant____cond__
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 return /*# fields.ForEach((f, i) => { */__scope__.Is__cond__(__f__)/*# }, act); */;
@@ -522,7 +530,25 @@ namespace Aardvark.Base
         }
 
         //# }); // quantArray
-        //# }); // condArray
+        //# }); // condArray 
+        /// <summary>
+        /// Returns true if any component of the vector is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any component of the vector is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
         //# } // ft.IsReal
         #endregion
 
@@ -1277,10 +1303,6 @@ namespace Aardvark.Base
         #endregion
 
         #region Comparisons
-
-#pragma warning disable 1718
-        public bool IsNaN => this != this;
-#pragma warning restore 1718
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__vtype__ a, __vtype__ b)

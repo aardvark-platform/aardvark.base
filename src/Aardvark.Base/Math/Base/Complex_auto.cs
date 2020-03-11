@@ -227,6 +227,15 @@ namespace Aardvark.Base
             get { return (float.IsNaN(Real) || float.IsNaN(Imag)); }
         }
 
+        /// <summary>
+        /// Returns whether the complex number has a part that is infinite (positive or negative).
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return (float.IsInfinity(Real) || float.IsInfinity(Imag)); }
+        }
+
         #endregion
 
         #region Static factories
@@ -1152,6 +1161,15 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (double.IsNaN(Real) || double.IsNaN(Imag)); }
+        }
+
+        /// <summary>
+        /// Returns whether the complex number has a part that is infinite (positive or negative).
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return (double.IsInfinity(Real) || double.IsInfinity(Imag)); }
         }
 
         #endregion

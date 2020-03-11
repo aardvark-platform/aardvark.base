@@ -76,6 +76,32 @@ module FSharpMath =
             static member inline Log2(a : ^a) =
                 log a / log (LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne)
 
+        type Infinity() =
+            static member inline IsNaN< ^a when ^a : (member IsNaN : bool)> (x : ^a) : bool =
+                (^a : (member IsNaN : bool) x)
+
+            static member inline IsInfinity< ^a when ^a : (member IsInfinity : bool)> (x : ^a) : bool =
+                (^a : (member IsInfinity : bool) x)
+
+            static member inline IsPositiveInfinity< ^a when ^a : (member IsPositiveInfinity : bool)> (x : ^a) : bool =
+                (^a : (member IsPositiveInfinity : bool) x)
+
+            static member inline IsNegativeInfinity< ^a when ^a : (member IsNegativeInfinity : bool)> (x : ^a) : bool =
+                (^a : (member IsNegativeInfinity : bool) x)
+
+        type InfinityS() =
+            static member inline IsNaN< ^a when ^a : (static member IsNaN : ^a -> bool)> (x : ^a) : bool =
+                (^a : (static member IsNaN : ^a -> bool) x)
+
+            static member inline IsInfinity< ^a when ^a : (static member IsInfinity : ^a -> bool)> (x : ^a) : bool =
+                (^a : (static member IsInfinity : ^a -> bool) x)
+
+            static member inline IsPositiveInfinity< ^a when ^a : (static member IsPositiveInfinity : ^a -> bool)> (x : ^a) : bool =
+                (^a : (static member IsPositiveInfinity : ^a -> bool) x)
+
+            static member inline IsNegativeInfinity< ^a when ^a : (static member IsNegativeInfinity : ^a -> bool)> (x : ^a) : bool =
+                (^a : (static member IsNegativeInfinity : ^a -> bool) x)
+
     [<AutoOpen>]
     module private Aux =
         let inline signumAux (_ : ^z) (_ : ^y) (x : ^a) =
@@ -112,6 +138,18 @@ module FSharpMath =
 
         let inline smoothstepAux (_ : ^z) (edge0 : ^a) (edge1 : ^a) (x : ^b) =
             ((^z or ^a or ^b) : (static member Smoothstep : ^b * ^a * ^a -> ^b) (x, edge0, edge1))
+
+        let inline isNanAux (_ : ^z) (_ : ^w) (x : ^a) =
+            ((^z or ^w or ^a) : (static member IsNaN : ^a -> bool) x)
+
+        let inline isInfAux (_ : ^z) (_ : ^w) (x : ^a) =
+            ((^z or ^w or ^a) : (static member IsInfinity : ^a -> bool) x)
+
+        let inline isPosInfAux (_ : ^z) (_ : ^w) (x : ^a) =
+            ((^z or ^w or ^a) : (static member IsPositiveInfinity : ^a -> bool) x)
+
+        let inline isNegInfAux (_ : ^z) (_ : ^w) (x : ^a) =
+            ((^z or ^w or ^a) : (static member IsNegativeInfinity : ^a -> bool) x)
 
     /// Resolves to the zero value for any scalar or vector type.
     [<GeneralizableValue>]
@@ -183,19 +221,19 @@ module FSharpMath =
 
     /// Returns whether x is NaN.
     let inline isNaN (x : ^a) =
-        (^a : (static member IsNaN: ^a -> bool) x)
+        isNanAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
 
     /// Returns whether x is infinity (positive or negative).
     let inline isInfinity (x : ^a) =
-        (^a : (static member IsInfinity : ^a -> bool) x)
+        isInfAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
 
     /// Returns whether x is positive infinity.
     let inline isPositiveInfinity (x : ^a) =
-        (^a : (static member IsPositiveInfinity : ^a -> bool) x)
+        isPosInfAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
 
     /// Returns whether x is negative infinity.
     let inline isNegativeInfinity (x : ^a) =
-        (^a : (static member IsNegativeInfinity : ^a -> bool) x)
+        isNegInfAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
 
     /// Returns whether x is finite (i.e. not NaN and not infinity).
     let inline isFinite (x : ^a) =
@@ -526,10 +564,16 @@ module FSharpMath =
         let specialFloatingPointValuesWorking() =
             let a : bool = isNaN 0.0
             let a : bool = isNaN 0.0f
+            let a : bool = isNaN ComplexD.Zero
+            let a : bool = isNaN V3d.Zero
             let a : bool = isFinite 0.0
             let a : bool = isFinite 0.0f
+            let a : bool = isFinite ComplexD.Zero
+            let a : bool = isFinite V3d.Zero
             let a : bool = isInfinity 0.0
             let a : bool = isInfinity 0.0f
+            let a : bool = isInfinity ComplexD.Zero
+            let a : bool = isInfinity V3d.Zero
             let a : bool = isPositiveInfinity 0.0
             let a : bool = isPositiveInfinity 0.0f
             let a : bool = isNegativeInfinity 0.0
