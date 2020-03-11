@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -153,12 +154,12 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>String representing the sphere.</returns>
         public override string ToString()
-            => string.Format("[{0}, {1}]", Center, Radius);
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
         public static Sphere3d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Sphere3d(V3d.Parse(x[0]), double.Parse(x[1]));
+            return new Sphere3d(V3d.Parse(x[0]), double.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         #endregion

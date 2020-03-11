@@ -217,7 +217,7 @@ namespace Aardvark.Base
         public static Plane3d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Plane3d(V3d.Parse(x[0]), double.Parse(x[1]));
+            return new Plane3d(V3d.Parse(x[0]), double.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         #endregion

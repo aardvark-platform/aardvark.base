@@ -43,5 +43,13 @@ namespace Aardvark.Tests.Geometry
             Assert.IsTrue((a.Normal == V3d.ZAxis && a.Distance == 1.5) ||
                           (a.Normal == -V3d.ZAxis && a.Distance == -1.5));
         }
+
+        [Test]
+        public void ToStringAndParse()
+        {
+            var a = new Plane3d(new V3d(12, 46, 1.5), new V3d(-2, 412, 1.5), new V3d(876, -23, 1.5));
+            var b = Plane3d.Parse(a.ToString());
+            Assert.AreEqual(a, b);
+        }
     }
 }

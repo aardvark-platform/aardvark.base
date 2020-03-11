@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Linq;
 
 namespace Aardvark.Base
@@ -47,7 +48,7 @@ namespace Aardvark.Base
         /// Returns a string that represents the current object.
         /// </summary>
         public override string ToString()
-            => string.Format("[{0}]", string.Join(", ", m_ps.Select(x => x.ToString())));
+            => string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(", ", m_ps.Select(x => x.ToString())));
 
         #region IImmutablePolygon
 

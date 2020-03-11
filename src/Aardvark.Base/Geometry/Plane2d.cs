@@ -173,7 +173,7 @@ namespace Aardvark.Base
         public static Plane2d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Plane2d(V2d.Parse(x[0]), double.Parse(x[1]));
+            return new Plane2d(V2d.Parse(x[0]), double.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         #endregion

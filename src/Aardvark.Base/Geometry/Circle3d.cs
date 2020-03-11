@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -115,12 +116,12 @@ namespace Aardvark.Base
         #region Overrides
 
         public override string ToString()
-            => string.Format("[{0}, {1}, {2}]", Center, Normal, Radius);
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Center, Normal, Radius);
 
         public static Circle3d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Circle3d(V3d.Parse(x[0]), V3d.Parse(x[1]), double.Parse(x[2]));
+            return new Circle3d(V3d.Parse(x[0]), V3d.Parse(x[1]), double.Parse(x[2], CultureInfo.InvariantCulture));
         }
 
         #endregion
