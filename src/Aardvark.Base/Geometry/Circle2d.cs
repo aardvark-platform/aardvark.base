@@ -107,7 +107,7 @@ namespace Aardvark.Base
         public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
         
         public override bool Equals(object other) => (other is Circle2d o)
-            ? (Center == o.Center) && (Radius == o.Radius)
+            ? Center.Equals(o.Center) && Radius.Equals(o.Radius)
             : false;
 
         public override string ToString()

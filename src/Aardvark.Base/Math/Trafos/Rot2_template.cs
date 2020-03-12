@@ -370,12 +370,9 @@ namespace Aardvark.Base
             );
         }
 
-        public override bool Equals(object other)
-        {
-            if (other is __type__ r)
-                return Rot.Distance(this, r) == 0;
-            return false;
-        }
+        public override bool Equals(object other) => (other is __type__ r)
+            ? (Rot.Distance(this, r) == 0)
+            : false;
 
         #endregion
     }

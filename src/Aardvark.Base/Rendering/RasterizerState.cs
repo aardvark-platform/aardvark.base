@@ -65,13 +65,13 @@
         {
             if (obj is RasterizerState rs)
             {
-                return rs.DepthTest == DepthTest 
-                    && rs.DepthBias == DepthBias
-                    && rs.FrontFace == FrontFace 
-                    && rs.CullMode == CullMode
+                return rs.DepthTest.Equals(DepthTest)
+                    && rs.DepthBias.Equals(DepthBias)
+                    && rs.FrontFace.Equals(FrontFace)
+                    && rs.CullMode.Equals(CullMode)
                     && rs.BlendMode.Equals(BlendMode) 
                     && rs.StencilMode.Equals(StencilMode)
-                    && rs.FillMode == FillMode;
+                    && rs.FillMode.Equals(FillMode);
             }
             else return false;
         }

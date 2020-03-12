@@ -384,7 +384,7 @@ namespace Aardvark.Base
             var o = (Polygon2d)other;
             if (m_pointCount != o.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
-                if (m_pointArray[pi] != o.m_pointArray[pi]) return false;
+                if (!m_pointArray[pi].Equals(o.m_pointArray[pi])) return false;
             return true;
         }
 
@@ -875,7 +875,7 @@ namespace Aardvark.Base
             if (other is Line2d)
             {
                 var o = (Line2d)other;
-                return P0 == o.P0 && P1 == o.P1;
+                return P0.Equals(o.P0) && P1.Equals(o.P1);
             }
             return false;
         }
@@ -1127,7 +1127,7 @@ namespace Aardvark.Base
             if (other is Triangle2d)
             {
                 var o = (Triangle2d)other;
-                return P0 == o.P0 && P1 == o.P1 && P2 == o.P2;
+                return P0.Equals(o.P0) && P1.Equals(o.P1) && P2.Equals(o.P2);
             }
             return false;
         }
@@ -1409,7 +1409,7 @@ namespace Aardvark.Base
             if (other is Quad2d)
             {
                 var o = (Quad2d)other;
-                return P0 == o.P0 && P1 == o.P1 && P2 == o.P2 && P3 == o.P3;
+                return P0.Equals(o.P0) && P1.Equals(o.P1) && P2.Equals(o.P2) && P3.Equals(o.P3);
             }
             return false;
         }
@@ -1840,7 +1840,7 @@ namespace Aardvark.Base
             var o = (Polygon3d)other;
             if (m_pointCount != o.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
-                if (m_pointArray[pi] != o.m_pointArray[pi]) return false;
+                if (!m_pointArray[pi].Equals(o.m_pointArray[pi])) return false;
             return true;
         }
 
@@ -2332,7 +2332,7 @@ namespace Aardvark.Base
             if (other is Line3d)
             {
                 var o = (Line3d)other;
-                return P0 == o.P0 && P1 == o.P1;
+                return P0.Equals(o.P0) && P1.Equals(o.P1);
             }
             return false;
         }
@@ -2584,7 +2584,7 @@ namespace Aardvark.Base
             if (other is Triangle3d)
             {
                 var o = (Triangle3d)other;
-                return P0 == o.P0 && P1 == o.P1 && P2 == o.P2;
+                return P0.Equals(o.P0) && P1.Equals(o.P1) && P2.Equals(o.P2);
             }
             return false;
         }
@@ -2866,7 +2866,7 @@ namespace Aardvark.Base
             if (other is Quad3d)
             {
                 var o = (Quad3d)other;
-                return P0 == o.P0 && P1 == o.P1 && P2 == o.P2 && P3 == o.P3;
+                return P0.Equals(o.P0) && P1.Equals(o.P1) && P2.Equals(o.P2) && P3.Equals(o.P3);
             }
             return false;
         }

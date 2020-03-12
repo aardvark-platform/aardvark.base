@@ -156,11 +156,11 @@
                 && AddressV == sd.AddressV
                 && AddressW == sd.AddressW
                 && MaxAnisotropy == sd.MaxAnisotropy
-                && MipLodBias == sd.MipLodBias
-                && MinLod == sd.MinLod
-                && MaxLod == sd.MaxLod
+                && MipLodBias.Equals(sd.MipLodBias)
+                && MinLod.Equals(sd.MinLod)
+                && MaxLod.Equals(sd.MaxLod)
                 && ComparisonFunction == sd.ComparisonFunction
-                && BorderColor == sd.BorderColor;
+                && BorderColor.Equals(sd.BorderColor);
         }
 
         public override string ToString()

@@ -1051,7 +1051,13 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is __nmtype__) ? (this == (__nmtype__)other) : false;
+            if (other is __nmtype__ o)
+            {
+                return /*# n.ForEach(i => { */
+                    /*# m.ForEach(j => { */M__i____j__.Equals(o.M__i____j__)/*#}, andand);}, andand);*/;
+            }
+            else
+                return false;
         }
 
         public override string ToString()

@@ -534,15 +534,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Scale2f)
-            {
-                Scale2f v = (Scale2f)obj;
-                return X == v.X && Y == v.Y;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Scale2f o)
+            ? X.Equals(o.X) && Y.Equals(o.Y)
+            : false;
 
         public override string ToString()
         {
@@ -1207,15 +1201,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Scale3f)
-            {
-                Scale3f v = (Scale3f)obj;
-                return X == v.X && Y == v.Y && Z == v.Z;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Scale3f o)
+            ? X.Equals(o.X) && Y.Equals(o.Y) && Z.Equals(o.Z)
+            : false;
 
         public override string ToString()
         {
@@ -1839,15 +1827,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Scale2d)
-            {
-                Scale2d v = (Scale2d)obj;
-                return X == v.X && Y == v.Y;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Scale2d o)
+            ? X.Equals(o.X) && Y.Equals(o.Y)
+            : false;
 
         public override string ToString()
         {
@@ -2512,15 +2494,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Scale3d)
-            {
-                Scale3d v = (Scale3d)obj;
-                return X == v.X && Y == v.Y && Z == v.Z;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Scale3d o)
+            ? X.Equals(o.X) && Y.Equals(o.Y) && Z.Equals(o.Z)
+            : false;
 
         public override string ToString()
         {

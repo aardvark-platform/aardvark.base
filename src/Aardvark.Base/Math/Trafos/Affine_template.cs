@@ -668,10 +668,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is __type__) ? (this == (__type__)other) : false;
-        }
+        public override bool Equals(object other) => (other is __type__ o)
+            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {

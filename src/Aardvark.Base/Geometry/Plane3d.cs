@@ -208,7 +208,7 @@ namespace Aardvark.Base
         public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
         public override bool Equals(object other) => (other is Plane3d value)
-            ? (Normal == value.Normal) && (Distance == value.Distance)
+            ? Normal.Equals(value.Normal) && Distance.Equals(value.Distance)
             : false;
 
         public override string ToString() => 
@@ -322,7 +322,7 @@ namespace Aardvark.Base
         public override int GetHashCode() => HashCode.GetCombined(Normal, Point);
 
         public override bool Equals(object other) => (other is PlaneWithPoint3d value)
-            ? (Normal == value.Normal) && (Point == value.Point)
+            ? Normal.Equals(value.Normal) && Point.Equals(value.Point)
             : false;
 
         public override string ToString()

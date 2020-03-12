@@ -40,7 +40,7 @@
         public override int GetHashCode() => HashCode.Combine(Comparison.GetHashCode(), Bounds.GetHashCode());
 
         public override bool Equals(object obj)
-            => (obj is DepthTestMode o) ? Comparison == o.Comparison && Bounds == o.Bounds : false;
+            => (obj is DepthTestMode o) ? Comparison.Equals(o.Comparison) && Bounds.Equals(o.Bounds) : false;
 
         public override string ToString()
             => Bounds.IsInfinite ? Comparison.ToString() : string.Format("{0}/{1}", Comparison, Bounds);

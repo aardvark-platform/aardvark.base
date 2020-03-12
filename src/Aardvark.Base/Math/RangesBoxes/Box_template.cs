@@ -1434,10 +1434,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is __type__) ? this == (__type__)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is __type__ o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {

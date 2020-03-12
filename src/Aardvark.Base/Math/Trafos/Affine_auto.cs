@@ -523,10 +523,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Affine2f) ? (this == (Affine2f)other) : false;
-        }
+        public override bool Equals(object other) => (other is Affine2f o)
+            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {
@@ -1315,10 +1314,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Affine3f) ? (this == (Affine3f)other) : false;
-        }
+        public override bool Equals(object other) => (other is Affine3f o)
+            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {
@@ -1964,10 +1962,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Affine2d) ? (this == (Affine2d)other) : false;
-        }
+        public override bool Equals(object other) => (other is Affine2d o)
+            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {
@@ -2756,10 +2753,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Affine3d) ? (this == (Affine3d)other) : false;
-        }
+        public override bool Equals(object other) => (other is Affine3d o)
+            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {

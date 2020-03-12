@@ -1523,7 +1523,14 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M22i) ? (this == (M22i)other) : false;
+            if (other is M22i o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -3455,7 +3462,14 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M22l) ? (this == (M22l)other) : false;
+            if (other is M22l o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -5469,7 +5483,14 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M22f) ? (this == (M22f)other) : false;
+            if (other is M22f o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -7500,7 +7521,14 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M22d) ? (this == (M22d)other) : false;
+            if (other is M22d o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -9701,7 +9729,14 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M23i) ? (this == (M23i)other) : false;
+            if (other is M23i o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -11593,7 +11628,14 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M23l) ? (this == (M23l)other) : false;
+            if (other is M23l o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -13567,7 +13609,14 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M23f) ? (this == (M23f)other) : false;
+            if (other is M23f o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -15475,7 +15524,14 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M23d) ? (this == (M23d)other) : false;
+            if (other is M23d o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -17877,7 +17933,15 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M33i) ? (this == (M33i)other) : false;
+            if (other is M33i o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -20395,7 +20459,15 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M33l) ? (this == (M33l)other) : false;
+            if (other is M33l o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -23164,7 +23236,15 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M33f) ? (this == (M33f)other) : false;
+            if (other is M33f o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -25929,7 +26009,15 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M33d) ? (this == (M33d)other) : false;
+            if (other is M33d o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -28718,7 +28806,15 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M34i) ? (this == (M34i)other) : false;
+            if (other is M34i o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -31070,7 +31166,15 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M34l) ? (this == (M34l)other) : false;
+            if (other is M34l o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -33625,7 +33729,15 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M34f) ? (this == (M34f)other) : false;
+            if (other is M34f o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -36119,7 +36231,15 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M34d) ? (this == (M34d)other) : false;
+            if (other is M34d o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -38977,7 +39097,16 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M44i) ? (this == (M44i)other) : false;
+            if (other is M44i o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23) && 
+                    M30.Equals(o.M30) && M31.Equals(o.M31) && M32.Equals(o.M32) && M33.Equals(o.M33);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -41931,7 +42060,16 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M44l) ? (this == (M44l)other) : false;
+            if (other is M44l o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23) && 
+                    M30.Equals(o.M30) && M31.Equals(o.M31) && M32.Equals(o.M32) && M33.Equals(o.M33);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -45096,7 +45234,16 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M44f) ? (this == (M44f)other) : false;
+            if (other is M44f o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23) && 
+                    M30.Equals(o.M30) && M31.Equals(o.M31) && M32.Equals(o.M32) && M33.Equals(o.M33);
+            }
+            else
+                return false;
         }
 
         public override string ToString()
@@ -48269,7 +48416,16 @@ namespace Aardvark.Base
 
         public override bool Equals(object other)
         {
-            return (other is M44d) ? (this == (M44d)other) : false;
+            if (other is M44d o)
+            {
+                return 
+                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
+                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
+                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23) && 
+                    M30.Equals(o.M30) && M31.Equals(o.M31) && M32.Equals(o.M32) && M33.Equals(o.M33);
+            }
+            else
+                return false;
         }
 
         public override string ToString()

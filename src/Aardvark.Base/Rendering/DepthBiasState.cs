@@ -23,8 +23,9 @@ namespace Aardvark.Base.Rendering
         public override int GetHashCode() 
             => HashCode.Combine(Constant.GetHashCode(), SlopeScale.GetHashCode(), Clamp.GetHashCode());
 
-        public override bool Equals(object obj)
-            => (obj is DepthBiasState o) ? Constant == o.Constant && SlopeScale == o.SlopeScale && Clamp == o.Clamp : false;
+        public override bool Equals(object obj) => (obj is DepthBiasState o)
+            ? Constant.Equals(o.Constant) && SlopeScale.Equals(o.SlopeScale) && Clamp.Equals(o.Clamp)
+            : false;
 
         public static bool operator ==(DepthBiasState l, DepthBiasState r)
             => l.Constant == r.Constant && l.SlopeScale == r.SlopeScale && l.Clamp == r.Clamp;

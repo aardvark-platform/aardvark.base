@@ -489,10 +489,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Rot, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Euclidean2f) ? (this == (Euclidean2f)other) : false;
-        }
+        public override bool Equals(object other) => (other is Euclidean2f o)
+            ? Rot.Equals(o.Rot) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {
@@ -1221,10 +1220,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Rot, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Euclidean3f) ? (this == (Euclidean3f)other) : false;
-        }
+        public override bool Equals(object other) => (other is Euclidean3f o)
+            ? Rot.Equals(o.Rot) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {
@@ -1841,10 +1839,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Rot, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Euclidean2d) ? (this == (Euclidean2d)other) : false;
-        }
+        public override bool Equals(object other) => (other is Euclidean2d o)
+            ? Rot.Equals(o.Rot) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {
@@ -2573,10 +2570,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Rot, Trans);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Euclidean3d) ? (this == (Euclidean3d)other) : false;
-        }
+        public override bool Equals(object other) => (other is Euclidean3d o)
+            ? Rot.Equals(o.Rot) && Trans.Equals(o.Trans)
+            : false;
 
         public override string ToString()
         {

@@ -1391,10 +1391,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(/*# fields.ForEach(f => { */__f__/*# }, comma); */); 
         }
         
-        public override bool Equals(object other)
-        {
-            return (other is __vtype__) ? this == (__vtype__)other : false;
-        }
+        public override bool Equals(object other) => (other is __vtype__ o)
+            ? /*# fields.ForEach(f => { */__f__.Equals(o.__f__)/*# }, andand); */
+            : false;
 
         public Text ToText(int bracketLevel = 1)
         {

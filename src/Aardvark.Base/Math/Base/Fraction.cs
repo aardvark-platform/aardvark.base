@@ -213,10 +213,9 @@ namespace Aardvark.Base
             return f.Denominator == 0;
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Fraction) ? (this == (Fraction)obj) : false;
-        }
+        public override bool Equals(object obj) => (obj is Fraction o)
+            ? Numerator.Equals(o.Numerator) && Denominator.Equals(o.Denominator)
+            : false;
 
         public override int GetHashCode()
         {

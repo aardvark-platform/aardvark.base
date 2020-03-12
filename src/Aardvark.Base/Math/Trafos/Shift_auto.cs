@@ -583,15 +583,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Shift2f)
-            {
-                Shift2f v = (Shift2f)obj;
-                return X == v.X && Y == v.Y;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Shift2f o)
+            ? X.Equals(o.X) && Y.Equals(o.Y)
+            : false;
 
         public override string ToString()
         {
@@ -1323,15 +1317,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Shift3f)
-            {
-                Shift3f v = (Shift3f)obj;
-                return X == v.X && Y == v.Y && Z == v.Z;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Shift3f o)
+            ? X.Equals(o.X) && Y.Equals(o.Y) && Z.Equals(o.Z)
+            : false;
 
         public override string ToString()
         {
@@ -2004,15 +1992,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Shift2d)
-            {
-                Shift2d v = (Shift2d)obj;
-                return X == v.X && Y == v.Y;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Shift2d o)
+            ? X.Equals(o.X) && Y.Equals(o.Y)
+            : false;
 
         public override string ToString()
         {
@@ -2744,15 +2726,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Shift3d)
-            {
-                Shift3d v = (Shift3d)obj;
-                return X == v.X && Y == v.Y && Z == v.Z;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is Shift3d o)
+            ? X.Equals(o.X) && Y.Equals(o.Y) && Z.Equals(o.Z)
+            : false;
 
         public override string ToString()
         {

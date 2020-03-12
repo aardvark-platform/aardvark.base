@@ -572,15 +572,9 @@ namespace Aardvark.Base
             return V.GetHashCode();
         }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is __type__)
-            {
-                __type__ v = (__type__)obj;
-                return /*# dfields.ForEach(f => {*/__f__ == v.__f__/*# }, and);*/;
-            }
-            return false;
-        }
+        public override bool Equals(object obj) => (obj is __type__ o)
+            ? /*# dfields.ForEach(f => {*/__f__.Equals(o.__f__)/*# }, and);*/
+            : false;
 
         public override string ToString()
         {

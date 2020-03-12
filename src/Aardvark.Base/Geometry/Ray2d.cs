@@ -171,7 +171,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>Result of comparison.</returns>
         public override bool Equals(object other) => (other is Ray2d value)
-             ? (Origin == value.Origin) && (Direction == value.Direction)
+             ? Origin.Equals(value.Origin) && Direction.Equals(value.Direction)
              : false;
 
         public override string ToString()

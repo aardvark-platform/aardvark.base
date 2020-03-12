@@ -461,10 +461,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(W, X, Y, Z);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is QuaternionF) ? (this == (QuaternionF)other) : false;
-        }
+        public override bool Equals(object other) => (other is QuaternionF o)
+            ? W.Equals(o.W) && X.Equals(o.X) && Y.Equals(o.Y) && Z.Equals(o.Z)
+            : false;
 
         public override string ToString()
         {
@@ -1052,10 +1051,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(W, X, Y, Z);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is QuaternionD) ? (this == (QuaternionD)other) : false;
-        }
+        public override bool Equals(object other) => (other is QuaternionD o)
+            ? W.Equals(o.W) && X.Equals(o.X) && Y.Equals(o.Y) && Z.Equals(o.Z)
+            : false;
 
         public override string ToString()
         {

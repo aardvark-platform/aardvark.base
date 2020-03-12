@@ -421,7 +421,7 @@ namespace Aardvark.Base
             var o = (__tpolygon__)other;
             if (m_pointCount != o.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
-                if (m_pointArray[pi] != o.m_pointArray[pi]) return false;
+                if (!m_pointArray[pi].Equals(o.m_pointArray[pi])) return false;
             return true;
         }
 
@@ -981,7 +981,7 @@ namespace Aardvark.Base
             if (other is __type__)
             {
                 var o = (__type__)other;
-                return /*# pc.ForEach(i => { */P__i__ == o.P__i__/*# }, Sep(" && ")); */;
+                return /*# pc.ForEach(i => { */P__i__.Equals(o.P__i__)/*# }, Sep(" && ")); */;
             }
             return false;
         }

@@ -987,12 +987,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(W, V);
         }
 
-        public override bool Equals(object other)
-        {
-            if (other is Rot3f r)
-                return Rot.Distance(this, r) == 0;
-            return false;
-        }
+        public override bool Equals(object other) => (other is Rot3f r)
+            ? (Rot.Distance(this, r) == 0)
+            : false;
 
         public override string ToString()
         {
@@ -2211,12 +2208,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(W, V);
         }
 
-        public override bool Equals(object other)
-        {
-            if (other is Rot3d r)
-                return Rot.Distance(this, r) == 0;
-            return false;
-        }
+        public override bool Equals(object other) => (other is Rot3d r)
+            ? (Rot.Distance(this, r) == 0)
+            : false;
 
         public override string ToString()
         {

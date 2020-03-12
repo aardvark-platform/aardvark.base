@@ -605,10 +605,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is __type__) ? this == (__type__)other : false;
-        }
+        public override bool Equals(object other) => (other is __type__ o)
+            ? /*# fields.ForEach(f => { */__f__.Equals(o.__f__)/*# }, andand); */
+            : false;
 
         public override int GetHashCode()
         {

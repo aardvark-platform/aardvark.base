@@ -738,10 +738,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1b) ? this == (Range1b)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1b o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -1710,10 +1709,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1sb) ? this == (Range1sb)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1sb o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -2682,10 +2680,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1s) ? this == (Range1s)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1s o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -3654,10 +3651,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1us) ? this == (Range1us)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1us o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -4626,10 +4622,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1i) ? this == (Range1i)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1i o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -5598,10 +5593,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1ui) ? this == (Range1ui)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1ui o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -6570,10 +6564,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1l) ? this == (Range1l)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1l o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -7542,10 +7535,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1ul) ? this == (Range1ul)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1ul o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -8533,10 +8525,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1f) ? this == (Range1f)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1f o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -9524,10 +9515,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Range1d) ? this == (Range1d)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Range1d o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -10826,10 +10816,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Box2i) ? this == (Box2i)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Box2i o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -12321,10 +12310,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Box2l) ? this == (Box2l)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Box2l o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -13933,10 +13921,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Box2f) ? this == (Box2f)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Box2f o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -15534,10 +15521,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Box2d) ? this == (Box2d)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Box2d o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -17003,10 +16989,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Box3i) ? this == (Box3i)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Box3i o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -18827,10 +18812,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Box3l) ? this == (Box3l)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Box3l o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -20774,10 +20758,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Box3f) ? this == (Box3f)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Box3f o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {
@@ -22709,10 +22692,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is Box3d) ? this == (Box3d)obj : false;
-        }
+        public override bool Equals(object obj) => (obj is Box3d o)
+            ? Min.Equals(o.Min) && Max.Equals(o.Max)
+            : false;
 
         public override string ToString()
         {

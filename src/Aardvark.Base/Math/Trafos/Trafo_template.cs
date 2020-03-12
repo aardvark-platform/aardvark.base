@@ -161,8 +161,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other)
-            => (other is __type__) ? (this == (__type__)other) : false;
+        public override bool Equals(object other) => (other is __type__ o)
+            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
+            : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);

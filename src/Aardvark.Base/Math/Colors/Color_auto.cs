@@ -738,10 +738,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C3b) ? this == (C3b)other : false;
-        }
+        public override bool Equals(object other) => (other is C3b o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
+            : false;
 
         public override int GetHashCode()
         {
@@ -2087,10 +2086,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C3us) ? this == (C3us)other : false;
-        }
+        public override bool Equals(object other) => (other is C3us o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
+            : false;
 
         public override int GetHashCode()
         {
@@ -3356,10 +3354,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C3ui) ? this == (C3ui)other : false;
-        }
+        public override bool Equals(object other) => (other is C3ui o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
+            : false;
 
         public override int GetHashCode()
         {
@@ -4778,10 +4775,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C3f) ? this == (C3f)other : false;
-        }
+        public override bool Equals(object other) => (other is C3f o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
+            : false;
 
         public override int GetHashCode()
         {
@@ -6091,10 +6087,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C3d) ? this == (C3d)other : false;
-        }
+        public override bool Equals(object other) => (other is C3d o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
+            : false;
 
         public override int GetHashCode()
         {
@@ -7608,10 +7603,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C4b) ? this == (C4b)other : false;
-        }
+        public override bool Equals(object other) => (other is C4b o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
+            : false;
 
         public override int GetHashCode()
         {
@@ -9086,10 +9080,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C4us) ? this == (C4us)other : false;
-        }
+        public override bool Equals(object other) => (other is C4us o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
+            : false;
 
         public override int GetHashCode()
         {
@@ -10474,10 +10467,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C4ui) ? this == (C4ui)other : false;
-        }
+        public override bool Equals(object other) => (other is C4ui o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
+            : false;
 
         public override int GetHashCode()
         {
@@ -12031,10 +12023,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C4f) ? this == (C4f)other : false;
-        }
+        public override bool Equals(object other) => (other is C4f o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
+            : false;
 
         public override int GetHashCode()
         {
@@ -13462,10 +13453,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
-        {
-            return (other is C4d) ? this == (C4d)other : false;
-        }
+        public override bool Equals(object other) => (other is C4d o)
+            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
+            : false;
 
         public override int GetHashCode()
         {

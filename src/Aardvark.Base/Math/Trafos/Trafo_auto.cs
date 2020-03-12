@@ -136,8 +136,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other)
-            => (other is Trafo2f) ? (this == (Trafo2f)other) : false;
+        public override bool Equals(object other) => (other is Trafo2f o)
+            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
+            : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);
@@ -475,8 +476,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other)
-            => (other is Trafo3f) ? (this == (Trafo3f)other) : false;
+        public override bool Equals(object other) => (other is Trafo3f o)
+            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
+            : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);
@@ -1195,8 +1197,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other)
-            => (other is Trafo2d) ? (this == (Trafo2d)other) : false;
+        public override bool Equals(object other) => (other is Trafo2d o)
+            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
+            : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);
@@ -1534,8 +1537,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other)
-            => (other is Trafo3d) ? (this == (Trafo3d)other) : false;
+        public override bool Equals(object other) => (other is Trafo3d o)
+            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
+            : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);

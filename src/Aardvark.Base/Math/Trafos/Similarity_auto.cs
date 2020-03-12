@@ -570,10 +570,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Similarity2f) ? (this == (Similarity2f)other) : false;
-        }
+        public override bool Equals(object other) => (other is Similarity2f o)
+            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
+            : false;
 
         public override string ToString()
         {
@@ -1386,10 +1385,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Similarity3f) ? (this == (Similarity3f)other) : false;
-        }
+        public override bool Equals(object other) => (other is Similarity3f o)
+            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
+            : false;
 
         public override string ToString()
         {
@@ -2088,10 +2086,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Similarity2d) ? (this == (Similarity2d)other) : false;
-        }
+        public override bool Equals(object other) => (other is Similarity2d o)
+            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
+            : false;
 
         public override string ToString()
         {
@@ -2904,10 +2901,9 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other)
-        {
-            return (other is Similarity3d) ? (this == (Similarity3d)other) : false;
-        }
+        public override bool Equals(object other) => (other is Similarity3d o)
+            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
+            : false;
 
         public override string ToString()
         {

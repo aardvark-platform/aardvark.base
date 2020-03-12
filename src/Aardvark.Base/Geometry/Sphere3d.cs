@@ -146,7 +146,7 @@ namespace Aardvark.Base
         public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         public override bool Equals(object other) => (other is Sphere3d value)
-            ? (Center == value.Center && Radius == value.Radius)
+            ? (Center.Equals(value.Center) && Radius.Equals(value.Radius))
             : false;
 
         /// <summary>
