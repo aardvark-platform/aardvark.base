@@ -76,6 +76,18 @@ module FSharpMath =
             static member inline Log2(a : ^a) =
                 log a / log (LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne)
 
+        type Trigonometry() =
+            static member inline Asinh(a : ^a) =
+                log (a + sqrt (a * a + LanguagePrimitives.GenericOne< ^a>))
+
+            static member inline Acosh(a : ^a) =
+                log (a + sqrt (a * a - LanguagePrimitives.GenericOne< ^a>))
+
+            static member inline Atanh(a : ^a) =
+                let one = LanguagePrimitives.GenericOne< ^a>
+                let two = one + one
+                (log ((one + a) / (one - a))) / two
+
         type Infinity() =
             static member inline IsNaN< ^a when ^a : (member IsNaN : bool)> (x : ^a) : bool =
                 (^a : (member IsNaN : bool) x)
@@ -105,10 +117,10 @@ module FSharpMath =
     [<AutoOpen>]
     module private Aux =
         let inline signumAux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Signum : ^a  -> ^a) x)
+            ((^z or ^y or ^a) : (static member Signum : ^a -> ^a) x)
 
         let inline signumiAux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Signumi : ^a  -> ^b) x)
+            ((^z or ^y or ^a) : (static member Signumi : ^a -> ^b) x)
 
         let inline powAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
             ((^z or ^y or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^c) (x, y))
@@ -117,10 +129,19 @@ module FSharpMath =
             ((^z or ^y or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^c) (x, y))
 
         let inline log2Aux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Log2 : ^a  -> ^a) x)
+            ((^z or ^y or ^a) : (static member Log2 : ^a -> ^a) x)
+
+        let inline asinhAux (_ : ^z) (_ : ^y) (x : ^a) =
+            ((^z or ^y or ^a) : (static member Asinh : ^a -> ^a) x)
+
+        let inline acoshAux (_ : ^z) (_ : ^y) (x : ^a) =
+            ((^z or ^y or ^a) : (static member Acosh : ^a -> ^a) x)
+
+        let inline atanhAux (_ : ^z) (_ : ^y) (x : ^a) =
+            ((^z or ^y or ^a) : (static member Atanh : ^a -> ^a) x)
 
         let inline cbrtAux (_ : ^z) (x : ^a) =
-            ((^z or ^a) : (static member Cbrt : ^a  -> ^a) x)
+            ((^z or ^a) : (static member Cbrt : ^a -> ^a) x)
         
         let inline minAux (_ : ^z) (x : ^a) (y : ^b) =
             ((^z or ^a or ^b or ^c) : (static member Min : ^a * ^b -> ^c) (x, y))
@@ -190,6 +211,18 @@ module FSharpMath =
     let inline log2 x = 
         log2Aux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Log2> x
 
+    /// Returns the inverse hyperbolic sine of x.
+    let inline asinh x =
+        asinhAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Trigonometry> x
+
+    /// Returns the inverse hyperbolic cosine of x.
+    let inline acosh x =
+        acoshAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Trigonometry> x
+
+    /// Returns the inverse hyperbolic tangent of x.
+    let inline atanh x =
+        atanhAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Trigonometry> x
+
     /// Returns x^2
     let inline sqr x = x * x
 
@@ -244,6 +277,8 @@ module FSharpMath =
         type MyCustomNumericTypeExtensionTestTypeForInternalTesting() =
             static member Pow(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : float) = h
             static member (*)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member (+)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member (-)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member (/)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member One = MyCustomNumericTypeExtensionTestTypeForInternalTesting()
 
@@ -253,6 +288,8 @@ module FSharpMath =
 
             static member Log(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member Log2(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+
+            static member Sqrt(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
         let fsharpCoreWorking() =
 
@@ -490,6 +527,33 @@ module FSharpMath =
             let a : V2d =  log2 V2d.II
             let a : ComplexD = log2 ComplexD.One
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = log2 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            ()
+
+        let acoshWorking() =
+            let a : float = acosh 1.0
+            let a : float32 = acosh 1.0f
+            let a : V2f = acosh V2f.One
+            let a : V3d = acosh V3d.One
+            let a : ComplexD = acosh ComplexD.One
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = acosh (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            ()
+
+        let asinhWorking() =
+            let a : float = asinh 1.0
+            let a : float32 = asinh 1.0f
+            let a : V2f = asinh V2f.One
+            let a : V3d = asinh V3d.One
+            let a : ComplexD = asinh ComplexD.One
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = asinh (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            ()
+
+        let atanhWorking() =
+            let a : float = atanh 1.0
+            let a : float32 = atanh 1.0f
+            let a : V2f = atanh V2f.One
+            let a : V3d = atanh V3d.One
+            let a : ComplexD = atanh ComplexD.One
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = atanh (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
             
         let cbrtWorking() =
