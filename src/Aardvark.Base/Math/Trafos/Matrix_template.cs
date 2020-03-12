@@ -248,42 +248,85 @@ namespace Aardvark.Base
                 /*# mfields.ForEach(f => {*/row__r__.__f__/*#}, comma);}, comma); */);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="__nmtype__"/> using __n__ scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Diagonal(/*# nfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
+        public static __nmtype__ FromDiagonal(__ftype__ value)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
-                /*# m.ForEach(j => { var v = i == j ? "s" + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+                /*# m.ForEach(j => { var v = i == j ? "value" : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vntype__"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Diagonal(__vntype__ s)
+        public static __nmtype__ FromDiagonal(/*# n.ForEach(i => {*/__ftype__ m__i____i__/*#}, comma); */)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = i == j ? "m" + i + i : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromDiagonal(__vntype__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
                 /*# m.ForEach(j => { var v = i == j ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
         }
+
+        //# if (n == m) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromAntiDiagonal(__ftype__ value)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                 /*# m.ForEach(j => {
+                  var v = (i + j == n - 1) ? "value" : "0";
+                  */__v__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromAntiDiagonal(/*# n.ForEach(i => { var j = n - 1 - i; */__ftype__ m__i____j__/*#}, comma); */)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                 var v = (i + j == n - 1) ? "m" + i + (n - 1 - i) : "0";
+                 */__v__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromAntiDiagonal(__vntype__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i + j == n - 1) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# }
+        #region Scale
+
+        //# if (n == m) {
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using __m__ scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(/*# mfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
+            => FromDiagonal(/*# mfields.ForEach(f => { */s__f__/*# }, comma); */);
+
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vmtype__"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(__vmtype__ s)
+            => FromDiagonal(s);
 
         //# if (t > 1 && n < 4) {
         /// <summary>
         /// Creates a transformation <see cref="__nmtype__"/> from a <see cref="__scalent__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __nmtype__ Diagonal(__scalent__ s)
+        public static __nmtype__ Scale(__scalemt__ s)
         {
             return new __nmtype__(/*# n.ForEach(i => { */
                 /*# m.ForEach(j => { var v = (i == j) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
         }
 
         //# } // isReal
+        //# }
         //# if (n > 2 && Math.Abs(n-m) <= 1) {
-
         /// <summary>
         /// Creates a homogenous transformation <see cref="__nmtype__"/> using a uniform scale.
         /// </summary>
@@ -683,6 +726,20 @@ namespace Aardvark.Base
         }
 
         //# });
+        public __vntype__ Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __vntype__(/*# n.ForEach(i => {*/M__i____i__/*#}, comma); */);
+        }
+
+        //# if (n == m) {
+        public __vntype__ AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __vntype__(/*# n.ForEach(i => { var j = n - 1 - i; */M__i____j__/*#}, comma); */);
+        }
+
+        //# }
         public __ftype__ this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

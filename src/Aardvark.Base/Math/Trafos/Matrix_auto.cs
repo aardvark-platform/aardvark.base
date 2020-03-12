@@ -587,29 +587,69 @@ namespace Aardvark.Base
                 row1.X, row1.Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i FromDiagonal(int value)
+        {
+            return new M22i(
+                value, 0, 
+                0, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i FromDiagonal(int m00, int m11)
+        {
+            return new M22i(
+                m00, 0, 
+                0, m11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i FromDiagonal(V2i s)
+        {
+            return new M22i(
+                s.X, 0, 
+                0, s.Y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i FromAntiDiagonal(int value)
+        {
+            return new M22i(
+                 0, value, 
+                 value, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i FromAntiDiagonal(int m01, int m10)
+        {
+            return new M22i(
+                0, m01, 
+                m10, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i FromAntiDiagonal(V2i s)
+        {
+            return new M22i(
+                0, s.X, 
+                s.Y, 0);
+        }
+
         #region Scale
 
         /// <summary>
         /// Creates a transformation <see cref="M22i"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22i Diagonal(int sX, int sY)
-        {
-            return new M22i(
-                sX, 0, 
-                0, sY);
-        }
+        public static M22i Scale(int sX, int sY)
+            => FromDiagonal(sX, sY);
 
         /// <summary>
         /// Creates a transformation <see cref="M22i"/> using a <see cref="V2i"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22i Diagonal(V2i s)
-        {
-            return new M22i(
-                s.X, 0, 
-                0, s.Y);
-        }
+        public static M22i Scale(V2i s)
+            => FromDiagonal(s);
 
         #endregion
 
@@ -707,6 +747,18 @@ namespace Aardvark.Base
                 M01 = value.X;
                 M11 = value.Y;
             }
+        }
+
+        public V2i Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2i(M00, M11);
+        }
+
+        public V2i AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2i(M01, M10);
         }
 
         public int this[int index]
@@ -2565,29 +2617,69 @@ namespace Aardvark.Base
                 row1.X, row1.Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l FromDiagonal(long value)
+        {
+            return new M22l(
+                value, 0, 
+                0, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l FromDiagonal(long m00, long m11)
+        {
+            return new M22l(
+                m00, 0, 
+                0, m11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l FromDiagonal(V2l s)
+        {
+            return new M22l(
+                s.X, 0, 
+                0, s.Y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l FromAntiDiagonal(long value)
+        {
+            return new M22l(
+                 0, value, 
+                 value, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l FromAntiDiagonal(long m01, long m10)
+        {
+            return new M22l(
+                0, m01, 
+                m10, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l FromAntiDiagonal(V2l s)
+        {
+            return new M22l(
+                0, s.X, 
+                s.Y, 0);
+        }
+
         #region Scale
 
         /// <summary>
         /// Creates a transformation <see cref="M22l"/> using 2 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22l Diagonal(long sX, long sY)
-        {
-            return new M22l(
-                sX, 0, 
-                0, sY);
-        }
+        public static M22l Scale(long sX, long sY)
+            => FromDiagonal(sX, sY);
 
         /// <summary>
         /// Creates a transformation <see cref="M22l"/> using a <see cref="V2l"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22l Diagonal(V2l s)
-        {
-            return new M22l(
-                s.X, 0, 
-                0, s.Y);
-        }
+        public static M22l Scale(V2l s)
+            => FromDiagonal(s);
 
         #endregion
 
@@ -2685,6 +2777,18 @@ namespace Aardvark.Base
                 M01 = value.X;
                 M11 = value.Y;
             }
+        }
+
+        public V2l Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2l(M00, M11);
+        }
+
+        public V2l AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2l(M01, M10);
         }
 
         public long this[int index]
@@ -4445,35 +4549,75 @@ namespace Aardvark.Base
                 row1.X, row1.Y);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M22f"/> using 2 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22f Diagonal(float sX, float sY)
+        public static M22f FromDiagonal(float value)
         {
             return new M22f(
-                sX, 0, 
-                0, sY);
+                value, 0, 
+                0, value);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M22f"/> using a <see cref="V2f"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22f Diagonal(V2f s)
+        public static M22f FromDiagonal(float m00, float m11)
+        {
+            return new M22f(
+                m00, 0, 
+                0, m11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f FromDiagonal(V2f s)
         {
             return new M22f(
                 s.X, 0, 
                 0, s.Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f FromAntiDiagonal(float value)
+        {
+            return new M22f(
+                 0, value, 
+                 value, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f FromAntiDiagonal(float m01, float m10)
+        {
+            return new M22f(
+                0, m01, 
+                m10, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f FromAntiDiagonal(V2f s)
+        {
+            return new M22f(
+                0, s.X, 
+                s.Y, 0);
+        }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M22f"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f Scale(float sX, float sY)
+            => FromDiagonal(sX, sY);
+
+        /// <summary>
+        /// Creates a transformation <see cref="M22f"/> using a <see cref="V2f"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f Scale(V2f s)
+            => FromDiagonal(s);
+
         /// <summary>
         /// Creates a transformation <see cref="M22f"/> from a <see cref="Scale2f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22f Diagonal(Scale2f s)
+        public static M22f Scale(Scale2f s)
         {
             return new M22f(
                 s.X, 0, 
@@ -4608,6 +4752,18 @@ namespace Aardvark.Base
                 M01 = value.X;
                 M11 = value.Y;
             }
+        }
+
+        public V2f Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2f(M00, M11);
+        }
+
+        public V2f AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2f(M01, M10);
         }
 
         public float this[int index]
@@ -6522,35 +6678,75 @@ namespace Aardvark.Base
                 row1.X, row1.Y);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M22d"/> using 2 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22d Diagonal(double sX, double sY)
+        public static M22d FromDiagonal(double value)
         {
             return new M22d(
-                sX, 0, 
-                0, sY);
+                value, 0, 
+                0, value);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M22d"/> using a <see cref="V2d"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22d Diagonal(V2d s)
+        public static M22d FromDiagonal(double m00, double m11)
+        {
+            return new M22d(
+                m00, 0, 
+                0, m11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d FromDiagonal(V2d s)
         {
             return new M22d(
                 s.X, 0, 
                 0, s.Y);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d FromAntiDiagonal(double value)
+        {
+            return new M22d(
+                 0, value, 
+                 value, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d FromAntiDiagonal(double m01, double m10)
+        {
+            return new M22d(
+                0, m01, 
+                m10, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d FromAntiDiagonal(V2d s)
+        {
+            return new M22d(
+                0, s.X, 
+                s.Y, 0);
+        }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M22d"/> using 2 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d Scale(double sX, double sY)
+            => FromDiagonal(sX, sY);
+
+        /// <summary>
+        /// Creates a transformation <see cref="M22d"/> using a <see cref="V2d"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d Scale(V2d s)
+            => FromDiagonal(s);
+
         /// <summary>
         /// Creates a transformation <see cref="M22d"/> from a <see cref="Scale2d"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M22d Diagonal(Scale2d s)
+        public static M22d Scale(Scale2d s)
         {
             return new M22d(
                 s.X, 0, 
@@ -6685,6 +6881,18 @@ namespace Aardvark.Base
                 M01 = value.X;
                 M11 = value.Y;
             }
+        }
+
+        public V2d Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2d(M00, M11);
+        }
+
+        public V2d AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2d(M01, M10);
         }
 
         public double this[int index]
@@ -8521,29 +8729,31 @@ namespace Aardvark.Base
                 row1.X, row1.Y, row1.Z);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M23i"/> using 2 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23i Diagonal(int sX, int sY)
+        public static M23i FromDiagonal(int value)
         {
             return new M23i(
-                sX, 0, 0, 
-                0, sY, 0);
+                value, 0, 0, 
+                0, value, 0);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M23i"/> using a <see cref="V2i"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23i Diagonal(V2i s)
+        public static M23i FromDiagonal(int m00, int m11)
+        {
+            return new M23i(
+                m00, 0, 0, 
+                0, m11, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i FromDiagonal(V2i s)
         {
             return new M23i(
                 s.X, 0, 0, 
                 0, s.Y, 0);
         }
+
+        #region Scale
 
         #endregion
 
@@ -8684,6 +8894,12 @@ namespace Aardvark.Base
                 M02 = value.X;
                 M12 = value.Y;
             }
+        }
+
+        public V2i Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2i(M00, M11);
         }
 
         public int this[int index]
@@ -10503,29 +10719,31 @@ namespace Aardvark.Base
                 row1.X, row1.Y, row1.Z);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M23l"/> using 2 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23l Diagonal(long sX, long sY)
+        public static M23l FromDiagonal(long value)
         {
             return new M23l(
-                sX, 0, 0, 
-                0, sY, 0);
+                value, 0, 0, 
+                0, value, 0);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M23l"/> using a <see cref="V2l"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23l Diagonal(V2l s)
+        public static M23l FromDiagonal(long m00, long m11)
+        {
+            return new M23l(
+                m00, 0, 0, 
+                0, m11, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l FromDiagonal(V2l s)
         {
             return new M23l(
                 s.X, 0, 0, 
                 0, s.Y, 0);
         }
+
+        #region Scale
 
         #endregion
 
@@ -10666,6 +10884,12 @@ namespace Aardvark.Base
                 M02 = value.X;
                 M12 = value.Y;
             }
+        }
+
+        public V2l Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2l(M00, M11);
         }
 
         public long this[int index]
@@ -12387,40 +12611,31 @@ namespace Aardvark.Base
                 row1.X, row1.Y, row1.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f FromDiagonal(float value)
+        {
+            return new M23f(
+                value, 0, 0, 
+                0, value, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f FromDiagonal(float m00, float m11)
+        {
+            return new M23f(
+                m00, 0, 0, 
+                0, m11, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f FromDiagonal(V2f s)
+        {
+            return new M23f(
+                s.X, 0, 0, 
+                0, s.Y, 0);
+        }
+
         #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M23f"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23f Diagonal(float sX, float sY)
-        {
-            return new M23f(
-                sX, 0, 0, 
-                0, sY, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M23f"/> using a <see cref="V2f"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23f Diagonal(V2f s)
-        {
-            return new M23f(
-                s.X, 0, 0, 
-                0, s.Y, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M23f"/> from a <see cref="Scale2f"/> transformation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23f Diagonal(Scale2f s)
-        {
-            return new M23f(
-                s.X, 0, 0, 
-                0, s.Y, 0);
-        }
 
         #endregion
 
@@ -12604,6 +12819,12 @@ namespace Aardvark.Base
                 M02 = value.X;
                 M12 = value.Y;
             }
+        }
+
+        public V2f Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2f(M00, M11);
         }
 
         public float this[int index]
@@ -14396,40 +14617,31 @@ namespace Aardvark.Base
                 row1.X, row1.Y, row1.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d FromDiagonal(double value)
+        {
+            return new M23d(
+                value, 0, 0, 
+                0, value, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d FromDiagonal(double m00, double m11)
+        {
+            return new M23d(
+                m00, 0, 0, 
+                0, m11, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d FromDiagonal(V2d s)
+        {
+            return new M23d(
+                s.X, 0, 0, 
+                0, s.Y, 0);
+        }
+
         #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M23d"/> using 2 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23d Diagonal(double sX, double sY)
-        {
-            return new M23d(
-                sX, 0, 0, 
-                0, sY, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M23d"/> using a <see cref="V2d"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23d Diagonal(V2d s)
-        {
-            return new M23d(
-                s.X, 0, 0, 
-                0, s.Y, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M23d"/> from a <see cref="Scale2d"/> transformation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M23d Diagonal(Scale2d s)
-        {
-            return new M23d(
-                s.X, 0, 0, 
-                0, s.Y, 0);
-        }
 
         #endregion
 
@@ -14613,6 +14825,12 @@ namespace Aardvark.Base
                 M02 = value.X;
                 M12 = value.Y;
             }
+        }
+
+        public V2d Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2d(M00, M11);
         }
 
         public double this[int index]
@@ -16399,25 +16617,26 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M33i"/> using 3 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33i Diagonal(int sX, int sY, int sZ)
+        public static M33i FromDiagonal(int value)
         {
             return new M33i(
-                sX, 0, 0, 
-                0, sY, 0, 
-                0, 0, sZ);
+                value, 0, 0, 
+                0, value, 0, 
+                0, 0, value);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M33i"/> using a <see cref="V3i"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33i Diagonal(V3i s)
+        public static M33i FromDiagonal(int m00, int m11, int m22)
+        {
+            return new M33i(
+                m00, 0, 0, 
+                0, m11, 0, 
+                0, 0, m22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i FromDiagonal(V3i s)
         {
             return new M33i(
                 s.X, 0, 0, 
@@ -16425,6 +16644,48 @@ namespace Aardvark.Base
                 0, 0, s.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i FromAntiDiagonal(int value)
+        {
+            return new M33i(
+                 0, 0, value, 
+                 0, value, 0, 
+                 value, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i FromAntiDiagonal(int m02, int m11, int m20)
+        {
+            return new M33i(
+                0, 0, m02, 
+                0, m11, 0, 
+                m20, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i FromAntiDiagonal(V3i s)
+        {
+            return new M33i(
+                0, 0, s.X, 
+                0, s.Y, 0, 
+                s.Z, 0, 0);
+        }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33i"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i Scale(int sX, int sY, int sZ)
+            => FromDiagonal(sX, sY, sZ);
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33i"/> using a <see cref="V3i"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i Scale(V3i s)
+            => FromDiagonal(s);
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M33i"/> using a uniform scale.
@@ -16663,6 +16924,18 @@ namespace Aardvark.Base
                 M12 = value.Y;
                 M22 = value.Z;
             }
+        }
+
+        public V3i Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3i(M00, M11, M22);
+        }
+
+        public V3i AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3i(M02, M11, M20);
         }
 
         public int this[int index]
@@ -18974,25 +19247,26 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M33l"/> using 3 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33l Diagonal(long sX, long sY, long sZ)
+        public static M33l FromDiagonal(long value)
         {
             return new M33l(
-                sX, 0, 0, 
-                0, sY, 0, 
-                0, 0, sZ);
+                value, 0, 0, 
+                0, value, 0, 
+                0, 0, value);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M33l"/> using a <see cref="V3l"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33l Diagonal(V3l s)
+        public static M33l FromDiagonal(long m00, long m11, long m22)
+        {
+            return new M33l(
+                m00, 0, 0, 
+                0, m11, 0, 
+                0, 0, m22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l FromDiagonal(V3l s)
         {
             return new M33l(
                 s.X, 0, 0, 
@@ -19000,6 +19274,48 @@ namespace Aardvark.Base
                 0, 0, s.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l FromAntiDiagonal(long value)
+        {
+            return new M33l(
+                 0, 0, value, 
+                 0, value, 0, 
+                 value, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l FromAntiDiagonal(long m02, long m11, long m20)
+        {
+            return new M33l(
+                0, 0, m02, 
+                0, m11, 0, 
+                m20, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l FromAntiDiagonal(V3l s)
+        {
+            return new M33l(
+                0, 0, s.X, 
+                0, s.Y, 0, 
+                s.Z, 0, 0);
+        }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33l"/> using 3 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l Scale(long sX, long sY, long sZ)
+            => FromDiagonal(sX, sY, sZ);
+
+        /// <summary>
+        /// Creates a transformation <see cref="M33l"/> using a <see cref="V3l"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l Scale(V3l s)
+            => FromDiagonal(s);
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M33l"/> using a uniform scale.
@@ -19238,6 +19554,18 @@ namespace Aardvark.Base
                 M12 = value.Y;
                 M22 = value.Z;
             }
+        }
+
+        public V3l Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3l(M00, M11, M22);
+        }
+
+        public V3l AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3l(M02, M11, M20);
         }
 
         public long this[int index]
@@ -21437,44 +21765,87 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f FromDiagonal(float value)
+        {
+            return new M33f(
+                value, 0, 0, 
+                0, value, 0, 
+                0, 0, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f FromDiagonal(float m00, float m11, float m22)
+        {
+            return new M33f(
+                m00, 0, 0, 
+                0, m11, 0, 
+                0, 0, m22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f FromDiagonal(V3f s)
+        {
+            return new M33f(
+                s.X, 0, 0, 
+                0, s.Y, 0, 
+                0, 0, s.Z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f FromAntiDiagonal(float value)
+        {
+            return new M33f(
+                 0, 0, value, 
+                 0, value, 0, 
+                 value, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f FromAntiDiagonal(float m02, float m11, float m20)
+        {
+            return new M33f(
+                0, 0, m02, 
+                0, m11, 0, 
+                m20, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f FromAntiDiagonal(V3f s)
+        {
+            return new M33f(
+                0, 0, s.X, 
+                0, s.Y, 0, 
+                s.Z, 0, 0);
+        }
+
         #region Scale
 
         /// <summary>
         /// Creates a transformation <see cref="M33f"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f Diagonal(float sX, float sY, float sZ)
-        {
-            return new M33f(
-                sX, 0, 0, 
-                0, sY, 0, 
-                0, 0, sZ);
-        }
+        public static M33f Scale(float sX, float sY, float sZ)
+            => FromDiagonal(sX, sY, sZ);
 
         /// <summary>
         /// Creates a transformation <see cref="M33f"/> using a <see cref="V3f"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f Diagonal(V3f s)
-        {
-            return new M33f(
-                s.X, 0, 0, 
-                0, s.Y, 0, 
-                0, 0, s.Z);
-        }
+        public static M33f Scale(V3f s)
+            => FromDiagonal(s);
 
         /// <summary>
         /// Creates a transformation <see cref="M33f"/> from a <see cref="Scale3f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33f Diagonal(Scale3f s)
+        public static M33f Scale(Scale3f s)
         {
             return new M33f(
                 s.X, 0, 0, 
                 0, s.Y, 0, 
                 0, 0, s.Z);
         }
-
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M33f"/> using a uniform scale.
@@ -21917,6 +22288,18 @@ namespace Aardvark.Base
                 M12 = value.Y;
                 M22 = value.Z;
             }
+        }
+
+        public V3f Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3f(M00, M11, M22);
+        }
+
+        public V3f AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3f(M02, M11, M20);
         }
 
         public float this[int index]
@@ -24259,44 +24642,87 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d FromDiagonal(double value)
+        {
+            return new M33d(
+                value, 0, 0, 
+                0, value, 0, 
+                0, 0, value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d FromDiagonal(double m00, double m11, double m22)
+        {
+            return new M33d(
+                m00, 0, 0, 
+                0, m11, 0, 
+                0, 0, m22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d FromDiagonal(V3d s)
+        {
+            return new M33d(
+                s.X, 0, 0, 
+                0, s.Y, 0, 
+                0, 0, s.Z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d FromAntiDiagonal(double value)
+        {
+            return new M33d(
+                 0, 0, value, 
+                 0, value, 0, 
+                 value, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d FromAntiDiagonal(double m02, double m11, double m20)
+        {
+            return new M33d(
+                0, 0, m02, 
+                0, m11, 0, 
+                m20, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d FromAntiDiagonal(V3d s)
+        {
+            return new M33d(
+                0, 0, s.X, 
+                0, s.Y, 0, 
+                s.Z, 0, 0);
+        }
+
         #region Scale
 
         /// <summary>
         /// Creates a transformation <see cref="M33d"/> using 3 scalars as scaling factors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d Diagonal(double sX, double sY, double sZ)
-        {
-            return new M33d(
-                sX, 0, 0, 
-                0, sY, 0, 
-                0, 0, sZ);
-        }
+        public static M33d Scale(double sX, double sY, double sZ)
+            => FromDiagonal(sX, sY, sZ);
 
         /// <summary>
         /// Creates a transformation <see cref="M33d"/> using a <see cref="V3d"/> as scaling factor.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d Diagonal(V3d s)
-        {
-            return new M33d(
-                s.X, 0, 0, 
-                0, s.Y, 0, 
-                0, 0, s.Z);
-        }
+        public static M33d Scale(V3d s)
+            => FromDiagonal(s);
 
         /// <summary>
         /// Creates a transformation <see cref="M33d"/> from a <see cref="Scale3d"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M33d Diagonal(Scale3d s)
+        public static M33d Scale(Scale3d s)
         {
             return new M33d(
                 s.X, 0, 0, 
                 0, s.Y, 0, 
                 0, 0, s.Z);
         }
-
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M33d"/> using a uniform scale.
@@ -24739,6 +25165,18 @@ namespace Aardvark.Base
                 M12 = value.Y;
                 M22 = value.Z;
             }
+        }
+
+        public V3d Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3d(M00, M11, M22);
+        }
+
+        public V3d AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3d(M02, M11, M20);
         }
 
         public double this[int index]
@@ -26989,25 +27427,26 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z, row2.W);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34i"/> using 3 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34i Diagonal(int sX, int sY, int sZ)
+        public static M34i FromDiagonal(int value)
         {
             return new M34i(
-                sX, 0, 0, 0, 
-                0, sY, 0, 0, 
-                0, 0, sZ, 0);
+                value, 0, 0, 0, 
+                0, value, 0, 0, 
+                0, 0, value, 0);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M34i"/> using a <see cref="V3i"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34i Diagonal(V3i s)
+        public static M34i FromDiagonal(int m00, int m11, int m22)
+        {
+            return new M34i(
+                m00, 0, 0, 0, 
+                0, m11, 0, 0, 
+                0, 0, m22, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i FromDiagonal(V3i s)
         {
             return new M34i(
                 s.X, 0, 0, 0, 
@@ -27015,6 +27454,7 @@ namespace Aardvark.Base
                 0, 0, s.Z, 0);
         }
 
+        #region Scale
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M34i"/> using a uniform scale.
@@ -27273,6 +27713,12 @@ namespace Aardvark.Base
                 M13 = value.Y;
                 M23 = value.Z;
             }
+        }
+
+        public V3i Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3i(M00, M11, M22);
         }
 
         public int this[int index]
@@ -29445,25 +29891,26 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z, row2.W);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34l"/> using 3 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34l Diagonal(long sX, long sY, long sZ)
+        public static M34l FromDiagonal(long value)
         {
             return new M34l(
-                sX, 0, 0, 0, 
-                0, sY, 0, 0, 
-                0, 0, sZ, 0);
+                value, 0, 0, 0, 
+                0, value, 0, 0, 
+                0, 0, value, 0);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M34l"/> using a <see cref="V3l"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34l Diagonal(V3l s)
+        public static M34l FromDiagonal(long m00, long m11, long m22)
+        {
+            return new M34l(
+                m00, 0, 0, 0, 
+                0, m11, 0, 0, 
+                0, 0, m22, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l FromDiagonal(V3l s)
         {
             return new M34l(
                 s.X, 0, 0, 0, 
@@ -29471,6 +29918,7 @@ namespace Aardvark.Base
                 0, 0, s.Z, 0);
         }
 
+        #region Scale
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M34l"/> using a uniform scale.
@@ -29729,6 +30177,12 @@ namespace Aardvark.Base
                 M13 = value.Y;
                 M23 = value.Z;
             }
+        }
+
+        public V3l Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3l(M00, M11, M22);
         }
 
         public long this[int index]
@@ -31789,44 +32243,34 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z, row2.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f FromDiagonal(float value)
+        {
+            return new M34f(
+                value, 0, 0, 0, 
+                0, value, 0, 0, 
+                0, 0, value, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f FromDiagonal(float m00, float m11, float m22)
+        {
+            return new M34f(
+                m00, 0, 0, 0, 
+                0, m11, 0, 0, 
+                0, 0, m22, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f FromDiagonal(V3f s)
+        {
+            return new M34f(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, s.Z, 0);
+        }
+
         #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34f"/> using 3 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f Diagonal(float sX, float sY, float sZ)
-        {
-            return new M34f(
-                sX, 0, 0, 0, 
-                0, sY, 0, 0, 
-                0, 0, sZ, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34f"/> using a <see cref="V3f"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f Diagonal(V3f s)
-        {
-            return new M34f(
-                s.X, 0, 0, 0, 
-                0, s.Y, 0, 0, 
-                0, 0, s.Z, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34f"/> from a <see cref="Scale3f"/> transformation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34f Diagonal(Scale3f s)
-        {
-            return new M34f(
-                s.X, 0, 0, 0, 
-                0, s.Y, 0, 0, 
-                0, 0, s.Z, 0);
-        }
-
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M34f"/> using a uniform scale.
@@ -32253,6 +32697,12 @@ namespace Aardvark.Base
                 M13 = value.Y;
                 M23 = value.Z;
             }
+        }
+
+        public V3f Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3f(M00, M11, M22);
         }
 
         public float this[int index]
@@ -34399,44 +34849,34 @@ namespace Aardvark.Base
                 row2.X, row2.Y, row2.Z, row2.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d FromDiagonal(double value)
+        {
+            return new M34d(
+                value, 0, 0, 0, 
+                0, value, 0, 0, 
+                0, 0, value, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d FromDiagonal(double m00, double m11, double m22)
+        {
+            return new M34d(
+                m00, 0, 0, 0, 
+                0, m11, 0, 0, 
+                0, 0, m22, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d FromDiagonal(V3d s)
+        {
+            return new M34d(
+                s.X, 0, 0, 0, 
+                0, s.Y, 0, 0, 
+                0, 0, s.Z, 0);
+        }
+
         #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34d"/> using 3 scalars as scaling factors.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d Diagonal(double sX, double sY, double sZ)
-        {
-            return new M34d(
-                sX, 0, 0, 0, 
-                0, sY, 0, 0, 
-                0, 0, sZ, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34d"/> using a <see cref="V3d"/> as scaling factor.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d Diagonal(V3d s)
-        {
-            return new M34d(
-                s.X, 0, 0, 0, 
-                0, s.Y, 0, 0, 
-                0, 0, s.Z, 0);
-        }
-
-        /// <summary>
-        /// Creates a transformation <see cref="M34d"/> from a <see cref="Scale3d"/> transformation.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M34d Diagonal(Scale3d s)
-        {
-            return new M34d(
-                s.X, 0, 0, 0, 
-                0, s.Y, 0, 0, 
-                0, 0, s.Z, 0);
-        }
-
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M34d"/> using a uniform scale.
@@ -34863,6 +35303,12 @@ namespace Aardvark.Base
                 M13 = value.Y;
                 M23 = value.Z;
             }
+        }
+
+        public V3d Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V3d(M00, M11, M22);
         }
 
         public double this[int index]
@@ -36995,26 +37441,28 @@ namespace Aardvark.Base
                 row3.X, row3.Y, row3.Z, row3.W);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M44i"/> using 4 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44i Diagonal(int sX, int sY, int sZ, int sW)
+        public static M44i FromDiagonal(int value)
         {
             return new M44i(
-                sX, 0, 0, 0, 
-                0, sY, 0, 0, 
-                0, 0, sZ, 0, 
-                0, 0, 0, sW);
+                value, 0, 0, 0, 
+                0, value, 0, 0, 
+                0, 0, value, 0, 
+                0, 0, 0, value);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M44i"/> using a <see cref="V4i"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44i Diagonal(V4i s)
+        public static M44i FromDiagonal(int m00, int m11, int m22, int m33)
+        {
+            return new M44i(
+                m00, 0, 0, 0, 
+                0, m11, 0, 0, 
+                0, 0, m22, 0, 
+                0, 0, 0, m33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i FromDiagonal(V4i s)
         {
             return new M44i(
                 s.X, 0, 0, 0, 
@@ -37023,6 +37471,51 @@ namespace Aardvark.Base
                 0, 0, 0, s.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i FromAntiDiagonal(int value)
+        {
+            return new M44i(
+                 0, 0, 0, value, 
+                 0, 0, value, 0, 
+                 0, value, 0, 0, 
+                 value, 0, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i FromAntiDiagonal(int m03, int m12, int m21, int m30)
+        {
+            return new M44i(
+                0, 0, 0, m03, 
+                0, 0, m12, 0, 
+                0, m21, 0, 0, 
+                m30, 0, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i FromAntiDiagonal(V4i s)
+        {
+            return new M44i(
+                0, 0, 0, s.X, 
+                0, 0, s.Y, 0, 
+                0, s.Z, 0, 0, 
+                s.W, 0, 0, 0);
+        }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44i"/> using 4 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i Scale(int sX, int sY, int sZ, int sW)
+            => FromDiagonal(sX, sY, sZ, sW);
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44i"/> using a <see cref="V4i"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i Scale(V4i s)
+            => FromDiagonal(s);
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M44i"/> using a uniform scale.
@@ -37312,6 +37805,18 @@ namespace Aardvark.Base
                 M23 = value.Z;
                 M33 = value.W;
             }
+        }
+
+        public V4i Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V4i(M00, M11, M22, M33);
+        }
+
+        public V4i AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V4i(M03, M12, M21, M30);
         }
 
         public int this[int index]
@@ -40016,26 +40521,28 @@ namespace Aardvark.Base
                 row3.X, row3.Y, row3.Z, row3.W);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M44l"/> using 4 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44l Diagonal(long sX, long sY, long sZ, long sW)
+        public static M44l FromDiagonal(long value)
         {
             return new M44l(
-                sX, 0, 0, 0, 
-                0, sY, 0, 0, 
-                0, 0, sZ, 0, 
-                0, 0, 0, sW);
+                value, 0, 0, 0, 
+                0, value, 0, 0, 
+                0, 0, value, 0, 
+                0, 0, 0, value);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M44l"/> using a <see cref="V4l"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44l Diagonal(V4l s)
+        public static M44l FromDiagonal(long m00, long m11, long m22, long m33)
+        {
+            return new M44l(
+                m00, 0, 0, 0, 
+                0, m11, 0, 0, 
+                0, 0, m22, 0, 
+                0, 0, 0, m33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l FromDiagonal(V4l s)
         {
             return new M44l(
                 s.X, 0, 0, 0, 
@@ -40044,6 +40551,51 @@ namespace Aardvark.Base
                 0, 0, 0, s.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l FromAntiDiagonal(long value)
+        {
+            return new M44l(
+                 0, 0, 0, value, 
+                 0, 0, value, 0, 
+                 0, value, 0, 0, 
+                 value, 0, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l FromAntiDiagonal(long m03, long m12, long m21, long m30)
+        {
+            return new M44l(
+                0, 0, 0, m03, 
+                0, 0, m12, 0, 
+                0, m21, 0, 0, 
+                m30, 0, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l FromAntiDiagonal(V4l s)
+        {
+            return new M44l(
+                0, 0, 0, s.X, 
+                0, 0, s.Y, 0, 
+                0, s.Z, 0, 0, 
+                s.W, 0, 0, 0);
+        }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44l"/> using 4 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l Scale(long sX, long sY, long sZ, long sW)
+            => FromDiagonal(sX, sY, sZ, sW);
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44l"/> using a <see cref="V4l"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l Scale(V4l s)
+            => FromDiagonal(s);
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M44l"/> using a uniform scale.
@@ -40333,6 +40885,18 @@ namespace Aardvark.Base
                 M23 = value.Z;
                 M33 = value.W;
             }
+        }
+
+        public V4l Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V4l(M00, M11, M22, M33);
+        }
+
+        public V4l AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V4l(M03, M12, M21, M30);
         }
 
         public long this[int index]
@@ -42911,26 +43475,28 @@ namespace Aardvark.Base
                 row3.X, row3.Y, row3.Z, row3.W);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M44f"/> using 4 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f Diagonal(float sX, float sY, float sZ, float sW)
+        public static M44f FromDiagonal(float value)
         {
             return new M44f(
-                sX, 0, 0, 0, 
-                0, sY, 0, 0, 
-                0, 0, sZ, 0, 
-                0, 0, 0, sW);
+                value, 0, 0, 0, 
+                0, value, 0, 0, 
+                0, 0, value, 0, 
+                0, 0, 0, value);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M44f"/> using a <see cref="V4f"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44f Diagonal(V4f s)
+        public static M44f FromDiagonal(float m00, float m11, float m22, float m33)
+        {
+            return new M44f(
+                m00, 0, 0, 0, 
+                0, m11, 0, 0, 
+                0, 0, m22, 0, 
+                0, 0, 0, m33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f FromDiagonal(V4f s)
         {
             return new M44f(
                 s.X, 0, 0, 0, 
@@ -42939,6 +43505,51 @@ namespace Aardvark.Base
                 0, 0, 0, s.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f FromAntiDiagonal(float value)
+        {
+            return new M44f(
+                 0, 0, 0, value, 
+                 0, 0, value, 0, 
+                 0, value, 0, 0, 
+                 value, 0, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f FromAntiDiagonal(float m03, float m12, float m21, float m30)
+        {
+            return new M44f(
+                0, 0, 0, m03, 
+                0, 0, m12, 0, 
+                0, m21, 0, 0, 
+                m30, 0, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f FromAntiDiagonal(V4f s)
+        {
+            return new M44f(
+                0, 0, 0, s.X, 
+                0, 0, s.Y, 0, 
+                0, s.Z, 0, 0, 
+                s.W, 0, 0, 0);
+        }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44f"/> using 4 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Scale(float sX, float sY, float sZ, float sW)
+            => FromDiagonal(sX, sY, sZ, sW);
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44f"/> using a <see cref="V4f"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Scale(V4f s)
+            => FromDiagonal(s);
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M44f"/> using a uniform scale.
@@ -43408,6 +44019,18 @@ namespace Aardvark.Base
                 M23 = value.Z;
                 M33 = value.W;
             }
+        }
+
+        public V4f Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V4f(M00, M11, M22, M33);
+        }
+
+        public V4f AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V4f(M03, M12, M21, M30);
         }
 
         public float this[int index]
@@ -46151,26 +46774,28 @@ namespace Aardvark.Base
                 row3.X, row3.Y, row3.Z, row3.W);
         }
 
-        #region Scale
-
-        /// <summary>
-        /// Creates a transformation <see cref="M44d"/> using 4 scalars as scaling factors.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d Diagonal(double sX, double sY, double sZ, double sW)
+        public static M44d FromDiagonal(double value)
         {
             return new M44d(
-                sX, 0, 0, 0, 
-                0, sY, 0, 0, 
-                0, 0, sZ, 0, 
-                0, 0, 0, sW);
+                value, 0, 0, 0, 
+                0, value, 0, 0, 
+                0, 0, value, 0, 
+                0, 0, 0, value);
         }
 
-        /// <summary>
-        /// Creates a transformation <see cref="M44d"/> using a <see cref="V4d"/> as scaling factor.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static M44d Diagonal(V4d s)
+        public static M44d FromDiagonal(double m00, double m11, double m22, double m33)
+        {
+            return new M44d(
+                m00, 0, 0, 0, 
+                0, m11, 0, 0, 
+                0, 0, m22, 0, 
+                0, 0, 0, m33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d FromDiagonal(V4d s)
         {
             return new M44d(
                 s.X, 0, 0, 0, 
@@ -46179,6 +46804,51 @@ namespace Aardvark.Base
                 0, 0, 0, s.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d FromAntiDiagonal(double value)
+        {
+            return new M44d(
+                 0, 0, 0, value, 
+                 0, 0, value, 0, 
+                 0, value, 0, 0, 
+                 value, 0, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d FromAntiDiagonal(double m03, double m12, double m21, double m30)
+        {
+            return new M44d(
+                0, 0, 0, m03, 
+                0, 0, m12, 0, 
+                0, m21, 0, 0, 
+                m30, 0, 0, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d FromAntiDiagonal(V4d s)
+        {
+            return new M44d(
+                0, 0, 0, s.X, 
+                0, 0, s.Y, 0, 
+                0, s.Z, 0, 0, 
+                s.W, 0, 0, 0);
+        }
+
+        #region Scale
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44d"/> using 4 scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Scale(double sX, double sY, double sZ, double sW)
+            => FromDiagonal(sX, sY, sZ, sW);
+
+        /// <summary>
+        /// Creates a transformation <see cref="M44d"/> using a <see cref="V4d"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Scale(V4d s)
+            => FromDiagonal(s);
 
         /// <summary>
         /// Creates a homogenous transformation <see cref="M44d"/> using a uniform scale.
@@ -46648,6 +47318,18 @@ namespace Aardvark.Base
                 M23 = value.Z;
                 M33 = value.W;
             }
+        }
+
+        public V4d Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V4d(M00, M11, M22, M33);
+        }
+
+        public V4d AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V4d(M03, M12, M21, M30);
         }
 
         public double this[int index]

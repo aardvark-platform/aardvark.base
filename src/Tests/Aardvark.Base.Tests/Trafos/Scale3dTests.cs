@@ -107,7 +107,7 @@ namespace Aardvark.Tests
             TrafoTesting.GenericTest(rnd =>
             {
                 var scale = rnd.UniformV3d() * 10;
-                var m = M33d.Diagonal(scale);
+                var m = M33d.Scale(scale);
                 var r = new Scale3d(scale);
 
                 var p = rnd.UniformV3d() * rnd.UniformInt(1000);
