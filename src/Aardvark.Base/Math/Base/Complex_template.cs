@@ -696,6 +696,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the angle that is the hyperbolic arc cosine of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Acosh(this __ct__ x)
+            => Log(x + Sqrt(x * x - 1));
+
+        /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -721,6 +728,13 @@ namespace Aardvark.Base
             var t = Log(new __ct__(-x.Imag, x.Real) + Sqrt(1 - x * x));
             return new __ct__(t.Imag, -t.Real);
         }
+
+        /// <summary>
+        /// Returns the angle that is the hyperbolic arc sine of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Asinh(this __ct__ x)
+            => Log(x + Sqrt(1 + x * x));
 
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
@@ -758,6 +772,24 @@ namespace Aardvark.Base
                 return new __ct__(-__cast__Constant.PiHalf);
             else
                 return new __ct__(0, __half__) * Log((__ct__.I + x) / (__ct__.I - x));
+        }
+
+        /// <summary>
+        /// Returns the angle that is the hyperbolic arc tangent of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Atanh(this __ct__ x)
+        {
+            if (x == __ct__.Zero)
+                return __ct__.Zero;
+            else if (x == __ct__.One)
+                return __ct__.PositiveInfinity;
+            else if (x == __ct__.PositiveInfinity)
+                return new __ct__(0, -__cast__Constant.PiHalf);
+            else if (x == __ct__.I)
+                return new __ct__(0, __cast__Constant.PiQuarter);
+            else
+                return __half__ * (Log(1 + x) - Log(1 - x));
         }
 
         /// <summary>

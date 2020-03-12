@@ -316,6 +316,15 @@ namespace Aardvark.Tests
             });
 
         [Test]
+        public static void Acosh()
+            => GenericTest(rnd =>
+            {
+                GetRandomComplex(rnd, out Num.Complex _, out ComplexD c, false);
+                var x = Fun.Cosh(Fun.Acosh(c));
+                AreEqual(c, x);
+            });
+
+        [Test]
         public static void Cosh()
             => UnaryPowTest(
                 Num.Complex.Cosh,
@@ -335,6 +344,15 @@ namespace Aardvark.Tests
             {
                 GetRandomComplex(rnd, out Num.Complex _, out ComplexD c, false);
                 var x = Fun.Sin(Fun.Asin(c));
+                AreEqual(c, x);
+            });
+
+        [Test]
+        public static void Asinh()
+            => GenericTest(rnd =>
+            {
+                GetRandomComplex(rnd, out Num.Complex _, out ComplexD c, false);
+                var x = Fun.Sinh(Fun.Asinh(c));
                 AreEqual(c, x);
             });
 
@@ -380,6 +398,32 @@ namespace Aardvark.Tests
 
                 AreEqualAngle(x, y);  
                 AreEqual(c, Fun.Tan(Fun.Atan(c)));
+            });
+
+        [Test]
+        public static void Atanh()
+            => GenericTest(rnd =>
+            {
+                GetRandomComplex(rnd, out Num.Complex a, out ComplexD b);
+                GetRandomComplex(rnd, out Num.Complex _, out ComplexD c, false);
+
+                // https://mathworld.wolfram.com/InverseHyperbolicTangent.html
+                var values = new Dictionary<ComplexD, ComplexD>()
+                {
+                    { ComplexD.Zero, ComplexD.Zero },
+                    { ComplexD.One, ComplexD.PositiveInfinity },
+                    { ComplexD.PositiveInfinity, -Constant.PiHalf * ComplexD.I },
+                    { ComplexD.I, Constant.PiQuarter * ComplexD.I }
+                };
+
+                if (values.TryGetValue(b, out ComplexD reference))
+                {
+                    var x = new Num.Complex(reference.Real, reference.Imag);
+                    var y = Fun.Atanh(b);
+                    AreEqualAngle(x, y);
+                }
+
+                AreEqual(c, Fun.Tanh(Fun.Atanh(c)));
             });
 
         [Test]

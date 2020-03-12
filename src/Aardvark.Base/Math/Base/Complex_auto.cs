@@ -687,6 +687,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the angle that is the hyperbolic arc cosine of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Acosh(this ComplexF x)
+            => Log(x + Sqrt(x * x - 1));
+
+        /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -712,6 +719,13 @@ namespace Aardvark.Base
             var t = Log(new ComplexF(-x.Imag, x.Real) + Sqrt(1 - x * x));
             return new ComplexF(t.Imag, -t.Real);
         }
+
+        /// <summary>
+        /// Returns the angle that is the hyperbolic arc sine of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Asinh(this ComplexF x)
+            => Log(x + Sqrt(1 + x * x));
 
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
@@ -749,6 +763,24 @@ namespace Aardvark.Base
                 return new ComplexF(-(float)Constant.PiHalf);
             else
                 return new ComplexF(0, 0.5f) * Log((ComplexF.I + x) / (ComplexF.I - x));
+        }
+
+        /// <summary>
+        /// Returns the angle that is the hyperbolic arc tangent of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Atanh(this ComplexF x)
+        {
+            if (x == ComplexF.Zero)
+                return ComplexF.Zero;
+            else if (x == ComplexF.One)
+                return ComplexF.PositiveInfinity;
+            else if (x == ComplexF.PositiveInfinity)
+                return new ComplexF(0, -(float)Constant.PiHalf);
+            else if (x == ComplexF.I)
+                return new ComplexF(0, (float)Constant.PiQuarter);
+            else
+                return 0.5f * (Log(1 + x) - Log(1 - x));
         }
 
         /// <summary>
@@ -1627,6 +1659,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the angle that is the hyperbolic arc cosine of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Acosh(this ComplexD x)
+            => Log(x + Sqrt(x * x - 1));
+
+        /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1652,6 +1691,13 @@ namespace Aardvark.Base
             var t = Log(new ComplexD(-x.Imag, x.Real) + Sqrt(1 - x * x));
             return new ComplexD(t.Imag, -t.Real);
         }
+
+        /// <summary>
+        /// Returns the angle that is the hyperbolic arc sine of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Asinh(this ComplexD x)
+            => Log(x + Sqrt(1 + x * x));
 
         /// <summary>
         /// Returns the sine of the complex number <paramref name="x"/>.
@@ -1689,6 +1735,24 @@ namespace Aardvark.Base
                 return new ComplexD(-Constant.PiHalf);
             else
                 return new ComplexD(0, 0.5) * Log((ComplexD.I + x) / (ComplexD.I - x));
+        }
+
+        /// <summary>
+        /// Returns the angle that is the hyperbolic arc tangent of the complex number <paramref name="x"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Atanh(this ComplexD x)
+        {
+            if (x == ComplexD.Zero)
+                return ComplexD.Zero;
+            else if (x == ComplexD.One)
+                return ComplexD.PositiveInfinity;
+            else if (x == ComplexD.PositiveInfinity)
+                return new ComplexD(0, -Constant.PiHalf);
+            else if (x == ComplexD.I)
+                return new ComplexD(0, Constant.PiQuarter);
+            else
+                return 0.5 * (Log(1 + x) - Log(1 - x));
         }
 
         /// <summary>
