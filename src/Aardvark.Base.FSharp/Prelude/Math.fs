@@ -122,11 +122,14 @@ module FSharpMath =
         let inline signumiAux (_ : ^z) (_ : ^y) (x : ^a) =
             ((^z or ^y or ^a) : (static member Signumi : ^a -> ^b) x)
 
+        // Making the power functions more general with ^a -> ^b -> ^c
+        // generally works but requires manual type annotations in some cases
+        // It's not worth the hassle so we restrict them to ^a -> ^b -> ^a
         let inline powAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
-            ((^z or ^y or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^c) (x, y))
+            ((^z or ^y or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^a) (x, y))
 
         let inline pownAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
-            ((^z or ^y or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^c) (x, y))
+            ((^z or ^y or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^a) (x, y))
 
         let inline log2Aux (_ : ^z) (_ : ^y) (x : ^a) =
             ((^z or ^y or ^a) : (static member Log2 : ^a -> ^a) x)
@@ -441,18 +444,16 @@ module FSharpMath =
             let a : int64 = pown 1L 2
             let a : int64 = pown 1L 2L
 
+            let a = 2.0 * (pown V3d.III V3i.III)
+
             let a : V2f = pown V2f.One 1
-            let a : V2f = pown 1.0f V2i.One
             let a : V2f = pown V2f.One V2i.One
             
             let a : V2i = pown V2i.One 1
-            let a : V2i = pown 1 V2i.One
             let a : V2i = pown V2i.One V2i.One
 
             let a : V2l = pown V2l.One 1
-            let a : V2l = pown 1L V2i.One
             let a : V2l = pown V2l.One 1L
-            let a : V2l = pown 1L V2l.One
             let a : V2l = pown V2l.One V2i.One
             let a : V2l = pown V2l.One V2l.One
 
@@ -460,66 +461,29 @@ module FSharpMath =
 
         let powWorking() =
             let a : float = pow 1.0 2.0
-            let a : float = pow 1 2.0
-            let a : float = pow 1uy 2.0
-            let a : float = pow 1s 2.0
-            let a : float = pow 1L 2.0
+            let a : float32 = pow 1.0f 2.0f
+            let a = log (2.0 + 8.0 * (pow V3d.III V3d.III))
 
             let a = pow (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 12.0
 
             let a : V2d = pow V2d.II V2d.II
             let a : V2d = pow V2d.II 1.0
-            let a : V2d = pow 1.0 V2d.II
-
-            let a : V2d = pow V2i.II 1.0
-            let a : V2d = pow 1 V2d.II
-            let a : V2d = pow V2i.II V2d.II
-            let a : V2f = pow V2i.II 1.0f
-            let a : V2f = pow 1 V2f.II
-            let a : V2f = pow V2i.II V2f.II
-
-            let a : V3d = pow V3l.III 1.0
-            let a : V3d = pow 1L V3d.III
-            let a : V3d = pow V3l.III V3d.III
-            let a : V3f = pow V3l.III 1.0f
-            let a : V3f = pow 1L V3f.III
-            let a : V3f = pow V3l.III V3f.III
 
             let a : ComplexD = pow ComplexD.One ComplexD.One
             let a : ComplexD = pow ComplexD.One 1.0
-            let a : ComplexD = pow 1.0 ComplexD.One
             ()
 
         let powOpWorking() =
             let a : float = 1.0 ** 2.0
-            let a : float = 1 ** 2.0
-            let a : float = 1uy ** 2.0
-            let a : float = 1s ** 2.0
-            let a : float = 1L ** 2.0
+            let a : float32 = 1.0f ** 2.0f
             
             let a = MyCustomNumericTypeExtensionTestTypeForInternalTesting() ** 12.0
 
             let a : V2d = V2d.II ** V2d.II
             let a : V2d = V2d.II ** 1.0
-            let a : V2d = 1.0 ** V2d.II
-
-            let a : V2d = V2i.II ** 1.0
-            let a : V2d = 1 ** V2d.II
-            let a : V2d = V2i.II ** V2d.II
-            let a : V2f = V2i.II ** 1.0f
-            let a : V2f = 1 ** V2f.II
-            let a : V2f = V2i.II ** V2f.II
-
-            let a : V3d = V3l.III ** 1.0
-            let a : V3d = 1L ** V3d.III
-            let a : V3d = V3l.III ** V3d.III
-            let a : V3f = V3l.III ** 1.0f
-            let a : V3f = 1L ** V3f.III
-            let a : V3f = V3l.III ** V3f.III
 
             let a : ComplexD = ComplexD.One ** ComplexD.One
             let a : ComplexD = ComplexD.One ** 1.0
-            let a : ComplexD = 1.0 ** ComplexD.One
             ()
             
         let log2Working() =
