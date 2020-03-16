@@ -87,14 +87,20 @@ namespace Aardvark.Base
 
         #region ApproximateEquals
 
-        //# signedtypes.ForEach(t => {
+        //# numtypes.ForEach(t => {
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __t.Name__ x, __t.Name__ y, __t.Name__ epsilon)
-            => Abs(x - y) <= epsilon;
+        {
+            //# if (signedtypes.Contains(t)) {
+            return Abs(x - y) <= epsilon;
+            //# } else {
+            return (x > y) ? ((x - y) <= epsilon) : ((y - x) <= epsilon);
+            //# }
+        }
 
         //# });
         //# fdtypes.ForEach(t => {

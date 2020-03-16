@@ -1,4 +1,6 @@
-﻿namespace Aardvark.Base.Rendering
+﻿using System.Runtime.CompilerServices;
+
+namespace Aardvark.Base.Rendering
 {
     public struct StencilFunction
     {
@@ -28,14 +30,29 @@
 
         #endregion
 
+        #region Comparison
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(StencilFunction a, StencilFunction b)
+            => (a.Function == b.Function) && (a.Reference == b.Reference) && (a.Mask == b.Mask);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(StencilFunction a, StencilFunction b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
             => Function.GetHashCode() ^ Reference.GetHashCode() ^ Mask.GetHashCode();
 
-        public override bool Equals(object obj) => (obj is StencilFunction f)
-            ? (f.Function == Function && f.Reference == Reference && f.Mask == Mask)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(StencilFunction other)
+            => this == other;
+
+        public override bool Equals(object obj)
+            => (obj is StencilFunction other) ? Equals(other) : false;
 
         #endregion
     }
@@ -68,14 +85,29 @@
 
         #endregion
 
+        #region Comparison
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(StencilOperation a, StencilOperation b)
+            => (a.StencilFail == b.StencilFail) && (a.DepthFail == b.DepthFail) && (a.DepthPass == b.DepthPass);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(StencilOperation a, StencilOperation b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
             => StencilFail.GetHashCode() ^ DepthFail.GetHashCode() ^ DepthPass.GetHashCode();
 
-        public override bool Equals(object obj) => (obj is StencilOperation o)
-            ? (o.StencilFail == StencilFail && o.DepthFail == DepthFail && o.DepthPass == DepthPass)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(StencilOperation other)
+            => this == other;
+
+        public override bool Equals(object obj)
+            => (obj is StencilOperation other) ? Equals(other) : false;
 
         #endregion
     }
@@ -153,22 +185,42 @@
 
         #endregion
 
+        #region Comparison
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(StencilMode a, StencilMode b)
+        {
+            if (!a.IsEnabled && !b.IsEnabled)
+                return true;
+            else if (a.IsEnabled && b.IsEnabled)
+            {
+                return
+                    a.CompareFront == b.CompareFront &&
+                    a.CompareBack == b.CompareBack &&
+                    a.OperationFront == b.OperationFront &&
+                    a.OperationBack == b.OperationBack;
+            }
+            else
+                return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(StencilMode a, StencilMode b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
             => IsEnabled.GetHashCode() ^ CompareFront.GetHashCode() ^ CompareBack.GetHashCode() ^ OperationFront.GetHashCode() ^ OperationBack.GetHashCode();
-       
-        public override bool Equals(object obj)
-        {
-            if (obj is StencilMode m)
-            {
-                if (IsEnabled != m.IsEnabled) return false;
 
-                return m.CompareFront.Equals(CompareFront) && m.CompareBack.Equals(CompareBack) &&
-                       m.OperationFront.Equals(OperationFront) && m.OperationBack.Equals(OperationBack);
-            }
-            else return false;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(StencilMode other)
+            => this == other;
+
+        public override bool Equals(object obj)
+            => (obj is StencilMode other) ? Equals(other) : false;
 
         #endregion
     }

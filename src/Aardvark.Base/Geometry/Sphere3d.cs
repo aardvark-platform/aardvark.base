@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -108,36 +109,16 @@ namespace Aardvark.Base
         /// <summary>
         /// Tests whether two specified spheres are equal.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Sphere3d a, Sphere3d b)
-        {
-            if (Equals(a, null) == true)
-            {
-                return Equals(b, null);
-            }
-
-            if (Equals(b, null) == true)
-            {
-                return Equals(a, null);
-            }
-
-            return (a.Center == b.Center) && (a.Radius == b.Radius);
-        }
+            => (a.Center == b.Center) && (a.Radius == b.Radius);
 
         /// <summary>
         /// Tests whether two specified spheres are not equal.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Sphere3d a, Sphere3d b)
-        {
-            if (Equals(a, null) == true)
-            {
-                return !Equals(b, null);
-            }
-            else if (Equals(b, null) == true)
-            {
-                return !Equals(a, null);
-            }
-            return !((a.Center == b.Center) && (a.Radius == b.Radius));
-        }
+            => !(a == b);
 
         #endregion
 
@@ -145,9 +126,12 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
-        public override bool Equals(object other) => (other is Sphere3d value)
-            ? (Center.Equals(value.Center) && Radius.Equals(value.Radius))
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Sphere3d other)
+            => Center.Equals(other.Center) && Radius.Equals(other.Radius);
+
+        public override bool Equals(object other)
+            => (other is Sphere3d o) ? Equals(o) : false;
 
         /// <summary>
         /// Writes a sphere to String.
@@ -171,9 +155,27 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Sphere3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Sphere3d a, Sphere3d b, double tolerance) =>
+            ApproximateEquals(a.Center, b.Center, tolerance) &&
+            ApproximateEquals(a.Radius, b.Radius, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Sphere3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Sphere3d a, Sphere3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+    }
+
     public static class Box3dExtensions
     {
-
         public static Sphere3d GetBoundingSphere3d(this Box3d box)
             => box.IsInvalid ? Sphere3d.Invalid : new Sphere3d(box.Center, 0.5 * box.Size.Length);
     }

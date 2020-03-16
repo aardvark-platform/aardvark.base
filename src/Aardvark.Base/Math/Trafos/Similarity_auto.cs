@@ -364,11 +364,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Similarity2f t0, Similarity2f t1)
         {
             return t0.Scale == t1.Scale && t0.Euclidean == t1.Euclidean;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Similarity2f t0, Similarity2f t1)
         {
             return !(t0 == t1);
@@ -570,9 +572,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other) => (other is Similarity2f o)
-            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Similarity2f other)
+            => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
+
+        public override bool Equals(object other)
+            => (other is Similarity2f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1085,11 +1090,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Similarity3f t0, Similarity3f t1)
         {
             return t0.Scale == t1.Scale && t0.Euclidean == t1.Euclidean;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Similarity3f t0, Similarity3f t1)
         {
             return !(t0 == t1);
@@ -1385,9 +1392,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other) => (other is Similarity3f o)
-            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Similarity3f other)
+            => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
+
+        public override bool Equals(object other)
+            => (other is Similarity3f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1880,11 +1890,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Similarity2d t0, Similarity2d t1)
         {
             return t0.Scale == t1.Scale && t0.Euclidean == t1.Euclidean;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Similarity2d t0, Similarity2d t1)
         {
             return !(t0 == t1);
@@ -2086,9 +2098,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other) => (other is Similarity2d o)
-            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Similarity2d other)
+            => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
+
+        public override bool Equals(object other)
+            => (other is Similarity2d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2601,11 +2616,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Similarity3d t0, Similarity3d t1)
         {
             return t0.Scale == t1.Scale && t0.Euclidean == t1.Euclidean;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Similarity3d t0, Similarity3d t1)
         {
             return !(t0 == t1);
@@ -2901,9 +2918,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other) => (other is Similarity3d o)
-            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Similarity3d other)
+            => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
+
+        public override bool Equals(object other)
+            => (other is Similarity3d o) ? Equals(o) : false;
 
         public override string ToString()
         {

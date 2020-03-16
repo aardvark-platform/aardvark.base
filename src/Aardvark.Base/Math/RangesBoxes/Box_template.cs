@@ -1434,9 +1434,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is __type__ o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__type__ other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is __type__ o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2377,6 +2380,23 @@ namespace Aardvark.Base
 
     #endregion
     //# }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a, __type__ b)
+        {
+            return ApproximateEquals(a, b, Constant<__ftype__>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a, __type__ b, __ftype__ tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 

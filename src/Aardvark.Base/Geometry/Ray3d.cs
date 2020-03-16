@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -531,12 +532,15 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Ray3d a, Ray3d b)
             => (a.Origin == b.Origin) && (a.Direction == b.Direction);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Ray3d a, Ray3d b)
             => !((a.Origin == b.Origin) && (a.Direction == b.Direction));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LexicalCompare(Ray3d other)
         {
             var cmp = Origin.LexicalCompare(other.Origin);
@@ -554,13 +558,12 @@ namespace Aardvark.Base
         /// <returns>Hash-code.</returns>
         public override int GetHashCode() => HashCode.GetCombined(Origin, Direction);
 
-        /// <summary>
-        /// Checks if 2 objects are equal.
-        /// </summary>
-        /// <returns>Result of comparison.</returns>
-        public override bool Equals(object other) => (other is Ray3d value)
-            ? Origin.Equals(value.Origin) && Direction.Equals(value.Direction)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Ray3d other)
+            => Origin.Equals(other.Origin) && Direction.Equals(other.Direction);
+
+        public override bool Equals(object other)
+            => (other is Ray3d o) ? Equals(o) : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Direction);
@@ -578,6 +581,25 @@ namespace Aardvark.Base
         public Box3d BoundingBox3d => Box3d.FromPoints(Origin, Direction + Origin);
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Ray3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Ray3d a, Ray3d b, double tolerance) =>
+            ApproximateEquals(a.Origin, b.Origin, tolerance) &&
+            ApproximateEquals(a.Direction, b.Direction, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Ray3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Ray3d a, Ray3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     /// <summary>

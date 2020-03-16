@@ -489,9 +489,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Rot, Trans);
         }
 
-        public override bool Equals(object other) => (other is Euclidean2f o)
-            ? Rot.Equals(o.Rot) && Trans.Equals(o.Trans)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Euclidean2f other)
+            => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
+
+        public override bool Equals(object other)
+            => (other is Euclidean2f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1220,9 +1223,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Rot, Trans);
         }
 
-        public override bool Equals(object other) => (other is Euclidean3f o)
-            ? Rot.Equals(o.Rot) && Trans.Equals(o.Trans)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Euclidean3f other)
+            => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
+
+        public override bool Equals(object other)
+            => (other is Euclidean3f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1839,9 +1845,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Rot, Trans);
         }
 
-        public override bool Equals(object other) => (other is Euclidean2d o)
-            ? Rot.Equals(o.Rot) && Trans.Equals(o.Trans)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Euclidean2d other)
+            => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
+
+        public override bool Equals(object other)
+            => (other is Euclidean2d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2570,9 +2579,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Rot, Trans);
         }
 
-        public override bool Equals(object other) => (other is Euclidean3d o)
-            ? Rot.Equals(o.Rot) && Trans.Equals(o.Trans)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Euclidean3d other)
+            => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
+
+        public override bool Equals(object other)
+            => (other is Euclidean3d o) ? Equals(o) : false;
 
         public override string ToString()
         {

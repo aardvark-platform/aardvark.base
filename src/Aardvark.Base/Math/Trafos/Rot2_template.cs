@@ -197,9 +197,7 @@ namespace Aardvark.Base
         /// <returns>Result of comparison.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__type__ rotation1, __type__ rotation2)
-        {
-            return (rotation1.Angle == rotation2.Angle);
-        }
+            => Rot.Distance(rotation1, rotation2) == 0;
 
         /// <summary>
         /// Checks if 2 rotations are not equal.
@@ -207,9 +205,7 @@ namespace Aardvark.Base
         /// <returns>Result of comparison.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__type__ rotation1, __type__ rotation2)
-        {
-            return !(rotation1.Angle == rotation2.Angle);
-        }
+            => Rot.Distance(rotation1, rotation2) != 0;
 
         #endregion
 
@@ -370,9 +366,12 @@ namespace Aardvark.Base
             );
         }
 
-        public override bool Equals(object other) => (other is __type__ r)
-            ? (Rot.Distance(this, r) == 0)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__type__ other)
+            => Rot.Distance(this, other) == 0;
+
+        public override bool Equals(object other)
+            => (other is __type__ o) ? Equals(o) : false;
 
         #endregion
     }

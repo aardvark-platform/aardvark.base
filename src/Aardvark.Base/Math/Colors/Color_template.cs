@@ -398,11 +398,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__type__ a, __type__ b)
         {
             return /*# fields.ForEach(f => { */a.__f__ == b.__f__/*# }, andand); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__type__ a, __type__ b)
         {
             return /*# fields.ForEach(f => { */a.__f__ != b.__f__/*# }, oror); */;
@@ -605,9 +607,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is __type__ o)
-            ? /*# fields.ForEach(f => { */__f__.Equals(o.__f__)/*# }, andand); */
-            : false;
+        public override bool Equals(object other)
+            => (other is __type__ o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -700,9 +701,10 @@ namespace Aardvark.Base
 
         #region IEquatable<__type__> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(__type__ other)
         {
-            return /*# fields.ForEach(f => { */__f__ == other.__f__/*# }, andand); */;
+            return /*# fields.ForEach(f => { */__f__.Equals(other.__f__)/*# }, andand); */;
         }
 
         #endregion
@@ -767,6 +769,22 @@ namespace Aardvark.Base
             return new __type__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
         }
         //# }
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a, __type__ b)
+        {
+            return ApproximateEquals(a, b, Constant<__ftype__>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a, __type__ b, __ftype__ tolerance)
+        {
+            return /*# fields.ForEach(f => {*/ApproximateEquals(a.__f__, b.__f__, tolerance)/*# }, andand);*/;
+        }
+
         #endregion
     }
 

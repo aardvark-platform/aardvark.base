@@ -468,9 +468,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(W, X, Y, Z);
         }
 
-        public override bool Equals(object other) => (other is __type__ o)
-            ? /*# qfields.ForEach(f => {*/__f__.Equals(o.__f__)/*# }, and);*/
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__type__ other)
+            => /*# qfields.ForEach(f => {*/__f__.Equals(other.__f__)/*# }, and);*/;
+
+        public override bool Equals(object other)
+            => (other is __type__ o) ? Equals(o) : false;
 
         public override string ToString()
         {

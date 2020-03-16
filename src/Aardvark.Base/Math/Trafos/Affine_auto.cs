@@ -523,9 +523,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other) => (other is Affine2f o)
-            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Affine2f other)
+            => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
+
+        public override bool Equals(object other)
+            => (other is Affine2f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1314,9 +1317,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other) => (other is Affine3f o)
-            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Affine3f other)
+            => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
+
+        public override bool Equals(object other)
+            => (other is Affine3f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1962,9 +1968,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other) => (other is Affine2d o)
-            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Affine2d other)
+            => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
+
+        public override bool Equals(object other)
+            => (other is Affine2d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2753,9 +2762,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Linear, Trans);
         }
 
-        public override bool Equals(object other) => (other is Affine3d o)
-            ? Linear.Equals(o.Linear) && Trans.Equals(o.Trans)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Affine3d other)
+            => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
+
+        public override bool Equals(object other)
+            => (other is Affine3d o) ? Equals(o) : false;
 
         public override string ToString()
         {

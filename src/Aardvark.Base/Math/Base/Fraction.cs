@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -17,12 +18,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Fraction(long value)
         {
             Numerator = value;
             Denominator = 1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Fraction(long numerator, long denominator)
         {
             // ensure positive denominator
@@ -36,11 +39,13 @@ namespace Aardvark.Base
 
         public double Value
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (double)Numerator / Denominator; }
         }
 
         public Fraction Reduced
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 long gcd = Fun.GreatestCommonDivisor(Numerator, Denominator);
@@ -52,16 +57,19 @@ namespace Aardvark.Base
 
         #region Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction operator +(Fraction a)
         {
             return a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction operator -(Fraction a)
         {
             return new Fraction(-a.Numerator, a.Denominator);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction operator +(Fraction a, Fraction b)
         {
             long gcd = Fun.GreatestCommonDivisor(a.Denominator, b.Denominator);
@@ -74,11 +82,13 @@ namespace Aardvark.Base
                 );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction operator -(Fraction a, Fraction b)
         {
             return a + (-b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction operator *(Fraction a, Fraction b)
         {
             return new Fraction(
@@ -87,6 +97,7 @@ namespace Aardvark.Base
                 );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction operator /(Fraction a, Fraction b)
         {
             if (b.Numerator < 0)        // ensure positive denominator
@@ -101,31 +112,37 @@ namespace Aardvark.Base
                 );
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(Fraction a, Fraction b)
         {
             return a.Value < b.Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(Fraction a, Fraction b)
         {
             return a.Value <= b.Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Fraction a, Fraction b)
         {
             return a.Value == b.Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Fraction a, Fraction b)
         {
             return a.Value != b.Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(Fraction a, Fraction b)
         {
             return a.Value >= b.Value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(Fraction a, Fraction b)
         {
             return a.Value > b.Value;
@@ -181,6 +198,7 @@ namespace Aardvark.Base
         /// Returns whether the specified <see cref="Fraction"/>
         /// evaluates to negative or positive infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(Fraction f)
         {
             return f.Denominator == 0;
@@ -190,6 +208,7 @@ namespace Aardvark.Base
         /// Returns whether the specified <see cref="Fraction"/>
         /// evaluates to negative infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNegativeInfinity(Fraction f)
         {
             return f.Denominator == 0 && f.Numerator < 0;
@@ -199,6 +218,7 @@ namespace Aardvark.Base
         /// Returns whether the specified <see cref="Fraction"/>
         /// evaluates to positive infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsPositiveInfinity(Fraction f)
         {
             return f.Denominator == 0 && f.Numerator > 0;
@@ -208,14 +228,18 @@ namespace Aardvark.Base
         /// Returns whether the specified <see cref="Fraction"/>
         /// evaluates to a value that is not a number (Fraction.NaN).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNaN(Fraction f)
         {
             return f.Denominator == 0;
         }
 
-        public override bool Equals(object obj) => (obj is Fraction o)
-            ? Numerator.Equals(o.Numerator) && Denominator.Equals(o.Denominator)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Fraction other)
+            => Numerator.Equals(other.Numerator) && Denominator.Equals(other.Denominator);
+
+        public override bool Equals(object obj)
+            => (obj is Fraction o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -236,6 +260,27 @@ namespace Aardvark.Base
                 long.Parse(s.Substring(sep+1, s.Length-sep-1))
                 );
         }
+    }
 
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        /// <summary>
+        /// Returns whether the given <see cref="Fraction"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Fraction a, Fraction b, double tolerance)
+            => ApproximateEquals(a.Value, b.Value, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Fraction"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Fraction a, Fraction b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+
+        #endregion
     }
 }

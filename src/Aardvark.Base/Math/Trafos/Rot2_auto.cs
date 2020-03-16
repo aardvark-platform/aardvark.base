@@ -251,9 +251,7 @@ namespace Aardvark.Base
         /// <returns>Result of comparison.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Rot2f rotation1, Rot2f rotation2)
-        {
-            return (rotation1.Angle == rotation2.Angle);
-        }
+            => Rot.Distance(rotation1, rotation2) == 0;
 
         /// <summary>
         /// Checks if 2 rotations are not equal.
@@ -261,9 +259,7 @@ namespace Aardvark.Base
         /// <returns>Result of comparison.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Rot2f rotation1, Rot2f rotation2)
-        {
-            return !(rotation1.Angle == rotation2.Angle);
-        }
+            => Rot.Distance(rotation1, rotation2) != 0;
 
         #endregion
 
@@ -466,9 +462,12 @@ namespace Aardvark.Base
             );
         }
 
-        public override bool Equals(object other) => (other is Rot2f r)
-            ? (Rot.Distance(this, r) == 0)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Rot2f other)
+            => Rot.Distance(this, other) == 0;
+
+        public override bool Equals(object other)
+            => (other is Rot2f o) ? Equals(o) : false;
 
         #endregion
     }
@@ -847,9 +846,7 @@ namespace Aardvark.Base
         /// <returns>Result of comparison.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Rot2d rotation1, Rot2d rotation2)
-        {
-            return (rotation1.Angle == rotation2.Angle);
-        }
+            => Rot.Distance(rotation1, rotation2) == 0;
 
         /// <summary>
         /// Checks if 2 rotations are not equal.
@@ -857,9 +854,7 @@ namespace Aardvark.Base
         /// <returns>Result of comparison.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Rot2d rotation1, Rot2d rotation2)
-        {
-            return !(rotation1.Angle == rotation2.Angle);
-        }
+            => Rot.Distance(rotation1, rotation2) != 0;
 
         #endregion
 
@@ -1062,9 +1057,12 @@ namespace Aardvark.Base
             );
         }
 
-        public override bool Equals(object other) => (other is Rot2d r)
-            ? (Rot.Distance(this, r) == 0)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Rot2d other)
+            => Rot.Distance(this, other) == 0;
+
+        public override bool Equals(object other)
+            => (other is Rot2d o) ? Equals(o) : false;
 
         #endregion
     }

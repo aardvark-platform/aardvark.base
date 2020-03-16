@@ -465,11 +465,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C3b a, C3b b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C3b a, C3b b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
@@ -738,9 +740,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C3b o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
-            : false;
+        public override bool Equals(object other)
+            => (other is C3b o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -837,9 +838,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C3b> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C3b other)
         {
-            return R == other.R && G == other.G && B == other.B;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
 
         #endregion
@@ -886,6 +888,22 @@ namespace Aardvark.Base
         public static C3b Lerp(this double x, C3b a, C3b b)
         {
             return new C3b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+        }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3b a, C3b b)
+        {
+            return ApproximateEquals(a, b, Constant<byte>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3b a, C3b b, byte tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance);
         }
 
         #endregion
@@ -1813,11 +1831,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C3us a, C3us b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C3us a, C3us b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
@@ -2086,9 +2106,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C3us o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
-            : false;
+        public override bool Equals(object other)
+            => (other is C3us o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -2185,9 +2204,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C3us> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C3us other)
         {
-            return R == other.R && G == other.G && B == other.B;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
 
         #endregion
@@ -2234,6 +2254,22 @@ namespace Aardvark.Base
         public static C3us Lerp(this double x, C3us a, C3us b)
         {
             return new C3us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+        }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3us a, C3us b)
+        {
+            return ApproximateEquals(a, b, Constant<ushort>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3us a, C3us b, ushort tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance);
         }
 
         #endregion
@@ -3119,11 +3155,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C3ui a, C3ui b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C3ui a, C3ui b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
@@ -3354,9 +3392,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C3ui o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
-            : false;
+        public override bool Equals(object other)
+            => (other is C3ui o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -3453,9 +3490,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C3ui> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C3ui other)
         {
-            return R == other.R && G == other.G && B == other.B;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
 
         #endregion
@@ -3502,6 +3540,22 @@ namespace Aardvark.Base
         public static C3ui Lerp(this double x, C3ui a, C3ui b)
         {
             return new C3ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
+        }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3ui a, C3ui b)
+        {
+            return ApproximateEquals(a, b, Constant<uint>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3ui a, C3ui b, uint tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance);
         }
 
         #endregion
@@ -4454,11 +4508,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C3f a, C3f b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C3f a, C3f b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
@@ -4775,9 +4831,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C3f o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
-            : false;
+        public override bool Equals(object other)
+            => (other is C3f o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -4874,9 +4929,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C3f> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C3f other)
         {
-            return R == other.R && G == other.G && B == other.B;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
 
         #endregion
@@ -4916,6 +4972,22 @@ namespace Aardvark.Base
         {
             return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3f a, C3f b)
+        {
+            return ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3f a, C3f b, float tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance);
+        }
+
         #endregion
     }
 
@@ -5820,11 +5892,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C3d a, C3d b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C3d a, C3d b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B;
@@ -6087,9 +6161,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C3d o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B)
-            : false;
+        public override bool Equals(object other)
+            => (other is C3d o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -6186,9 +6259,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C3d> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C3d other)
         {
-            return R == other.R && G == other.G && B == other.B;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
 
         #endregion
@@ -6228,6 +6302,22 @@ namespace Aardvark.Base
         {
             return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
         }
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3d a, C3d b)
+        {
+            return ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C3d a, C3d b, double tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance);
+        }
+
         #endregion
     }
 
@@ -7317,11 +7407,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C4b a, C4b b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C4b a, C4b b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
@@ -7603,9 +7695,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C4b o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
-            : false;
+        public override bool Equals(object other)
+            => (other is C4b o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -7705,9 +7796,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C4b> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C4b other)
         {
-            return R == other.R && G == other.G && B == other.B && A == other.A;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
 
         #endregion
@@ -7764,6 +7856,22 @@ namespace Aardvark.Base
         public static C4b Lerp(this double x, C4b a, C4b b)
         {
             return new C4b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+        }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4b a, C4b b)
+        {
+            return ApproximateEquals(a, b, Constant<byte>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4b a, C4b b, byte tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance) && ApproximateEquals(a.A, b.A, tolerance);
         }
 
         #endregion
@@ -8794,11 +8902,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C4us a, C4us b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C4us a, C4us b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
@@ -9080,9 +9190,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C4us o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
-            : false;
+        public override bool Equals(object other)
+            => (other is C4us o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -9182,9 +9291,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C4us> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C4us other)
         {
-            return R == other.R && G == other.G && B == other.B && A == other.A;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
 
         #endregion
@@ -9241,6 +9351,22 @@ namespace Aardvark.Base
         public static C4us Lerp(this double x, C4us a, C4us b)
         {
             return new C4us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+        }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4us a, C4us b)
+        {
+            return ApproximateEquals(a, b, Constant<ushort>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4us a, C4us b, ushort tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance) && ApproximateEquals(a.A, b.A, tolerance);
         }
 
         #endregion
@@ -10219,11 +10345,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C4ui a, C4ui b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C4ui a, C4ui b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
@@ -10467,9 +10595,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C4ui o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
-            : false;
+        public override bool Equals(object other)
+            => (other is C4ui o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -10569,9 +10696,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C4ui> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C4ui other)
         {
-            return R == other.R && G == other.G && B == other.B && A == other.A;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
 
         #endregion
@@ -10628,6 +10756,22 @@ namespace Aardvark.Base
         public static C4ui Lerp(this double x, C4ui a, C4ui b)
         {
             return new C4ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
+        }
+
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4ui a, C4ui b)
+        {
+            return ApproximateEquals(a, b, Constant<uint>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4ui a, C4ui b, uint tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance) && ApproximateEquals(a.A, b.A, tolerance);
         }
 
         #endregion
@@ -11683,11 +11827,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C4f a, C4f b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C4f a, C4f b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
@@ -12023,9 +12169,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C4f o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
-            : false;
+        public override bool Equals(object other)
+            => (other is C4f o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -12125,9 +12270,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C4f> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C4f other)
         {
-            return R == other.R && G == other.G && B == other.B && A == other.A;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
 
         #endregion
@@ -12177,6 +12323,22 @@ namespace Aardvark.Base
         {
             return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4f a, C4f b)
+        {
+            return ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4f a, C4f b, float tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance) && ApproximateEquals(a.A, b.A, tolerance);
+        }
+
         #endregion
     }
 
@@ -13167,11 +13329,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(C4d a, C4d b)
         {
             return a.R == b.R && a.G == b.G && a.B == b.B && a.A == b.A;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(C4d a, C4d b)
         {
             return a.R != b.R || a.G != b.G || a.B != b.B || a.A != b.A;
@@ -13453,9 +13617,8 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other) => (other is C4d o)
-            ? R.Equals(o.R) && G.Equals(o.G) && B.Equals(o.B) && A.Equals(o.A)
-            : false;
+        public override bool Equals(object other)
+            => (other is C4d o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -13555,9 +13718,10 @@ namespace Aardvark.Base
 
         #region IEquatable<C4d> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(C4d other)
         {
-            return R == other.R && G == other.G && B == other.B && A == other.A;
+            return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
 
         #endregion
@@ -13607,6 +13771,22 @@ namespace Aardvark.Base
         {
             return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
         }
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4d a, C4d b)
+        {
+            return ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this C4d a, C4d b, double tolerance)
+        {
+            return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance) && ApproximateEquals(a.A, b.A, tolerance);
+        }
+
         #endregion
     }
 

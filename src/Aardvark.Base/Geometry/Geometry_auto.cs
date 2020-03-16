@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -371,6 +372,23 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Polygon2d a, Polygon2d b)
+        {
+            if (a.m_pointCount != b.m_pointCount) return false;
+            for (int pi = 0; pi < a.m_pointCount; pi++)
+                if (a.m_pointArray[pi] != b.m_pointArray[pi]) return false;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Polygon2d a, Polygon2d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -378,15 +396,17 @@ namespace Aardvark.Base
             return m_pointArray.GetCombinedHashCode(m_pointCount);
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Polygon2d other)
         {
-            if (!(other is Polygon2d)) return false;
-            var o = (Polygon2d)other;
-            if (m_pointCount != o.m_pointCount) return false;
+            if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
-                if (!m_pointArray[pi].Equals(o.m_pointArray[pi])) return false;
+                if (!m_pointArray[pi].Equals(other.m_pointArray[pi])) return false;
             return true;
         }
+
+        public override bool Equals(object other)
+            => (other is Polygon2d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -414,6 +434,29 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Polygon2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Polygon2d a, Polygon2d b, double tolerance)
+        {
+            if (a.m_pointCount != b.m_pointCount) return false;
+            for (int pi = 0; pi < a.m_pointCount; pi++)
+                if (!ApproximateEquals(a.m_pointArray[pi], b.m_pointArray[pi], tolerance)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Returns whether the given <see cref="Polygon2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Polygon2d a, Polygon2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -863,6 +906,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Line2d a, Line2d b)
+            => (a.P0 == b.P0) && (a.P1 == b.P1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Line2d a, Line2d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -870,15 +925,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(P0, P1);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Line2d other)
+            => P0.Equals(other.P0) && P1.Equals(other.P1);
+
         public override bool Equals(object other)
-        {
-            if (other is Line2d)
-            {
-                var o = (Line2d)other;
-                return P0.Equals(o.P0) && P1.Equals(o.P1);
-            }
-            return false;
-        }
+             => (other is Line2d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -904,6 +956,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Line2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Line2d a, Line2d b, double tolerance)
+            => ApproximateEquals(a.P0, b.P0, tolerance) && ApproximateEquals(a.P1, b.P1, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Line2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Line2d a, Line2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -1115,6 +1185,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Triangle2d a, Triangle2d b)
+            => (a.P0 == b.P0) && (a.P1 == b.P1) && (a.P2 == b.P2);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Triangle2d a, Triangle2d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -1122,15 +1204,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(P0, P1, P2);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Triangle2d other)
+            => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2);
+
         public override bool Equals(object other)
-        {
-            if (other is Triangle2d)
-            {
-                var o = (Triangle2d)other;
-                return P0.Equals(o.P0) && P1.Equals(o.P1) && P2.Equals(o.P2);
-            }
-            return false;
-        }
+             => (other is Triangle2d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1156,6 +1235,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Triangle2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Triangle2d a, Triangle2d b, double tolerance)
+            => ApproximateEquals(a.P0, b.P0, tolerance) && ApproximateEquals(a.P1, b.P1, tolerance) && ApproximateEquals(a.P2, b.P2, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Triangle2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Triangle2d a, Triangle2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -1397,6 +1494,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Quad2d a, Quad2d b)
+            => (a.P0 == b.P0) && (a.P1 == b.P1) && (a.P2 == b.P2) && (a.P3 == b.P3);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Quad2d a, Quad2d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -1404,15 +1513,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(P0, P1, P2, P3);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Quad2d other)
+            => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2) && P3.Equals(other.P3);
+
         public override bool Equals(object other)
-        {
-            if (other is Quad2d)
-            {
-                var o = (Quad2d)other;
-                return P0.Equals(o.P0) && P1.Equals(o.P1) && P2.Equals(o.P2) && P3.Equals(o.P3);
-            }
-            return false;
-        }
+             => (other is Quad2d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1438,6 +1544,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Quad2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Quad2d a, Quad2d b, double tolerance)
+            => ApproximateEquals(a.P0, b.P0, tolerance) && ApproximateEquals(a.P1, b.P1, tolerance) && ApproximateEquals(a.P2, b.P2, tolerance) && ApproximateEquals(a.P3, b.P3, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Quad2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Quad2d a, Quad2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -1827,6 +1951,23 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Polygon3d a, Polygon3d b)
+        {
+            if (a.m_pointCount != b.m_pointCount) return false;
+            for (int pi = 0; pi < a.m_pointCount; pi++)
+                if (a.m_pointArray[pi] != b.m_pointArray[pi]) return false;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Polygon3d a, Polygon3d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -1834,15 +1975,17 @@ namespace Aardvark.Base
             return m_pointArray.GetCombinedHashCode(m_pointCount);
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Polygon3d other)
         {
-            if (!(other is Polygon3d)) return false;
-            var o = (Polygon3d)other;
-            if (m_pointCount != o.m_pointCount) return false;
+            if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
-                if (!m_pointArray[pi].Equals(o.m_pointArray[pi])) return false;
+                if (!m_pointArray[pi].Equals(other.m_pointArray[pi])) return false;
             return true;
         }
+
+        public override bool Equals(object other)
+            => (other is Polygon3d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1870,6 +2013,29 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Polygon3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Polygon3d a, Polygon3d b, double tolerance)
+        {
+            if (a.m_pointCount != b.m_pointCount) return false;
+            for (int pi = 0; pi < a.m_pointCount; pi++)
+                if (!ApproximateEquals(a.m_pointArray[pi], b.m_pointArray[pi], tolerance)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Returns whether the given <see cref="Polygon3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Polygon3d a, Polygon3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -2320,6 +2486,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Line3d a, Line3d b)
+            => (a.P0 == b.P0) && (a.P1 == b.P1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Line3d a, Line3d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -2327,15 +2505,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(P0, P1);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Line3d other)
+            => P0.Equals(other.P0) && P1.Equals(other.P1);
+
         public override bool Equals(object other)
-        {
-            if (other is Line3d)
-            {
-                var o = (Line3d)other;
-                return P0.Equals(o.P0) && P1.Equals(o.P1);
-            }
-            return false;
-        }
+             => (other is Line3d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2361,6 +2536,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Line3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Line3d a, Line3d b, double tolerance)
+            => ApproximateEquals(a.P0, b.P0, tolerance) && ApproximateEquals(a.P1, b.P1, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Line3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Line3d a, Line3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -2572,6 +2765,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Triangle3d a, Triangle3d b)
+            => (a.P0 == b.P0) && (a.P1 == b.P1) && (a.P2 == b.P2);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Triangle3d a, Triangle3d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -2579,15 +2784,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(P0, P1, P2);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Triangle3d other)
+            => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2);
+
         public override bool Equals(object other)
-        {
-            if (other is Triangle3d)
-            {
-                var o = (Triangle3d)other;
-                return P0.Equals(o.P0) && P1.Equals(o.P1) && P2.Equals(o.P2);
-            }
-            return false;
-        }
+             => (other is Triangle3d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2613,6 +2815,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Triangle3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Triangle3d a, Triangle3d b, double tolerance)
+            => ApproximateEquals(a.P0, b.P0, tolerance) && ApproximateEquals(a.P1, b.P1, tolerance) && ApproximateEquals(a.P2, b.P2, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Triangle3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Triangle3d a, Triangle3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -2854,6 +3074,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Quad3d a, Quad3d b)
+            => (a.P0 == b.P0) && (a.P1 == b.P1) && (a.P2 == b.P2) && (a.P3 == b.P3);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Quad3d a, Quad3d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -2861,15 +3093,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(P0, P1, P2, P3);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Quad3d other)
+            => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2) && P3.Equals(other.P3);
+
         public override bool Equals(object other)
-        {
-            if (other is Quad3d)
-            {
-                var o = (Quad3d)other;
-                return P0.Equals(o.P0) && P1.Equals(o.P1) && P2.Equals(o.P2) && P3.Equals(o.P3);
-            }
-            return false;
-        }
+             => (other is Quad3d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2895,6 +3124,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Quad3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Quad3d a, Quad3d b, double tolerance)
+            => ApproximateEquals(a.P0, b.P0, tolerance) && ApproximateEquals(a.P1, b.P1, tolerance) && ApproximateEquals(a.P2, b.P2, tolerance) && ApproximateEquals(a.P3, b.P3, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Quad3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Quad3d a, Quad3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -3051,6 +3298,72 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Ellipse2d a, Ellipse2d b) => 
+            (a.Center == b.Center) && 
+            (a.Axis0 == b.Axis0) && 
+            (a.Axis1 == b.Axis1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Ellipse2d a, Ellipse2d b)
+            => !(a == b);
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode()
+        {
+            return HashCode.GetCombined(Center, Axis0, Axis1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Ellipse2d other) =>
+            Center.Equals(other.Center) &&
+            Axis0.Equals(other.Axis0) &&
+            Axis1.Equals(other.Axis1);
+
+        public override bool Equals(object other)
+             => (other is Ellipse2d o) ? Equals(o) : false;
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Center, Axis0, Axis1);
+        }
+
+        public static Ellipse2d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Ellipse2d(
+                V2d.Parse(x[0]),
+                V2d.Parse(x[1]),
+                V2d.Parse(x[2])
+            );
+        }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Ellipse2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Ellipse2d a, Ellipse2d b, double tolerance) =>
+            ApproximateEquals(a.Center, b.Center, tolerance) &&
+            ApproximateEquals(a.Axis0, b.Axis0, tolerance) &&
+            ApproximateEquals(a.Axis1, b.Axis1, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Ellipse2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Ellipse2d a, Ellipse2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -3187,6 +3500,76 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Ellipse3d a, Ellipse3d b) => 
+            (a.Center == b.Center) && 
+            (a.Normal == b.Normal) &&
+            (a.Axis0 == b.Axis0) && 
+            (a.Axis1 == b.Axis1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Ellipse3d a, Ellipse3d b)
+            => !(a == b);
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode()
+        {
+            return HashCode.GetCombined(Center, Normal, Axis0, Axis1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Ellipse3d other) =>
+            Center.Equals(other.Center) &&
+            Normal.Equals(other.Normal) &&
+            Axis0.Equals(other.Axis0) &&
+            Axis1.Equals(other.Axis1);
+
+        public override bool Equals(object other)
+             => (other is Ellipse3d o) ? Equals(o) : false;
+
+        public override string ToString()
+        {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", Center, Normal, Axis0, Axis1);
+        }
+
+        public static Ellipse3d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Ellipse3d(
+                V3d.Parse(x[0]),
+                V3d.Parse(x[1]),
+                V3d.Parse(x[2]),
+                V3d.Parse(x[3])
+            );
+        }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Ellipse3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Ellipse3d a, Ellipse3d b, double tolerance) =>
+            ApproximateEquals(a.Center, b.Center, tolerance) &&
+            ApproximateEquals(a.Normal, b.Normal, tolerance) &&
+            ApproximateEquals(a.Axis0, b.Axis0, tolerance) &&
+            ApproximateEquals(a.Axis1, b.Axis1, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Ellipse3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Ellipse3d a, Ellipse3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion

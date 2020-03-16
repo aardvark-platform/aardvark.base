@@ -505,8 +505,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__type__ r0, __type__ r1)
-            => (/*# qfields.ForEach(f => {*/r0.__f__ == r1.__f__/*# }, and);*/) ||
-                    (/*# qfields.ForEach(f => {*/r0.__f__ == -r1.__f__/*# }, and);*/);
+            => Rot.Distance(r0, r1) == 0;
 
         /// <summary>
         /// Checks whether two <see cref="__type__"/> transformations are different.
@@ -921,9 +920,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(W, V);
         }
 
-        public override bool Equals(object other) => (other is __type__ r)
-            ? (Rot.Distance(this, r) == 0)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__type__ other)
+            => Rot.Distance(this, other) == 0;
+
+        public override bool Equals(object other)
+            => (other is __type__ o) ? Equals(o) : false;
 
         public override string ToString()
         {

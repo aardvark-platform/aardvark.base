@@ -524,10 +524,14 @@ namespace Aardvark.Base
         public override int GetHashCode()
             => HashCode.GetCombined(Real, Imag);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__ct__ other)
+            => Real.Equals(other.Real) && Imag.Equals(other.Imag);
+
         public override bool Equals(object other)
         {
             if (other is __ct__ obj)
-                return Real.Equals(obj.Real) && Imag.Equals(obj.Imag);
+                return Equals(obj);
             else
                 return false;
         }
@@ -959,7 +963,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given complex numbers are equal within
-        /// Constant{__ft__}.PositiveTinyValue.
+        /// Constant&lt;__ft__&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __ct__ a, __ct__ b)

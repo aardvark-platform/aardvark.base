@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base.Rendering
@@ -23,13 +24,18 @@ namespace Aardvark.Base.Rendering
         public override int GetHashCode() 
             => HashCode.Combine(Constant.GetHashCode(), SlopeScale.GetHashCode(), Clamp.GetHashCode());
 
-        public override bool Equals(object obj) => (obj is DepthBiasState o)
-            ? Constant.Equals(o.Constant) && SlopeScale.Equals(o.SlopeScale) && Clamp.Equals(o.Clamp)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(DepthBiasState other)
+            => Constant.Equals(other.Constant) && SlopeScale.Equals(other.SlopeScale) && Clamp.Equals(other.Clamp);
 
+        public override bool Equals(object other)
+            => (other is DepthBiasState o) ? Equals(o) : false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(DepthBiasState l, DepthBiasState r)
             => l.Constant == r.Constant && l.SlopeScale == r.SlopeScale && l.Clamp == r.Clamp;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(DepthBiasState l, DepthBiasState r)
             => l.Constant != r.Constant || l.SlopeScale != r.SlopeScale || l.Clamp != r.Clamp;
     }

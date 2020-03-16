@@ -73,6 +73,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(__ftype__ value)
         {
             //# n.ForEach(r => {
@@ -80,6 +81,7 @@ namespace Aardvark.Base
             //# });
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(/*# n.ForEach(r => { */
                 /*# m.ForEach(s => {*/__ftype__ m__r____s__/*#}, comma);}, comma); */)
         {
@@ -88,6 +90,7 @@ namespace Aardvark.Base
             //# });
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(__ftype__[] a)
         {
             //# int l = 0;
@@ -96,6 +99,7 @@ namespace Aardvark.Base
             //# l++; }); });
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(__ftype__[] a, int start)
         {
             //# l = 0;
@@ -105,6 +109,7 @@ namespace Aardvark.Base
         }
 
         //# if (n == m - 1) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(__nntype__ m, __vntype__ v)
         {
             //# n.ForEach(r => {
@@ -118,6 +123,7 @@ namespace Aardvark.Base
         //#         for (int b = a; b <= (a+1) && b < 5; b++) {
         //#             var MabType1 = "M" + a + b + tcharA[t1];
         //#             if (n != a || m != b || t1 != t)  {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(__MabType1__ m)
         {
             //# n.ForEach(r => {
@@ -943,6 +949,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ operator -(__nmtype__ m)
         {
             return new __nmtype__(/*# n.ForEach(r => { */
@@ -954,6 +961,7 @@ namespace Aardvark.Base
         //#         var nmtype1 = "M" + n + m + tcharA[t1];
         //#         var ftype1 = ftypeA[t1];
         //#         if (o != ops.Length-1) { 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype1__ __opact__(__nmtype__ a, __nmtype1__ b)
         {
             return new __nmtype1__(/*# n.ForEach(r => { */
@@ -961,12 +969,14 @@ namespace Aardvark.Base
         }
 
         //#             }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype1__ __opact__(__nmtype__ m, __ftype1__ s)
         {
             return new __nmtype1__(/*# n.ForEach(r => { */
                 /*# m.ForEach(s => { */m.M__r____s____op__s/*# }, comma); }, comma); */);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype1__ __opact__(__ftype1__ s, __nmtype__ m)
         {
             return new __nmtype1__(/*# n.ForEach(r => { */
@@ -1005,18 +1015,21 @@ namespace Aardvark.Base
 
         //# for(int o = 0; o < bops.Length; o++) {
         //#     string bop = " " + bops[o] + " ", bopname = "operator " + bops[o];
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __bopname__(__nmtype__ a, __nmtype__ b)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
                 a.M__i____j____bop__b.M__i____j__/*#}, andand);}, andand);*/;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __bopname__(__nmtype__ a, __ftype__ s)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
                 a.M__i____j____bop__s/*# }, andand); }, andand); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __bopname__(__ftype__ s, __nmtype__ a)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
@@ -1024,16 +1037,19 @@ namespace Aardvark.Base
         }
 
         //# }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__nmtype__ a, __nmtype__ b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__nmtype__ m, __ftype__ s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__ftype__ s, __nmtype__ m)
         {
             return !(s == m);
@@ -1049,16 +1065,15 @@ namespace Aardvark.Base
                 /*# m.ForEach(s => {*/M__r____s__.GetHashCode()/*# }, comma); }, comma); */);
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__nmtype__ other)
         {
-            if (other is __nmtype__ o)
-            {
-                return /*# n.ForEach(i => { */
-                    /*# m.ForEach(j => { */M__i____j__.Equals(o.M__i____j__)/*#}, andand);}, andand);*/;
-            }
-            else
-                return false;
+            return /*# n.ForEach(i => { */
+                /*# m.ForEach(j => { */M__i____j__.Equals(other.M__i____j__)/*#}, andand);}, andand);*/;
         }
+
+        public override bool Equals(object other)
+            => (other is __nmtype__ o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1872,6 +1887,15 @@ namespace Aardvark.Base
     {
         #region ApproximateEquals
 
+        //# if (isReal) {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __nmtype__ a, __nmtype__ b)
+            => ApproximateEquals(a, b, Constant<__ftype__>.PositiveTinyValue);
+
+        //# }
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>

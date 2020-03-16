@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base
@@ -110,11 +111,13 @@ namespace Aardvark.Base
 
         #region Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__type__ a, __type__ b)
         {
             return /*# d.ForEach(i => { */a.I__i__ == b.I__i__/*# }, andand); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__type__ a, __type__ b)
         {
             return /*# d.ForEach(i => { */a.I__i__ != b.I__i__/*# }, oror); */;
@@ -130,14 +133,13 @@ namespace Aardvark.Base
         }
 
         public override bool Equals(object other)
-        {
-            return (other is __type__) ? this == (__type__)other : false;
-        }
+            => (other is __type__ o) ? Equals(o) : false;
 
         #endregion
 
         #region IEquatable<__type__> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(__type__ other)
         {
             return this == other;

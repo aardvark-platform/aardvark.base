@@ -738,9 +738,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1b o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1b other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1b o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1075,6 +1078,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1b a, Range1b b)
+        {
+            return ApproximateEquals(a, b, Constant<byte>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1b a, Range1b b, byte tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -1709,9 +1729,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1sb o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1sb other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1sb o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2046,6 +2069,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1sb a, Range1sb b)
+        {
+            return ApproximateEquals(a, b, Constant<sbyte>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1sb a, Range1sb b, sbyte tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -2680,9 +2720,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1s o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1s other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1s o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -3017,6 +3060,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1s a, Range1s b)
+        {
+            return ApproximateEquals(a, b, Constant<short>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1s a, Range1s b, short tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -3651,9 +3711,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1us o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1us other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1us o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -3988,6 +4051,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1us a, Range1us b)
+        {
+            return ApproximateEquals(a, b, Constant<ushort>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1us a, Range1us b, ushort tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -4622,9 +4702,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1i o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1i other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1i o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -4959,6 +5042,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1i a, Range1i b)
+        {
+            return ApproximateEquals(a, b, Constant<int>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1i a, Range1i b, int tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -5593,9 +5693,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1ui o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1ui other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1ui o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -5930,6 +6033,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1ui a, Range1ui b)
+        {
+            return ApproximateEquals(a, b, Constant<uint>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1ui a, Range1ui b, uint tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -6564,9 +6684,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1l o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1l other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1l o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -6901,6 +7024,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1l a, Range1l b)
+        {
+            return ApproximateEquals(a, b, Constant<long>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1l a, Range1l b, long tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -7535,9 +7675,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1ul o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1ul other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1ul o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -7872,6 +8015,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1ul a, Range1ul b)
+        {
+            return ApproximateEquals(a, b, Constant<ulong>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1ul a, Range1ul b, ulong tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -8525,9 +8685,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1f o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1f other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -8862,6 +9025,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1f a, Range1f b)
+        {
+            return ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1f a, Range1f b, float tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -9515,9 +9695,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Range1d o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Range1d other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Range1d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -9852,6 +10035,23 @@ namespace Aardvark.Base
     }
 
     #endregion
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1d a, Range1d b)
+        {
+            return ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Range1d a, Range1d b, double tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
+
+        #endregion
+    }
 
     #endregion
 
@@ -10816,9 +11016,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Box2i o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Box2i other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Box2i o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -11343,6 +11546,23 @@ namespace Aardvark.Base
             foreach (var p in points) box.ExtendBy(p);
             return box;
         }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box2i a, Box2i b)
+        {
+            return ApproximateEquals(a, b, Constant<int>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box2i a, Box2i b, int tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
     }
@@ -12310,9 +12530,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Box2l o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Box2l other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Box2l o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -12837,6 +13060,23 @@ namespace Aardvark.Base
             foreach (var p in points) box.ExtendBy(p);
             return box;
         }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box2l a, Box2l b)
+        {
+            return ApproximateEquals(a, b, Constant<long>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box2l a, Box2l b, long tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
     }
@@ -13921,9 +14161,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Box2f o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Box2f other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Box2f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -14437,6 +14680,23 @@ namespace Aardvark.Base
             foreach (var p in points) box.ExtendBy(p);
             return box;
         }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box2f a, Box2f b)
+        {
+            return ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box2f a, Box2f b, float tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
     }
@@ -15521,9 +15781,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Box2d o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Box2d other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Box2d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -16037,6 +16300,23 @@ namespace Aardvark.Base
             foreach (var p in points) box.ExtendBy(p);
             return box;
         }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box2d a, Box2d b)
+        {
+            return ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box2d a, Box2d b, double tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
     }
@@ -16989,9 +17269,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Box3i o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Box3i other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Box3i o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -17860,6 +18143,23 @@ namespace Aardvark.Base
             var cs = box.ComputeCorners();
             return GetOutlineCornerIndicesCW(box, fromPosition)?.Map(i => cs[i]);
         }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box3i a, Box3i b)
+        {
+            return ApproximateEquals(a, b, Constant<int>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box3i a, Box3i b, int tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
     }
@@ -18812,9 +19112,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Box3l o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Box3l other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Box3l o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -19683,6 +19986,23 @@ namespace Aardvark.Base
             var cs = box.ComputeCorners();
             return GetOutlineCornerIndicesCW(box, fromPosition)?.Map(i => cs[i]);
         }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box3l a, Box3l b)
+        {
+            return ApproximateEquals(a, b, Constant<long>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box3l a, Box3l b, long tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
     }
@@ -20758,9 +21078,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Box3f o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Box3f other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Box3f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -21617,6 +21940,23 @@ namespace Aardvark.Base
             var cs = box.ComputeCorners();
             return GetOutlineCornerIndicesCW(box, fromPosition)?.Map(i => cs[i]);
         }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box3f a, Box3f b)
+        {
+            return ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box3f a, Box3f b, float tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
     }
@@ -22692,9 +23032,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Min, Max);
         }
 
-        public override bool Equals(object obj) => (obj is Box3d o)
-            ? Min.Equals(o.Min) && Max.Equals(o.Max)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Box3d other)
+            => Min.Equals(other.Min) && Max.Equals(other.Max);
+
+        public override bool Equals(object obj) =>
+            (obj is Box3d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -23551,6 +23894,23 @@ namespace Aardvark.Base
             var cs = box.ComputeCorners();
             return GetOutlineCornerIndicesCW(box, fromPosition)?.Map(i => cs[i]);
         }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box3d a, Box3d b)
+        {
+            return ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Box3d a, Box3d b, double tolerance)
+            => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
     }

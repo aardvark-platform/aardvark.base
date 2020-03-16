@@ -25,12 +25,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(int value)
         {
             M00 = value; M01 = value; 
             M10 = value; M11 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(
                 int m00, int m01, 
                 int m10, int m11)
@@ -39,6 +41,7 @@ namespace Aardvark.Base
             M10 = m10; M11 = m11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(int[] a)
         {
             M00 = a[0];
@@ -47,6 +50,7 @@ namespace Aardvark.Base
             M11 = a[3];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(int[] a, int start)
         {
             M00 = a[start + 0];
@@ -55,114 +59,133 @@ namespace Aardvark.Base
             M11 = a[start + 3];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M23i m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M33i m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M34i m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M44i m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M22l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M23l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M33l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M34l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M44l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M22f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M23f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M33f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M34f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M44f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M22d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M23d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M33d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M34d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
             M10 = (int)m.M10; M11 = (int)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(M44d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; 
@@ -931,6 +954,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator -(M22i m)
         {
             return new M22i(
@@ -938,6 +962,7 @@ namespace Aardvark.Base
                 -m.M10, -m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  + (M22i a, M22i b)
         {
             return new M22i(
@@ -945,6 +970,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  + (M22i m, int s)
         {
             return new M22i(
@@ -952,6 +978,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  + (int s, M22i m)
         {
             return new M22i(
@@ -959,6 +986,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  + (M22i a, M22l b)
         {
             return new M22l(
@@ -966,6 +994,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  + (M22i m, long s)
         {
             return new M22l(
@@ -973,6 +1002,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  + (long s, M22i m)
         {
             return new M22l(
@@ -980,6 +1010,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (M22i a, M22f b)
         {
             return new M22f(
@@ -987,6 +1018,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (M22i m, float s)
         {
             return new M22f(
@@ -994,6 +1026,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (float s, M22i m)
         {
             return new M22f(
@@ -1001,6 +1034,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (M22i a, M22d b)
         {
             return new M22d(
@@ -1008,6 +1042,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (M22i m, double s)
         {
             return new M22d(
@@ -1015,6 +1050,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (double s, M22i m)
         {
             return new M22d(
@@ -1022,6 +1058,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  - (M22i a, M22i b)
         {
             return new M22i(
@@ -1029,6 +1066,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  - (M22i m, int s)
         {
             return new M22i(
@@ -1036,6 +1074,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  - (int s, M22i m)
         {
             return new M22i(
@@ -1043,6 +1082,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  - (M22i a, M22l b)
         {
             return new M22l(
@@ -1050,6 +1090,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  - (M22i m, long s)
         {
             return new M22l(
@@ -1057,6 +1098,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  - (long s, M22i m)
         {
             return new M22l(
@@ -1064,6 +1106,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (M22i a, M22f b)
         {
             return new M22f(
@@ -1071,6 +1114,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (M22i m, float s)
         {
             return new M22f(
@@ -1078,6 +1122,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (float s, M22i m)
         {
             return new M22f(
@@ -1085,6 +1130,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (M22i a, M22d b)
         {
             return new M22d(
@@ -1092,6 +1138,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (M22i m, double s)
         {
             return new M22d(
@@ -1099,6 +1146,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (double s, M22i m)
         {
             return new M22d(
@@ -1106,6 +1154,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  % (M22i a, M22i b)
         {
             return new M22i(
@@ -1113,6 +1162,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  % (M22i m, int s)
         {
             return new M22i(
@@ -1120,6 +1170,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  % (int s, M22i m)
         {
             return new M22i(
@@ -1127,6 +1178,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  % (M22i a, M22l b)
         {
             return new M22l(
@@ -1134,6 +1186,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  % (M22i m, long s)
         {
             return new M22l(
@@ -1141,6 +1194,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  % (long s, M22i m)
         {
             return new M22l(
@@ -1148,6 +1202,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (M22i a, M22f b)
         {
             return new M22f(
@@ -1155,6 +1210,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (M22i m, float s)
         {
             return new M22f(
@@ -1162,6 +1218,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (float s, M22i m)
         {
             return new M22f(
@@ -1169,6 +1226,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (M22i a, M22d b)
         {
             return new M22d(
@@ -1176,6 +1234,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (M22i m, double s)
         {
             return new M22d(
@@ -1183,6 +1242,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (double s, M22i m)
         {
             return new M22d(
@@ -1190,6 +1250,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  / (M22i a, M22i b)
         {
             return new M22i(
@@ -1197,6 +1258,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  / (M22i m, int s)
         {
             return new M22i(
@@ -1204,6 +1266,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  / (int s, M22i m)
         {
             return new M22i(
@@ -1211,6 +1274,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  / (M22i a, M22l b)
         {
             return new M22l(
@@ -1218,6 +1282,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  / (M22i m, long s)
         {
             return new M22l(
@@ -1225,6 +1290,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  / (long s, M22i m)
         {
             return new M22l(
@@ -1232,6 +1298,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (M22i a, M22f b)
         {
             return new M22f(
@@ -1239,6 +1306,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (M22i m, float s)
         {
             return new M22f(
@@ -1246,6 +1314,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (float s, M22i m)
         {
             return new M22f(
@@ -1253,6 +1322,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (M22i a, M22d b)
         {
             return new M22d(
@@ -1260,6 +1330,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (M22i m, double s)
         {
             return new M22d(
@@ -1267,6 +1338,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (double s, M22i m)
         {
             return new M22d(
@@ -1274,6 +1346,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  * (M22i m, int s)
         {
             return new M22i(
@@ -1281,6 +1354,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22i operator  * (int s, M22i m)
         {
             return new M22i(
@@ -1288,6 +1362,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  * (M22i m, long s)
         {
             return new M22l(
@@ -1295,6 +1370,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  * (long s, M22i m)
         {
             return new M22l(
@@ -1302,6 +1378,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  * (M22i m, float s)
         {
             return new M22f(
@@ -1309,6 +1386,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  * (float s, M22i m)
         {
             return new M22f(
@@ -1316,6 +1394,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  * (M22i m, double s)
         {
             return new M22d(
@@ -1323,6 +1402,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  * (double s, M22i m)
         {
             return new M22d(
@@ -1360,6 +1440,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M22i a, M22i b)
         {
             return
@@ -1369,6 +1450,7 @@ namespace Aardvark.Base
                 a.M11 < b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M22i a, int s)
         {
             return
@@ -1378,6 +1460,7 @@ namespace Aardvark.Base
                 a.M11 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(int s, M22i a)
         {
             return
@@ -1387,6 +1470,7 @@ namespace Aardvark.Base
                 s < a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M22i a, M22i b)
         {
             return
@@ -1396,6 +1480,7 @@ namespace Aardvark.Base
                 a.M11 > b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M22i a, int s)
         {
             return
@@ -1405,6 +1490,7 @@ namespace Aardvark.Base
                 a.M11 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(int s, M22i a)
         {
             return
@@ -1414,6 +1500,7 @@ namespace Aardvark.Base
                 s > a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22i a, M22i b)
         {
             return
@@ -1423,6 +1510,7 @@ namespace Aardvark.Base
                 a.M11 == b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22i a, int s)
         {
             return
@@ -1432,6 +1520,7 @@ namespace Aardvark.Base
                 a.M11 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(int s, M22i a)
         {
             return
@@ -1441,6 +1530,7 @@ namespace Aardvark.Base
                 s == a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M22i a, M22i b)
         {
             return
@@ -1450,6 +1540,7 @@ namespace Aardvark.Base
                 a.M11 <= b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M22i a, int s)
         {
             return
@@ -1459,6 +1550,7 @@ namespace Aardvark.Base
                 a.M11 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(int s, M22i a)
         {
             return
@@ -1468,6 +1560,7 @@ namespace Aardvark.Base
                 s <= a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M22i a, M22i b)
         {
             return
@@ -1477,6 +1570,7 @@ namespace Aardvark.Base
                 a.M11 >= b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M22i a, int s)
         {
             return
@@ -1486,6 +1580,7 @@ namespace Aardvark.Base
                 a.M11 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(int s, M22i a)
         {
             return
@@ -1495,16 +1590,19 @@ namespace Aardvark.Base
                 s >= a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M22i a, M22i b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M22i m, int s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(int s, M22i m)
         {
             return !(s == m);
@@ -1521,17 +1619,16 @@ namespace Aardvark.Base
                 M10.GetHashCode(), M11.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M22i other)
         {
-            if (other is M22i o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11);
         }
+
+        public override bool Equals(object other)
+            => (other is M22i o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -2062,12 +2159,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(long value)
         {
             M00 = value; M01 = value; 
             M10 = value; M11 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(
                 long m00, long m01, 
                 long m10, long m11)
@@ -2076,6 +2175,7 @@ namespace Aardvark.Base
             M10 = m10; M11 = m11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(long[] a)
         {
             M00 = a[0];
@@ -2084,6 +2184,7 @@ namespace Aardvark.Base
             M11 = a[3];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(long[] a, int start)
         {
             M00 = a[start + 0];
@@ -2092,114 +2193,133 @@ namespace Aardvark.Base
             M11 = a[start + 3];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M22i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M23i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M33i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M34i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M44i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M23l m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M33l m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M34l m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M44l m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M22f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M23f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M33f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M34f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M44f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M22d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M23d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M33d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M34d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
             M10 = (long)m.M10; M11 = (long)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(M44d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; 
@@ -2968,6 +3088,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator -(M22l m)
         {
             return new M22l(
@@ -2975,6 +3096,7 @@ namespace Aardvark.Base
                 -m.M10, -m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  + (M22l a, M22l b)
         {
             return new M22l(
@@ -2982,6 +3104,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  + (M22l m, long s)
         {
             return new M22l(
@@ -2989,6 +3112,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  + (long s, M22l m)
         {
             return new M22l(
@@ -2996,6 +3120,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (M22l a, M22f b)
         {
             return new M22f(
@@ -3003,6 +3128,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (M22l m, float s)
         {
             return new M22f(
@@ -3010,6 +3136,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (float s, M22l m)
         {
             return new M22f(
@@ -3017,6 +3144,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (M22l a, M22d b)
         {
             return new M22d(
@@ -3024,6 +3152,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (M22l m, double s)
         {
             return new M22d(
@@ -3031,6 +3160,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (double s, M22l m)
         {
             return new M22d(
@@ -3038,6 +3168,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  - (M22l a, M22l b)
         {
             return new M22l(
@@ -3045,6 +3176,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  - (M22l m, long s)
         {
             return new M22l(
@@ -3052,6 +3184,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  - (long s, M22l m)
         {
             return new M22l(
@@ -3059,6 +3192,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (M22l a, M22f b)
         {
             return new M22f(
@@ -3066,6 +3200,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (M22l m, float s)
         {
             return new M22f(
@@ -3073,6 +3208,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (float s, M22l m)
         {
             return new M22f(
@@ -3080,6 +3216,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (M22l a, M22d b)
         {
             return new M22d(
@@ -3087,6 +3224,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (M22l m, double s)
         {
             return new M22d(
@@ -3094,6 +3232,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (double s, M22l m)
         {
             return new M22d(
@@ -3101,6 +3240,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  % (M22l a, M22l b)
         {
             return new M22l(
@@ -3108,6 +3248,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  % (M22l m, long s)
         {
             return new M22l(
@@ -3115,6 +3256,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  % (long s, M22l m)
         {
             return new M22l(
@@ -3122,6 +3264,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (M22l a, M22f b)
         {
             return new M22f(
@@ -3129,6 +3272,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (M22l m, float s)
         {
             return new M22f(
@@ -3136,6 +3280,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (float s, M22l m)
         {
             return new M22f(
@@ -3143,6 +3288,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (M22l a, M22d b)
         {
             return new M22d(
@@ -3150,6 +3296,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (M22l m, double s)
         {
             return new M22d(
@@ -3157,6 +3304,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (double s, M22l m)
         {
             return new M22d(
@@ -3164,6 +3312,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  / (M22l a, M22l b)
         {
             return new M22l(
@@ -3171,6 +3320,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  / (M22l m, long s)
         {
             return new M22l(
@@ -3178,6 +3328,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  / (long s, M22l m)
         {
             return new M22l(
@@ -3185,6 +3336,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (M22l a, M22f b)
         {
             return new M22f(
@@ -3192,6 +3344,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (M22l m, float s)
         {
             return new M22f(
@@ -3199,6 +3352,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (float s, M22l m)
         {
             return new M22f(
@@ -3206,6 +3360,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (M22l a, M22d b)
         {
             return new M22d(
@@ -3213,6 +3368,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (M22l m, double s)
         {
             return new M22d(
@@ -3220,6 +3376,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (double s, M22l m)
         {
             return new M22d(
@@ -3227,6 +3384,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  * (M22l m, long s)
         {
             return new M22l(
@@ -3234,6 +3392,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22l operator  * (long s, M22l m)
         {
             return new M22l(
@@ -3241,6 +3400,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  * (M22l m, float s)
         {
             return new M22f(
@@ -3248,6 +3408,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  * (float s, M22l m)
         {
             return new M22f(
@@ -3255,6 +3416,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  * (M22l m, double s)
         {
             return new M22d(
@@ -3262,6 +3424,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  * (double s, M22l m)
         {
             return new M22d(
@@ -3299,6 +3462,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M22l a, M22l b)
         {
             return
@@ -3308,6 +3472,7 @@ namespace Aardvark.Base
                 a.M11 < b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M22l a, long s)
         {
             return
@@ -3317,6 +3482,7 @@ namespace Aardvark.Base
                 a.M11 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(long s, M22l a)
         {
             return
@@ -3326,6 +3492,7 @@ namespace Aardvark.Base
                 s < a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M22l a, M22l b)
         {
             return
@@ -3335,6 +3502,7 @@ namespace Aardvark.Base
                 a.M11 > b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M22l a, long s)
         {
             return
@@ -3344,6 +3512,7 @@ namespace Aardvark.Base
                 a.M11 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(long s, M22l a)
         {
             return
@@ -3353,6 +3522,7 @@ namespace Aardvark.Base
                 s > a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22l a, M22l b)
         {
             return
@@ -3362,6 +3532,7 @@ namespace Aardvark.Base
                 a.M11 == b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22l a, long s)
         {
             return
@@ -3371,6 +3542,7 @@ namespace Aardvark.Base
                 a.M11 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(long s, M22l a)
         {
             return
@@ -3380,6 +3552,7 @@ namespace Aardvark.Base
                 s == a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M22l a, M22l b)
         {
             return
@@ -3389,6 +3562,7 @@ namespace Aardvark.Base
                 a.M11 <= b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M22l a, long s)
         {
             return
@@ -3398,6 +3572,7 @@ namespace Aardvark.Base
                 a.M11 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(long s, M22l a)
         {
             return
@@ -3407,6 +3582,7 @@ namespace Aardvark.Base
                 s <= a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M22l a, M22l b)
         {
             return
@@ -3416,6 +3592,7 @@ namespace Aardvark.Base
                 a.M11 >= b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M22l a, long s)
         {
             return
@@ -3425,6 +3602,7 @@ namespace Aardvark.Base
                 a.M11 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(long s, M22l a)
         {
             return
@@ -3434,16 +3612,19 @@ namespace Aardvark.Base
                 s >= a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M22l a, M22l b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M22l m, long s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(long s, M22l m)
         {
             return !(s == m);
@@ -3460,17 +3641,16 @@ namespace Aardvark.Base
                 M10.GetHashCode(), M11.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M22l other)
         {
-            if (other is M22l o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11);
         }
+
+        public override bool Equals(object other)
+            => (other is M22l o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -4001,12 +4181,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(float value)
         {
             M00 = value; M01 = value; 
             M10 = value; M11 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(
                 float m00, float m01, 
                 float m10, float m11)
@@ -4015,6 +4197,7 @@ namespace Aardvark.Base
             M10 = m10; M11 = m11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(float[] a)
         {
             M00 = a[0];
@@ -4023,6 +4206,7 @@ namespace Aardvark.Base
             M11 = a[3];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(float[] a, int start)
         {
             M00 = a[start + 0];
@@ -4031,114 +4215,133 @@ namespace Aardvark.Base
             M11 = a[start + 3];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M22i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M23i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M33i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M34i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M44i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M22l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M23l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M33l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M34l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M44l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M23f m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M33f m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M34f m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M44f m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M22d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M23d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M33d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M34d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
             M10 = (float)m.M10; M11 = (float)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(M44d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; 
@@ -5087,6 +5290,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator -(M22f m)
         {
             return new M22f(
@@ -5094,6 +5298,7 @@ namespace Aardvark.Base
                 -m.M10, -m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (M22f a, M22f b)
         {
             return new M22f(
@@ -5101,6 +5306,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (M22f m, float s)
         {
             return new M22f(
@@ -5108,6 +5314,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  + (float s, M22f m)
         {
             return new M22f(
@@ -5115,6 +5322,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (M22f a, M22d b)
         {
             return new M22d(
@@ -5122,6 +5330,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (M22f m, double s)
         {
             return new M22d(
@@ -5129,6 +5338,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (double s, M22f m)
         {
             return new M22d(
@@ -5136,6 +5346,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (M22f a, M22f b)
         {
             return new M22f(
@@ -5143,6 +5354,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (M22f m, float s)
         {
             return new M22f(
@@ -5150,6 +5362,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  - (float s, M22f m)
         {
             return new M22f(
@@ -5157,6 +5370,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (M22f a, M22d b)
         {
             return new M22d(
@@ -5164,6 +5378,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (M22f m, double s)
         {
             return new M22d(
@@ -5171,6 +5386,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (double s, M22f m)
         {
             return new M22d(
@@ -5178,6 +5394,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (M22f a, M22f b)
         {
             return new M22f(
@@ -5185,6 +5402,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (M22f m, float s)
         {
             return new M22f(
@@ -5192,6 +5410,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  % (float s, M22f m)
         {
             return new M22f(
@@ -5199,6 +5418,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (M22f a, M22d b)
         {
             return new M22d(
@@ -5206,6 +5426,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (M22f m, double s)
         {
             return new M22d(
@@ -5213,6 +5434,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (double s, M22f m)
         {
             return new M22d(
@@ -5220,6 +5442,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (M22f a, M22f b)
         {
             return new M22f(
@@ -5227,6 +5450,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (M22f m, float s)
         {
             return new M22f(
@@ -5234,6 +5458,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  / (float s, M22f m)
         {
             return new M22f(
@@ -5241,6 +5466,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (M22f a, M22d b)
         {
             return new M22d(
@@ -5248,6 +5474,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (M22f m, double s)
         {
             return new M22d(
@@ -5255,6 +5482,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (double s, M22f m)
         {
             return new M22d(
@@ -5262,6 +5490,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  * (M22f m, float s)
         {
             return new M22f(
@@ -5269,6 +5498,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22f operator  * (float s, M22f m)
         {
             return new M22f(
@@ -5276,6 +5506,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  * (M22f m, double s)
         {
             return new M22d(
@@ -5283,6 +5514,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  * (double s, M22f m)
         {
             return new M22d(
@@ -5320,6 +5552,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M22f a, M22f b)
         {
             return
@@ -5329,6 +5562,7 @@ namespace Aardvark.Base
                 a.M11 < b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M22f a, float s)
         {
             return
@@ -5338,6 +5572,7 @@ namespace Aardvark.Base
                 a.M11 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(float s, M22f a)
         {
             return
@@ -5347,6 +5582,7 @@ namespace Aardvark.Base
                 s < a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M22f a, M22f b)
         {
             return
@@ -5356,6 +5592,7 @@ namespace Aardvark.Base
                 a.M11 > b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M22f a, float s)
         {
             return
@@ -5365,6 +5602,7 @@ namespace Aardvark.Base
                 a.M11 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(float s, M22f a)
         {
             return
@@ -5374,6 +5612,7 @@ namespace Aardvark.Base
                 s > a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22f a, M22f b)
         {
             return
@@ -5383,6 +5622,7 @@ namespace Aardvark.Base
                 a.M11 == b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22f a, float s)
         {
             return
@@ -5392,6 +5632,7 @@ namespace Aardvark.Base
                 a.M11 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(float s, M22f a)
         {
             return
@@ -5401,6 +5642,7 @@ namespace Aardvark.Base
                 s == a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M22f a, M22f b)
         {
             return
@@ -5410,6 +5652,7 @@ namespace Aardvark.Base
                 a.M11 <= b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M22f a, float s)
         {
             return
@@ -5419,6 +5662,7 @@ namespace Aardvark.Base
                 a.M11 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(float s, M22f a)
         {
             return
@@ -5428,6 +5672,7 @@ namespace Aardvark.Base
                 s <= a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M22f a, M22f b)
         {
             return
@@ -5437,6 +5682,7 @@ namespace Aardvark.Base
                 a.M11 >= b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M22f a, float s)
         {
             return
@@ -5446,6 +5692,7 @@ namespace Aardvark.Base
                 a.M11 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(float s, M22f a)
         {
             return
@@ -5455,16 +5702,19 @@ namespace Aardvark.Base
                 s >= a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M22f a, M22f b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M22f m, float s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(float s, M22f m)
         {
             return !(s == m);
@@ -5481,17 +5731,16 @@ namespace Aardvark.Base
                 M10.GetHashCode(), M11.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M22f other)
         {
-            if (other is M22f o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11);
         }
+
+        public override bool Equals(object other)
+            => (other is M22f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -6088,6 +6337,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M22f a, M22f b)
+            => ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M22f a, M22f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -6137,12 +6393,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(double value)
         {
             M00 = value; M01 = value; 
             M10 = value; M11 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(
                 double m00, double m01, 
                 double m10, double m11)
@@ -6151,6 +6409,7 @@ namespace Aardvark.Base
             M10 = m10; M11 = m11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(double[] a)
         {
             M00 = a[0];
@@ -6159,6 +6418,7 @@ namespace Aardvark.Base
             M11 = a[3];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(double[] a, int start)
         {
             M00 = a[start + 0];
@@ -6167,114 +6427,133 @@ namespace Aardvark.Base
             M11 = a[start + 3];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M22i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M23i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M33i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M34i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M44i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M22l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M23l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M33l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M34l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M44l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M22f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M23f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M33f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M34f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M44f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; 
             M10 = (double)m.M10; M11 = (double)m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M23d m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M33d m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M34d m)
         {
             M00 = m.M00; M01 = m.M01; 
             M10 = m.M10; M11 = m.M11; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(M44d m)
         {
             M00 = m.M00; M01 = m.M01; 
@@ -7223,6 +7502,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator -(M22d m)
         {
             return new M22d(
@@ -7230,6 +7510,7 @@ namespace Aardvark.Base
                 -m.M10, -m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (M22d a, M22d b)
         {
             return new M22d(
@@ -7237,6 +7518,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (M22d m, double s)
         {
             return new M22d(
@@ -7244,6 +7526,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  + (double s, M22d m)
         {
             return new M22d(
@@ -7251,6 +7534,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (M22d a, M22d b)
         {
             return new M22d(
@@ -7258,6 +7542,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (M22d m, double s)
         {
             return new M22d(
@@ -7265,6 +7550,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  - (double s, M22d m)
         {
             return new M22d(
@@ -7272,6 +7558,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (M22d a, M22d b)
         {
             return new M22d(
@@ -7279,6 +7566,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (M22d m, double s)
         {
             return new M22d(
@@ -7286,6 +7574,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  % (double s, M22d m)
         {
             return new M22d(
@@ -7293,6 +7582,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (M22d a, M22d b)
         {
             return new M22d(
@@ -7300,6 +7590,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (M22d m, double s)
         {
             return new M22d(
@@ -7307,6 +7598,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  / (double s, M22d m)
         {
             return new M22d(
@@ -7314,6 +7606,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  * (M22d m, double s)
         {
             return new M22d(
@@ -7321,6 +7614,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M22d operator  * (double s, M22d m)
         {
             return new M22d(
@@ -7358,6 +7652,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M22d a, M22d b)
         {
             return
@@ -7367,6 +7662,7 @@ namespace Aardvark.Base
                 a.M11 < b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M22d a, double s)
         {
             return
@@ -7376,6 +7672,7 @@ namespace Aardvark.Base
                 a.M11 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(double s, M22d a)
         {
             return
@@ -7385,6 +7682,7 @@ namespace Aardvark.Base
                 s < a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M22d a, M22d b)
         {
             return
@@ -7394,6 +7692,7 @@ namespace Aardvark.Base
                 a.M11 > b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M22d a, double s)
         {
             return
@@ -7403,6 +7702,7 @@ namespace Aardvark.Base
                 a.M11 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(double s, M22d a)
         {
             return
@@ -7412,6 +7712,7 @@ namespace Aardvark.Base
                 s > a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22d a, M22d b)
         {
             return
@@ -7421,6 +7722,7 @@ namespace Aardvark.Base
                 a.M11 == b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22d a, double s)
         {
             return
@@ -7430,6 +7732,7 @@ namespace Aardvark.Base
                 a.M11 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(double s, M22d a)
         {
             return
@@ -7439,6 +7742,7 @@ namespace Aardvark.Base
                 s == a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M22d a, M22d b)
         {
             return
@@ -7448,6 +7752,7 @@ namespace Aardvark.Base
                 a.M11 <= b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M22d a, double s)
         {
             return
@@ -7457,6 +7762,7 @@ namespace Aardvark.Base
                 a.M11 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(double s, M22d a)
         {
             return
@@ -7466,6 +7772,7 @@ namespace Aardvark.Base
                 s <= a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M22d a, M22d b)
         {
             return
@@ -7475,6 +7782,7 @@ namespace Aardvark.Base
                 a.M11 >= b.M11;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M22d a, double s)
         {
             return
@@ -7484,6 +7792,7 @@ namespace Aardvark.Base
                 a.M11 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(double s, M22d a)
         {
             return
@@ -7493,16 +7802,19 @@ namespace Aardvark.Base
                 s >= a.M11 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M22d a, M22d b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M22d m, double s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(double s, M22d m)
         {
             return !(s == m);
@@ -7519,17 +7831,16 @@ namespace Aardvark.Base
                 M10.GetHashCode(), M11.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M22d other)
         {
-            if (other is M22d o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11);
         }
+
+        public override bool Equals(object other)
+            => (other is M22d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -8126,6 +8437,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M22d a, M22d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M22d a, M22d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -8175,12 +8493,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(int value)
         {
             M00 = value; M01 = value; M02 = value; 
             M10 = value; M11 = value; M12 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(
                 int m00, int m01, int m02, 
                 int m10, int m11, int m12)
@@ -8189,6 +8509,7 @@ namespace Aardvark.Base
             M10 = m10; M11 = m11; M12 = m12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(int[] a)
         {
             M00 = a[0];
@@ -8199,6 +8520,7 @@ namespace Aardvark.Base
             M12 = a[5];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(int[] a, int start)
         {
             M00 = a[start + 0];
@@ -8209,120 +8531,140 @@ namespace Aardvark.Base
             M12 = a[start + 5];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M22i m, V2i v)
         {
             M00 = m.M00; M01 = m.M01; M02 = v.X; 
             M10 = m.M10; M11 = m.M11; M12 = v.Y; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M22i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; 
             M10 = m.M10; M11 = m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M33i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M34i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M44i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M22l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M23l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M33l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M34l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M44l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M22f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M23f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M33f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M34f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M44f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M22d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M23d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M33d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M34d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
             M10 = (int)m.M10; M11 = (int)m.M11; M12 = (int)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(M44d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -9106,6 +9448,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator -(M23i m)
         {
             return new M23i(
@@ -9113,6 +9456,7 @@ namespace Aardvark.Base
                 -m.M10, -m.M11, -m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  + (M23i a, M23i b)
         {
             return new M23i(
@@ -9120,6 +9464,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  + (M23i m, int s)
         {
             return new M23i(
@@ -9127,6 +9472,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  + (int s, M23i m)
         {
             return new M23i(
@@ -9134,6 +9480,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  + (M23i a, M23l b)
         {
             return new M23l(
@@ -9141,6 +9488,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  + (M23i m, long s)
         {
             return new M23l(
@@ -9148,6 +9496,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  + (long s, M23i m)
         {
             return new M23l(
@@ -9155,6 +9504,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (M23i a, M23f b)
         {
             return new M23f(
@@ -9162,6 +9512,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (M23i m, float s)
         {
             return new M23f(
@@ -9169,6 +9520,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (float s, M23i m)
         {
             return new M23f(
@@ -9176,6 +9528,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (M23i a, M23d b)
         {
             return new M23d(
@@ -9183,6 +9536,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (M23i m, double s)
         {
             return new M23d(
@@ -9190,6 +9544,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (double s, M23i m)
         {
             return new M23d(
@@ -9197,6 +9552,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  - (M23i a, M23i b)
         {
             return new M23i(
@@ -9204,6 +9560,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  - (M23i m, int s)
         {
             return new M23i(
@@ -9211,6 +9568,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  - (int s, M23i m)
         {
             return new M23i(
@@ -9218,6 +9576,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  - (M23i a, M23l b)
         {
             return new M23l(
@@ -9225,6 +9584,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  - (M23i m, long s)
         {
             return new M23l(
@@ -9232,6 +9592,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  - (long s, M23i m)
         {
             return new M23l(
@@ -9239,6 +9600,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (M23i a, M23f b)
         {
             return new M23f(
@@ -9246,6 +9608,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (M23i m, float s)
         {
             return new M23f(
@@ -9253,6 +9616,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (float s, M23i m)
         {
             return new M23f(
@@ -9260,6 +9624,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (M23i a, M23d b)
         {
             return new M23d(
@@ -9267,6 +9632,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (M23i m, double s)
         {
             return new M23d(
@@ -9274,6 +9640,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (double s, M23i m)
         {
             return new M23d(
@@ -9281,6 +9648,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  % (M23i a, M23i b)
         {
             return new M23i(
@@ -9288,6 +9656,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  % (M23i m, int s)
         {
             return new M23i(
@@ -9295,6 +9664,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  % (int s, M23i m)
         {
             return new M23i(
@@ -9302,6 +9672,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  % (M23i a, M23l b)
         {
             return new M23l(
@@ -9309,6 +9680,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  % (M23i m, long s)
         {
             return new M23l(
@@ -9316,6 +9688,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  % (long s, M23i m)
         {
             return new M23l(
@@ -9323,6 +9696,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (M23i a, M23f b)
         {
             return new M23f(
@@ -9330,6 +9704,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (M23i m, float s)
         {
             return new M23f(
@@ -9337,6 +9712,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (float s, M23i m)
         {
             return new M23f(
@@ -9344,6 +9720,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (M23i a, M23d b)
         {
             return new M23d(
@@ -9351,6 +9728,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (M23i m, double s)
         {
             return new M23d(
@@ -9358,6 +9736,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (double s, M23i m)
         {
             return new M23d(
@@ -9365,6 +9744,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  / (M23i a, M23i b)
         {
             return new M23i(
@@ -9372,6 +9752,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  / (M23i m, int s)
         {
             return new M23i(
@@ -9379,6 +9760,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  / (int s, M23i m)
         {
             return new M23i(
@@ -9386,6 +9768,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  / (M23i a, M23l b)
         {
             return new M23l(
@@ -9393,6 +9776,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  / (M23i m, long s)
         {
             return new M23l(
@@ -9400,6 +9784,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  / (long s, M23i m)
         {
             return new M23l(
@@ -9407,6 +9792,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (M23i a, M23f b)
         {
             return new M23f(
@@ -9414,6 +9800,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (M23i m, float s)
         {
             return new M23f(
@@ -9421,6 +9808,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (float s, M23i m)
         {
             return new M23f(
@@ -9428,6 +9816,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (M23i a, M23d b)
         {
             return new M23d(
@@ -9435,6 +9824,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (M23i m, double s)
         {
             return new M23d(
@@ -9442,6 +9832,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (double s, M23i m)
         {
             return new M23d(
@@ -9449,6 +9840,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  * (M23i m, int s)
         {
             return new M23i(
@@ -9456,6 +9848,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23i operator  * (int s, M23i m)
         {
             return new M23i(
@@ -9463,6 +9856,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11, s * m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  * (M23i m, long s)
         {
             return new M23l(
@@ -9470,6 +9864,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  * (long s, M23i m)
         {
             return new M23l(
@@ -9477,6 +9872,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11, s * m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  * (M23i m, float s)
         {
             return new M23f(
@@ -9484,6 +9880,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  * (float s, M23i m)
         {
             return new M23f(
@@ -9491,6 +9888,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11, s * m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  * (M23i m, double s)
         {
             return new M23d(
@@ -9498,6 +9896,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  * (double s, M23i m)
         {
             return new M23d(
@@ -9536,6 +9935,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M23i a, M23i b)
         {
             return
@@ -9547,6 +9947,7 @@ namespace Aardvark.Base
                 a.M12 < b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M23i a, int s)
         {
             return
@@ -9558,6 +9959,7 @@ namespace Aardvark.Base
                 a.M12 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(int s, M23i a)
         {
             return
@@ -9569,6 +9971,7 @@ namespace Aardvark.Base
                 s < a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M23i a, M23i b)
         {
             return
@@ -9580,6 +9983,7 @@ namespace Aardvark.Base
                 a.M12 > b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M23i a, int s)
         {
             return
@@ -9591,6 +9995,7 @@ namespace Aardvark.Base
                 a.M12 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(int s, M23i a)
         {
             return
@@ -9602,6 +10007,7 @@ namespace Aardvark.Base
                 s > a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23i a, M23i b)
         {
             return
@@ -9613,6 +10019,7 @@ namespace Aardvark.Base
                 a.M12 == b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23i a, int s)
         {
             return
@@ -9624,6 +10031,7 @@ namespace Aardvark.Base
                 a.M12 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(int s, M23i a)
         {
             return
@@ -9635,6 +10043,7 @@ namespace Aardvark.Base
                 s == a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M23i a, M23i b)
         {
             return
@@ -9646,6 +10055,7 @@ namespace Aardvark.Base
                 a.M12 <= b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M23i a, int s)
         {
             return
@@ -9657,6 +10067,7 @@ namespace Aardvark.Base
                 a.M12 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(int s, M23i a)
         {
             return
@@ -9668,6 +10079,7 @@ namespace Aardvark.Base
                 s <= a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M23i a, M23i b)
         {
             return
@@ -9679,6 +10091,7 @@ namespace Aardvark.Base
                 a.M12 >= b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M23i a, int s)
         {
             return
@@ -9690,6 +10103,7 @@ namespace Aardvark.Base
                 a.M12 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(int s, M23i a)
         {
             return
@@ -9701,16 +10115,19 @@ namespace Aardvark.Base
                 s >= a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M23i a, M23i b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M23i m, int s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(int s, M23i m)
         {
             return !(s == m);
@@ -9727,17 +10144,16 @@ namespace Aardvark.Base
                 M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M23i other)
         {
-            if (other is M23i o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12);
         }
+
+        public override bool Equals(object other)
+            => (other is M23i o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -10172,12 +10588,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(long value)
         {
             M00 = value; M01 = value; M02 = value; 
             M10 = value; M11 = value; M12 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(
                 long m00, long m01, long m02, 
                 long m10, long m11, long m12)
@@ -10186,6 +10604,7 @@ namespace Aardvark.Base
             M10 = m10; M11 = m11; M12 = m12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(long[] a)
         {
             M00 = a[0];
@@ -10196,6 +10615,7 @@ namespace Aardvark.Base
             M12 = a[5];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(long[] a, int start)
         {
             M00 = a[start + 0];
@@ -10206,120 +10626,140 @@ namespace Aardvark.Base
             M12 = a[start + 5];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M22l m, V2l v)
         {
             M00 = m.M00; M01 = m.M01; M02 = v.X; 
             M10 = m.M10; M11 = m.M11; M12 = v.Y; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M22i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M23i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M33i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M34i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M44i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M22l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; 
             M10 = m.M10; M11 = m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M33l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M34l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M44l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M22f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M23f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M33f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M34f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M44f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M22d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M23d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M33d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M34d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
             M10 = (long)m.M10; M11 = (long)m.M11; M12 = (long)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(M44d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -11103,6 +11543,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator -(M23l m)
         {
             return new M23l(
@@ -11110,6 +11551,7 @@ namespace Aardvark.Base
                 -m.M10, -m.M11, -m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  + (M23l a, M23l b)
         {
             return new M23l(
@@ -11117,6 +11559,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  + (M23l m, long s)
         {
             return new M23l(
@@ -11124,6 +11567,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  + (long s, M23l m)
         {
             return new M23l(
@@ -11131,6 +11575,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (M23l a, M23f b)
         {
             return new M23f(
@@ -11138,6 +11583,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (M23l m, float s)
         {
             return new M23f(
@@ -11145,6 +11591,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (float s, M23l m)
         {
             return new M23f(
@@ -11152,6 +11599,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (M23l a, M23d b)
         {
             return new M23d(
@@ -11159,6 +11607,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (M23l m, double s)
         {
             return new M23d(
@@ -11166,6 +11615,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (double s, M23l m)
         {
             return new M23d(
@@ -11173,6 +11623,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  - (M23l a, M23l b)
         {
             return new M23l(
@@ -11180,6 +11631,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  - (M23l m, long s)
         {
             return new M23l(
@@ -11187,6 +11639,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  - (long s, M23l m)
         {
             return new M23l(
@@ -11194,6 +11647,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (M23l a, M23f b)
         {
             return new M23f(
@@ -11201,6 +11655,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (M23l m, float s)
         {
             return new M23f(
@@ -11208,6 +11663,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (float s, M23l m)
         {
             return new M23f(
@@ -11215,6 +11671,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (M23l a, M23d b)
         {
             return new M23d(
@@ -11222,6 +11679,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (M23l m, double s)
         {
             return new M23d(
@@ -11229,6 +11687,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (double s, M23l m)
         {
             return new M23d(
@@ -11236,6 +11695,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  % (M23l a, M23l b)
         {
             return new M23l(
@@ -11243,6 +11703,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  % (M23l m, long s)
         {
             return new M23l(
@@ -11250,6 +11711,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  % (long s, M23l m)
         {
             return new M23l(
@@ -11257,6 +11719,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (M23l a, M23f b)
         {
             return new M23f(
@@ -11264,6 +11727,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (M23l m, float s)
         {
             return new M23f(
@@ -11271,6 +11735,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (float s, M23l m)
         {
             return new M23f(
@@ -11278,6 +11743,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (M23l a, M23d b)
         {
             return new M23d(
@@ -11285,6 +11751,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (M23l m, double s)
         {
             return new M23d(
@@ -11292,6 +11759,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (double s, M23l m)
         {
             return new M23d(
@@ -11299,6 +11767,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  / (M23l a, M23l b)
         {
             return new M23l(
@@ -11306,6 +11775,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  / (M23l m, long s)
         {
             return new M23l(
@@ -11313,6 +11783,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  / (long s, M23l m)
         {
             return new M23l(
@@ -11320,6 +11791,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (M23l a, M23f b)
         {
             return new M23f(
@@ -11327,6 +11799,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (M23l m, float s)
         {
             return new M23f(
@@ -11334,6 +11807,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (float s, M23l m)
         {
             return new M23f(
@@ -11341,6 +11815,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (M23l a, M23d b)
         {
             return new M23d(
@@ -11348,6 +11823,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (M23l m, double s)
         {
             return new M23d(
@@ -11355,6 +11831,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (double s, M23l m)
         {
             return new M23d(
@@ -11362,6 +11839,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  * (M23l m, long s)
         {
             return new M23l(
@@ -11369,6 +11847,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23l operator  * (long s, M23l m)
         {
             return new M23l(
@@ -11376,6 +11855,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11, s * m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  * (M23l m, float s)
         {
             return new M23f(
@@ -11383,6 +11863,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  * (float s, M23l m)
         {
             return new M23f(
@@ -11390,6 +11871,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11, s * m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  * (M23l m, double s)
         {
             return new M23d(
@@ -11397,6 +11879,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  * (double s, M23l m)
         {
             return new M23d(
@@ -11435,6 +11918,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M23l a, M23l b)
         {
             return
@@ -11446,6 +11930,7 @@ namespace Aardvark.Base
                 a.M12 < b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M23l a, long s)
         {
             return
@@ -11457,6 +11942,7 @@ namespace Aardvark.Base
                 a.M12 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(long s, M23l a)
         {
             return
@@ -11468,6 +11954,7 @@ namespace Aardvark.Base
                 s < a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M23l a, M23l b)
         {
             return
@@ -11479,6 +11966,7 @@ namespace Aardvark.Base
                 a.M12 > b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M23l a, long s)
         {
             return
@@ -11490,6 +11978,7 @@ namespace Aardvark.Base
                 a.M12 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(long s, M23l a)
         {
             return
@@ -11501,6 +11990,7 @@ namespace Aardvark.Base
                 s > a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23l a, M23l b)
         {
             return
@@ -11512,6 +12002,7 @@ namespace Aardvark.Base
                 a.M12 == b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23l a, long s)
         {
             return
@@ -11523,6 +12014,7 @@ namespace Aardvark.Base
                 a.M12 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(long s, M23l a)
         {
             return
@@ -11534,6 +12026,7 @@ namespace Aardvark.Base
                 s == a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M23l a, M23l b)
         {
             return
@@ -11545,6 +12038,7 @@ namespace Aardvark.Base
                 a.M12 <= b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M23l a, long s)
         {
             return
@@ -11556,6 +12050,7 @@ namespace Aardvark.Base
                 a.M12 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(long s, M23l a)
         {
             return
@@ -11567,6 +12062,7 @@ namespace Aardvark.Base
                 s <= a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M23l a, M23l b)
         {
             return
@@ -11578,6 +12074,7 @@ namespace Aardvark.Base
                 a.M12 >= b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M23l a, long s)
         {
             return
@@ -11589,6 +12086,7 @@ namespace Aardvark.Base
                 a.M12 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(long s, M23l a)
         {
             return
@@ -11600,16 +12098,19 @@ namespace Aardvark.Base
                 s >= a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M23l a, M23l b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M23l m, long s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(long s, M23l m)
         {
             return !(s == m);
@@ -11626,17 +12127,16 @@ namespace Aardvark.Base
                 M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M23l other)
         {
-            if (other is M23l o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12);
         }
+
+        public override bool Equals(object other)
+            => (other is M23l o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -12071,12 +12571,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(float value)
         {
             M00 = value; M01 = value; M02 = value; 
             M10 = value; M11 = value; M12 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(
                 float m00, float m01, float m02, 
                 float m10, float m11, float m12)
@@ -12085,6 +12587,7 @@ namespace Aardvark.Base
             M10 = m10; M11 = m11; M12 = m12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(float[] a)
         {
             M00 = a[0];
@@ -12095,6 +12598,7 @@ namespace Aardvark.Base
             M12 = a[5];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(float[] a, int start)
         {
             M00 = a[start + 0];
@@ -12105,120 +12609,140 @@ namespace Aardvark.Base
             M12 = a[start + 5];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M22f m, V2f v)
         {
             M00 = m.M00; M01 = m.M01; M02 = v.X; 
             M10 = m.M10; M11 = m.M11; M12 = v.Y; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M22i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M23i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M33i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M34i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M44i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M22l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M23l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M33l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M34l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M44l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M22f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; 
             M10 = m.M10; M11 = m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M33f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M34f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M44f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M22d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M23d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M33d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M34d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
             M10 = (float)m.M10; M11 = (float)m.M11; M12 = (float)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(M44d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -13182,6 +13706,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator -(M23f m)
         {
             return new M23f(
@@ -13189,6 +13714,7 @@ namespace Aardvark.Base
                 -m.M10, -m.M11, -m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (M23f a, M23f b)
         {
             return new M23f(
@@ -13196,6 +13722,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (M23f m, float s)
         {
             return new M23f(
@@ -13203,6 +13730,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  + (float s, M23f m)
         {
             return new M23f(
@@ -13210,6 +13738,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (M23f a, M23d b)
         {
             return new M23d(
@@ -13217,6 +13746,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (M23f m, double s)
         {
             return new M23d(
@@ -13224,6 +13754,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (double s, M23f m)
         {
             return new M23d(
@@ -13231,6 +13762,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (M23f a, M23f b)
         {
             return new M23f(
@@ -13238,6 +13770,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (M23f m, float s)
         {
             return new M23f(
@@ -13245,6 +13778,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  - (float s, M23f m)
         {
             return new M23f(
@@ -13252,6 +13786,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (M23f a, M23d b)
         {
             return new M23d(
@@ -13259,6 +13794,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (M23f m, double s)
         {
             return new M23d(
@@ -13266,6 +13802,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (double s, M23f m)
         {
             return new M23d(
@@ -13273,6 +13810,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (M23f a, M23f b)
         {
             return new M23f(
@@ -13280,6 +13818,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (M23f m, float s)
         {
             return new M23f(
@@ -13287,6 +13826,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  % (float s, M23f m)
         {
             return new M23f(
@@ -13294,6 +13834,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (M23f a, M23d b)
         {
             return new M23d(
@@ -13301,6 +13842,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (M23f m, double s)
         {
             return new M23d(
@@ -13308,6 +13850,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (double s, M23f m)
         {
             return new M23d(
@@ -13315,6 +13858,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (M23f a, M23f b)
         {
             return new M23f(
@@ -13322,6 +13866,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (M23f m, float s)
         {
             return new M23f(
@@ -13329,6 +13874,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  / (float s, M23f m)
         {
             return new M23f(
@@ -13336,6 +13882,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (M23f a, M23d b)
         {
             return new M23d(
@@ -13343,6 +13890,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (M23f m, double s)
         {
             return new M23d(
@@ -13350,6 +13898,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (double s, M23f m)
         {
             return new M23d(
@@ -13357,6 +13906,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  * (M23f m, float s)
         {
             return new M23f(
@@ -13364,6 +13914,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23f operator  * (float s, M23f m)
         {
             return new M23f(
@@ -13371,6 +13922,7 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11, s * m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  * (M23f m, double s)
         {
             return new M23d(
@@ -13378,6 +13930,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  * (double s, M23f m)
         {
             return new M23d(
@@ -13416,6 +13969,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M23f a, M23f b)
         {
             return
@@ -13427,6 +13981,7 @@ namespace Aardvark.Base
                 a.M12 < b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M23f a, float s)
         {
             return
@@ -13438,6 +13993,7 @@ namespace Aardvark.Base
                 a.M12 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(float s, M23f a)
         {
             return
@@ -13449,6 +14005,7 @@ namespace Aardvark.Base
                 s < a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M23f a, M23f b)
         {
             return
@@ -13460,6 +14017,7 @@ namespace Aardvark.Base
                 a.M12 > b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M23f a, float s)
         {
             return
@@ -13471,6 +14029,7 @@ namespace Aardvark.Base
                 a.M12 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(float s, M23f a)
         {
             return
@@ -13482,6 +14041,7 @@ namespace Aardvark.Base
                 s > a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23f a, M23f b)
         {
             return
@@ -13493,6 +14053,7 @@ namespace Aardvark.Base
                 a.M12 == b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23f a, float s)
         {
             return
@@ -13504,6 +14065,7 @@ namespace Aardvark.Base
                 a.M12 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(float s, M23f a)
         {
             return
@@ -13515,6 +14077,7 @@ namespace Aardvark.Base
                 s == a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M23f a, M23f b)
         {
             return
@@ -13526,6 +14089,7 @@ namespace Aardvark.Base
                 a.M12 <= b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M23f a, float s)
         {
             return
@@ -13537,6 +14101,7 @@ namespace Aardvark.Base
                 a.M12 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(float s, M23f a)
         {
             return
@@ -13548,6 +14113,7 @@ namespace Aardvark.Base
                 s <= a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M23f a, M23f b)
         {
             return
@@ -13559,6 +14125,7 @@ namespace Aardvark.Base
                 a.M12 >= b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M23f a, float s)
         {
             return
@@ -13570,6 +14137,7 @@ namespace Aardvark.Base
                 a.M12 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(float s, M23f a)
         {
             return
@@ -13581,16 +14149,19 @@ namespace Aardvark.Base
                 s >= a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M23f a, M23f b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M23f m, float s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(float s, M23f m)
         {
             return !(s == m);
@@ -13607,17 +14178,16 @@ namespace Aardvark.Base
                 M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M23f other)
         {
-            if (other is M23f o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12);
         }
+
+        public override bool Equals(object other)
+            => (other is M23f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -14035,6 +14605,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M23f a, M23f b)
+            => ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M23f a, M23f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -14084,12 +14661,14 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(double value)
         {
             M00 = value; M01 = value; M02 = value; 
             M10 = value; M11 = value; M12 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(
                 double m00, double m01, double m02, 
                 double m10, double m11, double m12)
@@ -14098,6 +14677,7 @@ namespace Aardvark.Base
             M10 = m10; M11 = m11; M12 = m12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(double[] a)
         {
             M00 = a[0];
@@ -14108,6 +14688,7 @@ namespace Aardvark.Base
             M12 = a[5];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(double[] a, int start)
         {
             M00 = a[start + 0];
@@ -14118,120 +14699,140 @@ namespace Aardvark.Base
             M12 = a[start + 5];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M22d m, V2d v)
         {
             M00 = m.M00; M01 = m.M01; M02 = v.X; 
             M10 = m.M10; M11 = m.M11; M12 = v.Y; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M22i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M23i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M33i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M34i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M44i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M22l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M23l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M33l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M34l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M44l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M22f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M23f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M33f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M34f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M44f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
             M10 = (double)m.M10; M11 = (double)m.M11; M12 = (double)m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M22d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; 
             M10 = m.M10; M11 = m.M11; M12 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M33d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M34d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
             M10 = m.M10; M11 = m.M11; M12 = m.M12; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(M44d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -15195,6 +15796,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator -(M23d m)
         {
             return new M23d(
@@ -15202,6 +15804,7 @@ namespace Aardvark.Base
                 -m.M10, -m.M11, -m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (M23d a, M23d b)
         {
             return new M23d(
@@ -15209,6 +15812,7 @@ namespace Aardvark.Base
                 a.M10 + b.M10, a.M11 + b.M11, a.M12 + b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (M23d m, double s)
         {
             return new M23d(
@@ -15216,6 +15820,7 @@ namespace Aardvark.Base
                 m.M10 + s, m.M11 + s, m.M12 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  + (double s, M23d m)
         {
             return new M23d(
@@ -15223,6 +15828,7 @@ namespace Aardvark.Base
                 s + m.M10, s + m.M11, s + m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (M23d a, M23d b)
         {
             return new M23d(
@@ -15230,6 +15836,7 @@ namespace Aardvark.Base
                 a.M10 - b.M10, a.M11 - b.M11, a.M12 - b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (M23d m, double s)
         {
             return new M23d(
@@ -15237,6 +15844,7 @@ namespace Aardvark.Base
                 m.M10 - s, m.M11 - s, m.M12 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  - (double s, M23d m)
         {
             return new M23d(
@@ -15244,6 +15852,7 @@ namespace Aardvark.Base
                 s - m.M10, s - m.M11, s - m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (M23d a, M23d b)
         {
             return new M23d(
@@ -15251,6 +15860,7 @@ namespace Aardvark.Base
                 a.M10 % b.M10, a.M11 % b.M11, a.M12 % b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (M23d m, double s)
         {
             return new M23d(
@@ -15258,6 +15868,7 @@ namespace Aardvark.Base
                 m.M10 % s, m.M11 % s, m.M12 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  % (double s, M23d m)
         {
             return new M23d(
@@ -15265,6 +15876,7 @@ namespace Aardvark.Base
                 s % m.M10, s % m.M11, s % m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (M23d a, M23d b)
         {
             return new M23d(
@@ -15272,6 +15884,7 @@ namespace Aardvark.Base
                 a.M10 / b.M10, a.M11 / b.M11, a.M12 / b.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (M23d m, double s)
         {
             return new M23d(
@@ -15279,6 +15892,7 @@ namespace Aardvark.Base
                 m.M10 / s, m.M11 / s, m.M12 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  / (double s, M23d m)
         {
             return new M23d(
@@ -15286,6 +15900,7 @@ namespace Aardvark.Base
                 s / m.M10, s / m.M11, s / m.M12);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  * (M23d m, double s)
         {
             return new M23d(
@@ -15293,6 +15908,7 @@ namespace Aardvark.Base
                 m.M10 * s, m.M11 * s, m.M12 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M23d operator  * (double s, M23d m)
         {
             return new M23d(
@@ -15331,6 +15947,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M23d a, M23d b)
         {
             return
@@ -15342,6 +15959,7 @@ namespace Aardvark.Base
                 a.M12 < b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M23d a, double s)
         {
             return
@@ -15353,6 +15971,7 @@ namespace Aardvark.Base
                 a.M12 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(double s, M23d a)
         {
             return
@@ -15364,6 +15983,7 @@ namespace Aardvark.Base
                 s < a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M23d a, M23d b)
         {
             return
@@ -15375,6 +15995,7 @@ namespace Aardvark.Base
                 a.M12 > b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M23d a, double s)
         {
             return
@@ -15386,6 +16007,7 @@ namespace Aardvark.Base
                 a.M12 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(double s, M23d a)
         {
             return
@@ -15397,6 +16019,7 @@ namespace Aardvark.Base
                 s > a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23d a, M23d b)
         {
             return
@@ -15408,6 +16031,7 @@ namespace Aardvark.Base
                 a.M12 == b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23d a, double s)
         {
             return
@@ -15419,6 +16043,7 @@ namespace Aardvark.Base
                 a.M12 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(double s, M23d a)
         {
             return
@@ -15430,6 +16055,7 @@ namespace Aardvark.Base
                 s == a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M23d a, M23d b)
         {
             return
@@ -15441,6 +16067,7 @@ namespace Aardvark.Base
                 a.M12 <= b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M23d a, double s)
         {
             return
@@ -15452,6 +16079,7 @@ namespace Aardvark.Base
                 a.M12 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(double s, M23d a)
         {
             return
@@ -15463,6 +16091,7 @@ namespace Aardvark.Base
                 s <= a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M23d a, M23d b)
         {
             return
@@ -15474,6 +16103,7 @@ namespace Aardvark.Base
                 a.M12 >= b.M12;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M23d a, double s)
         {
             return
@@ -15485,6 +16115,7 @@ namespace Aardvark.Base
                 a.M12 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(double s, M23d a)
         {
             return
@@ -15496,16 +16127,19 @@ namespace Aardvark.Base
                 s >= a.M12 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M23d a, M23d b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M23d m, double s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(double s, M23d m)
         {
             return !(s == m);
@@ -15522,17 +16156,16 @@ namespace Aardvark.Base
                 M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M23d other)
         {
-            if (other is M23d o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12);
         }
+
+        public override bool Equals(object other)
+            => (other is M23d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -15950,6 +16583,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M23d a, M23d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M23d a, M23d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -16001,6 +16641,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(int value)
         {
             M00 = value; M01 = value; M02 = value; 
@@ -16008,6 +16649,7 @@ namespace Aardvark.Base
             M20 = value; M21 = value; M22 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(
                 int m00, int m01, int m02, 
                 int m10, int m11, int m12, 
@@ -16018,6 +16660,7 @@ namespace Aardvark.Base
             M20 = m20; M21 = m21; M22 = m22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(int[] a)
         {
             M00 = a[0];
@@ -16031,6 +16674,7 @@ namespace Aardvark.Base
             M22 = a[8];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(int[] a, int start)
         {
             M00 = a[start + 0];
@@ -16044,6 +16688,7 @@ namespace Aardvark.Base
             M22 = a[start + 8];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M22i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; 
@@ -16051,6 +16696,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M23i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -16058,6 +16704,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M34i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -16065,6 +16712,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M44i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -16072,6 +16720,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M22l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; 
@@ -16079,6 +16728,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M23l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16086,6 +16736,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M33l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16093,6 +16744,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M34l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16100,6 +16752,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M44l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16107,6 +16760,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M22f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; 
@@ -16114,6 +16768,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M23f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16121,6 +16776,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M33f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16128,6 +16784,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M34f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16135,6 +16792,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M44f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16142,6 +16800,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M22d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; 
@@ -16149,6 +16808,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M23d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16156,6 +16816,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M33d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16163,6 +16824,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M34d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -16170,6 +16832,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(M44d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; 
@@ -17206,6 +17869,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator -(M33i m)
         {
             return new M33i(
@@ -17214,6 +17878,7 @@ namespace Aardvark.Base
                 -m.M20, -m.M21, -m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  + (M33i a, M33i b)
         {
             return new M33i(
@@ -17222,6 +17887,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  + (M33i m, int s)
         {
             return new M33i(
@@ -17230,6 +17896,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  + (int s, M33i m)
         {
             return new M33i(
@@ -17238,6 +17905,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  + (M33i a, M33l b)
         {
             return new M33l(
@@ -17246,6 +17914,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  + (M33i m, long s)
         {
             return new M33l(
@@ -17254,6 +17923,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  + (long s, M33i m)
         {
             return new M33l(
@@ -17262,6 +17932,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (M33i a, M33f b)
         {
             return new M33f(
@@ -17270,6 +17941,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (M33i m, float s)
         {
             return new M33f(
@@ -17278,6 +17950,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (float s, M33i m)
         {
             return new M33f(
@@ -17286,6 +17959,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (M33i a, M33d b)
         {
             return new M33d(
@@ -17294,6 +17968,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (M33i m, double s)
         {
             return new M33d(
@@ -17302,6 +17977,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (double s, M33i m)
         {
             return new M33d(
@@ -17310,6 +17986,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  - (M33i a, M33i b)
         {
             return new M33i(
@@ -17318,6 +17995,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  - (M33i m, int s)
         {
             return new M33i(
@@ -17326,6 +18004,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  - (int s, M33i m)
         {
             return new M33i(
@@ -17334,6 +18013,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  - (M33i a, M33l b)
         {
             return new M33l(
@@ -17342,6 +18022,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  - (M33i m, long s)
         {
             return new M33l(
@@ -17350,6 +18031,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  - (long s, M33i m)
         {
             return new M33l(
@@ -17358,6 +18040,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (M33i a, M33f b)
         {
             return new M33f(
@@ -17366,6 +18049,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (M33i m, float s)
         {
             return new M33f(
@@ -17374,6 +18058,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (float s, M33i m)
         {
             return new M33f(
@@ -17382,6 +18067,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (M33i a, M33d b)
         {
             return new M33d(
@@ -17390,6 +18076,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (M33i m, double s)
         {
             return new M33d(
@@ -17398,6 +18085,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (double s, M33i m)
         {
             return new M33d(
@@ -17406,6 +18094,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  % (M33i a, M33i b)
         {
             return new M33i(
@@ -17414,6 +18103,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  % (M33i m, int s)
         {
             return new M33i(
@@ -17422,6 +18112,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  % (int s, M33i m)
         {
             return new M33i(
@@ -17430,6 +18121,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  % (M33i a, M33l b)
         {
             return new M33l(
@@ -17438,6 +18130,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  % (M33i m, long s)
         {
             return new M33l(
@@ -17446,6 +18139,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  % (long s, M33i m)
         {
             return new M33l(
@@ -17454,6 +18148,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (M33i a, M33f b)
         {
             return new M33f(
@@ -17462,6 +18157,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (M33i m, float s)
         {
             return new M33f(
@@ -17470,6 +18166,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (float s, M33i m)
         {
             return new M33f(
@@ -17478,6 +18175,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (M33i a, M33d b)
         {
             return new M33d(
@@ -17486,6 +18184,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (M33i m, double s)
         {
             return new M33d(
@@ -17494,6 +18193,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (double s, M33i m)
         {
             return new M33d(
@@ -17502,6 +18202,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  / (M33i a, M33i b)
         {
             return new M33i(
@@ -17510,6 +18211,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  / (M33i m, int s)
         {
             return new M33i(
@@ -17518,6 +18220,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  / (int s, M33i m)
         {
             return new M33i(
@@ -17526,6 +18229,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  / (M33i a, M33l b)
         {
             return new M33l(
@@ -17534,6 +18238,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  / (M33i m, long s)
         {
             return new M33l(
@@ -17542,6 +18247,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  / (long s, M33i m)
         {
             return new M33l(
@@ -17550,6 +18256,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (M33i a, M33f b)
         {
             return new M33f(
@@ -17558,6 +18265,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (M33i m, float s)
         {
             return new M33f(
@@ -17566,6 +18274,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (float s, M33i m)
         {
             return new M33f(
@@ -17574,6 +18283,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (M33i a, M33d b)
         {
             return new M33d(
@@ -17582,6 +18292,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (M33i m, double s)
         {
             return new M33d(
@@ -17590,6 +18301,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (double s, M33i m)
         {
             return new M33d(
@@ -17598,6 +18310,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  * (M33i m, int s)
         {
             return new M33i(
@@ -17606,6 +18319,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33i operator  * (int s, M33i m)
         {
             return new M33i(
@@ -17614,6 +18328,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  * (M33i m, long s)
         {
             return new M33l(
@@ -17622,6 +18337,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  * (long s, M33i m)
         {
             return new M33l(
@@ -17630,6 +18346,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  * (M33i m, float s)
         {
             return new M33f(
@@ -17638,6 +18355,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  * (float s, M33i m)
         {
             return new M33f(
@@ -17646,6 +18364,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  * (M33i m, double s)
         {
             return new M33d(
@@ -17654,6 +18373,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  * (double s, M33i m)
         {
             return new M33d(
@@ -17694,6 +18414,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M33i a, M33i b)
         {
             return
@@ -17708,6 +18429,7 @@ namespace Aardvark.Base
                 a.M22 < b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M33i a, int s)
         {
             return
@@ -17722,6 +18444,7 @@ namespace Aardvark.Base
                 a.M22 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(int s, M33i a)
         {
             return
@@ -17736,6 +18459,7 @@ namespace Aardvark.Base
                 s < a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M33i a, M33i b)
         {
             return
@@ -17750,6 +18474,7 @@ namespace Aardvark.Base
                 a.M22 > b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M33i a, int s)
         {
             return
@@ -17764,6 +18489,7 @@ namespace Aardvark.Base
                 a.M22 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(int s, M33i a)
         {
             return
@@ -17778,6 +18504,7 @@ namespace Aardvark.Base
                 s > a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33i a, M33i b)
         {
             return
@@ -17792,6 +18519,7 @@ namespace Aardvark.Base
                 a.M22 == b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33i a, int s)
         {
             return
@@ -17806,6 +18534,7 @@ namespace Aardvark.Base
                 a.M22 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(int s, M33i a)
         {
             return
@@ -17820,6 +18549,7 @@ namespace Aardvark.Base
                 s == a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M33i a, M33i b)
         {
             return
@@ -17834,6 +18564,7 @@ namespace Aardvark.Base
                 a.M22 <= b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M33i a, int s)
         {
             return
@@ -17848,6 +18579,7 @@ namespace Aardvark.Base
                 a.M22 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(int s, M33i a)
         {
             return
@@ -17862,6 +18594,7 @@ namespace Aardvark.Base
                 s <= a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M33i a, M33i b)
         {
             return
@@ -17876,6 +18609,7 @@ namespace Aardvark.Base
                 a.M22 >= b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M33i a, int s)
         {
             return
@@ -17890,6 +18624,7 @@ namespace Aardvark.Base
                 a.M22 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(int s, M33i a)
         {
             return
@@ -17904,16 +18639,19 @@ namespace Aardvark.Base
                 s >= a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M33i a, M33i b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M33i m, int s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(int s, M33i m)
         {
             return !(s == m);
@@ -17931,18 +18669,17 @@ namespace Aardvark.Base
                 M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M33i other)
         {
-            if (other is M33i o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22);
         }
+
+        public override bool Equals(object other)
+            => (other is M33i o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -18639,6 +19376,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(long value)
         {
             M00 = value; M01 = value; M02 = value; 
@@ -18646,6 +19384,7 @@ namespace Aardvark.Base
             M20 = value; M21 = value; M22 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(
                 long m00, long m01, long m02, 
                 long m10, long m11, long m12, 
@@ -18656,6 +19395,7 @@ namespace Aardvark.Base
             M20 = m20; M21 = m21; M22 = m22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(long[] a)
         {
             M00 = a[0];
@@ -18669,6 +19409,7 @@ namespace Aardvark.Base
             M22 = a[8];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(long[] a, int start)
         {
             M00 = a[start + 0];
@@ -18682,6 +19423,7 @@ namespace Aardvark.Base
             M22 = a[start + 8];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M22i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; 
@@ -18689,6 +19431,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M23i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18696,6 +19439,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M33i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18703,6 +19447,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M34i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18710,6 +19455,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M44i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18717,6 +19463,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M22l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; 
@@ -18724,6 +19471,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M23l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -18731,6 +19479,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M34l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -18738,6 +19487,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M44l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -18745,6 +19495,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M22f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; 
@@ -18752,6 +19503,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M23f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18759,6 +19511,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M33f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18766,6 +19519,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M34f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18773,6 +19527,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M44f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18780,6 +19535,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M22d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; 
@@ -18787,6 +19543,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M23d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18794,6 +19551,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M33d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18801,6 +19559,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M34d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -18808,6 +19567,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(M44d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; 
@@ -19844,6 +20604,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator -(M33l m)
         {
             return new M33l(
@@ -19852,6 +20613,7 @@ namespace Aardvark.Base
                 -m.M20, -m.M21, -m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  + (M33l a, M33l b)
         {
             return new M33l(
@@ -19860,6 +20622,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  + (M33l m, long s)
         {
             return new M33l(
@@ -19868,6 +20631,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  + (long s, M33l m)
         {
             return new M33l(
@@ -19876,6 +20640,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (M33l a, M33f b)
         {
             return new M33f(
@@ -19884,6 +20649,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (M33l m, float s)
         {
             return new M33f(
@@ -19892,6 +20658,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (float s, M33l m)
         {
             return new M33f(
@@ -19900,6 +20667,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (M33l a, M33d b)
         {
             return new M33d(
@@ -19908,6 +20676,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (M33l m, double s)
         {
             return new M33d(
@@ -19916,6 +20685,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (double s, M33l m)
         {
             return new M33d(
@@ -19924,6 +20694,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  - (M33l a, M33l b)
         {
             return new M33l(
@@ -19932,6 +20703,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  - (M33l m, long s)
         {
             return new M33l(
@@ -19940,6 +20712,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  - (long s, M33l m)
         {
             return new M33l(
@@ -19948,6 +20721,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (M33l a, M33f b)
         {
             return new M33f(
@@ -19956,6 +20730,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (M33l m, float s)
         {
             return new M33f(
@@ -19964,6 +20739,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (float s, M33l m)
         {
             return new M33f(
@@ -19972,6 +20748,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (M33l a, M33d b)
         {
             return new M33d(
@@ -19980,6 +20757,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (M33l m, double s)
         {
             return new M33d(
@@ -19988,6 +20766,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (double s, M33l m)
         {
             return new M33d(
@@ -19996,6 +20775,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  % (M33l a, M33l b)
         {
             return new M33l(
@@ -20004,6 +20784,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  % (M33l m, long s)
         {
             return new M33l(
@@ -20012,6 +20793,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  % (long s, M33l m)
         {
             return new M33l(
@@ -20020,6 +20802,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (M33l a, M33f b)
         {
             return new M33f(
@@ -20028,6 +20811,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (M33l m, float s)
         {
             return new M33f(
@@ -20036,6 +20820,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (float s, M33l m)
         {
             return new M33f(
@@ -20044,6 +20829,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (M33l a, M33d b)
         {
             return new M33d(
@@ -20052,6 +20838,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (M33l m, double s)
         {
             return new M33d(
@@ -20060,6 +20847,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (double s, M33l m)
         {
             return new M33d(
@@ -20068,6 +20856,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  / (M33l a, M33l b)
         {
             return new M33l(
@@ -20076,6 +20865,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  / (M33l m, long s)
         {
             return new M33l(
@@ -20084,6 +20874,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  / (long s, M33l m)
         {
             return new M33l(
@@ -20092,6 +20883,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (M33l a, M33f b)
         {
             return new M33f(
@@ -20100,6 +20892,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (M33l m, float s)
         {
             return new M33f(
@@ -20108,6 +20901,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (float s, M33l m)
         {
             return new M33f(
@@ -20116,6 +20910,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (M33l a, M33d b)
         {
             return new M33d(
@@ -20124,6 +20919,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (M33l m, double s)
         {
             return new M33d(
@@ -20132,6 +20928,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (double s, M33l m)
         {
             return new M33d(
@@ -20140,6 +20937,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  * (M33l m, long s)
         {
             return new M33l(
@@ -20148,6 +20946,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33l operator  * (long s, M33l m)
         {
             return new M33l(
@@ -20156,6 +20955,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  * (M33l m, float s)
         {
             return new M33f(
@@ -20164,6 +20964,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  * (float s, M33l m)
         {
             return new M33f(
@@ -20172,6 +20973,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  * (M33l m, double s)
         {
             return new M33d(
@@ -20180,6 +20982,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  * (double s, M33l m)
         {
             return new M33d(
@@ -20220,6 +21023,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M33l a, M33l b)
         {
             return
@@ -20234,6 +21038,7 @@ namespace Aardvark.Base
                 a.M22 < b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M33l a, long s)
         {
             return
@@ -20248,6 +21053,7 @@ namespace Aardvark.Base
                 a.M22 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(long s, M33l a)
         {
             return
@@ -20262,6 +21068,7 @@ namespace Aardvark.Base
                 s < a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M33l a, M33l b)
         {
             return
@@ -20276,6 +21083,7 @@ namespace Aardvark.Base
                 a.M22 > b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M33l a, long s)
         {
             return
@@ -20290,6 +21098,7 @@ namespace Aardvark.Base
                 a.M22 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(long s, M33l a)
         {
             return
@@ -20304,6 +21113,7 @@ namespace Aardvark.Base
                 s > a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33l a, M33l b)
         {
             return
@@ -20318,6 +21128,7 @@ namespace Aardvark.Base
                 a.M22 == b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33l a, long s)
         {
             return
@@ -20332,6 +21143,7 @@ namespace Aardvark.Base
                 a.M22 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(long s, M33l a)
         {
             return
@@ -20346,6 +21158,7 @@ namespace Aardvark.Base
                 s == a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M33l a, M33l b)
         {
             return
@@ -20360,6 +21173,7 @@ namespace Aardvark.Base
                 a.M22 <= b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M33l a, long s)
         {
             return
@@ -20374,6 +21188,7 @@ namespace Aardvark.Base
                 a.M22 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(long s, M33l a)
         {
             return
@@ -20388,6 +21203,7 @@ namespace Aardvark.Base
                 s <= a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M33l a, M33l b)
         {
             return
@@ -20402,6 +21218,7 @@ namespace Aardvark.Base
                 a.M22 >= b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M33l a, long s)
         {
             return
@@ -20416,6 +21233,7 @@ namespace Aardvark.Base
                 a.M22 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(long s, M33l a)
         {
             return
@@ -20430,16 +21248,19 @@ namespace Aardvark.Base
                 s >= a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M33l a, M33l b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M33l m, long s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(long s, M33l m)
         {
             return !(s == m);
@@ -20457,18 +21278,17 @@ namespace Aardvark.Base
                 M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M33l other)
         {
-            if (other is M33l o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22);
         }
+
+        public override bool Equals(object other)
+            => (other is M33l o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -21165,6 +21985,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(float value)
         {
             M00 = value; M01 = value; M02 = value; 
@@ -21172,6 +21993,7 @@ namespace Aardvark.Base
             M20 = value; M21 = value; M22 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(
                 float m00, float m01, float m02, 
                 float m10, float m11, float m12, 
@@ -21182,6 +22004,7 @@ namespace Aardvark.Base
             M20 = m20; M21 = m21; M22 = m22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(float[] a)
         {
             M00 = a[0];
@@ -21195,6 +22018,7 @@ namespace Aardvark.Base
             M22 = a[8];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(float[] a, int start)
         {
             M00 = a[start + 0];
@@ -21208,6 +22032,7 @@ namespace Aardvark.Base
             M22 = a[start + 8];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M22i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; 
@@ -21215,6 +22040,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M23i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21222,6 +22048,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M33i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21229,6 +22056,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M34i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21236,6 +22064,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M44i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21243,6 +22072,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M22l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; 
@@ -21250,6 +22080,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M23l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21257,6 +22088,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M33l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21264,6 +22096,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M34l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21271,6 +22104,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M44l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21278,6 +22112,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M22f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; 
@@ -21285,6 +22120,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M23f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -21292,6 +22128,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M34f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -21299,6 +22136,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M44f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -21306,6 +22144,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M22d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; 
@@ -21313,6 +22152,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M23d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21320,6 +22160,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M33d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21327,6 +22168,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M34d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -21334,6 +22176,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(M44d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; 
@@ -22733,6 +23576,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator -(M33f m)
         {
             return new M33f(
@@ -22741,6 +23585,7 @@ namespace Aardvark.Base
                 -m.M20, -m.M21, -m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (M33f a, M33f b)
         {
             return new M33f(
@@ -22749,6 +23594,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (M33f m, float s)
         {
             return new M33f(
@@ -22757,6 +23603,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  + (float s, M33f m)
         {
             return new M33f(
@@ -22765,6 +23612,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (M33f a, M33d b)
         {
             return new M33d(
@@ -22773,6 +23621,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (M33f m, double s)
         {
             return new M33d(
@@ -22781,6 +23630,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (double s, M33f m)
         {
             return new M33d(
@@ -22789,6 +23639,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (M33f a, M33f b)
         {
             return new M33f(
@@ -22797,6 +23648,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (M33f m, float s)
         {
             return new M33f(
@@ -22805,6 +23657,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  - (float s, M33f m)
         {
             return new M33f(
@@ -22813,6 +23666,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (M33f a, M33d b)
         {
             return new M33d(
@@ -22821,6 +23675,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (M33f m, double s)
         {
             return new M33d(
@@ -22829,6 +23684,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (double s, M33f m)
         {
             return new M33d(
@@ -22837,6 +23693,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (M33f a, M33f b)
         {
             return new M33f(
@@ -22845,6 +23702,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (M33f m, float s)
         {
             return new M33f(
@@ -22853,6 +23711,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  % (float s, M33f m)
         {
             return new M33f(
@@ -22861,6 +23720,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (M33f a, M33d b)
         {
             return new M33d(
@@ -22869,6 +23729,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (M33f m, double s)
         {
             return new M33d(
@@ -22877,6 +23738,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (double s, M33f m)
         {
             return new M33d(
@@ -22885,6 +23747,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (M33f a, M33f b)
         {
             return new M33f(
@@ -22893,6 +23756,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (M33f m, float s)
         {
             return new M33f(
@@ -22901,6 +23765,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  / (float s, M33f m)
         {
             return new M33f(
@@ -22909,6 +23774,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (M33f a, M33d b)
         {
             return new M33d(
@@ -22917,6 +23783,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (M33f m, double s)
         {
             return new M33d(
@@ -22925,6 +23792,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (double s, M33f m)
         {
             return new M33d(
@@ -22933,6 +23801,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  * (M33f m, float s)
         {
             return new M33f(
@@ -22941,6 +23810,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f operator  * (float s, M33f m)
         {
             return new M33f(
@@ -22949,6 +23819,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  * (M33f m, double s)
         {
             return new M33d(
@@ -22957,6 +23828,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  * (double s, M33f m)
         {
             return new M33d(
@@ -22997,6 +23869,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M33f a, M33f b)
         {
             return
@@ -23011,6 +23884,7 @@ namespace Aardvark.Base
                 a.M22 < b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M33f a, float s)
         {
             return
@@ -23025,6 +23899,7 @@ namespace Aardvark.Base
                 a.M22 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(float s, M33f a)
         {
             return
@@ -23039,6 +23914,7 @@ namespace Aardvark.Base
                 s < a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M33f a, M33f b)
         {
             return
@@ -23053,6 +23929,7 @@ namespace Aardvark.Base
                 a.M22 > b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M33f a, float s)
         {
             return
@@ -23067,6 +23944,7 @@ namespace Aardvark.Base
                 a.M22 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(float s, M33f a)
         {
             return
@@ -23081,6 +23959,7 @@ namespace Aardvark.Base
                 s > a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33f a, M33f b)
         {
             return
@@ -23095,6 +23974,7 @@ namespace Aardvark.Base
                 a.M22 == b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33f a, float s)
         {
             return
@@ -23109,6 +23989,7 @@ namespace Aardvark.Base
                 a.M22 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(float s, M33f a)
         {
             return
@@ -23123,6 +24004,7 @@ namespace Aardvark.Base
                 s == a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M33f a, M33f b)
         {
             return
@@ -23137,6 +24019,7 @@ namespace Aardvark.Base
                 a.M22 <= b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M33f a, float s)
         {
             return
@@ -23151,6 +24034,7 @@ namespace Aardvark.Base
                 a.M22 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(float s, M33f a)
         {
             return
@@ -23165,6 +24049,7 @@ namespace Aardvark.Base
                 s <= a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M33f a, M33f b)
         {
             return
@@ -23179,6 +24064,7 @@ namespace Aardvark.Base
                 a.M22 >= b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M33f a, float s)
         {
             return
@@ -23193,6 +24079,7 @@ namespace Aardvark.Base
                 a.M22 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(float s, M33f a)
         {
             return
@@ -23207,16 +24094,19 @@ namespace Aardvark.Base
                 s >= a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M33f a, M33f b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M33f m, float s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(float s, M33f m)
         {
             return !(s == m);
@@ -23234,18 +24124,17 @@ namespace Aardvark.Base
                 M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M33f other)
         {
-            if (other is M33f o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22);
         }
+
+        public override bool Equals(object other)
+            => (other is M33f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -23999,6 +24888,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M33f a, M33f b)
+            => ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M33f a, M33f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -24050,6 +24946,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(double value)
         {
             M00 = value; M01 = value; M02 = value; 
@@ -24057,6 +24954,7 @@ namespace Aardvark.Base
             M20 = value; M21 = value; M22 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(
                 double m00, double m01, double m02, 
                 double m10, double m11, double m12, 
@@ -24067,6 +24965,7 @@ namespace Aardvark.Base
             M20 = m20; M21 = m21; M22 = m22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(double[] a)
         {
             M00 = a[0];
@@ -24080,6 +24979,7 @@ namespace Aardvark.Base
             M22 = a[8];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(double[] a, int start)
         {
             M00 = a[start + 0];
@@ -24093,6 +24993,7 @@ namespace Aardvark.Base
             M22 = a[start + 8];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M22i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; 
@@ -24100,6 +25001,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M23i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24107,6 +25009,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M33i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24114,6 +25017,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M34i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24121,6 +25025,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M44i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24128,6 +25033,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M22l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; 
@@ -24135,6 +25041,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M23l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24142,6 +25049,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M33l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24149,6 +25057,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M34l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24156,6 +25065,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M44l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24163,6 +25073,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M22f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; 
@@ -24170,6 +25081,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M23f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24177,6 +25089,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M33f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24184,6 +25097,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M34f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24191,6 +25105,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M44f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; 
@@ -24198,6 +25113,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M22d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; 
@@ -24205,6 +25121,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M23d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -24212,6 +25129,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M34d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -24219,6 +25137,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(M44d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; 
@@ -25618,6 +26537,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator -(M33d m)
         {
             return new M33d(
@@ -25626,6 +26546,7 @@ namespace Aardvark.Base
                 -m.M20, -m.M21, -m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (M33d a, M33d b)
         {
             return new M33d(
@@ -25634,6 +26555,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (M33d m, double s)
         {
             return new M33d(
@@ -25642,6 +26564,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  + (double s, M33d m)
         {
             return new M33d(
@@ -25650,6 +26573,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (M33d a, M33d b)
         {
             return new M33d(
@@ -25658,6 +26582,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (M33d m, double s)
         {
             return new M33d(
@@ -25666,6 +26591,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  - (double s, M33d m)
         {
             return new M33d(
@@ -25674,6 +26600,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (M33d a, M33d b)
         {
             return new M33d(
@@ -25682,6 +26609,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (M33d m, double s)
         {
             return new M33d(
@@ -25690,6 +26618,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  % (double s, M33d m)
         {
             return new M33d(
@@ -25698,6 +26627,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (M33d a, M33d b)
         {
             return new M33d(
@@ -25706,6 +26636,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (M33d m, double s)
         {
             return new M33d(
@@ -25714,6 +26645,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  / (double s, M33d m)
         {
             return new M33d(
@@ -25722,6 +26654,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  * (M33d m, double s)
         {
             return new M33d(
@@ -25730,6 +26663,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d operator  * (double s, M33d m)
         {
             return new M33d(
@@ -25770,6 +26704,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M33d a, M33d b)
         {
             return
@@ -25784,6 +26719,7 @@ namespace Aardvark.Base
                 a.M22 < b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M33d a, double s)
         {
             return
@@ -25798,6 +26734,7 @@ namespace Aardvark.Base
                 a.M22 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(double s, M33d a)
         {
             return
@@ -25812,6 +26749,7 @@ namespace Aardvark.Base
                 s < a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M33d a, M33d b)
         {
             return
@@ -25826,6 +26764,7 @@ namespace Aardvark.Base
                 a.M22 > b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M33d a, double s)
         {
             return
@@ -25840,6 +26779,7 @@ namespace Aardvark.Base
                 a.M22 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(double s, M33d a)
         {
             return
@@ -25854,6 +26794,7 @@ namespace Aardvark.Base
                 s > a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33d a, M33d b)
         {
             return
@@ -25868,6 +26809,7 @@ namespace Aardvark.Base
                 a.M22 == b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33d a, double s)
         {
             return
@@ -25882,6 +26824,7 @@ namespace Aardvark.Base
                 a.M22 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(double s, M33d a)
         {
             return
@@ -25896,6 +26839,7 @@ namespace Aardvark.Base
                 s == a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M33d a, M33d b)
         {
             return
@@ -25910,6 +26854,7 @@ namespace Aardvark.Base
                 a.M22 <= b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M33d a, double s)
         {
             return
@@ -25924,6 +26869,7 @@ namespace Aardvark.Base
                 a.M22 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(double s, M33d a)
         {
             return
@@ -25938,6 +26884,7 @@ namespace Aardvark.Base
                 s <= a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M33d a, M33d b)
         {
             return
@@ -25952,6 +26899,7 @@ namespace Aardvark.Base
                 a.M22 >= b.M22;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M33d a, double s)
         {
             return
@@ -25966,6 +26914,7 @@ namespace Aardvark.Base
                 a.M22 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(double s, M33d a)
         {
             return
@@ -25980,16 +26929,19 @@ namespace Aardvark.Base
                 s >= a.M22 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M33d a, M33d b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M33d m, double s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(double s, M33d m)
         {
             return !(s == m);
@@ -26007,18 +26959,17 @@ namespace Aardvark.Base
                 M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M33d other)
         {
-            if (other is M33d o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22);
         }
+
+        public override bool Equals(object other)
+            => (other is M33d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -26772,6 +27723,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M33d a, M33d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M33d a, M33d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -26823,6 +27781,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(int value)
         {
             M00 = value; M01 = value; M02 = value; M03 = value; 
@@ -26830,6 +27789,7 @@ namespace Aardvark.Base
             M20 = value; M21 = value; M22 = value; M23 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(
                 int m00, int m01, int m02, int m03, 
                 int m10, int m11, int m12, int m13, 
@@ -26840,6 +27800,7 @@ namespace Aardvark.Base
             M20 = m20; M21 = m21; M22 = m22; M23 = m23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(int[] a)
         {
             M00 = a[0];
@@ -26856,6 +27817,7 @@ namespace Aardvark.Base
             M23 = a[11];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(int[] a, int start)
         {
             M00 = a[start + 0];
@@ -26872,6 +27834,7 @@ namespace Aardvark.Base
             M23 = a[start + 11];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M33i m, V3i v)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = v.X; 
@@ -26879,6 +27842,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = v.Z; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M22i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; M03 = 0; 
@@ -26886,6 +27850,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M23i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -26893,6 +27858,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M33i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -26900,6 +27866,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M44i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = m.M03; 
@@ -26907,6 +27874,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M22l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; M03 = 0; 
@@ -26914,6 +27882,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M23l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -26921,6 +27890,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M33l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -26928,6 +27898,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M34l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -26935,6 +27906,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; M23 = (int)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M44l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -26942,6 +27914,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; M23 = (int)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M22f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; M03 = 0; 
@@ -26949,6 +27922,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M23f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -26956,6 +27930,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M33f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -26963,6 +27938,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M34f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -26970,6 +27946,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; M23 = (int)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M44f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -26977,6 +27954,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; M23 = (int)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M22d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; M03 = 0; 
@@ -26984,6 +27962,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M23d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -26991,6 +27970,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M33d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -26998,6 +27978,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M34d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -27005,6 +27986,7 @@ namespace Aardvark.Base
             M20 = (int)m.M20; M21 = (int)m.M21; M22 = (int)m.M22; M23 = (int)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(M44d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -28033,6 +29015,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator -(M34i m)
         {
             return new M34i(
@@ -28041,6 +29024,7 @@ namespace Aardvark.Base
                 -m.M20, -m.M21, -m.M22, -m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  + (M34i a, M34i b)
         {
             return new M34i(
@@ -28049,6 +29033,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  + (M34i m, int s)
         {
             return new M34i(
@@ -28057,6 +29042,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  + (int s, M34i m)
         {
             return new M34i(
@@ -28065,6 +29051,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  + (M34i a, M34l b)
         {
             return new M34l(
@@ -28073,6 +29060,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  + (M34i m, long s)
         {
             return new M34l(
@@ -28081,6 +29069,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  + (long s, M34i m)
         {
             return new M34l(
@@ -28089,6 +29078,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (M34i a, M34f b)
         {
             return new M34f(
@@ -28097,6 +29087,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (M34i m, float s)
         {
             return new M34f(
@@ -28105,6 +29096,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (float s, M34i m)
         {
             return new M34f(
@@ -28113,6 +29105,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (M34i a, M34d b)
         {
             return new M34d(
@@ -28121,6 +29114,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (M34i m, double s)
         {
             return new M34d(
@@ -28129,6 +29123,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (double s, M34i m)
         {
             return new M34d(
@@ -28137,6 +29132,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  - (M34i a, M34i b)
         {
             return new M34i(
@@ -28145,6 +29141,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  - (M34i m, int s)
         {
             return new M34i(
@@ -28153,6 +29150,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  - (int s, M34i m)
         {
             return new M34i(
@@ -28161,6 +29159,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  - (M34i a, M34l b)
         {
             return new M34l(
@@ -28169,6 +29168,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  - (M34i m, long s)
         {
             return new M34l(
@@ -28177,6 +29177,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  - (long s, M34i m)
         {
             return new M34l(
@@ -28185,6 +29186,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (M34i a, M34f b)
         {
             return new M34f(
@@ -28193,6 +29195,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (M34i m, float s)
         {
             return new M34f(
@@ -28201,6 +29204,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (float s, M34i m)
         {
             return new M34f(
@@ -28209,6 +29213,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (M34i a, M34d b)
         {
             return new M34d(
@@ -28217,6 +29222,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (M34i m, double s)
         {
             return new M34d(
@@ -28225,6 +29231,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (double s, M34i m)
         {
             return new M34d(
@@ -28233,6 +29240,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  % (M34i a, M34i b)
         {
             return new M34i(
@@ -28241,6 +29249,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  % (M34i m, int s)
         {
             return new M34i(
@@ -28249,6 +29258,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  % (int s, M34i m)
         {
             return new M34i(
@@ -28257,6 +29267,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  % (M34i a, M34l b)
         {
             return new M34l(
@@ -28265,6 +29276,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  % (M34i m, long s)
         {
             return new M34l(
@@ -28273,6 +29285,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  % (long s, M34i m)
         {
             return new M34l(
@@ -28281,6 +29294,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (M34i a, M34f b)
         {
             return new M34f(
@@ -28289,6 +29303,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (M34i m, float s)
         {
             return new M34f(
@@ -28297,6 +29312,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (float s, M34i m)
         {
             return new M34f(
@@ -28305,6 +29321,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (M34i a, M34d b)
         {
             return new M34d(
@@ -28313,6 +29330,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (M34i m, double s)
         {
             return new M34d(
@@ -28321,6 +29339,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (double s, M34i m)
         {
             return new M34d(
@@ -28329,6 +29348,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  / (M34i a, M34i b)
         {
             return new M34i(
@@ -28337,6 +29357,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  / (M34i m, int s)
         {
             return new M34i(
@@ -28345,6 +29366,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  / (int s, M34i m)
         {
             return new M34i(
@@ -28353,6 +29375,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  / (M34i a, M34l b)
         {
             return new M34l(
@@ -28361,6 +29384,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  / (M34i m, long s)
         {
             return new M34l(
@@ -28369,6 +29393,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  / (long s, M34i m)
         {
             return new M34l(
@@ -28377,6 +29402,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (M34i a, M34f b)
         {
             return new M34f(
@@ -28385,6 +29411,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (M34i m, float s)
         {
             return new M34f(
@@ -28393,6 +29420,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (float s, M34i m)
         {
             return new M34f(
@@ -28401,6 +29429,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (M34i a, M34d b)
         {
             return new M34d(
@@ -28409,6 +29438,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (M34i m, double s)
         {
             return new M34d(
@@ -28417,6 +29447,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (double s, M34i m)
         {
             return new M34d(
@@ -28425,6 +29456,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  * (M34i m, int s)
         {
             return new M34i(
@@ -28433,6 +29465,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34i operator  * (int s, M34i m)
         {
             return new M34i(
@@ -28441,6 +29474,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22, s * m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  * (M34i m, long s)
         {
             return new M34l(
@@ -28449,6 +29483,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  * (long s, M34i m)
         {
             return new M34l(
@@ -28457,6 +29492,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22, s * m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  * (M34i m, float s)
         {
             return new M34f(
@@ -28465,6 +29501,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  * (float s, M34i m)
         {
             return new M34f(
@@ -28473,6 +29510,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22, s * m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  * (M34i m, double s)
         {
             return new M34d(
@@ -28481,6 +29519,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  * (double s, M34i m)
         {
             return new M34d(
@@ -28522,6 +29561,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M34i a, M34i b)
         {
             return
@@ -28539,6 +29579,7 @@ namespace Aardvark.Base
                 a.M23 < b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M34i a, int s)
         {
             return
@@ -28556,6 +29597,7 @@ namespace Aardvark.Base
                 a.M23 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(int s, M34i a)
         {
             return
@@ -28573,6 +29615,7 @@ namespace Aardvark.Base
                 s < a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M34i a, M34i b)
         {
             return
@@ -28590,6 +29633,7 @@ namespace Aardvark.Base
                 a.M23 > b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M34i a, int s)
         {
             return
@@ -28607,6 +29651,7 @@ namespace Aardvark.Base
                 a.M23 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(int s, M34i a)
         {
             return
@@ -28624,6 +29669,7 @@ namespace Aardvark.Base
                 s > a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34i a, M34i b)
         {
             return
@@ -28641,6 +29687,7 @@ namespace Aardvark.Base
                 a.M23 == b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34i a, int s)
         {
             return
@@ -28658,6 +29705,7 @@ namespace Aardvark.Base
                 a.M23 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(int s, M34i a)
         {
             return
@@ -28675,6 +29723,7 @@ namespace Aardvark.Base
                 s == a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M34i a, M34i b)
         {
             return
@@ -28692,6 +29741,7 @@ namespace Aardvark.Base
                 a.M23 <= b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M34i a, int s)
         {
             return
@@ -28709,6 +29759,7 @@ namespace Aardvark.Base
                 a.M23 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(int s, M34i a)
         {
             return
@@ -28726,6 +29777,7 @@ namespace Aardvark.Base
                 s <= a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M34i a, M34i b)
         {
             return
@@ -28743,6 +29795,7 @@ namespace Aardvark.Base
                 a.M23 >= b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M34i a, int s)
         {
             return
@@ -28760,6 +29813,7 @@ namespace Aardvark.Base
                 a.M23 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(int s, M34i a)
         {
             return
@@ -28777,16 +29831,19 @@ namespace Aardvark.Base
                 s >= a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M34i a, M34i b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M34i m, int s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(int s, M34i m)
         {
             return !(s == m);
@@ -28804,18 +29861,17 @@ namespace Aardvark.Base
                 M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M34i other)
         {
-            if (other is M34i o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && M13.Equals(other.M13) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23);
         }
+
+        public override bool Equals(object other)
+            => (other is M34i o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -29295,6 +30351,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(long value)
         {
             M00 = value; M01 = value; M02 = value; M03 = value; 
@@ -29302,6 +30359,7 @@ namespace Aardvark.Base
             M20 = value; M21 = value; M22 = value; M23 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(
                 long m00, long m01, long m02, long m03, 
                 long m10, long m11, long m12, long m13, 
@@ -29312,6 +30370,7 @@ namespace Aardvark.Base
             M20 = m20; M21 = m21; M22 = m22; M23 = m23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(long[] a)
         {
             M00 = a[0];
@@ -29328,6 +30387,7 @@ namespace Aardvark.Base
             M23 = a[11];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(long[] a, int start)
         {
             M00 = a[start + 0];
@@ -29344,6 +30404,7 @@ namespace Aardvark.Base
             M23 = a[start + 11];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M33l m, V3l v)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = v.X; 
@@ -29351,6 +30412,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = v.Z; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M22i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; M03 = 0; 
@@ -29358,6 +30420,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M23i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -29365,6 +30428,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M33i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -29372,6 +30436,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M34i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -29379,6 +30444,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; M23 = (long)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M44i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -29386,6 +30452,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; M23 = (long)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M22l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; M03 = 0; 
@@ -29393,6 +30460,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M23l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -29400,6 +30468,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M33l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -29407,6 +30476,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M44l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = m.M03; 
@@ -29414,6 +30484,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M22f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; M03 = 0; 
@@ -29421,6 +30492,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M23f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -29428,6 +30500,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M33f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -29435,6 +30508,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M34f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -29442,6 +30516,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; M23 = (long)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M44f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -29449,6 +30524,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; M23 = (long)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M22d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; M03 = 0; 
@@ -29456,6 +30532,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M23d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -29463,6 +30540,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M33d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -29470,6 +30548,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M34d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -29477,6 +30556,7 @@ namespace Aardvark.Base
             M20 = (long)m.M20; M21 = (long)m.M21; M22 = (long)m.M22; M23 = (long)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(M44d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -30505,6 +31585,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator -(M34l m)
         {
             return new M34l(
@@ -30513,6 +31594,7 @@ namespace Aardvark.Base
                 -m.M20, -m.M21, -m.M22, -m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  + (M34l a, M34l b)
         {
             return new M34l(
@@ -30521,6 +31603,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  + (M34l m, long s)
         {
             return new M34l(
@@ -30529,6 +31612,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  + (long s, M34l m)
         {
             return new M34l(
@@ -30537,6 +31621,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (M34l a, M34f b)
         {
             return new M34f(
@@ -30545,6 +31630,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (M34l m, float s)
         {
             return new M34f(
@@ -30553,6 +31639,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (float s, M34l m)
         {
             return new M34f(
@@ -30561,6 +31648,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (M34l a, M34d b)
         {
             return new M34d(
@@ -30569,6 +31657,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (M34l m, double s)
         {
             return new M34d(
@@ -30577,6 +31666,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (double s, M34l m)
         {
             return new M34d(
@@ -30585,6 +31675,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  - (M34l a, M34l b)
         {
             return new M34l(
@@ -30593,6 +31684,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  - (M34l m, long s)
         {
             return new M34l(
@@ -30601,6 +31693,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  - (long s, M34l m)
         {
             return new M34l(
@@ -30609,6 +31702,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (M34l a, M34f b)
         {
             return new M34f(
@@ -30617,6 +31711,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (M34l m, float s)
         {
             return new M34f(
@@ -30625,6 +31720,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (float s, M34l m)
         {
             return new M34f(
@@ -30633,6 +31729,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (M34l a, M34d b)
         {
             return new M34d(
@@ -30641,6 +31738,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (M34l m, double s)
         {
             return new M34d(
@@ -30649,6 +31747,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (double s, M34l m)
         {
             return new M34d(
@@ -30657,6 +31756,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  % (M34l a, M34l b)
         {
             return new M34l(
@@ -30665,6 +31765,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  % (M34l m, long s)
         {
             return new M34l(
@@ -30673,6 +31774,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  % (long s, M34l m)
         {
             return new M34l(
@@ -30681,6 +31783,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (M34l a, M34f b)
         {
             return new M34f(
@@ -30689,6 +31792,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (M34l m, float s)
         {
             return new M34f(
@@ -30697,6 +31801,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (float s, M34l m)
         {
             return new M34f(
@@ -30705,6 +31810,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (M34l a, M34d b)
         {
             return new M34d(
@@ -30713,6 +31819,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (M34l m, double s)
         {
             return new M34d(
@@ -30721,6 +31828,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (double s, M34l m)
         {
             return new M34d(
@@ -30729,6 +31837,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  / (M34l a, M34l b)
         {
             return new M34l(
@@ -30737,6 +31846,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  / (M34l m, long s)
         {
             return new M34l(
@@ -30745,6 +31855,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  / (long s, M34l m)
         {
             return new M34l(
@@ -30753,6 +31864,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (M34l a, M34f b)
         {
             return new M34f(
@@ -30761,6 +31873,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (M34l m, float s)
         {
             return new M34f(
@@ -30769,6 +31882,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (float s, M34l m)
         {
             return new M34f(
@@ -30777,6 +31891,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (M34l a, M34d b)
         {
             return new M34d(
@@ -30785,6 +31900,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (M34l m, double s)
         {
             return new M34d(
@@ -30793,6 +31909,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (double s, M34l m)
         {
             return new M34d(
@@ -30801,6 +31918,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  * (M34l m, long s)
         {
             return new M34l(
@@ -30809,6 +31927,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34l operator  * (long s, M34l m)
         {
             return new M34l(
@@ -30817,6 +31936,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22, s * m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  * (M34l m, float s)
         {
             return new M34f(
@@ -30825,6 +31945,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  * (float s, M34l m)
         {
             return new M34f(
@@ -30833,6 +31954,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22, s * m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  * (M34l m, double s)
         {
             return new M34d(
@@ -30841,6 +31963,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  * (double s, M34l m)
         {
             return new M34d(
@@ -30882,6 +32005,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M34l a, M34l b)
         {
             return
@@ -30899,6 +32023,7 @@ namespace Aardvark.Base
                 a.M23 < b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M34l a, long s)
         {
             return
@@ -30916,6 +32041,7 @@ namespace Aardvark.Base
                 a.M23 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(long s, M34l a)
         {
             return
@@ -30933,6 +32059,7 @@ namespace Aardvark.Base
                 s < a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M34l a, M34l b)
         {
             return
@@ -30950,6 +32077,7 @@ namespace Aardvark.Base
                 a.M23 > b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M34l a, long s)
         {
             return
@@ -30967,6 +32095,7 @@ namespace Aardvark.Base
                 a.M23 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(long s, M34l a)
         {
             return
@@ -30984,6 +32113,7 @@ namespace Aardvark.Base
                 s > a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34l a, M34l b)
         {
             return
@@ -31001,6 +32131,7 @@ namespace Aardvark.Base
                 a.M23 == b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34l a, long s)
         {
             return
@@ -31018,6 +32149,7 @@ namespace Aardvark.Base
                 a.M23 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(long s, M34l a)
         {
             return
@@ -31035,6 +32167,7 @@ namespace Aardvark.Base
                 s == a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M34l a, M34l b)
         {
             return
@@ -31052,6 +32185,7 @@ namespace Aardvark.Base
                 a.M23 <= b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M34l a, long s)
         {
             return
@@ -31069,6 +32203,7 @@ namespace Aardvark.Base
                 a.M23 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(long s, M34l a)
         {
             return
@@ -31086,6 +32221,7 @@ namespace Aardvark.Base
                 s <= a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M34l a, M34l b)
         {
             return
@@ -31103,6 +32239,7 @@ namespace Aardvark.Base
                 a.M23 >= b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M34l a, long s)
         {
             return
@@ -31120,6 +32257,7 @@ namespace Aardvark.Base
                 a.M23 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(long s, M34l a)
         {
             return
@@ -31137,16 +32275,19 @@ namespace Aardvark.Base
                 s >= a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M34l a, M34l b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M34l m, long s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(long s, M34l m)
         {
             return !(s == m);
@@ -31164,18 +32305,17 @@ namespace Aardvark.Base
                 M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M34l other)
         {
-            if (other is M34l o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && M13.Equals(other.M13) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23);
         }
+
+        public override bool Equals(object other)
+            => (other is M34l o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -31655,6 +32795,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(float value)
         {
             M00 = value; M01 = value; M02 = value; M03 = value; 
@@ -31662,6 +32803,7 @@ namespace Aardvark.Base
             M20 = value; M21 = value; M22 = value; M23 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(
                 float m00, float m01, float m02, float m03, 
                 float m10, float m11, float m12, float m13, 
@@ -31672,6 +32814,7 @@ namespace Aardvark.Base
             M20 = m20; M21 = m21; M22 = m22; M23 = m23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(float[] a)
         {
             M00 = a[0];
@@ -31688,6 +32831,7 @@ namespace Aardvark.Base
             M23 = a[11];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(float[] a, int start)
         {
             M00 = a[start + 0];
@@ -31704,6 +32848,7 @@ namespace Aardvark.Base
             M23 = a[start + 11];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M33f m, V3f v)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = v.X; 
@@ -31711,6 +32856,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = v.Z; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M22i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; M03 = 0; 
@@ -31718,6 +32864,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M23i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -31725,6 +32872,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M33i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -31732,6 +32880,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M34i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -31739,6 +32888,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; M23 = (float)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M44i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -31746,6 +32896,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; M23 = (float)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M22l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; M03 = 0; 
@@ -31753,6 +32904,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M23l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -31760,6 +32912,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M33l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -31767,6 +32920,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M34l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -31774,6 +32928,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; M23 = (float)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M44l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -31781,6 +32936,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; M23 = (float)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M22f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; M03 = 0; 
@@ -31788,6 +32944,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M23f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -31795,6 +32952,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M33f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -31802,6 +32960,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M44f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = m.M03; 
@@ -31809,6 +32968,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M22d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; M03 = 0; 
@@ -31816,6 +32976,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M23d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -31823,6 +32984,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M33d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -31830,6 +32992,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M34d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -31837,6 +33000,7 @@ namespace Aardvark.Base
             M20 = (float)m.M20; M21 = (float)m.M21; M22 = (float)m.M22; M23 = (float)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(M44d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -33180,6 +34344,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator -(M34f m)
         {
             return new M34f(
@@ -33188,6 +34353,7 @@ namespace Aardvark.Base
                 -m.M20, -m.M21, -m.M22, -m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (M34f a, M34f b)
         {
             return new M34f(
@@ -33196,6 +34362,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (M34f m, float s)
         {
             return new M34f(
@@ -33204,6 +34371,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  + (float s, M34f m)
         {
             return new M34f(
@@ -33212,6 +34380,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (M34f a, M34d b)
         {
             return new M34d(
@@ -33220,6 +34389,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (M34f m, double s)
         {
             return new M34d(
@@ -33228,6 +34398,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (double s, M34f m)
         {
             return new M34d(
@@ -33236,6 +34407,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (M34f a, M34f b)
         {
             return new M34f(
@@ -33244,6 +34416,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (M34f m, float s)
         {
             return new M34f(
@@ -33252,6 +34425,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  - (float s, M34f m)
         {
             return new M34f(
@@ -33260,6 +34434,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (M34f a, M34d b)
         {
             return new M34d(
@@ -33268,6 +34443,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (M34f m, double s)
         {
             return new M34d(
@@ -33276,6 +34452,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (double s, M34f m)
         {
             return new M34d(
@@ -33284,6 +34461,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (M34f a, M34f b)
         {
             return new M34f(
@@ -33292,6 +34470,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (M34f m, float s)
         {
             return new M34f(
@@ -33300,6 +34479,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  % (float s, M34f m)
         {
             return new M34f(
@@ -33308,6 +34488,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (M34f a, M34d b)
         {
             return new M34d(
@@ -33316,6 +34497,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (M34f m, double s)
         {
             return new M34d(
@@ -33324,6 +34506,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (double s, M34f m)
         {
             return new M34d(
@@ -33332,6 +34515,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (M34f a, M34f b)
         {
             return new M34f(
@@ -33340,6 +34524,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (M34f m, float s)
         {
             return new M34f(
@@ -33348,6 +34533,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  / (float s, M34f m)
         {
             return new M34f(
@@ -33356,6 +34542,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (M34f a, M34d b)
         {
             return new M34d(
@@ -33364,6 +34551,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (M34f m, double s)
         {
             return new M34d(
@@ -33372,6 +34560,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (double s, M34f m)
         {
             return new M34d(
@@ -33380,6 +34569,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  * (M34f m, float s)
         {
             return new M34f(
@@ -33388,6 +34578,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f operator  * (float s, M34f m)
         {
             return new M34f(
@@ -33396,6 +34587,7 @@ namespace Aardvark.Base
                 s * m.M20, s * m.M21, s * m.M22, s * m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  * (M34f m, double s)
         {
             return new M34d(
@@ -33404,6 +34596,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  * (double s, M34f m)
         {
             return new M34d(
@@ -33445,6 +34638,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M34f a, M34f b)
         {
             return
@@ -33462,6 +34656,7 @@ namespace Aardvark.Base
                 a.M23 < b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M34f a, float s)
         {
             return
@@ -33479,6 +34674,7 @@ namespace Aardvark.Base
                 a.M23 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(float s, M34f a)
         {
             return
@@ -33496,6 +34692,7 @@ namespace Aardvark.Base
                 s < a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M34f a, M34f b)
         {
             return
@@ -33513,6 +34710,7 @@ namespace Aardvark.Base
                 a.M23 > b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M34f a, float s)
         {
             return
@@ -33530,6 +34728,7 @@ namespace Aardvark.Base
                 a.M23 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(float s, M34f a)
         {
             return
@@ -33547,6 +34746,7 @@ namespace Aardvark.Base
                 s > a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34f a, M34f b)
         {
             return
@@ -33564,6 +34764,7 @@ namespace Aardvark.Base
                 a.M23 == b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34f a, float s)
         {
             return
@@ -33581,6 +34782,7 @@ namespace Aardvark.Base
                 a.M23 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(float s, M34f a)
         {
             return
@@ -33598,6 +34800,7 @@ namespace Aardvark.Base
                 s == a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M34f a, M34f b)
         {
             return
@@ -33615,6 +34818,7 @@ namespace Aardvark.Base
                 a.M23 <= b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M34f a, float s)
         {
             return
@@ -33632,6 +34836,7 @@ namespace Aardvark.Base
                 a.M23 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(float s, M34f a)
         {
             return
@@ -33649,6 +34854,7 @@ namespace Aardvark.Base
                 s <= a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M34f a, M34f b)
         {
             return
@@ -33666,6 +34872,7 @@ namespace Aardvark.Base
                 a.M23 >= b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M34f a, float s)
         {
             return
@@ -33683,6 +34890,7 @@ namespace Aardvark.Base
                 a.M23 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(float s, M34f a)
         {
             return
@@ -33700,16 +34908,19 @@ namespace Aardvark.Base
                 s >= a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M34f a, M34f b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M34f m, float s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(float s, M34f m)
         {
             return !(s == m);
@@ -33727,18 +34938,17 @@ namespace Aardvark.Base
                 M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M34f other)
         {
-            if (other is M34f o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && M13.Equals(other.M13) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23);
         }
+
+        public override bool Equals(object other)
+            => (other is M34f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -34218,6 +35428,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M34f a, M34f b)
+            => ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M34f a, M34f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -34269,6 +35486,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(double value)
         {
             M00 = value; M01 = value; M02 = value; M03 = value; 
@@ -34276,6 +35494,7 @@ namespace Aardvark.Base
             M20 = value; M21 = value; M22 = value; M23 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(
                 double m00, double m01, double m02, double m03, 
                 double m10, double m11, double m12, double m13, 
@@ -34286,6 +35505,7 @@ namespace Aardvark.Base
             M20 = m20; M21 = m21; M22 = m22; M23 = m23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(double[] a)
         {
             M00 = a[0];
@@ -34302,6 +35522,7 @@ namespace Aardvark.Base
             M23 = a[11];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(double[] a, int start)
         {
             M00 = a[start + 0];
@@ -34318,6 +35539,7 @@ namespace Aardvark.Base
             M23 = a[start + 11];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M33d m, V3d v)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = v.X; 
@@ -34325,6 +35547,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = v.Z; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M22i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; M03 = 0; 
@@ -34332,6 +35555,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M23i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -34339,6 +35563,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M33i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -34346,6 +35571,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M34i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -34353,6 +35579,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = (double)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M44i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -34360,6 +35587,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = (double)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M22l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; M03 = 0; 
@@ -34367,6 +35595,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M23l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -34374,6 +35603,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M33l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -34381,6 +35611,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M34l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -34388,6 +35619,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = (double)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M44l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -34395,6 +35627,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = (double)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M22f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; M03 = 0; 
@@ -34402,6 +35635,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M23f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -34409,6 +35643,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M33f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -34416,6 +35651,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M34f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -34423,6 +35659,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = (double)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M44f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -34430,6 +35667,7 @@ namespace Aardvark.Base
             M20 = (double)m.M20; M21 = (double)m.M21; M22 = (double)m.M22; M23 = (double)m.M23; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M22d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; M03 = 0; 
@@ -34437,6 +35675,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M23d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -34444,6 +35683,7 @@ namespace Aardvark.Base
             M20 = 0; M21 = 0; M22 = 1; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M33d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -34451,6 +35691,7 @@ namespace Aardvark.Base
             M20 = m.M20; M21 = m.M21; M22 = m.M22; M23 = 0; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(M44d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = m.M03; 
@@ -35794,6 +37035,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator -(M34d m)
         {
             return new M34d(
@@ -35802,6 +37044,7 @@ namespace Aardvark.Base
                 -m.M20, -m.M21, -m.M22, -m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (M34d a, M34d b)
         {
             return new M34d(
@@ -35810,6 +37053,7 @@ namespace Aardvark.Base
                 a.M20 + b.M20, a.M21 + b.M21, a.M22 + b.M22, a.M23 + b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (M34d m, double s)
         {
             return new M34d(
@@ -35818,6 +37062,7 @@ namespace Aardvark.Base
                 m.M20 + s, m.M21 + s, m.M22 + s, m.M23 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  + (double s, M34d m)
         {
             return new M34d(
@@ -35826,6 +37071,7 @@ namespace Aardvark.Base
                 s + m.M20, s + m.M21, s + m.M22, s + m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (M34d a, M34d b)
         {
             return new M34d(
@@ -35834,6 +37080,7 @@ namespace Aardvark.Base
                 a.M20 - b.M20, a.M21 - b.M21, a.M22 - b.M22, a.M23 - b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (M34d m, double s)
         {
             return new M34d(
@@ -35842,6 +37089,7 @@ namespace Aardvark.Base
                 m.M20 - s, m.M21 - s, m.M22 - s, m.M23 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  - (double s, M34d m)
         {
             return new M34d(
@@ -35850,6 +37098,7 @@ namespace Aardvark.Base
                 s - m.M20, s - m.M21, s - m.M22, s - m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (M34d a, M34d b)
         {
             return new M34d(
@@ -35858,6 +37107,7 @@ namespace Aardvark.Base
                 a.M20 % b.M20, a.M21 % b.M21, a.M22 % b.M22, a.M23 % b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (M34d m, double s)
         {
             return new M34d(
@@ -35866,6 +37116,7 @@ namespace Aardvark.Base
                 m.M20 % s, m.M21 % s, m.M22 % s, m.M23 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  % (double s, M34d m)
         {
             return new M34d(
@@ -35874,6 +37125,7 @@ namespace Aardvark.Base
                 s % m.M20, s % m.M21, s % m.M22, s % m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (M34d a, M34d b)
         {
             return new M34d(
@@ -35882,6 +37134,7 @@ namespace Aardvark.Base
                 a.M20 / b.M20, a.M21 / b.M21, a.M22 / b.M22, a.M23 / b.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (M34d m, double s)
         {
             return new M34d(
@@ -35890,6 +37143,7 @@ namespace Aardvark.Base
                 m.M20 / s, m.M21 / s, m.M22 / s, m.M23 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  / (double s, M34d m)
         {
             return new M34d(
@@ -35898,6 +37152,7 @@ namespace Aardvark.Base
                 s / m.M20, s / m.M21, s / m.M22, s / m.M23);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  * (M34d m, double s)
         {
             return new M34d(
@@ -35906,6 +37161,7 @@ namespace Aardvark.Base
                 m.M20 * s, m.M21 * s, m.M22 * s, m.M23 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d operator  * (double s, M34d m)
         {
             return new M34d(
@@ -35947,6 +37203,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M34d a, M34d b)
         {
             return
@@ -35964,6 +37221,7 @@ namespace Aardvark.Base
                 a.M23 < b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M34d a, double s)
         {
             return
@@ -35981,6 +37239,7 @@ namespace Aardvark.Base
                 a.M23 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(double s, M34d a)
         {
             return
@@ -35998,6 +37257,7 @@ namespace Aardvark.Base
                 s < a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M34d a, M34d b)
         {
             return
@@ -36015,6 +37275,7 @@ namespace Aardvark.Base
                 a.M23 > b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M34d a, double s)
         {
             return
@@ -36032,6 +37293,7 @@ namespace Aardvark.Base
                 a.M23 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(double s, M34d a)
         {
             return
@@ -36049,6 +37311,7 @@ namespace Aardvark.Base
                 s > a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34d a, M34d b)
         {
             return
@@ -36066,6 +37329,7 @@ namespace Aardvark.Base
                 a.M23 == b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34d a, double s)
         {
             return
@@ -36083,6 +37347,7 @@ namespace Aardvark.Base
                 a.M23 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(double s, M34d a)
         {
             return
@@ -36100,6 +37365,7 @@ namespace Aardvark.Base
                 s == a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M34d a, M34d b)
         {
             return
@@ -36117,6 +37383,7 @@ namespace Aardvark.Base
                 a.M23 <= b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M34d a, double s)
         {
             return
@@ -36134,6 +37401,7 @@ namespace Aardvark.Base
                 a.M23 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(double s, M34d a)
         {
             return
@@ -36151,6 +37419,7 @@ namespace Aardvark.Base
                 s <= a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M34d a, M34d b)
         {
             return
@@ -36168,6 +37437,7 @@ namespace Aardvark.Base
                 a.M23 >= b.M23;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M34d a, double s)
         {
             return
@@ -36185,6 +37455,7 @@ namespace Aardvark.Base
                 a.M23 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(double s, M34d a)
         {
             return
@@ -36202,16 +37473,19 @@ namespace Aardvark.Base
                 s >= a.M23 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M34d a, M34d b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M34d m, double s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(double s, M34d m)
         {
             return !(s == m);
@@ -36229,18 +37503,17 @@ namespace Aardvark.Base
                 M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M34d other)
         {
-            if (other is M34d o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && M13.Equals(other.M13) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23);
         }
+
+        public override bool Equals(object other)
+            => (other is M34d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -36720,6 +37993,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M34d a, M34d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M34d a, M34d b, double epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -36773,6 +38053,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(int value)
         {
             M00 = value; M01 = value; M02 = value; M03 = value; 
@@ -36781,6 +38062,7 @@ namespace Aardvark.Base
             M30 = value; M31 = value; M32 = value; M33 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(
                 int m00, int m01, int m02, int m03, 
                 int m10, int m11, int m12, int m13, 
@@ -36793,6 +38075,7 @@ namespace Aardvark.Base
             M30 = m30; M31 = m31; M32 = m32; M33 = m33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(int[] a)
         {
             M00 = a[0];
@@ -36813,6 +38096,7 @@ namespace Aardvark.Base
             M33 = a[15];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(int[] a, int start)
         {
             M00 = a[start + 0];
@@ -36833,6 +38117,7 @@ namespace Aardvark.Base
             M33 = a[start + 15];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M22i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; M03 = 0; 
@@ -36841,6 +38126,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M23i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -36849,6 +38135,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M33i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -36857,6 +38144,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M34i m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = m.M03; 
@@ -36865,6 +38153,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M22l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; M03 = 0; 
@@ -36873,6 +38162,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M23l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -36881,6 +38171,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M33l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -36889,6 +38180,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M34l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -36897,6 +38189,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M44l m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -36905,6 +38198,7 @@ namespace Aardvark.Base
             M30 = (int)m.M30; M31 = (int)m.M31; M32 = (int)m.M32; M33 = (int)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M22f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; M03 = 0; 
@@ -36913,6 +38207,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M23f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -36921,6 +38216,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M33f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -36929,6 +38225,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M34f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -36937,6 +38234,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M44f m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -36945,6 +38243,7 @@ namespace Aardvark.Base
             M30 = (int)m.M30; M31 = (int)m.M31; M32 = (int)m.M32; M33 = (int)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M22d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = 0; M03 = 0; 
@@ -36953,6 +38252,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M23d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -36961,6 +38261,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M33d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = 0; 
@@ -36969,6 +38270,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M34d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -36977,6 +38279,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(M44d m)
         {
             M00 = (int)m.M00; M01 = (int)m.M01; M02 = (int)m.M02; M03 = (int)m.M03; 
@@ -38205,6 +39508,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator -(M44i m)
         {
             return new M44i(
@@ -38214,6 +39518,7 @@ namespace Aardvark.Base
                 -m.M30, -m.M31, -m.M32, -m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  + (M44i a, M44i b)
         {
             return new M44i(
@@ -38223,6 +39528,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  + (M44i m, int s)
         {
             return new M44i(
@@ -38232,6 +39538,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  + (int s, M44i m)
         {
             return new M44i(
@@ -38241,6 +39548,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  + (M44i a, M44l b)
         {
             return new M44l(
@@ -38250,6 +39558,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  + (M44i m, long s)
         {
             return new M44l(
@@ -38259,6 +39568,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  + (long s, M44i m)
         {
             return new M44l(
@@ -38268,6 +39578,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (M44i a, M44f b)
         {
             return new M44f(
@@ -38277,6 +39588,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (M44i m, float s)
         {
             return new M44f(
@@ -38286,6 +39598,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (float s, M44i m)
         {
             return new M44f(
@@ -38295,6 +39608,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (M44i a, M44d b)
         {
             return new M44d(
@@ -38304,6 +39618,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (M44i m, double s)
         {
             return new M44d(
@@ -38313,6 +39628,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (double s, M44i m)
         {
             return new M44d(
@@ -38322,6 +39638,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  - (M44i a, M44i b)
         {
             return new M44i(
@@ -38331,6 +39648,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  - (M44i m, int s)
         {
             return new M44i(
@@ -38340,6 +39658,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  - (int s, M44i m)
         {
             return new M44i(
@@ -38349,6 +39668,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  - (M44i a, M44l b)
         {
             return new M44l(
@@ -38358,6 +39678,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  - (M44i m, long s)
         {
             return new M44l(
@@ -38367,6 +39688,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  - (long s, M44i m)
         {
             return new M44l(
@@ -38376,6 +39698,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (M44i a, M44f b)
         {
             return new M44f(
@@ -38385,6 +39708,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (M44i m, float s)
         {
             return new M44f(
@@ -38394,6 +39718,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (float s, M44i m)
         {
             return new M44f(
@@ -38403,6 +39728,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (M44i a, M44d b)
         {
             return new M44d(
@@ -38412,6 +39738,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (M44i m, double s)
         {
             return new M44d(
@@ -38421,6 +39748,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (double s, M44i m)
         {
             return new M44d(
@@ -38430,6 +39758,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  % (M44i a, M44i b)
         {
             return new M44i(
@@ -38439,6 +39768,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  % (M44i m, int s)
         {
             return new M44i(
@@ -38448,6 +39778,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  % (int s, M44i m)
         {
             return new M44i(
@@ -38457,6 +39788,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  % (M44i a, M44l b)
         {
             return new M44l(
@@ -38466,6 +39798,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  % (M44i m, long s)
         {
             return new M44l(
@@ -38475,6 +39808,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  % (long s, M44i m)
         {
             return new M44l(
@@ -38484,6 +39818,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (M44i a, M44f b)
         {
             return new M44f(
@@ -38493,6 +39828,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (M44i m, float s)
         {
             return new M44f(
@@ -38502,6 +39838,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (float s, M44i m)
         {
             return new M44f(
@@ -38511,6 +39848,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (M44i a, M44d b)
         {
             return new M44d(
@@ -38520,6 +39858,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (M44i m, double s)
         {
             return new M44d(
@@ -38529,6 +39868,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (double s, M44i m)
         {
             return new M44d(
@@ -38538,6 +39878,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  / (M44i a, M44i b)
         {
             return new M44i(
@@ -38547,6 +39888,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  / (M44i m, int s)
         {
             return new M44i(
@@ -38556,6 +39898,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  / (int s, M44i m)
         {
             return new M44i(
@@ -38565,6 +39908,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  / (M44i a, M44l b)
         {
             return new M44l(
@@ -38574,6 +39918,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  / (M44i m, long s)
         {
             return new M44l(
@@ -38583,6 +39928,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  / (long s, M44i m)
         {
             return new M44l(
@@ -38592,6 +39938,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (M44i a, M44f b)
         {
             return new M44f(
@@ -38601,6 +39948,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (M44i m, float s)
         {
             return new M44f(
@@ -38610,6 +39958,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (float s, M44i m)
         {
             return new M44f(
@@ -38619,6 +39968,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (M44i a, M44d b)
         {
             return new M44d(
@@ -38628,6 +39978,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (M44i m, double s)
         {
             return new M44d(
@@ -38637,6 +39988,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (double s, M44i m)
         {
             return new M44d(
@@ -38646,6 +39998,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  * (M44i m, int s)
         {
             return new M44i(
@@ -38655,6 +40008,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44i operator  * (int s, M44i m)
         {
             return new M44i(
@@ -38664,6 +40018,7 @@ namespace Aardvark.Base
                 s * m.M30, s * m.M31, s * m.M32, s * m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  * (M44i m, long s)
         {
             return new M44l(
@@ -38673,6 +40028,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  * (long s, M44i m)
         {
             return new M44l(
@@ -38682,6 +40038,7 @@ namespace Aardvark.Base
                 s * m.M30, s * m.M31, s * m.M32, s * m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  * (M44i m, float s)
         {
             return new M44f(
@@ -38691,6 +40048,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  * (float s, M44i m)
         {
             return new M44f(
@@ -38700,6 +40058,7 @@ namespace Aardvark.Base
                 s * m.M30, s * m.M31, s * m.M32, s * m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  * (M44i m, double s)
         {
             return new M44d(
@@ -38709,6 +40068,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  * (double s, M44i m)
         {
             return new M44d(
@@ -38752,6 +40112,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M44i a, M44i b)
         {
             return
@@ -38773,6 +40134,7 @@ namespace Aardvark.Base
                 a.M33 < b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M44i a, int s)
         {
             return
@@ -38794,6 +40156,7 @@ namespace Aardvark.Base
                 a.M33 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(int s, M44i a)
         {
             return
@@ -38815,6 +40178,7 @@ namespace Aardvark.Base
                 s < a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M44i a, M44i b)
         {
             return
@@ -38836,6 +40200,7 @@ namespace Aardvark.Base
                 a.M33 > b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M44i a, int s)
         {
             return
@@ -38857,6 +40222,7 @@ namespace Aardvark.Base
                 a.M33 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(int s, M44i a)
         {
             return
@@ -38878,6 +40244,7 @@ namespace Aardvark.Base
                 s > a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44i a, M44i b)
         {
             return
@@ -38899,6 +40266,7 @@ namespace Aardvark.Base
                 a.M33 == b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44i a, int s)
         {
             return
@@ -38920,6 +40288,7 @@ namespace Aardvark.Base
                 a.M33 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(int s, M44i a)
         {
             return
@@ -38941,6 +40310,7 @@ namespace Aardvark.Base
                 s == a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M44i a, M44i b)
         {
             return
@@ -38962,6 +40332,7 @@ namespace Aardvark.Base
                 a.M33 <= b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M44i a, int s)
         {
             return
@@ -38983,6 +40354,7 @@ namespace Aardvark.Base
                 a.M33 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(int s, M44i a)
         {
             return
@@ -39004,6 +40376,7 @@ namespace Aardvark.Base
                 s <= a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M44i a, M44i b)
         {
             return
@@ -39025,6 +40398,7 @@ namespace Aardvark.Base
                 a.M33 >= b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M44i a, int s)
         {
             return
@@ -39046,6 +40420,7 @@ namespace Aardvark.Base
                 a.M33 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(int s, M44i a)
         {
             return
@@ -39067,16 +40442,19 @@ namespace Aardvark.Base
                 s >= a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M44i a, M44i b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M44i m, int s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(int s, M44i m)
         {
             return !(s == m);
@@ -39095,19 +40473,18 @@ namespace Aardvark.Base
                 M30.GetHashCode(), M31.GetHashCode(), M32.GetHashCode(), M33.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M44i other)
         {
-            if (other is M44i o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23) && 
-                    M30.Equals(o.M30) && M31.Equals(o.M31) && M32.Equals(o.M32) && M33.Equals(o.M33);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && M13.Equals(other.M13) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23) && 
+                M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
+
+        public override bool Equals(object other)
+            => (other is M44i o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -39862,6 +41239,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(long value)
         {
             M00 = value; M01 = value; M02 = value; M03 = value; 
@@ -39870,6 +41248,7 @@ namespace Aardvark.Base
             M30 = value; M31 = value; M32 = value; M33 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(
                 long m00, long m01, long m02, long m03, 
                 long m10, long m11, long m12, long m13, 
@@ -39882,6 +41261,7 @@ namespace Aardvark.Base
             M30 = m30; M31 = m31; M32 = m32; M33 = m33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(long[] a)
         {
             M00 = a[0];
@@ -39902,6 +41282,7 @@ namespace Aardvark.Base
             M33 = a[15];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(long[] a, int start)
         {
             M00 = a[start + 0];
@@ -39922,6 +41303,7 @@ namespace Aardvark.Base
             M33 = a[start + 15];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M22i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; M03 = 0; 
@@ -39930,6 +41312,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M23i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -39938,6 +41321,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M33i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -39946,6 +41330,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M34i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -39954,6 +41339,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M44i m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -39962,6 +41348,7 @@ namespace Aardvark.Base
             M30 = (long)m.M30; M31 = (long)m.M31; M32 = (long)m.M32; M33 = (long)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M22l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; M03 = 0; 
@@ -39970,6 +41357,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M23l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -39978,6 +41366,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M33l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -39986,6 +41375,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M34l m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = m.M03; 
@@ -39994,6 +41384,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M22f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; M03 = 0; 
@@ -40002,6 +41393,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M23f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -40010,6 +41402,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M33f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -40018,6 +41411,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M34f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -40026,6 +41420,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M44f m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -40034,6 +41429,7 @@ namespace Aardvark.Base
             M30 = (long)m.M30; M31 = (long)m.M31; M32 = (long)m.M32; M33 = (long)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M22d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = 0; M03 = 0; 
@@ -40042,6 +41438,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M23d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -40050,6 +41447,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M33d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = 0; 
@@ -40058,6 +41456,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M34d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -40066,6 +41465,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(M44d m)
         {
             M00 = (long)m.M00; M01 = (long)m.M01; M02 = (long)m.M02; M03 = (long)m.M03; 
@@ -41294,6 +42694,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator -(M44l m)
         {
             return new M44l(
@@ -41303,6 +42704,7 @@ namespace Aardvark.Base
                 -m.M30, -m.M31, -m.M32, -m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  + (M44l a, M44l b)
         {
             return new M44l(
@@ -41312,6 +42714,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  + (M44l m, long s)
         {
             return new M44l(
@@ -41321,6 +42724,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  + (long s, M44l m)
         {
             return new M44l(
@@ -41330,6 +42734,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (M44l a, M44f b)
         {
             return new M44f(
@@ -41339,6 +42744,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (M44l m, float s)
         {
             return new M44f(
@@ -41348,6 +42754,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (float s, M44l m)
         {
             return new M44f(
@@ -41357,6 +42764,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (M44l a, M44d b)
         {
             return new M44d(
@@ -41366,6 +42774,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (M44l m, double s)
         {
             return new M44d(
@@ -41375,6 +42784,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (double s, M44l m)
         {
             return new M44d(
@@ -41384,6 +42794,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  - (M44l a, M44l b)
         {
             return new M44l(
@@ -41393,6 +42804,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  - (M44l m, long s)
         {
             return new M44l(
@@ -41402,6 +42814,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  - (long s, M44l m)
         {
             return new M44l(
@@ -41411,6 +42824,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (M44l a, M44f b)
         {
             return new M44f(
@@ -41420,6 +42834,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (M44l m, float s)
         {
             return new M44f(
@@ -41429,6 +42844,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (float s, M44l m)
         {
             return new M44f(
@@ -41438,6 +42854,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (M44l a, M44d b)
         {
             return new M44d(
@@ -41447,6 +42864,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (M44l m, double s)
         {
             return new M44d(
@@ -41456,6 +42874,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (double s, M44l m)
         {
             return new M44d(
@@ -41465,6 +42884,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  % (M44l a, M44l b)
         {
             return new M44l(
@@ -41474,6 +42894,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  % (M44l m, long s)
         {
             return new M44l(
@@ -41483,6 +42904,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  % (long s, M44l m)
         {
             return new M44l(
@@ -41492,6 +42914,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (M44l a, M44f b)
         {
             return new M44f(
@@ -41501,6 +42924,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (M44l m, float s)
         {
             return new M44f(
@@ -41510,6 +42934,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (float s, M44l m)
         {
             return new M44f(
@@ -41519,6 +42944,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (M44l a, M44d b)
         {
             return new M44d(
@@ -41528,6 +42954,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (M44l m, double s)
         {
             return new M44d(
@@ -41537,6 +42964,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (double s, M44l m)
         {
             return new M44d(
@@ -41546,6 +42974,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  / (M44l a, M44l b)
         {
             return new M44l(
@@ -41555,6 +42984,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  / (M44l m, long s)
         {
             return new M44l(
@@ -41564,6 +42994,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  / (long s, M44l m)
         {
             return new M44l(
@@ -41573,6 +43004,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (M44l a, M44f b)
         {
             return new M44f(
@@ -41582,6 +43014,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (M44l m, float s)
         {
             return new M44f(
@@ -41591,6 +43024,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (float s, M44l m)
         {
             return new M44f(
@@ -41600,6 +43034,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (M44l a, M44d b)
         {
             return new M44d(
@@ -41609,6 +43044,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (M44l m, double s)
         {
             return new M44d(
@@ -41618,6 +43054,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (double s, M44l m)
         {
             return new M44d(
@@ -41627,6 +43064,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  * (M44l m, long s)
         {
             return new M44l(
@@ -41636,6 +43074,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44l operator  * (long s, M44l m)
         {
             return new M44l(
@@ -41645,6 +43084,7 @@ namespace Aardvark.Base
                 s * m.M30, s * m.M31, s * m.M32, s * m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  * (M44l m, float s)
         {
             return new M44f(
@@ -41654,6 +43094,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  * (float s, M44l m)
         {
             return new M44f(
@@ -41663,6 +43104,7 @@ namespace Aardvark.Base
                 s * m.M30, s * m.M31, s * m.M32, s * m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  * (M44l m, double s)
         {
             return new M44d(
@@ -41672,6 +43114,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  * (double s, M44l m)
         {
             return new M44d(
@@ -41715,6 +43158,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M44l a, M44l b)
         {
             return
@@ -41736,6 +43180,7 @@ namespace Aardvark.Base
                 a.M33 < b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M44l a, long s)
         {
             return
@@ -41757,6 +43202,7 @@ namespace Aardvark.Base
                 a.M33 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(long s, M44l a)
         {
             return
@@ -41778,6 +43224,7 @@ namespace Aardvark.Base
                 s < a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M44l a, M44l b)
         {
             return
@@ -41799,6 +43246,7 @@ namespace Aardvark.Base
                 a.M33 > b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M44l a, long s)
         {
             return
@@ -41820,6 +43268,7 @@ namespace Aardvark.Base
                 a.M33 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(long s, M44l a)
         {
             return
@@ -41841,6 +43290,7 @@ namespace Aardvark.Base
                 s > a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44l a, M44l b)
         {
             return
@@ -41862,6 +43312,7 @@ namespace Aardvark.Base
                 a.M33 == b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44l a, long s)
         {
             return
@@ -41883,6 +43334,7 @@ namespace Aardvark.Base
                 a.M33 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(long s, M44l a)
         {
             return
@@ -41904,6 +43356,7 @@ namespace Aardvark.Base
                 s == a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M44l a, M44l b)
         {
             return
@@ -41925,6 +43378,7 @@ namespace Aardvark.Base
                 a.M33 <= b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M44l a, long s)
         {
             return
@@ -41946,6 +43400,7 @@ namespace Aardvark.Base
                 a.M33 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(long s, M44l a)
         {
             return
@@ -41967,6 +43422,7 @@ namespace Aardvark.Base
                 s <= a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M44l a, M44l b)
         {
             return
@@ -41988,6 +43444,7 @@ namespace Aardvark.Base
                 a.M33 >= b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M44l a, long s)
         {
             return
@@ -42009,6 +43466,7 @@ namespace Aardvark.Base
                 a.M33 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(long s, M44l a)
         {
             return
@@ -42030,16 +43488,19 @@ namespace Aardvark.Base
                 s >= a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M44l a, M44l b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M44l m, long s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(long s, M44l m)
         {
             return !(s == m);
@@ -42058,19 +43519,18 @@ namespace Aardvark.Base
                 M30.GetHashCode(), M31.GetHashCode(), M32.GetHashCode(), M33.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M44l other)
         {
-            if (other is M44l o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23) && 
-                    M30.Equals(o.M30) && M31.Equals(o.M31) && M32.Equals(o.M32) && M33.Equals(o.M33);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && M13.Equals(other.M13) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23) && 
+                M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
+
+        public override bool Equals(object other)
+            => (other is M44l o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -42825,6 +44285,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(float value)
         {
             M00 = value; M01 = value; M02 = value; M03 = value; 
@@ -42833,6 +44294,7 @@ namespace Aardvark.Base
             M30 = value; M31 = value; M32 = value; M33 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(
                 float m00, float m01, float m02, float m03, 
                 float m10, float m11, float m12, float m13, 
@@ -42845,6 +44307,7 @@ namespace Aardvark.Base
             M30 = m30; M31 = m31; M32 = m32; M33 = m33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(float[] a)
         {
             M00 = a[0];
@@ -42865,6 +44328,7 @@ namespace Aardvark.Base
             M33 = a[15];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(float[] a, int start)
         {
             M00 = a[start + 0];
@@ -42885,6 +44349,7 @@ namespace Aardvark.Base
             M33 = a[start + 15];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M22i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; M03 = 0; 
@@ -42893,6 +44358,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M23i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -42901,6 +44367,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M33i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -42909,6 +44376,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M34i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -42917,6 +44385,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M44i m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -42925,6 +44394,7 @@ namespace Aardvark.Base
             M30 = (float)m.M30; M31 = (float)m.M31; M32 = (float)m.M32; M33 = (float)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M22l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; M03 = 0; 
@@ -42933,6 +44403,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M23l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -42941,6 +44412,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M33l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -42949,6 +44421,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M34l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -42957,6 +44430,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M44l m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -42965,6 +44439,7 @@ namespace Aardvark.Base
             M30 = (float)m.M30; M31 = (float)m.M31; M32 = (float)m.M32; M33 = (float)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M22f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; M03 = 0; 
@@ -42973,6 +44448,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M23f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -42981,6 +44457,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M33f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -42989,6 +44466,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M34f m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = m.M03; 
@@ -42997,6 +44475,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M22d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = 0; M03 = 0; 
@@ -43005,6 +44484,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M23d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -43013,6 +44493,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M33d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = 0; 
@@ -43021,6 +44502,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M34d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -43029,6 +44511,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(M44d m)
         {
             M00 = (float)m.M00; M01 = (float)m.M01; M02 = (float)m.M02; M03 = (float)m.M03; 
@@ -44594,6 +46077,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator -(M44f m)
         {
             return new M44f(
@@ -44603,6 +46087,7 @@ namespace Aardvark.Base
                 -m.M30, -m.M31, -m.M32, -m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (M44f a, M44f b)
         {
             return new M44f(
@@ -44612,6 +46097,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (M44f m, float s)
         {
             return new M44f(
@@ -44621,6 +46107,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  + (float s, M44f m)
         {
             return new M44f(
@@ -44630,6 +46117,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (M44f a, M44d b)
         {
             return new M44d(
@@ -44639,6 +46127,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (M44f m, double s)
         {
             return new M44d(
@@ -44648,6 +46137,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (double s, M44f m)
         {
             return new M44d(
@@ -44657,6 +46147,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (M44f a, M44f b)
         {
             return new M44f(
@@ -44666,6 +46157,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (M44f m, float s)
         {
             return new M44f(
@@ -44675,6 +46167,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  - (float s, M44f m)
         {
             return new M44f(
@@ -44684,6 +46177,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (M44f a, M44d b)
         {
             return new M44d(
@@ -44693,6 +46187,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (M44f m, double s)
         {
             return new M44d(
@@ -44702,6 +46197,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (double s, M44f m)
         {
             return new M44d(
@@ -44711,6 +46207,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (M44f a, M44f b)
         {
             return new M44f(
@@ -44720,6 +46217,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (M44f m, float s)
         {
             return new M44f(
@@ -44729,6 +46227,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  % (float s, M44f m)
         {
             return new M44f(
@@ -44738,6 +46237,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (M44f a, M44d b)
         {
             return new M44d(
@@ -44747,6 +46247,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (M44f m, double s)
         {
             return new M44d(
@@ -44756,6 +46257,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (double s, M44f m)
         {
             return new M44d(
@@ -44765,6 +46267,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (M44f a, M44f b)
         {
             return new M44f(
@@ -44774,6 +46277,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (M44f m, float s)
         {
             return new M44f(
@@ -44783,6 +46287,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  / (float s, M44f m)
         {
             return new M44f(
@@ -44792,6 +46297,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (M44f a, M44d b)
         {
             return new M44d(
@@ -44801,6 +46307,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (M44f m, double s)
         {
             return new M44d(
@@ -44810,6 +46317,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (double s, M44f m)
         {
             return new M44d(
@@ -44819,6 +46327,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  * (M44f m, float s)
         {
             return new M44f(
@@ -44828,6 +46337,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f operator  * (float s, M44f m)
         {
             return new M44f(
@@ -44837,6 +46347,7 @@ namespace Aardvark.Base
                 s * m.M30, s * m.M31, s * m.M32, s * m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  * (M44f m, double s)
         {
             return new M44d(
@@ -44846,6 +46357,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  * (double s, M44f m)
         {
             return new M44d(
@@ -44889,6 +46401,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M44f a, M44f b)
         {
             return
@@ -44910,6 +46423,7 @@ namespace Aardvark.Base
                 a.M33 < b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M44f a, float s)
         {
             return
@@ -44931,6 +46445,7 @@ namespace Aardvark.Base
                 a.M33 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(float s, M44f a)
         {
             return
@@ -44952,6 +46467,7 @@ namespace Aardvark.Base
                 s < a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M44f a, M44f b)
         {
             return
@@ -44973,6 +46489,7 @@ namespace Aardvark.Base
                 a.M33 > b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M44f a, float s)
         {
             return
@@ -44994,6 +46511,7 @@ namespace Aardvark.Base
                 a.M33 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(float s, M44f a)
         {
             return
@@ -45015,6 +46533,7 @@ namespace Aardvark.Base
                 s > a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44f a, M44f b)
         {
             return
@@ -45036,6 +46555,7 @@ namespace Aardvark.Base
                 a.M33 == b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44f a, float s)
         {
             return
@@ -45057,6 +46577,7 @@ namespace Aardvark.Base
                 a.M33 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(float s, M44f a)
         {
             return
@@ -45078,6 +46599,7 @@ namespace Aardvark.Base
                 s == a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M44f a, M44f b)
         {
             return
@@ -45099,6 +46621,7 @@ namespace Aardvark.Base
                 a.M33 <= b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M44f a, float s)
         {
             return
@@ -45120,6 +46643,7 @@ namespace Aardvark.Base
                 a.M33 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(float s, M44f a)
         {
             return
@@ -45141,6 +46665,7 @@ namespace Aardvark.Base
                 s <= a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M44f a, M44f b)
         {
             return
@@ -45162,6 +46687,7 @@ namespace Aardvark.Base
                 a.M33 >= b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M44f a, float s)
         {
             return
@@ -45183,6 +46709,7 @@ namespace Aardvark.Base
                 a.M33 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(float s, M44f a)
         {
             return
@@ -45204,16 +46731,19 @@ namespace Aardvark.Base
                 s >= a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M44f a, M44f b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M44f m, float s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(float s, M44f m)
         {
             return !(s == m);
@@ -45232,19 +46762,18 @@ namespace Aardvark.Base
                 M30.GetHashCode(), M31.GetHashCode(), M32.GetHashCode(), M33.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M44f other)
         {
-            if (other is M44f o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23) && 
-                    M30.Equals(o.M30) && M31.Equals(o.M31) && M32.Equals(o.M32) && M33.Equals(o.M33);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && M13.Equals(other.M13) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23) && 
+                M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
+
+        public override bool Equals(object other)
+            => (other is M44f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -46080,6 +47609,13 @@ namespace Aardvark.Base
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M44f a, M44f b)
+            => ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this M44f a, M44f b, float epsilon)
         {
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
@@ -46133,6 +47669,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(double value)
         {
             M00 = value; M01 = value; M02 = value; M03 = value; 
@@ -46141,6 +47678,7 @@ namespace Aardvark.Base
             M30 = value; M31 = value; M32 = value; M33 = value; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(
                 double m00, double m01, double m02, double m03, 
                 double m10, double m11, double m12, double m13, 
@@ -46153,6 +47691,7 @@ namespace Aardvark.Base
             M30 = m30; M31 = m31; M32 = m32; M33 = m33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(double[] a)
         {
             M00 = a[0];
@@ -46173,6 +47712,7 @@ namespace Aardvark.Base
             M33 = a[15];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(double[] a, int start)
         {
             M00 = a[start + 0];
@@ -46193,6 +47733,7 @@ namespace Aardvark.Base
             M33 = a[start + 15];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M22i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; M03 = 0; 
@@ -46201,6 +47742,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M23i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -46209,6 +47751,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M33i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -46217,6 +47760,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M34i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -46225,6 +47769,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M44i m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -46233,6 +47778,7 @@ namespace Aardvark.Base
             M30 = (double)m.M30; M31 = (double)m.M31; M32 = (double)m.M32; M33 = (double)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M22l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; M03 = 0; 
@@ -46241,6 +47787,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M23l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -46249,6 +47796,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M33l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -46257,6 +47805,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M34l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -46265,6 +47814,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M44l m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -46273,6 +47823,7 @@ namespace Aardvark.Base
             M30 = (double)m.M30; M31 = (double)m.M31; M32 = (double)m.M32; M33 = (double)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M22f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = 0; M03 = 0; 
@@ -46281,6 +47832,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M23f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -46289,6 +47841,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M33f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = 0; 
@@ -46297,6 +47850,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M34f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -46305,6 +47859,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M44f m)
         {
             M00 = (double)m.M00; M01 = (double)m.M01; M02 = (double)m.M02; M03 = (double)m.M03; 
@@ -46313,6 +47868,7 @@ namespace Aardvark.Base
             M30 = (double)m.M30; M31 = (double)m.M31; M32 = (double)m.M32; M33 = (double)m.M33; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M22d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = 0; M03 = 0; 
@@ -46321,6 +47877,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M23d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -46329,6 +47886,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M33d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0; 
@@ -46337,6 +47895,7 @@ namespace Aardvark.Base
             M30 = 0; M31 = 0; M32 = 0; M33 = 1; 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(M34d m)
         {
             M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = m.M03; 
@@ -47902,6 +49461,7 @@ namespace Aardvark.Base
 
         #region Mathematical Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator -(M44d m)
         {
             return new M44d(
@@ -47911,6 +49471,7 @@ namespace Aardvark.Base
                 -m.M30, -m.M31, -m.M32, -m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (M44d a, M44d b)
         {
             return new M44d(
@@ -47920,6 +49481,7 @@ namespace Aardvark.Base
                 a.M30 + b.M30, a.M31 + b.M31, a.M32 + b.M32, a.M33 + b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (M44d m, double s)
         {
             return new M44d(
@@ -47929,6 +49491,7 @@ namespace Aardvark.Base
                 m.M30 + s, m.M31 + s, m.M32 + s, m.M33 + s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  + (double s, M44d m)
         {
             return new M44d(
@@ -47938,6 +49501,7 @@ namespace Aardvark.Base
                 s + m.M30, s + m.M31, s + m.M32, s + m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (M44d a, M44d b)
         {
             return new M44d(
@@ -47947,6 +49511,7 @@ namespace Aardvark.Base
                 a.M30 - b.M30, a.M31 - b.M31, a.M32 - b.M32, a.M33 - b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (M44d m, double s)
         {
             return new M44d(
@@ -47956,6 +49521,7 @@ namespace Aardvark.Base
                 m.M30 - s, m.M31 - s, m.M32 - s, m.M33 - s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  - (double s, M44d m)
         {
             return new M44d(
@@ -47965,6 +49531,7 @@ namespace Aardvark.Base
                 s - m.M30, s - m.M31, s - m.M32, s - m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (M44d a, M44d b)
         {
             return new M44d(
@@ -47974,6 +49541,7 @@ namespace Aardvark.Base
                 a.M30 % b.M30, a.M31 % b.M31, a.M32 % b.M32, a.M33 % b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (M44d m, double s)
         {
             return new M44d(
@@ -47983,6 +49551,7 @@ namespace Aardvark.Base
                 m.M30 % s, m.M31 % s, m.M32 % s, m.M33 % s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  % (double s, M44d m)
         {
             return new M44d(
@@ -47992,6 +49561,7 @@ namespace Aardvark.Base
                 s % m.M30, s % m.M31, s % m.M32, s % m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (M44d a, M44d b)
         {
             return new M44d(
@@ -48001,6 +49571,7 @@ namespace Aardvark.Base
                 a.M30 / b.M30, a.M31 / b.M31, a.M32 / b.M32, a.M33 / b.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (M44d m, double s)
         {
             return new M44d(
@@ -48010,6 +49581,7 @@ namespace Aardvark.Base
                 m.M30 / s, m.M31 / s, m.M32 / s, m.M33 / s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  / (double s, M44d m)
         {
             return new M44d(
@@ -48019,6 +49591,7 @@ namespace Aardvark.Base
                 s / m.M30, s / m.M31, s / m.M32, s / m.M33);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  * (M44d m, double s)
         {
             return new M44d(
@@ -48028,6 +49601,7 @@ namespace Aardvark.Base
                 m.M30 * s, m.M31 * s, m.M32 * s, m.M33 * s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d operator  * (double s, M44d m)
         {
             return new M44d(
@@ -48071,6 +49645,7 @@ namespace Aardvark.Base
 
         #region Bool Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M44d a, M44d b)
         {
             return
@@ -48092,6 +49667,7 @@ namespace Aardvark.Base
                 a.M33 < b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(M44d a, double s)
         {
             return
@@ -48113,6 +49689,7 @@ namespace Aardvark.Base
                 a.M33 < s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <(double s, M44d a)
         {
             return
@@ -48134,6 +49711,7 @@ namespace Aardvark.Base
                 s < a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M44d a, M44d b)
         {
             return
@@ -48155,6 +49733,7 @@ namespace Aardvark.Base
                 a.M33 > b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(M44d a, double s)
         {
             return
@@ -48176,6 +49755,7 @@ namespace Aardvark.Base
                 a.M33 > s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >(double s, M44d a)
         {
             return
@@ -48197,6 +49777,7 @@ namespace Aardvark.Base
                 s > a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44d a, M44d b)
         {
             return
@@ -48218,6 +49799,7 @@ namespace Aardvark.Base
                 a.M33 == b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44d a, double s)
         {
             return
@@ -48239,6 +49821,7 @@ namespace Aardvark.Base
                 a.M33 == s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(double s, M44d a)
         {
             return
@@ -48260,6 +49843,7 @@ namespace Aardvark.Base
                 s == a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M44d a, M44d b)
         {
             return
@@ -48281,6 +49865,7 @@ namespace Aardvark.Base
                 a.M33 <= b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(M44d a, double s)
         {
             return
@@ -48302,6 +49887,7 @@ namespace Aardvark.Base
                 a.M33 <= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator <=(double s, M44d a)
         {
             return
@@ -48323,6 +49909,7 @@ namespace Aardvark.Base
                 s <= a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M44d a, M44d b)
         {
             return
@@ -48344,6 +49931,7 @@ namespace Aardvark.Base
                 a.M33 >= b.M33;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(M44d a, double s)
         {
             return
@@ -48365,6 +49953,7 @@ namespace Aardvark.Base
                 a.M33 >= s;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator >=(double s, M44d a)
         {
             return
@@ -48386,16 +49975,19 @@ namespace Aardvark.Base
                 s >= a.M33 ;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M44d a, M44d b)
         {
             return !(a == b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(M44d m, double s)
         {
             return !(m == s);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(double s, M44d m)
         {
             return !(s == m);
@@ -48414,19 +50006,18 @@ namespace Aardvark.Base
                 M30.GetHashCode(), M31.GetHashCode(), M32.GetHashCode(), M33.GetHashCode());
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(M44d other)
         {
-            if (other is M44d o)
-            {
-                return 
-                    M00.Equals(o.M00) && M01.Equals(o.M01) && M02.Equals(o.M02) && M03.Equals(o.M03) && 
-                    M10.Equals(o.M10) && M11.Equals(o.M11) && M12.Equals(o.M12) && M13.Equals(o.M13) && 
-                    M20.Equals(o.M20) && M21.Equals(o.M21) && M22.Equals(o.M22) && M23.Equals(o.M23) && 
-                    M30.Equals(o.M30) && M31.Equals(o.M31) && M32.Equals(o.M32) && M33.Equals(o.M33);
-            }
-            else
-                return false;
+            return 
+                M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
+                M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12) && M13.Equals(other.M13) && 
+                M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23) && 
+                M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
+
+        public override bool Equals(object other)
+            => (other is M44d o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -49282,6 +50873,13 @@ namespace Aardvark.Base
     public static partial class Fun
     {
         #region ApproximateEquals
+
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this M44d a, M44d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
 
         /// <summary>
         /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.

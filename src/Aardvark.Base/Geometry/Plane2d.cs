@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -159,13 +160,28 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Plane2d a, Plane2d b)
+            => (a.Normal == b.Normal) && (a.Distance == b.Distance);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Plane2d a, Plane2d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
-        public override bool Equals(object other) => (other is Plane2d value)
-            ? Normal.Equals(value.Normal) && Distance.Equals(value.Distance)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Plane2d other)
+            => Normal.Equals(other.Normal) && Distance.Equals(other.Distance);
+
+        public override bool Equals(object other)
+            => (other is Plane2d o) ? Equals(o) : false;
 
         public override string ToString() => 
             string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
@@ -177,5 +193,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Plane2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Plane2d a, Plane2d b, double tolerance) =>
+            ApproximateEquals(a.Normal, b.Normal, tolerance) &&
+            ApproximateEquals(a.Distance, b.Distance, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Plane2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Plane2d a, Plane2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 }

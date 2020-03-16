@@ -1353,9 +1353,10 @@ namespace Aardvark.Base
 
         #region IEquatable<__vtype__> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(__vtype__ other)
         {
-            return /*# fields.ForEach(f => { */__f__ == other.__f__/*# }, andand); */;
+            return /*# fields.ForEach(f => { */__f__.Equals(other.__f__)/*# }, andand); */;
         }
 
         #endregion
@@ -1390,10 +1391,9 @@ namespace Aardvark.Base
         {
             return HashCode.GetCombined(/*# fields.ForEach(f => { */__f__/*# }, comma); */); 
         }
-        
-        public override bool Equals(object other) => (other is __vtype__ o)
-            ? /*# fields.ForEach(f => { */__f__.Equals(o.__f__)/*# }, andand); */
-            : false;
+
+        public override bool Equals(object other)
+            => (other is __vtype__ o) ? Equals(o) : false;
 
         public Text ToText(int bracketLevel = 1)
         {

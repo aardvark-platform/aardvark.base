@@ -136,9 +136,12 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other) => (other is Trafo2f o)
-            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Trafo2f other)
+            => Forward.Equals(other.Forward) && Backward.Equals(other.Backward);
+
+        public override bool Equals(object other)
+            => (other is Trafo2f o) ? Equals(o) : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);
@@ -476,9 +479,12 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other) => (other is Trafo3f o)
-            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Trafo3f other)
+            => Forward.Equals(other.Forward) && Backward.Equals(other.Backward);
+
+        public override bool Equals(object other)
+            => (other is Trafo3f o) ? Equals(o) : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);
@@ -1197,9 +1203,12 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other) => (other is Trafo2d o)
-            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Trafo2d other)
+            => Forward.Equals(other.Forward) && Backward.Equals(other.Backward);
+
+        public override bool Equals(object other)
+            => (other is Trafo2d o) ? Equals(o) : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);
@@ -1537,9 +1546,12 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Forward, Backward);
 
-        public override bool Equals(object other) => (other is Trafo3d o)
-            ? Forward.Equals(o.Forward) && Backward.Equals(o.Backward)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Trafo3d other)
+            => Forward.Equals(other.Forward) && Backward.Equals(other.Backward);
+
+        public override bool Equals(object other)
+            => (other is Trafo3d o) ? Equals(o) : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Forward, Backward);

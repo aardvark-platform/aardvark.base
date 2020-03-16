@@ -387,11 +387,13 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__type__ t0, __type__ t1)
         {
             return t0.Scale == t1.Scale && t0.Euclidean == t1.Euclidean;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__type__ t0, __type__ t1)
         {
             return !(t0 == t1);
@@ -704,9 +706,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
-        public override bool Equals(object other) => (other is __type__ o)
-            ? Scale.Equals(o.Scale) && Euclidean.Equals(o.Euclidean)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__type__ other)
+            => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
+
+        public override bool Equals(object other)
+            => (other is __type__ o) ? Equals(o) : false;
 
         public override string ToString()
         {

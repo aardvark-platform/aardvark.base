@@ -1,4 +1,6 @@
-﻿namespace Aardvark.Base.Rendering
+﻿using System.Runtime.CompilerServices;
+
+namespace Aardvark.Base.Rendering
 {
     public struct DepthTestMode
     {
@@ -39,15 +41,21 @@
 
         public override int GetHashCode() => HashCode.Combine(Comparison.GetHashCode(), Bounds.GetHashCode());
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(DepthTestMode other)
+            => Comparison.Equals(other.Comparison) && Bounds.Equals(other.Bounds);
+
         public override bool Equals(object obj)
-            => (obj is DepthTestMode o) ? Comparison.Equals(o.Comparison) && Bounds.Equals(o.Bounds) : false;
+            => (obj is DepthTestMode o) ? Equals(o) : false;
 
         public override string ToString()
             => Bounds.IsInfinite ? Comparison.ToString() : string.Format("{0}/{1}", Comparison, Bounds);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(DepthTestMode l, DepthTestMode r)
             => l.Comparison == r.Comparison && l.Bounds == r.Bounds;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(DepthTestMode l, DepthTestMode r)
             => l.Comparison != r.Comparison || l.Bounds != r.Bounds;
     }

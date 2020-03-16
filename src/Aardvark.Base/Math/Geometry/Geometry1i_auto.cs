@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base
@@ -75,11 +76,13 @@ namespace Aardvark.Base
 
         #region Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Line1i a, Line1i b)
         {
             return a.I0 == b.I0 && a.I1 == b.I1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Line1i a, Line1i b)
         {
             return a.I0 != b.I0 || a.I1 != b.I1;
@@ -95,14 +98,13 @@ namespace Aardvark.Base
         }
 
         public override bool Equals(object other)
-        {
-            return (other is Line1i) ? this == (Line1i)other : false;
-        }
+            => (other is Line1i o) ? Equals(o) : false;
 
         #endregion
 
         #region IEquatable<Line1i> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Line1i other)
         {
             return this == other;
@@ -196,11 +198,13 @@ namespace Aardvark.Base
 
         #region Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Triangle1i a, Triangle1i b)
         {
             return a.I0 == b.I0 && a.I1 == b.I1 && a.I2 == b.I2;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Triangle1i a, Triangle1i b)
         {
             return a.I0 != b.I0 || a.I1 != b.I1 || a.I2 != b.I2;
@@ -216,14 +220,13 @@ namespace Aardvark.Base
         }
 
         public override bool Equals(object other)
-        {
-            return (other is Triangle1i) ? this == (Triangle1i)other : false;
-        }
+            => (other is Triangle1i o) ? Equals(o) : false;
 
         #endregion
 
         #region IEquatable<Triangle1i> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Triangle1i other)
         {
             return this == other;
@@ -382,11 +385,13 @@ namespace Aardvark.Base
 
         #region Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Quad1i a, Quad1i b)
         {
             return a.I0 == b.I0 && a.I1 == b.I1 && a.I2 == b.I2 && a.I3 == b.I3;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Quad1i a, Quad1i b)
         {
             return a.I0 != b.I0 || a.I1 != b.I1 || a.I2 != b.I2 || a.I3 != b.I3;
@@ -402,14 +407,13 @@ namespace Aardvark.Base
         }
 
         public override bool Equals(object other)
-        {
-            return (other is Quad1i) ? this == (Quad1i)other : false;
-        }
+            => (other is Quad1i o) ? Equals(o) : false;
 
         #endregion
 
         #region IEquatable<Quad1i> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(Quad1i other)
         {
             return this == other;

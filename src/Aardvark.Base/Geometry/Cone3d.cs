@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
+    #region ObliqueCone3d
+
     [StructLayout(LayoutKind.Sequential)]
     public struct ObliqueCone3d
     {
@@ -35,6 +39,40 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(ObliqueCone3d a, ObliqueCone3d b)
+            => (a.Origin == b.Origin) && (a.Circle == b.Circle);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(ObliqueCone3d a, ObliqueCone3d b)
+            => !(a == b);
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode() => HashCode.GetCombined(Origin, Circle);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(ObliqueCone3d other)
+            => Origin.Equals(other.Origin) && Circle.Equals(other.Circle);
+
+        public override bool Equals(object other)
+            => (other is ObliqueCone3d o) ? Equals(o) : false;
+
+        public override string ToString()
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Circle);
+
+        public static ObliqueCone3d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new ObliqueCone3d(V3d.Parse(x[0]), Circle3d.Parse(x[1]));
+        }
+
+        #endregion
+
         #region Operations
 
         /// <summary>
@@ -53,6 +91,29 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="ObliqueCone3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this ObliqueCone3d a, ObliqueCone3d b, double tolerance) =>
+            ApproximateEquals(a.Origin, b.Origin, tolerance) &&
+            ApproximateEquals(a.Circle, b.Circle, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="ObliqueCone3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this ObliqueCone3d a, ObliqueCone3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+    }
+
+    #endregion
+
+    #region Cone3d
 
     [StructLayout(LayoutKind.Sequential)]
     public struct Cone3d : IValidity
@@ -82,6 +143,40 @@ namespace Aardvark.Base
 
         public bool IsValid => Direction != V3d.Zero;
         public bool IsInvalid => Direction == V3d.Zero;
+
+        #endregion
+
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Cone3d a, Cone3d b)
+            => (a.Origin == b.Origin) && (a.Direction == b.Direction) && (a.Angle == b.Angle);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Cone3d a, Cone3d b)
+            => !(a == b);
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode() => HashCode.GetCombined(Origin, Direction, Angle);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Cone3d other)
+            => Origin.Equals(other.Origin) && Direction.Equals(other.Direction) && Angle.Equals(other.Angle);
+
+        public override bool Equals(object other)
+            => (other is Cone3d o) ? Equals(o) : false;
+
+        public override string ToString()
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Origin, Direction, Angle);
+
+        public static Cone3d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Cone3d(V3d.Parse(x[0]), V3d.Parse(x[1]), double.Parse(x[2], CultureInfo.InvariantCulture));
+        }            
 
         #endregion
 
@@ -123,4 +218,26 @@ namespace Aardvark.Base
 
         #endregion
     }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Cone3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Cone3d a, Cone3d b, double tolerance) =>
+            ApproximateEquals(a.Origin, b.Origin, tolerance) &&
+            ApproximateEquals(a.Direction, b.Direction, tolerance) &&
+            ApproximateEquals(a.Angle, b.Angle, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Cone3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Cone3d a, Cone3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+    }
+
+    #endregion
 }

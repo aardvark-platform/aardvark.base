@@ -515,10 +515,14 @@ namespace Aardvark.Base
         public override int GetHashCode()
             => HashCode.GetCombined(Real, Imag);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(ComplexF other)
+            => Real.Equals(other.Real) && Imag.Equals(other.Imag);
+
         public override bool Equals(object other)
         {
             if (other is ComplexF obj)
-                return Real.Equals(obj.Real) && Imag.Equals(obj.Imag);
+                return Equals(obj);
             else
                 return false;
         }
@@ -944,7 +948,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given complex numbers are equal within
-        /// Constant{float}.PositiveTinyValue.
+        /// Constant&lt;float&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this ComplexF a, ComplexF b)
@@ -1487,10 +1491,14 @@ namespace Aardvark.Base
         public override int GetHashCode()
             => HashCode.GetCombined(Real, Imag);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(ComplexD other)
+            => Real.Equals(other.Real) && Imag.Equals(other.Imag);
+
         public override bool Equals(object other)
         {
             if (other is ComplexD obj)
-                return Real.Equals(obj.Real) && Imag.Equals(obj.Imag);
+                return Equals(obj);
             else
                 return false;
         }
@@ -1977,7 +1985,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the given complex numbers are equal within
-        /// Constant{double}.PositiveTinyValue.
+        /// Constant&lt;double&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this ComplexD a, ComplexD b)

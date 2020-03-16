@@ -519,8 +519,20 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this byte x, byte y, byte epsilon)
+        {
+            return (x > y) ? ((x - y) <= epsilon) : ((y - x) <= epsilon);
+        }
+
+        /// <summary>
+        /// Returns whether the distance between x and y is not more than epsilon.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this sbyte x, sbyte y, sbyte epsilon)
-            => Abs(x - y) <= epsilon;
+        {
+            return Abs(x - y) <= epsilon;
+        }
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
@@ -528,7 +540,19 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this short x, short y, short epsilon)
-            => Abs(x - y) <= epsilon;
+        {
+            return Abs(x - y) <= epsilon;
+        }
+
+        /// <summary>
+        /// Returns whether the distance between x and y is not more than epsilon.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this ushort x, ushort y, ushort epsilon)
+        {
+            return (x > y) ? ((x - y) <= epsilon) : ((y - x) <= epsilon);
+        }
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
@@ -536,7 +560,19 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this int x, int y, int epsilon)
-            => Abs(x - y) <= epsilon;
+        {
+            return Abs(x - y) <= epsilon;
+        }
+
+        /// <summary>
+        /// Returns whether the distance between x and y is not more than epsilon.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this uint x, uint y, uint epsilon)
+        {
+            return (x > y) ? ((x - y) <= epsilon) : ((y - x) <= epsilon);
+        }
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
@@ -544,7 +580,19 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this long x, long y, long epsilon)
-            => Abs(x - y) <= epsilon;
+        {
+            return Abs(x - y) <= epsilon;
+        }
+
+        /// <summary>
+        /// Returns whether the distance between x and y is not more than epsilon.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this ulong x, ulong y, ulong epsilon)
+        {
+            return (x > y) ? ((x - y) <= epsilon) : ((y - x) <= epsilon);
+        }
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
@@ -552,7 +600,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this float x, float y, float epsilon)
-            => Abs(x - y) <= epsilon;
+        {
+            return Abs(x - y) <= epsilon;
+        }
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
@@ -560,15 +610,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this double x, double y, double epsilon)
-            => Abs(x - y) <= epsilon;
-
-        /// <summary>
-        /// Returns whether the distance between x and y is not more than epsilon.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ApproximateEquals(this decimal x, decimal y, decimal epsilon)
-            => Abs(x - y) <= epsilon;
+        {
+            return Abs(x - y) <= epsilon;
+        }
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than

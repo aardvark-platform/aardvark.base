@@ -509,8 +509,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Rot3f r0, Rot3f r1)
-            => (r0.W == r1.W && r0.X == r1.X && r0.Y == r1.Y && r0.Z == r1.Z) ||
-                    (r0.W == -r1.W && r0.X == -r1.X && r0.Y == -r1.Y && r0.Z == -r1.Z);
+            => Rot.Distance(r0, r1) == 0;
 
         /// <summary>
         /// Checks whether two <see cref="Rot3f"/> transformations are different.
@@ -987,9 +986,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(W, V);
         }
 
-        public override bool Equals(object other) => (other is Rot3f r)
-            ? (Rot.Distance(this, r) == 0)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Rot3f other)
+            => Rot.Distance(this, other) == 0;
+
+        public override bool Equals(object other)
+            => (other is Rot3f o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1730,8 +1732,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Rot3d r0, Rot3d r1)
-            => (r0.W == r1.W && r0.X == r1.X && r0.Y == r1.Y && r0.Z == r1.Z) ||
-                    (r0.W == -r1.W && r0.X == -r1.X && r0.Y == -r1.Y && r0.Z == -r1.Z);
+            => Rot.Distance(r0, r1) == 0;
 
         /// <summary>
         /// Checks whether two <see cref="Rot3d"/> transformations are different.
@@ -2208,9 +2209,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(W, V);
         }
 
-        public override bool Equals(object other) => (other is Rot3d r)
-            ? (Rot.Distance(this, r) == 0)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Rot3d other)
+            => Rot.Distance(this, other) == 0;
+
+        public override bool Equals(object other)
+            => (other is Rot3d o) ? Equals(o) : false;
 
         public override string ToString()
         {
