@@ -695,24 +695,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3f RotateInto(V3f from, V3f into)
         {
-            var angle = from.AngleBetween(into);
+            var d = Vec.Dot(from, into);
 
-            // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
-            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3 -> using AngleBetween allows higher precision again
-            if (angle < 1e-6f)
-            {
-                // axis = a; angle = 0;
-                return Identity;
-            }
-            else if (Constant.PiF - angle.Abs() < 1e-6f)
-            {
-                //axis = a.AxisAlignedNormal(); //angle = PI;
+            if (d.ApproximateEquals(-1))
                 return new Rot3f(0, from.AxisAlignedNormal());
-            }
             else
             {
-                V3f axis = Vec.Cross(from, into).Normalized;
-                return Rotation(axis, angle);
+                QuaternionF q = new QuaternionF(d + 1, Vec.Cross(from, into));
+                return new Rot3f(q.Normalized);
             }
         }
 
@@ -1918,24 +1908,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3d RotateInto(V3d from, V3d into)
         {
-            var angle = from.AngleBetween(into);
+            var d = Vec.Dot(from, into);
 
-            // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
-            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3 -> using AngleBetween allows higher precision again
-            if (angle < 1e-16)
-            {
-                // axis = a; angle = 0;
-                return Identity;
-            }
-            else if (Constant.Pi - angle.Abs() < 1e-16)
-            {
-                //axis = a.AxisAlignedNormal(); //angle = PI;
+            if (d.ApproximateEquals(-1))
                 return new Rot3d(0, from.AxisAlignedNormal());
-            }
             else
             {
-                V3d axis = Vec.Cross(from, into).Normalized;
-                return Rotation(axis, angle);
+                QuaternionD q = new QuaternionD(d + 1, Vec.Cross(from, into));
+                return new Rot3d(q.Normalized);
             }
         }
 

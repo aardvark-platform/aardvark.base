@@ -40,7 +40,6 @@ namespace Aardvark.Base
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
     //#   var assertEps = isDouble ? "1e-10" : "1e-6f";
-    //#   var rotIntoEps = isDouble ? "1e-16" : "1e-6f";
     //#   var eulerAnglesEps = isDouble ? "0.49999999999999" : "0.49999f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
@@ -691,24 +690,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotateInto(__v3t__ from, __v3t__ into)
         {
-            var angle = from.AngleBetween(into);
+            var d = Vec.Dot(from, into);
 
-            // some vectors do not normalize to 1.0 -> Vec.Dot = -0.99999999999999989 || -0.99999994f
-            // acos => 3.1415926386886319 or 3.14124632f -> delta of 1e-7 or 1e-3 -> using AngleBetween allows higher precision again
-            if (angle < __rotIntoEps__)
-            {
-                // axis = a; angle = 0;
-                return Identity;
-            }
-            else if (__pi__ - angle.Abs() < __rotIntoEps__)
-            {
-                //axis = a.AxisAlignedNormal(); //angle = PI;
+            if (d.ApproximateEquals(-1))
                 return new __type__(0, from.AxisAlignedNormal());
-            }
             else
             {
-                __v3t__ axis = Vec.Cross(from, into).Normalized;
-                return Rotation(axis, angle);
+                __quatt__ q = new __quatt__(d + 1, Vec.Cross(from, into));
+                return new __type__(q.Normalized);
             }
         }
 

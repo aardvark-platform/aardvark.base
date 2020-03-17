@@ -20,13 +20,21 @@ namespace Aardvark.Base.Benchmarks
             //var td = new AngleBetweenDouble();
             //td.BenchmarkNumericalStability();
 
+            var tf = new RotateIntoFloat();
+            tf.BenchmarkNumericalStability();
+
+            var td = new RotateIntoDouble();
+            td.BenchmarkNumericalStability();
+
             //BenchmarkRunner.Run<Rot3dTransform>();
             //BenchmarkRunner.Run<StaticConstants>();
             //BenchmarkRunner.Run<MatrixMultiply>();
-            BenchmarkRunner.Run<IntegerPowerFloat>();
-            BenchmarkRunner.Run<IntegerPowerDouble>();
-            BenchmarkRunner.Run<IntegerPowerInt>();
-            BenchmarkRunner.Run<IntegerPowerLong>();
+            //BenchmarkRunner.Run<IntegerPowerFloat>();
+            //BenchmarkRunner.Run<IntegerPowerDouble>();
+            //BenchmarkRunner.Run<IntegerPowerInt>();
+            //BenchmarkRunner.Run<IntegerPowerLong>();
+            //BenchmarkRunner.Run<RotateIntoFloat>();
+            //BenchmarkRunner.Run<RotateIntoDouble>();
         }
     }
 }
