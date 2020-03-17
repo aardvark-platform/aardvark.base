@@ -23,7 +23,6 @@
     <Compile Include="ChangeTracker.fs" />
     <Compile Include="AdaptiveFunc/AdaptiveFunc.fs" />
     <Compile Include="Builders.fs" />
-    <Compile Include="CSharp.fs" />
     <Compile Include="IncrementalBvh.fs" />
     <Compile Include="Proc/Proc.fs" />
     <Compile Include="Proc/ProcList.fs" />
