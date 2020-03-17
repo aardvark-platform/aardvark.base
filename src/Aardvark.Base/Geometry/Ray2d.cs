@@ -135,6 +135,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the angle between this and the given <see cref="Ray2d"/> in radians.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double AngleBetweenFast(Ray2d r)
+            => Direction.AngleBetweenFast(r.Direction);
+
+        /// <summary>
+        /// Returns the angle between this and the given <see cref="Ray2d"/> in radians using a numerically stable algorithm.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double AngleBetween(Ray2d r)
+            => Direction.AngleBetween(r.Direction);
+
+        /// <summary>
         /// Returns a signed value where left is negative and right positive.
         /// The magnitude is equal to the double size of the triangle the ray + direction and p.
         /// </summary>
