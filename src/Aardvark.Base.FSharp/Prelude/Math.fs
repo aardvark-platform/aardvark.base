@@ -146,11 +146,12 @@ module FSharpMath =
         let inline cbrtAux (_ : ^z) (x : ^a) =
             ((^z or ^a) : (static member Cbrt : ^a -> ^a) x)
         
+        // See comment for powAux
         let inline minAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b or ^c) : (static member Min : ^a * ^b -> ^c) (x, y))
+            ((^z or ^a or ^b or ^c) : (static member Min : ^a * ^b -> ^b) (x, y))
 
         let inline maxAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b or ^c) : (static member Max : ^a * ^b -> ^c) (x, y)) 
+            ((^z or ^a or ^b or ^c) : (static member Max : ^a * ^b -> ^b) (x, y))
             
         // Simply using min and max directly will resolve to the comparison overload for some reason.
         // Therefore we need to do it the dumb (incomplete) way. E.g. won't work for Version.
@@ -539,13 +540,14 @@ module FSharpMath =
             let a : int = clamp 1 2 3
             let a : Version = clamp (Version(1,2,3)) (Version(3,2,3)) (Version(4,5,6))
             let a : V2d = clamp V2d.Zero V2d.One V2d.Half
-            let a : V3f = clamp V3f.Zero 0.5f 1.5f
+            let a : V3f = clamp 0.5f 1.5f V3f.Zero
+            let a = exp ((V3f.Zero |> clamp 0.5f V3f.One) * 0.5f)
             ()
 
         let minWorking() =
             let a : V2d = min V2d.II V2d.OO
-            let a : V2d = min V2d.II 0.0
             let a : V2d = min 0.0 V2d.II
+            let a = (V2d.II |> min 1.0) * 2.0 - 0.5
             let a : float = min 1.0 2.0
             let a : uint32 = min 1u 2u
             let a : nativeint = min 1n 2n
@@ -554,7 +556,6 @@ module FSharpMath =
 
         let maxWorking() =
             let a : V2d = max V2d.II V2d.OO
-            let a : V2d = max V2d.II 0.0
             let a : V2d = max 0.0 V2d.II
             let a : float = max 1.0 2.0
             let a : uint32 = max 1u 2u
