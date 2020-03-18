@@ -164,6 +164,10 @@ module FSharpMath =
         let inline smoothstepAux (_ : ^z) (edge0 : ^a) (edge1 : ^a) (x : ^b) =
             ((^z or ^a or ^b) : (static member Smoothstep : ^b * ^a * ^a -> ^b) (x, edge0, edge1))
 
+        // See comment for powAux
+        let inline copysignAux (_ : ^z) (x : ^a) (y : ^b) =
+            ((^z or ^a or ^b or ^c) : (static member CopySign : ^a * ^b -> ^a) (x, y))
+
         let inline isNanAux (_ : ^z) (_ : ^w) (x : ^a) =
             ((^z or ^w or ^a) : (static member IsNaN : ^a -> bool) x)
 
@@ -255,6 +259,10 @@ module FSharpMath =
     /// Performs Hermite interpolation between a and b.
     let inline smoothstep (edge0 : ^a) (edge1 : ^a) (x : ^b) =
         smoothstepAux Unchecked.defaultof<Fun> edge0 edge1 x
+
+    /// Returns a value with the magnitude of x and the sign of y.
+    let inline copysign (x : ^a) (y : ^b) =
+        copysignAux Unchecked.defaultof<Fun> x y
 
     /// Returns whether x is NaN.
     let inline isNaN (x : ^a) =
@@ -588,6 +596,14 @@ module FSharpMath =
             let a : float32 = smoothstep 0.0f 1.0f 0.5f
             let a : V2f = smoothstep 0.0f 1.0f V2f.Half
             let a : V4d = smoothstep V4d.Zero V4d.One V4d.Half
+            ()
+
+        let copysignWorking() =
+            let a : float = copysign 0.0 1.0
+            let a : float32 = copysign 0.0f 10.0f
+            let a : V3d = copysign V3d.Zero V3d.One
+            let a : V3d = copysign V3d.Zero -1.0
+            let a = exp (2.0 * (copysign V3d.Zero -1.0))
             ()
 
         let specialFloatingPointValuesWorking() =

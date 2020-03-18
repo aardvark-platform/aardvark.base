@@ -1808,6 +1808,125 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Floating point bits
+
+        #if NETSTANDARD2_0
+            /// <summary>
+            /// Returns the bit representation of the given <see cref="float"/> value as a <see cref="int"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static unsafe int FloatToBits(this float x)
+                => *((int*)&x);
+
+            /// <summary>
+            /// Returns the <see cref="float"/> value represented by the given <see cref="int"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static unsafe float FloatFromBits(this int x)
+                => *((float*)&x);
+        #else
+            /// <summary>
+            /// Returns the bit representation of the given <see cref="float"/> value as a <see cref="int"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static int FloatToBits(this float x)
+                => BitConverter.SingleToInt32Bits(x);
+
+            /// <summary>
+            /// Returns the <see cref="float"/> value represented by the given <see cref="int"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static float FloatFromBits(this int x)
+                => BitConverter.Int32BitsToSingle(x);
+        #endif
+
+        #if NETSTANDARD2_0
+            /// <summary>
+            /// Returns the bit representation of the given <see cref="double"/> value as a <see cref="long"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static unsafe long FloatToBits(this double x)
+                => *((long*)&x);
+
+            /// <summary>
+            /// Returns the <see cref="double"/> value represented by the given <see cref="long"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static unsafe double FloatFromBits(this long x)
+                => *((double*)&x);
+        #else
+            /// <summary>
+            /// Returns the bit representation of the given <see cref="double"/> value as a <see cref="long"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static long FloatToBits(this double x)
+                => BitConverter.DoubleToInt64Bits(x);
+
+            /// <summary>
+            /// Returns the <see cref="double"/> value represented by the given <see cref="long"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static double FloatFromBits(this long x)
+                => BitConverter.Int64BitsToDouble(x);
+        #endif
+
+        #endregion
+
+        #region Copy sign
+
+        /// <summary>
+        /// Returns a value with the maginute of <paramref name="x"/> and the sign of <paramref name="y"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float CopySign(float x, float y)
+        {
+            #if NETCOREAPP3_0
+                return MathF.CopySign(x, y);
+            #else
+                var xbits = FloatToBits(x);
+                var ybits = FloatToBits(y);
+
+                if ((xbits ^ ybits) < 0)
+                {
+                    return FloatFromBits(xbits ^ int.MinValue);
+                }
+
+                return x;
+            #endif
+        }
+        /// <summary>
+        /// Returns a value with the maginute of <paramref name="x"/> and the sign of <paramref name="y"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double CopySign(double x, double y)
+        {
+            #if NETCOREAPP3_0
+                return Math.CopySign(x, y);
+            #else
+                var xbits = FloatToBits(x);
+                var ybits = FloatToBits(y);
+
+                if ((xbits ^ ybits) < 0)
+                {
+                    return FloatFromBits(xbits ^ long.MinValue);
+                }
+
+                return x;
+            #endif
+        }
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>

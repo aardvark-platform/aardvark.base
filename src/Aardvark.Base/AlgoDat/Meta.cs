@@ -1067,6 +1067,14 @@ namespace Aardvark.Base
             );
             #endregion
 
+            #region Copy sign
+            Add("Copy sign",
+                Method("CopySign", false, RealTypes, Tensor("x"), Tensor("y")),
+                Method("CopySign", false, RealTypes, Scalar("x"), Tensor("y")),
+                Method("CopySign", false, RealTypes, Tensor("x"), Scalar("y"))
+            );
+            #endregion
+
             #region Roots
             Add("Roots",
                 Method("Sqrt", RealTypes, Tensor("x")),

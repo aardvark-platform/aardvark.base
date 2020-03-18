@@ -533,6 +533,87 @@ namespace Aardvark.Base
         //# });
         #endregion
 
+        #region Floating point bits
+
+        //# fdtypes.ForEach(t => {
+        //# var type = t.Name;
+        //# var isDouble = (t == Meta.DoubleType);
+        //# var toBits = isDouble ? "DoubleToInt64Bits" : "SingleToInt32Bits";
+        //# var fromBits = isDouble ? "Int64BitsToDouble" : "Int32BitsToSingle";
+        //# var bittype = isDouble ? "long" : "int";
+        #if NETSTANDARD2_0
+            /// <summary>
+            /// Returns the bit representation of the given <see cref="__type__"/> value as a <see cref="__bittype__"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static unsafe __bittype__ FloatToBits(this __type__ x)
+                => *((__bittype__*)&x);
+
+            /// <summary>
+            /// Returns the <see cref="__type__"/> value represented by the given <see cref="__bittype__"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static unsafe __type__ FloatFromBits(this __bittype__ x)
+                => *((__type__*)&x);
+        #else
+            /// <summary>
+            /// Returns the bit representation of the given <see cref="__type__"/> value as a <see cref="__bittype__"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static __bittype__ FloatToBits(this __type__ x)
+                => BitConverter.__toBits__(x);
+
+            /// <summary>
+            /// Returns the <see cref="__type__"/> value represented by the given <see cref="__bittype__"/>.
+            /// </summary>
+            [Pure]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static __type__ FloatFromBits(this __bittype__ x)
+                => BitConverter.__fromBits__(x);
+        #endif
+
+        //# });
+        #endregion
+
+        #region Copy sign
+
+        //# fdtypes.ForEach(t => {
+        //# var type = t.Name;
+        //# var fname = "CopySign";
+        //# var isDouble = (t == Meta.DoubleType);
+        //# var bittype = isDouble ? "long" : "int";
+        /// <summary>
+        /// Returns a value with the maginute of <paramref name="x"/> and the sign of <paramref name="y"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ __fname__(__type__ x, __type__ y)
+        {
+            #if NETCOREAPP3_0
+                //# if (t != Meta.FloatType) {
+                return Math.__fname__(x, y);
+                //# } else {
+                return MathF.__fname__(x, y);
+                //# }
+            #else
+                var xbits = FloatToBits(x);
+                var ybits = FloatToBits(y);
+
+                if ((xbits ^ ybits) < 0)
+                {
+                    return FloatFromBits(xbits ^ __bittype__.MinValue);
+                }
+
+                return x;
+            #endif
+        }
+        //# });
+
+        #endregion
+
         #region Comparisons
 
         //# numtypes.ForEach(t => {
