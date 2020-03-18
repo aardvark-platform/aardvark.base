@@ -40,7 +40,7 @@ namespace Aardvark.Base
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
     //#   var assertEps = isDouble ? "1e-10" : "1e-6f";
-    //#   var eulerAnglesEps = isDouble ? "0.49999999999999" : "0.49999f";
+    //#   var half = isDouble ? "0.5" : "0.5f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
     //#   var assertNorm = "Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, " + assertEps + "))";
@@ -1076,14 +1076,14 @@ namespace Aardvark.Base
         public static __v3t__ GetEulerAngles(this __type__ r)
         {
             var test = r.W * r.Y - r.X * r.Z;
-            if (test > __eulerAnglesEps__) // singularity at north pole
+            if (test >= __half__ - Constant<__ftype__>.PositiveTinyValue) // singularity at north pole
             {
                 return new __v3t__(
                     2 * Fun.Atan2(r.X, r.W),
                     __piHalf__,
                     0);
             }
-            if (test < -__eulerAnglesEps__) // singularity at south pole
+            if (test <= -__half__ + Constant<__ftype__>.PositiveTinyValue) // singularity at south pole
             {
                 return new __v3t__(
                     2 * Fun.Atan2(r.X, r.W),

@@ -20,11 +20,17 @@ namespace Aardvark.Base.Benchmarks
             //var td = new AngleBetweenDouble();
             //td.BenchmarkNumericalStability();
 
-            var tf = new RotateIntoFloat();
-            tf.BenchmarkNumericalStability();
+            //var tf = new RotateIntoFloat();
+            //tf.BenchmarkNumericalStability();
 
-            var td = new RotateIntoDouble();
-            td.BenchmarkNumericalStability();
+            //var td = new RotateIntoDouble();
+            //td.BenchmarkNumericalStability();
+
+            //var tf = new Rot3fGetEuler();
+            //tf.BenchmarkNumericalStability();
+
+            //var td = new Rot3dGetEuler();
+            //td.BenchmarkNumericalStability();
 
             //BenchmarkRunner.Run<Rot3dTransform>();
             //BenchmarkRunner.Run<StaticConstants>();
@@ -35,6 +41,8 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<IntegerPowerLong>();
             //BenchmarkRunner.Run<RotateIntoFloat>();
             //BenchmarkRunner.Run<RotateIntoDouble>();
+            BenchmarkRunner.Run<Rot3fGetEuler>();
+            BenchmarkRunner.Run<Rot3dGetEuler>();
         }
     }
 }
