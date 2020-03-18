@@ -521,10 +521,11 @@ namespace Aardvark.Base
         #endregion
 
         #region Static Creators
-
+        
         /// <summary>
-        /// WARNING: UNTESTED!!!
+        /// Creates a <see cref="Rot3f"/> transformation from an orthonormal basis.
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3f FromFrame(V3f x, V3f y, V3f z)
         {
@@ -1734,10 +1735,11 @@ namespace Aardvark.Base
         #endregion
 
         #region Static Creators
-
+        
         /// <summary>
-        /// WARNING: UNTESTED!!!
+        /// Creates a <see cref="Rot3d"/> transformation from an orthonormal basis.
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3d FromFrame(V3d x, V3d y, V3d z)
         {

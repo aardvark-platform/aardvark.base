@@ -516,10 +516,11 @@ namespace Aardvark.Base
         #endregion
 
         #region Static Creators
-
+        
         /// <summary>
-        /// WARNING: UNTESTED!!!
+        /// Creates a <see cref="__type__"/> transformation from an orthonormal basis.
         /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ FromFrame(__v3t__ x, __v3t__ y, __v3t__ z)
         {
