@@ -240,6 +240,18 @@ namespace Aardvark.Base
         #region Creating Randomly Filled Arrays
 
         /// <summary>
+        /// Create a random array of floats in the half-open interval
+        /// [0.0, 1.0) of the specified length.
+        /// </summary>
+        public static float[] CreateUniformFloatArray(
+                this IRandomUniform rnd, long length)
+        {
+            var array = new float[length];
+            rnd.FillUniform(array);
+            return array;
+        }
+
+        /// <summary>
         /// Create a random array of doubles in the half-open interval
         /// [0.0, 1.0) of the specified length.
         /// </summary>

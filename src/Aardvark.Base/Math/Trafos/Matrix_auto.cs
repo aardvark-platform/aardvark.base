@@ -6306,6 +6306,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this M22f m)
+            => IsIdentity(m, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
         /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6314,6 +6321,13 @@ namespace Aardvark.Base
             var i = m * m.Transposed;
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this M22f m)
+            => IsOrthonormal(m, Constant<float>.PositiveTinyValue);
 
         /// <summary>
         /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
@@ -6326,6 +6340,64 @@ namespace Aardvark.Base
                 i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this M22f m)
+            => IsOrthogonal(m, Constant<float>.PositiveTinyValue);
+
+        #endregion
+
+        #region Orthogonalization
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M22f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthogonalize(this ref M22f matrix)
+        {
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+        }
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M22f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f Orthogonalized(this M22f matrix)
+        {
+            M22f m = matrix;
+            Orthogonalize(ref m);
+            return m;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M22f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthonormalize(this ref M22f matrix)
+        {
+            matrix.C0 = matrix.C0.Normalized;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 = matrix.C1.Normalized;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M22f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f Orthonormalized(this M22f matrix)
+        {
+            M22f m = matrix;
+            Orthonormalize(ref m);
+            return m;
+        }
+
         #endregion
     }
 
@@ -8406,6 +8478,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this M22d m)
+            => IsIdentity(m, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
         /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -8414,6 +8493,13 @@ namespace Aardvark.Base
             var i = m * m.Transposed;
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this M22d m)
+            => IsOrthonormal(m, Constant<double>.PositiveTinyValue);
 
         /// <summary>
         /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
@@ -8426,6 +8512,64 @@ namespace Aardvark.Base
                 i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this M22d m)
+            => IsOrthogonal(m, Constant<double>.PositiveTinyValue);
+
+        #endregion
+
+        #region Orthogonalization
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M22d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthogonalize(this ref M22d matrix)
+        {
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+        }
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M22d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d Orthogonalized(this M22d matrix)
+        {
+            M22d m = matrix;
+            Orthogonalize(ref m);
+            return m;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M22d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthonormalize(this ref M22d matrix)
+        {
+            matrix.C0 = matrix.C0.Normalized;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 = matrix.C1.Normalized;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M22d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d Orthonormalized(this M22d matrix)
+        {
+            M22d m = matrix;
+            Orthonormalize(ref m);
+            return m;
+        }
+
         #endregion
     }
 
@@ -24857,6 +25001,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this M33f m)
+            => IsIdentity(m, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
         /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -24865,6 +25016,13 @@ namespace Aardvark.Base
             var i = m * m.Transposed;
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this M33f m)
+            => IsOrthonormal(m, Constant<float>.PositiveTinyValue);
 
         /// <summary>
         /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
@@ -24877,6 +25035,73 @@ namespace Aardvark.Base
                 i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this M33f m)
+            => IsOrthogonal(m, Constant<float>.PositiveTinyValue);
+
+        #endregion
+
+        #region Orthogonalization
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M33f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthogonalize(this ref M33f matrix)
+        {
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+        }
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M33f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Orthogonalized(this M33f matrix)
+        {
+            M33f m = matrix;
+            Orthogonalize(ref m);
+            return m;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M33f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthonormalize(this ref M33f matrix)
+        {
+            matrix.C0 = matrix.C0.Normalized;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 = matrix.C1.Normalized;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 = matrix.C2.Normalized;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M33f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Orthonormalized(this M33f matrix)
+        {
+            M33f m = matrix;
+            Orthonormalize(ref m);
+            return m;
+        }
+
         #endregion
     }
 
@@ -27692,6 +27917,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this M33d m)
+            => IsIdentity(m, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
         /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -27700,6 +27932,13 @@ namespace Aardvark.Base
             var i = m * m.Transposed;
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this M33d m)
+            => IsOrthonormal(m, Constant<double>.PositiveTinyValue);
 
         /// <summary>
         /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
@@ -27712,6 +27951,73 @@ namespace Aardvark.Base
                 i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this M33d m)
+            => IsOrthogonal(m, Constant<double>.PositiveTinyValue);
+
+        #endregion
+
+        #region Orthogonalization
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M33d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthogonalize(this ref M33d matrix)
+        {
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+        }
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M33d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Orthogonalized(this M33d matrix)
+        {
+            M33d m = matrix;
+            Orthogonalize(ref m);
+            return m;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M33d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthonormalize(this ref M33d matrix)
+        {
+            matrix.C0 = matrix.C0.Normalized;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 = matrix.C1.Normalized;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 = matrix.C2.Normalized;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M33d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Orthonormalized(this M33d matrix)
+        {
+            M33d m = matrix;
+            Orthonormalize(ref m);
+            return m;
+        }
+
         #endregion
     }
 
@@ -47578,6 +47884,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this M44f m)
+            => IsIdentity(m, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
         /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -47586,6 +47899,13 @@ namespace Aardvark.Base
             var i = m * m.Transposed;
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this M44f m)
+            => IsOrthonormal(m, Constant<float>.PositiveTinyValue);
 
         /// <summary>
         /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
@@ -47598,6 +47918,86 @@ namespace Aardvark.Base
                 i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this M44f m)
+            => IsOrthogonal(m, Constant<float>.PositiveTinyValue);
+
+        #endregion
+
+        #region Orthogonalization
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M44f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthogonalize(this ref M44f matrix)
+        {
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C0, matrix.C3) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C3 -= (Vec.Dot(matrix.C1, matrix.C3) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C2, matrix.C3) / Vec.Dot(matrix.C2, matrix.C2)) * matrix.C2;
+            matrix.C3 -= (Vec.Dot(matrix.C0, matrix.C3) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C3 -= (Vec.Dot(matrix.C1, matrix.C3) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C2, matrix.C3) / Vec.Dot(matrix.C2, matrix.C2)) * matrix.C2;
+        }
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M44f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Orthogonalized(this M44f matrix)
+        {
+            M44f m = matrix;
+            Orthogonalize(ref m);
+            return m;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M44f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthonormalize(this ref M44f matrix)
+        {
+            matrix.C0 = matrix.C0.Normalized;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 = matrix.C1.Normalized;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 = matrix.C2.Normalized;
+            matrix.C3 -= (Vec.Dot(matrix.C0, matrix.C3) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C3 -= (Vec.Dot(matrix.C1, matrix.C3) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C2, matrix.C3) / Vec.Dot(matrix.C2, matrix.C2)) * matrix.C2;
+            matrix.C3 -= (Vec.Dot(matrix.C0, matrix.C3) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C3 -= (Vec.Dot(matrix.C1, matrix.C3) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C2, matrix.C3) / Vec.Dot(matrix.C2, matrix.C2)) * matrix.C2;
+            matrix.C3 = matrix.C3.Normalized;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M44f"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Orthonormalized(this M44f matrix)
+        {
+            M44f m = matrix;
+            Orthonormalize(ref m);
+            return m;
+        }
+
         #endregion
     }
 
@@ -50847,6 +51247,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this M44d m)
+            => IsIdentity(m, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
         /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50855,6 +51262,13 @@ namespace Aardvark.Base
             var i = m * m.Transposed;
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this M44d m)
+            => IsOrthonormal(m, Constant<double>.PositiveTinyValue);
 
         /// <summary>
         /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
@@ -50867,6 +51281,86 @@ namespace Aardvark.Base
                 i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this M44d m)
+            => IsOrthogonal(m, Constant<double>.PositiveTinyValue);
+
+        #endregion
+
+        #region Orthogonalization
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M44d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthogonalize(this ref M44d matrix)
+        {
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C0, matrix.C3) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C3 -= (Vec.Dot(matrix.C1, matrix.C3) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C2, matrix.C3) / Vec.Dot(matrix.C2, matrix.C2)) * matrix.C2;
+            matrix.C3 -= (Vec.Dot(matrix.C0, matrix.C3) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C3 -= (Vec.Dot(matrix.C1, matrix.C3) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C2, matrix.C3) / Vec.Dot(matrix.C2, matrix.C2)) * matrix.C2;
+        }
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="M44d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Orthogonalized(this M44d matrix)
+        {
+            M44d m = matrix;
+            Orthogonalize(ref m);
+            return m;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M44d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthonormalize(this ref M44d matrix)
+        {
+            matrix.C0 = matrix.C0.Normalized;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 -= (Vec.Dot(matrix.C0, matrix.C1) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C1 = matrix.C1.Normalized;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 -= (Vec.Dot(matrix.C0, matrix.C2) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C2 -= (Vec.Dot(matrix.C1, matrix.C2) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C2 = matrix.C2.Normalized;
+            matrix.C3 -= (Vec.Dot(matrix.C0, matrix.C3) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C3 -= (Vec.Dot(matrix.C1, matrix.C3) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C2, matrix.C3) / Vec.Dot(matrix.C2, matrix.C2)) * matrix.C2;
+            matrix.C3 -= (Vec.Dot(matrix.C0, matrix.C3) / Vec.Dot(matrix.C0, matrix.C0)) * matrix.C0;
+            matrix.C3 -= (Vec.Dot(matrix.C1, matrix.C3) / Vec.Dot(matrix.C1, matrix.C1)) * matrix.C1;
+            matrix.C3 -= (Vec.Dot(matrix.C2, matrix.C3) / Vec.Dot(matrix.C2, matrix.C2)) * matrix.C2;
+            matrix.C3 = matrix.C3.Normalized;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="M44d"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Orthonormalized(this M44d matrix)
+        {
+            M44d m = matrix;
+            Orthonormalize(ref m);
+            return m;
+        }
+
         #endregion
     }
 

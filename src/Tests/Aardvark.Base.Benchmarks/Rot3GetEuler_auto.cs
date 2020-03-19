@@ -23,14 +23,14 @@ namespace Aardvark.Base.Benchmarks
             public static V3f Original(Rot3f r)
             {
                 var test = r.W * r.Y - r.X * r.Z;
-                if (test >= 0.5f - Constant<float>.PositiveTinyValue) // singularity at north pole
+                if (test > 0.5f - Constant<float>.PositiveTinyValue) // singularity at north pole
                 {
                     return new V3f(
                         2 * Fun.Atan2(r.X, r.W),
                         (float)Constant.PiHalf,
                         0);
                 }
-                if (test <= -0.5f + Constant<float>.PositiveTinyValue) // singularity at south pole
+                if (test < -0.5f + Constant<float>.PositiveTinyValue) // singularity at south pole
                 {
                     return new V3f(
                         2 * Fun.Atan2(r.X, r.W),
@@ -201,14 +201,14 @@ namespace Aardvark.Base.Benchmarks
             public static V3d Original(Rot3d r)
             {
                 var test = r.W * r.Y - r.X * r.Z;
-                if (test >= 0.5 - Constant<double>.PositiveTinyValue) // singularity at north pole
+                if (test > 0.5 - Constant<double>.PositiveTinyValue) // singularity at north pole
                 {
                     return new V3d(
                         2 * Fun.Atan2(r.X, r.W),
                         Constant.PiHalf,
                         0);
                 }
-                if (test <= -0.5 + Constant<double>.PositiveTinyValue) // singularity at south pole
+                if (test < -0.5 + Constant<double>.PositiveTinyValue) // singularity at south pole
                 {
                     return new V3d(
                         2 * Fun.Atan2(r.X, r.W),

@@ -1832,7 +1832,7 @@ namespace Aardvark.Base
             //# }); }
         }
 
-        //# if (t > 1) {
+        //# if (isReal) {
         /// <summary>
         /// Returns the inverse of the given matrix. If the matrix is not invertible
         /// __nmtype__.Zero is returned.
@@ -1858,6 +1858,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this __nmtype__ m)
+            => IsIdentity(m, Constant<__ftype__>.PositiveTinyValue);
+
+        /// <summary>
         /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1866,6 +1873,13 @@ namespace Aardvark.Base
             var i = m * m.Transposed;
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this __nmtype__ m)
+            => IsOrthonormal(m, Constant<__ftype__>.PositiveTinyValue);
 
         /// <summary>
         /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
@@ -1878,9 +1892,79 @@ namespace Aardvark.Base
                 i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
             return i.IsIdentity(epsilon);
         }
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this __nmtype__ m)
+            => IsOrthogonal(m, Constant<__ftype__>.PositiveTinyValue);
+
         //# }
         //# }
         #endregion
+        //# if (m == n && isReal) {
+
+        #region Orthogonalization
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="__nmtype__"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthogonalize(this ref __nmtype__ matrix)
+        {
+            //# for (int j = 1; j < n; j++) {
+            //# for (int i = 0; i < 2; i++) {
+            //# for (int k = 0; k < j; k++) {
+            matrix.C__j__ -= (Vec.Dot(matrix.C__k__, matrix.C__j__) / Vec.Dot(matrix.C__k__, matrix.C__k__)) * matrix.C__k__;
+            //# }
+            //# }
+            //# }
+        }
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="__nmtype__"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Orthogonalized(this __nmtype__ matrix)
+        {
+            __nmtype__ m = matrix;
+            Orthogonalize(ref m);
+            return m;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="__nmtype__"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthonormalize(this ref __nmtype__ matrix)
+        {
+            matrix.C0 = matrix.C0.Normalized;
+            //# for (int j = 1; j < n; j++) {
+            //# for (int i = 0; i < 2; i++) {
+            //# for (int k = 0; k < j; k++) {
+            matrix.C__j__ -= (Vec.Dot(matrix.C__k__, matrix.C__j__) / Vec.Dot(matrix.C__k__, matrix.C__k__)) * matrix.C__k__;
+            //# }
+            //# }
+            matrix.C__j__ = matrix.C__j__.Normalized;
+            //# }
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="__nmtype__"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Orthonormalized(this __nmtype__ matrix)
+        {
+            __nmtype__ m = matrix;
+            Orthonormalize(ref m);
+            return m;
+        }
+
+        #endregion
+        //# }
     }
 
     public static partial class Fun

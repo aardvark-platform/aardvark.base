@@ -1076,14 +1076,14 @@ namespace Aardvark.Base
         public static __v3t__ GetEulerAngles(this __type__ r)
         {
             var test = r.W * r.Y - r.X * r.Z;
-            if (test >= __half__ - Constant<__ftype__>.PositiveTinyValue) // singularity at north pole
+            if (test > __half__ - Constant<__ftype__>.PositiveTinyValue) // singularity at north pole
             {
                 return new __v3t__(
                     2 * Fun.Atan2(r.X, r.W),
                     __piHalf__,
                     0);
             }
-            if (test <= -__half__ + Constant<__ftype__>.PositiveTinyValue) // singularity at south pole
+            if (test < -__half__ + Constant<__ftype__>.PositiveTinyValue) // singularity at south pole
             {
                 return new __v3t__(
                     2 * Fun.Atan2(r.X, r.W),
