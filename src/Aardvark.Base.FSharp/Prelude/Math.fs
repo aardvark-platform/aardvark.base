@@ -88,6 +88,9 @@ module FSharpMath =
                 let two = one + one
                 (log ((one + a) / (one - a))) / two
 
+        type MultiplyAdd() =
+            static member inline MultiplyAdd(x : ^a, y : ^b, z : ^a) = (x * y) + z
+
         type Infinity() =
             static member inline IsNaN< ^a when ^a : (member IsNaN : bool)> (x : ^a) : bool =
                 (^a : (member IsNaN : bool) x)
@@ -167,6 +170,15 @@ module FSharpMath =
         // See comment for powAux
         let inline copysignAux (_ : ^z) (x : ^a) (y : ^b) =
             ((^z or ^a or ^b or ^c) : (static member CopySign : ^a * ^b -> ^a) (x, y))
+
+        let inline degreesAux (_ : ^z) (radians : ^a) =
+            ((^z or ^a) : (static member DegreesFromRadians : ^a -> ^a) radians)
+
+        let inline radiansAux (_ : ^z) (degrees : ^a) =
+            ((^z or ^a) : (static member RadiansFromDegrees : ^a -> ^a) degrees)
+
+        let inline maddAux (_ : ^z) (_ : ^w) (x : ^a) (y : ^b) (z : ^a) =
+            ((^z or ^w or ^a or ^b) : (static member MultiplyAdd : ^a * ^b * ^a -> ^a) (x, y, z))
 
         let inline isNanAux (_ : ^z) (_ : ^w) (x : ^a) =
             ((^z or ^w or ^a) : (static member IsNaN : ^a -> bool) x)
@@ -264,6 +276,18 @@ module FSharpMath =
     let inline copysign (x : ^a) (y : ^b) =
         copysignAux Unchecked.defaultof<Fun> x y
 
+    /// Converts an angle given in radians to degrees.
+    let inline degrees (radians : ^a) =
+        degreesAux Unchecked.defaultof<Conversion> radians
+
+    /// Converts an angle given in degrees to radians.
+    let inline radians (degrees : ^a) =
+        radiansAux Unchecked.defaultof<Conversion> degrees
+
+    /// Returns (x * y) + z
+    let inline madd (x : ^a) (y : ^b) (z : ^a) =
+        maddAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.MultiplyAdd> x y z
+
     /// Returns whether x is NaN.
     let inline isNaN (x : ^a) =
         isNanAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
@@ -289,6 +313,7 @@ module FSharpMath =
         type MyCustomNumericTypeExtensionTestTypeForInternalTesting() =
             static member Pow(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : float) = h
             static member (*)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member (*)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : int) = h
             static member (+)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member (-)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member (/)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
@@ -302,6 +327,9 @@ module FSharpMath =
             static member Log2(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
             static member Sqrt(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+
+            static member DegreesFromRadians(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member RadiansFromDegrees(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
         let fsharpCoreWorking() =
 
@@ -604,6 +632,23 @@ module FSharpMath =
             let a : V3d = copysign V3d.Zero V3d.One
             let a : V3d = copysign V3d.Zero -1.0
             let a = exp (2.0 * (copysign V3d.Zero -1.0))
+            ()
+
+        let conversionWorking() =
+            let a : float = degrees 0.0
+            let a : float32 = radians 0.0f
+            let a : V3d = degrees V3d.Zero
+            let a : V4f = radians V4f.Zero
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = radians (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = degrees (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            ()
+
+        let multiplyAddWorking() =
+            let a : float = madd 0.0 1.0 2.0
+            let a : float32 = madd 0.0f 1.0f 2.0f
+            let a : V3d = madd V3d.Zero 1.0 V3d.Zero
+            let a : V3d = madd V3d.Zero V3d.Zero V3d.Zero
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = madd (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 1 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
 
         let specialFloatingPointValuesWorking() =

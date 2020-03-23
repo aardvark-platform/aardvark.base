@@ -533,6 +533,39 @@ namespace Aardvark.Base
         //# });
         #endregion
 
+        #region Multiply-Add
+
+        //# fdtypes.ForEach(t => {
+        //# var type = t.Name;
+        //# var isDouble = (t == Meta.DoubleType);
+        #if NETCOREAPP3_0
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// Computes the result rounded as a single ternary operation.
+        /// </summary>
+        #else
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        #endif
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ MultiplyAdd(__type__ x, __type__ y, __type__ z)
+        {
+            #if NETCOREAPP3_0
+                //# if (isDouble) {
+                return Math.FusedMultiplyAdd(x, y, z);
+                //# } else {
+                return MathF.FusedMultiplyAdd(x, y, z);
+                //# }
+            #else
+                return (x * y) + z;
+            #endif
+        }
+
+        //# });
+        #endregion
+
         #region Floating point bits
 
         //# fdtypes.ForEach(t => {
@@ -610,8 +643,8 @@ namespace Aardvark.Base
                 return x;
             #endif
         }
-        //# });
 
+        //# });
         #endregion
 
         #region Comparisons

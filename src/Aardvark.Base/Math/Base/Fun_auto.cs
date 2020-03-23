@@ -1808,6 +1808,52 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Multiply-Add
+
+        #if NETCOREAPP3_0
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// Computes the result rounded as a single ternary operation.
+        /// </summary>
+        #else
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        #endif   
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MultiplyAdd(float x, float y, float z)
+        {
+            #if NETCOREAPP3_0
+                return MathF.FusedMultiplyAdd(x, y, z);
+            #else
+                return (x * y) + z;
+            #endif
+        }
+
+        #if NETCOREAPP3_0
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// Computes the result rounded as a single ternary operation.
+        /// </summary>
+        #else
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        #endif   
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MultiplyAdd(double x, double y, double z)
+        {
+            #if NETCOREAPP3_0
+                return Math.FusedMultiplyAdd(x, y, z);
+            #else
+                return (x * y) + z;
+            #endif
+        }
+
+        #endregion
+
         #region Floating point bits
 
         #if NETSTANDARD2_0
@@ -1903,6 +1949,7 @@ namespace Aardvark.Base
                 return x;
             #endif
         }
+
         /// <summary>
         /// Returns a value with the maginute of <paramref name="x"/> and the sign of <paramref name="y"/>.
         /// </summary>
