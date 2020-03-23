@@ -1883,7 +1883,7 @@ module SVDTests =
 
             match svd with
             | Some (q, s, v) -> let test = q * s * v
-                                if not (Fun.ApproximateEquals(test, mat, 1e-3f)) then
+                                if not (Fun.ApproximateEquals(test, mat, float32 1e-3)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwithf "NONE at %d" i
 
@@ -2004,7 +2004,7 @@ module SVDTests =
 
             match svd with
             | Some (q, s, v) -> let test = q * s * v
-                                if not (Fun.ApproximateEquals(test, mat, 1e-6f)) then
+                                if not (Fun.ApproximateEquals(test, mat, float32 1e-6)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"
 
@@ -2020,7 +2020,7 @@ module SVDTests =
 
             match svd with
             | Some (q, s, v) -> let test = q * s * v
-                                if not (Fun.ApproximateEquals(test, mat, 1e-6f)) then
+                                if not (Fun.ApproximateEquals(test, mat, float32 1e-6)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"
 
@@ -2036,7 +2036,7 @@ module SVDTests =
 
             match svd with
             | Some (q, s, v) -> let test = q * s * v
-                                if not (Fun.ApproximateEquals(test, mat, 1e-6f)) then
+                                if not (Fun.ApproximateEquals(test, mat, float32 1e-6)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"
 
@@ -2051,7 +2051,7 @@ module SVDTests =
 
             match svd with
             | Some (q, s, v) -> let test = q * s * v
-                                if not (Fun.ApproximateEquals(test, mat, 1e-2f)) then
+                                if not (Fun.ApproximateEquals(test, mat, float32 1e-2)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"
 
@@ -2066,6 +2066,6 @@ module SVDTests =
 
             match svd with
             | Some (q, s, v) -> let test = q * s * v
-                                if not (Fun.ApproximateEquals(test, mat, 1e-2f)) then
+                                if not (Fun.ApproximateEquals(test, mat, float32 1e-2)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"

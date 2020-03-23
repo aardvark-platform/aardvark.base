@@ -1819,7 +1819,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns (x * y) + z.
         /// </summary>
-        #endif   
+        #endif
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float MultiplyAdd(float x, float y, float z)
@@ -1840,7 +1840,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns (x * y) + z.
         /// </summary>
-        #endif   
+        #endif
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double MultiplyAdd(double x, double y, double z)

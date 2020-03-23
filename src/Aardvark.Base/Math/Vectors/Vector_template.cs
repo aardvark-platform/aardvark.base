@@ -1577,7 +1577,7 @@ namespace Aardvark.Base
         /// Applies Fun.__fun.Name__ to each element of the given vector(s).
         /// </summary>
         [Pure]
-        //# if (fun.EditorBrowsable) {
+        //# if (!fun.EditorBrowsable) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
