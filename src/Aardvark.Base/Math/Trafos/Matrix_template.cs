@@ -19,6 +19,7 @@ namespace Aardvark.Base
     //# Action oror = () => Out(" || ");
     //# Action addqcomma = () => Out(" + \",\" ");
     //# Action addbetweenM = () => Out(" + betweenM ");
+    //# Action el = () => Out("else ");
     //# var tcharA = new[] { "i", "l", "f", "d" };
     //# var ftypeA = new[] { "int", "long", "float", "double" };
     //# var ctypeA = new[] { "double", "double", "float", "double" }; // computation types
@@ -748,7 +749,6 @@ namespace Aardvark.Base
         //# }
         public __ftype__ this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -760,7 +760,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -776,7 +775,6 @@ namespace Aardvark.Base
 
         public __ftype__ this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -793,7 +791,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -1781,13 +1778,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vmtype__ Row(this __nmtype__ m, int index)
         {
-            switch (index)
-            {
-                //# n.ForEach(r => {
-                case __r__: return m.R__r__;
-                //# });
-                default: throw new IndexOutOfRangeException();
-            }
+            /*# n.ForEach(i => { */if (index == __i__) return m.R__i__;
+            /*# }, el); */else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -1796,13 +1788,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vntype__ Column(this __nmtype__ m, int index)
         {
-            switch (index)
-            {
-                //# m.ForEach(r => {
-                case __r__: return m.C__r__;
-                //# });
-                default: throw new IndexOutOfRangeException();
-            }
+            /*# m.ForEach(i => { */if (index == __i__) return m.C__i__;
+            /*# }, el); */else throw new IndexOutOfRangeException();
         }
 
         //# if( m == n) {

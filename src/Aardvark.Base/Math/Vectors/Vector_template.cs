@@ -43,6 +43,7 @@ namespace Aardvark.Base
     //# Action andand = () => Out(" && ");
     //# Action oror = () => Out(" || ");
     //# Action xor = () => Out(" ^ ");
+    //# Action el = () => Out("else ");
     //# string f0 = Meta.VecFields[0], f1 = Meta.VecFields[1];
     //# string f2 = Meta.VecFields[2], f3 = Meta.VecFields[3];
     //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
@@ -448,24 +449,14 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    //# fields.ForEach((f, i) => {
-                    case __i__: return __f__;
-                    //# });
-                    default: throw new IndexOutOfRangeException();
-                }
+                /*# fields.ForEach((f, i) => { */if (index == __i__) return __f__;
+                /*# }, el); */else throw new IndexOutOfRangeException();
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    //# fields.ForEach((f, i) => {
-                    case __i__: __f__ = value; return;
-                    //# });
-                    default: throw new IndexOutOfRangeException();
-                }
+                /*# fields.ForEach((f, i) => { */if (index == __i__) __f__ = value;
+                /*# }, el); */else throw new IndexOutOfRangeException();
             }
         }
 
