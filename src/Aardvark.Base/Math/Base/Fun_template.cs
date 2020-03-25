@@ -14,8 +14,9 @@ namespace Aardvark.Base
     //# var unsignedtypes = Meta.UnsignedTypes;
     //# var numtypes = Meta.StandardNumericTypes;
     //# var numdectypes = Meta.BuiltInNumericTypes;
-    //# var freptypes = Meta.FloatRepresentableTypes;
-    //# var dreptypes = Meta.DoubleRepresentableTypes;
+    //# var reptypes = Meta.RealRepresentableTypes;
+    //# var freptypes = reptypes[Meta.FloatType];
+    //# var dreptypes = reptypes[Meta.DoubleType];
     //# var modtypes = new [] { Meta.IntType, Meta.LongType, Meta.UIntType, Meta.ULongType };
     //# var smalltypes = new [] { Meta.SByteType, Meta.ShortType, Meta.ByteType, Meta.UShortType };
     //# var iltypes = new[] { Meta.IntType, Meta.LongType };
@@ -803,9 +804,8 @@ namespace Aardvark.Base
         //# }
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rt.Name__ Power(this __t.Name__ x, __rt.Name__ y)
+        public static __rt.Name__ Pow(this __t.Name__ x, __rt.Name__ y)
         {
             //# if (rt != Meta.FloatType || !freptypes.Contains(t)) {
             return __rcast__Math.Pow(x, y);
@@ -817,17 +817,6 @@ namespace Aardvark.Base
             #endif
             //# }
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        //# if (rt == Meta.DoubleType && !dreptypes.Contains(t)) {
-        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double. 
-        //# }
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __rt.Name__ Pow(this __t.Name__ x, __rt.Name__ y)
-            => Power(x, y);
 
         //# } 
         //# });

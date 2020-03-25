@@ -68,8 +68,6 @@ module FSharpMath =
                 else 0
 
         type Power() =
-            static member inline Power(a : ^a, b : ^b) = Operators.( ** ) a b
-            
             static member inline Pown(a : ^a, b : int) = Operators.pown a b
         
         type Log2() =
@@ -128,9 +126,6 @@ module FSharpMath =
         // Making the power functions more general with ^a -> ^b -> ^c
         // generally works but requires manual type annotations in some cases
         // It's not worth the hassle so we restrict them to ^a -> ^b -> ^a
-        let inline powAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
-            ((^z or ^y or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^a) (x, y))
-
         let inline pownAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
             ((^z or ^y or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^a) (x, y))
 
@@ -215,17 +210,12 @@ module FSharpMath =
     /// Returns x raised by the power of y (must be float or double).
     // F# variant does not support integers!
     let inline pow x y =
-        powAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
+        x ** y
 
     /// Returns x raised by the integer power of y (must not be negative).
-    // F# variant has signature a' -> b' -> 'a, which does not permit for example float32 -> V2i -> V2f
+    // F# variant has signature a' -> int -> 'a, which does not permit for example V2f -> V2i -> V2f
     let inline pown x y =
         pownAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
-
-    /// Returns x raised by the power of y.
-    // F# variant does not support integers!
-    let inline ( ** ) x y =
-        powAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
 
     /// Returns the base 2 logarithm of x.
     let inline log2 x = 

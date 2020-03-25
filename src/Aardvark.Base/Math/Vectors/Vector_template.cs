@@ -1177,6 +1177,24 @@ namespace Aardvark.Base
         public static __vtype__ Log10(__vtype__ v)
             => Fun.Log10(v);
 
+        /// <summary>
+        /// Returns a vector, with each element being the result of pow() applied
+        /// to each element pair of the given vectors.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Pow(__vtype__ x, __vtype__ y)
+            => Fun.Pow(x, y);
+
+        /// <summary>
+        /// Returns a vector, with each element being the result of pow() applied
+        /// to it and <paramref name="y"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ Pow(__vtype__ x, __ftype__ y)
+            => Fun.Pow(x, y);
+
         //# } // ft.IsReal
         /// <summary>
         /// Returns the componentwise minimum vector.

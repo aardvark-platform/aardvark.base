@@ -2618,9 +2618,8 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this byte x, float y)
+        public static float Pow(this byte x, float y)
         {
             #if NETCOREAPP3_0
                 return MathF.Pow(x, y);
@@ -2634,27 +2633,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this byte x, float y)
-            => Power(x, y);
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this byte x, double y)
+        public static double Pow(this byte x, double y)
         {
             return Math.Pow(x, y);
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this byte x, double y)
-            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2683,9 +2665,8 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this sbyte x, float y)
+        public static float Pow(this sbyte x, float y)
         {
             #if NETCOREAPP3_0
                 return MathF.Pow(x, y);
@@ -2699,27 +2680,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this sbyte x, float y)
-            => Power(x, y);
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this sbyte x, double y)
+        public static double Pow(this sbyte x, double y)
         {
             return Math.Pow(x, y);
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this sbyte x, double y)
-            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2749,9 +2713,8 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this short x, float y)
+        public static float Pow(this short x, float y)
         {
             #if NETCOREAPP3_0
                 return MathF.Pow(x, y);
@@ -2765,27 +2728,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this short x, float y)
-            => Power(x, y);
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this short x, double y)
+        public static double Pow(this short x, double y)
         {
             return Math.Pow(x, y);
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this short x, double y)
-            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2815,9 +2761,8 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this ushort x, float y)
+        public static float Pow(this ushort x, float y)
         {
             #if NETCOREAPP3_0
                 return MathF.Pow(x, y);
@@ -2831,27 +2776,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this ushort x, float y)
-            => Power(x, y);
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this ushort x, double y)
+        public static double Pow(this ushort x, double y)
         {
             return Math.Pow(x, y);
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this ushort x, double y)
-            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2880,9 +2808,8 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this int x, float y)
+        public static float Pow(this int x, float y)
         {
             return (float)Math.Pow(x, y);
         }
@@ -2892,27 +2819,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this int x, float y)
-            => Power(x, y);
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this int x, double y)
+        public static double Pow(this int x, double y)
         {
             return Math.Pow(x, y);
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this int x, double y)
-            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2938,9 +2848,8 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this uint x, float y)
+        public static float Pow(this uint x, float y)
         {
             return (float)Math.Pow(x, y);
         }
@@ -2950,27 +2859,10 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this uint x, float y)
-            => Power(x, y);
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this uint x, double y)
+        public static double Pow(this uint x, double y)
         {
             return Math.Pow(x, y);
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this uint x, double y)
-            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -3015,31 +2907,10 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this long x, float y)
-        {
-            return (float)Math.Pow(x, y);
-        }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this long x, float y)
-            => Power(x, y);
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double. 
-        /// </summary>
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this long x, double y)
         {
-            return Math.Pow(x, y);
+            return (float)Math.Pow(x, y);
         }
 
         /// <summary>
@@ -3049,7 +2920,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this long x, double y)
-            => Power(x, y);
+        {
+            return Math.Pow(x, y);
+        }
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -3095,31 +2968,10 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this ulong x, float y)
-        {
-            return (float)Math.Pow(x, y);
-        }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this ulong x, float y)
-            => Power(x, y);
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double. 
-        /// </summary>
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this ulong x, double y)
         {
-            return Math.Pow(x, y);
+            return (float)Math.Pow(x, y);
         }
 
         /// <summary>
@@ -3129,7 +2981,9 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pow(this ulong x, double y)
-            => Power(x, y);
+        {
+            return Math.Pow(x, y);
+        }
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -3174,9 +3028,8 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Power(this float x, float y)
+        public static float Pow(this float x, float y)
         {
             #if NETCOREAPP3_0
                 return MathF.Pow(x, y);
@@ -3184,14 +3037,6 @@ namespace Aardvark.Base
                 return (float)Math.Pow(x, y);
             #endif
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float Pow(this float x, float y)
-            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -3217,20 +3062,11 @@ namespace Aardvark.Base
         /// Returns the number raised to the specified power.
         /// </summary>
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Power(this double x, double y)
+        public static double Pow(this double x, double y)
         {
             return Math.Pow(x, y);
         }
-
-        /// <summary>
-        /// Returns the number raised to the specified power.
-        /// </summary>
-        [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double Pow(this double x, double y)
-            => Power(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.

@@ -369,6 +369,22 @@ namespace Aardvark.Base
         public static ComplexF Log10(ComplexF x)
             => x.Log10();
 
+        /// <summary>
+        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Pow(ComplexF number, ComplexF exponent)
+            => number.Pow(exponent);
+
+        /// <summary>
+        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Pow(ComplexF number, float exponent)
+            => number.Pow(exponent);
+
         #endregion
 
         #region Operators
@@ -594,9 +610,8 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Power(this ComplexF number, ComplexF exponent)
+        public static ComplexF Pow(this ComplexF number, ComplexF exponent)
         {    
             if (number.IsZero)
                 return ComplexF.Zero;
@@ -618,15 +633,7 @@ namespace Aardvark.Base
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Pow(this ComplexF number, ComplexF exponent)
-            => Power(number, exponent);
-
-        /// <summary>
-        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Power(this ComplexF number, float exponent)
+        public static ComplexF Pow(this ComplexF number, float exponent)
         {
             if (number.IsZero)
                 return ComplexF.Zero;
@@ -639,18 +646,10 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Pow(this ComplexF number, float exponent)
-            => Power(number, exponent);
-
-        /// <summary>
         /// Returns <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Power(this float number, ComplexF exponent)
+        public static ComplexF Pow(this float number, ComplexF exponent)
         {
             if (number == 0)
                 return ComplexF.Zero;
@@ -668,13 +667,6 @@ namespace Aardvark.Base
                     return ComplexF.CreateRadial(Pow(number, a), b * Log(number));
             }
         }
-
-        /// <summary>
-        /// Returns <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Pow(this float number, ComplexF exponent)
-            => Power(number, exponent);
 
         #endregion
 
@@ -1345,6 +1337,22 @@ namespace Aardvark.Base
         public static ComplexD Log10(ComplexD x)
             => x.Log10();
 
+        /// <summary>
+        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Pow(ComplexD number, ComplexD exponent)
+            => number.Pow(exponent);
+
+        /// <summary>
+        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Pow(ComplexD number, double exponent)
+            => number.Pow(exponent);
+
         #endregion
 
         #region Operators
@@ -1570,9 +1578,8 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Power(this ComplexD number, ComplexD exponent)
+        public static ComplexD Pow(this ComplexD number, ComplexD exponent)
         {    
             if (number.IsZero)
                 return ComplexD.Zero;
@@ -1594,15 +1601,7 @@ namespace Aardvark.Base
         /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Pow(this ComplexD number, ComplexD exponent)
-            => Power(number, exponent);
-
-        /// <summary>
-        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Power(this ComplexD number, double exponent)
+        public static ComplexD Pow(this ComplexD number, double exponent)
         {
             if (number.IsZero)
                 return ComplexD.Zero;
@@ -1615,18 +1614,10 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Pow(this ComplexD number, double exponent)
-            => Power(number, exponent);
-
-        /// <summary>
         /// Returns <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Power(this double number, ComplexD exponent)
+        public static ComplexD Pow(this double number, ComplexD exponent)
         {
             if (number == 0)
                 return ComplexD.Zero;
@@ -1644,13 +1635,6 @@ namespace Aardvark.Base
                     return ComplexD.CreateRadial(Pow(number, a), b * Log(number));
             }
         }
-
-        /// <summary>
-        /// Returns <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Pow(this double number, ComplexD exponent)
-            => Power(number, exponent);
 
         #endregion
 
