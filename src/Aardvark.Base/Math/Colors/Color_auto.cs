@@ -14,21 +14,25 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(byte r, byte g, byte b)
         {
             R = r; G = g; B = b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(int r, int g, int b)
         {
             R = (byte)r; G = (byte)g; B = (byte)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(long r, long g, long b)
         {
             R = (byte)r; G = (byte)g; B = (byte)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(double r, double g, double b)
         {
             R = Col.ByteFromDoubleClamped(r);
@@ -36,17 +40,20 @@ namespace Aardvark.Base
             B = Col.ByteFromDoubleClamped(b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(byte gray)
         {
             R = gray; G = gray; B = gray;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(double gray)
         {
             var value = Col.ByteFromDoubleClamped(gray);
             R = value; G = value; B = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3b color)
         {
             R = (color.R);
@@ -54,6 +61,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3us color)
         {
             R = Col.ByteFromUShort(color.R);
@@ -61,6 +69,7 @@ namespace Aardvark.Base
             B = Col.ByteFromUShort(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3ui color)
         {
             R = Col.ByteFromUInt(color.R);
@@ -68,6 +77,7 @@ namespace Aardvark.Base
             B = Col.ByteFromUInt(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3f color)
         {
             R = Col.ByteFromFloat(color.R);
@@ -75,6 +85,7 @@ namespace Aardvark.Base
             B = Col.ByteFromFloat(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3d color)
         {
             R = Col.ByteFromDouble(color.R);
@@ -82,6 +93,7 @@ namespace Aardvark.Base
             B = Col.ByteFromDouble(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4b color)
         {
             R = (color.R);
@@ -89,6 +101,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4us color)
         {
             R = Col.ByteFromUShort(color.R);
@@ -96,6 +109,7 @@ namespace Aardvark.Base
             B = Col.ByteFromUShort(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4ui color)
         {
             R = Col.ByteFromUInt(color.R);
@@ -103,6 +117,7 @@ namespace Aardvark.Base
             B = Col.ByteFromUInt(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4f color)
         {
             R = Col.ByteFromFloat(color.R);
@@ -110,6 +125,7 @@ namespace Aardvark.Base
             B = Col.ByteFromFloat(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4d color)
         {
             R = Col.ByteFromDouble(color.R);
@@ -117,6 +133,7 @@ namespace Aardvark.Base
             B = Col.ByteFromDouble(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(V3i vec)
         {
             R = (byte)(vec.X);
@@ -124,6 +141,7 @@ namespace Aardvark.Base
             B = (byte)(vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(V3l vec)
         {
             R = (byte)(vec.X);
@@ -131,6 +149,7 @@ namespace Aardvark.Base
             B = (byte)(vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(V4i vec)
         {
             R = (byte)(vec.X);
@@ -138,6 +157,7 @@ namespace Aardvark.Base
             B = (byte)(vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(V4l vec)
         {
             R = (byte)(vec.X);
@@ -403,38 +423,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public byte this[int i]
+        public unsafe byte this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (byte* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (byte* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -1380,21 +1379,25 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(ushort r, ushort g, ushort b)
         {
             R = r; G = g; B = b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(int r, int g, int b)
         {
             R = (ushort)r; G = (ushort)g; B = (ushort)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(long r, long g, long b)
         {
             R = (ushort)r; G = (ushort)g; B = (ushort)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(double r, double g, double b)
         {
             R = Col.UShortFromDoubleClamped(r);
@@ -1402,17 +1405,20 @@ namespace Aardvark.Base
             B = Col.UShortFromDoubleClamped(b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(ushort gray)
         {
             R = gray; G = gray; B = gray;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(double gray)
         {
             var value = Col.UShortFromDoubleClamped(gray);
             R = value; G = value; B = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3b color)
         {
             R = Col.UShortFromByte(color.R);
@@ -1420,6 +1426,7 @@ namespace Aardvark.Base
             B = Col.UShortFromByte(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3us color)
         {
             R = (color.R);
@@ -1427,6 +1434,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3ui color)
         {
             R = Col.UShortFromUInt(color.R);
@@ -1434,6 +1442,7 @@ namespace Aardvark.Base
             B = Col.UShortFromUInt(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3f color)
         {
             R = Col.UShortFromFloat(color.R);
@@ -1441,6 +1450,7 @@ namespace Aardvark.Base
             B = Col.UShortFromFloat(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3d color)
         {
             R = Col.UShortFromDouble(color.R);
@@ -1448,6 +1458,7 @@ namespace Aardvark.Base
             B = Col.UShortFromDouble(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4b color)
         {
             R = Col.UShortFromByte(color.R);
@@ -1455,6 +1466,7 @@ namespace Aardvark.Base
             B = Col.UShortFromByte(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4us color)
         {
             R = (color.R);
@@ -1462,6 +1474,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4ui color)
         {
             R = Col.UShortFromUInt(color.R);
@@ -1469,6 +1482,7 @@ namespace Aardvark.Base
             B = Col.UShortFromUInt(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4f color)
         {
             R = Col.UShortFromFloat(color.R);
@@ -1476,6 +1490,7 @@ namespace Aardvark.Base
             B = Col.UShortFromFloat(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4d color)
         {
             R = Col.UShortFromDouble(color.R);
@@ -1483,6 +1498,7 @@ namespace Aardvark.Base
             B = Col.UShortFromDouble(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(V3i vec)
         {
             R = (ushort)(vec.X);
@@ -1490,6 +1506,7 @@ namespace Aardvark.Base
             B = (ushort)(vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(V3l vec)
         {
             R = (ushort)(vec.X);
@@ -1497,6 +1514,7 @@ namespace Aardvark.Base
             B = (ushort)(vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(V4i vec)
         {
             R = (ushort)(vec.X);
@@ -1504,6 +1522,7 @@ namespace Aardvark.Base
             B = (ushort)(vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(V4l vec)
         {
             R = (ushort)(vec.X);
@@ -1769,38 +1788,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public ushort this[int i]
+        public unsafe ushort this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (ushort* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (ushort* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -2746,21 +2744,25 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(uint r, uint g, uint b)
         {
             R = r; G = g; B = b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(int r, int g, int b)
         {
             R = (uint)r; G = (uint)g; B = (uint)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(long r, long g, long b)
         {
             R = (uint)r; G = (uint)g; B = (uint)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(double r, double g, double b)
         {
             R = Col.UIntFromDoubleClamped(r);
@@ -2768,17 +2770,20 @@ namespace Aardvark.Base
             B = Col.UIntFromDoubleClamped(b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(uint gray)
         {
             R = gray; G = gray; B = gray;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(double gray)
         {
             var value = Col.UIntFromDoubleClamped(gray);
             R = value; G = value; B = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3b color)
         {
             R = Col.UIntFromByte(color.R);
@@ -2786,6 +2791,7 @@ namespace Aardvark.Base
             B = Col.UIntFromByte(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3us color)
         {
             R = Col.UIntFromUShort(color.R);
@@ -2793,6 +2799,7 @@ namespace Aardvark.Base
             B = Col.UIntFromUShort(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3ui color)
         {
             R = (color.R);
@@ -2800,6 +2807,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3f color)
         {
             R = Col.UIntFromFloat(color.R);
@@ -2807,6 +2815,7 @@ namespace Aardvark.Base
             B = Col.UIntFromFloat(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3d color)
         {
             R = Col.UIntFromDouble(color.R);
@@ -2814,6 +2823,7 @@ namespace Aardvark.Base
             B = Col.UIntFromDouble(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4b color)
         {
             R = Col.UIntFromByte(color.R);
@@ -2821,6 +2831,7 @@ namespace Aardvark.Base
             B = Col.UIntFromByte(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4us color)
         {
             R = Col.UIntFromUShort(color.R);
@@ -2828,6 +2839,7 @@ namespace Aardvark.Base
             B = Col.UIntFromUShort(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4ui color)
         {
             R = (color.R);
@@ -2835,6 +2847,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4f color)
         {
             R = Col.UIntFromFloat(color.R);
@@ -2842,6 +2855,7 @@ namespace Aardvark.Base
             B = Col.UIntFromFloat(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4d color)
         {
             R = Col.UIntFromDouble(color.R);
@@ -2849,6 +2863,7 @@ namespace Aardvark.Base
             B = Col.UIntFromDouble(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(V3l vec)
         {
             R = (uint)(vec.X);
@@ -2856,6 +2871,7 @@ namespace Aardvark.Base
             B = (uint)(vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(V4l vec)
         {
             R = (uint)(vec.X);
@@ -3094,38 +3110,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public uint this[int i]
+        public unsafe uint this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (uint* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (uint* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -4048,21 +4043,25 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(float r, float g, float b)
         {
             R = r; G = g; B = b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(int r, int g, int b)
         {
             R = (float)r; G = (float)g; B = (float)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(long r, long g, long b)
         {
             R = (float)r; G = (float)g; B = (float)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(double r, double g, double b)
         {
             R = (float)(r);
@@ -4070,17 +4069,20 @@ namespace Aardvark.Base
             B = (float)(b);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(float gray)
         {
             R = gray; G = gray; B = gray;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(double gray)
         {
             var value = (float)(gray);
             R = value; G = value; B = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3b color)
         {
             R = Col.FloatFromByte(color.R);
@@ -4088,6 +4090,7 @@ namespace Aardvark.Base
             B = Col.FloatFromByte(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3us color)
         {
             R = Col.FloatFromUShort(color.R);
@@ -4095,6 +4098,7 @@ namespace Aardvark.Base
             B = Col.FloatFromUShort(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3ui color)
         {
             R = Col.FloatFromUInt(color.R);
@@ -4102,6 +4106,7 @@ namespace Aardvark.Base
             B = Col.FloatFromUInt(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3f color)
         {
             R = (color.R);
@@ -4109,6 +4114,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3d color)
         {
             R = Col.FloatFromDouble(color.R);
@@ -4116,6 +4122,7 @@ namespace Aardvark.Base
             B = Col.FloatFromDouble(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4b color)
         {
             R = Col.FloatFromByte(color.R);
@@ -4123,6 +4130,7 @@ namespace Aardvark.Base
             B = Col.FloatFromByte(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4us color)
         {
             R = Col.FloatFromUShort(color.R);
@@ -4130,6 +4138,7 @@ namespace Aardvark.Base
             B = Col.FloatFromUShort(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4ui color)
         {
             R = Col.FloatFromUInt(color.R);
@@ -4137,6 +4146,7 @@ namespace Aardvark.Base
             B = Col.FloatFromUInt(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4f color)
         {
             R = (color.R);
@@ -4144,6 +4154,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4d color)
         {
             R = Col.FloatFromDouble(color.R);
@@ -4151,6 +4162,7 @@ namespace Aardvark.Base
             B = Col.FloatFromDouble(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(V3f vec)
         {
             R = (vec.X);
@@ -4158,6 +4170,7 @@ namespace Aardvark.Base
             B = (vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(V3d vec)
         {
             R = (float)(vec.X);
@@ -4165,6 +4178,7 @@ namespace Aardvark.Base
             B = (float)(vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(V4f vec)
         {
             R = (vec.X);
@@ -4172,6 +4186,7 @@ namespace Aardvark.Base
             B = (vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(V4d vec)
         {
             R = (float)(vec.X);
@@ -4437,38 +4452,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public float this[int i]
+        public unsafe float this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -5496,26 +5490,31 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(double r, double g, double b)
         {
             R = r; G = g; B = b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(int r, int g, int b)
         {
             R = (double)r; G = (double)g; B = (double)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(long r, long g, long b)
         {
             R = (double)r; G = (double)g; B = (double)b;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(double gray)
         {
             R = gray; G = gray; B = gray;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3b color)
         {
             R = Col.DoubleFromByte(color.R);
@@ -5523,6 +5522,7 @@ namespace Aardvark.Base
             B = Col.DoubleFromByte(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3us color)
         {
             R = Col.DoubleFromUShort(color.R);
@@ -5530,6 +5530,7 @@ namespace Aardvark.Base
             B = Col.DoubleFromUShort(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3ui color)
         {
             R = Col.DoubleFromUInt(color.R);
@@ -5537,6 +5538,7 @@ namespace Aardvark.Base
             B = Col.DoubleFromUInt(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3f color)
         {
             R = Col.DoubleFromFloat(color.R);
@@ -5544,6 +5546,7 @@ namespace Aardvark.Base
             B = Col.DoubleFromFloat(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3d color)
         {
             R = (color.R);
@@ -5551,6 +5554,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4b color)
         {
             R = Col.DoubleFromByte(color.R);
@@ -5558,6 +5562,7 @@ namespace Aardvark.Base
             B = Col.DoubleFromByte(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4us color)
         {
             R = Col.DoubleFromUShort(color.R);
@@ -5565,6 +5570,7 @@ namespace Aardvark.Base
             B = Col.DoubleFromUShort(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4ui color)
         {
             R = Col.DoubleFromUInt(color.R);
@@ -5572,6 +5578,7 @@ namespace Aardvark.Base
             B = Col.DoubleFromUInt(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4f color)
         {
             R = Col.DoubleFromFloat(color.R);
@@ -5579,6 +5586,7 @@ namespace Aardvark.Base
             B = Col.DoubleFromFloat(color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4d color)
         {
             R = (color.R);
@@ -5586,6 +5594,7 @@ namespace Aardvark.Base
             B = (color.B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(V3d vec)
         {
             R = (vec.X);
@@ -5593,6 +5602,7 @@ namespace Aardvark.Base
             B = (vec.Z);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(V4d vec)
         {
             R = (vec.X);
@@ -5831,38 +5841,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public double this[int i]
+        public unsafe double this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -6853,21 +6842,25 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(byte r, byte g, byte b, byte a)
         {
             R = r; G = g; B = b; A = a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(int r, int g, int b, int a)
         {
             R = (byte)r; G = (byte)g; B = (byte)b; A = (byte)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(long r, long g, long b, long a)
         {
             R = (byte)r; G = (byte)g; B = (byte)b; A = (byte)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double r, double g, double b, double a)
         {
             R = Col.ByteFromDoubleClamped(r);
@@ -6876,41 +6869,48 @@ namespace Aardvark.Base
             A = Col.ByteFromDoubleClamped(a);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(byte r, byte g, byte b)
         {
             R = r; G = g; B = b;
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(int r, int g, int b)
         {
             R = (byte)r; G = (byte)g; B = (byte)b;
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(long r, long g, long b)
         {
             R = (byte)r; G = (byte)g; B = (byte)b;
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double r, double g, double b)
         {
             R = Col.ByteFromDoubleClamped(r); G = Col.ByteFromDoubleClamped(g); B = Col.ByteFromDoubleClamped(b);
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(byte gray)
         {
             R = gray; G = gray; B = gray; A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double gray)
         {
             var value = Col.ByteFromDoubleClamped(gray);
             R = value; G = value; B = value; A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3b color)
         {
             R = (color.R);
@@ -6919,6 +6919,7 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3b color, byte alpha)
         {
             R = (color.R);
@@ -6927,6 +6928,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3us color)
         {
             R = Col.ByteFromUShort(color.R);
@@ -6935,6 +6937,7 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3us color, byte alpha)
         {
             R = Col.ByteFromUShort(color.R);
@@ -6943,6 +6946,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3ui color)
         {
             R = Col.ByteFromUInt(color.R);
@@ -6951,6 +6955,7 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3ui color, byte alpha)
         {
             R = Col.ByteFromUInt(color.R);
@@ -6959,6 +6964,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3f color)
         {
             R = Col.ByteFromFloat(color.R);
@@ -6967,6 +6973,7 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3f color, byte alpha)
         {
             R = Col.ByteFromFloat(color.R);
@@ -6975,6 +6982,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3d color)
         {
             R = Col.ByteFromDouble(color.R);
@@ -6983,6 +6991,7 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3d color, byte alpha)
         {
             R = Col.ByteFromDouble(color.R);
@@ -6991,6 +7000,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4b color)
         {
             R = (color.R);
@@ -6999,6 +7009,7 @@ namespace Aardvark.Base
             A = (color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4us color)
         {
             R = Col.ByteFromUShort(color.R);
@@ -7007,6 +7018,7 @@ namespace Aardvark.Base
             A = Col.ByteFromUShort(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4ui color)
         {
             R = Col.ByteFromUInt(color.R);
@@ -7015,6 +7027,7 @@ namespace Aardvark.Base
             A = Col.ByteFromUInt(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4f color)
         {
             R = Col.ByteFromFloat(color.R);
@@ -7023,6 +7036,7 @@ namespace Aardvark.Base
             A = Col.ByteFromFloat(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4d color)
         {
             R = Col.ByteFromDouble(color.R);
@@ -7031,6 +7045,7 @@ namespace Aardvark.Base
             A = Col.ByteFromDouble(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(V3i vec)
         {
             R = (byte)(vec.X);
@@ -7039,6 +7054,7 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(V3i vec, byte alpha)
         {
             R = (byte)(vec.X);
@@ -7047,6 +7063,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(V3l vec)
         {
             R = (byte)(vec.X);
@@ -7055,6 +7072,7 @@ namespace Aardvark.Base
             A = 255;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(V3l vec, byte alpha)
         {
             R = (byte)(vec.X);
@@ -7063,6 +7081,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(V4i vec)
         {
             R = (byte)(vec.X);
@@ -7071,6 +7090,7 @@ namespace Aardvark.Base
             A = (byte)(vec.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(V4l vec)
         {
             R = (byte)(vec.X);
@@ -7340,43 +7360,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public byte this[int i]
+        public unsafe byte this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    case 3:
-                        A = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (byte* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    case 3:
-                        return A;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (byte* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -8348,21 +8342,25 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(ushort r, ushort g, ushort b, ushort a)
         {
             R = r; G = g; B = b; A = a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(int r, int g, int b, int a)
         {
             R = (ushort)r; G = (ushort)g; B = (ushort)b; A = (ushort)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(long r, long g, long b, long a)
         {
             R = (ushort)r; G = (ushort)g; B = (ushort)b; A = (ushort)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double r, double g, double b, double a)
         {
             R = Col.UShortFromDoubleClamped(r);
@@ -8371,41 +8369,48 @@ namespace Aardvark.Base
             A = Col.UShortFromDoubleClamped(a);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(ushort r, ushort g, ushort b)
         {
             R = r; G = g; B = b;
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(int r, int g, int b)
         {
             R = (ushort)r; G = (ushort)g; B = (ushort)b;
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(long r, long g, long b)
         {
             R = (ushort)r; G = (ushort)g; B = (ushort)b;
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double r, double g, double b)
         {
             R = Col.UShortFromDoubleClamped(r); G = Col.UShortFromDoubleClamped(g); B = Col.UShortFromDoubleClamped(b);
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(ushort gray)
         {
             R = gray; G = gray; B = gray; A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double gray)
         {
             var value = Col.UShortFromDoubleClamped(gray);
             R = value; G = value; B = value; A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3b color)
         {
             R = Col.UShortFromByte(color.R);
@@ -8414,6 +8419,7 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3b color, ushort alpha)
         {
             R = Col.UShortFromByte(color.R);
@@ -8422,6 +8428,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3us color)
         {
             R = (color.R);
@@ -8430,6 +8437,7 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3us color, ushort alpha)
         {
             R = (color.R);
@@ -8438,6 +8446,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3ui color)
         {
             R = Col.UShortFromUInt(color.R);
@@ -8446,6 +8455,7 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3ui color, ushort alpha)
         {
             R = Col.UShortFromUInt(color.R);
@@ -8454,6 +8464,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3f color)
         {
             R = Col.UShortFromFloat(color.R);
@@ -8462,6 +8473,7 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3f color, ushort alpha)
         {
             R = Col.UShortFromFloat(color.R);
@@ -8470,6 +8482,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3d color)
         {
             R = Col.UShortFromDouble(color.R);
@@ -8478,6 +8491,7 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3d color, ushort alpha)
         {
             R = Col.UShortFromDouble(color.R);
@@ -8486,6 +8500,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4b color)
         {
             R = Col.UShortFromByte(color.R);
@@ -8494,6 +8509,7 @@ namespace Aardvark.Base
             A = Col.UShortFromByte(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4us color)
         {
             R = (color.R);
@@ -8502,6 +8518,7 @@ namespace Aardvark.Base
             A = (color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4ui color)
         {
             R = Col.UShortFromUInt(color.R);
@@ -8510,6 +8527,7 @@ namespace Aardvark.Base
             A = Col.UShortFromUInt(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4f color)
         {
             R = Col.UShortFromFloat(color.R);
@@ -8518,6 +8536,7 @@ namespace Aardvark.Base
             A = Col.UShortFromFloat(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4d color)
         {
             R = Col.UShortFromDouble(color.R);
@@ -8526,6 +8545,7 @@ namespace Aardvark.Base
             A = Col.UShortFromDouble(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(V3i vec)
         {
             R = (ushort)(vec.X);
@@ -8534,6 +8554,7 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(V3i vec, ushort alpha)
         {
             R = (ushort)(vec.X);
@@ -8542,6 +8563,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(V3l vec)
         {
             R = (ushort)(vec.X);
@@ -8550,6 +8572,7 @@ namespace Aardvark.Base
             A = 65535;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(V3l vec, ushort alpha)
         {
             R = (ushort)(vec.X);
@@ -8558,6 +8581,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(V4i vec)
         {
             R = (ushort)(vec.X);
@@ -8566,6 +8590,7 @@ namespace Aardvark.Base
             A = (ushort)(vec.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(V4l vec)
         {
             R = (ushort)(vec.X);
@@ -8835,43 +8860,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public ushort this[int i]
+        public unsafe ushort this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    case 3:
-                        A = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (ushort* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    case 3:
-                        return A;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (ushort* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -9843,21 +9842,25 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(uint r, uint g, uint b, uint a)
         {
             R = r; G = g; B = b; A = a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(int r, int g, int b, int a)
         {
             R = (uint)r; G = (uint)g; B = (uint)b; A = (uint)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(long r, long g, long b, long a)
         {
             R = (uint)r; G = (uint)g; B = (uint)b; A = (uint)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double r, double g, double b, double a)
         {
             R = Col.UIntFromDoubleClamped(r);
@@ -9866,41 +9869,48 @@ namespace Aardvark.Base
             A = Col.UIntFromDoubleClamped(a);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(uint r, uint g, uint b)
         {
             R = r; G = g; B = b;
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(int r, int g, int b)
         {
             R = (uint)r; G = (uint)g; B = (uint)b;
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(long r, long g, long b)
         {
             R = (uint)r; G = (uint)g; B = (uint)b;
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double r, double g, double b)
         {
             R = Col.UIntFromDoubleClamped(r); G = Col.UIntFromDoubleClamped(g); B = Col.UIntFromDoubleClamped(b);
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(uint gray)
         {
             R = gray; G = gray; B = gray; A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double gray)
         {
             var value = Col.UIntFromDoubleClamped(gray);
             R = value; G = value; B = value; A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3b color)
         {
             R = Col.UIntFromByte(color.R);
@@ -9909,6 +9919,7 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3b color, uint alpha)
         {
             R = Col.UIntFromByte(color.R);
@@ -9917,6 +9928,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3us color)
         {
             R = Col.UIntFromUShort(color.R);
@@ -9925,6 +9937,7 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3us color, uint alpha)
         {
             R = Col.UIntFromUShort(color.R);
@@ -9933,6 +9946,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3ui color)
         {
             R = (color.R);
@@ -9941,6 +9955,7 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3ui color, uint alpha)
         {
             R = (color.R);
@@ -9949,6 +9964,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3f color)
         {
             R = Col.UIntFromFloat(color.R);
@@ -9957,6 +9973,7 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3f color, uint alpha)
         {
             R = Col.UIntFromFloat(color.R);
@@ -9965,6 +9982,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3d color)
         {
             R = Col.UIntFromDouble(color.R);
@@ -9973,6 +9991,7 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3d color, uint alpha)
         {
             R = Col.UIntFromDouble(color.R);
@@ -9981,6 +10000,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4b color)
         {
             R = Col.UIntFromByte(color.R);
@@ -9989,6 +10009,7 @@ namespace Aardvark.Base
             A = Col.UIntFromByte(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4us color)
         {
             R = Col.UIntFromUShort(color.R);
@@ -9997,6 +10018,7 @@ namespace Aardvark.Base
             A = Col.UIntFromUShort(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4ui color)
         {
             R = (color.R);
@@ -10005,6 +10027,7 @@ namespace Aardvark.Base
             A = (color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4f color)
         {
             R = Col.UIntFromFloat(color.R);
@@ -10013,6 +10036,7 @@ namespace Aardvark.Base
             A = Col.UIntFromFloat(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4d color)
         {
             R = Col.UIntFromDouble(color.R);
@@ -10021,6 +10045,7 @@ namespace Aardvark.Base
             A = Col.UIntFromDouble(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(V3l vec)
         {
             R = (uint)(vec.X);
@@ -10029,6 +10054,7 @@ namespace Aardvark.Base
             A = UInt32.MaxValue;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(V3l vec, uint alpha)
         {
             R = (uint)(vec.X);
@@ -10037,6 +10063,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(V4l vec)
         {
             R = (uint)(vec.X);
@@ -10279,43 +10306,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public uint this[int i]
+        public unsafe uint this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    case 3:
-                        A = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (uint* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    case 3:
-                        return A;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (uint* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -11264,21 +11265,25 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(float r, float g, float b, float a)
         {
             R = r; G = g; B = b; A = a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(int r, int g, int b, int a)
         {
             R = (float)r; G = (float)g; B = (float)b; A = (float)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(long r, long g, long b, long a)
         {
             R = (float)r; G = (float)g; B = (float)b; A = (float)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(double r, double g, double b, double a)
         {
             R = (float)(r);
@@ -11287,41 +11292,48 @@ namespace Aardvark.Base
             A = (float)(a);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(float r, float g, float b)
         {
             R = r; G = g; B = b;
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(int r, int g, int b)
         {
             R = (float)r; G = (float)g; B = (float)b;
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(long r, long g, long b)
         {
             R = (float)r; G = (float)g; B = (float)b;
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(double r, double g, double b)
         {
             R = (float)(r); G = (float)(g); B = (float)(b);
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(float gray)
         {
             R = gray; G = gray; B = gray; A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(double gray)
         {
             var value = (float)(gray);
             R = value; G = value; B = value; A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3b color)
         {
             R = Col.FloatFromByte(color.R);
@@ -11330,6 +11342,7 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3b color, float alpha)
         {
             R = Col.FloatFromByte(color.R);
@@ -11338,6 +11351,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3us color)
         {
             R = Col.FloatFromUShort(color.R);
@@ -11346,6 +11360,7 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3us color, float alpha)
         {
             R = Col.FloatFromUShort(color.R);
@@ -11354,6 +11369,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3ui color)
         {
             R = Col.FloatFromUInt(color.R);
@@ -11362,6 +11378,7 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3ui color, float alpha)
         {
             R = Col.FloatFromUInt(color.R);
@@ -11370,6 +11387,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3f color)
         {
             R = (color.R);
@@ -11378,6 +11396,7 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3f color, float alpha)
         {
             R = (color.R);
@@ -11386,6 +11405,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3d color)
         {
             R = Col.FloatFromDouble(color.R);
@@ -11394,6 +11414,7 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3d color, float alpha)
         {
             R = Col.FloatFromDouble(color.R);
@@ -11402,6 +11423,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4b color)
         {
             R = Col.FloatFromByte(color.R);
@@ -11410,6 +11432,7 @@ namespace Aardvark.Base
             A = Col.FloatFromByte(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4us color)
         {
             R = Col.FloatFromUShort(color.R);
@@ -11418,6 +11441,7 @@ namespace Aardvark.Base
             A = Col.FloatFromUShort(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4ui color)
         {
             R = Col.FloatFromUInt(color.R);
@@ -11426,6 +11450,7 @@ namespace Aardvark.Base
             A = Col.FloatFromUInt(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4f color)
         {
             R = (color.R);
@@ -11434,6 +11459,7 @@ namespace Aardvark.Base
             A = (color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4d color)
         {
             R = Col.FloatFromDouble(color.R);
@@ -11442,6 +11468,7 @@ namespace Aardvark.Base
             A = Col.FloatFromDouble(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(V3f vec)
         {
             R = (vec.X);
@@ -11450,6 +11477,7 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(V3f vec, float alpha)
         {
             R = (vec.X);
@@ -11458,6 +11486,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(V3d vec)
         {
             R = (float)(vec.X);
@@ -11466,6 +11495,7 @@ namespace Aardvark.Base
             A = 1.0f;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(V3d vec, float alpha)
         {
             R = (float)(vec.X);
@@ -11474,6 +11504,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(V4f vec)
         {
             R = (vec.X);
@@ -11482,6 +11513,7 @@ namespace Aardvark.Base
             A = (vec.W);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(V4d vec)
         {
             R = (float)(vec.X);
@@ -11751,43 +11783,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public float this[int i]
+        public unsafe float this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    case 3:
-                        A = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    case 3:
-                        return A;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion
@@ -12847,44 +12853,52 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(double r, double g, double b, double a)
         {
             R = r; G = g; B = b; A = a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(int r, int g, int b, int a)
         {
             R = (double)r; G = (double)g; B = (double)b; A = (double)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(long r, long g, long b, long a)
         {
             R = (double)r; G = (double)g; B = (double)b; A = (double)a;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(double r, double g, double b)
         {
             R = r; G = g; B = b;
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(int r, int g, int b)
         {
             R = (double)r; G = (double)g; B = (double)b;
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(long r, long g, long b)
         {
             R = (double)r; G = (double)g; B = (double)b;
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(double gray)
         {
             R = gray; G = gray; B = gray; A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3b color)
         {
             R = Col.DoubleFromByte(color.R);
@@ -12893,6 +12907,7 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3b color, double alpha)
         {
             R = Col.DoubleFromByte(color.R);
@@ -12901,6 +12916,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3us color)
         {
             R = Col.DoubleFromUShort(color.R);
@@ -12909,6 +12925,7 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3us color, double alpha)
         {
             R = Col.DoubleFromUShort(color.R);
@@ -12917,6 +12934,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3ui color)
         {
             R = Col.DoubleFromUInt(color.R);
@@ -12925,6 +12943,7 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3ui color, double alpha)
         {
             R = Col.DoubleFromUInt(color.R);
@@ -12933,6 +12952,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3f color)
         {
             R = Col.DoubleFromFloat(color.R);
@@ -12941,6 +12961,7 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3f color, double alpha)
         {
             R = Col.DoubleFromFloat(color.R);
@@ -12949,6 +12970,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3d color)
         {
             R = (color.R);
@@ -12957,6 +12979,7 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3d color, double alpha)
         {
             R = (color.R);
@@ -12965,6 +12988,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4b color)
         {
             R = Col.DoubleFromByte(color.R);
@@ -12973,6 +12997,7 @@ namespace Aardvark.Base
             A = Col.DoubleFromByte(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4us color)
         {
             R = Col.DoubleFromUShort(color.R);
@@ -12981,6 +13006,7 @@ namespace Aardvark.Base
             A = Col.DoubleFromUShort(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4ui color)
         {
             R = Col.DoubleFromUInt(color.R);
@@ -12989,6 +13015,7 @@ namespace Aardvark.Base
             A = Col.DoubleFromUInt(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4f color)
         {
             R = Col.DoubleFromFloat(color.R);
@@ -12997,6 +13024,7 @@ namespace Aardvark.Base
             A = Col.DoubleFromFloat(color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4d color)
         {
             R = (color.R);
@@ -13005,6 +13033,7 @@ namespace Aardvark.Base
             A = (color.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(V3d vec)
         {
             R = (vec.X);
@@ -13013,6 +13042,7 @@ namespace Aardvark.Base
             A = 1.0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(V3d vec, double alpha)
         {
             R = (vec.X);
@@ -13021,6 +13051,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(V4d vec)
         {
             R = (vec.X);
@@ -13263,43 +13294,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public double this[int i]
+        public unsafe double this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0:
-                        R = value;
-                        break;
-                    case 1:
-                        G = value;
-                        break;
-                    case 2:
-                        B = value;
-                        break;
-                    case 3:
-                        A = value;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &R) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0:
-                        return R;
-                    case 1:
-                        return G;
-                    case 2:
-                        return B;
-                    case 3:
-                        return A;
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &R) { return ptr[i]; }
             }
         }
         #endregion

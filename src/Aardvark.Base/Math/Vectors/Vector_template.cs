@@ -69,6 +69,7 @@ namespace Aardvark.Base
     //#     var mtype = Meta.MatTypeOf(d, d, ft).Name;
     //#     var fields = vt.Fields;
     //#     var args = fields.ToLower();
+    //#     var getptr = "&" + fields[0];
     #region __vtype__
 
     [DataContract]
@@ -473,21 +474,18 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Gets or sets element with given index.
-        /// An IndexOutOfRangeException is thrown for invalid index values.
         /// </summary>
-        public __ftype__ this[int index]
+        public unsafe __ftype__ this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                /*# fields.ForEach((f, i) => { */if (index == __i__) return __f__;
-                /*# }, el); */else throw new IndexOutOfRangeException();
+                fixed (__ftype__* ptr = __getptr__) { return ptr[index]; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                /*# fields.ForEach((f, i) => { */if (index == __i__) __f__ = value;
-                /*# }, el); */else throw new IndexOutOfRangeException();
+                fixed (__ftype__* ptr = __getptr__) { ptr[index] = value; }
             }
         }
 

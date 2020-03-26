@@ -784,71 +784,31 @@ namespace Aardvark.Base
             get => new V2i(M01, M10);
         }
 
-        public int this[int index]
+        public unsafe int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M10;
-                    case 3: return M11;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M10 = value; return;
-                    case 3: M11 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public int this[int row, int column]
+        public unsafe int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[row * 2 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[row * 2 + column] = value; }
             }
         }
 
@@ -2072,22 +2032,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2i Row(this M22i m, int index)
+        public unsafe static V2i Row(this M22i m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V2i(ptr[index * 2], ptr[index * 2 + 1]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2i Column(this M22i m, int index)
+        public unsafe static V2i Column(this M22i m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V2i(ptr[index], ptr[index + 2]);
         }
 
         /// <summary>
@@ -2908,71 +2866,31 @@ namespace Aardvark.Base
             get => new V2l(M01, M10);
         }
 
-        public long this[int index]
+        public unsafe long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M10;
-                    case 3: return M11;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M10 = value; return;
-                    case 3: M11 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public long this[int row, int column]
+        public unsafe long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[row * 2 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[row * 2 + column] = value; }
             }
         }
 
@@ -4084,22 +4002,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2l Row(this M22l m, int index)
+        public unsafe static V2l Row(this M22l m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V2l(ptr[index * 2], ptr[index * 2 + 1]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2l Column(this M22l m, int index)
+        public unsafe static V2l Column(this M22l m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V2l(ptr[index], ptr[index + 2]);
         }
 
         /// <summary>
@@ -4963,71 +4879,31 @@ namespace Aardvark.Base
             get => new V2f(M01, M10);
         }
 
-        public float this[int index]
+        public unsafe float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M10;
-                    case 3: return M11;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M10 = value; return;
-                    case 3: M11 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public float this[int row, int column]
+        public unsafe float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[row * 2 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[row * 2 + column] = value; }
             }
         }
 
@@ -6209,22 +6085,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f Row(this M22f m, int index)
+        public unsafe static V2f Row(this M22f m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V2f(ptr[index * 2], ptr[index * 2 + 1]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f Column(this M22f m, int index)
+        public unsafe static V2f Column(this M22f m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V2f(ptr[index], ptr[index + 2]);
         }
 
         /// <summary>
@@ -7237,71 +7111,31 @@ namespace Aardvark.Base
             get => new V2d(M01, M10);
         }
 
-        public double this[int index]
+        public unsafe double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M10;
-                    case 3: return M11;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M10 = value; return;
-                    case 3: M11 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public double this[int row, int column]
+        public unsafe double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[row * 2 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[row * 2 + column] = value; }
             }
         }
 
@@ -8371,22 +8205,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d Row(this M22d m, int index)
+        public unsafe static V2d Row(this M22d m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V2d(ptr[index * 2], ptr[index * 2 + 1]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d Column(this M22d m, int index)
+        public unsafe static V2d Column(this M22d m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V2d(ptr[index], ptr[index + 2]);
         }
 
         /// <summary>
@@ -9376,79 +9208,31 @@ namespace Aardvark.Base
             get => new V2i(M00, M11);
         }
 
-        public int this[int index]
+        public unsafe int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M10;
-                    case 4: return M11;
-                    case 5: return M12;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M10 = value; return;
-                    case 4: M11 = value; return;
-                    case 5: M12 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public int this[int row, int column]
+        public unsafe int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[row * 3 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[row * 3 + column] = value; }
             }
         }
 
@@ -10628,23 +10412,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3i Row(this M23i m, int index)
+        public unsafe static V3i Row(this M23i m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V3i(ptr[index * 3], ptr[index * 3 + 1], ptr[index * 3 + 2]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2i Column(this M23i m, int index)
+        public unsafe static V2i Column(this M23i m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V2i(ptr[index], ptr[index + 3]);
         }
 
         #endregion
@@ -11461,79 +11242,31 @@ namespace Aardvark.Base
             get => new V2l(M00, M11);
         }
 
-        public long this[int index]
+        public unsafe long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M10;
-                    case 4: return M11;
-                    case 5: return M12;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M10 = value; return;
-                    case 4: M11 = value; return;
-                    case 5: M12 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public long this[int row, int column]
+        public unsafe long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[row * 3 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[row * 3 + column] = value; }
             }
         }
 
@@ -12601,23 +12334,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3l Row(this M23l m, int index)
+        public unsafe static V3l Row(this M23l m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V3l(ptr[index * 3], ptr[index * 3 + 1], ptr[index * 3 + 2]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2l Column(this M23l m, int index)
+        public unsafe static V2l Column(this M23l m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V2l(ptr[index], ptr[index + 3]);
         }
 
         #endregion
@@ -13477,79 +13207,31 @@ namespace Aardvark.Base
             get => new V2f(M00, M11);
         }
 
-        public float this[int index]
+        public unsafe float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M10;
-                    case 4: return M11;
-                    case 5: return M12;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M10 = value; return;
-                    case 4: M11 = value; return;
-                    case 5: M12 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public float this[int row, int column]
+        public unsafe float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[row * 3 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[row * 3 + column] = value; }
             }
         }
 
@@ -14649,23 +14331,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f Row(this M23f m, int index)
+        public unsafe static V3f Row(this M23f m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V3f(ptr[index * 3], ptr[index * 3 + 1], ptr[index * 3 + 2]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f Column(this M23f m, int index)
+        public unsafe static V2f Column(this M23f m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V2f(ptr[index], ptr[index + 3]);
         }
 
         #endregion
@@ -15557,79 +15236,31 @@ namespace Aardvark.Base
             get => new V2d(M00, M11);
         }
 
-        public double this[int index]
+        public unsafe double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M10;
-                    case 4: return M11;
-                    case 5: return M12;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M10 = value; return;
-                    case 4: M11 = value; return;
-                    case 5: M12 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public double this[int row, int column]
+        public unsafe double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[row * 3 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[row * 3 + column] = value; }
             }
         }
 
@@ -16617,23 +16248,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d Row(this M23d m, int index)
+        public unsafe static V3d Row(this M23d m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V3d(ptr[index * 3], ptr[index * 3 + 1], ptr[index * 3 + 2]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d Column(this M23d m, int index)
+        public unsafe static V2d Column(this M23d m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V2d(ptr[index], ptr[index + 3]);
         }
 
         #endregion
@@ -17721,99 +17349,31 @@ namespace Aardvark.Base
             get => new V3i(M02, M11, M20);
         }
 
-        public int this[int index]
+        public unsafe int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M10;
-                    case 4: return M11;
-                    case 5: return M12;
-                    case 6: return M20;
-                    case 7: return M21;
-                    case 8: return M22;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M10 = value; return;
-                    case 4: M11 = value; return;
-                    case 5: M12 = value; return;
-                    case 6: M20 = value; return;
-                    case 7: M21 = value; return;
-                    case 8: M22 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public int this[int row, int column]
+        public unsafe int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[row * 3 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[row * 3 + column] = value; }
             }
         }
 
@@ -19346,24 +18906,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3i Row(this M33i m, int index)
+        public unsafe static V3i Row(this M33i m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V3i(ptr[index * 3], ptr[index * 3 + 1], ptr[index * 3 + 2]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3i Column(this M33i m, int index)
+        public unsafe static V3i Column(this M33i m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V3i(ptr[index], ptr[index + 3], ptr[index + 6]);
         }
 
         /// <summary>
@@ -20445,99 +20001,31 @@ namespace Aardvark.Base
             get => new V3l(M02, M11, M20);
         }
 
-        public long this[int index]
+        public unsafe long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M10;
-                    case 4: return M11;
-                    case 5: return M12;
-                    case 6: return M20;
-                    case 7: return M21;
-                    case 8: return M22;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M10 = value; return;
-                    case 4: M11 = value; return;
-                    case 5: M12 = value; return;
-                    case 6: M20 = value; return;
-                    case 7: M21 = value; return;
-                    case 8: M22 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public long this[int row, int column]
+        public unsafe long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[row * 3 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[row * 3 + column] = value; }
             }
         }
 
@@ -21944,24 +21432,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3l Row(this M33l m, int index)
+        public unsafe static V3l Row(this M33l m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V3l(ptr[index * 3], ptr[index * 3 + 1], ptr[index * 3 + 2]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3l Column(this M33l m, int index)
+        public unsafe static V3l Column(this M33l m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V3l(ptr[index], ptr[index + 3], ptr[index + 6]);
         }
 
         /// <summary>
@@ -23259,99 +22743,31 @@ namespace Aardvark.Base
             get => new V3f(M02, M11, M20);
         }
 
-        public float this[int index]
+        public unsafe float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M10;
-                    case 4: return M11;
-                    case 5: return M12;
-                    case 6: return M20;
-                    case 7: return M21;
-                    case 8: return M22;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M10 = value; return;
-                    case 4: M11 = value; return;
-                    case 5: M12 = value; return;
-                    case 6: M20 = value; return;
-                    case 7: M21 = value; return;
-                    case 8: M22 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public float this[int row, int column]
+        public unsafe float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[row * 3 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[row * 3 + column] = value; }
             }
         }
 
@@ -24817,24 +24233,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f Row(this M33f m, int index)
+        public unsafe static V3f Row(this M33f m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V3f(ptr[index * 3], ptr[index * 3 + 1], ptr[index * 3 + 2]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f Column(this M33f m, int index)
+        public unsafe static V3f Column(this M33f m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V3f(ptr[index], ptr[index + 3], ptr[index + 6]);
         }
 
         /// <summary>
@@ -26290,99 +25702,31 @@ namespace Aardvark.Base
             get => new V3d(M02, M11, M20);
         }
 
-        public double this[int index]
+        public unsafe double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M10;
-                    case 4: return M11;
-                    case 5: return M12;
-                    case 6: return M20;
-                    case 7: return M21;
-                    case 8: return M22;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M10 = value; return;
-                    case 4: M11 = value; return;
-                    case 5: M12 = value; return;
-                    case 6: M20 = value; return;
-                    case 7: M21 = value; return;
-                    case 8: M22 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public double this[int row, int column]
+        public unsafe double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[row * 3 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[row * 3 + column] = value; }
             }
         }
 
@@ -27722,24 +27066,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d Row(this M33d m, int index)
+        public unsafe static V3d Row(this M33d m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V3d(ptr[index * 3], ptr[index * 3 + 1], ptr[index * 3 + 2]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d Column(this M33d m, int index)
+        public unsafe static V3d Column(this M33d m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V3d(ptr[index], ptr[index + 3], ptr[index + 6]);
         }
 
         /// <summary>
@@ -28973,111 +28313,31 @@ namespace Aardvark.Base
             get => new V3i(M00, M11, M22);
         }
 
-        public int this[int index]
+        public unsafe int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M03;
-                    case 4: return M10;
-                    case 5: return M11;
-                    case 6: return M12;
-                    case 7: return M13;
-                    case 8: return M20;
-                    case 9: return M21;
-                    case 10: return M22;
-                    case 11: return M23;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M03 = value; return;
-                    case 4: M10 = value; return;
-                    case 5: M11 = value; return;
-                    case 6: M12 = value; return;
-                    case 7: M13 = value; return;
-                    case 8: M20 = value; return;
-                    case 9: M21 = value; return;
-                    case 10: M22 = value; return;
-                    case 11: M23 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public int this[int row, int column]
+        public unsafe int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            case 3: return M03;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            case 3: return M13;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            case 3: return M23;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[row * 4 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            case 3: M03 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            case 3: M13 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            case 3: M23 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[row * 4 + column] = value; }
             }
         }
 
@@ -30465,25 +29725,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4i Row(this M34i m, int index)
+        public unsafe static V4i Row(this M34i m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V4i(ptr[index * 4], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3i Column(this M34i m, int index)
+        public unsafe static V3i Column(this M34i m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else if (index == 3) return m.C3;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V3i(ptr[index], ptr[index + 4], ptr[index + 8]);
         }
 
         #endregion
@@ -31533,111 +30788,31 @@ namespace Aardvark.Base
             get => new V3l(M00, M11, M22);
         }
 
-        public long this[int index]
+        public unsafe long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M03;
-                    case 4: return M10;
-                    case 5: return M11;
-                    case 6: return M12;
-                    case 7: return M13;
-                    case 8: return M20;
-                    case 9: return M21;
-                    case 10: return M22;
-                    case 11: return M23;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M03 = value; return;
-                    case 4: M10 = value; return;
-                    case 5: M11 = value; return;
-                    case 6: M12 = value; return;
-                    case 7: M13 = value; return;
-                    case 8: M20 = value; return;
-                    case 9: M21 = value; return;
-                    case 10: M22 = value; return;
-                    case 11: M23 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public long this[int row, int column]
+        public unsafe long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            case 3: return M03;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            case 3: return M13;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            case 3: return M23;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[row * 4 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            case 3: M03 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            case 3: M13 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            case 3: M23 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[row * 4 + column] = value; }
             }
         }
 
@@ -32899,25 +32074,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4l Row(this M34l m, int index)
+        public unsafe static V4l Row(this M34l m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V4l(ptr[index * 4], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3l Column(this M34l m, int index)
+        public unsafe static V3l Column(this M34l m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else if (index == 3) return m.C3;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V3l(ptr[index], ptr[index + 4], ptr[index + 8]);
         }
 
         #endregion
@@ -34135,111 +33305,31 @@ namespace Aardvark.Base
             get => new V3f(M00, M11, M22);
         }
 
-        public float this[int index]
+        public unsafe float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M03;
-                    case 4: return M10;
-                    case 5: return M11;
-                    case 6: return M12;
-                    case 7: return M13;
-                    case 8: return M20;
-                    case 9: return M21;
-                    case 10: return M22;
-                    case 11: return M23;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M03 = value; return;
-                    case 4: M10 = value; return;
-                    case 5: M11 = value; return;
-                    case 6: M12 = value; return;
-                    case 7: M13 = value; return;
-                    case 8: M20 = value; return;
-                    case 9: M21 = value; return;
-                    case 10: M22 = value; return;
-                    case 11: M23 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public float this[int row, int column]
+        public unsafe float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            case 3: return M03;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            case 3: return M13;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            case 3: return M23;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[row * 4 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            case 3: M03 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            case 3: M13 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            case 3: M23 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[row * 4 + column] = value; }
             }
         }
 
@@ -35548,25 +34638,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4f Row(this M34f m, int index)
+        public unsafe static V4f Row(this M34f m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V4f(ptr[index * 4], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3f Column(this M34f m, int index)
+        public unsafe static V3f Column(this M34f m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else if (index == 3) return m.C3;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V3f(ptr[index], ptr[index + 4], ptr[index + 8]);
         }
 
         #endregion
@@ -36816,111 +35901,31 @@ namespace Aardvark.Base
             get => new V3d(M00, M11, M22);
         }
 
-        public double this[int index]
+        public unsafe double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M03;
-                    case 4: return M10;
-                    case 5: return M11;
-                    case 6: return M12;
-                    case 7: return M13;
-                    case 8: return M20;
-                    case 9: return M21;
-                    case 10: return M22;
-                    case 11: return M23;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M03 = value; return;
-                    case 4: M10 = value; return;
-                    case 5: M11 = value; return;
-                    case 6: M12 = value; return;
-                    case 7: M13 = value; return;
-                    case 8: M20 = value; return;
-                    case 9: M21 = value; return;
-                    case 10: M22 = value; return;
-                    case 11: M23 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public double this[int row, int column]
+        public unsafe double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            case 3: return M03;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            case 3: return M13;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            case 3: return M23;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[row * 4 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            case 3: M03 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            case 3: M13 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            case 3: M23 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[row * 4 + column] = value; }
             }
         }
 
@@ -38103,25 +37108,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4d Row(this M34d m, int index)
+        public unsafe static V4d Row(this M34d m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V4d(ptr[index * 4], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V3d Column(this M34d m, int index)
+        public unsafe static V3d Column(this M34d m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else if (index == 3) return m.C3;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V3d(ptr[index], ptr[index + 4], ptr[index + 8]);
         }
 
         #endregion
@@ -39384,135 +38384,31 @@ namespace Aardvark.Base
             get => new V4i(M03, M12, M21, M30);
         }
 
-        public int this[int index]
+        public unsafe int this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M03;
-                    case 4: return M10;
-                    case 5: return M11;
-                    case 6: return M12;
-                    case 7: return M13;
-                    case 8: return M20;
-                    case 9: return M21;
-                    case 10: return M22;
-                    case 11: return M23;
-                    case 12: return M30;
-                    case 13: return M31;
-                    case 14: return M32;
-                    case 15: return M33;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M03 = value; return;
-                    case 4: M10 = value; return;
-                    case 5: M11 = value; return;
-                    case 6: M12 = value; return;
-                    case 7: M13 = value; return;
-                    case 8: M20 = value; return;
-                    case 9: M21 = value; return;
-                    case 10: M22 = value; return;
-                    case 11: M23 = value; return;
-                    case 12: M30 = value; return;
-                    case 13: M31 = value; return;
-                    case 14: M32 = value; return;
-                    case 15: M33 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public int this[int row, int column]
+        public unsafe int this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            case 3: return M03;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            case 3: return M13;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            case 3: return M23;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 3: switch (column)
-                        {
-                            case 0: return M30;
-                            case 1: return M31;
-                            case 2: return M32;
-                            case 3: return M33;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { return ptr[row * 4 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            case 3: M03 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            case 3: M13 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            case 3: M23 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 3: switch (column)
-                        {
-                            case 0: M30 = value; return;
-                            case 1: M31 = value; return;
-                            case 2: M32 = value; return;
-                            case 3: M33 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (int* ptr = &M00) { ptr[row * 4 + column] = value; }
             }
         }
 
@@ -41280,26 +40176,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4i Row(this M44i m, int index)
+        public unsafe static V4i Row(this M44i m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else if (index == 3) return m.R3;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V4i(ptr[index * 4], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4i Column(this M44i m, int index)
+        public unsafe static V4i Column(this M44i m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else if (index == 3) return m.C3;
-            else throw new IndexOutOfRangeException();
+            int* ptr = &m.M00;
+            return new V4i(ptr[index], ptr[index + 4], ptr[index + 8], ptr[index + 12]);
         }
 
         /// <summary>
@@ -42559,135 +41449,31 @@ namespace Aardvark.Base
             get => new V4l(M03, M12, M21, M30);
         }
 
-        public long this[int index]
+        public unsafe long this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M03;
-                    case 4: return M10;
-                    case 5: return M11;
-                    case 6: return M12;
-                    case 7: return M13;
-                    case 8: return M20;
-                    case 9: return M21;
-                    case 10: return M22;
-                    case 11: return M23;
-                    case 12: return M30;
-                    case 13: return M31;
-                    case 14: return M32;
-                    case 15: return M33;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M03 = value; return;
-                    case 4: M10 = value; return;
-                    case 5: M11 = value; return;
-                    case 6: M12 = value; return;
-                    case 7: M13 = value; return;
-                    case 8: M20 = value; return;
-                    case 9: M21 = value; return;
-                    case 10: M22 = value; return;
-                    case 11: M23 = value; return;
-                    case 12: M30 = value; return;
-                    case 13: M31 = value; return;
-                    case 14: M32 = value; return;
-                    case 15: M33 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public long this[int row, int column]
+        public unsafe long this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            case 3: return M03;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            case 3: return M13;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            case 3: return M23;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 3: switch (column)
-                        {
-                            case 0: return M30;
-                            case 1: return M31;
-                            case 2: return M32;
-                            case 3: return M33;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { return ptr[row * 4 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            case 3: M03 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            case 3: M13 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            case 3: M23 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 3: switch (column)
-                        {
-                            case 0: M30 = value; return;
-                            case 1: M31 = value; return;
-                            case 2: M32 = value; return;
-                            case 3: M33 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (long* ptr = &M00) { ptr[row * 4 + column] = value; }
             }
         }
 
@@ -44315,26 +43101,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4l Row(this M44l m, int index)
+        public unsafe static V4l Row(this M44l m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else if (index == 3) return m.R3;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V4l(ptr[index * 4], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4l Column(this M44l m, int index)
+        public unsafe static V4l Column(this M44l m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else if (index == 3) return m.C3;
-            else throw new IndexOutOfRangeException();
+            long* ptr = &m.M00;
+            return new V4l(ptr[index], ptr[index + 4], ptr[index + 8], ptr[index + 12]);
         }
 
         /// <summary>
@@ -45774,135 +44554,31 @@ namespace Aardvark.Base
             get => new V4f(M03, M12, M21, M30);
         }
 
-        public float this[int index]
+        public unsafe float this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M03;
-                    case 4: return M10;
-                    case 5: return M11;
-                    case 6: return M12;
-                    case 7: return M13;
-                    case 8: return M20;
-                    case 9: return M21;
-                    case 10: return M22;
-                    case 11: return M23;
-                    case 12: return M30;
-                    case 13: return M31;
-                    case 14: return M32;
-                    case 15: return M33;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M03 = value; return;
-                    case 4: M10 = value; return;
-                    case 5: M11 = value; return;
-                    case 6: M12 = value; return;
-                    case 7: M13 = value; return;
-                    case 8: M20 = value; return;
-                    case 9: M21 = value; return;
-                    case 10: M22 = value; return;
-                    case 11: M23 = value; return;
-                    case 12: M30 = value; return;
-                    case 13: M31 = value; return;
-                    case 14: M32 = value; return;
-                    case 15: M33 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public float this[int row, int column]
+        public unsafe float this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            case 3: return M03;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            case 3: return M13;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            case 3: return M23;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 3: switch (column)
-                        {
-                            case 0: return M30;
-                            case 1: return M31;
-                            case 2: return M32;
-                            case 3: return M33;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { return ptr[row * 4 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            case 3: M03 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            case 3: M13 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            case 3: M23 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 3: switch (column)
-                        {
-                            case 0: M30 = value; return;
-                            case 1: M31 = value; return;
-                            case 2: M32 = value; return;
-                            case 3: M33 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &M00) { ptr[row * 4 + column] = value; }
             }
         }
 
@@ -47611,26 +46287,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4f Row(this M44f m, int index)
+        public unsafe static V4f Row(this M44f m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else if (index == 3) return m.R3;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V4f(ptr[index * 4], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4f Column(this M44f m, int index)
+        public unsafe static V4f Column(this M44f m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else if (index == 3) return m.C3;
-            else throw new IndexOutOfRangeException();
+            float* ptr = &m.M00;
+            return new V4f(ptr[index], ptr[index + 4], ptr[index + 8], ptr[index + 12]);
         }
 
         /// <summary>
@@ -49241,135 +47911,31 @@ namespace Aardvark.Base
             get => new V4d(M03, M12, M21, M30);
         }
 
-        public double this[int index]
+        public unsafe double this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    case 0: return M00;
-                    case 1: return M01;
-                    case 2: return M02;
-                    case 3: return M03;
-                    case 4: return M10;
-                    case 5: return M11;
-                    case 6: return M12;
-                    case 7: return M13;
-                    case 8: return M20;
-                    case 9: return M21;
-                    case 10: return M22;
-                    case 11: return M23;
-                    case 12: return M30;
-                    case 13: return M31;
-                    case 14: return M32;
-                    case 15: return M33;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    case 0: M00 = value; return;
-                    case 1: M01 = value; return;
-                    case 2: M02 = value; return;
-                    case 3: M03 = value; return;
-                    case 4: M10 = value; return;
-                    case 5: M11 = value; return;
-                    case 6: M12 = value; return;
-                    case 7: M13 = value; return;
-                    case 8: M20 = value; return;
-                    case 9: M21 = value; return;
-                    case 10: M22 = value; return;
-                    case 11: M23 = value; return;
-                    case 12: M30 = value; return;
-                    case 13: M31 = value; return;
-                    case 14: M32 = value; return;
-                    case 15: M33 = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[index] = value; }
             }
         }
 
-        public double this[int row, int column]
+        public unsafe double this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: return M00;
-                            case 1: return M01;
-                            case 2: return M02;
-                            case 3: return M03;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: return M10;
-                            case 1: return M11;
-                            case 2: return M12;
-                            case 3: return M13;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: return M20;
-                            case 1: return M21;
-                            case 2: return M22;
-                            case 3: return M23;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 3: switch (column)
-                        {
-                            case 0: return M30;
-                            case 1: return M31;
-                            case 2: return M32;
-                            case 3: return M33;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { return ptr[row * 4 + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    case 0: switch (column)
-                        {
-                            case 0: M00 = value; return;
-                            case 1: M01 = value; return;
-                            case 2: M02 = value; return;
-                            case 3: M03 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 1: switch (column)
-                        {
-                            case 0: M10 = value; return;
-                            case 1: M11 = value; return;
-                            case 2: M12 = value; return;
-                            case 3: M13 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 2: switch (column)
-                        {
-                            case 0: M20 = value; return;
-                            case 1: M21 = value; return;
-                            case 2: M22 = value; return;
-                            case 3: M23 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    case 3: switch (column)
-                        {
-                            case 0: M30 = value; return;
-                            case 1: M31 = value; return;
-                            case 2: M32 = value; return;
-                            case 3: M33 = value; return;
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &M00) { ptr[row * 4 + column] = value; }
             }
         }
 
@@ -50963,26 +49529,20 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4d Row(this M44d m, int index)
+        public unsafe static V4d Row(this M44d m, int index)
         {
-            if (index == 0) return m.R0;
-            else if (index == 1) return m.R1;
-            else if (index == 2) return m.R2;
-            else if (index == 3) return m.R3;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V4d(ptr[index * 4], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V4d Column(this M44d m, int index)
+        public unsafe static V4d Column(this M44d m, int index)
         {
-            if (index == 0) return m.C0;
-            else if (index == 1) return m.C1;
-            else if (index == 2) return m.C2;
-            else if (index == 3) return m.C3;
-            else throw new IndexOutOfRangeException();
+            double* ptr = &m.M00;
+            return new V4d(ptr[index], ptr[index + 4], ptr[index + 8], ptr[index + 12]);
         }
 
         /// <summary>

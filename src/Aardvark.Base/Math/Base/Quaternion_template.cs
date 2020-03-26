@@ -26,6 +26,7 @@ namespace Aardvark.Base
     //#   var v3t = "V3" + tc;
     //#   var v4t = "V4" + tc;
     //#   var m44t = "M44" + tc;
+    //#   var getptr = "&" + qfields[0];
     #region __type__
 
     /// <summary>
@@ -437,25 +438,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets or sets the <paramref name="i"/>-th component of the <see cref="__type__"/> with components (w, (x, y, z)).
         /// </summary>
-        public __ftype__ this[int i]
+        public unsafe __ftype__ this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    /*# qfields.ForEach((f, i) => {*/case __i__: return __f__;
-                    /*# });*/default: throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { return ptr[i]; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    /*# qfields.ForEach((f, i) => {*/case __i__: __f__ = value; return;
-                    /*# });*/default: throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { ptr[i] = value; }
             }
         }
 

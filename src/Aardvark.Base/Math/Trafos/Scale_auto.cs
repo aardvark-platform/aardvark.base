@@ -504,25 +504,10 @@ namespace Aardvark.Base
         public float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                switch (index)
-                {
-                    case 0: return V.X;
-                    case 1: return V.Y;
-                    default: throw new IndexOutOfRangeException();
-                }
-            }
+            get => V[index];
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                switch (index)
-                {
-                    case 0: V.X = value; return;
-                    case 1: V.Y = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
-            }
+            set => V[index] = value;
         }
 
         #endregion
@@ -1172,27 +1157,10 @@ namespace Aardvark.Base
         public float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                switch (index)
-                {
-                    case 0: return V.X;
-                    case 1: return V.Y;
-                    case 2: return V.Z;
-                    default: throw new IndexOutOfRangeException();
-                }
-            }
+            get => V[index];
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                switch (index)
-                {
-                    case 0: V.X = value; return;
-                    case 1: V.Y = value; return;
-                    case 2: V.Z = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
-            }
+            set => V[index] = value;
         }
 
         #endregion
@@ -1803,25 +1771,10 @@ namespace Aardvark.Base
         public double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                switch (index)
-                {
-                    case 0: return V.X;
-                    case 1: return V.Y;
-                    default: throw new IndexOutOfRangeException();
-                }
-            }
+            get => V[index];
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                switch (index)
-                {
-                    case 0: V.X = value; return;
-                    case 1: V.Y = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
-            }
+            set => V[index] = value;
         }
 
         #endregion
@@ -2471,27 +2424,10 @@ namespace Aardvark.Base
         public double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                switch (index)
-                {
-                    case 0: return V.X;
-                    case 1: return V.Y;
-                    case 2: return V.Z;
-                    default: throw new IndexOutOfRangeException();
-                }
-            }
+            get => V[index];
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                switch (index)
-                {
-                    case 0: V.X = value; return;
-                    case 1: V.Y = value; return;
-                    case 2: V.Z = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
-            }
+            set => V[index] = value;
         }
 
         #endregion

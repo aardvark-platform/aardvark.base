@@ -45,6 +45,7 @@ namespace Aardvark.Base
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
     //#   var assertNorm = "Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, " + assertEps + "))";
     //#   var eps = isDouble ? "1e-12" : "1e-5f";
+    //#   var getptr = "&" + qfields[0];
     #region __type__
 
     /// <summary>
@@ -879,25 +880,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets or sets the <paramref name="i"/>-th component of the <see cref="__type__"/> unit quaternion with components (W, (X, Y, Z)).
         /// </summary>
-        public __ftype__ this[int i]
+        public unsafe __ftype__ this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    /*# qfields.ForEach((f, i) => {*/case __i__: return __f__;
-                    /*# });*/default: throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { return ptr[i]; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    /*# qfields.ForEach((f, i) => {*/case __i__: __f__ = value; return;
-                    /*# });*/default: throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { ptr[i] = value; }
             }
         }
 

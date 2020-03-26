@@ -544,23 +544,10 @@ namespace Aardvark.Base
         public __ftype__ this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                switch (index)
-                {
-                    /*# dfields.ForEach((f, i) => {*/case __i__: return V.__f__;
-                    /*# });*/default: throw new IndexOutOfRangeException();
-                }
-            }
+            get => V[index];
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set
-            {
-                switch (index)
-                {
-                    /*# dfields.ForEach((f, i) => {*/case __i__: V.__f__ = value; return;
-                    /*# });*/default: throw new IndexOutOfRangeException();
-                }
-            }
+            set => V[index] = value;
         }
 
         #endregion

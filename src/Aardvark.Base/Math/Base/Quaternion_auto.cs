@@ -424,31 +424,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets or sets the <paramref name="i"/>-th component of the <see cref="QuaternionF"/> with components (w, (x, y, z)).
         /// </summary>
-        public float this[int i]
+        public unsafe float this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0: return W;
-                    case 1: return X;
-                    case 2: return Y;
-                    case 3: return Z;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &W) { return ptr[i]; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0: W = value; return;
-                    case 1: X = value; return;
-                    case 2: Y = value; return;
-                    case 3: Z = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (float* ptr = &W) { ptr[i] = value; }
             }
         }
 
@@ -1017,31 +1003,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets or sets the <paramref name="i"/>-th component of the <see cref="QuaternionD"/> with components (w, (x, y, z)).
         /// </summary>
-        public double this[int i]
+        public unsafe double this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {
-                    case 0: return W;
-                    case 1: return X;
-                    case 2: return Y;
-                    case 3: return Z;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &W) { return ptr[i]; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {
-                    case 0: W = value; return;
-                    case 1: X = value; return;
-                    case 2: Y = value; return;
-                    case 3: Z = value; return;
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (double* ptr = &W) { ptr[i] = value; }
             }
         }
 

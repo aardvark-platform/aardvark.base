@@ -83,6 +83,7 @@ namespace Aardvark.Base
     //#     var ft_to_b = fttobmap[ft];
     //#     var fabs_p = isReal ? "Fun.Abs(" : "";
     //#     var q_fabs = isReal ? ")" : "";
+    //#     var getptr = "&" + fields[0];
     #region __type__
 
     [Serializable]
@@ -90,22 +91,26 @@ namespace Aardvark.Base
     {
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# args.ForEach(a => { */__ftype__ __a__/*# }, comma); */)
         {
             /*# fields.ForEach(args, (f,a) => { */__f__ = __a__/*# }, semicolon); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# args.ForEach(a => { */int __a__/*# }, comma); */)
         {
             /*# fields.ForEach(args, (f,a) => { */__f__ = (__ftype__)__a__/*# }, semicolon); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# args.ForEach(a => { */long __a__/*# }, comma); */)
         {
             /*# fields.ForEach(args, (f,a) => { */__f__ = (__ftype__)__a__/*# }, semicolon); */;
         }
 
         //# if (!isDouble) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# args.ForEach(a => { */double __a__/*# }, comma); */)
         {
             //# fields.ForEach(args, (f,a) => {
@@ -115,6 +120,7 @@ namespace Aardvark.Base
 
         //# } // !isDouble
         //# if (t.HasAlpha) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# cargs.ForEach(a => { */__ftype__ __a__/*# }, comma); */)
         {
             /*# channels.ForEach(args,
@@ -122,6 +128,7 @@ namespace Aardvark.Base
             A = __t.MaxValue__;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# cargs.ForEach(a => { */int __a__/*# }, comma); */)
         {
             /*# channels.ForEach(args,
@@ -129,6 +136,7 @@ namespace Aardvark.Base
             A = __t.MaxValue__;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# cargs.ForEach(a => { */long __a__/*# }, comma); */)
         {
             /*# channels.ForEach(args,
@@ -137,6 +145,7 @@ namespace Aardvark.Base
         }
 
         //# if (!isDouble) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(/*# cargs.ForEach(a => { */double __a__/*# }, comma); */)
         {
             /*# channels.ForEach(args,
@@ -146,6 +155,7 @@ namespace Aardvark.Base
 
         //# } // !isDouble
         //# } // t.HasAlpha
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__ gray)
         {
             /*# channels.ForEach(
@@ -154,6 +164,7 @@ namespace Aardvark.Base
         }
 
         //# if (!isDouble) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(double gray)
         {
             var value = __d_to_ft__(gray);
@@ -167,6 +178,7 @@ namespace Aardvark.Base
         //#     var convert = t.FieldType != t1.FieldType
         //#         ? "Col." + t.FieldType.Caps + "From" + t1.FieldType.Caps
         //#         : "";
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__t1.Name__ color)
         {
             //# channels.ForEach(c => {
@@ -182,6 +194,7 @@ namespace Aardvark.Base
         }
 
         //#if (t.HasAlpha && !t1.HasAlpha) { // build constructor from Color3 with explicit alpha
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__t1.Name__ color, __ftype__ alpha)
         {
             //# channels.ForEach(Meta.VecFields, (c, vf) => {
@@ -199,6 +212,7 @@ namespace Aardvark.Base
         //#         var vt = Meta.VecTypeOf(d, vft);
         //#         vecTypes.Add(vt);
         //#         var convert = ft != vft ? "("+ ft.Name+")" : "";
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__vt.Name__ vec)
         {
             //# channels.ForEach(Meta.VecFields, (c, vf) => {
@@ -214,6 +228,7 @@ namespace Aardvark.Base
         }
 
         //#if (t.HasAlpha && d == 3) { // build constructor from Vec3 with explicit alpha
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__vt.Name__ vec, __ftype__ alpha)
         {
             //# channels.ForEach(Meta.VecFields, (c, vf) => {
@@ -333,30 +348,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
-        public __ftype__ this[int i]
+        public unsafe __ftype__ this[int i]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (i)
-                {/*#
-                    fields.ForEach((f,i) => {*/
-                    case __i__:
-                        __f__ = value;
-                        break;/*# }); */
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { ptr[i] = value; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (i)
-                {/*#
-                    fields.ForEach((f,i) => {*/
-                    case __i__:
-                        return __f__;/*# }); */
-                    default:
-                        throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { return ptr[i]; }
             }
         }
         #endregion

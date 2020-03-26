@@ -60,6 +60,7 @@ namespace Aardvark.Base
     //#     var x4t = 4 + tchar;
     //#     var xyznsub1 = "XYZW".Substring(0, nsub1);
     //#     var xyzmsub1 = "XYZW".Substring(0, msub1);
+    //#     var getptr = "&M00";
     #region __nmtype__
 
     [DataContract]
@@ -747,65 +748,31 @@ namespace Aardvark.Base
         }
 
         //# }
-        public __ftype__ this[int index]
+        public unsafe __ftype__ this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    //# { int cs = 0;
-                    //# n.ForEach(r => { m.ForEach(q => {
-                    case __cs__: return M__r____q__;
-                    //# cs++; }); }); }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { return ptr[index]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    //# { int cs = 0;
-                    //# n.ForEach(r => { m.ForEach(q => {
-                    case __cs__: M__r____q__ = value; return;
-                    //# cs++; }); }); }
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { ptr[index] = value; }
             }
         }
 
-        public __ftype__ this[int row, int column]
+        public unsafe __ftype__ this[int row, int column]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (row)
-                {
-                    //# n.ForEach(r => { 
-                    case __r__: switch (column)
-                        {
-                            //# m.ForEach(c => {
-                            case __c__: return M__r____c__;
-                            //# });
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    //# });
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { return ptr[row * __m__ + column]; }
             }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (row)
-                {
-                    //# n.ForEach(r => { 
-                    case __r__: switch (column)
-                        {
-                            //# m.ForEach(c => {
-                            case __c__: M__r____c__ = value; return;
-                            //# });                       
-                            default: throw new IndexOutOfRangeException();
-                        }
-                    //# });
-                    default: throw new IndexOutOfRangeException();
-                }
+                fixed (__ftype__* ptr = __getptr__) { ptr[row * __m__ + column] = value; }
             }
         }
 
@@ -1775,20 +1742,27 @@ namespace Aardvark.Base
         /// Returns index-th row of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vmtype__ Row(this __nmtype__ m, int index)
+        public unsafe static __vmtype__ Row(this __nmtype__ m, int index)
         {
-            /*# n.ForEach(i => { */if (index == __i__) return m.R__i__;
-            /*# }, el); */else throw new IndexOutOfRangeException();
+            __ftype__* ptr = &m.M00;
+            return new __vmtype__(/*# m.ForEach(j => {
+                */ptr[index * __m__/*#
+                if (j > 0) {*/ + __j__/*#
+                }*/]/*# }, comma);*/);
         }
 
         /// <summary>
         /// Returns index-th column of the given matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vntype__ Column(this __nmtype__ m, int index)
+        public unsafe static __vntype__ Column(this __nmtype__ m, int index)
         {
-            /*# m.ForEach(i => { */if (index == __i__) return m.C__i__;
-            /*# }, el); */else throw new IndexOutOfRangeException();
+            __ftype__* ptr = &m.M00;
+            return new __vntype__(/*# n.ForEach(i => {
+                var offset = i * m;
+                */ptr[index/*#
+                if (offset > 0) {*/ + __offset__/*#
+                }*/]/*# }, comma);*/);
         }
 
         //# if( m == n) {
