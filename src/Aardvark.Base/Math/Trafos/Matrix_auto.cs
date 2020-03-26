@@ -19331,13 +19331,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 4; k++)
             {
-                var i = k / 4;
-                var j = k % 4;
+                var i = k / 2;
+                var j = k % 2;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 3 + jj];
             }
 
             return rs;
@@ -21930,13 +21929,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 4; k++)
             {
-                var i = k / 4;
-                var j = k % 4;
+                var i = k / 2;
+                var j = k % 2;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 3 + jj];
             }
 
             return rs;
@@ -24804,13 +24802,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 4; k++)
             {
-                var i = k / 4;
-                var j = k % 4;
+                var i = k / 2;
+                var j = k % 2;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 3 + jj];
             }
 
             return rs;
@@ -27710,13 +27707,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 4; k++)
             {
-                var i = k / 4;
-                var j = k % 4;
+                var i = k / 2;
+                var j = k % 2;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 3 + jj];
             }
 
             return rs;
@@ -41269,13 +41265,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 9; k++)
             {
-                var i = k / 9;
-                var j = k % 9;
+                var i = k / 3;
+                var j = k % 3;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 4 + jj];
             }
 
             return rs;
@@ -44305,13 +44300,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 9; k++)
             {
-                var i = k / 9;
-                var j = k % 9;
+                var i = k / 3;
+                var j = k % 3;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 4 + jj];
             }
 
             return rs;
@@ -47602,13 +47596,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 9; k++)
             {
-                var i = k / 9;
-                var j = k % 9;
+                var i = k / 3;
+                var j = k % 3;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 4 + jj];
             }
 
             return rs;
@@ -50955,13 +50948,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 9; k++)
             {
-                var i = k / 9;
-                var j = k % 9;
+                var i = k / 3;
+                var j = k % 3;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 4 + jj];
             }
 
             return rs;

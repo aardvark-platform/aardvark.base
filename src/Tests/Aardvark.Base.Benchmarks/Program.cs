@@ -63,9 +63,10 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<Rot3dGetEuler>();
             //BenchmarkRunner.Run<MatrixOrthogonalizeM22f>();
             //BenchmarkRunner.Run<MatrixOrthogonalizeM22d>();
-            BenchmarkRunner.Run<SwitchIf2>();
-            BenchmarkRunner.Run<SwitchIf3>();
-            BenchmarkRunner.Run<SwitchIf4>();
+            //BenchmarkRunner.Run<Indexers2>();
+            //BenchmarkRunner.Run<Indexers3>();
+            //BenchmarkRunner.Run<Indexers4>();
+            BenchmarkRunner.Run<MatrixMinor>();
         }
     }
 }

@@ -1744,7 +1744,7 @@ namespace Aardvark.Base
 
         //# if (n == m) {
         //# var rettype = (n > 2) ? "M" + nsub1 + msub1 + tchar : ftype;
-        //# var size = nsub1 * msub1;
+        //# var size = nsub1 * nsub1;
         /// <summary>
         /// Returns the given <see cref="__nmtype__"/> to a deleting the
         /// specified row and column.
@@ -1758,13 +1758,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < __size__; k++)
             {
-                var i = k / __size__;
-                var j = k % __size__;
+                var i = k / __nsub1__;
+                var j = k % __nsub1__;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * __n__ + jj];
             }
 
             return rs;
