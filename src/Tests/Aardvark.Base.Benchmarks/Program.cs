@@ -32,11 +32,11 @@ namespace Aardvark.Base.Benchmarks
             //var td = new Rot3dGetEuler();
             //td.BenchmarkNumericalStability();
 
-            var tf2 = new MatrixOrthogonalizeM22f();
-            tf2.BenchmarkNumericalStability();
+            //var tf2 = new MatrixOrthogonalizeM22f();
+            //tf2.BenchmarkNumericalStability();
 
-            var td2 = new MatrixOrthogonalizeM22d();
-            td2.BenchmarkNumericalStability();
+            //var td2 = new MatrixOrthogonalizeM22d();
+            //td2.BenchmarkNumericalStability();
 
             //var tf3 = new MatrixOrthogonalizeM33f();
             //tf3.BenchmarkNumericalStability();
@@ -61,8 +61,12 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<RotateIntoDouble>();
             //BenchmarkRunner.Run<Rot3fGetEuler>();
             //BenchmarkRunner.Run<Rot3dGetEuler>();
-            BenchmarkRunner.Run<MatrixOrthogonalizeM22f>();
-            BenchmarkRunner.Run<MatrixOrthogonalizeM22d>();
+            //BenchmarkRunner.Run<MatrixOrthogonalizeM22f>();
+            //BenchmarkRunner.Run<MatrixOrthogonalizeM22d>();
+            //BenchmarkRunner.Run<Indexers2>();
+            //BenchmarkRunner.Run<Indexers3>();
+            //BenchmarkRunner.Run<Indexers4>();
+            BenchmarkRunner.Run<MatrixMinor>();
         }
     }
 }

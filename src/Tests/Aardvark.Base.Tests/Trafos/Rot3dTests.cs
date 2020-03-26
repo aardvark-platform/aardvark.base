@@ -177,10 +177,10 @@ namespace Aardvark.Tests
                 var testd = rotd.Transform(V3d.OOI);
                 Assert.True((testd + V3d.OOI).Length < 1e-8);
 
-                //var vecf = new V3f(0, 0, -rnd.NextDouble());
-                //var rotf = new Rot3f(V3f.OOI, vecf.Normalized);
-                //var testf = rotf.TransformDir(V3f.OOI);
-                //Assert.True((testf + V3f.OOI).Length < 1e-5);
+                var vecf = new V3f(0, 0, -rnd.UniformDouble());
+                var rotf = Rot3f.RotateInto(V3f.OOI, vecf.Normalized);
+                var testf = rotf.Transform(V3f.OOI);
+                Assert.True((testf + V3f.OOI).Length < 1e-5);
             });
         }
 

@@ -43,9 +43,11 @@ namespace Aardvark.Base
     //# Action andand = () => Out(" && ");
     //# Action oror = () => Out(" || ");
     //# Action xor = () => Out(" ^ ");
+    //# Action el = () => Out("else ");
     //# string f0 = Meta.VecFields[0], f1 = Meta.VecFields[1];
     //# string f2 = Meta.VecFields[2], f3 = Meta.VecFields[3];
     //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
+    //# var allfields = Meta.VecFields;
 
     //# foreach (var vt in Meta.VecTypes) {
     //#     int d = vt.Len;
@@ -85,8 +87,9 @@ namespace Aardvark.Base
         //#     var vt1 = Meta.VecTypeOf(d, ft1);
         //#     var ftype1 = ft1.Name;
         /// <summary>
-        /// Creates a new vector from given __ftype1__ elements.
+        /// Creates a new vector from given <see cref="__ftype1__"/> elements.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(/*# args.ForEach(a => { */__ftype1__ __a__/*# }, comma); */)
         {
             //# fields.ForEach(args, (f, a) => {
@@ -95,8 +98,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a new vector by assigning the given __ftype1__ to all elements.
+        /// Creates a new vector by assigning the given <see cref="__ftype1__"/> to all elements.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(__ftype1__ v)
         {
             //# fields.ForEach(args, (f, a) => {
@@ -105,8 +109,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a new vector from given array.
+        /// Creates a new vector from the given array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(__ftype1__[] a)
         {
             //# fields.ForEach((f, i) => {
@@ -117,6 +122,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a new vector from given array, starting at specified index.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(__ftype1__[] a, int start)
         {
             //# fields.ForEach((f, i) => {
@@ -128,8 +134,9 @@ namespace Aardvark.Base
         //# var fsttype = (i > 1) ? Meta.VecTypeOf(i, ft1) : ft1;
         //# var sndtype = (j > 1) ? Meta.VecTypeOf(j, ft1) : ft1;
         /// <summary>
-        /// Creates a new vector from the given __fsttype.Name__ and __sndtype.Name__.
+        /// Creates a new vector from the given <see cref="__fsttype.Name__"/> and <see cref="__sndtype.Name__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(__fsttype.Name__ a, __sndtype.Name__ b)
         {
             //# if (i == 1) {
@@ -143,15 +150,16 @@ namespace Aardvark.Base
             __fj__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/b.__fk__;
             //# } }
         }
-        //# } }
 
+        //# } }
         //# if (d > 3) { for (int i = 0; i < 3; i++) {
         //# var t0 = (i == 0) ? Meta.VecTypeOf(2, ft1).Name : ft1.Name;
         //# var t1 = (i == 1) ? Meta.VecTypeOf(2, ft1).Name : ft1.Name;
         //# var t2 = (i == 2) ? Meta.VecTypeOf(2, ft1).Name : ft1.Name;
         /// <summary>
-        /// Creates a new vector from the given __t0__, __t1__, and __t2__.
+        /// Creates a new vector from the given <see cref="__t0__"/>, <see cref="__t1__"/>, and <see cref="__t2__"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(__t0__ a, __t1__ b, __t2__ c)
         {
             //# if (i != 0) {
@@ -170,12 +178,13 @@ namespace Aardvark.Base
             __fj__ = /*# if (ft != ft1) {*/(__ftype__)/*# }*/c.__fk__;
             //# } }
         }
-        //# } }
 
+        //# } }
         //# }
         /// <summary>
         /// Creates a vector from the results of the supplied function of the index.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(Func<int, __ftype__> index_fun)
         {
             //# fields.ForEach((f, fi) => {
@@ -183,33 +192,56 @@ namespace Aardvark.Base
             //# });
         }
 
+        /// <summary>
+        /// Creates a vector from a general vector implementing the IVector&lt;__ftype__&gt; interface.
+        /// The caller has to verify that the dimension of <paramref name="v"/> is at least __d__.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(IVector<double> v)
             : this(/*# d.ForEach(i => {*/v[__i__]/*# }, comma); */)
         { }
 
-        //# foreach (var ft1 in Meta.VecFieldTypes) {
-        //#     var vt1 = Meta.VecTypeOf(d, ft1);
-        //#     var vtype1 = vt1.Name;
-        //#     if (ft != ft1) {
+        //# foreach (var vt1 in Meta.VecTypes) {
+        //# var vtype1 = vt1.Name;
+        //# var d1 = vt1.Len;
+        //# var ft1 = vt1.FieldType;
+        //# var cast = (ft != ft1) ? "(" + ftype + ")" : "";
+        //# var missingfields = allfields.Skip(d1).Take(d - d1);
+        //# var mfcount = missingfields.Count();
+        //# var ignoredfields = allfields.Skip(d).Take(d1 - d);
+        //# var ifcount = ignoredfields.Count();
         /// <summary>
-        /// Construct a vector from another vector of type __vtype1__.
+        /// Creates a vector from another vector of type <see cref="__vtype1__"/>.
+        //# if (mfcount > 0) { var isare = (mfcount > 1) ? "are" : "is";
+        /// /*# missingfields.ForEach(f => {*/__f__/*# }, comma);*/ __isare__ set to zero.
+        //# }
+        //# if (ifcount > 0) { var isare = (ifcount > 1) ? "are" : "is";
+        /// /*# ignoredfields.ForEach(f => {*/v.__f__/*# }, comma);*/ __isare__ ignored.
+        //# }
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(__vtype1__ v)
         {
-            //# fields.ForEach(f => {
-            __f__ = (__ftype__)v.__f__;
+            //# fields.ForEach((f, i) => {
+            //# if (i < d1) {
+            __f__ = __cast__v.__f__;
+            //# } else {
+            __f__ = 0;
+            //# }
             //# });
         }
 
-        //#     }
         //# }
-
         //# if (d == 3 || d == 4) {
         //#     foreach (var t1 in Meta.ColorTypes) {
         //#         var ft1 = t1.FieldType;
         //#         if (ft.IsInteger != ft1.IsInteger) continue;
         //#         if (ft == Meta.IntType && ft1 == Meta.UIntType) continue;
         //#         var convert = ft != ft1 ? "("+ ft.Name+")" : "";
+        /// <summary>
+        /// Creates a vector from a <see cref="__t1.Name__"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype__(__t1.Name__ c)
         {
             //# t1.Channels.ForEach(fields, (c, f) => {
@@ -448,24 +480,14 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                switch (index)
-                {
-                    //# fields.ForEach((f, i) => {
-                    case __i__: return __f__;
-                    //# });
-                    default: throw new IndexOutOfRangeException();
-                }
+                /*# fields.ForEach((f, i) => { */if (index == __i__) return __f__;
+                /*# }, el); */else throw new IndexOutOfRangeException();
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                switch (index)
-                {
-                    //# fields.ForEach((f, i) => {
-                    case __i__: __f__ = value; return;
-                    //# });
-                    default: throw new IndexOutOfRangeException();
-                }
+                /*# fields.ForEach((f, i) => { */if (index == __i__) __f__ = value;
+                /*# }, el); */else throw new IndexOutOfRangeException();
             }
         }
 

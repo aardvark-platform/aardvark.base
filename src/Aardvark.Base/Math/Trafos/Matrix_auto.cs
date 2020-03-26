@@ -786,7 +786,6 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -798,7 +797,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -814,7 +812,6 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -834,7 +831,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -2078,12 +2074,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2i Row(this M22i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -2092,12 +2085,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2i Column(this M22i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -2920,7 +2910,6 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -2932,7 +2921,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -2948,7 +2936,6 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -2968,7 +2955,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -4100,12 +4086,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2l Row(this M22l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -4114,12 +4097,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2l Column(this M22l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -4985,7 +4965,6 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -4997,7 +4976,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -5013,7 +4991,6 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -5033,7 +5010,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -6235,12 +6211,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f Row(this M22f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -6249,12 +6222,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f Column(this M22f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -7269,7 +7239,6 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -7281,7 +7250,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -7297,7 +7265,6 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -7317,7 +7284,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -8407,12 +8373,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d Row(this M22d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -8421,12 +8384,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d Column(this M22d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -9418,7 +9378,6 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -9432,7 +9391,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -9450,7 +9408,6 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -9472,7 +9429,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -10674,12 +10630,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3i Row(this M23i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -10688,13 +10641,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2i Column(this M23i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else throw new IndexOutOfRangeException();
         }
 
         #endregion
@@ -11513,7 +11463,6 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -11527,7 +11476,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -11545,7 +11493,6 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -11567,7 +11514,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -12657,12 +12603,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3l Row(this M23l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -12671,13 +12614,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2l Column(this M23l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else throw new IndexOutOfRangeException();
         }
 
         #endregion
@@ -13539,7 +13479,6 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -13553,7 +13492,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -13571,7 +13509,6 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -13593,7 +13530,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -14715,12 +14651,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f Row(this M23f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -14729,13 +14662,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f Column(this M23f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else throw new IndexOutOfRangeException();
         }
 
         #endregion
@@ -15629,7 +15559,6 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -15643,7 +15572,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -15661,7 +15589,6 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -15683,7 +15610,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -16693,12 +16619,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d Row(this M23d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -16707,13 +16630,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d Column(this M23d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else throw new IndexOutOfRangeException();
         }
 
         #endregion
@@ -17803,7 +17723,6 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -17820,7 +17739,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -17841,7 +17759,6 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -17870,7 +17787,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -19415,13 +19331,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 4; k++)
             {
-                var i = k / 4;
-                var j = k % 4;
+                var i = k / 2;
+                var j = k % 2;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 3 + jj];
             }
 
             return rs;
@@ -19433,13 +19348,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3i Row(this M33i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -19448,13 +19360,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3i Column(this M33i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -20538,7 +20447,6 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -20555,7 +20463,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -20576,7 +20483,6 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -20605,7 +20511,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -22024,13 +21929,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 4; k++)
             {
-                var i = k / 4;
-                var j = k % 4;
+                var i = k / 2;
+                var j = k % 2;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 3 + jj];
             }
 
             return rs;
@@ -22042,13 +21946,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3l Row(this M33l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -22057,13 +21958,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3l Column(this M33l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -23363,7 +23261,6 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -23380,7 +23277,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -23401,7 +23297,6 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -23430,7 +23325,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -24908,13 +24802,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 4; k++)
             {
-                var i = k / 4;
-                var j = k % 4;
+                var i = k / 2;
+                var j = k % 2;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 3 + jj];
             }
 
             return rs;
@@ -24926,13 +24819,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f Row(this M33f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -24941,13 +24831,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f Column(this M33f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -26405,7 +26292,6 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -26422,7 +26308,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -26443,7 +26328,6 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -26472,7 +26356,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -27824,13 +27707,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 4; k++)
             {
-                var i = k / 4;
-                var j = k % 4;
+                var i = k / 2;
+                var j = k % 2;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 3 + jj];
             }
 
             return rs;
@@ -27842,13 +27724,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d Row(this M33d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -27857,13 +27736,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d Column(this M33d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -29099,7 +28975,6 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -29119,7 +28994,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -29143,7 +29017,6 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -29175,7 +29048,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -30595,13 +30467,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4i Row(this M34i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -30610,14 +30479,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3i Column(this M34i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                case 3: return m.C3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else if (index == 3) return m.C3;
+            else throw new IndexOutOfRangeException();
         }
 
         #endregion
@@ -31669,7 +31535,6 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -31689,7 +31554,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -31713,7 +31577,6 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -31745,7 +31608,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -33039,13 +32901,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4l Row(this M34l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -33054,14 +32913,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3l Column(this M34l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                case 3: return m.C3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else if (index == 3) return m.C3;
+            else throw new IndexOutOfRangeException();
         }
 
         #endregion
@@ -34281,7 +34137,6 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -34301,7 +34156,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -34325,7 +34179,6 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -34357,7 +34210,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -35698,13 +35550,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4f Row(this M34f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -35713,14 +35562,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f Column(this M34f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                case 3: return m.C3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else if (index == 3) return m.C3;
+            else throw new IndexOutOfRangeException();
         }
 
         #endregion
@@ -36972,7 +36818,6 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -36992,7 +36837,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -37016,7 +36860,6 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -37048,7 +36891,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -38263,13 +38105,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4d Row(this M34d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -38278,14 +38117,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d Column(this M34d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                case 3: return m.C3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else if (index == 3) return m.C3;
+            else throw new IndexOutOfRangeException();
         }
 
         #endregion
@@ -39550,7 +39386,6 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -39574,7 +39409,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -39602,7 +39436,6 @@ namespace Aardvark.Base
 
         public int this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -39642,7 +39475,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -41433,13 +41265,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 9; k++)
             {
-                var i = k / 9;
-                var j = k % 9;
+                var i = k / 3;
+                var j = k % 3;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 4 + jj];
             }
 
             return rs;
@@ -41451,14 +41282,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4i Row(this M44i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                case 3: return m.R3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else if (index == 3) return m.R3;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -41467,14 +41295,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4i Column(this M44i m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                case 3: return m.C3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else if (index == 3) return m.C3;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -42736,7 +42561,6 @@ namespace Aardvark.Base
 
         public long this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -42760,7 +42584,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -42788,7 +42611,6 @@ namespace Aardvark.Base
 
         public long this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -42828,7 +42650,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -44479,13 +44300,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 9; k++)
             {
-                var i = k / 9;
-                var j = k % 9;
+                var i = k / 3;
+                var j = k % 3;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 4 + jj];
             }
 
             return rs;
@@ -44497,14 +44317,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4l Row(this M44l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                case 3: return m.R3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else if (index == 3) return m.R3;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -44513,14 +44330,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4l Column(this M44l m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                case 3: return m.C3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else if (index == 3) return m.C3;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -45962,7 +45776,6 @@ namespace Aardvark.Base
 
         public float this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -45986,7 +45799,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -46014,7 +45826,6 @@ namespace Aardvark.Base
 
         public float this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -46054,7 +45865,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -47786,13 +47596,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 9; k++)
             {
-                var i = k / 9;
-                var j = k % 9;
+                var i = k / 3;
+                var j = k % 3;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 4 + jj];
             }
 
             return rs;
@@ -47804,14 +47613,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4f Row(this M44f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                case 3: return m.R3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else if (index == 3) return m.R3;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -47820,14 +47626,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4f Column(this M44f m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                case 3: return m.C3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else if (index == 3) return m.C3;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -49440,7 +49243,6 @@ namespace Aardvark.Base
 
         public double this[int index]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (index)
@@ -49464,7 +49266,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (index)
@@ -49492,7 +49293,6 @@ namespace Aardvark.Base
 
         public double this[int row, int column]
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 switch (row)
@@ -49532,7 +49332,6 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 switch (row)
@@ -51149,13 +50948,12 @@ namespace Aardvark.Base
 
             for (int k = 0; k < 9; k++)
             {
-                var i = k / 9;
-                var j = k % 9;
+                var i = k / 3;
+                var j = k % 3;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
 
-                if (i != row && j != column)
-                {
-                    rs[k] = m[k];
-                }
+                rs[k] = m[ii * 4 + jj];
             }
 
             return rs;
@@ -51167,14 +50965,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4d Row(this M44d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.R0;
-                case 1: return m.R1;
-                case 2: return m.R2;
-                case 3: return m.R3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.R0;
+            else if (index == 1) return m.R1;
+            else if (index == 2) return m.R2;
+            else if (index == 3) return m.R3;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -51183,14 +50978,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V4d Column(this M44d m, int index)
         {
-            switch (index)
-            {
-                case 0: return m.C0;
-                case 1: return m.C1;
-                case 2: return m.C2;
-                case 3: return m.C3;
-                default: throw new IndexOutOfRangeException();
-            }
+            if (index == 0) return m.C0;
+            else if (index == 1) return m.C1;
+            else if (index == 2) return m.C2;
+            else if (index == 3) return m.C3;
+            else throw new IndexOutOfRangeException();
         }
 
         /// <summary>
