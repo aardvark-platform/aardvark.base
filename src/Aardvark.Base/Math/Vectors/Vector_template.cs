@@ -48,6 +48,21 @@ namespace Aardvark.Base
     //# string f2 = Meta.VecFields[2], f3 = Meta.VecFields[3];
     //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
     //# var allfields = Meta.VecFields;
+    //#
+    //# Func<Meta.SimpleType, Meta.SimpleType, bool> iscolormapped =
+    //#     (t1, t2) => (t1 != t2) && !(t1.IsReal && t2.IsReal);
+    //#
+    //# Func<Meta.SimpleType, Meta.SimpleType, bool> coltovecsupported =
+    //#     (cft, vft) => (!cft.IsReal || vft.IsReal) && (cft != Meta.UIntType || vft != Meta.IntType);
+    //#
+    //# var colmaxvalmap = new Dictionary<Meta.SimpleType, string>
+    //#     {
+    //#         { Meta.ByteType, "255" },
+    //#         { Meta.UShortType, "2^16 - 1" },
+    //#         { Meta.UIntType, "2^32 - 1" },
+    //#         { Meta.FloatType, "1" },
+    //#         { Meta.DoubleType, "1" },
+    //#     };
 
     //# foreach (var vt in Meta.VecTypes) {
     //#     int d = vt.Len;
@@ -232,18 +247,22 @@ namespace Aardvark.Base
             //# });
         }
 
-        //# }
+        //# } 
         //# if (d == 3 || d == 4) {
-        //#     foreach (var t1 in Meta.ColorTypes) {
-        //#         var ft1 = t1.FieldType;
-        //#         if (ft.IsInteger != ft1.IsInteger) continue;
-        //#         if (ft == Meta.IntType && ft1 == Meta.UIntType) continue;
-        //#         var convert = ft != ft1 ? "("+ ft.Name+")" : "";
+        //#     foreach (var t1 in Meta.ColorTypes) { var ft1 = t1.FieldType;
+        //#         if (coltovecsupported(ft1, ft)) {
+        //#             var type1 = t1.Name;
+        //#             var ftype1 = ft1.Name;
+        //#             var convert = ft != ft1 ? "("+ ftype +")" : "";
+        //#             var maxval = colmaxvalmap[ft1];
         /// <summary>
-        /// Creates a vector from a <see cref="__t1.Name__"/> color.
+        /// Creates a vector from a <see cref="__type1__"/> color.
+        //# if (d == 4 && !t1.HasAlpha) {
+        /// W is set to __maxval__.
+        //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __vtype__(__t1.Name__ c)
+        public __vtype__(__type1__ c)
         {
             //# t1.Channels.ForEach(fields, (c, f) => {
             __f__ = __convert__(c.__c__);
@@ -252,13 +271,12 @@ namespace Aardvark.Base
             //#     if (t1.HasAlpha) {
             W = __convert__(c.A);
             //#     } else {
-
             W = __convert____t1.MaxValue__;
             //#     }
             //# }
         }
 
-        //#     }
+        //#     } }
         //# }
         #endregion 
 
@@ -267,35 +285,46 @@ namespace Aardvark.Base
         //# foreach (var ft1 in Meta.VecFieldTypes) {
         //#     var vt1 = Meta.VecTypeOf(d, ft1);
         //#     var ftype1 = ft1.Name;
+        //#     var vtype1 = vt1.Name;
         //#     if (ft != ft1) {
-        public static explicit operator __vtype__(__vt1.Name__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */(__ftype__)v.__f__/*# }, comma); */);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __vtype__(__vtype1__ v)
+            => new __vtype__(/*# fields.ForEach(f => { */(__ftype__)v.__f__/*# }, comma); */);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __vtype1__ To__vtype1__() => (__vtype1__)this;
 
         //#     }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __ftype1__[](__vtype__ v)
-        {
-            return new __ftype1__[] { /*# fields.ForEach(f => {
+            => new __ftype1__[] { /*# fields.ForEach(f => {
                 if (ft != ft1) { */(__ftype1__)/*# } */v.__f__/*# }, comma); */ };
-        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __vtype__(__ftype1__[] v)
-        {
-            return new __vtype__(/*# d.ForEach(fi => {
+            => new __vtype__(/*# d.ForEach(fi => {
                 if (ft != ft1) { */(__ftype__)/*# } */v[__fi__]/*# }, comma); */);
-        }
 
         //# }
         //# if (d == 3 || d == 4) {
-        //#     foreach (var t1 in Meta.ColorTypes) {
-        //#         var ft1 = t1.FieldType;
-        //#         if (ft.IsInteger != ft1.IsInteger) continue;
-        //#         if (ft == Meta.IntType && ft1 == Meta.UIntType) continue;
-        //#         var convert = ft != ft1 ? "("+ ft1.Name+")" : "";
-        public static explicit operator __t1.Name__(__vtype__ v)
-        {
-            return new __t1.Name__(/*# t1.Channels.ForEach(fields, (c, f) => { */
+        //#     foreach (var t1 in Meta.ColorTypes) { var ft1 = t1.FieldType;
+        //#         if (coltovecsupported(ft1, ft)) {
+        //#             var type1 = t1.Name;
+        //#             var ftype1 = ft1.Name;
+        //#             var convert = ft != ft1 ? "("+ ftype +")" : "";
+        //#             var maxval = colmaxvalmap[ft1];
+        /// <summary>
+        /// Converts the given vector to a <see cref="__type1__"/> color.
+        //# if (iscolormapped(ft, ft1)) {
+        /// The values are not mapped to the <see cref="__type1__"/> color range.
+        //# }
+        //# if (d == 3 && t1.HasAlpha) {
+        /// The alpha channel is set to __maxval__.
+        //# }
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type1__(__vtype__ v)
+            => new __type1__(/*# t1.Channels.ForEach(fields, (c, f) => { */
                 __convert__(v.__f__)/*# }, comma);
                 if (t1.HasAlpha) {
                     if (d == 4) { */,
@@ -304,51 +333,28 @@ namespace Aardvark.Base
                 __convert__(__t1.MaxValue__)/*#
                     }
                 } */);
-        }
 
-        //#     }
+        /// <summary>
+        /// Converts the given vector to a <see cref="__type1__"/> color.
+        //# if (iscolormapped(ft, ft1)) {
+        /// The values are not mapped to the <see cref="__type1__"/> color range.
         //# }
-        //# foreach (var ft1 in Meta.VecFieldTypes) {
-        //#     var vt1 = Meta.VecTypeOf(d, ft1);
-        //#     var vtype1 = vt1.Name;
-        //#     var ftype1 = ft1.Name;
-        //#     if (ft != ft1) {
-        public __vtype1__ To__vtype1__()
-        {
-            return new __vtype1__(/*# fields.ForEach(f => { */(__ftype1__)__f__/*# }, comma); */);
-        }
-
-        //#     }
+        //# if (d == 3 && t1.HasAlpha) {
+        /// The alpha channel is set to __maxval__.
         //# }
-        //# if (d == 3 || d == 4) {
-        //#     foreach (var t1 in Meta.ColorTypes) {
-        //#         var ft1 = t1.FieldType;
-        //#         if (ft.IsInteger != ft1.IsInteger) continue;
-        //#         if (ft == Meta.IntType && ft1 == Meta.UIntType) continue;
-        //#         var convert = ft != ft1 ? "("+ ft1.Name+")" : "";
-        public __t1.Name__ To__t1.Name__()
-        {
-            return new __t1.Name__(/*# t1.Channels.ForEach(fields, (c, f) => { */
-                __convert__(__f__)/*# }, comma);
-                if (t1.HasAlpha) {
-                    if (d == 4) { */,
-                __convert__(W)/*#
-                    } else { */,
-                 __convert__(__t1.MaxValue__)/*#
-                    }
-                } */);
-        }
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type1__ To__type1__() => (__type1__)this;
 
-        //#     }
+        //#     } }
         //# }
         //# if (ft.IsReal) {
         //#     var ichar = ft == Meta.DoubleType ? "l" : "i";
         //#     var icast = ft == Meta.DoubleType ? "long" : "int";
         //#     foreach (var floor in new[] { "Floor", "Ceiling" }) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V__d____ichar__ To__floor__V__d____ichar__()
-        {
-            return new V__d____ichar__(/*# vt.Fields.ForEach(f => { */(__icast__)Fun.__floor__(__f__)/*# }, comma); */);
-        }
+            => new V__d____ichar__(/*# vt.Fields.ForEach(f => { */(__icast__)Fun.__floor__(__f__)/*# }, comma); */);
 
         //#   }
         //# }
@@ -361,6 +367,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates the inhomogenized Version by dividing the first elements by the last element.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype1__ To__vtype1__Inhomo()
         {
             var div = 1 / __lastF__;
@@ -377,10 +384,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates the homogenized Version by adding an additional element 1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype1__ To__vtype1__Homo()
-        {
-            return new __vtype1__(/*# fields.ForEach(f => { */__f__/*# }, comma); */, 1);
-        }
+            => new __vtype1__(/*# fields.ForEach(f => { */__f__/*# }, comma); */, 1);
 
         //#     }
         //# }
@@ -747,16 +753,22 @@ namespace Aardvark.Base
         //#     }
         //# }
         //# if (d == 3 || d == 4) {
-        //#     foreach (var t1 in Meta.ColorTypes) {
-        //#         var ft1 = t1.FieldType;
-        //#         if (ft.IsInteger != ft1.IsInteger) continue;
-        //#         if (ft == Meta.IntType && ft1 == Meta.UIntType) continue;
-        //#         var type1 = t1.Name;
+        //#     foreach (var t1 in Meta.ColorTypes) { var ft1 = t1.FieldType;
+        //#         if (coltovecsupported(ft1, ft)) {
+        //#             var type1 = t1.Name;
+        //#             var ftype1 = ft1.Name;
+        //#             var convert = ft != ft1 ? "("+ ftype +")" : "";
+        //#             var maxval = colmaxvalmap[ft1];
+        /// <summary>
+        /// Creates a vector from the given <see cref="__type1__"/> color.
+        //# if (d == 4 && !t1.HasAlpha) {
+        /// W is set to __maxval__.
+        //# }
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ From__type1__(__type1__ c)
-            => new __vtype__(c);
+        public static __vtype__ From__type1__(__type1__ c) => new __vtype__(c);
 
-        //#     }
+        //#     } }
         //# }
         //# if (ft.IsReal) {
         //# if (d == 2) {

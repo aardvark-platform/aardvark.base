@@ -886,8 +886,8 @@ namespace Aardvark.Base
         public static CieXYZf SRGBToCieXYZf(this C3f c) { return c.SRGBToXYZinC3f().XYZinC3fToCieXYZf(); }
         public static CieXYZf SRGBAToCieXYZf(this C4f c) { return c.SRGBAToXYZAinC4f().XYZAinC4fToCieXYZf(); }
 
-        public static C3f ToXYZinC3f(this CieXYZf c) { return new C3f(c.X * 0.01, c.Y * 0.01, c.Z * 0.01); }
-        public static C4f ToXYZAinC4f(this CieXYZf c) { return new C4f(c.X * 0.01, c.Y * 0.01, c.Z * 0.01); }
+        public static C3f ToXYZinC3f(this CieXYZf c) { return new C3f(c.X * 0.01f, c.Y * 0.01f, c.Z * 0.01f); }
+        public static C4f ToXYZAinC4f(this CieXYZf c) { return new C4f(c.X * 0.01f, c.Y * 0.01f, c.Z * 0.01f); }
         public static C3f ToLinearSRGB(this CieXYZf c) { return c.ToXYZinC3f().XYZinC3fToLinearSRGB(); }
         public static C4f ToLinearSRGBA(this CieXYZf c) { return c.ToXYZAinC4f().XYZAinC4fToLinearSRGBA(); }
         public static C3f ToSRGB(this CieXYZf c) { return c. ToXYZinC3f().XYZinC3fToSRGB(); }

@@ -23,61 +23,61 @@ namespace Aardvark.Base
         public static C3b Lerp(this C3b[] array, WeightedIndex[] wia)
         {
             var result = default(V3d);
-            foreach (var wi in wia) result += wi.Weight * (C3d)array[wi.Index];
-            return (C3b)(C3d)result;
+            foreach (var wi in wia) result += wi.Weight * (V3d)array[wi.Index];
+            return (C3b)result;
         }
         public static C3us Lerp(this C3us[] array, WeightedIndex[] wia)
         {
             var result = default(V3d);
-            foreach (var wi in wia) result += wi.Weight * (C3d)array[wi.Index];
-            return (C3us)(C3d)result;
+            foreach (var wi in wia) result += wi.Weight * (V3d)array[wi.Index];
+            return (C3us)result;
         }
         public static C3ui Lerp(this C3ui[] array, WeightedIndex[] wia)
         {
             var result = default(V3d);
-            foreach (var wi in wia) result += wi.Weight * (C3d)array[wi.Index];
-            return (C3ui)(C3d)result;
+            foreach (var wi in wia) result += wi.Weight * (V3d)array[wi.Index];
+            return (C3ui)result;
         }
         public static C3f Lerp(this C3f[] array, WeightedIndex[] wia)
         {
             var result = default(V3d);
-            foreach (var wi in wia) result += wi.Weight * (C3d)array[wi.Index];
-            return (C3f)(C3d)result;
+            foreach (var wi in wia) result += wi.Weight * (V3d)array[wi.Index];
+            return (C3f)result;
         }
         public static C3d Lerp(this C3d[] array, WeightedIndex[] wia)
         {
             var result = default(V3d);
-            foreach (var wi in wia) result += wi.Weight * array[wi.Index];
+            foreach (var wi in wia) result += wi.Weight * (V3d)array[wi.Index];
             return (C3d)result;
         }
         public static C4b Lerp(this C4b[] array, WeightedIndex[] wia)
         {
             var result = default(V4d);
-            foreach (var wi in wia) result += wi.Weight * (C4d)array[wi.Index];
-            return (C4b)(C4d)result;
+            foreach (var wi in wia) result += wi.Weight * (V4d)array[wi.Index];
+            return (C4b)result;
         }
         public static C4us Lerp(this C4us[] array, WeightedIndex[] wia)
         {
             var result = default(V4d);
-            foreach (var wi in wia) result += wi.Weight * (C4d)array[wi.Index];
-            return (C4us)(C4d)result;
+            foreach (var wi in wia) result += wi.Weight * (V4d)array[wi.Index];
+            return (C4us)result;
         }
         public static C4ui Lerp(this C4ui[] array, WeightedIndex[] wia)
         {
             var result = default(V4d);
-            foreach (var wi in wia) result += wi.Weight * (C4d)array[wi.Index];
-            return (C4ui)(C4d)result;
+            foreach (var wi in wia) result += wi.Weight * (V4d)array[wi.Index];
+            return (C4ui)result;
         }
         public static C4f Lerp(this C4f[] array, WeightedIndex[] wia)
         {
             var result = default(V4d);
-            foreach (var wi in wia) result += wi.Weight * (C4d)array[wi.Index];
-            return (C4f)(C4d)result;
+            foreach (var wi in wia) result += wi.Weight * (V4d)array[wi.Index];
+            return (C4f)result;
         }
         public static C4d Lerp(this C4d[] array, WeightedIndex[] wia)
         {
             var result = default(V4d);
-            foreach (var wi in wia) result += wi.Weight * array[wi.Index];
+            foreach (var wi in wia) result += wi.Weight * (V4d)array[wi.Index];
             return (C4d)result;
         }
         public static V2f Lerp(this V2f[] array, WeightedIndex[] wia)

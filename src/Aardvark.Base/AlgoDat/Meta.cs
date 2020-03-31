@@ -520,6 +520,7 @@ namespace Aardvark.Base
         private static readonly Dictionary<SimpleType, SimpleType> ComputationTypeMap
             = new Dictionary<SimpleType, SimpleType>()
             {
+                { ByteType, DoubleType }, { UIntType, DoubleType}, { UShortType, DoubleType},
                 { IntType, DoubleType }, { LongType, DoubleType },
             };
 
