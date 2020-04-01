@@ -448,12 +448,6 @@ namespace Aardvark.Base
             Stats.Add(hs.Stats);
         }
 
-        [Obsolete("Use 'Add' instead (same functionality and parameters)", false)]
-        public void AddHist(double value, T data)
-        {
-            Add(value, data);
-        }
-
         public static HistogramAndStats<T> operator +(HistogramAndStats<T> hs0, HistogramAndStats<T> hs1)
         {
             return new HistogramAndStats<T>(hs0.Histogram + hs1.Histogram, hs0.Stats + hs1.Stats);

@@ -84,20 +84,6 @@ namespace Aardvark.Base
             PlaneArray = planes;
         }
 
-        [Obsolete("Inconsistent implementation (normals point inside). Use Hull3d.Create(Box3d) instead.")]
-        public Hull3d(Box3d box)
-        {
-            PlaneArray = new[]
-            {
-                new Plane3d(V3d.XAxis, box.Min),
-                new Plane3d(V3d.YAxis, box.Min),
-                new Plane3d(V3d.ZAxis, box.Min),
-                new Plane3d(-V3d.XAxis, box.Max),
-                new Plane3d(-V3d.YAxis, box.Max),
-                new Plane3d(-V3d.ZAxis, box.Max)
-            };
-        }
-
         /// <summary>
         /// Creates a Hull3d from the given box where plane normals point outside.
         /// </summary>

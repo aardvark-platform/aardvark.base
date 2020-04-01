@@ -204,12 +204,6 @@ namespace Aardvark.Base
             return result;
         }
 
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
-        public static Tr[] Copy<T, Tr>(this T[] array, Func<T, Tr> element_fun)
-        {
-            return array.Map(element_fun);
-        }
-
         /// <summary>
         /// Create a copy with the elements piped through a function.
         /// </summary>
@@ -250,12 +244,6 @@ namespace Aardvark.Base
             return result;
         }
 
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
-        public static Tr[] Copy<T, Tr>(this T[] array, Func<T, long, Tr> element_index_fun)
-        {
-            return array.Map(element_index_fun);
-        }
-
         /// <summary>
         /// Create a copy with the elements piped through a function.
         /// The function gets the index of the element as a second argument.
@@ -289,13 +277,6 @@ namespace Aardvark.Base
             return result;
         }
 
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
-        public static Tr[] Copy<T, Tr>(
-                this T[] array, long count, Func<T, Tr> element_fun)
-        {
-            return array.Map(count, element_fun);
-        }
-
         /// <summary>
         /// Create a copy of count elements with the elements piped through a
         /// function. count may be longer than the array, in this case the
@@ -324,20 +305,13 @@ namespace Aardvark.Base
             return result;
         }
 
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
-        public static Tr[] Copy<T, Tr>(
-                this T[] array, long count, Func<T, long, Tr> element_index_fun)
-        {
-            return array.Map(count, element_index_fun);
-        }
-
-        /// <summary>
-        /// Create a copy of count elements with the elements piped through a
-        /// function. count may be longer than the array, in this case the
-        /// result array has default elements at the end.
-        /// The function gets the index of the element as a second argument.
-        /// </summary>
-        public static Tr[] Map<T, Tr>(
+		/// <summary>
+		/// Create a copy of count elements with the elements piped through a
+		/// function. count may be longer than the array, in this case the
+		/// result array has default elements at the end.
+		/// The function gets the index of the element as a second argument.
+		/// </summary>
+		public static Tr[] Map<T, Tr>(
 				this T[] array, long count, Func<T, long, Tr> element_index_fun)
 		{
 			var result = new Tr[count];
@@ -345,13 +319,6 @@ namespace Aardvark.Base
 			for (var i = 0L; i < len; i++) result[i] = element_index_fun(array[i], i);
 			return result;
 		}
-
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
-        public static Tr[] Copy<T, Tr>(
-                this T[] array, long start, long count, Func<T, Tr> element_fun)
-        {
-            return array.Map(start, count, element_fun);
-        }
 
         /// <summary>
         /// Create a copy of specified length starting at the specified
@@ -377,13 +344,6 @@ namespace Aardvark.Base
             var len = Math.Min(count, array.Length - start);
             for (var i = 0; i < len; i++) result[i] = element_fun(array[start + i]);
             return result;
-        }
-
-        [Obsolete("Use 'Map' instead (same functionality and parameters)", false)]
-        public static Tr[] Copy<T, Tr>(
-                this T[] array, long start, long count, Func<T, long, Tr> element_index_fun)
-        {
-            return array.Map(start, count, element_index_fun);
         }
 
         /// <summary>
@@ -462,18 +422,6 @@ namespace Aardvark.Base
 			return result;
 		}
 
-        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
-        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, Tr> element_fun)
-        {
-            return array.MapToList(element_fun);
-        }
-
-        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
-        public static List<Tr> ToList<T, Tr>(this T[] array, Func<T, Tr> fun)
-        {
-            return array.MapToList(fun);
-        }
-
         public static List<Tr> MapToList<T, Tr>(this T[] array, Func<T, Tr> element_fun)
 		{
 			var count = array.Length;
@@ -481,12 +429,6 @@ namespace Aardvark.Base
 			for (int i = 0; i < count; i++) result.Add(element_fun(array[i]));
 			return result;
 		}
-
-        [Obsolete("Use 'MapToList' instead (same functionality and parameters)", false)]
-        public static List<Tr> CopyToList<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
-        {
-            return array.MapToList(item_index_fun);
-        }
 
         public static List<Tr> MapToList<T, Tr>(this T[] array, Func<T, long, Tr> item_index_fun)
         {

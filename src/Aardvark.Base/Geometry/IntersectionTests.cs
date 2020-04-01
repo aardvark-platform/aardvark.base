@@ -600,43 +600,6 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Line2d intersects Line2d (Deprecated)
-        
-        /// <summary>
-        /// Deprecated: use Plane2d.Intersects(Plane2d) or Ray2d.Intersects(Ray2d) instead.
-        /// </summary>
-        [Obsolete]
-        public static bool Intersects(this Line2d line0, Line2d line1, bool infiniteLines, out V2d p)
-        {
-            if (!infiniteLines)
-                return Intersects(line0, line1, out p);
-
-            p = new V2d(double.PositiveInfinity, double.PositiveInfinity);
-            var perp = line0.Direction.X * line1.Direction.Y - line0.Direction.Y * line1.Direction.X;
-            if (Fun.IsTiny(perp))
-            {
-                return false;
-            }
-
-            var m12 = new M22d(line0.P0.X, line0.P0.Y, line0.P1.X, line0.P1.Y).Determinant;
-            var m34 = new M22d(line1.P0.X, line1.P0.Y, line1.P1.X, line1.P1.Y).Determinant;
-            var mx12 = new M22d(line0.P0.X, 1, line0.P1.X, 1).Determinant;
-            var mx34 = new M22d(line1.P0.X, 1, line1.P1.X, 1).Determinant;
-            var my12 = new M22d(line0.P0.Y, 1, line0.P1.Y, 1).Determinant;
-            var my34 = new M22d(line1.P0.Y, 1, line1.P1.Y, 1).Determinant;
-
-            var d = new M22d(mx12, my12, mx34, my34).Determinant;
-            if (Fun.IsTiny(d))
-                return false;
-            var x = new M22d(m12, mx12, m34, mx34).Determinant;
-            var y = new M22d(m12, my12, m34, my34).Determinant;
-            p = new V2d(x / d, y / d);
-            return true;
-        }
-
-        #endregion
-
-
         #region Ray2d intersects Line2d
 
         /// <summary>

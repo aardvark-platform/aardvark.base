@@ -284,16 +284,6 @@ namespace Aardvark.Base
         /// Copy this volume to image memory layout.
         /// Retains the coordinates of the original image.
         /// </summary>
-        [Obsolete("Use 'CopyToImageWindow' instead (same functionality and parameters)", false)]
-        public static Volume<T> CopyImageWindow<T>(this Volume<T> volume)
-        {
-            return volume.CopyToImageWindow();
-        }
-
-        /// <summary>
-        /// Copy this volume to image memory layout.
-        /// Retains the coordinates of the original image.
-        /// </summary>
         public static Volume<T> CopyToImageWindow<T>(this Volume<T> volume)
         {
             var copy = CreateImageVolume<T>(volume.S);
@@ -306,32 +296,11 @@ namespace Aardvark.Base
         /// Copy this volume to image memory layout.
         /// Coordinates of the result start at [0, 0, 0].
         /// </summary>
-        [Obsolete("Use 'CopyToImage' instead (same functionality and parameters)", false)]
-        public static Volume<T> CopyImage<T>(this Volume<T> volume)
-        {
-            return volume.CopyToImage();
-        }
-
-        /// <summary>
-        /// Copy this volume to image memory layout.
-        /// Coordinates of the result start at [0, 0, 0].
-        /// </summary>
         public static Volume<T> CopyToImage<T>(this Volume<T> volume)
         {
             var copy = CreateImageVolume<T>(volume.S);
             copy.Set(volume);
             return copy;
-        }
-
-        /// <summary>
-        /// Copy this volume to image memory layout, while piping all elements
-        /// through the supplied function.
-        /// Retains the coordinates of the original image.
-        /// </summary>
-        [Obsolete("Use 'MapToImageWindow' instead (same functionality and parameters)", false)]
-        public static Volume<T1> CopyImageWindow<T, T1>(this Volume<T> volume, Func<T, T1> fun)
-        {
-            return volume.MapToImageWindow(fun);
         }
 
         /// <summary>
@@ -352,32 +321,11 @@ namespace Aardvark.Base
         /// through the supplied function.
         /// Coordinates of the result start at [0, 0, 0].
         /// </summary>
-        [Obsolete("Use 'MapToImage' instead (same functionality and parameters)", false)]
-        public static Volume<T1> CopyImage<T, T1>(this Volume<T> volume, Func<T, T1> fun)
-        {
-            return volume.MapToImage(fun);
-        }
-
-        /// <summary>
-        /// Copy this volume to image memory layout, while piping all elements
-        /// through the supplied function.
-        /// Coordinates of the result start at [0, 0, 0].
-        /// </summary>
         public static Volume<T1> MapToImage<T, T1>(this Volume<T> volume, Func<T, T1> fun)
         {
             var copy = CreateImageVolume<T1>(volume.S);
             copy.SetMap(volume, fun);
             return copy;
-        }
-
-        /// <summary>
-        /// Copy this tensor4 to image memory layout.
-        /// Retains the coordinates of the original image.
-        /// </summary>
-        [Obsolete("Use 'CopyToImageWindow' instead (same functionality and parameters)", false)]
-        public static Tensor4<T> CopyImageWindow<T>(this Tensor4<T> tensor4)
-        {
-            return tensor4.CopyToImageWindow();
         }
 
         /// <summary>
@@ -396,32 +344,11 @@ namespace Aardvark.Base
         /// Copy this tensor4 to image memory layout.
         /// Coordinates of the result start at [0, 0, 0, 0].
         /// </summary>
-        [Obsolete("Use 'CopyToImage' instead (same functionality and parameters)", false)]
-        public static Tensor4<T> CopyImage<T>(this Tensor4<T> tensor4)
-        {
-            return tensor4.CopyToImage();
-        }
-
-        /// <summary>
-        /// Copy this tensor4 to image memory layout.
-        /// Coordinates of the result start at [0, 0, 0, 0].
-        /// </summary>
         public static Tensor4<T> CopyToImage<T>(this Tensor4<T> tensor4)
         {
             var copy = CreateImageTensor4<T>(tensor4.S);
             copy.Set(tensor4);
             return copy;
-        }
-
-        /// <summary>
-        /// Copy this tensor4 to image memory layout, while piping all elements
-        /// through the supplied function.
-        /// Retains the coordinates of the original image.
-        /// </summary>
-        [Obsolete("Use 'MapToImageWindow' instead (same functionality and parameters)", false)]
-        public static Tensor4<T1> CopyImageWindow<T, T1>(this Tensor4<T> tensor4, Func<T, T1> fun)
-        {
-            return tensor4.MapToImageWindow(fun);
         }
 
         /// <summary>
@@ -435,17 +362,6 @@ namespace Aardvark.Base
             copy.F = tensor4.F;
             copy.SetMap(tensor4, fun);
             return copy;
-        }
-
-        /// <summary>
-        /// Copy this tensor4 to image memory layout, while piping all elements
-        /// through the supplied function.
-        /// Coordinates of the result start at [0, 0, 0, 0].
-        /// </summary>
-        [Obsolete("Use 'MapToImage' instead (same functionality and parameters)", false)]
-        public static Tensor4<T1> CopyImage<T, T1>(this Tensor4<T> tensor4, Func<T, T1> fun)
-        {
-            return tensor4.MapToImage(fun);
         }
 
         /// <summary>

@@ -358,15 +358,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Obsolete. Use 'Map' instead (same functionality and parameters).
-        /// </summary>
-        [Obsolete("Use 'Map' instead (same functionality and parameters).", false)]
-        public __tpolygon__ Copy(Func<__tvec__, __tvec__> point_fun)
-        {
-            return Map(point_fun);
-        }
-
-        /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
         public __tpolygon__ Map(Func<__tvec__, __tvec__> point_fun)
@@ -390,12 +381,6 @@ namespace Aardvark.Base
                 return new __tpolygon__(npa, pc);
             }
         }
-
-        /// <summary>
-        /// Obsolete. Use 'Reverse' instead..
-        /// </summary>
-        [Obsolete("Use 'Reverse' instead.", false)]
-        public void Revert() => Reverse();
 
         /// <summary>
         /// Reverses order of vertices in-place. 

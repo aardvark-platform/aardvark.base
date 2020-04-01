@@ -321,15 +321,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Obsolete. Use 'Map' instead (same functionality and parameters).
-        /// </summary>
-        [Obsolete("Use 'Map' instead (same functionality and parameters).", false)]
-        public Polygon2d Copy(Func<V2d, V2d> point_fun)
-        {
-            return Map(point_fun);
-        }
-
-        /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
         public Polygon2d Map(Func<V2d, V2d> point_fun)
@@ -353,12 +344,6 @@ namespace Aardvark.Base
                 return new Polygon2d(npa, pc);
             }
         }
-
-        /// <summary>
-        /// Obsolete. Use 'Reverse' instead..
-        /// </summary>
-        [Obsolete("Use 'Reverse' instead.", false)]
-        public void Revert() => Reverse();
 
         /// <summary>
         /// Reverses order of vertices in-place. 
@@ -1900,15 +1885,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Obsolete. Use 'Map' instead (same functionality and parameters).
-        /// </summary>
-        [Obsolete("Use 'Map' instead (same functionality and parameters).", false)]
-        public Polygon3d Copy(Func<V3d, V3d> point_fun)
-        {
-            return Map(point_fun);
-        }
-
-        /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
         public Polygon3d Map(Func<V3d, V3d> point_fun)
@@ -1932,12 +1908,6 @@ namespace Aardvark.Base
                 return new Polygon3d(npa, pc);
             }
         }
-
-        /// <summary>
-        /// Obsolete. Use 'Reverse' instead..
-        /// </summary>
-        [Obsolete("Use 'Reverse' instead.", false)]
-        public void Revert() => Reverse();
 
         /// <summary>
         /// Reverses order of vertices in-place. 
