@@ -1,5 +1,8 @@
-[![Build Status linux](https://github.com/aardvark-platform/aardvark.base/workflows/linux/badge.svg)](https://github.com/aardvark-platform/aardvark.base/actions?query=workflow%3A%22linux%22)
-[![Build Status windows](https://github.com/aardvark-platform/aardvark.base/workflows/windows/badge.svg)](https://github.com/aardvark-platform/aardvark.base/actions?query=workflow%3A%22windows%22)
+![Windows](https://github.com/aardvark-platform/aardvark.base/workflows/Windows/badge.svg)
+![MacOS](https://github.com/aardvark-platform/aardvark.base/workflows/MacOS/badge.svg)
+![Linux](https://github.com/aardvark-platform/aardvark.base/workflows/Linux/badge.svg)
+
+
 [![Join the chat at https://gitter.im/aardvark-platform/Lobby](https://img.shields.io/badge/gitter-join%20chat-blue.svg)](https://gitter.im/aardvark-platform/Lobby)
 [![license](https://img.shields.io/github/license/aardvark-platform/aardvark.base.svg)](https://github.com/aardvark-platform/aardvark.base/blob/master/LICENSE)
 

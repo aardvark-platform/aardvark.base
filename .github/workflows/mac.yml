@@ -1,4 +1,4 @@
-name: Windows
+name: MacOS
 
 on: 
   push:
@@ -13,8 +13,9 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: macos
+
     steps:
     - uses: actions/checkout@v1
-    - name: build
-      run: .\build.cmd
+    - name: Build
+      run: bash ./build.sh
