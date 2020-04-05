@@ -1,62 +1,45 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace FSharp.Data.Adaptive
 
 open Aardvark.Base
 open Aardvark.Base.Geometry
-
+open FSharp.Data.Adaptive
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module BvhTree =
 
-    type private ASetBvh<'a>(objects : aset<'a>, getBounds : 'a -> IMod<Box3d>) =
-        inherit Mod.AbstractMod<BvhTree<'a>>()
+    type private ASetBvh<'a>(objects : aset<'a>, getBounds : 'a -> aval<Box3d>) =
+        inherit AVal.AbstractVal<BvhTree<'a>>()
     
-        let mutable isDisposed = false
         let reader = objects.GetReader()
         let boundsCache = Dict()
 
         override x.Compute(token) =
-            if isDisposed then raise <| System.ObjectDisposedException("ASetBvh")
+            let ops = reader.GetChanges token
 
-            let ops = reader.GetOperations token
-
-            for op in HDeltaSet.toSeq ops do
+            for op in HashSetDelta.toSeq ops do
                 match op with
-                    | Add(_,key) ->
-                        boundsCache.GetOrCreate(key, fun key -> getBounds key) |> ignore
+                | Add(_,key) ->
+                    boundsCache.GetOrCreate(key, fun key -> getBounds key) |> ignore
 
-                    | Rem(_,key) ->
-                        match boundsCache.TryRemove key with
-                            | (true, bounds) ->
-                                bounds.Outputs.Remove x |> ignore
-                            | _ ->
-                                failwith "[Bvh] unexpected removal"
+                | Rem(_,key) ->
+                    match boundsCache.TryRemove key with
+                        | (true, bounds) ->
+                            bounds.Outputs.Remove x |> ignore
+                        | _ ->
+                            failwith "[Bvh] unexpected removal"
 
             let data = boundsCache |> Dict.toArray |> Array.map (fun (k,v) -> k, v.GetValue(token))
             BvhTree(data)
 
-        member x.Dispose() =
-            if not isDisposed then
-                isDisposed <- true
-                reader.Dispose()
-                for m in boundsCache.Values do
-                    m.Outputs.Remove x |> ignore
-                boundsCache.Clear()
-
-        interface IDisposableMod<BvhTree<'a>> with
-            member x.Dispose() = x.Dispose()
-  
-    type private AMapBvh<'a>(objects : amap<'a, IMod<Box3d>>) =
-        inherit Mod.AbstractMod<BvhTree<'a>>()
+    type private AMapBvh<'a>(objects : amap<'a, aval<Box3d>>) =
+        inherit AVal.AbstractVal<BvhTree<'a>>()
     
-        let mutable isDisposed = false
         let reader = objects.GetReader()
-        let boundsCache = Dict<'a, IMod<Box3d>>()
+        let boundsCache = Dict<'a, aval<Box3d>>()
 
         override x.Compute(token) =
-            if isDisposed then raise <| System.ObjectDisposedException("AMapBvh")
-            let ops = reader.GetOperations token
-
-            for key, op in HMap.toSeq ops do
+            let ops = reader.GetChanges token
+            for key, op in HashMapDelta.toSeq ops do
                 match op with
                     | Set bounds ->
                         match boundsCache.TryRemove key with
@@ -76,22 +59,12 @@ module BvhTree =
 
             BvhTree(data)
 
-        member x.Dispose() =
-            if not isDisposed then
-                isDisposed <- true
-                reader.Dispose()
-                for m in boundsCache.Values do
-                    m.Outputs.Remove x |> ignore
-                boundsCache.Clear()
 
-        interface IDisposableMod<BvhTree<'a>> with
-            member x.Dispose() = x.Dispose()
-
-    let ofASet (getBounds : 'a -> IMod<Box3d>) (objects : aset<'a>) =
-        new ASetBvh<'a>(objects, getBounds) :> IDisposableMod<_>
+    let ofASet (getBounds : 'a -> aval<Box3d>) (objects : aset<'a>) =
+        new ASetBvh<'a>(objects, getBounds) :> aval<_>
    
-    let ofAMap (objects : amap<'a, IMod<Box3d>>) =
-        new AMapBvh<'a>(objects) :> IDisposableMod<_>
+    let ofAMap (objects : amap<'a, aval<Box3d>>) =
+        new AMapBvh<'a>(objects) :> aval<_>
 
 
 

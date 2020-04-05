@@ -1,4 +1,6 @@
-﻿namespace Aardvark.Base.Rendering
+﻿using System.Runtime.CompilerServices;
+
+namespace Aardvark.Base.Rendering
 {
     // Details taken from:
     // http://msdn.microsoft.com/en-us/library/windows/desktop/bb172415(v=vs.85).aspx
@@ -44,6 +46,21 @@
             Min = min; Mag = mag; Mip = mip; IsAnisotropic = anisotropic;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(TextureFilter a, TextureFilter b)
+            => (a.Min == b.Min) && (a.Mag == b.Mag) && (a.Mip == b.Mip) && (a.IsAnisotropic == b.IsAnisotropic);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(TextureFilter a, TextureFilter b)
+            => !(a == b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(TextureFilter other)
+            => this == other;
+
+        public override bool Equals(object obj)
+            => (obj is TextureFilter other) ? Equals(other) : false;
+
         public override int GetHashCode()
         {
             return HashCode.Combine(
@@ -58,7 +75,6 @@
             return string.Format("{{Min={0}; Mag={1}; Mip={2}; IsAnisotropic={3}}}", Min, Mag, Mip, IsAnisotropic);
         }
 
-
         public static readonly TextureFilter MinMagPoint =
             new TextureFilter(TextureFilterMode.Point, TextureFilterMode.Point, TextureFilterMode.None);
 
@@ -69,8 +85,7 @@
             new TextureFilter(TextureFilterMode.Linear, TextureFilterMode.Point, TextureFilterMode.None);
 
         public static readonly TextureFilter MinMagLinear =
-            new TextureFilter(TextureFilterMode.Linear, TextureFilterMode.Linear, TextureFilterMode.None);
-        
+            new TextureFilter(TextureFilterMode.Linear, TextureFilterMode.Linear, TextureFilterMode.None); 
 
         public static readonly TextureFilter MinMagMipPoint = 
             new TextureFilter(TextureFilterMode.Point, TextureFilterMode.Point, TextureFilterMode.Point);
@@ -146,22 +161,25 @@
                 BorderColor.GetHashCode());
         }
 
-        public override bool Equals(object obj)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(SamplerStateDescription other)
         {
-            if (object.ReferenceEquals(this, obj)) return true;
-            var sd = obj as SamplerStateDescription;
-            return sd != null 
-                && Filter.Equals(sd.Filter)
-                && AddressU == sd.AddressU
-                && AddressV == sd.AddressV
-                && AddressW == sd.AddressW
-                && MaxAnisotropy == sd.MaxAnisotropy
-                && MipLodBias == sd.MipLodBias
-                && MinLod == sd.MinLod
-                && MaxLod == sd.MaxLod
-                && ComparisonFunction == sd.ComparisonFunction
-                && BorderColor == sd.BorderColor;
+            if (object.ReferenceEquals(this, other)) return true;
+            return other != null
+                && Filter.Equals(other.Filter)
+                && AddressU == other.AddressU
+                && AddressV == other.AddressV
+                && AddressW == other.AddressW
+                && MaxAnisotropy == other.MaxAnisotropy
+                && MipLodBias.Equals(other.MipLodBias)
+                && MinLod.Equals(other.MinLod)
+                && MaxLod.Equals(other.MaxLod)
+                && ComparisonFunction == other.ComparisonFunction
+                && BorderColor.Equals(other.BorderColor);
         }
+
+        public override bool Equals(object obj)
+            => (obj is SamplerStateDescription other) ? Equals(other) : false;
 
         public override string ToString()
         {

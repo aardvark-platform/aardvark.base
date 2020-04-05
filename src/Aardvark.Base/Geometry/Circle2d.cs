@@ -18,8 +18,8 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static System.Math;
 
 namespace Aardvark.Base
 {
@@ -87,28 +87,43 @@ namespace Aardvark.Base
 
         public double RadiusSquared => Radius * Radius;
 
-        public double Circumference => 2.0 * Radius * PI;
+        public double Circumference => 2.0 * Radius * Constant.Pi;
 
-        public double Area => Radius * Radius * PI;
+        public double Area => Radius * Radius * Constant.Pi;
 
         public Box2d InscribedSquare
         {
             get
             {
-                var a = Sqrt(RadiusSquared * 0.5);
+                var a = Fun.Sqrt(RadiusSquared * 0.5);
                 return new Box2d(new V2d(-a), new V2d(a));
             }
         }
 
         #endregion
-        
+
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Circle2d a, Circle2d b)
+            => (a.Center == b.Center) && (a.Radius == b.Radius);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Circle2d a, Circle2d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
-        
-        public override bool Equals(object other) => (other is Circle2d o)
-            ? (Center == o.Center) && (Radius == o.Radius)
-            : false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Circle2d other)
+            => Center.Equals(other.Center) && Radius.Equals(other.Radius);
+
+        public override bool Equals(object other)
+            => (other is Circle2d o) ? Equals(o) : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
@@ -132,6 +147,25 @@ namespace Aardvark.Base
             );
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Circle2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Circle2d a, Circle2d b, double tolerance) =>
+            ApproximateEquals(a.Center, b.Center, tolerance) &&
+            ApproximateEquals(a.Radius, b.Radius, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Circle2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Circle2d a, Circle2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     public static class Box2dExtensions

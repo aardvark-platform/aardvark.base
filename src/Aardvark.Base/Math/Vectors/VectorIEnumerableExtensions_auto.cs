@@ -1,14 +1,45 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Aardvark.Base
 {
     public static class VectorIEnumerableExtensions
     {
-        #region Centroid
+        #region V2i
 
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V2is.
+        /// </summary>
+        public static V2i Sum(this IEnumerable<V2i> vectors)
+        {
+            V2i sum = V2i.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V2is.
+        /// </summary>
+        public static V2i Sum(this V2i[] vectors)
+        {
+            V2i sum = V2i.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V2is.
         /// </summary>
@@ -92,6 +123,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V3i
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V3is.
+        /// </summary>
+        public static V3i Sum(this IEnumerable<V3i> vectors)
+        {
+            V3i sum = V3i.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V3is.
+        /// </summary>
+        public static V3i Sum(this V3i[] vectors)
+        {
+            V3i sum = V3i.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V3is.
         /// </summary>
@@ -175,6 +246,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V4i
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V4is.
+        /// </summary>
+        public static V4i Sum(this IEnumerable<V4i> vectors)
+        {
+            V4i sum = V4i.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V4is.
+        /// </summary>
+        public static V4i Sum(this V4i[] vectors)
+        {
+            V4i sum = V4i.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V4is.
         /// </summary>
@@ -258,6 +369,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V2l
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V2ls.
+        /// </summary>
+        public static V2l Sum(this IEnumerable<V2l> vectors)
+        {
+            V2l sum = V2l.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V2ls.
+        /// </summary>
+        public static V2l Sum(this V2l[] vectors)
+        {
+            V2l sum = V2l.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V2ls.
         /// </summary>
@@ -341,6 +492,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V3l
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V3ls.
+        /// </summary>
+        public static V3l Sum(this IEnumerable<V3l> vectors)
+        {
+            V3l sum = V3l.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V3ls.
+        /// </summary>
+        public static V3l Sum(this V3l[] vectors)
+        {
+            V3l sum = V3l.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V3ls.
         /// </summary>
@@ -424,6 +615,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V4l
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V4ls.
+        /// </summary>
+        public static V4l Sum(this IEnumerable<V4l> vectors)
+        {
+            V4l sum = V4l.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V4ls.
+        /// </summary>
+        public static V4l Sum(this V4l[] vectors)
+        {
+            V4l sum = V4l.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V4ls.
         /// </summary>
@@ -507,6 +738,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V2f
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V2fs.
+        /// </summary>
+        public static V2f Sum(this IEnumerable<V2f> vectors)
+        {
+            V2f sum = V2f.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V2fs.
+        /// </summary>
+        public static V2f Sum(this V2f[] vectors)
+        {
+            V2f sum = V2f.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V2fs.
         /// </summary>
@@ -590,6 +861,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V3f
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V3fs.
+        /// </summary>
+        public static V3f Sum(this IEnumerable<V3f> vectors)
+        {
+            V3f sum = V3f.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V3fs.
+        /// </summary>
+        public static V3f Sum(this V3f[] vectors)
+        {
+            V3f sum = V3f.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V3fs.
         /// </summary>
@@ -673,6 +984,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V4f
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V4fs.
+        /// </summary>
+        public static V4f Sum(this IEnumerable<V4f> vectors)
+        {
+            V4f sum = V4f.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V4fs.
+        /// </summary>
+        public static V4f Sum(this V4f[] vectors)
+        {
+            V4f sum = V4f.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V4fs.
         /// </summary>
@@ -756,6 +1107,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V2d
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V2ds.
+        /// </summary>
+        public static V2d Sum(this IEnumerable<V2d> vectors)
+        {
+            V2d sum = V2d.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V2ds.
+        /// </summary>
+        public static V2d Sum(this V2d[] vectors)
+        {
+            V2d sum = V2d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V2ds.
         /// </summary>
@@ -839,6 +1230,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V3d
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V3ds.
+        /// </summary>
+        public static V3d Sum(this IEnumerable<V3d> vectors)
+        {
+            V3d sum = V3d.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V3ds.
+        /// </summary>
+        public static V3d Sum(this V3d[] vectors)
+        {
+            V3d sum = V3d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V3ds.
         /// </summary>
@@ -922,6 +1353,46 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
+
+        #endregion
+
+        #region V4d
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V4ds.
+        /// </summary>
+        public static V4d Sum(this IEnumerable<V4d> vectors)
+        {
+            V4d sum = V4d.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V4ds.
+        /// </summary>
+        public static V4d Sum(this V4d[] vectors)
+        {
+            V4d sum = V4d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
         /// <summary>
         /// Calculates the centroid for a given set of V4ds.
         /// </summary>
@@ -1005,7 +1476,9 @@ namespace Aardvark.Base
             return sum / weightSum;
         }
 
+        #endregion
 
         #endregion
+
     }
 }

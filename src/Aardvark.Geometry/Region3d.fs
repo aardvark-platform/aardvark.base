@@ -34,7 +34,7 @@ module Intersectable3d =
             new Intersectable3d() with
                 member x.Intersects(o : Box3d) =    o.Intersects(s)
                 member x.Contains(o : Box3d) =      o.ComputeCorners() |> Array.forall x.Contains
-                member x.Contains(o : V3d) =        V3d.Distance(o, s.Center) <= s.Radius
+                member x.Contains(o : V3d) =        Vec.Distance(o, s.Center) <= s.Radius
         }
 
     let ofNearPlanePolygon (viewProj : Trafo3d) (npp : PolyRegion) =

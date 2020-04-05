@@ -1,46 +1,70 @@
 ﻿// Learn more about F# at http://fsharp.org
 
-open System
 open Aardvark.Base
 
-let svdtest() =
-    let szx = 9
-    let szy = 5
 
-    let rand = Random()
-    let vals = 
-        [|
-            for x in 0..szx-1 do
-                yield [| for y in 0..szy-1 do yield (rand.NextDouble() - 0.5) * 0.1 |]
-        |]
+let svd() =
+    let rand = RandomSystem()
+    let mutable evil = None
+    let mk() =
+        let morig =
+            (Trafo2d.Rotation(rand.UniformDouble()*Constant.PiTimesTwo))
+                //Trafo2d.Translation(rand.UniformV2d()))
+                .Forward
+        let m = morig
+        let vs = morig.ToArray()
 
-    let M = Array2D.init szx szy (fun i j -> vals.[i].[j])
-    let U = Array2D.zeroCreate szx szx
-    let Vt = Array2D.zeroCreate szy szy
+        match SVD.decompose m with
+        | None -> failwith "none"
+        | Some (u,s,vt) -> 
+            let mutable res = true
+            let mt = u * s * vt
+            for i in 0..vs.Length-1 do
+                let ms = mt.ToArray()
+                if not <| (Fun.ApproximateEquals(vs.[i],ms.[i],1E-8) || Fun.ApproximateEquals(vs.[i],-ms.[i],1E-8)) then
+                    for j in 0..vs.Length-1 do
+                        Log.line "%.5f ~ %.5f" vs.[j] ms.[j]
+                    Log.error "wrong %d" i
+                    evil <- Some(m)
+                    res <- false
+            res
 
-    if SVD.decomposeInPlace U M Vt then
-        Log.line "original: \n%A\n\n" vals
-        Log.line "eigenvalues:\n"
-        for i in 0..(min szx szy)-1 do 
-            Log.line "(%d) %f" i M.[i,i]
-    else
-        Log.error "bad"
-
+                    
+    let ct = 100000
+    Log.startTimed "Running"
+    Report.Progress(0.0)
+    let mutable res = true
+    let mutable i = 0
+    while i < ct && res do
+        res <- mk()
+        i <- i+1
+        Report.Progress(float i/float ct)
+    Report.Progress(1.0)
+    Log.stop()
     
-    
-    
-    Log.line "\ndone"
+    let m = evil |> Option.get
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
+    Log.error "EVIL"
+    Log.line "%A" (SVD.decompose m |> Option.get |> (fun (u,s,vt) -> u*s*vt))
 
-    Console.ReadLine() |> ignore
 
-
-
+    Log.line "ok"
 
 [<EntryPoint>]
 let main argv =
-    Aardvark.Init()
-
-    svdtest()
-    //let pi = PixImage.Create @"image.jpg"
-    //pi.SaveAsImage @"sepp.png"
+    svd()
+    
     0 

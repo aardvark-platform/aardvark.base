@@ -69,7 +69,9 @@ namespace Aardvark.Base.Coder
         public Shift3d ReadShift3d() { return new Shift3d(ReadV3d()); }
         public Similarity3f ReadSimilarity3f() { return new Similarity3f(ReadSingle(), ReadEuclidean3f()); }
         public Similarity3d ReadSimilarity3d() { return new Similarity3d(ReadDouble(), ReadEuclidean3d()); }
+        public Trafo2f ReadTrafo2f() { return new Trafo2f(ReadM33f(), ReadM33f()); }
         public Trafo2d ReadTrafo2d() { return new Trafo2d(ReadM33d(), ReadM33d()); }
+        public Trafo3f ReadTrafo3f() { return new Trafo3f(ReadM44f(), ReadM44f()); }
         public Trafo3d ReadTrafo3d() { return new Trafo3d(ReadM44d(), ReadM44d()); }
 
         #endregion

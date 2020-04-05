@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -62,6 +64,48 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Cylinder3d a, Cylinder3d b)
+            => (a.P0 == b.P0) && (a.P1 == b.P1) && (a.Radius == b.Radius) && (a.DistanceScale == b.DistanceScale);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Cylinder3d a, Cylinder3d b)
+            => !(a == b);
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode() => HashCode.GetCombined(P0, P1, Radius, DistanceScale);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Cylinder3d other) =>
+            P0.Equals(other.P0) &&
+            P1.Equals(other.P1) &&
+            Radius.Equals(other.Radius) &&
+            DistanceScale.Equals(other.DistanceScale);
+
+        public override bool Equals(object other)
+            => (other is Cylinder3d o) ? Equals(o) : false;
+
+        public override string ToString()
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", P0, P1, Radius, DistanceScale);
+
+        public static Cylinder3d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Cylinder3d(
+                V3d.Parse(x[0]),
+                V3d.Parse(x[1]),
+                double.Parse(x[2], CultureInfo.InvariantCulture),
+                double.Parse(x[3], CultureInfo.InvariantCulture)
+            );
+        }
+
+        #endregion
+
         #region Operations
 
         /// <summary>
@@ -89,5 +133,26 @@ namespace Aardvark.Base
         public Box3d BoundingBox3d => new Box3d(Circle0.BoundingBox3d, Circle1.BoundingBox3d);
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Cylinder3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Cylinder3d a, Cylinder3d b, double tolerance) =>
+            ApproximateEquals(a.P0, b.P0, tolerance) &&
+            ApproximateEquals(a.P1, b.P1, tolerance) &&
+            ApproximateEquals(a.Radius, b.Radius, tolerance) &&
+            ApproximateEquals(a.DistanceScale, b.DistanceScale, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Cylinder3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Cylinder3d a, Cylinder3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 }

@@ -39,7 +39,7 @@ namespace Aardvark.Base
     public enum ImageTrafo
     {
         /// <summary>No Trafo.</summary>
-        Rot0 = 0,
+        Identity = 0,
         /// <summary>Rotate 90° CCW.</summary>
         Rot90 = 1,
         /// <summary>Rotate 180°.</summary>
@@ -156,66 +156,6 @@ namespace Aardvark.Base
             return new Volume<T>(data, 0L, size, new V3l(size.Z, size.Z * size.X, 1L));
         }
 
-
-        #endregion
-
-        #region VecPixels
-
-        /// <summary>
-        /// Access a single pixel of an image volume as a Vec. Note that this
-        /// involves an indexing operation with two index multiplications.
-        /// </summary>
-        public static Vec<T> VecPixel<T>(
-                this Volume<T> vol, long x, long y)
-        {
-            #if DEBUG
-            if (vol.Info.Delta.Z != 1) throw new ArgumentException();
-            #endif
-            return new Vec<T>(vol.Data,
-                              vol.Info.Origin + x * vol.Info.Delta.X
-                                              + y * vol.Info.Delta.Y,
-                              vol.Info.Size.Z);
-        }
-
-        /// <summary>
-        /// Access a single pixel of an image volume as a Vec. Note that this
-        /// involves an indexing operation with two index multiplications.
-        /// </summary>
-        public static Vec<T> VecPixel<T>(
-                this Volume<T> vol, V2l position)
-        {
-            #if DEBUG
-            if (vol.Info.Delta.Z != 1) throw new ArgumentException();
-            #endif
-            return new Vec<T>(vol.Data,
-                              vol.Info.Origin + position.X * vol.Info.Delta.X
-                                              + position.Y * vol.Info.Delta.Y,
-                              vol.Info.Size.Z);
-        }
-
-        public static IEnumerable<Vec<T>> VecPixelsXY<T>(
-                this Volume<T> vol)
-        {
-            return vol.Info.IndicesXY.Select(i => new Vec<T>(vol.Data, i, vol.Info.Size.Z));
-        }
-
-        public static IEnumerable<Vec<T>> VecPixelsYX<T>(
-                this Volume<T> vol)
-        {
-            return vol.Info.IndicesYX.Select(i => new Vec<T>(vol.Data, i, vol.Info.Size.Z));
-        }
-
-        public static IEnumerable<Vec<T>> VecPixelsX<T>(
-                this Volume<T> vol)
-        {
-            return vol.Info.IndicesX.Select(i => new Vec<T>(vol.Data, i, vol.Info.Size.Z));
-        }
-
-        public static IEnumerable<Vec<T>> VecPixelsY<T>(
-                this Volume<T> vol)
-        {
-            return vol.Info.IndicesY.Select(i => new Vec<T>(vol.Data, i, vol.Info.Size.Z));
-        }
 
         #endregion
 

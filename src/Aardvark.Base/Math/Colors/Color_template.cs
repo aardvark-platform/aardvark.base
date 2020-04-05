@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -54,6 +55,7 @@ namespace Aardvark.Base
     //#         { Meta.FloatType, new[] { Meta.FloatType, Meta.DoubleType } },
     //#         { Meta.DoubleType, new[] { Meta.DoubleType } },
     //#     };
+    //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
     //# foreach (var t in Meta.ColorTypes) {
     //#     var type = t.Name;
     //#     var ft = t.FieldType;
@@ -70,6 +72,7 @@ namespace Aardvark.Base
     //#     var isDouble = ft == Meta.DoubleType;
     //#     var isReal = ft.IsReal;
     //#     var ftype = ft.Name;
+    //#     var fcaps = ft.Caps;
     //#     var fields = t.Fields;
     //#     var channels = t.Channels;
     //#     var args = fields.ToLower();
@@ -276,12 +279,16 @@ namespace Aardvark.Base
 
         //# foreach (var t1 in Meta.ColorTypes) if (t1 != t) {
         //#     var type1 = t1.Name;
-        public static readonly Func<__type1__, __type__> From__type1__ = c => new __type__(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__type1__(__type1__ c)
+            => new __type__(c);
         //# }
 
         //# foreach (var t1 in vecTypes) {
         //#     var type1 = t1.Name;
-        public static readonly Func<__type1__, __type__> From__type1__ = c => new __type__(c);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ From__type1__(__type1__ c)
+            => new __type__(c);
         //# }
 
         //# foreach (var t1 in Meta.ColorTypes) {
@@ -356,152 +363,52 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __type__ Black = new __type__(__t.MinValue__);
+        public static __type__ Black => new __type__(__t.MinValue__);
 
-        public static readonly __type__ Red = new __type__(__t.MaxValue__, __t.MinValue__, __t.MinValue__);
-        public static readonly __type__ Green = new __type__(__t.MinValue__, __t.MaxValue__, __t.MinValue__);
-        public static readonly __type__ Blue = new __type__(__t.MinValue__, __t.MinValue__, __t.MaxValue__);
-        public static readonly __type__ Cyan = new __type__(__t.MinValue__, __t.MaxValue__, __t.MaxValue__);
-        public static readonly __type__ Magenta = new __type__(__t.MaxValue__, __t.MinValue__, __t.MaxValue__);
-        public static readonly __type__ Yellow = new __type__(__t.MaxValue__, __t.MaxValue__, __t.MinValue__);
-        public static readonly __type__ White = new __type__(__t.MaxValue__);
+        public static __type__ Red => new __type__(__t.MaxValue__, __t.MinValue__, __t.MinValue__);
+        public static __type__ Green => new __type__(__t.MinValue__, __t.MaxValue__, __t.MinValue__);
+        public static __type__ Blue => new __type__(__t.MinValue__, __t.MinValue__, __t.MaxValue__);
+        public static __type__ Cyan => new __type__(__t.MinValue__, __t.MaxValue__, __t.MaxValue__);
+        public static __type__ Magenta => new __type__(__t.MaxValue__, __t.MinValue__, __t.MaxValue__);
+        public static __type__ Yellow => new __type__(__t.MaxValue__, __t.MaxValue__, __t.MinValue__);
+        public static __type__ White => new __type__(__t.MaxValue__);
 
-        public static readonly __type__ DarkRed = new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MinValue__ / 2);
-        public static readonly __type__ DarkGreen = new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
-        public static readonly __type__ DarkBlue = new __type__(__t.MinValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
-        public static readonly __type__ DarkCyan = new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MaxValue__ / 2);
-        public static readonly __type__ DarkMagenta = new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
-        public static readonly __type__ DarkYellow = new __type__(__t.MaxValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
-        public static readonly __type__ Gray = new __type__(__t.MaxValue__ / 2);
+        public static __type__ DarkRed => new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MinValue__ / 2);
+        public static __type__ DarkGreen => new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
+        public static __type__ DarkBlue => new __type__(__t.MinValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
+        public static __type__ DarkCyan => new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MaxValue__ / 2);
+        public static __type__ DarkMagenta => new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
+        public static __type__ DarkYellow => new __type__(__t.MaxValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
+        public static __type__ Gray => new __type__(__t.MaxValue__ / 2);
         
         //# if (isFloat) {
         //#     for (int i = 1; i < 10; i++) { double val = 0.1 * i; int percent = 10 * i;
-        public static readonly __type__ Gray__percent__ = new __type__(__val__f);
+        public static __type__ Gray__percent__ => new __type__(__val__f);
         //#     }
-        public static readonly __type__ VRVisGreen = new __type__(0.698f, 0.851f, 0.008f);
+        public static __type__ VRVisGreen => new __type__(0.698f, 0.851f, 0.008f);
         //# }
         //# if (isByte) {
-        public static readonly __type__ VRVisGreen = new __type__(178, 217, 2);
+        public static __type__ VRVisGreen => new __type__(178, 217, 2);
         //# }
         //# if (isUShort) {
-        public static readonly __type__ VRVisGreen = new __type__(45743, 53411, 5243);
+        public static __type__ VRVisGreen => new __type__(45743, 53411, 5243);
         //# }
 
         #endregion
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__type__ a, __type__ b)
         {
             return /*# fields.ForEach(f => { */a.__f__ == b.__f__/*# }, andand); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__type__ a, __type__ b)
         {
             return /*# fields.ForEach(f => { */a.__f__ != b.__f__/*# }, oror); */;
         }
-
-        #endregion
-
-        #region Comparisons
-
-        //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
-        //#                     { "<=", "SmallerOrEqual" }, { ">=", "GreaterOrEqual"},
-        //#                     { "==", "Equal" },          { "!=", "Different" } };
-        //# var attention1 = "ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).";
-        //# var attention2 = "ATTENTION: For example (a.AllSmaller(b)) is not the same as !(a.AllGreaterOrEqual(b)) but !(a.AnyGreaterOrEqual(b)).";
-        //# for(int o = 0; o < bops.GetLength(0); o++) {
-        //#     string bop = " " + bops[o,0] + " ", opName = bops[o,1];
-        /// <summary>
-        /// Returns whether ALL elements of a are __opName__ the corresponding element of b.
-        /// __attention1__
-        /// </summary>
-        public static bool All__opName__(__type__ a, __type__ b)
-        {
-            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of this are __opName__ the corresponding element of col.
-        /// __attention2__
-        /// </summary>
-        public bool All__opName__(__type__ col)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__col.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are __opName__ s.
-        /// __attention1__
-        /// </summary>
-        public static bool All__opName__(__type__ col, __ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */col.__f____bop__s/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether ALL elements of col are __opName__ s.
-        /// __attention2__
-        /// </summary>
-        public bool All__opName__(__ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__s/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether a is __opName__ ALL elements of col.
-        /// __attention1__
-        /// </summary>
-        public static bool All__opName__(__ftype__ s, __type__ col)
-        {
-            return (/*# fields.ForEach(f => { */s__bop__col.__f__/*# }, andand); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
-        /// __attention1__
-        /// </summary>
-        public static bool Any__opName__(__type__ a, __type__ b)
-        {
-            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
-        /// __attention2__
-        /// </summary>
-        public bool Any__opName__(__type__ col)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__col.__f__/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is __opName__ s.
-        /// __attention1__
-        /// </summary>
-        public static bool Any__opName__(__type__ col, __ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */col.__f____bop__s/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether AT LEAST ONE element of col is __opName__ s.
-        /// __attention1__
-        /// </summary>
-        public bool Any__opName__(__ftype__ s)
-        {
-            return (/*# fields.ForEach(f => { */this.__f____bop__s/*# }, oror); */);
-        }
-
-        /// <summary>
-        /// Returns whether a is __opName__ AT LEAST ONE element of col.
-        /// __attention1__
-        /// </summary>
-        public static bool Any__opName__(__ftype__ s, __type__ col)
-        {
-            return (/*# fields.ForEach(f => { */s__bop__col.__f__/*# }, oror); */);
-        }
-        //# }
 
         #endregion
 
@@ -701,9 +608,7 @@ namespace Aardvark.Base
         #region Overrides
 
         public override bool Equals(object other)
-        {
-            return (other is __type__) ? this == (__type__)other : false;
-        }
+            => (other is __type__ o) ? Equals(o) : false;
 
         public override int GetHashCode()
         {
@@ -742,31 +647,6 @@ namespace Aardvark.Base
                 }
             };
 
-        //# for (int tpc = 4; tpc < 7; tpc+=2) {
-        //# foreach (var rt in new[] { fltt, dblt }) { var rtype = rt.Name; var wtype = rt.FieldType.Name;
-        //#     var convert = ft.IsReal ? ""
-        //#        : "Col." + ft.Caps + "From" + ft.Caps + "In"
-        //#          + (ft.Name == "uint" ? "Double" : rt.FieldType.Caps) + "Clamped";
-        /// <summary>
-        /// A function that returns the linear combination fo the supplied parameters
-        /// with the referenced weight tuple.
-        /// </summary>
-        public static __type__ LinCom(
-            /*# tpc.ForEach(i => { */__type__ p__i__/*# }, comma); */, ref Tup__tpc__<__wtype__> w)
-        {
-            return new __type__(/*# channels.ForEach(ch => { */
-                __convert__(/*# tpc.ForEach(i => { */p__i__.__ch__ * w.E__i__/*# }, add); */)/*# }, comma); */);
-        }
-
-        public static __rtype__ LinComRaw__rtype__(
-            /*# tpc.ForEach(i => { */__type__ p__i__/*# }, comma); */, ref Tup__tpc__<__wtype__> w)
-        {
-            return new __rtype__(/*# channels.ForEach(ch => { */
-                /*# tpc.ForEach(i => { */p__i__.__ch__ * w.E__i__/*# }, add); }, comma); */);
-        }
-
-        //# } // rt
-        //# } // tpc
         #endregion
 
         #region Parsing
@@ -821,9 +701,10 @@ namespace Aardvark.Base
 
         #region IEquatable<__type__> Members
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Equals(__type__ other)
         {
-            return /*# fields.ForEach(f => { */__f__ == other.__f__/*# }, andand); */;
+            return /*# fields.ForEach(f => { */__f__.Equals(other.__f__)/*# }, andand); */;
         }
 
         #endregion
@@ -864,45 +745,182 @@ namespace Aardvark.Base
         //# }
     }
 
-    public static partial class ColFun
+    public static partial class Fun
     {
         #region Interpolation
 
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a  __flttype__.
-        /// </summary>
-        public static __flttype__ LerpRaw__flttype__(this double x, __type__ a, __type__ b)
-        {
-            return new __flttype__(/*# fields.ForEach(f => { */
-                        (float)a.__f__ + ((float)x * (float)((__htype__)b.__f__ - (__htype__)a.__f__))/*#
-                        }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns the linearly interpolated color between a and b stored in a __dbltype__.
-        /// </summary>
-        public static __dbltype__ LerpRaw__dbltype__(this double x, __type__ a, __type__ b)
-        {
-            return new __dbltype__(/*# fields.ForEach(f => { */
-                        (double)a.__f__ + (x * (double)((__htype__)b.__f__ - (__htype__)a.__f__))/*#
-                        }, comma); */);
-        }
-
+        //# if (!fdtypes.Contains(ft)) {
+        //# fdtypes.ForEach(rt => {
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static __type__ Lerp(this double x, __type__ a, __type__ b)
+        public static __type__ Lerp(this __rt.Name__ x, __type__ a, __type__ b)
         {
-            return new __type__(/*# fields.ForEach(f => { */
-                        (__ftype__)((__htype__)a.__f__ + /*# if (hnd) {
-                        */(__htype__)/*# } */(x * /*# if (hnd) {
-                        */(double)/*# } */((__htype__)b.__f__ - (__htype__)a.__f__)))/*#
-                        }, comma); */);
+            return new __type__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
+        }
+
+        //# });
+        //# } else {
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static __type__ Lerp(this __ftype__ x, __type__ a, __type__ b)
+        {
+            return new __type__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
+        }
+        //# }
+        #endregion
+
+        #region ApproximateEquals
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a, __type__ b)
+        {
+            return ApproximateEquals(a, b, Constant<__ftype__>.PositiveTinyValue);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a, __type__ b, __ftype__ tolerance)
+        {
+            return /*# fields.ForEach(f => {*/ApproximateEquals(a.__f__, b.__f__, tolerance)/*# }, andand);*/;
         }
 
         #endregion
     }
 
+    public static partial class Col
+    {
+        #region Comparisons
+
+        //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
+        //#                     { "<=", "SmallerOrEqual" }, { ">=", "GreaterOrEqual"},
+        //#                     { "==", "Equal" },          { "!=", "Different" } };
+        //# var attention = "ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).";
+        //# for(int o = 0; o < bops.GetLength(0); o++) {
+        //#     string bop = " " + bops[o,0] + " ", opName = bops[o,1];
+        /// <summary>
+        /// Returns whether ALL elements of a are __opName__ the corresponding element of b.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(this __type__ a, __type__ b)
+        {
+            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of col are __opName__ s.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(this __type__ col, __ftype__ s)
+        {
+            return (/*# fields.ForEach(f => { */col.__f____bop__s/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether a is __opName__ ALL elements of col.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(__ftype__ s, __type__ col)
+        {
+            return (/*# fields.ForEach(f => { */s__bop__col.__f__/*# }, andand); */);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(this __type__ a, __type__ b)
+        {
+            return (/*# fields.ForEach(f => { */a.__f____bop__b.__f__/*# }, oror); */);
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of col is __opName__ s.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(this __type__ col, __ftype__ s)
+        {
+            return (/*# fields.ForEach(f => { */col.__f____bop__s/*# }, oror); */);
+        }
+
+        /// <summary>
+        /// Returns whether a is __opName__ AT LEAST ONE element of col.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(__ftype__ s, __type__ col)
+        {
+            return (/*# fields.ForEach(f => { */s__bop__col.__f__/*# }, oror); */);
+        }
+        //# }
+
+        #endregion
+
+        #region Linear Combination
+
+        //# for (int tpc = 4; tpc < 7; tpc+=2) {
+        //# foreach (var rt in new[] { fltt, dblt }) { var rtype = rt.Name; var wtype = rt.FieldType.Name; var rtc = rt.FieldType.Caps[0];
+        //#     var convert = ft.IsReal ? ""
+        //#        : "Col." + ft.Caps + "From" + ft.Caps + "In"
+        //#          + (ft.Name == "uint" ? "Double" : rt.FieldType.Caps) + "Clamped";
+        /// <summary>
+        /// A function that returns the linear combination fo the supplied parameters
+        /// with the referenced weight tuple.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ LinCom(
+            /*# tpc.ForEach(i => { */__type__ p__i__/*# }, comma); */, ref Tup__tpc__<__wtype__> w)
+        {
+            return new __type__(/*# channels.ForEach(ch => { */
+                __convert__(/*# tpc.ForEach(i => { */p__i__.__ch__ * w.E__i__/*# }, add); */)/*# }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rtype__ LinComRaw__rtc__(
+            /*# tpc.ForEach(i => { */__type__ p__i__/*# }, comma); */, ref Tup__tpc__<__wtype__> w)
+        {
+            return new __rtype__(/*# channels.ForEach(ch => { */
+                /*# tpc.ForEach(i => { */p__i__.__ch__ * w.E__i__/*# }, add); }, comma); */);
+        }
+
+        //# } // rt
+        //# } // tpc
+        #endregion
+    }
+
+    //# if (ft != Meta.ByteType && ft != Meta.UShortType) {
+    public static class IRandomUniform__type__Extensions
+    {
+        #region IRandomUniform extensions for __type__
+
+        //# string[] variants;
+        //# if (ft == Meta.FloatType) {
+        //#     variants = new string[] { "", "Closed", "Open" };
+        //# } else if (ft == Meta.DoubleType) {
+        //#     variants = new string[] { "", "Closed", "Open", "Full", "FullClosed", "FullOpen" };
+        //# } else {
+        //#     variants = new string[] { "" };
+        //# }
+        //# foreach (var v in variants) {
+        /// <summary>
+        /// Uses Uniform__fcaps____v__() to generate the elements of a __type__ color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Uniform__type____v__(this IRandomUniform rnd)
+        {
+            return new __type__(/*# fields.ForEach(f => { */rnd.Uniform__fcaps____v__()/*#  }, comma); */);
+        }
+
+        //# }
+        #endregion
+    }
+
+    //# }
     #endregion
 
     //# }

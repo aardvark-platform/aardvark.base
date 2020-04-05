@@ -128,7 +128,7 @@ module SimplePerfTests =
                     current.[index] <- Some(level, n)
                     n
 
-        let getLevel (m : IMod<V3d>) (f : int -> obj) =
+        let getLevel (m : aval<V3d>) (f : int -> obj) =
             let mutable current = None
             m |> Mod.map (fun m ->
                 let level = 

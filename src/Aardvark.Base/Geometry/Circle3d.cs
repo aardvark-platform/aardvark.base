@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -112,15 +114,36 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Circle3d a, Circle3d b)
+            => (a.Center == b.Center) && (a.Normal == b.Normal) && (a.Radius == b.Radius);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Circle3d a, Circle3d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
+        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Circle3d other)
+            => Center.Equals(other.Center) && Normal.Equals(other.Normal) && Radius.Equals(other.Radius);
+
+        public override bool Equals(object other)
+            => (other is Circle3d o) ? Equals(o) : false;
+
         public override string ToString()
-            => string.Format("[{0}, {1}, {2}]", Center, Normal, Radius);
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Center, Normal, Radius);
 
         public static Circle3d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Circle3d(V3d.Parse(x[0]), V3d.Parse(x[1]), double.Parse(x[2]));
+            return new Circle3d(V3d.Parse(x[0]), V3d.Parse(x[1]), double.Parse(x[2], CultureInfo.InvariantCulture));
         }
 
         #endregion
@@ -138,5 +161,25 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Circle3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Circle3d a, Circle3d b, double tolerance) =>
+            ApproximateEquals(a.Center, b.Center, tolerance) &&
+            ApproximateEquals(a.Normal, b.Normal, tolerance) &&
+            ApproximateEquals(a.Radius, b.Radius, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Circle3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Circle3d a, Circle3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 }

@@ -9,7 +9,7 @@ namespace Aardvark.Base
     /// <summary>
     /// Conversion routines.
     /// </summary>
-    public static class Conversion
+    public static partial class Conversion
     {
         #region Spherical <-> Cartesian
 

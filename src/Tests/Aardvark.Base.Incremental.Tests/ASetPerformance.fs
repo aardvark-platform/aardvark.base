@@ -126,7 +126,7 @@ module ``performance tests`` =
         
         let input = Mod.init 0
 
-        let step (s : IMod<'a>) =
+        let step (s : aval<'a>) =
             s |> Mod.bind (Mod.constant)
 
         let rec stepN n s =
@@ -175,7 +175,7 @@ module ``performance tests`` =
         
         let input = Mod.init 0
 
-        let step (s : IMod<'a>) =
+        let step (s : aval<'a>) =
             s |> Mod.map id
 
         let rec stepN n s =

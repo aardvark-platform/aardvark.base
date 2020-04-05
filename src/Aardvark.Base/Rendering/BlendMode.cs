@@ -1,4 +1,6 @@
-﻿namespace Aardvark.Base.Rendering
+﻿using System.Runtime.CompilerServices;
+
+namespace Aardvark.Base.Rendering
 {
     public enum BlendOperation
     {
@@ -80,7 +82,34 @@
 
         public static readonly BlendMode Blend = new BlendMode(true);
         public static readonly BlendMode None = new BlendMode(false);
-        
+
+        #endregion
+
+        #region Comparison
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(BlendMode a, BlendMode b)
+        {
+            if (!a.Enabled && !b.Enabled)
+                return true;
+            else if (a.Enabled && b.Enabled)
+            {
+                return 
+                    a.SourceFactor == b.SourceFactor &&
+                    a.SourceAlphaFactor == b.SourceAlphaFactor &&
+                    a.DestinationFactor == b.DestinationFactor &&
+                    a.DestinationAlphaFactor == b.DestinationAlphaFactor &&
+                    a.Operation == b.Operation &&
+                    a.AlphaOperation == b.AlphaOperation;
+            }
+            else
+                return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(BlendMode a, BlendMode b)
+            => !(a == b);
+
         #endregion
 
         #region Overrides
@@ -90,21 +119,12 @@
             return !Enabled ? 0 : SourceFactor.GetHashCode() ^ SourceAlphaFactor.GetHashCode() ^ DestinationFactor.GetHashCode() ^ DestinationAlphaFactor.GetHashCode() ^ Operation.GetHashCode() ^ AlphaOperation.GetHashCode();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(BlendMode other)
+            => this == other;
+
         public override bool Equals(object obj)
-        {
-            if (obj is BlendMode bm)
-            {
-                if (!Enabled && !bm.Enabled)
-                    return true;
-
-                else if (Enabled && bm.Enabled)
-                    return bm.SourceFactor == SourceFactor && bm.SourceAlphaFactor == SourceAlphaFactor && bm.DestinationFactor == DestinationFactor && bm.DestinationAlphaFactor == DestinationAlphaFactor && bm.Operation == Operation && bm.AlphaOperation == AlphaOperation;
-
-                else
-                    return false;
-            }
-            else return false;
-        }
+            => (obj is BlendMode other) ? Equals(other) : false;
 
         #endregion
     }

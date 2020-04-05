@@ -26,7 +26,7 @@ namespace Aardvark.Base
             var zero = cam2worldRotation * cam2worldRotation.Transposed - M33d.Identity;
             if (zero.NormMax > 1e6)
                 throw new ArgumentException("supplied matrix is not a rotation");
-            if (cam2worldRotation.Determinant() < 0.0)
+            if (cam2worldRotation.Determinant < 0.0)
                 throw new ArgumentException("supplied rotation is improper (mirroring)");
             Rotation = cam2worldRotation;
             Translation = cam2worldTranslation;

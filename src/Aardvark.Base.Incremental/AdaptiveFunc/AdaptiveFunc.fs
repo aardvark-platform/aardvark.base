@@ -1,4 +1,6 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace FSharp.Data.Adaptive
+
+open FSharp.Data.Adaptive
 
 [<CompiledName("IAdaptiveFunc")>]
 type afun<'a, 'b> =
@@ -7,10 +9,8 @@ type afun<'a, 'b> =
 
 module AFun =
 
-    type AdaptiveFun<'a, 'b>(f : IMod<AdaptiveToken -> 'a -> 'b>) =
+    type AdaptiveFun<'a, 'b>(f : aval<AdaptiveToken -> 'a -> 'b>) =
         inherit AdaptiveObject()
-
-        override x.Inputs = Seq.singleton (f :> IAdaptiveObject)
 
         member x.Evaluate (caller, v) = 
             x.EvaluateAlways caller (fun token ->
@@ -21,12 +21,10 @@ module AFun =
         interface afun<'a, 'b> with
             member x.Evaluate (c, v) = x.Evaluate(c, v)
 
-        new(f) = AdaptiveFun (Mod.constant f)
+        new(f) = AdaptiveFun (AVal.constant f)
 
-    type ConstantFun<'a, 'b>(value : IMod<'b>) =
+    type ConstantFun<'a, 'b>(value : aval<'b>) =
         inherit AdaptiveObject()
-
-        override x.Inputs = Seq.singleton (value :> IAdaptiveObject)
 
         member x.Evaluate (token : AdaptiveToken, v : 'a) = 
             x.EvaluateAlways token (fun token ->
@@ -37,12 +35,12 @@ module AFun =
             member x.Evaluate (token, v) = x.Evaluate (token, v)
 
     let run (v : 'a) (f : afun<'a, 'b>) =
-        Mod.custom (fun s -> 
+        AVal.custom (fun s -> 
             f.Evaluate (s, v)
         )
 
-    let apply (v : IMod<'a>) (f : afun<'a, 'b>) =
-        Mod.custom (fun s -> 
+    let apply (v : aval<'a>) (f : afun<'a, 'b>) =
+        AVal.custom (fun s -> 
             f.Evaluate (s, v.GetValue s)
         )
 
@@ -50,13 +48,13 @@ module AFun =
         AdaptiveFun(fun _ -> f) :> afun<_,_>
 
     let constant (v : 'b) : afun<'a, 'b> =
-        ConstantFun(Mod.constant v) :> afun<_,_>
+        ConstantFun(AVal.constant v) :> afun<_,_>
 
-    let ofMod (f : IMod<'a -> 'b>) =
-        AdaptiveFun(f |> Mod.map (fun f _ -> f)) :> afun<_,_>
+    let ofAVal (f : aval<'a -> 'b>) =
+        AdaptiveFun(f |> AVal.map (fun f _ -> f)) :> afun<_,_>
 
-    let bind (f : 'a -> afun<'x, 'y>) (m : IMod<'a>) =
-        let mf = m |> Mod.map f
+    let bind (f : 'a -> afun<'x, 'y>) (m : aval<'a>) =
+        let mf = m |> AVal.map f
 
         let inner = ref None
         let self = ref Unchecked.defaultof<_>
@@ -66,7 +64,7 @@ module AFun =
 
                 match !inner with
                     | Some f' when f' <> f ->
-                        f'.RemoveOutput !self
+                        f'.Outputs.Remove !self |> ignore
                     | _ ->
                         ()
                 mf.GetValue(token).Evaluate(token, x)
@@ -89,25 +87,24 @@ module AFun =
             | [f] -> f
             | f::fs -> compose (chain fs) f
 
-    let chainM (l : IMod<list<afun<'a, 'a>>>) =
-        l |> Mod.map chain |> bind id
+    let chainM (l : aval<list<afun<'a, 'a>>>) =
+        l |> AVal.map chain |> bind id
 
     let runChain l initial =
         l |> chain |> run initial
 
     let integrate (f : afun<'a, 'a>) (initial : 'a) =
-        let input = Mod.init initial
+        let input = AVal.init initial
         let inputChanged = ChangeTracker.track<'a>
         initial |> inputChanged |> ignore
 
-        let ti = AdaptiveObject.Time
-        Mod.custom (fun s -> 
-            lock ti (fun () -> ti.Outputs.Remove input |> ignore)
+        AVal.custom (fun s -> 
             let v = input.GetValue s
             let res = f.Evaluate(s, v)
             if inputChanged res then
-                input.UnsafeCache <- res
-                lock ti (fun () -> ti.Outputs.Add input |> ignore)
+                AdaptiveObject.RunAfterEvaluate(fun () ->
+                    input.Value <- res
+                )
 
             res
         )
@@ -116,7 +113,7 @@ module AFun =
 module ``AFun Builder`` =
 
     type AFunBuilder() =
-        member x.Bind(m : IMod<'a>, f : 'a -> afun<'x, 'y>) =
+        member x.Bind(m : aval<'a>, f : 'a -> afun<'x, 'y>) =
             AFun.bind f m
 
         member x.Return(f : 'a -> 'b) =
@@ -125,8 +122,8 @@ module ``AFun Builder`` =
         member x.ReturnFrom(f : afun<'a, 'b>) = 
             f
 
-        member x.ReturnFrom(m : IMod<'a -> 'b>) =
-            AFun.ofMod m
+        member x.ReturnFrom(m : aval<'a -> 'b>) =
+            AFun.ofAVal m
 
     let inline (>>.) (f : afun<'a, 'b>) (g : afun<'b, 'c>) =
         AFun.compose g f
@@ -178,7 +175,7 @@ module AState =
                     | _ ->
                         let inner = (f v).runState
                         match !cache with
-                            | Some old -> old.RemoveOutput token.Caller
+                            | Some old -> old.Outputs.Remove token.Caller.Value |> ignore
                             | None -> ()
                         cache := Some inner
 
@@ -187,8 +184,8 @@ module AState =
 
         { runState = self }
 
-    let bindMod (f : 'a -> astate<'s, 'b>) (m : IMod<'a>) =
-        let mf = m |> Mod.map f
+    let bindAVal (f : 'a -> astate<'s, 'b>) (m : aval<'a>) =
+        let mf = m |> AVal.map f
 
         let inner : ref<Option<afun<_,_>>> = ref None
         let self =
@@ -197,7 +194,7 @@ module AState =
                 
                 match !inner with
                     | Some old when old <> run ->
-                        old.RemoveOutput token.Caller
+                        old.Outputs.Remove token.Caller.Value |> ignore
 
                     | _ -> ()
 
@@ -207,8 +204,8 @@ module AState =
 
         { runState = self :> afun<_,_> }
 
-    let ofMod (m : IMod<'a>) : astate<'s, 'a> =
-        let run = AFun.ofMod(m |> Mod.map (fun v s -> (s,v)))
+    let ofAVal (m : aval<'a>) : astate<'s, 'a> =
+        let run = AFun.ofAVal(m |> AVal.map (fun v s -> (s,v)))
         { runState = run }
 
     let ofAFun (m : afun<'a, 'b>) : astate<'s, 'a -> 'b> =
@@ -227,8 +224,8 @@ module ``AState Builder`` =
         member x.Bind(m : astate<'s, 'a>, f : 'a -> astate<'s, 'b>) =
             AState.bind f m
 
-        member x.Bind(m : IMod<'a>, f : 'a -> astate<'s, 'b>) =
-            AState.bindMod f m
+        member x.Bind(m : aval<'a>, f : 'a -> astate<'s, 'b>) =
+            AState.bindAVal f m
 
         member x.Return(v : 'a) =
             AState.create v
@@ -237,34 +234,34 @@ module ``AState Builder`` =
 
 
 
-type ControllerState = { prev : Map<int, obj>; pulled : Map<int, obj> }
+type ControllerState = { prev : HashMap<obj, obj>; pulled : HashMap<obj, obj> }
 type Controller<'a> = astate<ControllerState, 'a>
 
 [<AutoOpen>]
 module ``Controller Builder`` =
     open AState
 
-    let preWith (f : 'a -> 'a -> 'b) (m : IMod<'a>) =
+    let preWith (f : 'a -> 'a -> 'b) (m : aval<'a>) =
         if m.IsConstant then
             let v = m.GetValue(AdaptiveToken.Top)
             AState.create (f v v)
         else
-            m |> AState.bindMod (fun v ->
-                modifyState' (fun s -> { s with pulled = Map.add m.Id (v :> obj) s.pulled })
+            m |> AState.bindAVal (fun v ->
+                modifyState' (fun s -> { s with pulled = HashMap.add (m :> obj) (v :> obj) s.pulled })
                     |> AState.map (fun s ->
                         let last =
-                            match Map.tryFind m.Id s.prev with
+                            match HashMap.tryFind (m :> obj) s.prev with
                                 | Some (:? 'a as v) -> v
                                 | _ -> v
                         f last v
                        )
             )
 
-    let inline withLast (m : IMod<'a>) = preWith (fun a b -> (a,b)) m
+    let inline withLast (m : aval<'a>) = preWith (fun a b -> (a,b)) m
 
-    let inline pre (m : IMod<'a>) = preWith (fun a _ -> a) m
+    let inline pre (m : aval<'a>) = preWith (fun a _ -> a) m
 
-    let inline differentiate (m : IMod<'a>) = preWith (fun o n -> n - o) m
+    let inline differentiate (m : aval<'a>) = preWith (fun o n -> n - o) m
 
 
 
@@ -273,14 +270,14 @@ module ``Controller Builder`` =
         member x.Bind(m : Controller<'a>, f : 'a -> Controller<'b>) : Controller<'b> =
             AState.bind f m
 
-        member x.Bind(m : IMod<'a>, f : 'a -> Controller<'b>) : Controller<'b> =
-            AState.bindMod f m
+        member x.Bind(m : aval<'a>, f : 'a -> Controller<'b>) : Controller<'b> =
+            AState.bindAVal f m
 
         member x.Return(v : 'a) : Controller<'a> =
             AState.create v
 
-        member x.ReturnFrom(v : IMod<'a -> 'b>) : Controller<'a -> 'b> =
-            AState.ofMod v
+        member x.ReturnFrom(v : aval<'a -> 'b>) : Controller<'a -> 'b> =
+            AState.ofAVal v
 
         member x.ReturnFrom(v : afun<'a, 'b>) : Controller<'a -> 'b> =
             AState.ofAFun v
@@ -289,23 +286,19 @@ module ``Controller Builder`` =
             AState.create id
 
         member x.Run(c : Controller<'a -> 'b>) : afun<'a, 'b> =
-            let initial = { prev = Map.empty; pulled = Map.empty }
-            let state = Mod.init initial
+            let initial = { prev = HashMap.empty; pulled = HashMap.empty }
+            let state = AVal.init initial
             let res = c.runState |> AFun.apply state
             let stateChanged = ChangeTracker.track<ControllerState>
             initial |> stateChanged |> ignore
 
-            let ti = AdaptiveObject.Time
             let mf =
-                res |> Mod.map (fun (newState, v) ->
-                    lock ti (fun () -> ti.Outputs.Remove state |> ignore)
-
-                    if newState.pulled <> newState.prev then
-                        state.UnsafeCache <-  { prev = newState.pulled; pulled = Map.empty }
-                        lock ti (fun () -> ti.Outputs.Add state |> ignore)
-
+                res |> AVal.map (fun (newState, v) ->
+                    AdaptiveObject.RunAfterEvaluate(fun () ->
+                        state.Value <- { prev = newState.pulled; pulled = HashMap.empty }
+                    )
                     v
                 )
-            AFun.ofMod mf
+            AFun.ofAVal mf
 
     let controller = ControllerBuilder()

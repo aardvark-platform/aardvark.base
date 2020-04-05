@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -111,7 +112,7 @@ namespace Aardvark.Base
         public V2d Intersect(Ray2d r)
         {
             V2d a = r.Origin - Origin;
-            if (a.Abs.AllSmaller(Constant<double>.PositiveTinyValue))
+            if (a.Abs().AllSmaller(Constant<double>.PositiveTinyValue))
                 return Origin; // Early exit when rays have same origin
 
             double cross = Direction.Dot270(r.Direction);
@@ -123,7 +124,7 @@ namespace Aardvark.Base
 
         public V2d Intersect(V2d dirVector)
         {
-            if (Origin.Abs.AllSmaller(Constant<double>.PositiveTinyValue))
+            if (Origin.Abs().AllSmaller(Constant<double>.PositiveTinyValue))
                 return Origin; // Early exit when rays have same origin
 
             double cross = Direction.Dot270(dirVector);
@@ -132,6 +133,22 @@ namespace Aardvark.Base
             else // Rays are parallel
                 return V2d.NaN;
         }
+
+        /// <summary>
+        /// Returns the angle between this and the given <see cref="Ray2d"/> in radians.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double AngleBetweenFast(Ray2d r)
+            => Direction.AngleBetweenFast(r.Direction);
+
+        /// <summary>
+        /// Returns the angle between this and the given <see cref="Ray2d"/> in radians using a numerically stable algorithm.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double AngleBetween(Ray2d r)
+            => Direction.AngleBetween(r.Direction);
 
         /// <summary>
         /// Returns a signed value where left is negative and right positive.
@@ -143,12 +160,15 @@ namespace Aardvark.Base
 
         #region Comparison Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Ray2d a, Ray2d b)
             => (a.Origin == b.Origin) && (a.Direction == b.Direction);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Ray2d a, Ray2d b)
             => !((a.Origin == b.Origin) && (a.Direction == b.Direction));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LexicalCompare(Ray2d other)
         {
             var cmp = Origin.LexicalCompare(other.Origin);
@@ -166,13 +186,12 @@ namespace Aardvark.Base
         /// <returns>Hash-code.</returns>
         public override int GetHashCode() => HashCode.GetCombined(Origin, Direction);
 
-        /// <summary>
-        /// Checks if 2 objects are equal.
-        /// </summary>
-        /// <returns>Result of comparison.</returns>
-        public override bool Equals(object other) => (other is Ray2d value)
-             ? (Origin == value.Origin) && (Direction == value.Direction)
-             : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Ray2d other)
+            => Origin.Equals(other.Origin) && Direction.Equals(other.Direction);
+
+        public override bool Equals(object other)
+            => (other is Ray2d o) ? Equals(o) : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Direction);
@@ -192,6 +211,25 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Ray2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Ray2d a, Ray2d b, double tolerance) =>
+            ApproximateEquals(a.Origin, b.Origin, tolerance) &&
+            ApproximateEquals(a.Direction, b.Direction, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Ray2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Ray2d a, Ray2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
+    }
+
     /// <summary>
     /// A fast ray contains a ray and a number of precomputed flags and
     /// fields for fast intersection computation with bounding boxes and
@@ -200,7 +238,7 @@ namespace Aardvark.Base
     public struct FastRay2d
     {
         public readonly Ray2d Ray;
-        public readonly Vec.DirFlags DirFlags;
+        public readonly DirFlags DirFlags;
         public readonly V2d InvDir;
 
         #region Constructors
@@ -228,7 +266,7 @@ namespace Aardvark.Base
         {
             var dirFlags = DirFlags;
 
-            if ((dirFlags & Vec.DirFlags.PositiveX) != 0)
+            if ((dirFlags & DirFlags.PositiveX) != 0)
             {
                 {
                     double t = (box.Max.X - Ray.Origin.X) * InvDir.X;
@@ -241,7 +279,7 @@ namespace Aardvark.Base
                     if (t > tmin) tmin = t;
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeX) != 0)
+            else if ((dirFlags & DirFlags.NegativeX) != 0)
             {
                 {
                     double t = (box.Min.X - Ray.Origin.X) * InvDir.X;
@@ -260,7 +298,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveY) != 0)
+            if ((dirFlags & DirFlags.PositiveY) != 0)
             {
                 {
                     double t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
@@ -273,7 +311,7 @@ namespace Aardvark.Base
                     if (t > tmin) tmin = t;
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeY) != 0)
+            else if ((dirFlags & DirFlags.NegativeY) != 0)
             {
                 {
                     double t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
@@ -313,7 +351,7 @@ namespace Aardvark.Base
             tminFlags = Box.Flags.None;
             tmaxFlags = Box.Flags.None;
 
-            if ((dirFlags & Vec.DirFlags.PositiveX) != 0)
+            if ((dirFlags & DirFlags.PositiveX) != 0)
             {
                 {
                     double t = (box.Max.X - Ray.Origin.X) * InvDir.X;
@@ -326,7 +364,7 @@ namespace Aardvark.Base
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinX; }
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeX) != 0)
+            else if ((dirFlags & DirFlags.NegativeX) != 0)
             {
                 {
                     double t = (box.Min.X - Ray.Origin.X) * InvDir.X;
@@ -345,7 +383,7 @@ namespace Aardvark.Base
                     return false;
             }
 
-            if ((dirFlags & Vec.DirFlags.PositiveY) != 0)
+            if ((dirFlags & DirFlags.PositiveY) != 0)
             {
                 {
                     double t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
@@ -358,7 +396,7 @@ namespace Aardvark.Base
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinY; }
                 }
             }
-            else if ((dirFlags & Vec.DirFlags.NegativeY) != 0)
+            else if ((dirFlags & DirFlags.NegativeY) != 0)
             {
                 {
                     double t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;

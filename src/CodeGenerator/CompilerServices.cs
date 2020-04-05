@@ -129,14 +129,21 @@ namespace CodeGenerator
                 cp.ReferencedAssemblies.Add(asm.Location);
             }
 
-            CompilerResults cr = compiler.CompileAssemblyFromSource(
-                cp, sourceLines.ToArray()
-                );
+            try
+            {
+                CompilerResults cr = compiler.CompileAssemblyFromSource(
+                    cp, sourceLines.ToArray()
+                    );
 
-            compilerResults = cr;
-            if (compilerResults.Errors.Count > 0) return null;
+                compilerResults = cr;
+                if (compilerResults.Errors.Count > 0) return null;
 
-            return cr.CompiledAssembly;
+                return cr.CompiledAssembly;
+            }
+            finally
+            {
+                if (File.Exists(newAssemblyName)) File.Delete(newAssemblyName);
+            }
         }
 
         private static int s_uid = 0;

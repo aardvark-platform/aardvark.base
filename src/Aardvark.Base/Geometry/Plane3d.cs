@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -48,7 +49,7 @@ namespace Aardvark.Base
         public Plane3d(V3d normalizedNormal, V3d point)
         {
             Normal = normalizedNormal;
-            Distance = V3d.Dot(normalizedNormal, point);
+            Distance = Vec.Dot(normalizedNormal, point);
         }
 
         /// <summary>
@@ -57,8 +58,8 @@ namespace Aardvark.Base
         /// </summary>
         public Plane3d(V3d p0, V3d p1, V3d p2)
         {
-            Normal = V3d.Cross(p1 - p0, p2 - p0).Normalized;
-            Distance = V3d.Dot(Normal, p0);
+            Normal = Vec.Cross(p1 - p0, p2 - p0).Normalized;
+            Distance = Vec.Dot(Normal, p0);
         }
 
         /// <summary>
@@ -94,7 +95,7 @@ namespace Aardvark.Base
         public V3d Point
         {
             get { return Normal * Distance; }
-            set { Distance = V3d.Dot(Normal, value); }
+            set { Distance = Vec.Dot(Normal, value); }
         }
 
         /// <summary>
@@ -155,7 +156,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V3d p) => V3d.Dot(Normal, p) - Distance;
+        public double Height(V3d p) => Vec.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
@@ -195,9 +196,11 @@ namespace Aardvark.Base
 
         #region Operators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Plane3d a, Plane3d b)
             => a.Normal == b.Normal && a.Distance == b.Distance;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(Plane3d a, Plane3d b)
             => a.Normal != b.Normal || a.Distance != b.Distance;
 
@@ -207,9 +210,12 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
-        public override bool Equals(object other) => (other is Plane3d value)
-            ? (Normal == value.Normal) && (Distance == value.Distance)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Plane3d other)
+            => Normal.Equals(other.Normal) && Distance.Equals(other.Distance);
+
+        public override bool Equals(object other)
+            => (other is Plane3d o) ? Equals(o) : false;
 
         public override string ToString() => 
             string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
@@ -217,7 +223,7 @@ namespace Aardvark.Base
         public static Plane3d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Plane3d(V3d.Parse(x[0]), double.Parse(x[1]));
+            return new Plane3d(V3d.Parse(x[0]), double.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         #endregion
@@ -251,6 +257,25 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Plane3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Plane3d a, Plane3d b, double tolerance) =>
+            ApproximateEquals(a.Normal, b.Normal, tolerance) &&
+            ApproximateEquals(a.Distance, b.Distance, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Plane3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Plane3d a, Plane3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     /// <summary>
@@ -308,7 +333,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V3d p) => V3d.Dot(Normal, p - Point);
+        public double Height(V3d p) => Vec.Dot(Normal, p - Point);
 
         /// <summary>
         /// The sign of the height of the point over the plane.
@@ -321,9 +346,12 @@ namespace Aardvark.Base
 
         public override int GetHashCode() => HashCode.GetCombined(Normal, Point);
 
-        public override bool Equals(object other) => (other is PlaneWithPoint3d value)
-            ? (Normal == value.Normal) && (Point == value.Point)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(PlaneWithPoint3d other)
+            => Normal.Equals(other.Normal) && Point.Equals(other.Point);
+
+        public override bool Equals(object other)
+            => (other is PlaneWithPoint3d o) ? Equals(o) : false;
 
         public override string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Point);
@@ -365,6 +393,25 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="PlaneWithPoint3d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this PlaneWithPoint3d a, PlaneWithPoint3d b, double tolerance) =>
+            ApproximateEquals(a.Normal, b.Normal, tolerance) &&
+            ApproximateEquals(a.Point, b.Point, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="PlaneWithPoint3d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this PlaneWithPoint3d a, PlaneWithPoint3d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     /// <summary>

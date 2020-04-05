@@ -173,7 +173,7 @@ namespace Aardvark.Base
                 this int[] indexArray, V2d[] pointArray)
         {
             var sortedIndex = indexArray.Copy();
-            sortedIndex.PermutationQuickSort(pointArray, V2d.LexicalCompare);
+            sortedIndex.PermutationQuickSort(pointArray, Vec.LexicalCompare);
             return ConvexHullIndexPolygonOfSortedIndexArray(sortedIndex, pointArray);
         }
 
@@ -187,7 +187,7 @@ namespace Aardvark.Base
         {
             if (pointCount == 0) pointCount = pointArray.Length;
             var sortedIndex = new int[pointCount].SetByIndex(i => i);
-            sortedIndex.PermutationQuickSort(pointArray, V2d.LexicalCompare);
+            sortedIndex.PermutationQuickSort(pointArray, Vec.LexicalCompare);
             return ConvexHullIndexPolygonOfSortedIndexArray(sortedIndex, pointArray);
         }
 
@@ -421,7 +421,7 @@ namespace Aardvark.Base
                         ra[ti] = ra[cc]; ca[ti] = ca[cc];
                         ++cc; continue;
                     }
-                    if (V2d.DistanceSquared(p, center) <= r2)
+                    if (Vec.DistanceSquared(p, center) <= r2)
                     {
                         int nec = ec + 3;
                         if (nec >= ecMax)

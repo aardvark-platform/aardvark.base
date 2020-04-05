@@ -424,7 +424,7 @@ module Generator =
             let idot =
                 match dim with
                     | 1 -> "{0} * {1}"
-                    | _ -> sprintf "%s.Dot({0}, {1})" lv
+                    | _ -> "Vec.Dot({0}, {1})"
             
             line "let sa = nativeint sizeof<'a>"
             line "let ptr = NativePtr.toNativeInt x.Pointer + nativeint (%s) * sa" (System.String.Format(idot, "nearest", sprintf "x.Delta.%s" swizzle))
@@ -478,8 +478,10 @@ module Generator =
                 sprintf "%s" v
 
         let floor (v : string) =
+            sprintf "floor %s" v
+            (*
             if dim = 1 then sprintf "floor(%s)" v
-            else sprintf "%s.Floor" v
+            else sprintf "%s.Floor()" v*)
 
         start "member inline private x.BlitToInternal%s(y : %s<'a>, srcOffset : %s, srcSize : %s, lerp : float -> 'a -> 'a -> 'a) = " suffix selfType tFloat tFloat
 
@@ -696,7 +698,7 @@ module Generator =
 
         let idot =
             if dim = 1 then "{0} * {1}"
-            else sprintf "%s.Dot({0}, {1})" lv
+            else "Vec.Dot({0}, {1})"
 
         for (ct, convert) in coordTypes do
             start "member x.Item"
@@ -731,7 +733,7 @@ module Generator =
 
             start "member x.SampleLinear(coord : %s, lerp : float -> 'a -> 'a -> 'a) : %s = " coordType resType
             line "let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)"
-            line "let coord = %s.Min(%s.Max(coord, %s.Zero), %s.One)" coordType coordType coordType coordType
+            line "let coord = Fun.Min(Fun.Max(coord, %s.Zero), %s.One)" coordType coordType
 
 
             let lv, iv = 
@@ -765,7 +767,7 @@ module Generator =
             let idot =
                 match dim with
                     | 1 -> "{0} * {1}"
-                    | _ -> sprintf "%s.Dot({0}, {1})" lv
+                    | _ -> "Vec.Dot({0}, {1})"
 
 
             line "let sa = nativeint sizeof<'a>"
@@ -846,9 +848,9 @@ module Generator =
 
                 let offset = 
                     if offset |> List.forall ((=) 0) then
-                        System.String.Format(idot, "x.Delta", sprintf "%s.Min(%s.Max(%s.Zero, p0), max)" lv lv lv)
+                        System.String.Format(idot, "x.Delta", sprintf "Fun.Min(Fun.Max(%s.Zero, p0), max)" lv)
                     else
-                        System.String.Format(idot, "x.Delta", sprintf "%s.Min(%s.Max(%s.Zero, p0 + %s), max)" lv lv lv offsetVec)
+                        System.String.Format(idot, "x.Delta", sprintf "Fun.Min(Fun.Max(%s.Zero, p0 + %s), max)" lv offsetVec)
                         
                 //line "let %s : nativeptr<'a> = NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(%s) * sa)" ptrName offset
                 line "let %s : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(%s) * sa))" valueName offset

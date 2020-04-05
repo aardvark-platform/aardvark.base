@@ -14,7 +14,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Unit cell (0, 0, 0, 0) -> Box3d[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)]
         /// </summary>
-        public static readonly Cell Unit = new Cell(0, 0, 0, 0);
+        public static Cell Unit => new Cell(0, 0, 0, 0);
 
         /// <summary>
         /// </summary>
@@ -106,11 +106,11 @@ namespace Aardvark.Base
                         : box.Size.NormMax.Log2Int()
                         ;
                 var s = Math.Pow(2.0, Exponent);
-                var a = (box.Min / s).Floor * s;
+                var a = (box.Min / s).Floor() * s;
                 while (a.X + s < box.Max.X || a.Y + s < box.Max.Y || a.Z + s < box.Max.Z)
                 {
                     s *= 2.0; Exponent++;
-                    a = (box.Min / s).Floor * s;
+                    a = (box.Min / s).Floor() * s;
                 }
                 X = (long)Math.Floor(a.X / s);
                 Y = (long)Math.Floor(a.Y / s);

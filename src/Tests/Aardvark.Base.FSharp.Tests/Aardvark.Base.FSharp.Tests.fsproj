@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <GenerateProgramFile>false</GenerateProgramFile>
-	<DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\..\bin\Debug</OutputPath>
@@ -16,6 +16,8 @@
 	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.0</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MathTests.fs" />
+    <Compile Include="SVDTests.fs" />
     <Compile Include="CachesTest.fs" />
     <Compile Include="TimeTests.fs" />
     <Compile Include="PureAgTests.fs" />
@@ -23,9 +25,6 @@
     <Compile Include="Fragments.fs" />
     <Compile Include="ControlTests.fs" />
     <Compile Include="SortedSetExt.fs" />
-    <Compile Include="HMap.fs" />
-    <Compile Include="HSet.fs" />
-    <Compile Include="PList.fs" />
     <Compile Include="MapExt.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

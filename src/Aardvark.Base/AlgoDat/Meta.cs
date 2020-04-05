@@ -343,12 +343,24 @@ namespace Aardvark.Base
             Read = "ReadShift3d",
         };
 
+        public static readonly SimpleType Trafo2fType = new SimpleType()
+        {
+            Name = "Trafo2f",
+            Read = "ReadTrafo2f",
+        };
+        
         public static readonly SimpleType Trafo2dType = new SimpleType()
         {
             Name = "Trafo2d",
             Read = "ReadTrafo2d",
         };
 
+        public static readonly SimpleType Trafo3fType = new SimpleType()
+        {
+            Name = "Trafo3f",
+            Read = "ReadTrafo3f",
+        };
+        
         public static readonly SimpleType Trafo3dType = new SimpleType()
         {
             Name = "Trafo3d",
@@ -377,13 +389,34 @@ namespace Aardvark.Base
             FloatType, DoubleType, DecimalType,
         };
 
+        public static readonly SimpleType[] UnsignedTypes = new SimpleType[]
+        {
+            ByteType, UShortType, UIntType, ULongType,
+        };
+
+        public static readonly SimpleType[] FloatRepresentableTypes = new SimpleType[]
+        {
+            ByteType, SByteType,
+            ShortType, UShortType,
+            FloatType
+        };
+
+        public static readonly SimpleType[] DoubleRepresentableTypes = new SimpleType[]
+        {
+            ByteType, SByteType,
+            ShortType, UShortType,
+            IntType, UIntType,
+            FloatType, DoubleType
+        };
+
         public static readonly SimpleType[] TrafoTypes = new SimpleType[]
         {
             Euclidean3fType, Euclidean3dType,
             Rot2fType, Rot2dType, Rot3fType, Rot3dType,
             Scale3fType, Scale3dType,
             Shift3fType, Shift3dType,
-            Trafo2dType, Trafo3dType,
+            Trafo2fType, Trafo2dType,
+            Trafo3fType, Trafo3dType,
         };
 
         public static readonly string[] VecFields = new string[]
@@ -755,7 +788,9 @@ namespace Aardvark.Base
                             .Concat(FractionType.IntoArray())
                             .ToArray();
 
-            ComparableTypes = NumericTypes
+            ComparableTypes = StandardNumericTypes
+                            .Concat(DecimalType.IntoArray())
+                            .Concat(FractionType.IntoArray())
                             .Concat(TimeTypes)
                             .ToArray();
 
@@ -807,10 +842,6 @@ namespace Aardvark.Base
         public static readonly SimpleType Triangle2dType = new SimpleType() { Name = "Triangle2d" };
         public static readonly SimpleType Triangle3dType = new SimpleType() { Name = "Triangle3d" };
 
-        public static readonly SimpleType CameraExtrinsicsType = new SimpleType() { Name = "CameraExtrinsics" };
-        public static readonly SimpleType CameraIntrinsicsType = new SimpleType() { Name = "CameraIntrinsics" };
-
-
         /// <summary>
         /// All geometry types that need to be serialized.
         /// </summary>
@@ -818,7 +849,359 @@ namespace Aardvark.Base
         {
             Circle2dType, Line2dType, Line3dType, Plane2dType, Plane3dType, PlaneWithPoint3dType,
             Quad2dType, Quad3dType, Ray2dType, Ray3dType, Sphere3dType,
-            Triangle2dType, Triangle3dType, CameraExtrinsicsType, CameraIntrinsicsType,
+            Triangle2dType, Triangle3dType
         };
+
+        #region Fun related
+        // Instead of manually copy pasting methods defined in the Fun class to work
+        // elementwise with vectors and matrices, we simply define the methods we are interested in here.
+        // It's a bit verbose since we require a lot of meta information, but much easier and less error-prone than 
+        // manually copy pasting the code.
+
+        public class ElementwiseFun
+        {
+            public enum ParamType
+            {
+                Scalar,
+                Tensor,
+            }
+
+            public class Parameter
+            {
+                public string Name { get; set; }
+
+                public ParamType Type { get; set; }
+
+                // Parameters can specify an element type
+                // If null, it is generic and takes the element type of the current type
+                // E.g. for V2i -> int
+                public SimpleType ElementType { get; set; }
+
+                public Parameter(string name, ParamType t, SimpleType et)
+                {
+                    Name = name;
+                    Type = t;
+                    ElementType = et;
+                }
+            }
+
+            public string Name { get; set; }
+
+            // Element type of the result, if null it takes the element type of the current class
+            // E.g. for V2i -> int
+            public SimpleType ReturnType { get; set; }
+
+            public Parameter[] Parameters { get; set; }
+
+            public bool IsExtension { get; set; }
+
+            public bool EditorBrowsable { get; set; }
+
+            // Only valid for the given element types
+            public SimpleType[] Domain { get; set; }
+
+            public ElementwiseFun(string name, SimpleType returnType, bool extension,
+                                    SimpleType[] domain, bool editorBrowsable,
+                                    params Parameter[] parameters)
+            {
+                Name = name;
+                ReturnType = returnType;
+                Parameters = parameters;
+                IsExtension = extension;
+                Domain = domain;
+                EditorBrowsable = editorBrowsable;
+            }
+        }
+
+        public static bool IsScalar(this ElementwiseFun.Parameter p)
+        {
+            return p.Type == ElementwiseFun.ParamType.Scalar;
+        }
+
+        public static bool IsTensor(this ElementwiseFun.Parameter p)
+        {
+            return p.Type == ElementwiseFun.ParamType.Tensor;
+        }
+
+        private static ElementwiseFun.Parameter Scalar(string name, SimpleType t = null)
+        {
+            return new ElementwiseFun.Parameter(name, ElementwiseFun.ParamType.Scalar, t);
+        }
+
+        private static ElementwiseFun.Parameter Tensor(string name, SimpleType t = null)
+        {
+            return new ElementwiseFun.Parameter(name, ElementwiseFun.ParamType.Tensor, t);
+        }
+
+        private static ElementwiseFun.Parameter Other(string name, string typeName)
+        {
+            return new ElementwiseFun.Parameter(name, ElementwiseFun.ParamType.Scalar, new SimpleType(typeName));
+        }
+
+        private static ElementwiseFun Method(string name, SimpleType returnType,
+                                                SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, returnType, true, domain, true, parameters);
+        }
+
+        private static ElementwiseFun MethodHidden(string name, SimpleType returnType,
+                                        SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, returnType, true, domain, false, parameters);
+        }
+
+        private static ElementwiseFun Method(string name, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return Method(name, null, domain, parameters);
+        }
+
+        private static ElementwiseFun MethodHidden(string name, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, null, true, domain, false, parameters);
+        }
+
+        private static ElementwiseFun Method(string name, bool isExtension, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, null, isExtension, domain, true, parameters);
+        }
+
+        private static ElementwiseFun Method(string name, SimpleType returnType, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, returnType, true, VecFieldTypes, true, parameters);
+        }
+
+        private static ElementwiseFun Method(string name, params ElementwiseFun.Parameter[] parameters)
+        {
+            return Method(name, VecFieldTypes, parameters);
+        }
+
+        private static Dictionary<string, ElementwiseFun[]> getElementwiseFuns()
+        {
+            var dict = new Dictionary<string, ElementwiseFun[]>();
+
+            void Add(string category, params ElementwiseFun[] funs)
+            {
+                dict.Add(category, funs);
+            }
+
+            SimpleType[] Domain(params SimpleType[] types)
+                => types;
+
+            SimpleType[] AllExcept(params SimpleType[] types)
+                => types.FoldLeft(VecFieldTypes, (arr, t) => arr.WithRemoved(t));
+
+            SimpleType[] OnlyReal()
+                => Domain(FloatType, DoubleType);
+
+            SimpleType[] NotReal()
+                => AllExcept(FloatType, DoubleType);
+
+            #region Min and Max
+            Add(
+                "Min and Max",
+                Method("Min", Tensor("a"), Tensor("b")),
+                Method("Min", Tensor("a"), Scalar("b")),
+                Method("Min", Scalar("a"), Tensor("b")),
+                Method("Max", Tensor("a"), Tensor("b")),
+                Method("Max", Tensor("a"), Scalar("b")),
+                Method("Max", Scalar("a"), Tensor("b")),
+                Method("Min", Tensor("a"), Tensor("b"), Tensor("c")),
+                Method("Max", Tensor("a"), Tensor("b"), Tensor("c")),
+                Method("Min", Tensor("a"), Tensor("b"), Tensor("c"), Tensor("d")),
+                Method("Max", Tensor("a"), Tensor("b"), Tensor("c"), Tensor("d"))
+            );
+            #endregion
+
+            #region Abs
+            Add("Abs",
+                Method("Abs", Tensor("x"))
+            );
+            #endregion
+
+            #region Rounding
+            Add("Rounding",
+                Method("Floor", RealTypes, Tensor("x")),
+                Method("Ceiling", RealTypes, Tensor("x")),
+                Method("Round", RealTypes, Tensor("x")),
+                Method("Round", RealTypes, Tensor("x"), Other("mode", "MidpointRounding")),
+                Method("Round", RealTypes, Tensor("x"), Other("digits", "int")),
+                Method("Round", RealTypes, Tensor("x"), Other("digits", "int"), Other("mode", "MidpointRounding")),
+                Method("Truncate", RealTypes, Tensor("x"))
+            );
+            #endregion
+
+            #region Frac
+            Add("Frac", Method("Frac", RealTypes, Tensor("x")));
+            #endregion
+
+            #region Clamping
+            Add("Clamping",
+                    Method("Clamp", Tensor("x"), Tensor("a"), Tensor("b")),
+                    Method("Clamp", Tensor("x"), Scalar("a"), Scalar("b")),
+                    Method("ClampExcl", NotReal(), Tensor("x"), Tensor("a"), Tensor("b")),
+                    Method("ClampExcl", NotReal(), Tensor("x"), Scalar("a"), Scalar("b")),
+                    Method("ClampWrap", Tensor("x"), Tensor("a"), Tensor("b")),
+                    Method("ClampWrap", Tensor("x"), Scalar("a"), Scalar("b")),
+                    Method("Saturate", Tensor("x"))
+            );
+            #endregion
+
+            #region MapToUnitInterval
+            Add("MapToUnitInterval",
+                Method("MapToUnitInterval", RealTypes,
+                       Tensor("t"), Tensor("tMax"), Scalar("repeat", BoolType), Scalar("mirror", BoolType)),
+                Method("MapToUnitInterval", RealTypes,
+                       Tensor("t"), Tensor("tMax"), Scalar("repeat", BoolType)),
+                Method("MapToUnitInterval", RealTypes,
+                       Tensor("t"), Tensor("tMax")),
+                Method("MapToUnitInterval", RealTypes,
+                       Tensor("t"), Tensor("tMin"), Tensor("tMax"))
+            );
+            #endregion
+
+            #region Sign
+            Add("Sign",
+                Method("Sign", IntType, Tensor("x")),
+                Method("Signumi", IntType, Tensor("x")),
+                Method("Signum", Tensor("x"))
+            );
+            #endregion
+
+            #region Multiply-Add
+            Add("Multiply-Add",
+                Method("MultiplyAdd", false, RealTypes, Tensor("x"), Tensor("y"), Tensor("z")),
+                Method("MultiplyAdd", false, RealTypes, Tensor("x"), Scalar("y"), Tensor("z")),
+                Method("MultiplyAdd", false, RealTypes, Scalar("x"), Tensor("y"), Tensor("z"))
+            );
+            #endregion
+
+            #region Copy sign
+            Add("Copy sign",
+                Method("CopySign", false, RealTypes, Tensor("x"), Tensor("y")),
+                Method("CopySign", false, RealTypes, Scalar("x"), Tensor("y")),
+                Method("CopySign", false, RealTypes, Tensor("x"), Scalar("y"))
+            );
+            #endregion
+
+            #region Roots
+            Add("Roots",
+                Method("Sqrt", RealTypes, Tensor("x")),
+                Method("Sqrt", DoubleType, NotReal(), Tensor("x")),
+                Method("Cbrt", RealTypes, Tensor("x")),
+                Method("Cbrt", DoubleType, NotReal(), Tensor("x"))
+            );
+            #endregion
+
+            #region Square
+            Add("Square",
+                Method("Square", Tensor("x"))
+            );
+            #endregion
+
+            #region Power
+            Add("Power",
+                Method("Pown", NotReal(), Tensor("x"), Tensor("y")),
+                Method("Pown", NotReal(), Tensor("x"), Scalar("y")),
+                Method("Pown", NotReal(), Scalar("x"), Tensor("y")),
+                Method("Pown", AllExcept(IntType), Tensor("x"), Tensor("y", IntType)),
+                Method("Pown", AllExcept(IntType), Tensor("x"), Scalar("y", IntType)),
+                Method("Pown", AllExcept(IntType), Scalar("x"), Tensor("y", IntType)),
+
+                Method      ("Pow",   OnlyReal(), Tensor("x"), Tensor("y")),
+                MethodHidden("Power", OnlyReal(), Tensor("x"), Tensor("y")),
+                Method      ("Pow",   OnlyReal(), Tensor("x"), Scalar("y")),
+                MethodHidden("Power", OnlyReal(), Tensor("x"), Scalar("y")),
+                Method      ("Pow",   OnlyReal(), Scalar("x"), Tensor("y")),
+                MethodHidden("Power", OnlyReal(), Scalar("x"), Tensor("y")),
+
+                Method      ("Pow",   FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
+                MethodHidden("Power", FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
+                Method      ("Pow",   FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
+                MethodHidden("Power", FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
+                Method      ("Pow",   FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
+                MethodHidden("Power", FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
+                Method      ("Pow",   DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
+                MethodHidden("Power", DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
+                Method      ("Pow",   DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
+                MethodHidden("Power", DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
+                Method      ("Pow",   DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType)),
+                MethodHidden("Power", DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType))
+            );
+            #endregion
+
+            #region Exp and Log
+            Add("Exp and Log",
+                Method("Exp", RealTypes, Tensor("x")),
+                Method("Exp", DoubleType, NotReal(), Tensor("x")),
+                Method("Log", RealTypes, Tensor("x")),
+                Method("Log", DoubleType, NotReal(), Tensor("x")),
+                Method("Log2", RealTypes, Tensor("x")),
+                Method("Log2", DoubleType, NotReal(), Tensor("x")),
+                Method("Log10", RealTypes, Tensor("x")),
+                Method("Log10", DoubleType, NotReal(), Tensor("x")),
+                Method("Log", RealTypes, Tensor("x"), Scalar("basis")),
+                Method("Log", DoubleType, NotReal(), Tensor("x"), Scalar("basis", DoubleType))
+            );
+            #endregion
+
+            #region ModP
+            Add("ModP", Method("ModP", Tensor("a"), Tensor("b")));
+            #endregion
+
+            #region Power of Two
+            Add("Power of Two",
+                Method("PowerOfTwo", Domain(LongType, FloatType, DoubleType), Tensor("x")),
+                Method("NextPowerOfTwo", Domain(IntType, LongType), Tensor("x")),
+                Method("PrevPowerOfTwo", Domain(IntType, LongType), Tensor("x"))
+            );
+            #endregion
+
+            #region Trigonometry
+            Add("Trigonometry",
+                Method("Sin", RealTypes, Tensor("x")),
+                Method("Cos", RealTypes, Tensor("x")),
+                Method("Tan", RealTypes, Tensor("x")),
+                Method("Asin", RealTypes, Tensor("x")),
+                Method("AsinClamped", RealTypes, Tensor("x")),
+                Method("Acos", RealTypes, Tensor("x")),
+                Method("AcosClamped", RealTypes, Tensor("x")),
+                Method("Atan", RealTypes, Tensor("x")),
+                Method("Atan2", false, RealTypes, Tensor("y"), Tensor("x")),
+                Method("FastAtan2", false, RealTypes, Tensor("y"), Tensor("x")),
+                Method("Sinh", RealTypes, Tensor("x")),
+                Method("Cosh", RealTypes, Tensor("x")),
+                Method("Tanh", RealTypes, Tensor("x")),
+                Method("Asinh", RealTypes, Tensor("x")),
+                Method("Acosh", RealTypes, Tensor("x")),
+                Method("Atanh", RealTypes, Tensor("x"))
+            );
+            #endregion
+
+            #region Interpolation
+            Add("Interpolation",
+                Method("Lerp", AllExcept(DoubleType), Scalar("t", FloatType), Tensor("a"), Tensor("b")),
+                Method("Lerp", AllExcept(DoubleType), Tensor("t", FloatType), Tensor("a"), Tensor("b")),
+                Method("Lerp", AllExcept(FloatType), Scalar("t", DoubleType), Tensor("a"), Tensor("b")),
+                Method("Lerp", AllExcept(FloatType), Tensor("t", DoubleType), Tensor("a"), Tensor("b")),
+                Method("Smoothstep", RealTypes, Tensor("x"), Tensor("edge0"), Tensor("edge1")),
+                Method("Smoothstep", RealTypes, Tensor("x"), Scalar("edge0"), Scalar("edge1")),
+                Method("InvLerp", Domain(FloatType), Tensor("y"), Tensor("a"), Tensor("b")),
+                Method("InvLerp", DoubleType, AllExcept(FloatType), Tensor("y"), Tensor("a"), Tensor("b"))
+            );
+            #endregion
+
+            #region Common Divisor and Multiple
+            Add("Common Divisor and Multiple",
+                Method("GreatestCommonDivisor", Domain(IntType, LongType, UIntType, ULongType), Tensor("a"), Tensor("b")),
+                Method("LeastCommonMultiple", Domain(IntType, LongType, UIntType, ULongType), Tensor("a"), Tensor("b"))
+            );
+            #endregion
+
+            return dict;
+        }
+
+        public static readonly Dictionary<string, ElementwiseFun[]> ElementwiseFuns = getElementwiseFuns();
+
+        #endregion
     }
 }

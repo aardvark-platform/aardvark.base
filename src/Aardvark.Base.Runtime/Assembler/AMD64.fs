@@ -4,9 +4,9 @@ open System
 open System.Collections.Generic
 open System.IO
 open Aardvark.Base
-open Aardvark.Base.Incremental
 open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
+open FSharp.Data.Adaptive
 
 #nowarn "9"
 #nowarn "51"
@@ -752,7 +752,7 @@ module AMD64 =
             writer.Dispose()
 
 
-        member x.ConditionalCall(condition : IMod<'a>, callback : 'a -> unit) =
+        member x.ConditionalCall(condition : aval<'a>, callback : 'a -> unit) =
             let outOfDate : nativeptr<int> = NativePtr.alloc 1
             NativePtr.write outOfDate (if condition.OutOfDate then 1 else 0)
             let sub = condition.AddMarkingCallback(fun () -> NativePtr.write outOfDate 1)

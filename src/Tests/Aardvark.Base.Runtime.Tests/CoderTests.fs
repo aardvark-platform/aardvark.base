@@ -11,8 +11,6 @@ open System.Runtime.InteropServices
 open System.Runtime.CompilerServices
 open Microsoft.FSharp.NativeInterop
 open Aardvark.Base
-open Aardvark.Base.Incremental
-open Aardvark.Base.Runtime
 open Aardvark.Base.Runtime
 open NUnit.Framework
 open FsUnit

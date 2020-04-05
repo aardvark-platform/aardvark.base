@@ -675,7 +675,7 @@ module OtherASetTests =
     let ``[ASet] mapM test``() =
         let stuff = CSet.ofList [ Mod.init(1); Mod.init(2); Mod.init(3); ]
 
-        let mapm = stuff |> ASet.mapM (fun i -> i :> IMod<_>)
+        let mapm = stuff |> ASet.mapM (fun i -> i :> aval<_>)
 
         let r = mapm.GetReader()
         r.GetOperations() |> should equal [Add(1); Add(2); Add(3)]
@@ -739,7 +739,7 @@ module OtherASetTests =
 
     [<Test>]
     let ``[ASet] flattenM test``() =
-        let stuff = CSet.ofList [ Mod.init(1) :> IMod<_>; Mod.init(2) :> IMod<_>; Mod.init(3) :> IMod<_>; ]
+        let stuff = CSet.ofList [ Mod.init(1) :> aval<_>; Mod.init(2) :> aval<_>; Mod.init(3) :> aval<_>; ]
 
         let flatSet = stuff |> ASet.flattenM
 

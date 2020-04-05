@@ -32,6 +32,9 @@ namespace Aardvark.Base
 
         public void ReSeed(int seed) => Generator = new Random(seed);
 
+        // FIXME: System.Random.Next() returns an integer in the interval of [0, 2^31 - 1)
+        // but the IRandomSystem.UniformInt() comment specifies that the result
+        // is in the interval [0, 2^31-1]
         public int UniformInt() => Generator.Next();
 
         public static ThreadLocal<byte[]> s_buffer4 = new ThreadLocal<byte[]>(() => new byte[4]);

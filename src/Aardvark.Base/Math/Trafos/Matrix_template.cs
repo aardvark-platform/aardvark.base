@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace Aardvark.Base
 {
@@ -12,32 +14,52 @@ namespace Aardvark.Base
     //# Action comma = () => Out(", ");
     //# Action add = () => Out(" + ");
     //# Action xor = () => Out(" ^ ");
+    //# Action andLit = () => Out(" and ");
     //# Action andand = () => Out(" && ");
+    //# Action oror = () => Out(" || ");
     //# Action addqcomma = () => Out(" + \",\" ");
     //# Action addbetweenM = () => Out(" + betweenM ");
+    //# Action el = () => Out("else ");
     //# var tcharA = new[] { "i", "l", "f", "d" };
     //# var ftypeA = new[] { "int", "long", "float", "double" };
     //# var ctypeA = new[] { "double", "double", "float", "double" }; // computation types
     //# var fields = new[] {"X", "Y", "Z", "W"};
-    //# var oper = new[] {"operator *", "Multiply"};
     //# var ops = new[] {" + ", " - ", " % ", " / ", " * "};
     //# var bops = new[] {"<", ">", "==", "<=", ">="};
-    //# var opaction = new[,] {{"operator +", "operator -", "operator %", "operator /", "operator *"},{"Add", "Subtract", "Modulo", "Divide", "Multiply"}};
     //# for (int n = 2; n <= 4; n++) {
     //# for (int m = n; m <= (n+1) && m < 5; m++) { 
     //# for (int t = 0; t < tcharA.Length; t++) {
     //#     var msub1 = m - 1;
+    //#     var msub2 = m - 2;
+    //#     var nsub1 = n - 1;
     //#     var tchar = tcharA[t];
     //#     var nm = n * m;
     //#     var nmtype = "M" + n + m + tchar;        // Matrix type
+    //#     var nntype = "M" + n + n + tchar;
     //#     var mmtype = "M" + m + m + tchar;
     //#     var vmtype = "V"+ m + tchar;
     //#     var vmsub1type = "V"+ msub1 + tchar;
     //#     var vntype = "V"+ n + tchar;
+    //#     var vnsub1type = "V"+ nsub1 + tchar;
+    //#     var scalent = "Scale" + n + tchar;
+    //#     var scalemt = "Scale" + m + tchar;
+    //#     var scalensub1t = "Scale" + (n - 1) + tchar;
+    //#     var scalemsub1t = "Scale" + (m - 1) + tchar;
+    //#     var shiftmsub1t = "Shift" + (m - 1) + tchar;
+    //#     var rotnt = "Rot" + n + tchar;
+    //#     var rotnsub1t = "Rot" + (n - 1) + tchar;
     //#     var nfields = fields.Take(n).ToArray();
     //#     var mfields = fields.Take(m).ToArray();
+    //#     var isReal = t > 1;    
     //#     var ftype = ftypeA[t];
     //#     var ctype = ctypeA[t];
+    //#     var vnctype = "V"+ n + ctype[0];
+    //#     var vnsub1ctype = "V"+ nsub1 + ctype[0];
+    //#     var x2t = 2 + tchar;
+    //#     var x3t = 3 + tchar;
+    //#     var x4t = 4 + tchar;
+    //#     var xyznsub1 = "XYZW".Substring(0, nsub1);
+    //#     var xyzmsub1 = "XYZW".Substring(0, msub1);
     #region __nmtype__
 
     [DataContract]
@@ -52,6 +74,15 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __nmtype__(__ftype__ value)
+        {
+            //# n.ForEach(r => {
+            /*# m.ForEach(s => { */M__r____s__ = value; /*# }); */
+            //# });
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(/*# n.ForEach(r => { */
                 /*# m.ForEach(s => {*/__ftype__ m__r____s__/*#}, comma);}, comma); */)
         {
@@ -60,6 +91,7 @@ namespace Aardvark.Base
             //# });
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(__ftype__[] a)
         {
             //# int l = 0;
@@ -67,7 +99,8 @@ namespace Aardvark.Base
             M__r____s__ = a[__l__];
             //# l++; }); });
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __nmtype__(__ftype__[] a, int start)
         {
             //# l = 0;
@@ -76,6 +109,33 @@ namespace Aardvark.Base
             //# l++; }); });
         }
 
+        //# if (n == m - 1) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __nmtype__(__nntype__ m, __vntype__ v)
+        {
+            //# n.ForEach(r => {
+            /*# m.ForEach(s => { var value = (s < n) ? "m.M" + r + s : "v." + nfields[r]; */M__r____s__ = __value__; /*# });*/
+            //# });
+        }
+
+        //# }
+        //# for (int t1 = 0; t1 < tcharA.Length; t1++) { 
+        //#     for (int a = 2; a <= 4; a++) {
+        //#         for (int b = a; b <= (a+1) && b < 5; b++) {
+        //#             var MabType1 = "M" + a + b + tcharA[t1];
+        //#             if (n != a || m != b || t1 != t)  {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __nmtype__(__MabType1__ m)
+        {
+            //# n.ForEach(r => {
+            /*# m.ForEach(s => { if (r >= a || s >= b) { if (r != s) {*/M__r____s__ = 0; /*#} else if ( r == s) {*/M__r____s__ = 1; /*#}} if((r < a) && ( s < b)) {*/M__r____s__ = /*# if (t != t1) {*/(__ftype__)/*#}*/m.M__r____s__; /*#} }); */
+            //# });
+        }
+
+        //#             }
+        //#         }
+        //#     }
+        //# }
         #endregion
 
         #region Conversions
@@ -108,7 +168,7 @@ namespace Aardvark.Base
 
         public static explicit operator __nmtype__(__ftype1__[,] a)
         {
-            return new __nmtype__ (/*# n.ForEach(r => { */
+            return new __nmtype__(/*# n.ForEach(r => { */
                 /*# m.ForEach(s => { if (t != t1) { */(__ftype__)/*# } */a[__r__, __s__]/*# }, comma); }, comma); */);
         }
 
@@ -179,39 +239,451 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Static Factories
+        #region Static Creators
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ FromCols(/*# m.ForEach(r => {*/__vntype__ col__r__/*#}, comma); */)
         {
             return new __nmtype__(/*# n.ForEach(r => { */
                 /*# m.ForEach(c => { var rf = fields[r]; */col__c__.__rf__/*#}, comma);}, comma); */);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ FromRows(/*# n.ForEach(r => {*/__vmtype__ row__r__/*#}, comma); */)
         {
             return new __nmtype__(/*# n.ForEach(r => { */
                 /*# mfields.ForEach(f => {*/row__r__.__f__/*#}, comma);}, comma); */);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromDiagonal(__ftype__ value)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = i == j ? "value" : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromDiagonal(/*# n.ForEach(i => {*/__ftype__ m__i____i__/*#}, comma); */)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = i == j ? "m" + i + i : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromDiagonal(__vntype__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = i == j ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# if (n == m) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromAntiDiagonal(__ftype__ value)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                 /*# m.ForEach(j => {
+                  var v = (i + j == n - 1) ? "value" : "0";
+                  */__v__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromAntiDiagonal(/*# n.ForEach(i => { var j = n - 1 - i; */__ftype__ m__i____j__/*#}, comma); */)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                 var v = (i + j == n - 1) ? "m" + i + (n - 1 - i) : "0";
+                 */__v__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ FromAntiDiagonal(__vntype__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i + j == n - 1) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# }
+        #region Scale
+
+        //# if (n == m) {
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using __m__ scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(/*# mfields.ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
+            => FromDiagonal(/*# mfields.ForEach(f => { */s__f__/*# }, comma); */);
+
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vmtype__"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(__vmtype__ s)
+            => FromDiagonal(s);
+
+        //# if (t > 1 && n < 4) {
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> from a <see cref="__scalent__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(__scalemt__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i == j) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# } // isReal
+        //# }
+        //# if (n > 2 && Math.Abs(n-m) <= 1) {
+        /// <summary>
+        /// Creates a homogenous transformation <see cref="__nmtype__"/> using a uniform scale.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(__ftype__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = i == j ? ((i == m-1) ? "1" : "s") : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using __msub1__ scalars as scaling factors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(/*# nfields.Take(m - 1).ForEach(f => { */__ftype__ s__f__/*# }, comma); */)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < m - 1) ? "s" + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> using a <see cref="__vmsub1type__"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(__vmsub1type__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < m - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# if (t > 1) {
+        /// <summary>
+        /// Creates a scaling transformation <see cref="__nmtype__"/> from a <see cref="__scalemsub1t__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Scale(__scalemsub1t__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = (i == j) ? ((i < m - 1) ? "s." + fields[i] : "1") : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# } // isReal
+        //# }
+        #endregion
+
+        //# if (m > 2) {
+        #region Translation
+
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> with the translational component given by __msub1__ scalars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Translation(/*# fields.Take(m - 1).ForEach(f => { */__ftype__ t__f__/*# }, comma); */)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = i == j ? "1" : (j == m - 1) ? "t" + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> with the translational component given by a <see cref="__vmsub1type__"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Translation(__vmsub1type__ t)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = i == j ? "1" : (j == m - 1) ? "t." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# if (t > 1) {
+        /// <summary>
+        /// Creates a transformation <see cref="__nmtype__"/> from a <see cref="__shiftmsub1t__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Translation(__shiftmsub1t__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => { var v = i == j ? "1" : (j == m - 1) ? "s." + fields[i] : "0"; */__v__/*# }, comma); }, comma); */);
+        }
+
+        //# }
+        #endregion
+
+        //# }
+        //# if (t > 1) {
+        #region Rotation
+
+        //# if (m < 4) {
+        //# var val = new string[,] { { " a", "-b" }, { " b", " a" } };
+        /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Rotation(__ftype__ angleInRadians)
+        {
+            var a = Fun.Cos(angleInRadians);
+            var b = Fun.Sin(angleInRadians);
+
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var x = (i < 2 && j < 2) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
+        }
+
+        /// <summary>
+        /// Creates a 2D rotation matrix with the specified angle in degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationInDegrees(__ftype__ angleInDegrees)
+            => Rotation(angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a __n__D rotation matrix from a <see cref="__rotnt__"/>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Rotation(__rotnt__ r)
+            => (__nmtype__)r;
+
+        //# }
+        //# if (n > 2) {
+        //# if (n == m) {
+        /// <summary>
+        /// Creates a __nsub1__D rotation matrix from a <see cref="__rotnsub1t__"/>
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Rotation(__rotnsub1t__ r)
+            => (__nmtype__)r;
+
+        //# }
+        /// <summary>
+        /// Creates a 3D rotation matrix from an axis vector and an angle in radians.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Rotation(V__x3t__ normalizedAxis, __ftype__ angleInRadians)
+        {
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            return (__nmtype__)(Rot__x3t__.Rotation(normalizedAxis, angleInRadians));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from an axis vector and an angle in degrees.
+        /// The axis vector has to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationInDegrees(V__x3t__ normalizedAxis, __ftype__ angleInDegrees)
+            => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationEuler(__ftype__ rollInRadians, __ftype__ pitchInRadians, __ftype__ yawInRadians)
+        {
+            return (__nmtype__)(Rot__x3t__.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationEulerInDegrees(__ftype__ rollInDegrees, __ftype__ pitchInDegrees, __ftype__ yawInDegrees)
+            => RotationEuler(
+                rollInDegrees.RadiansFromDegrees(),
+                pitchInDegrees.RadiansFromDegrees(), 
+                yawInDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in radians.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationEuler(V__x3t__ rollPitchYawInRadians)
+            => RotationEuler(
+                rollPitchYawInRadians.X,
+                rollPitchYawInRadians.Y,
+                rollPitchYawInRadians.Z);
+
+        /// <summary>
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) vector in degrees.
+        /// The rotation order is: Z, Y, X.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationEulerInDegrees(V__x3t__ rollPitchYawInDegrees)
+            => RotationEulerInDegrees(
+                rollPitchYawInDegrees.X,
+                rollPitchYawInDegrees.Y,
+                rollPitchYawInDegrees.Z);
+
+        /// <summary>
+        /// Creates a 3D rotation matrix which rotates one vector into another.
+        /// The input vectors have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotateInto(V__x3t__ from, V__x3t__ into)
+        {
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            return (__nmtype__)(Rot__x3t__.RotateInto(from, into));
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationX(__ftype__ angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {" 1", " 0", " 0" }, {" 0", " a", "-b"}, {" 0", " b", " a"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationXInDegrees(__ftype__ angleDegrees)
+            => RotationX(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationY(__ftype__ angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {" a", " 0", " b" }, {" 0", " 1", " 0"}, {"-b", " 0", " a"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationYInDegrees(__ftype__ angleDegrees)
+            => RotationY(angleDegrees.RadiansFromDegrees());
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleRadians"/> radians around the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationZ(__ftype__ angleRadians)
+        {
+            var a = Fun.Cos(angleRadians);
+            var b = Fun.Sin(angleRadians);
+
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {" a", "-b"}, {" b", " a"} };
+                   var x = (i < 2 && j < 2) ? val[i, j] : ((i == j) ? " 1" : " 0");
+                */__x__/*# }, comma); }, comma);*/);
+        }
+
+        /// <summary>
+        /// Creates a 3D rotation matrix for <paramref name="angleDegrees"/> degrees around the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ RotationZInDegrees(__ftype__ angleDegrees)
+            => RotationZ(angleDegrees.RadiansFromDegrees());
+
+        //# }
+        #endregion
+
+        //# }
+        //# if (n > 2) {
+        #region Shearing
+
+        /// <summary>
+        /// Creates a shear transformation matrix along the z-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ ShearXY(__ftype__ factorX, __ftype__ factorY)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {"1", "0", "factorX" }, {"0", "1", "factorY"}, {"0", "0", "1"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? "1" : "0");
+                */__x__/*# }, comma); }, comma);*/);
+        }
+
+        /// <summary>
+        /// Creates a shear transformation matrix along the y-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ ShearXZ(__ftype__ factorX, __ftype__ factorZ)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {"1", "factorX", "0" }, {"0", "1", "0"}, {"0", "factorZ", "1"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? "1" : "0");
+                */__x__/*# }, comma); }, comma);*/);
+        }
+
+        /// <summary>
+        /// Creates a shear transformation matrix along the x-axis.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ ShearYZ(__ftype__ factorY, __ftype__ factorZ)
+        {
+            return new __nmtype__(/*# n.ForEach(i => { */
+                /*# m.ForEach(j => {
+                   var val = new string[,] { {"1", "0", "0" }, {"factorY", "1", "0"}, {"factorZ", "0", "1"} };
+                   var x = (i < 3 && j < 3) ? val[i, j] : ((i == j) ? "1" : "0");
+                */__x__/*# }, comma); }, comma);*/);
+        }
+
+        #endregion
+
+        //# }
         #endregion
 
         #region Properties and Indexers
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public bool IsValid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => true;
+        }
+
+        public bool IsInvalid
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => false;
+        }
 
         public IEnumerable<__ftype__> Elements
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# n.ForEach(j => { m.ForEach(k => {
-                 yield return M__j____k__;
+                yield return M__j____k__;
                 //# });});
             }
         }
 
         public IEnumerable<__vmtype__> Rows
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# n.ForEach(k => { 
@@ -222,6 +694,7 @@ namespace Aardvark.Base
 
         public IEnumerable<__vntype__> Columns
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 //# m.ForEach(k => { 
@@ -232,8 +705,10 @@ namespace Aardvark.Base
 
         //# n.ForEach(k => { 
         public __vmtype__ R__k__
-        {                     
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new __vmtype__(/*# m.ForEach(f => {*/ M__k____f__/*#}, comma); */); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 //# mfields.ForEach((f, j) => { 
@@ -245,17 +720,33 @@ namespace Aardvark.Base
         //# });
         //# m.ForEach(k => {
         public __vntype__ C__k__
-        {           
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new __vntype__(/*# n.ForEach(f => {*/ M__f____k__/*#}, comma); */); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
                 //# nfields.ForEach((f, j) => { 
                 M__j____k__ = value.__f__;
-            //# });
+                //# });
             }
         }
 
         //# });
+        public __vntype__ Diagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __vntype__(/*# n.ForEach(i => {*/M__i____i__/*#}, comma); */);
+        }
+
+        //# if (n == m) {
+        public __vntype__ AntiDiagonal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __vntype__(/*# n.ForEach(i => { var j = n - 1 - i; */M__i____j__/*#}, comma); */);
+        }
+
+        //# }
         public __ftype__ this[int index]
         {
             get
@@ -290,12 +781,12 @@ namespace Aardvark.Base
                 {
                     //# n.ForEach(r => { 
                     case __r__: switch (column)
-                            {
-                                //# m.ForEach(c => {
-                                case __c__: return M__r____c__;
-                                //# });
-                                default: throw new IndexOutOfRangeException();
-                            }
+                        {
+                            //# m.ForEach(c => {
+                            case __c__: return M__r____c__;
+                            //# });
+                            default: throw new IndexOutOfRangeException();
+                        }
                     //# });
                     default: throw new IndexOutOfRangeException();
                 }
@@ -306,34 +797,93 @@ namespace Aardvark.Base
                 {
                     //# n.ForEach(r => { 
                     case __r__: switch (column)
-                            {
-                                //# m.ForEach(c => {
-                                case __c__: M__r____c__ = value; return;
-                                //# });                       
-                                default: throw new IndexOutOfRangeException();
-                            }
+                        {
+                            //# m.ForEach(c => {
+                            case __c__: M__r____c__ = value; return;
+                            //# });                       
+                            default: throw new IndexOutOfRangeException();
+                        }
                     //# });
                     default: throw new IndexOutOfRangeException();
                 }
             }
         }
 
+        //# if (isReal) {
+        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var quantArray = new[] { "Any", "All" };
+        //# var actArray = new[] { oror, andand };
+        //# condArray.ForEach(scopeArray, (cond, scope) => {
+        //# quantArray.ForEach(actArray, (qant, act) => {
+        public bool __qant____cond__
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return /*# n.ForEach(i => {*/
+                    /*#m.ForEach(j => { */__scope__.Is__cond__(M__i____j__)/*# }, act); }, act); */;
+            }
+        }
+
+        //# }); // quantArray
+        //# }); // condArray 
+        /// <summary>
+        /// Returns true if any element of the matrix is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
+        }
+
+        //# } // isReal
         #endregion
 
         #region Constants
 
         public const int RowCount = __n__;
         public const int ColumnCount = __m__;
-        public const int ElementCount = __n__*__m__;
+        public const int ElementCount = __n__ * __m__;
 
-        public static readonly V2l Dimensions = new V2l(__n__, __m__);
+        public static V2l Dimensions
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new V2l(__n__, __m__);
+        }
 
-        public static readonly __nmtype__ Zero
-                = new __nmtype__(/*# (n*m).ForEach(k => {*/0/*#}, comma); */);
+        public static __nmtype__ Zero
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __nmtype__(0);
+        }
 
-        public static readonly __nmtype__ Identity
-                = new __nmtype__(/*# n.ForEach(i => { m.ForEach(j => { var v = i == j ? "1" : "0"; */__v__/*# }, comma); }, comma); */);
+        //# if (n == m) {
+        public static __nmtype__ Identity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new __nmtype__(/*# n.ForEach(i => { m.ForEach(j => { var v = i == j ? "1" : "0"; */__v__/*# }, comma); }, comma); */);
+        }
 
+        //# }
         #endregion
 
         #region Norms
@@ -365,17 +915,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the p-norm of the matrix. This is calculated as
-        /// (|M00|^p + |M01|^p + ... )^(1/p)
-        /// </summary>
-        public __ctype__ Norm(__ctype__ p)
-        {
-            return (/*# n.ForEach(i => { m.ForEach(j => { */
-                Fun.Abs(M__i____j__).Pow(p)/*# }, add); }, add); */
-            ).Pow(1 / p);
-        }
-
-        /// <summary>
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
@@ -403,68 +942,23 @@ namespace Aardvark.Base
             }
         }
 
-        /// <summary>
-        /// Returns the Manhatten (or 1-) distance between two matrices.
-        /// </summary>
-        public static __ftype__ Distance1(__nmtype__ a, __nmtype__ b)
-        {
-            return/*# n.ForEach(i => { m.ForEach(j => { */
-                Fun.Abs(b.M__i____j__ - a.M__i____j__)/*# }, add); }, add); */;
-        }
-
-        /// <summary>
-        /// Returns the Euclidean (or 2-) distance between two matrices.
-        /// </summary>
-        public static __ctype__ Distance2(__nmtype__ a, __nmtype__ b)
-        {
-            return /*# if (ctype != "double") {*/(__ctype__)/*# } */Fun.Sqrt(/*# n.ForEach(i => { m.ForEach(j => { */
-                        Fun.Square(b.M__i____j__ - a.M__i____j__)/*# }, add); }, add); */);
-        }
-
-        /// <summary>
-        /// Returns the p-distance between two matrices.
-        /// </summary>
-        public static __ctype__ Distance(__nmtype__ a, __nmtype__ b, __ctype__ p)
-        {
-            return (/*# n.ForEach(i => { m.ForEach(j => { */
-                Fun.Abs(b.M__i____j__ - a.M__i____j__).Pow(p)/*# }, add); }, add); */
-            ).Pow(1 / p);
-        }
-
-        /// <summary>
-        /// Returns the maximal absolute distance between the components of
-        /// the two matrices.
-        /// </summary>
-        public static __ftype__ DistanceMax(__nmtype__ a, __nmtype__ b)
-        {
-            return Fun.Max(/*# n.ForEach(i => { */
-                        Fun.Max(/*# m.ForEach(j => { */
-                            Fun.Abs(b.M__i____j__ - a.M__i____j__)/*#
-                                                }, comma); */)/*# }, comma); */);
-        }
-
-        /// <summary>
-        /// Returns the minimal absolute distance between the components of
-        /// the two matrices.
-        /// </summary>
-        public static __ftype__ DistanceMin(__nmtype__ a, __nmtype__ b)
-        {
-            return Fun.Min(/*# n.ForEach(i => { */
-                        Fun.Min(/*# m.ForEach(j => { */
-                            Fun.Abs(b.M__i____j__ - a.M__i____j__)/*#
-                                                }, comma); */)/*# }, comma); */);
-        }
-
         #endregion
 
         #region Mathematical Operators
 
-        //# for (int o = 0; o < ops.Length; o++) { var op = ops[o];
-        //#     for (int action = 0; action < 2; action++) { var opact = opaction[action, o]; 
-        //#         for (int t1 = t; t1 < tcharA.Length; t1++) {
-        //#             var nmtype1 = "M" + n + m + tcharA[t1];
-        //#             var ftype1 = ftypeA[t1];
-        //#             if (o != ops.Length-1) { 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ operator -(__nmtype__ m)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(s => { */-m.M__r____s__/*# }, comma); }, comma); */);
+        }
+
+        //# for (int o = 0; o < ops.Length; o++) { var op = ops[o]; var opact = "operator " + op;
+        //#     for (int t1 = t; t1 < tcharA.Length; t1++) {
+        //#         var nmtype1 = "M" + n + m + tcharA[t1];
+        //#         var ftype1 = ftypeA[t1];
+        //#         if (o != ops.Length-1) { 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype1__ __opact__(__nmtype__ a, __nmtype1__ b)
         {
             return new __nmtype1__(/*# n.ForEach(r => { */
@@ -472,66 +966,67 @@ namespace Aardvark.Base
         }
 
         //#             }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype1__ __opact__(__nmtype__ m, __ftype1__ s)
         {
             return new __nmtype1__(/*# n.ForEach(r => { */
                 /*# m.ForEach(s => { */m.M__r____s____op__s/*# }, comma); }, comma); */);
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype1__ __opact__(__ftype1__ s, __nmtype__ m)
         {
             return new __nmtype1__(/*# n.ForEach(r => { */
                 /*# m.ForEach(s => { */s__op__m.M__r____s__/*# }, comma); }, comma); */);
         }
 
-        //#         }
         //#     }
         //# }
         #endregion
 
         #region Matrix/Vector Multiplication
 
-        public static __vntype__ Multiply(__nmtype__ m, __vmtype__ v)
-        {
-            return new __vntype__(/*# n.ForEach(r => { */
-                /*# m.ForEach(q => { var f = fields[q]; */m.M__r____q__ * v.__f__/*# },
-                    add); }, comma); */);
-        }
-
+        /// <summary>
+        /// Multiplies a __nmtype__ matrix with a __vmtype__ column vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vntype__ operator *(__nmtype__ m, __vmtype__ v)
         {
             return new __vntype__(/*# n.ForEach(r => { */
-                /*# m.ForEach(q => { var f = fields[q]; */m.M__r____q__ * v.__f__/*# },
-                    add); }, comma); */);
+                /*# m.ForEach(q => { var f = fields[q]; */m.M__r____q__ * v.__f__/*# }, add); }, comma); */);
         }
 
-        //# if (m == n) {
-        public static __vmtype__ TransposedMultiply(__vntype__ v, __nmtype__ m)
+        /// <summary>
+        /// Multiplies a __vntype__ row vector with a __nmtype__ matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmtype__ operator *(__vntype__ v, __nmtype__ m)
         {
             return new __vmtype__(/*# m.ForEach(q => { */
-                /*# n.ForEach(r => { var f = fields[r]; */v.__f__ * m.M__r____q__/*# },
-                    add); }, comma); */);
+                /*# n.ForEach(r => { var f = fields[r]; */v.__f__ * m.M__r____q__/*# }, add); }, comma); */);
         }
 
-        //# }
         #endregion
 
         #region Bool Operators
 
         //# for(int o = 0; o < bops.Length; o++) {
         //#     string bop = " " + bops[o] + " ", bopname = "operator " + bops[o];
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __bopname__(__nmtype__ a, __nmtype__ b)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
                 a.M__i____j____bop__b.M__i____j__/*#}, andand);}, andand);*/;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __bopname__(__nmtype__ a, __ftype__ s)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
                 a.M__i____j____bop__s/*# }, andand); }, andand); */;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __bopname__(__ftype__ s, __nmtype__ a)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
@@ -539,16 +1034,19 @@ namespace Aardvark.Base
         }
 
         //# }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__nmtype__ a, __nmtype__ b)
         {
             return !(a == b);
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__nmtype__ m, __ftype__ s)
         {
             return !(m == s);
         }
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__ftype__ s, __nmtype__ m)
         {
             return !(s == m);
@@ -561,13 +1059,18 @@ namespace Aardvark.Base
         public override int GetHashCode()
         {
             return HashCode.Combine(/*# n.ForEach(r => { */
-                /*# m.ForEach(s => {*/M__r____s__.GetHashCode()/*# }, comma); }, comma); */); 
+                /*# m.ForEach(s => {*/M__r____s__.GetHashCode()/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__nmtype__ other)
+        {
+            return /*# n.ForEach(i => { */
+                /*# m.ForEach(j => { */M__i____j__.Equals(other.M__i____j__)/*#}, andand);}, andand);*/;
         }
 
         public override bool Equals(object other)
-        {
-            return (other is __nmtype__) ? (this == (__nmtype__)other) : false;
-        }
+            => (other is __nmtype__ o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -594,7 +1097,7 @@ namespace Aardvark.Base
                 + R__r__.ToString(format, fp, beginR, betweenR, endR) /*# }, addbetweenM); */
             + endM;
         }
-        
+
         public static __nmtype__ Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
@@ -605,248 +1108,37 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Transformations
-
-        //# if (m == 2) {
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
-        /// </summary>
-        public static __ftype__ TransformDir(__nmtype__ m, __ftype__ v)
-        {
-            return m.M00 * v;
-        }
-
-        /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
-        /// No projective transform is performed.
-        /// </summary>
-        public static __ftype__ TransformPos(__nmtype__ m, __ftype__ p)
-        {
-            return m.M00 * p + m.M01;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
-        /// Projective transform is performed. Perspective Division is performed.
-        /// </summary>
-        public static __ftype__ TransformPosProj(__nmtype__ m, __ftype__ p)
-        {
-            __ftype__ s = m.M10 * p + m.M11;
-            s = 1 / s;
-            return (TransformPos(m, p)) * s;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m. 
-        /// Projective transform is performed.
-        /// </summary>
-        public static __vmtype__ TransformPosProjFull(__nmtype__ m, __ftype__ p)
-        {
-            return new __vmtype__(TransformPos(m, p), m.M10 * p + m.M11);
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
-        /// </summary>
-        public __ftype__ TransformDir(__ftype__ v)
-        {
-            return TransformDir(this, v);
-        }
-
-        public __ftype__ TransformPos(__ftype__ p)
-        {
-            return TransformPos(this, p);
-        }
-
-        public __ftype__ TransformPosProj(__ftype__ p)
-        {
-            return TransformPosProj(this, p);
-        }
-
-        public __vmtype__ TransformPosProjFull(__ftype__ p)
-        {
-            return TransformPosProjFull(this, p);
-        }
-
-        //# } else { // m != 2
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by matrix m.
-        /// </summary>
-        public static __vmsub1type__ TransformDir(__nmtype__ m, __vmsub1type__ v)
-        {
-            return new __vmsub1type__(/*# msub1.ForEach(s => { */
-                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__s____r__ * v.__fr__/*# }, add); }, comma); */
-                );
-        }
-
-        /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by matrix m.
-        /// No projective transform is performed.
-        /// </summary>
-        public static __vmsub1type__ TransformPos(__nmtype__ m, __vmsub1type__ p)
-        {
-            return new __vmsub1type__(/*# msub1.ForEach(s => { */
-                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__s____r__ * p.__fr__/*# }, add); */ + m.M__s____msub1__/*# }, comma); */
-                );
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by this matrix.
-        /// </summary>
-        public __vmsub1type__ TransformDir(__vmsub1type__ v)
-        {
-            return new __vmsub1type__(/*# msub1.ForEach(s => { */
-                /*# mfields.Take(msub1).ForEach((fr, r) => { */M__s____r__ * v.__fr__/*# }, add); }, comma); */
-                );
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
-        /// No projective transform is performed.
-        /// </summary>
-        public __vmsub1type__ TransformPos(__vmsub1type__ p)
-        {
-            return new __vmsub1type__(/*# msub1.ForEach(s => { */
-                /*# mfields.Take(msub1).ForEach((fr, r) => { */M__s____r__ * p.__fr__/*# }, add); */ + M__s____msub1__/*# }, comma); */
-                );
-        }
-
-        //# if (n == m) {
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of matrix m.
-        /// </summary>
-        public static __vmsub1type__ TransposedTransformDir(__nmtype__ m, __vmsub1type__ v)
-        {
-            return new __vmsub1type__(/*# msub1.ForEach(s => { */
-                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__r____s__ * v.__fr__/*# }, add); }, comma); */
-                );
-        }
-
-        /// <summary>
-        /// Transforms point p (v.w is presumed 1.0) by transposed version of matrix m.
-        /// No projective transform is performed.
-        /// </summary>
-        public static __vmsub1type__ TransposedTransformPos(__nmtype__ m, __vmsub1type__ p)
-        {
-            return new __vmsub1type__(/*# msub1.ForEach(s => { */
-                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__r____s__ * p.__fr__/*# }, add); */ + m.M__msub1____s__/*# }, comma); */
-                );
-        }
-
-        /// <summary>
-        /// Transforms direction vector v (v.w is presumed 0.0) by transposed version of this matrix.
-        /// </summary>
-        public __vmsub1type__ TransposedTransformDir(__vmsub1type__ v)
-        {
-            return new __vmsub1type__(/*# msub1.ForEach(s => { */
-                /*# mfields.Take(msub1).ForEach((fr, r) => { */M__r____s__ * v.__fr__/*# }, add); }, comma); */
-                );
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by transposed version of this matrix.
-        /// No projective transform is performed.
-        /// </summary>
-        public __vmsub1type__ TransposedTransformPos(__vmsub1type__ p)
-        {
-            return new __vmsub1type__(/*# msub1.ForEach(s => { */
-                /*# mfields.Take(msub1).ForEach((fr, r) => { */M__r____s__ * p.__fr__/*# }, add); */ + M__msub1____s__/*# }, comma); */
-                );
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
-        /// </summary>
-        public static __vmsub1type__ TransformPosProj(__nmtype__ m, __vmsub1type__ p)
-        {
-            __ftype__ s = (/*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__msub1____r__ * p.__fr__ /*#}, add);*/+ m.M__msub1____msub1__);
-            s = 1 / s;
-            return (TransformPos(m, p)) * s;
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
-        /// Projective transform is performed.
-        /// </summary>
-        public static __vmtype__ TransformPosProjFull(__nmtype__ m, __vmsub1type__ p)
-        {
-            return new __vmtype__(/*# m.ForEach(s => { */
-                (/*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__s____r__ * p.__fr__/*#}, add);*/+ m.M__s____msub1__)/*#}, comma);*/
-                );
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
-        /// Projective transform is performed. Perspective Division is performed.
-        /// </summary>
-        public __vmsub1type__ TransformPosProj(__vmsub1type__ p)
-        {
-            return TransformPosProj(this, p);
-        }
-
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
-        /// Projective transform is performed.
-        /// </summary>
-        public __vmtype__ TransformPosProjFull(__vmsub1type__ p)
-        {
-            return TransformPosProjFull(this, p);
-        }
-
-        //# } else { // n != m
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by matrix m.
-        /// Projective transform is performed.
-        /// </summary>
-        public static __vmsub1type__ TransformPosProj(__nmtype__ m, __vmsub1type__ p)
-        {
-            return TransformDir(m, p);
-        }
-        /// <summary>
-        /// Transforms point p (p.w is presumed 1.0) by this matrix.
-        /// Projective transform is performed.
-        /// </summary>
-        public __vmsub1type__ TransformPosProj(__vmsub1type__ p)
-        {
-            return TransformDir(p);
-        }
-
-        //# } // n != m
-        //# } // m != 2
-        #endregion
-
         #region Matrix Operations
 
+        //# if(m == n) {
         /// <summary>
-        /// Returns index-th row of this matrix.
+        /// Returns adjoint of this matrix.
         /// </summary>
-        public __vmtype__ Row(int index)
+        public __nmtype__ Adjoint
         {
-            switch (index)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
             {
-                //# n.ForEach(r => {
-                case __r__: return R__r__;
-                //# });
-                default: throw new IndexOutOfRangeException();
+                //# if (n == 2) {
+                return new __nmtype__(M11, -M10, -M01, M00);
+                //# } else {
+                __nmtype__ result = new __nmtype__();
+                for (int row = 0; row < __n__; row++)
+                {
+                    for (int col = 0; col < __m__; col++)
+                    {
+                        if (((col + row) % 2) == 0)
+                            result[col, row] = this.Minor(row, col).Determinant;
+                        else
+                            result[col, row] = -this.Minor(row, col).Determinant;
+                    }
+                }
+
+                return result;
+                //# }
             }
         }
 
-        /// <summary>
-        /// Returns index-th column of this matrix.
-        /// </summary>
-        public __vntype__ Column(int index)
-        {
-            switch (index)
-            {
-                //# m.ForEach(r => {
-                case __r__: return C__r__;
-                //# });
-                default: throw new IndexOutOfRangeException();
-            }
-        }
-
-        //# if( m == n) {
         /// <summary>
         /// Returns the trace of this matrix.
         /// The trace is defined as the sum of the diagonal elements,
@@ -854,6 +1146,7 @@ namespace Aardvark.Base
         /// </summary>
         public __ftype__ Trace
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return /*# n.ForEach(r => {*/M__r____r__/*# }, add);*/ ; }
         }
 
@@ -861,14 +1154,14 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public __ftype__ Det
+        public __ftype__ Determinant
         {
             get
             {
-            //# if (n == 2) {
+                //# if (n == 2) {
                 return M00 * M11 - M10 * M01;
-            //# }
-            //# if (n == 3) {
+                //# }
+                //# if (n == 3) {
                 if (M10 == 0 && M20 == 0 && M21 == 0)
                 {
                     return M00 * M11 * M22;
@@ -877,8 +1170,8 @@ namespace Aardvark.Base
                 M00 * M11 * M22 - M00 * M12 * M21 +
                 M01 * M12 * M20 - M01 * M10 * M22 +
                 M02 * M10 * M21 - M02 * M11 * M20;
-            //# }
-            //# if (n == 4) {
+                //# }
+                //# if (n == 4) {
                 // using bottom row because elements M30, M31, and M32
                 // are zero most of the time.
                 __ftype__ d = 0;
@@ -899,41 +1192,30 @@ namespace Aardvark.Base
                 - M20 * M11 * M02 - M21 * M12 * M00 - M22 * M10 * M01
                 );
                 return d;
-            //# }
+                //# }
             }
-        }
-        
-        /// <summary>
-        /// Returns the determinant of this matrix.
-        /// The determinant is only defined for square matrices.
-        /// </summary>
-        public __ftype__ Determinant()
-        {
-            return Det;
         }
 
         /// <summary>
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible { get { return Det != 0; } }
-        
+        public bool Invertible
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Determinant != 0; }
+        }
+
         /// <summary>
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular { get { return Det == 0; } }
-
-        /// <summary>
-        /// Transposes this matrix (and returns this).
-        /// </summary>
-        public void Transpose()
+        public bool Singular
         {
-            //# for (int r = 1; r < n; r++) { r.ForEach(s => {
-            Fun.Swap(ref M__r____s__, ref M__s____r__);
-            //# }); }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Determinant == 0; }
         }
-        
+
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
@@ -942,7 +1224,8 @@ namespace Aardvark.Base
             get
             {
                 return new __nmtype__ {/*# n.ForEach(r => { */
-                    /*# m.ForEach(s => { */M__r____s__ = M__s____r__/*# }, comma); }, comma); */
+                    /*# m.ForEach(s => { */
+                    M__r____s__ = M__s____r__/*# }, comma); }, comma); */
                 };
             }
         }
@@ -952,7 +1235,7 @@ namespace Aardvark.Base
         private static V2l s_luDelta = new V2l(1, __n__);
 
         /// <summary>
-        /// Inverts the matrix using lu factorization in place. Returns true
+        /// Inverts the given matrix using lu factorization in place. Returns true
         /// if the matrix was invertible, otherwise the matrix remains unchanged.
         /// </summary>
         public bool LuInvert()
@@ -977,52 +1260,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Inverts the matrix in place. Returns true if the matrix was invertible,
-        /// otherwise the matrix remains unchanged.
-        /// </summary>
-        public bool Invert() { return LuInvert();  }
-
-        /// <summary>
         /// Returns the inverse of this matrix. If the matrix is not invertible
         /// __nmtype__.Zero is returned.
         /// </summary>
-        public __nmtype__ Inverse { get { return LuInverse(); } }
-
-        /// <summary>
-        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
-        /// </summary>
-        public static bool ApproximatelyEquals(__nmtype__ a, __nmtype__ b, __ftype__ epsilon)
+        public __nmtype__ Inverse
         {
-            return DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => LuInverse();
         }
 
-        /// <summary>
-        /// Returns if the matrix is the identity matrix I.
-        /// </summary>
-        public bool IsIdentity(__ftype__ epsilon)
-        {
-            return ApproximatelyEquals(this, Identity, epsilon);
-        }
-
-        /// <summary>
-        /// Returns if the matrix is orthonormal (i.e. M * M^t == I)
-        /// </summary>
-        public bool IsOrthonormal(__ftype__ epsilon)
-        {
-            var i = this * this.Transposed;
-            return i.IsIdentity(epsilon);
-        }
-
-        /// <summary>
-        /// Returns if the matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
-        /// </summary>
-        public bool IsOrthogonal(__ftype__ epsilon)
-        {
-            var i = this * this.Transposed;
-            for (int j = 0; j < __n__; j++)
-                i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
-            return i.IsIdentity(epsilon);
-        }
         //# }
         //# }
         #endregion
@@ -1030,10 +1276,8 @@ namespace Aardvark.Base
         #region Matrix Multiplication
 
         //# for (int a = n; a <= n+1 && a < 5; a++) {
-        //#     for (int o = 0; o < 2; o++) { 
-        //#         var opname = oper[o];
         //# if(a == m) {
-        public static M__n____a____tchar__ __opname__(M__n____a____tchar__ a, M__a____a____tchar__ b)
+        public static M__n____a____tchar__ operator *(M__n____a____tchar__ a, M__a____a____tchar__ b)
         {
             return new M__n____a____tchar__(/*# n.ForEach(r => { *//*# a.ForEach(s => { */
                 /*# a.ForEach(u => {*/a.M__r____u__ * b.M__u____s__/*# }, add);}, comma);}, comma); */
@@ -1044,14 +1288,13 @@ namespace Aardvark.Base
         //# if ((a == n) && (a < 4)) {
         //#     int b = a+1;
         //#     if( b == m) {
-        public static M__n____b____tchar__ __opname__(M__n____a____tchar__ a, M__a____b____tchar__ b)
+        public static M__n____b____tchar__ operator *(M__n____a____tchar__ a, M__a____b____tchar__ b)
         {
             return new M__n____b____tchar__(/*# n.ForEach(r => { *//*# b.ForEach(s => { */
                 /*# a.ForEach(u => {*/a.M__r____u__ * b.M__u____s__/*# }, add);}, comma);}, comma); */
              );
         }
 
-        //#            }
         //#         }
         //#     }
         //#  }
@@ -1141,6 +1384,625 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Contains static methods.
+    /// </summary>
+    public static partial class Mat
+    {
+        #region Transformation Extraction
+
+        //# if (t > 1 && n == 2) {
+        /// <summary>
+        /// Computes the (signed) angle in radians of a <see cref="__nmtype__"/> rotation matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ GetRotation(this __nmtype__ m)
+            => Fun.Atan2(m.M10, m.M00);
+
+        //# }
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ GetScale(this __nmtype__ m)
+            => (/*# n.ForEach(i => {*/m.C__i__.Length/*# }, add);*/) / __n__;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnctype__ GetScaleVector(this __nmtype__ m)
+            => new __vnctype__(/*# n.ForEach(i => {*/m.C__i__.Length/*# }, comma);*/);
+
+        //# if (n > 2 && n == m) {
+        /// <summary>
+        /// Approximates the uniform scale value of the given transformation matrix (average length of __nsub1__D basis vectors).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ GetScale__nsub1__(this __nmtype__ m)
+            => (/*# nsub1.ForEach(i => {*/m.C__i__.__xyznsub1__.Length/*# }, add);*/) / __nsub1__;
+
+        /// <summary>
+        /// Extracts a scale vector from the given matrix by calculating the lengths of the __nsub1__D basis vectors.
+        /// NOTE: The extraction only gives absolute value (negative scale will be ignored)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnsub1ctype__ GetScaleVector__nsub1__(this __nmtype__ m)
+            => new __vnsub1ctype__(/*# nsub1.ForEach(i => {*/m.C__i__.__xyznsub1__.Length/*# }, comma);*/);
+
+        //# }
+        //# if (t > 1 && m == 4) {
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// where the view-space z-axis points in forward direction.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmsub1type__ GetViewDirectionLH(this __nmtype__ m)
+            => m.R__msub2__.__xyzmsub1__.Normalized;
+
+        /// <summary>
+        /// Extracts the z-axis from the given transformation matrix.
+        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// the view-space z-axis points opposit the forward vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmsub1type__ GetViewDirectionRH(this __nmtype__ m)
+            => -m.R__msub2__.__xyzmsub1__.Normalized;
+
+        /// <summary>
+        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// a model transformation represents the model origin in world position.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmsub1type__ GetModelOrigin(this __nmtype__ m)
+            => m.C__msub1__/*# if (n != msub1) {*/.__xyzmsub1__/*#} */;
+
+        //# }
+        //# if (t == 3 && n == 4 && n == m) {
+        /// <summary>
+        /// Builds a hull from the given view-projection transformation matrix (left, right, bottom, top, near, far).
+        /// The view volume is assumed to be [-1, -1, -1] [1, 1, 1].
+        /// The normals of the hull planes point to the outside and are normalized. 
+        /// A point inside the visual hull will has negative height to all planes.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Hull3d GetVisualHull(this __nmtype__ viewProj)
+        {
+            var r0 = viewProj.R0;
+            var r1 = viewProj.R1;
+            var r2 = viewProj.R2;
+            var r3 = viewProj.R3;
+
+            return new Hull3d(new[]
+            {
+                new Plane3d((-(r3 + r0))).Normalized, // left
+                new Plane3d((-(r3 - r0))).Normalized, // right
+                new Plane3d((-(r3 + r1))).Normalized, // bottom
+                new Plane3d((-(r3 - r1))).Normalized, // top
+                new Plane3d((-(r3 + r2))).Normalized, // near
+                new Plane3d((-(r3 - r2))).Normalized, // far
+            });
+        }
+
+        //# }
+        #endregion
+
+        #region Norms
+
+        /// <summary>
+        /// Returns the Manhattan (or 1-) norm of the matrix. This is
+        /// calculated as |M00| + |M01| + ...
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Norm1(__nmtype__ m)
+            => m.Norm1;
+
+        /// <summary>
+        /// Returns the Euclidean (or 2-) norm of the matrix. This is
+        /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ Norm2(__nmtype__ m)
+            => m.Norm2;
+
+        /// <summary>
+        /// Returns the infinite (or maximum) norm of the matrix. This is
+        /// calculated as max(|M00|, |M01|, ...).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ NormMax(__nmtype__ m)
+            => m.NormMax;
+
+        /// <summary>
+        /// Returns the minimum norm of the matrix. This is calculated as
+        /// min(|M00|, |M01|, ...).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ NormMin(__nmtype__ m)
+            => m.NormMin;
+
+        /// <summary>
+        /// Returns the p-norm of the matrix. This is calculated as
+        /// (|M00|^p + |M01|^p + ... )^(1/p)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ Norm(this __nmtype__ m, __ctype__ p)
+        {
+            return (/*# n.ForEach(i => { m.ForEach(j => { */
+                Fun.Abs(m.M__i____j__).Pow(p)/*# }, add); }, add); */
+            ).Pow(1 / p);
+        }
+
+        #endregion
+
+        #region Distance functions
+
+        /// <summary>
+        /// Returns the Manhatten (or 1-) distance between two matrices.
+        /// </summary>
+        public static __ftype__ Distance1(this __nmtype__ a, __nmtype__ b)
+        {
+            return/*# n.ForEach(i => { m.ForEach(j => { */
+                Fun.Abs(b.M__i____j__ - a.M__i____j__)/*# }, add); }, add); */;
+        }
+
+        /// <summary>
+        /// Returns the Euclidean (or 2-) distance between two matrices.
+        /// </summary>
+        public static __ctype__ Distance2(this __nmtype__ a, __nmtype__ b)
+        {
+            return /*# if (ctype != "double") {*/(__ctype__)/*# } */Fun.Sqrt(/*# n.ForEach(i => { m.ForEach(j => { */
+                        Fun.Square(b.M__i____j__ - a.M__i____j__)/*# }, add); }, add); */);
+        }
+
+        /// <summary>
+        /// Returns the p-distance between two matrices.
+        /// </summary>
+        public static __ctype__ Distance(this __nmtype__ a, __nmtype__ b, __ctype__ p)
+        {
+            return (/*# n.ForEach(i => { m.ForEach(j => { */
+                Fun.Abs(b.M__i____j__ - a.M__i____j__).Pow(p)/*# }, add); }, add); */
+            ).Pow(1 / p);
+        }
+
+        /// <summary>
+        /// Returns the maximal absolute distance between the components of
+        /// the two matrices.
+        /// </summary>
+        public static __ftype__ DistanceMax(this __nmtype__ a, __nmtype__ b)
+        {
+            return Fun.Max(/*# n.ForEach(i => { */
+                        Fun.Max(/*# m.ForEach(j => { */
+                            Fun.Abs(b.M__i____j__ - a.M__i____j__)/*#
+                                                }, comma); */)/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns the minimal absolute distance between the components of
+        /// the two matrices.
+        /// </summary>
+        public static __ftype__ DistanceMin(this __nmtype__ a, __nmtype__ b)
+        {
+            return Fun.Min(/*# n.ForEach(i => { */
+                        Fun.Min(/*# m.ForEach(j => { */
+                            Fun.Abs(b.M__i____j__ - a.M__i____j__)/*#
+                                                }, comma); */)/*# }, comma); */);
+        }
+
+        #endregion
+
+        #region Transformations
+
+        /// <summary>
+        /// Transforms vector v by matrix m.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vntype__ Transform(this __nmtype__ m, __vmtype__ v)
+            => m * v;
+
+        //# for (int k = m + 1; k <= 4; k++) {
+        //# var d = k - m;
+        //# var vktype = "V" + k + tchar;
+        //# var vrettype = "V" + (n + d) + tchar;
+        //# var constfields = fields.Skip(m).Take(d);
+        //# var isare = (d > 1) ? "are" : "is";
+        /// <summary>
+        /// Transforms vector v by matrix m.
+        /// /*# constfields.ForEach(f => {*/v.__f__/*# }, andLit); */ __isare__ not modified.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vrettype__ Transform(this __nmtype__ m, __vktype__ v)
+        {
+            return new __vrettype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(q => { var f = fields[q]; */m.M__r____q__ * v.__f__/*# }, add); }, comma); */,
+                /*# constfields.ForEach(f => { */v.__f__/*# }, comma);*/);
+        }
+
+        //# }
+        /// <summary>
+        /// Transforms vector v by the transpose of matrix m.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmtype__ TransposedTransform(this __nmtype__ m, __vntype__ v)
+            => v * m;
+
+        //# if (n == m) {
+        //# for (int k = n + 1; k <= 4; k++) {
+        //# var d = k - n;
+        //# var vktype = "V" + k + tchar;
+        //# var vrettype = "V" + (m + d) + tchar;
+        //# var constfields = fields.Skip(n).Take(d);
+        //# var isare = (d > 1) ? "are" : "is";
+        /// <summary>
+        /// Transforms vector v by the transpose of matrix m.
+        /// /*# constfields.ForEach(f => {*/v.__f__/*# }, andLit); */ __isare__ not modified.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vrettype__ TransposedTransform(this __nmtype__ m, __vktype__ v)
+        {
+            return new __vrettype__(/*# m.ForEach(q => { */
+                /*# n.ForEach(r => { var f = fields[r]; */v.__f__ * m.M__r____q__/*# }, add); }, comma); */,
+                /*# constfields.ForEach(f => { */v.__f__/*# }, comma);*/);
+        }
+
+        //# } }
+        //# if (m > 2) {
+        /// <summary>
+        /// Transforms direction vector v (v.__fields[m-1]__ is presumed 0.0) by matrix m.
+        /// </summary>
+        public static __vmsub1type__ TransformDir(this __nmtype__ m, __vmsub1type__ v)
+        {
+            return new __vmsub1type__(/*# msub1.ForEach(s => { */
+                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__s____r__ * v.__fr__/*# }, add); }, comma); */
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by matrix m./*# if (n == m) {*/
+        /// No projective transform is performed./*# }*/
+        /// </summary>
+        public static __vmsub1type__ TransformPos(this __nmtype__ m, __vmsub1type__ p)
+        {
+            return new __vmsub1type__(/*# msub1.ForEach(s => { */
+                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__s____r__ * p.__fr__/*# }, add); */ + m.M__s____msub1__/*# }, comma); */
+                );
+        }
+
+        //# if (n == m) {
+        /// <summary>
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by matrix m.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        public static __vmsub1type__ TransformPosProj(this __nmtype__ m, __vmsub1type__ p)
+        {
+            __ftype__ s = /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__msub1____r__ * p.__fr__/*#}, add);*/ + m.M__msub1____msub1__;
+            return TransformPos(m, p) * (1 / s);
+        }
+
+        /// <summary>
+        /// Transforms point p (p.__fields[m-1]__ is presumed 1.0) by matrix m.
+        /// Projective transform is performed.
+        /// </summary>
+        public static __vmtype__ TransformPosProjFull(this __nmtype__ m, __vmsub1type__ p)
+        {
+            return new __vmtype__(/*# m.ForEach(s => { */
+                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__s____r__ * p.__fr__/*#}, add);*/ + m.M__s____msub1__/*#}, comma);*/
+                );
+        }
+
+        /// <summary>
+        /// Transforms direction vector v (v.__fields[m-1]__ is presumed 0.0) by transposed version of matrix m.
+        /// </summary>
+        public static __vmsub1type__ TransposedTransformDir(this __nmtype__ m, __vmsub1type__ v)
+        {
+            return new __vmsub1type__(/*# msub1.ForEach(s => { */
+                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__r____s__ * v.__fr__/*# }, add); }, comma); */
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by transposed version of matrix m.
+        /// No projective transform is performed.
+        /// </summary>
+        public static __vmsub1type__ TransposedTransformPos(this __nmtype__ m, __vmsub1type__ p)
+        {
+            return new __vmsub1type__(/*# msub1.ForEach(s => { */
+                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__r____s__ * p.__fr__/*# }, add); */ + m.M__msub1____s__/*# }, comma); */
+                );
+        }
+
+        /// <summary>
+        /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by transposed version of matrix m.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        public static __vmsub1type__ TransposedTransformProj(this __nmtype__ m, __vmsub1type__ p)
+        {
+            var s = /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__r____msub1__ * p.__fr__/*#}, add);*/ + m.M__msub1____msub1__;
+            return TransposedTransformPos(m, p) * (1 / s);
+        }
+
+        /// <summary>
+        /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by transposed version of matrix m.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        public static __vmtype__ TransposedTransformProjFull(this __nmtype__ m, __vmsub1type__ p)
+        {
+            return new __vmtype__(/*# m.ForEach(s => { */
+                /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__r____s__ * p.__fr__/*#}, add);*/ + m.M__msub1____s__/*#}, comma);*/
+                );
+        }
+
+        //# } // n != m
+        //# } // m > 2
+        #endregion
+
+        #region Operations
+
+        //# if (n == m) {
+        //# var rettype = (n > 2) ? "M" + nsub1 + msub1 + tchar : ftype;
+        //# var size = nsub1 * nsub1;
+        /// <summary>
+        /// Returns the given <see cref="__nmtype__"/> to a deleting the
+        /// specified row and column.
+        /// </summary>
+        public static __rettype__ Minor(this __nmtype__ m, int row, int column)
+        {
+            //# if (n == 2) {
+            return m[1 - row, 1 - column];
+            //# } else {
+            __rettype__ rs = new __rettype__();
+
+            for (int k = 0; k < __size__; k++)
+            {
+                var i = k / __nsub1__;
+                var j = k % __nsub1__;
+                var ii = (i < row) ? i : i + 1;
+                var jj = (j < column) ? j : j + 1;
+
+                rs[k] = m[ii * __n__ + jj];
+            }
+
+            return rs;
+            //# }
+        }
+
+        //# }
+        /// <summary>
+        /// Returns index-th row of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmtype__ Row(this __nmtype__ m, int index)
+        {
+            /*# n.ForEach(i => { */if (index == __i__) return m.R__i__;
+            /*# }, el); */else throw new IndexOutOfRangeException();
+        }
+
+        /// <summary>
+        /// Returns index-th column of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vntype__ Column(this __nmtype__ m, int index)
+        {
+            /*# m.ForEach(i => { */if (index == __i__) return m.C__i__;
+            /*# }, el); */else throw new IndexOutOfRangeException();
+        }
+
+        //# if( m == n) {
+        /// <summary>
+        /// Returns the determinant of the given matrix.
+        /// The determinant is only defined for square matrices.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Determinant(__nmtype__ m)
+            => m.Determinant;
+
+        /// <summary>
+        /// Returns the transpose of the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Transposed(__nmtype__ m)
+            => m.Transposed;
+
+        /// <summary>
+        /// Transposes the given matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transpose(this ref __nmtype__ m)
+        {
+            //# for (int r = 1; r < n; r++) { r.ForEach(s => {
+            Fun.Swap(ref m.M__r____s__, ref m.M__s____r__);
+            //# }); }
+        }
+
+        //# if (isReal) {
+        /// <summary>
+        /// Returns the inverse of the given matrix. If the matrix is not invertible
+        /// __nmtype__.Zero is returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Inverse(__nmtype__ m)
+            => m.Inverse;
+
+        /// <summary>
+        /// Inverts the given matrix in place. Returns true if the matrix was invertible,
+        /// otherwise the matrix remains unchanged.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Invert(this ref __nmtype__ m) { return m.LuInvert(); }
+
+        /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this __nmtype__ m, __ftype__ epsilon)
+        {
+            return Fun.ApproximateEquals(m, __nmtype__.Identity, epsilon);
+        }
+
+        /// <summary>
+        /// Returns if the given matrix is the identity matrix I.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsIdentity(this __nmtype__ m)
+            => IsIdentity(m, Constant<__ftype__>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this __nmtype__ m, __ftype__ epsilon)
+        {
+            var i = m * m.Transposed;
+            return i.IsIdentity(epsilon);
+        }
+
+        /// <summary>
+        /// Returns if the given matrix is orthonormal (i.e. M * M^t == I)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthonormal(this __nmtype__ m)
+            => IsOrthonormal(m, Constant<__ftype__>.PositiveTinyValue);
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this __nmtype__ m, __ftype__ epsilon)
+        {
+            var i = m * m.Transposed;
+            for (int j = 0; j < __n__; j++)
+                i[j, j] = 1; //inefficient implementation: just leave out the comparisons at the diagonal entries.
+            return i.IsIdentity(epsilon);
+        }
+
+        /// <summary>
+        /// Returns if the given matrix is orthogonal (i.e. all non-diagonal entries of M * M^t == 0)
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOrthogonal(this __nmtype__ m)
+            => IsOrthogonal(m, Constant<__ftype__>.PositiveTinyValue);
+
+        //# }
+        //# }
+        #endregion
+        //# if (m == n && isReal) {
+
+        #region Orthogonalization
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="__nmtype__"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthogonalize(this ref __nmtype__ matrix)
+        {
+            //# for (int j = 1; j < n; j++) {
+            //# for (int i = 0; i < 2; i++) {
+            //# for (int k = 0; k < j; k++) {
+            matrix.C__j__ -= (Vec.Dot(matrix.C__k__, matrix.C__j__) / Vec.Dot(matrix.C__k__, matrix.C__k__)) * matrix.C__k__;
+            //# }
+            //# }
+            //# }
+        }
+
+        /// <summary>
+        /// Orthogonalizes the columns of the given <see cref="__nmtype__"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Orthogonalized(this __nmtype__ matrix)
+        {
+            __nmtype__ m = matrix;
+            Orthogonalize(ref m);
+            return m;
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="__nmtype__"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        public static void Orthonormalize(this ref __nmtype__ matrix)
+        {
+            matrix.C0 = matrix.C0.Normalized;
+            //# for (int j = 1; j < n; j++) {
+            //# for (int i = 0; i < 2; i++) {
+            //# for (int k = 0; k < j; k++) {
+            matrix.C__j__ -= (Vec.Dot(matrix.C__k__, matrix.C__j__) / Vec.Dot(matrix.C__k__, matrix.C__k__)) * matrix.C__k__;
+            //# }
+            //# }
+            matrix.C__j__ = matrix.C__j__.Normalized;
+            //# }
+        }
+
+        /// <summary>
+        /// Orthonormalizes the columns of the given <see cref="__nmtype__"/> using the (modified) Gram-Schmidt algorithm with
+        /// an additional reorthogonalization step.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Orthonormalized(this __nmtype__ matrix)
+        {
+            __nmtype__ m = matrix;
+            Orthonormalize(ref m);
+            return m;
+        }
+
+        #endregion
+        //# }
+    }
+
+    public static partial class Fun
+    {
+        #region ApproximateEquals
+
+        //# if (isReal) {
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __nmtype__ a, __nmtype__ b)
+            => ApproximateEquals(a, b, Constant<__ftype__>.PositiveTinyValue);
+
+        //# }
+        /// <summary>
+        /// Returns if all entries in the matrix a are approximately equal to the respective entries in matrix b.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __nmtype__ a, __nmtype__ b, __ftype__ epsilon)
+        {
+            return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
+        }
+
+        #endregion
+        //# if (isReal) {
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="__nmtype__"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(__nmtype__ v)
+            => v.IsNaN;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="__nmtype__"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(__nmtype__ v)
+            => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all elements of the given <see cref="__nmtype__"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(__nmtype__ v)
+            => v.IsFinite;
+
+        #endregion
+        //# }
     }
 
     #endregion

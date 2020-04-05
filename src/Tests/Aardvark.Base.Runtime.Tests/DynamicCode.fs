@@ -6,10 +6,10 @@ open System.Threading
 open System.Threading.Tasks
 open System.Collections.Generic
 open Aardvark.Base
-open Aardvark.Base.Incremental
 open Aardvark.Base.Runtime
 open NUnit.Framework
 open FsUnit
+open FSharp.Data.Adaptive
 
 
 module DynamicCodeTests =
@@ -107,7 +107,7 @@ module DynamicCodeTests =
             let compileDelta (l : Option<int>) (r : int) =
                 let l = match l with | Some l -> l | None -> 0
 
-                new AdaptiveCode<_>([Mod.constant [pAppend, [|l :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
+                new AdaptiveCode<_>([AVal.constant [pAppend, [|l :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
 
             let program =
                 input |> AdaptiveProgram.nativeDifferential 6 Comparer.Default compileDelta
@@ -116,10 +116,10 @@ module DynamicCodeTests =
 
             new TestProgram<_,_>(program, getCalls)
 
-        let createMod (input : aset<'k * IMod<int>>) =
-            let compileDelta (l : Option<IMod<int>>) (r : IMod<int>) =
-                let l = match l with | Some l -> l | None -> Mod.constant 0
-                let call = Mod.map2 (fun l r -> [pAppend, [|l :> obj; r :> obj|]]) l r
+        let createMod (input : aset<'k * aval<int>>) =
+            let compileDelta (l : Option<aval<int>>) (r : aval<int>) =
+                let l = match l with | Some l -> l | None -> AVal.constant 0
+                let call = AVal.map2 (fun l r -> [pAppend, [|l :> obj; r :> obj|]]) l r
                 new AdaptiveCode<_>([call]) :> IAdaptiveCode<_>
 
             let program =
@@ -130,7 +130,7 @@ module DynamicCodeTests =
 
         let createSimple (input : aset<int>) =
             let compile (r : int) =
-                new AdaptiveCode<_>([Mod.constant [pAppend, [|r :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
+                new AdaptiveCode<_>([AVal.constant [pAppend, [|r :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
 
             let program =
                 input 
@@ -145,7 +145,7 @@ module DynamicCodeTests =
             let compileDelta (l : Option<float32>) (r : float32) =
                 let l = match l with | Some l -> l | None -> 0.0f
 
-                new AdaptiveCode<_>([Mod.constant [pAppendF, [|l :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
+                new AdaptiveCode<_>([AVal.constant [pAppendF, [|l :> obj; r :> obj|]]]) :> IAdaptiveCode<_>
 
             let program =
                 input |> ASet.map (fun i -> i,i) |> AdaptiveProgram.nativeDifferential 6 Comparer.Default compileDelta
@@ -158,7 +158,7 @@ module DynamicCodeTests =
 
         let createDynamic (input : aset<int>) =
             let compile (r : int) =
-                new AdaptiveCode<_>([Mod.constant [pAppend, [|r :> obj|]]]) :> IAdaptiveCode<_>
+                new AdaptiveCode<_>([AVal.constant [pAppend, [|r :> obj|]]]) :> IAdaptiveCode<_>
 
             let program =
                 input |> ASet.map (fun i -> i,i) |> AdaptiveProgram.nativeSimple 6 Comparer.Default compile
@@ -214,11 +214,11 @@ module DynamicCodeTests =
 
     [<Test>]
     let ``[DynamicCode] lots of args``() =
-        let input = CSet.ofList [1,1]
+        let input = cset [1,1]
         let prog = 
             AdaptiveProgram.nativeSimple 
                 6 Comparer<int>.Default 
-                (fun a -> new AdaptiveCode<_>([Mod.constant [pTest, [|2 :> obj; 3 :> obj; 4 :> obj; 5 :> obj|]]]) :> IAdaptiveCode<_>)
+                (fun a -> new AdaptiveCode<_>([AVal.constant [pTest, [|2 :> obj; 3 :> obj; 4 :> obj; 5 :> obj|]]]) :> IAdaptiveCode<_>)
                 input
 
         prog.Update(AdaptiveToken.Top) |> ignore
@@ -229,7 +229,7 @@ module DynamicCodeTests =
     [<Test>]
     let ``[DynamicCode] add/remove/clear``() =
 
-        let calls = CSet.ofList [1,1; 2,2]
+        let calls = cset [1,1; 2,2]
 
         use prog = TestProgram.create calls
 
@@ -243,7 +243,7 @@ module DynamicCodeTests =
 
         // test addition at end
         transact (fun () ->
-            CSet.add (3,3) calls |> ignore
+            calls.Add (3,3) |> ignore
         )
 
         prog.Update(AdaptiveToken.Top) |> ignore
@@ -256,7 +256,7 @@ module DynamicCodeTests =
 
         // test removal at end
         transact (fun () ->
-            CSet.exceptWith [(2,2); (3,3)] calls |> ignore
+            calls.ExceptWith [(2,2); (3,3)]
         )
         prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 1 
@@ -268,7 +268,7 @@ module DynamicCodeTests =
 
         // test duplicate key stability
         transact (fun () ->
-            CSet.add (1,2) calls |> ignore
+            calls.Add (1,2) |> ignore
         )
         prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 2 
@@ -279,7 +279,7 @@ module DynamicCodeTests =
 
         // test removal at front
         transact (fun () ->
-            CSet.remove (1,1) calls |> ignore
+            calls.Remove (1,1) |> ignore
         )
         prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 1
@@ -289,7 +289,7 @@ module DynamicCodeTests =
 
         // test addition at front
         transact (fun () ->
-            CSet.add (0,1) calls |> ignore
+            calls.Add (0,1) |> ignore
         )
         prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 2
@@ -299,7 +299,7 @@ module DynamicCodeTests =
 
         // test clear
         transact (fun () ->
-            CSet.clear calls
+            calls.Clear()
         )
         prog.Update(AdaptiveToken.Top) |> ignore
         prog.NativeCallCount |> should equal 0
@@ -311,28 +311,28 @@ module DynamicCodeTests =
     [<Test>]
     let ``[DynamicCode] changes``() =
 
-        let v1 = Mod.init 1
-        let v2 = Mod.init 2
-        let v3 = Mod.init 3
+        let v1 = cval 1
+        let v2 = cval 2
+        let v3 = cval 3
 
-        let input = CSet.ofList [1, v1 :> IMod<_>; 2, v2 :> IMod<_>; 3, v3 :> IMod<_>]
+        let input = cset [1, v1 :> aval<_>; 2, v2 :> aval<_>; 3, v3 :> aval<_>]
         use prog = TestProgram.createMod input
 
 
         prog.Run() |> should equal [0,1; 1,2; 2,3]
 
-        transact (fun () -> Mod.change v1 4)
+        transact (fun () -> v1.Value <- 4)
         prog.Run() |> should equal [0,4; 4,2; 2,3]
 
 
-        transact (fun () -> Mod.change v2 3)
+        transact (fun () -> v2.Value <- 3)
         prog.Run() |> should equal [0,4; 4,3; 3,3]
 
-        transact (fun () -> Mod.change v3 2)
+        transact (fun () -> v3.Value <- 2)
         prog.Run() |> should equal [0,4; 4,3; 3,2]
 
 
-        transact (fun () -> input |> CSet.remove (1,v1 :> IMod<_>)) |> should be True
+        transact (fun () -> input.Remove(1,v1 :> aval<_>)) |> should be True
         prog.Run() |> should equal [0,3; 3,2] 
 
         prog.StartDefragmentation().Wait()
@@ -341,13 +341,13 @@ module DynamicCodeTests =
     [<Test>]
     let ``[DynamicCode] defragmentation``() =
         
-        let calls = [1..1000] |> CSet.ofList
+        let calls = cset [1..1000]
         use prog = TestProgram.createSimple calls
 
         // create some fragmentation
         prog.Update(AdaptiveToken.Top) |> ignore
         transact (fun () ->
-            calls |> CSet.exceptWith [100..200] 
+            calls.ExceptWith [100..200] 
         )
         prog.Update(AdaptiveToken.Top) |> ignore
         prog.TotalJumpDistanceInBytes |> should not' (equal 0L)
@@ -361,7 +361,7 @@ module DynamicCodeTests =
 
         // re-add the removed calls and check defragment/run
         transact (fun () ->
-            calls |> CSet.unionWith [100..200] 
+            calls.UnionWith [100..200] 
         )
         prog.Update(AdaptiveToken.Top) |> ignore
         prog.TotalJumpDistanceInBytes |> should not' (equal 0L)
@@ -376,7 +376,7 @@ module DynamicCodeTests =
     [<Test>]
     let ``[DynamicCode] dynamic arguments``() =
         
-        let calls = [1] |> CSet.ofList
+        let calls = cset [1]
         use prog = TestProgram.createDynamic calls
 
         prog.Run (TestStruct 5) |> should equal [5,1]
@@ -399,7 +399,7 @@ module DynamicCodeTests =
 
     [<Test>]
     let ``[DynamicCode] float arguments``() =
-        let calls = [1.0f; 2.0f] |> CSet.ofList
+        let calls = cset [1.0f; 2.0f]
         use prog = TestProgram.createSimpleFloat calls
 
         prog.Update(AdaptiveToken.Top) |> ignore
@@ -417,7 +417,7 @@ module DynamicCodeTests =
                 for i in 1 .. cnt do yield i,i+1
             ]
 
-        let calls = CSet.ofList manyCalls
+        let calls = cset manyCalls
 
         use prog = TestProgram.create calls
 

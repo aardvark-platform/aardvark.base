@@ -1,4 +1,6 @@
-﻿namespace Aardvark.Base.Rendering
+﻿using System.Runtime.CompilerServices;
+
+namespace Aardvark.Base.Rendering
 {
     public struct RasterizerState
     {
@@ -54,27 +56,47 @@
 
         #endregion
 
-        #region Overrides
+        #region Comparison
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(RasterizerState a, RasterizerState b)
+        {
+            return (a.DepthTest == b.DepthTest) &&
+                (a.DepthBias == b.DepthBias) &&
+                (a.FrontFace == b.FrontFace) &&
+                (a.CullMode == b.CullMode) &&
+                (a.BlendMode == b.BlendMode) &&
+                (a.StencilMode == b.StencilMode) &&
+                (a.FillMode == b.FillMode);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(RasterizerState a, RasterizerState b)
+            => !(a == b);
+
+        #endregion
+
+            #region Overrides
 
         public override int GetHashCode()
         {
             return DepthTest.GetHashCode() ^ DepthBias.GetHashCode() ^ FrontFace.GetHashCode() ^ CullMode.GetHashCode() ^ BlendMode.GetHashCode() ^ FillMode.GetHashCode() ^ StencilMode.GetHashCode();
         }
 
-        public override bool Equals(object obj)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(RasterizerState other)
         {
-            if (obj is RasterizerState rs)
-            {
-                return rs.DepthTest == DepthTest 
-                    && rs.DepthBias == DepthBias
-                    && rs.FrontFace == FrontFace 
-                    && rs.CullMode == CullMode
-                    && rs.BlendMode.Equals(BlendMode) 
-                    && rs.StencilMode.Equals(StencilMode)
-                    && rs.FillMode == FillMode;
-            }
-            else return false;
+            return other.DepthTest.Equals(DepthTest)
+                && other.DepthBias.Equals(DepthBias)
+                && other.FrontFace.Equals(FrontFace)
+                && other.CullMode.Equals(CullMode)
+                && other.BlendMode.Equals(BlendMode)
+                && other.StencilMode.Equals(StencilMode)
+                && other.FillMode.Equals(FillMode);
         }
+
+        public override bool Equals(object other)
+            => (other is RasterizerState o) ? Equals(o) : false;
 
         #endregion
     }

@@ -14,8 +14,8 @@ module TreeFlattenPerformance =
         r,sw.Elapsed.TotalSeconds
 
         // Let us convert the tree to an adaptive one
-    type Tree<'a> = Node of left : IMod<Tree<'a>> * right : IMod<Tree<'a>> 
-                  | Leaf of IMod<'a>
+    type Tree<'a> = Node of left : aval<Tree<'a>> * right : aval<Tree<'a>> 
+                  | Leaf of aval<'a>
 
     // Let us define the adaptive version of leafNodes
     let rec leafNodes t =

@@ -8,12 +8,11 @@ open System.Runtime.InteropServices
 open System.Runtime.CompilerServices
 open Microsoft.FSharp.NativeInterop
 open Aardvark.Base
-open Aardvark.Base.Incremental
-open Aardvark.Base.Runtime
 open Aardvark.Base.Runtime
 open NUnit.Framework
 open FsUnit
 open System.IO
+open FSharp.Data.Adaptive
 
 
 module RefelectionTests =
@@ -36,7 +35,7 @@ module RefelectionTests =
     let tryUnify (decl : Type) (real : Type) =
         match decl.TryUnifyWith real with
             | Some ass ->
-                decl.GetGenericArguments() |> Array.map (fun a -> HMap.find a ass) |> Array.toList |> Some
+                decl.GetGenericArguments() |> Array.map (fun a -> HashMap.find a ass) |> Array.toList |> Some
             | None ->
                 None
 

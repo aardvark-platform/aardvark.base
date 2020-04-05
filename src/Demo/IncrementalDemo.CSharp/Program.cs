@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Aardvark.Base;
-using Aardvark.Base.Incremental;
-using Aardvark.Base.Incremental.CSharp;
-using Aardvark.Base.Incremental.Validation;
+using FSharp.Data.Adaptive;
+using CSharp.Data.Adaptive;
+using FSharp.Data.Traceable;
 
 namespace IncrementalDemo.CSharp
 {
@@ -14,87 +14,92 @@ namespace IncrementalDemo.CSharp
     {
         static void SimpleCallbackTest()
         {
-            var m = new ModRef<int>(0);
+            var m = new ChangeableValue<int>(0);
             var d = m.Map(a => 2 * a);
 
             Report.Begin("m = 0");
-            var s = d.UnsafeRegisterCallbackNoGcRoot(v =>
+
+            void print ()
             {
-                Report.Line("m * 2 = {0}", v);
-            });
+                Report.Line("m * 2 = {0}", d.GetValue());
+            }
+
             Report.End();
 
             Report.Begin("m = 3");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 m.Value = 3;
             }
+            print();
             Report.End();
 
 
             Report.Begin("m = 1; m = 2");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 m.Value = 1;
                 m.Value = 2;
             }
+            print();
             Report.End();
 
         }
 
         static void SetContainmentTest()
         {
-            var set = new ChangeableSet<int> { 1, 2, 3, 4 };
+            var set = new ChangeableHashSet<int>(new [] { 1, 2, 3, 4 });
 
 
             var greater1 = from i in set where i > 1 select i;
-            var contains5 = greater1.ContainsMod(5);
-            var contains2And4 = greater1.ContainsAll(2, 4);
 
 
+            var reader = greater1.GetReader();
 
             Report.Begin("set = {1,2,3,4}");
-            greater1.UnsafeRegisterCallbackNoGcRoot(deltas =>
+            void print()
             {
-                foreach(var d in deltas)
+                var deltas = reader.GetChanges(AdaptiveToken.Top);
+                foreach (var d in deltas)
                 {
                     if (d.Count > 0) Report.Line("add {0}", d.Value);
                     else Report.Line("rem {0}", d.Value);
                 }
-            });
-
-            contains5.UnsafeRegisterCallbackNoGcRoot(c => Report.Line("contains 5 = {0}", c));
-            contains2And4.UnsafeRegisterCallbackNoGcRoot(c => Report.Line("contains [2,4] = {0}", c));
+            }
             Report.End();
 
             
 
             Report.Begin("set = {1,2,3,4,5,6}");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 set.Add(5); set.Add(6);
             }
+            print();
             Report.End();
 
             Report.Begin("set = {2,4,6}");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 set.Remove(1); set.Remove(3); set.Remove(5);
             }
+            print();
             Report.End();
 
             Report.Begin("set = {4,6}");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 set.Remove(2);
             }
+            print();
             Report.End();
 
             Report.Begin("set = {4,5,6}");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 set.Add(5);
             }
+            print();
             Report.End();
 
             
@@ -104,9 +109,9 @@ namespace IncrementalDemo.CSharp
 
         static void AdvancedASetTest()
         {
-            Action<IOpReader<hrefset<int>, hdeltaset<int>>> print = (r) =>
+            Action<FSharp.Data.Traceable.IOpReader<CountingHashSet<int>, HashSetDelta<int>>> print = (r) =>
             {
-                var deltas = r.GetOperations();
+                var deltas = r.GetChanges(AdaptiveToken.Top);
                 var content = r.State;
 
                 var deltaStr = deltas.Select(d => d.Count > 0 ? string.Format("Add {0}", d.Value) : string.Format("Rem {0}", d.Value)).Join(", ");
@@ -116,10 +121,10 @@ namespace IncrementalDemo.CSharp
                 Report.Line("content = [{0}]", contentStr);
             };
 
-            var i0 = new ChangeableSet<int> { 1, 2, 3 };
-            var i1 = new ChangeableSet<int> { 4, 5 };
-            var i2 = new ChangeableSet<int> { 6, 7 };
-            var input = new ChangeableSet<IAdaptiveSet<int>> { i0, i1 };
+            var i0 = new ChangeableHashSet<int>(new [] { 1, 2, 3 });
+            var i1 = new ChangeableHashSet<int>(new [] { 4, 5 });
+            var i2 = new ChangeableHashSet<int>(new [] { 6, 7 });
+            var input = new ChangeableHashSet<IAdaptiveHashSet<int>>(new [] { i0, i1 });
 
             var flat = input.SelectMany(a => a);
 
@@ -131,7 +136,7 @@ namespace IncrementalDemo.CSharp
 
             Report.Begin("add i2; i1.rem 4");
             Report.Line("all changes (inner and outer) shall be seen consistently");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 input.Add(i2);
                 i1.Remove(4);
@@ -142,7 +147,7 @@ namespace IncrementalDemo.CSharp
 
             Report.Begin("rem i0; i0.add 10");
             Report.Line("the set shall not see the (Add 10) operation since i0 was removed as a whole");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 input.Remove(i0);
                 i0.Add(10);
@@ -154,7 +159,7 @@ namespace IncrementalDemo.CSharp
 
             Report.Begin("add i0; i0.rem 10");
             Report.Line("the set shall not see the (Add 10) operation since 10 was removed from i0");
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 input.Add(i0);
                 i0.Remove(10);
@@ -162,8 +167,6 @@ namespace IncrementalDemo.CSharp
             print(reader);
             Report.End();
 
-
-            reader.Dump();
         }
 
 

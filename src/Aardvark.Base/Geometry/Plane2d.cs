@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -39,7 +40,7 @@ namespace Aardvark.Base
         public Plane2d(V2d normalizedNormal, V2d point)
         {
             Normal = normalizedNormal;
-            Distance = V2d.Dot(normalizedNormal, point);
+            Distance = Vec.Dot(normalizedNormal, point);
         }
 
         #endregion
@@ -60,7 +61,7 @@ namespace Aardvark.Base
         public V2d Point
         {
             get { return Normal * Distance; }
-            set { Distance = V2d.Dot(Normal, value); }
+            set { Distance = Vec.Dot(Normal, value); }
         }
 
         /// <summary>
@@ -135,7 +136,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The signed height of the supplied point over the plane.
         /// </summary>
-        public double Height(V2d p) => V2d.Dot(Normal, p) - Distance;
+        public double Height(V2d p) => Vec.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
@@ -159,13 +160,28 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Plane2d a, Plane2d b)
+            => (a.Normal == b.Normal) && (a.Distance == b.Distance);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Plane2d a, Plane2d b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
-        public override bool Equals(object other) => (other is Plane2d value)
-            ? (Normal == value.Normal) && (Distance == value.Distance)
-            : false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Plane2d other)
+            => Normal.Equals(other.Normal) && Distance.Equals(other.Distance);
+
+        public override bool Equals(object other)
+            => (other is Plane2d o) ? Equals(o) : false;
 
         public override string ToString() => 
             string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
@@ -173,9 +189,28 @@ namespace Aardvark.Base
         public static Plane2d Parse(string s)
         {
             var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new Plane2d(V2d.Parse(x[0]), double.Parse(x[1]));
+            return new Plane2d(V2d.Parse(x[0]), double.Parse(x[1], CultureInfo.InvariantCulture));
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="Plane2d"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Plane2d a, Plane2d b, double tolerance) =>
+            ApproximateEquals(a.Normal, b.Normal, tolerance) &&
+            ApproximateEquals(a.Distance, b.Distance, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="Plane2d"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this Plane2d a, Plane2d b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 }

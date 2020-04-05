@@ -25,9 +25,9 @@ namespace Aardvark.Base
             {
                 var edge01 = Edge01;
                 var edge02 = Edge02;
-                double dot0101 = V3d.Dot(edge01, edge01);
-                double dot0102 = V3d.Dot(edge01, edge02);
-                double dot0202 = V3d.Dot(edge02, edge02);
+                double dot0101 = Vec.Dot(edge01, edge01);
+                double dot0102 = Vec.Dot(edge01, edge02);
+                double dot0202 = Vec.Dot(edge02, edge02);
                 double d = 2.0 * (dot0101 * dot0202 - dot0102 * dot0102);
                 if (d.Abs() <= 0.000000001) return Sphere3d.Invalid;
                 double s = (dot0101 * dot0202 - dot0202 * dot0102) / d;

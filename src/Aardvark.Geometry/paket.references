@@ -3,3 +3,4 @@ Unofficial.LibTessDotNet
 FSharp.Core
 FsPickler
 Aardvark.Base.TypeProviders
+FSharp.Data.Adaptive

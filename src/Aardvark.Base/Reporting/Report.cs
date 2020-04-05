@@ -863,6 +863,17 @@ namespace Aardvark.Base
             s_reporter.Line(LogType.Warn, 0, RootTarget, "WARNING:", 0, Format(line, args));
         }
 
+
+        /// <summary>
+        /// Write a warning. Warnings are at level 0 and cannot be
+        /// suppressed.
+        /// </summary>
+        public static void WarnNoPrefix([Localizable(true)] string line, params object[] args)
+        {
+            CountCallsToWarn.Increment();
+            s_reporter.Line(LogType.Warn, 0, RootTarget, "", 0, Format(line, args));
+        }
+
         /// <summary>
         /// Write a debug message.
         /// </summary>
@@ -870,6 +881,14 @@ namespace Aardvark.Base
         {
             CountCallsToDebug.Increment();
             s_reporter.Line(LogType.Debug, 0, RootTarget, "Debug:", 0, Format(line, args));
+        }
+        /// <summary>
+        /// Write a debug message.
+        /// </summary>
+        public static void DebugNoPrefix([Localizable(true)] string line, params object[] args)
+        {
+            CountCallsToDebug.Increment();
+            s_reporter.Line(LogType.Debug, 0, RootTarget, "", 0, Format(line, args));
         }
 
         /// <summary>
@@ -908,6 +927,25 @@ namespace Aardvark.Base
             var output = Format(line, args);
             CountCallsToError.Increment();
             s_reporter.Line(LogType.Error, 0, RootTarget, "ERROR:", 0, output);
+            if (ThrowOnError)
+            {
+                System.Diagnostics.Debugger.Break();
+                if (System.Diagnostics.Debugger.IsAttached)
+                {
+                    throw new Exception(output);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Write an error. Errors are at level 0 and cannot be
+        /// suppressed. More serious than a Warning, the program commences.
+        /// </summary>
+        public static void ErrorNoPrefix([Localizable(true)] string line, params object[] args)
+        {
+            var output = Format(line, args);
+            CountCallsToError.Increment();
+            s_reporter.Line(LogType.Error, 0, RootTarget, "", 0, output);
             if (ThrowOnError)
             {
                 System.Diagnostics.Debugger.Break();

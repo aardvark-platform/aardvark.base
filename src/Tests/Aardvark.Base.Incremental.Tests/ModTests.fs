@@ -171,7 +171,7 @@ module ``Basic Mod Tests`` =
     let ``[Mod] level changing bind``() =
         let ex = ExecutionTracker()
         let a = ModRef 1 
-        let a0 = a :> IMod<_>
+        let a0 = a :> aval<_>
         let a1 = a |> Mod.map id |> Mod.map id |> Mod.map id |> Mod.map (fun a -> ex.push "%A * 2" a; a * 2)
         let c = ModRef true
 
@@ -587,10 +587,10 @@ module ``Basic Mod Tests`` =
 
         let mutable markings = 0
         let ab =
-            let scratch = Dict<obj, HashSet<IMod<int>>>()
-            let dirty = HashSet<IMod<int>> [a;b]
+            let scratch = Dict<obj, HashSet<aval<int>>>()
+            let dirty = HashSet<aval<int>> [a;b]
             let mutable initial = true
-            { new Mod.AbstractDirtyTrackingMod<IMod<int>, int>() with
+            { new Mod.AbstractDirtyTrackingMod<aval<int>, int>() with
                 member x.Compute(token, dirty) =
                     if initial then
                         a.GetValue(token) |> ignore
@@ -605,7 +605,7 @@ module ``Basic Mod Tests`` =
 //            { new Mod.AbstractMod<int>() with
 //                override x.InputChanged(t,i) =
 //                    match i with
-//                        | :? IMod<int> as i ->
+//                        | :? aval<int> as i ->
 //                            lock scratch (fun () ->
 //                                let set = scratch.GetOrCreate(t, fun t -> HashSet())
 //                                set.Add i |> ignore
@@ -772,7 +772,7 @@ module ``Basic Mod Tests`` =
         let b = Mod.init -10
 
         let a' = a |> Mod.map id |> Mod.map id 
-        let b' = b :> IMod<_>
+        let b' = b :> aval<_>
 
         let apb = Mod.map2 (+) a' b'
 
@@ -852,7 +852,7 @@ module ``Basic Mod Tests`` =
             for k in 1..iter do
                 //let root = Mod.init Trafo3d.Identity
                 let root = Mod.init 10
-                let mutable leafs = [ root :> IMod<_> ]
+                let mutable leafs = [ root :> aval<_> ]
                 let rnd = RandomSystem(1)
 
                 // configuration 1: average of 2-3 outputs, less depth
@@ -991,9 +991,9 @@ module ``Basic Mod Tests`` =
     
         let a = Mod.init "hugo" 
 
-        let funf : IMod<string> -> IMod<string> -> IMod<string> = 
-            //BinaryCache<IMod<string>, IMod<string>, IMod<string>>(Mod.map2 (+)).Invoke
-            BinaryCache<IMod<string>, IMod<string>, IMod<string>>(Mod.map2 (fun a b -> a + b)).Invoke
+        let funf : aval<string> -> aval<string> -> aval<string> = 
+            //BinaryCache<aval<string>, aval<string>, aval<string>>(Mod.map2 (+)).Invoke
+            BinaryCache<aval<string>, aval<string>, aval<string>>(Mod.map2 (fun a b -> a + b)).Invoke
 
         let sw = Stopwatch.StartNew()
         let mutable i = 0

@@ -133,7 +133,7 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
         let yjX = nativeint y.DX * sa
         let ratio = (float(x.Size) * srcSize) / float(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * float(x.Size) - 0.5
-        let initialiCoord = int64(floor(initialCoord))
+        let initialiCoord = int64(floor initialCoord)
         let initialFrac = initialCoord - float(initialiCoord)
         let step = 1.0 * ratio
         let mutable coord = initialCoord
@@ -166,7 +166,7 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
         let yjX = nativeint y.DX * sa
         let ratio = (float(x.Size) * srcSize) / float(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * float(x.Size) - 0.5
-        let initialiCoord = int64(floor(initialCoord))
+        let initialiCoord = int64(floor initialCoord)
         let initialFrac = initialCoord - float(initialiCoord)
         let step = 1.0 * ratio
         let mutable coord = initialCoord
@@ -662,7 +662,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V2d(x.Size) * srcSize) / V2d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V2d(x.Size) - V2d.Half
-        let initialiCoord = V2l(initialCoord.Floor)
+        let initialiCoord = V2l(floor initialCoord)
         let initialFrac = initialCoord - V2d(initialiCoord)
         let step = V2d.One * ratio
         let mutable coord = initialCoord
@@ -715,7 +715,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V2d(x.Size) * srcSize) / V2d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V2d(x.Size) - V2d.Half
-        let initialiCoord = V2l(initialCoord.Floor)
+        let initialiCoord = V2l(floor initialCoord)
         let initialFrac = initialCoord - V2d(initialiCoord)
         let step = V2d.One * ratio
         let mutable coord = initialCoord
@@ -760,7 +760,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V2d(x.Size) * srcSize) / V2d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V2d(x.Size) - V2d.Half
-        let initialiCoord = V2l(initialCoord.Floor)
+        let initialiCoord = V2l(floor initialCoord)
         let initialFrac = initialCoord - V2d(initialiCoord)
         let step = V2d.One * ratio
         let mutable coord = initialCoord
@@ -807,7 +807,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V2d(x.Size) * srcSize) / V2d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V2d(x.Size) - V2d.Half
-        let initialiCoord = V2l(initialCoord.Floor)
+        let initialiCoord = V2l(floor initialCoord)
         let initialFrac = initialCoord - V2d(initialiCoord)
         let step = V2d.One * ratio
         let mutable coord = initialCoord
@@ -852,7 +852,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V2d(x.Size) * srcSize) / V2d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V2d(x.Size) - V2d.Half
-        let initialiCoord = V2l(initialCoord.Floor)
+        let initialiCoord = V2l(floor initialCoord)
         let initialFrac = initialCoord - V2d(initialiCoord)
         let step = V2d.One * ratio
         let mutable coord = initialCoord
@@ -905,7 +905,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V2d(x.Size) * srcSize) / V2d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V2d(x.Size) - V2d.Half
-        let initialiCoord = V2l(initialCoord.Floor)
+        let initialiCoord = V2l(floor initialCoord)
         let initialFrac = initialCoord - V2d(initialiCoord)
         let step = V2d.One * ratio
         let mutable coord = initialCoord
@@ -950,7 +950,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V2d(x.Size) * srcSize) / V2d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V2d(x.Size) - V2d.Half
-        let initialiCoord = V2l(initialCoord.Floor)
+        let initialiCoord = V2l(floor initialCoord)
         let initialFrac = initialCoord - V2d(initialiCoord)
         let step = V2d.One * ratio
         let mutable coord = initialCoord
@@ -997,7 +997,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V2d(x.Size) * srcSize) / V2d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V2d(x.Size) - V2d.Half
-        let initialiCoord = V2l(initialCoord.Floor)
+        let initialiCoord = V2l(floor initialCoord)
         let initialFrac = initialCoord - V2d(initialiCoord)
         let step = V2d.One * ratio
         let mutable coord = initialCoord
@@ -1034,31 +1034,31 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
     member x.BlitTo(y : NativeMatrix<'a>, lerp : float -> 'a -> 'a -> 'a) = x.BlitTo(y, V2d.Zero, V2d.One, lerp)
     member x.Item
         with get(c0 : V2l) : 'a = 
-            let i = V2l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V2l) (value : 'a) =
-            let i = V2l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : V2i) : 'a = 
-            let i = V2l.Dot(x.Delta, V2l(c0))
+            let i = Vec.Dot(x.Delta, V2l(c0))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V2i) (value : 'a) =
-            let i = V2l.Dot(x.Delta, V2l(c0))
+            let i = Vec.Dot(x.Delta, V2l(c0))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int, c1 : int) : 'a = 
-            let i = V2l.Dot(x.Delta, V2l(c0, c1))
+            let i = Vec.Dot(x.Delta, V2l(c0, c1))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int, c1 : int) (value : 'a) =
-            let i = V2l.Dot(x.Delta, V2l(c0, c1))
+            let i = Vec.Dot(x.Delta, V2l(c0, c1))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int64, c1 : int64) : 'a = 
-            let i = V2l.Dot(x.Delta, V2l(c0, c1))
+            let i = Vec.Dot(x.Delta, V2l(c0, c1))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int64, c1 : int64) (value : 'a) =
-            let i = V2l.Dot(x.Delta, V2l(c0, c1))
+            let i = Vec.Dot(x.Delta, V2l(c0, c1))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member inline private x.CopyToXY(y : NativeMatrix<'a>) = 
         let sa = nativeint (sizeof<'a>)
@@ -1169,7 +1169,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         Array.init (int x.Size.Y) (fun i -> NativePtr.read (NativePtr.ofNativeInt (ptr + nativeint i * dY)))
     member x.SampleLinear(coord : V2d, lerp : float -> 'a -> 'a -> 'a) : 'a = 
         let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)
-        let coord = V2d.Min(V2d.Max(coord, V2d.Zero), V2d.One)
+        let coord = Fun.Min(Fun.Max(coord, V2d.Zero), V2d.One)
         let p0f = coord * V2d x.Size.XY - V2d(0.5, 0.5)
         let mutable p0 = V2l(int64 (floor p0f.X), int64 (floor p0f.Y))
         let frac = p0f - V2d p0
@@ -1177,7 +1177,7 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let dX = nativeint x.DX * sa
         let dY = nativeint x.DY * sa
         if p0.X >= 0L && p0.X < x.Size.X - 1L && p0.Y >= 0L && p0.Y < x.Size.Y - 1L then
-            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (V2l.Dot(p0, x.Delta.XY)) * sa
+            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(p0, x.Delta.XY)) * sa
             let v00 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0))
             let v01 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dY))
             let v10 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dX))
@@ -1188,10 +1188,10 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
             vxx
         else
             let max = x.Size - V2l.One
-            let v00 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V2l.Dot(x.Delta, V2l.Min(V2l.Max(V2l.Zero, p0), max))) * sa))
-            let v01 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V2l.Dot(x.Delta, V2l.Min(V2l.Max(V2l.Zero, p0 + V2l(0L, 1L)), max))) * sa))
-            let v10 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V2l.Dot(x.Delta, V2l.Min(V2l.Max(V2l.Zero, p0 + V2l(1L, 0L)), max))) * sa))
-            let v11 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V2l.Dot(x.Delta, V2l.Min(V2l.Max(V2l.Zero, p0 + V2l(1L, 1L)), max))) * sa))
+            let v00 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0), max))) * sa))
+            let v01 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(0L, 1L)), max))) * sa))
+            let v10 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(1L, 0L)), max))) * sa))
+            let v11 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V2l.Zero, p0 + V2l(1L, 1L)), max))) * sa))
             let vx0 = lerp.Invoke(frac.X, v00, v10)
             let vx1 = lerp.Invoke(frac.X, v01, v11)
             let vxx = lerp.Invoke(frac.Y, vx0, vx1)
@@ -2666,7 +2666,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -2743,7 +2743,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -2808,7 +2808,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -2874,7 +2874,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -2931,7 +2931,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -2998,7 +2998,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3057,7 +3057,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3117,7 +3117,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3178,7 +3178,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3255,7 +3255,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3320,7 +3320,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3386,7 +3386,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3443,7 +3443,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3510,7 +3510,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3569,7 +3569,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3629,7 +3629,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjZ = nativeint y.DZ * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3690,7 +3690,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3767,7 +3767,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3832,7 +3832,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3898,7 +3898,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -3955,7 +3955,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4022,7 +4022,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4081,7 +4081,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4141,7 +4141,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4202,7 +4202,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4279,7 +4279,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4344,7 +4344,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4410,7 +4410,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4467,7 +4467,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4534,7 +4534,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4593,7 +4593,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4653,7 +4653,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4714,7 +4714,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4791,7 +4791,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4856,7 +4856,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4922,7 +4922,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -4979,7 +4979,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5046,7 +5046,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5105,7 +5105,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5165,7 +5165,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjY = nativeint y.DY * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5226,7 +5226,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5303,7 +5303,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5368,7 +5368,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5434,7 +5434,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5491,7 +5491,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5558,7 +5558,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5617,7 +5617,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5677,7 +5677,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let yjX = nativeint y.DX * sa
         let ratio = (V3d(x.Size) * srcSize) / V3d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V3d(x.Size) - V3d.Half
-        let initialiCoord = V3l(initialCoord.Floor)
+        let initialiCoord = V3l(floor initialCoord)
         let initialFrac = initialCoord - V3d(initialiCoord)
         let step = V3d.One * ratio
         let mutable coord = initialCoord
@@ -5733,31 +5733,31 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
     member x.BlitTo(y : NativeVolume<'a>, lerp : float -> 'a -> 'a -> 'a) = x.BlitTo(y, V3d.Zero, V3d.One, lerp)
     member x.Item
         with get(c0 : V3l) : 'a = 
-            let i = V3l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V3l) (value : 'a) =
-            let i = V3l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : V3i) : 'a = 
-            let i = V3l.Dot(x.Delta, V3l(c0))
+            let i = Vec.Dot(x.Delta, V3l(c0))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V3i) (value : 'a) =
-            let i = V3l.Dot(x.Delta, V3l(c0))
+            let i = Vec.Dot(x.Delta, V3l(c0))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int, c1 : int, c2 : int) : 'a = 
-            let i = V3l.Dot(x.Delta, V3l(c0, c1, c2))
+            let i = Vec.Dot(x.Delta, V3l(c0, c1, c2))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int, c1 : int, c2 : int) (value : 'a) =
-            let i = V3l.Dot(x.Delta, V3l(c0, c1, c2))
+            let i = Vec.Dot(x.Delta, V3l(c0, c1, c2))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int64, c1 : int64, c2 : int64) : 'a = 
-            let i = V3l.Dot(x.Delta, V3l(c0, c1, c2))
+            let i = Vec.Dot(x.Delta, V3l(c0, c1, c2))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int64, c1 : int64, c2 : int64) (value : 'a) =
-            let i = V3l.Dot(x.Delta, V3l(c0, c1, c2))
+            let i = Vec.Dot(x.Delta, V3l(c0, c1, c2))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member inline private x.CopyToXYZ(y : NativeVolume<'a>) = 
         let sa = nativeint (sizeof<'a>)
@@ -6133,12 +6133,12 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         if nearest.Y < 0L then nearest.Y <- 0L
         else if nearest.Y >= x.SY then nearest.Y <- x.SY - 1L
         let sa = nativeint sizeof<'a>
-        let ptr = NativePtr.toNativeInt x.Pointer + nativeint (V2l.Dot(nearest, x.Delta.XY)) * sa
+        let ptr = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(nearest, x.Delta.XY)) * sa
         let dZ = nativeint x.DZ * sa
         Array.init (int x.Size.Z) (fun i -> NativePtr.read (NativePtr.ofNativeInt (ptr + nativeint i * dZ)))
     member x.SampleLinear(coord : V3d, lerp : float -> 'a -> 'a -> 'a) : 'a = 
         let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)
-        let coord = V3d.Min(V3d.Max(coord, V3d.Zero), V3d.One)
+        let coord = Fun.Min(Fun.Max(coord, V3d.Zero), V3d.One)
         let p0f = coord * V3d x.Size.XYZ - V3d(0.5, 0.5, 0.5)
         let mutable p0 = V3l(int64 (floor p0f.X), int64 (floor p0f.Y), int64 (floor p0f.Z))
         let frac = p0f - V3d p0
@@ -6147,7 +6147,7 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         let dY = nativeint x.DY * sa
         let dZ = nativeint x.DZ * sa
         if p0.X >= 0L && p0.X < x.Size.X - 1L && p0.Y >= 0L && p0.Y < x.Size.Y - 1L && p0.Z >= 0L && p0.Z < x.Size.Z - 1L then
-            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (V3l.Dot(p0, x.Delta.XYZ)) * sa
+            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(p0, x.Delta.XYZ)) * sa
             let v000 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0))
             let v001 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dZ))
             let v010 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dY))
@@ -6166,14 +6166,14 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
             vxxx
         else
             let max = x.Size - V3l.One
-            let v000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, V3l.Min(V3l.Max(V3l.Zero, p0), max))) * sa))
-            let v001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, V3l.Min(V3l.Max(V3l.Zero, p0 + V3l(0L, 0L, 1L)), max))) * sa))
-            let v010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, V3l.Min(V3l.Max(V3l.Zero, p0 + V3l(0L, 1L, 0L)), max))) * sa))
-            let v011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, V3l.Min(V3l.Max(V3l.Zero, p0 + V3l(0L, 1L, 1L)), max))) * sa))
-            let v100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, V3l.Min(V3l.Max(V3l.Zero, p0 + V3l(1L, 0L, 0L)), max))) * sa))
-            let v101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, V3l.Min(V3l.Max(V3l.Zero, p0 + V3l(1L, 0L, 1L)), max))) * sa))
-            let v110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, V3l.Min(V3l.Max(V3l.Zero, p0 + V3l(1L, 1L, 0L)), max))) * sa))
-            let v111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V3l.Dot(x.Delta, V3l.Min(V3l.Max(V3l.Zero, p0 + V3l(1L, 1L, 1L)), max))) * sa))
+            let v000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0), max))) * sa))
+            let v001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 0L, 1L)), max))) * sa))
+            let v010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 1L, 0L)), max))) * sa))
+            let v011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(0L, 1L, 1L)), max))) * sa))
+            let v100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 0L, 0L)), max))) * sa))
+            let v101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 0L, 1L)), max))) * sa))
+            let v110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 1L, 0L)), max))) * sa))
+            let v111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V3l.Zero, p0 + V3l(1L, 1L, 1L)), max))) * sa))
             let vx00 = lerp.Invoke(frac.X, v000, v100)
             let vx01 = lerp.Invoke(frac.X, v001, v101)
             let vx10 = lerp.Invoke(frac.X, v010, v110)
@@ -12674,7 +12674,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -12783,7 +12783,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -12872,7 +12872,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -12962,7 +12962,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13039,7 +13039,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13129,7 +13129,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13207,7 +13207,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13286,7 +13286,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13355,7 +13355,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13446,7 +13446,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13525,7 +13525,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13605,7 +13605,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13676,7 +13676,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13756,7 +13756,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13828,7 +13828,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13901,7 +13901,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -13982,7 +13982,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14091,7 +14091,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14180,7 +14180,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14270,7 +14270,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14347,7 +14347,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14437,7 +14437,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14515,7 +14515,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14594,7 +14594,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14663,7 +14663,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14754,7 +14754,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14833,7 +14833,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14913,7 +14913,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -14984,7 +14984,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15064,7 +15064,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15136,7 +15136,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15209,7 +15209,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15290,7 +15290,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15399,7 +15399,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15488,7 +15488,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15578,7 +15578,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15655,7 +15655,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15745,7 +15745,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15823,7 +15823,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15902,7 +15902,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -15971,7 +15971,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16062,7 +16062,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16141,7 +16141,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16221,7 +16221,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16292,7 +16292,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16372,7 +16372,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16444,7 +16444,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16517,7 +16517,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16598,7 +16598,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16707,7 +16707,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16796,7 +16796,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16886,7 +16886,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -16963,7 +16963,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17053,7 +17053,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17131,7 +17131,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17210,7 +17210,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17279,7 +17279,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17370,7 +17370,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17449,7 +17449,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17529,7 +17529,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17600,7 +17600,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17680,7 +17680,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17752,7 +17752,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17825,7 +17825,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -17906,7 +17906,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18015,7 +18015,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18104,7 +18104,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18194,7 +18194,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18271,7 +18271,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18361,7 +18361,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18439,7 +18439,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18518,7 +18518,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18587,7 +18587,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18678,7 +18678,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18757,7 +18757,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18837,7 +18837,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18908,7 +18908,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -18988,7 +18988,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19060,7 +19060,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19133,7 +19133,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19214,7 +19214,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19323,7 +19323,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19412,7 +19412,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19502,7 +19502,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19579,7 +19579,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19669,7 +19669,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19747,7 +19747,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19826,7 +19826,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19895,7 +19895,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -19986,7 +19986,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20065,7 +20065,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20145,7 +20145,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20216,7 +20216,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20296,7 +20296,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20368,7 +20368,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20441,7 +20441,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20522,7 +20522,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20631,7 +20631,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20720,7 +20720,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20810,7 +20810,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20887,7 +20887,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -20977,7 +20977,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21055,7 +21055,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21134,7 +21134,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21203,7 +21203,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21294,7 +21294,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21373,7 +21373,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21453,7 +21453,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21524,7 +21524,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21604,7 +21604,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21676,7 +21676,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21749,7 +21749,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjW = nativeint y.DW * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21830,7 +21830,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -21939,7 +21939,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22028,7 +22028,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22118,7 +22118,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22195,7 +22195,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22285,7 +22285,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22363,7 +22363,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22442,7 +22442,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22511,7 +22511,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22602,7 +22602,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22681,7 +22681,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22761,7 +22761,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22832,7 +22832,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22912,7 +22912,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -22984,7 +22984,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23057,7 +23057,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23138,7 +23138,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23247,7 +23247,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23336,7 +23336,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23426,7 +23426,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23503,7 +23503,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23593,7 +23593,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23671,7 +23671,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23750,7 +23750,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23819,7 +23819,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23910,7 +23910,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -23989,7 +23989,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24069,7 +24069,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24140,7 +24140,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24220,7 +24220,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24292,7 +24292,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24365,7 +24365,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24446,7 +24446,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24555,7 +24555,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24644,7 +24644,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24734,7 +24734,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24811,7 +24811,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24901,7 +24901,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -24979,7 +24979,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25058,7 +25058,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25127,7 +25127,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25218,7 +25218,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25297,7 +25297,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25377,7 +25377,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25448,7 +25448,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25528,7 +25528,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25600,7 +25600,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25673,7 +25673,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25754,7 +25754,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25863,7 +25863,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -25952,7 +25952,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26042,7 +26042,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26119,7 +26119,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26209,7 +26209,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26287,7 +26287,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26366,7 +26366,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26435,7 +26435,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26526,7 +26526,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26605,7 +26605,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26685,7 +26685,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26756,7 +26756,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26836,7 +26836,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26908,7 +26908,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -26981,7 +26981,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27062,7 +27062,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27171,7 +27171,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27260,7 +27260,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27350,7 +27350,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27427,7 +27427,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27517,7 +27517,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27595,7 +27595,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27674,7 +27674,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27743,7 +27743,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27834,7 +27834,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27913,7 +27913,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -27993,7 +27993,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28064,7 +28064,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28144,7 +28144,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28216,7 +28216,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28289,7 +28289,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28370,7 +28370,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28479,7 +28479,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28568,7 +28568,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28658,7 +28658,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28735,7 +28735,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28825,7 +28825,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28903,7 +28903,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -28982,7 +28982,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29051,7 +29051,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29142,7 +29142,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29221,7 +29221,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29301,7 +29301,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29372,7 +29372,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29452,7 +29452,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29524,7 +29524,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29597,7 +29597,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29678,7 +29678,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29787,7 +29787,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29876,7 +29876,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -29966,7 +29966,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30043,7 +30043,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30133,7 +30133,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30211,7 +30211,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30290,7 +30290,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30359,7 +30359,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30450,7 +30450,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30529,7 +30529,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30609,7 +30609,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30680,7 +30680,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30760,7 +30760,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30832,7 +30832,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30905,7 +30905,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -30986,7 +30986,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31095,7 +31095,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31184,7 +31184,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31274,7 +31274,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31351,7 +31351,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31441,7 +31441,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31519,7 +31519,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31598,7 +31598,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31667,7 +31667,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31758,7 +31758,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31837,7 +31837,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31917,7 +31917,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -31988,7 +31988,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32068,7 +32068,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32140,7 +32140,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32213,7 +32213,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32294,7 +32294,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32403,7 +32403,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32492,7 +32492,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32582,7 +32582,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32659,7 +32659,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32749,7 +32749,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32827,7 +32827,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32906,7 +32906,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -32975,7 +32975,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33066,7 +33066,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33145,7 +33145,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33225,7 +33225,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33296,7 +33296,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33376,7 +33376,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33448,7 +33448,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33521,7 +33521,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33602,7 +33602,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33711,7 +33711,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33800,7 +33800,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33890,7 +33890,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -33967,7 +33967,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34057,7 +34057,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34135,7 +34135,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34214,7 +34214,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34283,7 +34283,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34374,7 +34374,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34453,7 +34453,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34533,7 +34533,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34604,7 +34604,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34684,7 +34684,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34756,7 +34756,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34829,7 +34829,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -34910,7 +34910,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35019,7 +35019,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35108,7 +35108,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35198,7 +35198,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35275,7 +35275,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35365,7 +35365,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35443,7 +35443,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35522,7 +35522,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35591,7 +35591,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35682,7 +35682,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35761,7 +35761,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35841,7 +35841,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35912,7 +35912,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -35992,7 +35992,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36064,7 +36064,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36137,7 +36137,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36218,7 +36218,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36327,7 +36327,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36416,7 +36416,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36506,7 +36506,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36583,7 +36583,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36673,7 +36673,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36751,7 +36751,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36830,7 +36830,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36899,7 +36899,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -36990,7 +36990,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37069,7 +37069,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37149,7 +37149,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37220,7 +37220,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37300,7 +37300,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37372,7 +37372,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37445,7 +37445,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjZ = nativeint y.DZ * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37526,7 +37526,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37635,7 +37635,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37724,7 +37724,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37814,7 +37814,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37891,7 +37891,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -37981,7 +37981,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38059,7 +38059,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38138,7 +38138,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38207,7 +38207,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38298,7 +38298,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38377,7 +38377,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38457,7 +38457,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38528,7 +38528,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38608,7 +38608,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38680,7 +38680,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38753,7 +38753,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38834,7 +38834,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -38943,7 +38943,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39032,7 +39032,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39122,7 +39122,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39199,7 +39199,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39289,7 +39289,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39367,7 +39367,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39446,7 +39446,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39515,7 +39515,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39606,7 +39606,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39685,7 +39685,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39765,7 +39765,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39836,7 +39836,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39916,7 +39916,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -39988,7 +39988,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40061,7 +40061,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40142,7 +40142,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40251,7 +40251,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40340,7 +40340,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40430,7 +40430,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40507,7 +40507,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40597,7 +40597,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40675,7 +40675,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40754,7 +40754,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40823,7 +40823,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40914,7 +40914,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -40993,7 +40993,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41073,7 +41073,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41144,7 +41144,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41224,7 +41224,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41296,7 +41296,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41369,7 +41369,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41450,7 +41450,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41559,7 +41559,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41648,7 +41648,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41738,7 +41738,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41815,7 +41815,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41905,7 +41905,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -41983,7 +41983,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42062,7 +42062,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42131,7 +42131,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42222,7 +42222,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42301,7 +42301,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42381,7 +42381,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42452,7 +42452,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42532,7 +42532,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42604,7 +42604,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42677,7 +42677,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjY = nativeint y.DY * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42758,7 +42758,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42867,7 +42867,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -42956,7 +42956,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43046,7 +43046,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43123,7 +43123,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43213,7 +43213,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43291,7 +43291,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43370,7 +43370,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43439,7 +43439,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43530,7 +43530,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43609,7 +43609,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43689,7 +43689,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43760,7 +43760,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43840,7 +43840,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43912,7 +43912,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -43985,7 +43985,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let yjX = nativeint y.DX * sa
         let ratio = (V4d(x.Size) * srcSize) / V4d(y.Size)
         let initialCoord = (0.5 * ratio) + srcOffset * V4d(x.Size) - V4d.Half
-        let initialiCoord = V4l(initialCoord.Floor)
+        let initialiCoord = V4l(floor initialCoord)
         let initialFrac = initialCoord - V4d(initialiCoord)
         let step = V4d.One * ratio
         let mutable coord = initialCoord
@@ -44079,31 +44079,31 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
     member x.BlitTo(y : NativeTensor4<'a>, lerp : float -> 'a -> 'a -> 'a) = x.BlitTo(y, V4d.Zero, V4d.One, lerp)
     member x.Item
         with get(c0 : V4l) : 'a = 
-            let i = V4l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V4l) (value : 'a) =
-            let i = V4l.Dot(x.Delta, c0)
+            let i = Vec.Dot(x.Delta, c0)
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : V4i) : 'a = 
-            let i = V4l.Dot(x.Delta, V4l(c0))
+            let i = Vec.Dot(x.Delta, V4l(c0))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : V4i) (value : 'a) =
-            let i = V4l.Dot(x.Delta, V4l(c0))
+            let i = Vec.Dot(x.Delta, V4l(c0))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int, c1 : int, c2 : int, c3 : int) : 'a = 
-            let i = V4l.Dot(x.Delta, V4l(c0, c1, c2, c3))
+            let i = Vec.Dot(x.Delta, V4l(c0, c1, c2, c3))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int, c1 : int, c2 : int, c3 : int) (value : 'a) =
-            let i = V4l.Dot(x.Delta, V4l(c0, c1, c2, c3))
+            let i = Vec.Dot(x.Delta, V4l(c0, c1, c2, c3))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member x.Item
         with get(c0 : int64, c1 : int64, c2 : int64, c3 : int64) : 'a = 
-            let i = V4l.Dot(x.Delta, V4l(c0, c1, c2, c3))
+            let i = Vec.Dot(x.Delta, V4l(c0, c1, c2, c3))
             NativePtr.read (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i)))
         and set (c0 : int64, c1 : int64, c2 : int64, c3 : int64) (value : 'a) =
-            let i = V4l.Dot(x.Delta, V4l(c0, c1, c2, c3))
+            let i = Vec.Dot(x.Delta, V4l(c0, c1, c2, c3))
             NativePtr.write (NativePtr.ofNativeInt<'a> (NativePtr.toNativeInt x.Pointer + nativeint sizeof<'a> * (nativeint x.Origin + nativeint i))) value
     member inline private x.CopyToXYZW(y : NativeTensor4<'a>) = 
         let sa = nativeint (sizeof<'a>)
@@ -45885,12 +45885,12 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         if nearest.Z < 0L then nearest.Z <- 0L
         else if nearest.Z >= x.SZ then nearest.Z <- x.SZ - 1L
         let sa = nativeint sizeof<'a>
-        let ptr = NativePtr.toNativeInt x.Pointer + nativeint (V3l.Dot(nearest, x.Delta.XYZ)) * sa
+        let ptr = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(nearest, x.Delta.XYZ)) * sa
         let dW = nativeint x.DW * sa
         Array.init (int x.Size.W) (fun i -> NativePtr.read (NativePtr.ofNativeInt (ptr + nativeint i * dW)))
     member x.SampleLinear(coord : V4d, lerp : float -> 'a -> 'a -> 'a) : 'a = 
         let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)
-        let coord = V4d.Min(V4d.Max(coord, V4d.Zero), V4d.One)
+        let coord = Fun.Min(Fun.Max(coord, V4d.Zero), V4d.One)
         let p0f = coord * V4d x.Size.XYZW - V4d(0.5, 0.5, 0.5, 0.5)
         let mutable p0 = V4l(int64 (floor p0f.X), int64 (floor p0f.Y), int64 (floor p0f.Z), int64 (floor p0f.W))
         let frac = p0f - V4d p0
@@ -45900,7 +45900,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         let dZ = nativeint x.DZ * sa
         let dW = nativeint x.DW * sa
         if p0.X >= 0L && p0.X < x.Size.X - 1L && p0.Y >= 0L && p0.Y < x.Size.Y - 1L && p0.Z >= 0L && p0.Z < x.Size.Z - 1L && p0.W >= 0L && p0.W < x.Size.W - 1L then
-            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (V4l.Dot(p0, x.Delta.XYZW)) * sa
+            let ptr0 = NativePtr.toNativeInt x.Pointer + nativeint (Vec.Dot(p0, x.Delta.XYZW)) * sa
             let v0000 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0))
             let v0001 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dW))
             let v0010 : 'a =  NativePtr.read (NativePtr.ofNativeInt (ptr0 + dZ))
@@ -45935,22 +45935,22 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
             vxxxx
         else
             let max = x.Size - V4l.One
-            let v0000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0), max))) * sa))
-            let v0001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(0L, 0L, 0L, 1L)), max))) * sa))
-            let v0010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(0L, 0L, 1L, 0L)), max))) * sa))
-            let v0011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(0L, 0L, 1L, 1L)), max))) * sa))
-            let v0100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(0L, 1L, 0L, 0L)), max))) * sa))
-            let v0101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(0L, 1L, 0L, 1L)), max))) * sa))
-            let v0110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(0L, 1L, 1L, 0L)), max))) * sa))
-            let v0111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(0L, 1L, 1L, 1L)), max))) * sa))
-            let v1000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(1L, 0L, 0L, 0L)), max))) * sa))
-            let v1001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(1L, 0L, 0L, 1L)), max))) * sa))
-            let v1010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(1L, 0L, 1L, 0L)), max))) * sa))
-            let v1011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(1L, 0L, 1L, 1L)), max))) * sa))
-            let v1100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(1L, 1L, 0L, 0L)), max))) * sa))
-            let v1101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(1L, 1L, 0L, 1L)), max))) * sa))
-            let v1110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(1L, 1L, 1L, 0L)), max))) * sa))
-            let v1111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(V4l.Dot(x.Delta, V4l.Min(V4l.Max(V4l.Zero, p0 + V4l(1L, 1L, 1L, 1L)), max))) * sa))
+            let v0000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0), max))) * sa))
+            let v0001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 0L, 1L)), max))) * sa))
+            let v0010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 1L, 0L)), max))) * sa))
+            let v0011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 0L, 1L, 1L)), max))) * sa))
+            let v0100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 0L, 0L)), max))) * sa))
+            let v0101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 0L, 1L)), max))) * sa))
+            let v0110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 1L, 0L)), max))) * sa))
+            let v0111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(0L, 1L, 1L, 1L)), max))) * sa))
+            let v1000 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 0L, 0L)), max))) * sa))
+            let v1001 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 0L, 1L)), max))) * sa))
+            let v1010 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 1L, 0L)), max))) * sa))
+            let v1011 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 0L, 1L, 1L)), max))) * sa))
+            let v1100 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 0L, 0L)), max))) * sa))
+            let v1101 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 0L, 1L)), max))) * sa))
+            let v1110 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 1L, 0L)), max))) * sa))
+            let v1111 : 'a = NativePtr.read (NativePtr.ofNativeInt (NativePtr.toNativeInt x.Pointer + nativeint(Vec.Dot(x.Delta, Fun.Min(Fun.Max(V4l.Zero, p0 + V4l(1L, 1L, 1L, 1L)), max))) * sa))
             let vx000 = lerp.Invoke(frac.X, v0000, v1000)
             let vx001 = lerp.Invoke(frac.X, v0001, v1001)
             let vx010 = lerp.Invoke(frac.X, v0010, v1010)

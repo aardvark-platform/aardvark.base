@@ -69,6 +69,18 @@ namespace Aardvark.Base
             return result;
         }
 
+        public static float Dist1(this Vector<float> v0, Vector<float> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), 0.0f, (s, p) => s + p);
+
+        public static float Dist2Squared(this Vector<float> v0, Vector<float> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Square(x1 - x0), 0.0f, (s, p) => s + p);
+
+        public static float Dist2(this Vector<float> v0, Vector<float> v1)
+            => Fun.Sqrt(v0.Dist2Squared(v1));
+
+        public static float DistMax(this Vector<float> v0, Vector<float> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), 0.0f, Fun.Max);
+
         public static Vector<float> Multiply(this Vector<float> a, Vector<float> b)
         {
             if (a.Dim != b.Dim) throw new InvalidOperationException("Cannot multiply vectors with different lengths!");
@@ -309,7 +321,7 @@ namespace Aardvark.Base
         /// </summary>
         public static double DotProduct(this Vector<double> v0, Vector<double> v1)
         {
-            double result = 0.0d;
+            double result = 0.0;
             double[] a0 = v0.Data, a1 = v1.Data;
             for (long i0 = v0.Origin, i1 = v1.Origin, e0 = i0 + v0.DSX, d0 = v0.D, d1 = v1.D;
                 i0 != e0; i0 += d0, i1 += d1)
@@ -323,12 +335,24 @@ namespace Aardvark.Base
         /// </summary>
         public static double NormSquared(this Vector<double> v)
         {
-            double result = 0.0d;
+            double result = 0.0;
             double[] a = v.Data;
             for (long i = v.Origin, e = i + v.DSX, d = v.D; i != e; i += d)
                 result += a[i] * a[i];
             return result;
         }
+
+        public static double Dist1(this Vector<double> v0, Vector<double> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), 0.0, (s, p) => s + p);
+
+        public static double Dist2Squared(this Vector<double> v0, Vector<double> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Square(x1 - x0), 0.0, (s, p) => s + p);
+
+        public static double Dist2(this Vector<double> v0, Vector<double> v1)
+            => Fun.Sqrt(v0.Dist2Squared(v1));
+
+        public static double DistMax(this Vector<double> v0, Vector<double> v1)
+            => v0.InnerProduct(v1, (x0, x1) => Fun.Abs(x1 - x0), 0.0, Fun.Max);
 
         public static Vector<double> Multiply(this Vector<double> a, Vector<double> b)
         {
@@ -437,7 +461,7 @@ namespace Aardvark.Base
             for (long ri = 0, ye = mat.FirstIndex + mat.DSY, f0 = mat.FirstIndex, e0 = f0 + ds0;
                 f0 != ye; f0 += my0, e0 += my0, ri++)
             {
-                double dot = 0.0d;
+                double dot = 0.0;
                 for (long i0 = f0, i1 = mf1; i0 != e0; i0 += d0, i1 += d1)
                     dot += data0[i0] * data1[i1];
 
@@ -461,7 +485,7 @@ namespace Aardvark.Base
                 i != ye; i += yj, f0 += my0, e0 += my0)
                 for (long xe = i + xs, f1 = mf1; i != xe; i += xj, f1 += mx1)
                 {
-                    double dot = 0.0d;
+                    double dot = 0.0;
                     for (long i0 = f0, i1 = f1; i0 != e0; i0 += d0, i1 += d1)
                         dot += data0[i0] * data1[i1];
                     data[i] = dot;

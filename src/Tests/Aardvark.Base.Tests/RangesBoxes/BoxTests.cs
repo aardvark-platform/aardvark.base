@@ -171,8 +171,8 @@ namespace Aardvark.Tests
             var zb = trafo.C2.XYZ * box.Max.Z;
 
             return new Box3d(
-                V3d.Min(xa, xb) + V3d.Min(ya, yb) + V3d.Min(za, zb) + trafo.C3.XYZ,
-                V3d.Max(xa, xb) + V3d.Max(ya, yb) + V3d.Max(za, zb) + trafo.C3.XYZ);
+                Fun.Min(xa, xb) + Fun.Min(ya, yb) + Fun.Min(za, zb) + trafo.C3.XYZ,
+                Fun.Max(xa, xb) + Fun.Max(ya, yb) + Fun.Max(za, zb) + trafo.C3.XYZ);
         }
 
         static Box3d Transform3(Box3d box, M44d trafo)
@@ -345,7 +345,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = boxes[i].Transformed(trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
 
@@ -353,7 +353,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = Transform1(boxes[i], trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
 
@@ -362,7 +362,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = Transform2(boxes[i], trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
 
@@ -370,7 +370,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = Transform3(boxes[i], trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
 
@@ -378,7 +378,7 @@ namespace Aardvark.Tests
                 for (int i = 0; i < trafos.Length; i++)
                 {
                     var test = Transform4(boxes[i], trafos[i]);
-                    Assert.IsTrue(test.Min.ApproxEqual(refBoxes[i].Min, 1e-7) && test.Max.ApproxEqual(refBoxes[i].Max, 1e-7));
+                    Assert.IsTrue(test.Min.ApproximateEquals(refBoxes[i].Min, 1e-7) && test.Max.ApproximateEquals(refBoxes[i].Max, 1e-7));
                 }
                 Report.End();
             }

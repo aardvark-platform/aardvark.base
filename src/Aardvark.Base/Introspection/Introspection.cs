@@ -11,6 +11,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 
 namespace Aardvark.Base
 {
@@ -150,11 +152,13 @@ namespace Aardvark.Base
             => GetAll___<(MethodInfo, T[])>(a, typeof(T).FullName,
                   lines => from line in lines
                            let t = Type.GetType(line)
+                           where t != null
                            from m in t.GetMethods()
                            let attribs = m.GetCustomAttributes(typeof(T), false)
                            where attribs.Length > 0
                            select (m, attribs.Select(x => (T)x).ToArray()),
                   types => from t in types
+                           where t != null
                            from m in t.GetMethods()
                            let attribs = m.GetCustomAttributes(typeof(T), false)
                            where attribs.Length > 0
@@ -562,51 +566,103 @@ namespace Aardvark.Base
             }
         }
 
-        private static bool IsPlugin(string file)
+        private static Regex versionRx = new Regex(@"^[ \t]*(?<name>[\.A-Za-z_0-9]+)[ \t]*,[ \t]*(v|V)ersion[ \t]*=[ \t]*(?<version>[\.A-Za-z_0-9]+)$");
+
+        private static unsafe bool IsPlugin(string file)
         {
             try
             {
-                var a = Assembly.LoadFile(file);
-                var empty = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(a).IsEmpty();
-                if (!empty)
+                using (var s = File.OpenRead(file))
+                using (var v = new System.Reflection.PortableExecutable.PEReader(s))
                 {
-                    Report.Line(3, "[GetPluginAssemblyPaths] found plugins in: {0}", file);
-                    return true;
-                }
-                else
-                {
+                    if (v.PEHeaders.CorHeader == null || !v.HasMetadata) return false;
+                    var data = v.GetMetadata();
+                    var m = new System.Reflection.Metadata.MetadataReader(data.Pointer, data.Length);
+
+
+                    var assdef = m.GetAssemblyDefinition();
+                    foreach (var att in assdef.GetCustomAttributes())
+                    {
+                        var attDef = m.GetCustomAttribute(att);
+                        if (attDef.Constructor.Kind == System.Reflection.Metadata.HandleKind.MemberReference)
+                        {
+                            var hh = (System.Reflection.Metadata.MemberReferenceHandle)attDef.Constructor;
+                            var e = m.GetMemberReference(hh);
+                            var pp = e.Parent;
+                            if (pp.Kind == System.Reflection.Metadata.HandleKind.TypeReference)
+                            {
+                                var attType = m.GetTypeReference((System.Reflection.Metadata.TypeReferenceHandle)pp);
+                                var nameStr = m.GetString(attType.Name);
+                                var nsStr = m.GetString(attType.Namespace);
+                                if (nsStr == "System.Runtime.Versioning" && nameStr == "TargetFrameworkAttribute")
+                                {
+                                    var reader = m.GetBlobReader(attDef.Value);
+                                    if (reader.ReadUInt16() == 1)
+                                    {
+                                        var version = reader.ReadSerializedString();
+                                        var match = versionRx.Match(version);
+                                        if (match.Success)
+                                        {
+                                            var fwName = match.Groups["name"].Value;
+                                            var isLoadable =
+                                                (fwName == ".NETCoreApp") ||
+                                                (fwName == ".NETStandard");
+                                            if (!isLoadable) return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (var t in m.TypeDefinitions)
+                    {
+                        var def = m.GetTypeDefinition(t);
+                        foreach (var meth in def.GetMethods())
+                        {
+                            var mdef = m.GetMethodDefinition(meth);
+                            var hasInitAtt =
+                                mdef.GetCustomAttributes().Any(att =>
+                                {
+                                    var attDef = m.GetCustomAttribute(att);
+                                    if (attDef.Constructor.Kind == System.Reflection.Metadata.HandleKind.MemberReference)
+                                    {
+                                        var hh = (System.Reflection.Metadata.MemberReferenceHandle)attDef.Constructor;
+                                        var e = m.GetMemberReference(hh);
+                                        var pp = e.Parent;
+                                        if (pp.Kind == System.Reflection.Metadata.HandleKind.TypeReference)
+                                        {
+                                            var attType = m.GetTypeReference((System.Reflection.Metadata.TypeReferenceHandle)pp);
+                                            var nameStr = m.GetString(attType.Name);
+                                            var nsStr = m.GetString(attType.Namespace);
+                                            if (nsStr == "Aardvark.Base" && nameStr == "OnAardvarkInitAttribute") 
+                                            {
+                                                return true;
+                                            }
+                                            else return false;
+                                        }
+                                        else return false;
+                                    }
+                                    else return false;
+                                });
+
+                            if (hasInitAtt) return true;
+                        }
+                    }
+
                     return false;
                 }
             }
-            catch(FileLoadException e)
+            catch(Exception)
             {
-                Report.Line(3, "[GetPluginAssemblyPaths] IsPlugin({0}) failed.", file);
-                Report.Line(3, "[GetPluginAssemblyPaths] (FileLoad) Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
-                Report.Line(5, "[GetPluginAssemblyPaths] StackTrace (outer): {0}", e.StackTrace.ToString());
-                try {
-                    Report.Line(5, "[GetPluginAssemblyPaths] FusionLog: {0}", e.FusionLog);
-                    if (e.InnerException != null)
-                    {
-                        Report.Line(5, "[GetPluginAssemblyPaths] Inner message: {0}", e.InnerException.Message);
-                        Report.Line(5, "[GetPluginAssemblyPaths] Inner stackTrace: {0}", e.InnerException.StackTrace.ToString());
-                    }
-                } catch(Exception)
-                {
-                    Report.Line(5, "[GetPluginAssemblyPaths] could not print details for FileLoadException (most likely BadImageFormat)");
-                }
-                return false;
-            }
-            catch (Exception e)
-            {
-                Report.Line(3, "[GetPluginAssemblyPaths] IsPlugin({0}) failed.", file);
-                Report.Line(3, "[GetPluginAssemblyPaths] Could not load potential plugin assembly (not necessarily an error. proceeding): {0}", e.Message);
-                Report.Line(5, "[GetPluginAssemblyPaths] {0}", e.StackTrace.ToString());
+                Report.Warn("NO PLUGIN: {0}", file);
                 return false;
             }
         }
 
         public string[] GetPluginAssemblyPaths()
         {
+
             var cache = ReadCacheFile();
             var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
 
@@ -670,6 +726,7 @@ namespace Aardvark.Base
             return paths.ToArray();
         }
 
+
         public static List<Assembly> LoadPlugins()
         {
             //Note: I removed the separate AppDomain for Plugin probing because:
@@ -678,6 +735,7 @@ namespace Aardvark.Base
             //   var paths = aardvark.GetPluginAssemblyPaths();
             //   was actually executed in this AppDomain.
             //Changes are marked with APPD
+
 
             //APPD var setup = new AppDomainSetup();
             //APPD setup.ApplicationBase = IntrospectionProperties.CurrentEntryPath;
@@ -691,6 +749,7 @@ namespace Aardvark.Base
                 aardvark.CacheFile = Aardvark.s_cacheFile;
                 var paths = aardvark.GetPluginAssemblyPaths();
                 //APPD AppDomain.Unload(d);
+
 
                 var assemblies = new List<Assembly>();
 
@@ -727,9 +786,25 @@ namespace Aardvark.Base
 
             static void Load()
             {
-
-                var myArch = IntPtr.Size == 8 ? "x86-64" : "x86";
-
+                string myArch;
+                switch (RuntimeInformation.ProcessArchitecture)
+                {
+                    case Architecture.X86:
+                        myArch = "x86";
+                        break;
+                    case Architecture.X64:
+                        myArch = "x86-64";
+                        break;
+                    case Architecture.Arm:
+                        myArch = "arm";
+                        break;
+                    case Architecture.Arm64:
+                        myArch = "arm-64";
+                        break;
+                    default:
+                        myArch = "unknown";
+                        break;
+                }
                 var info = new ProcessStartInfo("/bin/sh", "-c \"ldconfig -p\"")
                 {
                     RedirectStandardOutput = true,
@@ -824,13 +899,10 @@ namespace Aardvark.Base
 
         private static OS GetOS()
         {
-            switch(Environment.OSVersion.Platform)
-            {
-                case PlatformID.Unix: return OS.Linux;
-                case PlatformID.MacOSX: return OS.MacOS;
-                default: return OS.Win32;
-            }
-
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return OS.Win32;
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return OS.MacOS;
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return OS.Linux;
+            else return OS.Unknown;
         }
 
         private static Dictionary<string, string> GetSymlinks(XDocument document)
@@ -881,7 +953,8 @@ namespace Aardvark.Base
 
         private static void CreateSymlink(string baseDir, string src, string dst)
         {
-            if (Environment.OSVersion.Platform != PlatformID.Unix) return;
+            var os = GetOS();
+            if (os == OS.Win32 || os == OS.Unknown) return;
 
             string targetName;
             string targetPath;
@@ -921,6 +994,44 @@ namespace Aardvark.Base
 
 #endregion
 
+        private static void GetPlatformAndArch(out string platform, out string arch)
+        {
+            switch (RuntimeInformation.ProcessArchitecture)
+            {
+                case Architecture.X86:
+                    arch = "x86";
+                    break;
+                case Architecture.X64:
+                    arch = "AMD64";
+                    break;
+                case Architecture.Arm:
+                    arch = "ARM";
+                    break;
+                case Architecture.Arm64:
+                    arch = "ARM64";
+                    break;
+                default:
+                    arch = "unknown";
+                    break;
+            }
+
+            switch (GetOS())
+            {
+                case OS.Win32:
+                    platform = "windows";
+                    break;
+                case OS.Linux:
+                    platform = "linux";
+                    break;
+                case OS.MacOS:
+                    platform = "mac";
+                    break;
+                default:
+                    platform = "unknown";
+                    break;
+            }
+        }
+
         public static void UnpackNativeDependenciesToBaseDir(Assembly a, string baseDir)
         {
             if (a.IsDynamic) return;
@@ -938,14 +1049,11 @@ namespace Aardvark.Base
                 {
                     using (var archive = new ZipArchive(s))
                     {
-
-                        var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
-                        var platform = "windows";
-                        if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
-                        else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
+                        string arch;
+                        string platform;
+                        GetPlatformAndArch(out platform, out arch);
 
                         var copyPaths = platform + "/" + arch;
-
                         var remapFile = "remap.xml";
 
 
@@ -1076,12 +1184,14 @@ namespace Aardvark.Base
         public static bool SeparateLibraryDirectories = true;
 
         private static Dictionary<Assembly, string>  s_nativePaths = new Dictionary<Assembly, string>();
+        private static string[] s_allPaths = null;
 
         public static string[] GetNativeLibraryPaths()
         {
             lock(s_nativePaths)
             {
-                return s_nativePaths.Values.Where(p => p != null).ToArray();
+                if(s_allPaths == null) s_allPaths = s_nativePaths.Values.Where(p => p != null).ToArray();
+                return s_allPaths;
             }
         }
 
@@ -1120,6 +1230,7 @@ namespace Aardvark.Base
                             }
 
                             s_nativePaths[assembly] = dstFolder;
+                            s_allPaths = null;
                             path = dstFolder;
                             return true;
                         }
@@ -1128,35 +1239,51 @@ namespace Aardvark.Base
             }
         }
 
+        private static Dictionary<(Assembly, string), string> s_cache = new Dictionary<(Assembly, string), string>();
+
         public static IntPtr LoadLibrary(Assembly assembly, string nativeName)
         {
-
-            string[] formats = new string[0];
-            bool windows = true;
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            var os = GetOS();
+            lock (s_cache)
             {
-                windows = false;
-                formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
-            }
-            else formats = new[] { "{0}.dll" };
-            IntPtr ptr;
-
-            string[] paths;
-            if (assembly != null)
-            {
-                if (TryGetNativeLibraryPath(assembly, out var dstFolder))
+                if(s_cache.TryGetValue((assembly, nativeName), out var path))
                 {
-                    paths = new[] { dstFolder };
+#if NETCOREAPP3_0
+                    if (NativeLibrary.TryLoad(path, out var pp)) return pp;
+                    else return IntPtr.Zero;
+#else
+                    if (os == OS.Win32) return Kernel32.LoadLibrary(path);
+                    else Dl.dlopen(path, 1);
+#endif
+                }
+            }
+            IntPtr ptr = IntPtr.Zero;
+            string probe = Environment.CurrentDirectory;
+            try
+            {
+                string[] formats = new string[0];
+
+                if (os == OS.Linux) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
+                else if (os == OS.Win32) formats = new[] { "{0}.dll" };
+                else if (os == OS.MacOS) formats = new[] { "{0}.dylib", "lib{0}.dylib" };
+
+
+                string[] paths;
+                if (assembly != null)
+                {
+                    if (TryGetNativeLibraryPath(assembly, out var dstFolder))
+                    {
+                        paths = new[] { dstFolder };
+                    }
+                    else
+                    {
+                        paths = GetNativeLibraryPaths();
+                    }
                 }
                 else
                 {
-                    paths = new[] { Environment.CurrentDirectory };
+                    paths = GetNativeLibraryPaths();
                 }
-            }
-            else
-            {
-                paths = GetNativeLibraryPaths();
-            }
 
 #if NETCOREAPP3_0
 
@@ -1172,53 +1299,68 @@ namespace Aardvark.Base
                     var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
                     if (libPath != null)
                     {
+                        probe = libPath;
                         if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
                         else Report.Warn("found native library {0} in {1} but it could not be loaded.", Path.GetFileName(libPath), p);
                     }
                 }
 
                 // try the plain loading mechanism.
+                probe = libName;
                 if (assembly != null && NativeLibrary.TryLoad(libName, assembly, null, out ptr)) return ptr;
                 else if (NativeLibrary.TryLoad(libName, out ptr)) return ptr;
 
             }
+
+            probe = nativeName;
             // try the standard loading mechanism as a last resort.
             if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
             else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
 
-            if (windows) return IntPtr.Zero;
-            else return IntPtr.Zero;
+            return IntPtr.Zero;
 #else
 
-            Func<string, IntPtr> loadLibrary;
-            if (windows) loadLibrary = (a) => Kernel32.LoadLibrary(a);
-            else loadLibrary = (a) => Dl.dlopen(a, 1);
+                Func<string, IntPtr> loadLibrary;
+                if (os == OS.Win32) loadLibrary = (a) => Kernel32.LoadLibrary(a);
+                else loadLibrary = (a) => Dl.dlopen(a, 1);
 
-
-            ptr = loadLibrary(nativeName);
-            if(ptr != IntPtr.Zero) return ptr;
-
-            var realName = Path.GetFileNameWithoutExtension(nativeName);
-            foreach (var fmt in formats)
-            {
-                var libName = string.Format(fmt, realName);
-
-                ptr = loadLibrary(libName);
+                ptr = loadLibrary(nativeName);
                 if (ptr != IntPtr.Zero) return ptr;
 
-                foreach (var p in paths)
+                var realName = Path.GetFileNameWithoutExtension(nativeName);
+                foreach (var fmt in formats)
                 {
-                    var libPath = Path.Combine(p, libName);
-                    if (File.Exists(libPath))
+                    var libName = string.Format(fmt, realName);
+                    probe = libName;
+
+                    ptr = loadLibrary(libName);
+                    if (ptr != IntPtr.Zero) return ptr;
+
+                    foreach (var p in paths)
                     {
-                        ptr = loadLibrary(libPath);
-                        if (ptr != IntPtr.Zero) return ptr;
+                        var libPath = Path.Combine(p, libName);
+
+                        if (File.Exists(libPath))
+                        {
+                            probe = libPath;
+                            ptr = loadLibrary(libPath);
+                            if (ptr != IntPtr.Zero) return ptr;
+                        }
                     }
                 }
-            }
 
-            return IntPtr.Zero;
+                return IntPtr.Zero;
 #endif
+            }
+            finally
+            {
+                if (ptr == IntPtr.Zero) Report.Line(4, "[Introspection] could not load native library {0}", nativeName);
+                else
+                {
+                    lock(s_cache) { s_cache[(assembly, nativeName)] = probe; }
+                    Report.Line(4, "[Introspection] loaded native library {0} from {1}", nativeName, probe);
+                }
+            }
         }
 
         public static IntPtr GetProcAddress(IntPtr handle, string name)
@@ -1230,8 +1372,9 @@ namespace Aardvark.Base
             if (NativeLibrary.TryGetExport(handle, name, out ptr)) return ptr;
             else return IntPtr.Zero;
 #else
-            if (Environment.OSVersion.Platform == PlatformID.Unix) return Dl.dlsym(handle, name);
-            else return Kernel32.GetProcAddress(handle, name);
+            var os = GetOS();
+            if (os == OS.Win32) return Kernel32.GetProcAddress(handle, name);
+            else return Dl.dlsym(handle, name);
 #endif
         }
 
@@ -1246,10 +1389,9 @@ namespace Aardvark.Base
                     Report.BeginTimed(3, "Loading native dependencies for {0}", a.FullName);
                     try
                     {
-                        var arch = IntPtr.Size == 8 ? "AMD64" : "x86";
-                        var platform = "windows";
-                        if (Environment.OSVersion.Platform == PlatformID.MacOSX) platform = "mac";
-                        else if (Environment.OSVersion.Platform == PlatformID.Unix) platform = "linux";
+                        string arch;
+                        string platform;
+                        GetPlatformAndArch(out platform, out arch);
 
                         var copyPaths = new string[] { platform + "/" + arch + "/", arch + "/" };
                         var toLoad = new List<string>();
@@ -1300,6 +1442,9 @@ namespace Aardvark.Base
                                                 dstFolder,
                                                 localName
                                             );
+
+                                        Report.Line(4, "copy {0} to {1}", localName, file);
+
                                         var dir = Path.GetDirectoryName(file);
                                         if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
@@ -1324,9 +1469,11 @@ namespace Aardvark.Base
 #if NETCOREAPP3_0
 
                         string[] formats = new string[0];
-                        if (Environment.OSVersion.Platform == PlatformID.Unix) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
-                        else formats = new[] { "{0}.dll" };
+                        var os = GetOS();
 
+                        if (os == OS.Linux) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
+                        else if (os == OS.Win32) formats = new[] { "{0}.dll" };
+                        else if (os == OS.MacOS) formats = new[] { "{0}.dylib", "lib{0}.dylib" };
 
                         NativeLibrary.SetDllImportResolver(a, (name, ass, searchPath) =>
                         {
@@ -1387,20 +1534,42 @@ namespace Aardvark.Base
             }
             
         }
+
+        private static string ArchitectureString(Architecture arch)
+        {
+            switch (arch)
+            {
+                case Architecture.X86: return "x86";
+                case Architecture.X64: return "x64";
+                case Architecture.Arm: return "arm";
+                case Architecture.Arm64: return "arm64";
+                default: return arch.ToString();
+            }
+        }
+
         public static void Init(string basePath)
         {
             Report.BeginTimed("initializing aardvark");
 
             Report.Begin("System Information:");
-            Report.Line("OSVersion: {0}", System.Environment.OSVersion);
-            Report.Line("SystemArchitecture: {0}-bit", IntPtr.Size << 3);
-            Report.Line("Environment.Version: {0}", Environment.Version);
+            Report.Line("System:      {0}", RuntimeInformation.OSDescription);
+            Report.Line("Processor:   {0} core {1}", Environment.ProcessorCount, ArchitectureString(RuntimeInformation.OSArchitecture));
+            Report.Line("Process:     {0}", ArchitectureString(RuntimeInformation.ProcessArchitecture));
+            Report.Line("Framework:   {0}", RuntimeInformation.FrameworkDescription);
+
+            if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
+            {
+                Report.Error("{0} is not officially supported yet: some features may not work correctly", ArchitectureString(RuntimeInformation.ProcessArchitecture));
+            }
+
             Report.End();
 
 #if NETCOREAPP3_0
             System.Runtime.Loader.AssemblyLoadContext.Default.ResolvingUnmanagedDll += (ass, name) =>
             {
-                return LoadLibrary(null, name);
+                Report.Line(4, "trying to resolve native library {0}", name);
+                try { return LoadLibrary(null, name); }
+                catch (Exception) { return IntPtr.Zero; }
             };
 #endif
 

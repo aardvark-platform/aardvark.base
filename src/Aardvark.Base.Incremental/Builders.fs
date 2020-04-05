@@ -1,155 +1,52 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace FSharp.Data.Adaptive
+
+open FSharp.Data.Adaptive
 
 /// provides special operators for composing IMods
 module Operators =
     
     /// adaptively adds two values
-    let inline (%+) (l : IMod<'a>) (r : IMod<'b>) = Mod.map2 (+) l r
+    let inline (%+) (l : aval<'a>) (r : aval<'b>) = AVal.map2 (+) l r
 
     /// adaptively subtracts two values
-    let inline (%-) (l : IMod<'a>) (r : IMod<'b>) = Mod.map2 (-) l r
+    let inline (%-) (l : aval<'a>) (r : aval<'b>) = AVal.map2 (-) l r
 
     /// adaptively mutiplies two values
-    let inline (%*) (l : IMod<'a>) (r : IMod<'b>) = Mod.map2 (*) l r
+    let inline (%*) (l : aval<'a>) (r : aval<'b>) = AVal.map2 (*) l r
 
     /// adaptively divides two values
-    let inline (%/) (l : IMod<'a>) (r : IMod<'b>) = Mod.map2 (/) l r
+    let inline (%/) (l : aval<'a>) (r : aval<'b>) = AVal.map2 (/) l r
 
     /// creates an adaptive cell providing the value of "l && r"
-    let inline (%&&) (l : IMod<bool>) (r : IMod<bool>) = Mod.map2 (&&) l r
+    let inline (%&&) (l : aval<bool>) (r : aval<bool>) = AVal.map2 (&&) l r
 
     /// creates an adaptive cell providing the value of "l || r"
-    let inline (%||) (l : IMod<bool>) (r : IMod<bool>) = Mod.map2 (||) l r
+    let inline (%||) (l : aval<bool>) (r : aval<bool>) = AVal.map2 (||) l r
 
     /// expresses an adaptive "if then else" expression (e.g. m %? a %. b <=> if m then a else b)
-    let (%?) (l : IMod<bool>) (vt : 'a) : 'a -> IMod<'a> = fun vf -> l |> Mod.map (fun v -> if v then vt else vf)
+    let (%?) (l : aval<bool>) (vt : 'a) : 'a -> aval<'a> = fun vf -> l |> AVal.map (fun v -> if v then vt else vf)
 
     /// expresses an adaptive "if then else" expression (e.g. m %? a %. b <=> if m then a else b)
-    let (%.) (l : 'a -> IMod<'a>) (r : 'a) =  l r
+    let (%.) (l : 'a -> aval<'a>) (r : 'a) =  l r
 
     /// forces the value of a cell
-    let inline (!!) (m : IMod<'a>) = Mod.force m
+    let inline (!!) (m : aval<'a>) = AVal.force m
 
     /// creates a constant cell containing the given value
-    let inline (~~) (v : 'a) = Mod.constant v
-
-    /// creates a changeable cell containing the given value
-    let inline mref (v : 'a) = Mod.init v
-
+    let inline (~~) (v : 'a) = AVal.constant v
 
 [<AutoOpen>]
-module ``Computation Expression Builders`` =
-    
-    type AdaptiveBuilder() =
-        let constantUnit = Mod.constant ()
+module EvaluationExtensions =
 
-        member x.Bind(tup : IMod<'a> * IMod<'b>, f : 'a * 'b -> IMod<'c>) : IMod<'c> =
-            Mod.bind2 (fun a b -> f(a,b)) (fst tup) (snd tup)
+    type IAdaptiveValue with
+        member inline x.GetValue() = x.GetValueUntyped(AdaptiveToken.Top)
 
-        member x.Bind(m : IMod<'a>, f : 'a -> IMod<'b>) =
-            Mod.bind f m
-
-        member x.Return (v : 'a) =
-            Mod.constant v :> IMod<_>
-
-        member x.ReturnFrom(m : IMod<'a>) = 
-            m
-
-        member x.Zero() = constantUnit
-
-        member x.Combine(l : IMod<unit>, r : IMod<'a>) =
-            Mod.map2 (fun () r -> r) l r
-
-        member x.Delay (f : unit -> IMod<'a>) =
-            constantUnit |> Mod.bind f
-
+    type IAdaptiveValue<'T> with
+        member inline x.GetValue() = x.GetValue(AdaptiveToken.Top)
         
+    type FSharp.Data.Traceable.IOpReader<'a> with
+        member inline x.GetChanges() = x.GetChanges(AdaptiveToken.Top)
+        member inline x.Update() = x.GetChanges(AdaptiveToken.Top) |> ignore
 
-    type ASetBuilder() =
-        member x.Yield (v : 'a) =
-            ASet.single v
-
-        member x.YieldFrom (set : aset<'a>) =
-            set
-
-        member x.Bind(m : IMod<'a> * IMod<'b>, f : 'a * 'b -> aset<'c>) =
-            ASet.bind2 (fun a b -> f(a,b)) (fst m) (snd m)
-
-        member x.Bind(m : IMod<'a>, f : 'a -> aset<'b>) =
-            ASet.bind f m
-
-        member x.For(s : aset<'a>, f : 'a -> aset<'b>) =
-            ASet.collect f s
-
-        member x.For(s : seq<'a>, f : 'a -> aset<'b>) =
-            ASet.collect f (ASet.ofSeq s)
-
-        member x.Zero() =
-            ASet.empty
-
-        member x.Delay(f : unit -> aset<'a>) =
-            f()
-
-        member x.Combine(l : aset<'a>, r : aset<'a>) =
-            ASet.union l r
-
-    type AListBuilder() =
-        member x.Yield (v : 'a) =
-            AList.single v
-
-        member x.YieldFrom (set : alist<'a>) =
-            set
-
-        member x.Bind(m : IMod<'a> * IMod<'b>, f : 'a * 'b -> alist<'c>) =
-            AList.bind2 (fun a b -> f(a,b)) (fst m) (snd m)
-
-        member x.Bind(m : IMod<'a>, f : 'a -> alist<'b>) =
-            AList.bind f m
-
-        member x.For(s : alist<'a>, f : 'a -> alist<'b>) =
-            AList.collect f s
-
-        member x.For(s : seq<'a>, f : 'a -> alist<'b>) =
-            AList.collect f (AList.ofSeq s)
-
-        member x.Zero() =
-            AList.empty
-
-        member x.Delay(f : unit -> alist<'a>) =
-            f()
-
-        member x.Combine(l : alist<'a>, r : alist<'a>) =
-            AList.append l r
-
-
-    module Mod =
-        let toASet (m : IMod<'a>) =
-            ASet.ofModSingle m
-
-        let toAList (m : IMod<'a>) =
-            AList.ofModSingle m
-
-
-    let adaptive = AdaptiveBuilder()
-    let aset = ASetBuilder()
-    let alist = AListBuilder()
-
-open System.Runtime.CompilerServices
-
-[<AbstractClass; Sealed; Extension>]
-type EvaluationExtensions() =
-
-    [<Extension>]
-    static member inline GetValue(x : IMod) = x.GetValue(AdaptiveToken.Top)
-
-    [<Extension>]
-    static member inline GetValue(x : IMod<'a>) = x.GetValue(AdaptiveToken.Top)
-
-    [<Extension>]
-    static member inline GetOperations(x : IOpReader<'a>) = x.GetOperations(AdaptiveToken.Top)
-
-    [<Extension>]
-    static member inline Update(x : IOpReader<'a>) = x.GetOperations(AdaptiveToken.Top) |> ignore
-
-    [<Extension>]
-    static member inline Evaluate(x : afun<'a, 'b>, v : 'a) = x.Evaluate(AdaptiveToken.Top, v)
+    type afun<'a, 'b> with 
+        member x.Evaluate(v : 'a) = x.Evaluate(AdaptiveToken.Top, v)

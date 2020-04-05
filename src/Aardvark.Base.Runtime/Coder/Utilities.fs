@@ -6,6 +6,7 @@ open System.Collections.Generic
 open System.Runtime.CompilerServices
 open Microsoft.FSharp.Reflection
 open Aardvark.Base
+open FSharp.Data.Adaptive
 
 
 [<CustomEquality; NoComparison>]
@@ -22,30 +23,30 @@ type private R<'a when 'a : not struct> =
         new(v) = { Value = v }
     end
 
-type RefMap<'a, 'b when 'a : not struct> = private { store : hmap<R<'a>, 'b> }
+type RefMap<'a, 'b when 'a : not struct> = private { store : HashMap<R<'a>, 'b> }
 
 module RefMap =
     type private EmptyImpl<'a, 'b when 'a : not struct>() =
-        static let instance = { store = HMap.empty<R<'a>, 'b> }
+        static let instance = { store = HashMap.empty<R<'a>, 'b> }
         static member Instance = instance
 
     let empty<'a, 'b when 'a : not struct> = EmptyImpl<'a, 'b>.Instance
 
     let add (key : 'a) (value : 'b) (m : RefMap<'a, 'b>) =
-        { store = HMap.add (R key) value m.store }
+        { store = HashMap.add (R key) value m.store }
 
     let remove (key : 'a) (m : RefMap<'a, 'b>) =
-        { store = HMap.remove (R key) m.store }
+        { store = HashMap.remove (R key) m.store }
 
     let containsKey (key : 'a) (m : RefMap<'a, 'b>) =
-        HMap.containsKey (R key) m.store
+        HashMap.containsKey (R key) m.store
 
     let update (key : 'a) (f : Option<'b> -> 'b) (m : RefMap<'a, 'b>) =
         let key = R key
-        { store = HMap.update key f m.store }
+        { store = HashMap.update key f m.store }
 
     let tryFind (key : 'a) (m : RefMap<'a, 'b>) =
-        HMap.tryFind (R key) m.store
+        HashMap.tryFind (R key) m.store
 
 
 
@@ -158,7 +159,7 @@ module OverloadResolution =
                )
             |> Seq.toArray
             |> Seq.groupBy (fun m -> m.definition.Name)
-            |> Seq.map (fun (name, exts) -> name, Seq.toArray (HashSet exts))
+            |> Seq.map (fun (name, exts) -> name, Seq.toArray (System.Collections.Generic.HashSet exts))
             |> Dictionary.ofSeq
 
     let tryUnifyTypes (decl : Type) (real : Type) =
@@ -224,7 +225,7 @@ module OverloadResolution =
 
 
         if recurse decl real then
-            Some (assignment |> Dictionary.toSeq |> HMap.ofSeq)
+            Some (assignment |> Dictionary.toSeq |> HashMap.ofSeq)
         else
             None
 
@@ -236,7 +237,7 @@ module OverloadResolution =
 
                     let filled = 
                         holes |> Array.map (fun h ->
-                            match HMap.tryFind h ass with
+                            match HashMap.tryFind h ass with
                                 | Some r -> r
                                 | None -> h
                         )

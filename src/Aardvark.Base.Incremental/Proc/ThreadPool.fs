@@ -1,10 +1,8 @@
-﻿namespace Aardvark.Base.Incremental
+﻿namespace FSharp.Data.Adaptive
 
 open System
 open System.Threading
-open System.Threading.Tasks
-
-open Aardvark.Base
+open FSharp.Data.Adaptive
 
 [<AbstractClass>]
 type Command<'a>() =
@@ -37,8 +35,8 @@ type LeafCommand<'a>(p : ProcList<'a, unit>) =
         cancel.Cancel()
 
 
-type ThreadPool<'a>(_store : hmap<string, Command<'a>>) =
-    static let empty = ThreadPool<'a>(HMap.empty)
+type ThreadPool<'a>(_store : HashMap<string, Command<'a>>) =
+    static let empty = ThreadPool<'a>(HashMap.empty)
 
     static member Empty = empty
     
@@ -52,7 +50,7 @@ module ThreadPool =
 
     let map (mapping : 'a -> 'b) (pool : ThreadPool<'a>) =
         ThreadPool(
-            pool.store |> HMap.map (fun _ v -> 
+            pool.store |> HashMap.map (fun _ v -> 
                 { new Command<'b>() with
                     member x.Start(f) = v.Start(mapping >> f)
                     member x.Stop() = v.Stop()
@@ -61,14 +59,14 @@ module ThreadPool =
         )
 
     let add (id : string) (proc : ProcList<'a, unit>) (p : ThreadPool<'a>) =
-        ThreadPool(HMap.add id (LeafCommand(proc) :> Command<_>) p.store)
+        ThreadPool(HashMap.add id (LeafCommand(proc) :> Command<_>) p.store)
 
     let remove (id : string) (p : ThreadPool<'a>) =
-        ThreadPool(HMap.remove id p.store)
+        ThreadPool(HashMap.remove id p.store)
 
     let start (proc : ProcList<'a, unit>) (p : ThreadPool<'a>) =
         let id = Guid.NewGuid() |> string
-        ThreadPool(HMap.add id (LeafCommand(proc) :> Command<_>) p.store)
+        ThreadPool(HashMap.add id (LeafCommand(proc) :> Command<_>) p.store)
 
     let union (l : ThreadPool<'a>) (r : ThreadPool<'a>) =
-        ThreadPool(HMap.union l.store r.store)
+        ThreadPool(HashMap.union l.store r.store)

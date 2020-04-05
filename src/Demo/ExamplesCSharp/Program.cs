@@ -21,9 +21,9 @@ using System.Threading.Tasks;
 using System.Reactive.Linq;
 using System.Reactive;
 
-using Aardvark.Base.Incremental;
-using Aardvark.Base.Incremental.CSharp;
 using System.Reactive.Subjects;
+using FSharp.Data.Adaptive;
+using CSharp.Data.Adaptive;
 using static Aardvark.Base.CSharpInterop;
 
 namespace ExamplesCSharp
@@ -32,13 +32,10 @@ namespace ExamplesCSharp
     {
         static void Main(string[] args)
         {
-            Aardvark.Base.IL.TypeBuilderTest.run();
-            Environment.Exit(0);
-
             #region Basic Mod usage
 
             // Create a modref cell. can be changed via side effects
-            var input = Mod.Init(10);
+            var input = new ChangeableValue<int>(10);
 
             var output = input.Map(x => x * 2);
 
@@ -47,10 +44,10 @@ namespace ExamplesCSharp
             // not what we expected. Since mods are lazy and tostring does not force them we need
             // to pull the value out of it.
 
-            Console.WriteLine($"output was: {output.GetValue()}"); // F# equivalent: Mod.force : IMod<'a> -> 'a
+            Console.WriteLine($"output was: {output.GetValue()}"); // F# equivalent: Mod.force : aval<'a> -> 'a
             // output was: 20
 
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 input.Value = 20;
             }
@@ -157,8 +154,8 @@ namespace ExamplesCSharp
 
             // Let us see how this looks like in Mod:
             reexCount = 0;
-            var inputAM = Mod.Init(1);
-            var inputBM = Mod.Init(2);
+            var inputAM = new ChangeableValue<int>(1);
+            var inputBM = new ChangeableValue<int>(2);
             var aPlusB = inputAM.Map(inputBM, 
                 (a, b) => {
                     reexCount++;
@@ -170,7 +167,7 @@ namespace ExamplesCSharp
 
             // special note: Select2 was not defined at the time or writing of this tutorial, but
             // it is available in F#. How could we access the F# verion?
-            var aPlusB2 = ModModule.map2(FSharpFuncUtil.Create<int,int,int>((a, b) => a + b), inputAM, inputBM);
+            var aPlusB2 = FSharp.Data.Adaptive.AValModule.map2(FSharpFuncUtil.Create<int,int,int>((a, b) => a + b), inputAM, inputBM);
             // steps required: 
             // (1) F# map2 is defined in Mod module. usage Mod.map2 (+) a b
             // so we need this map module. by convention, modules with colliding type names
@@ -181,7 +178,7 @@ namespace ExamplesCSharp
             Console.WriteLine($"mod,a+b was: {aPlusB2.GetValue()}, reexCount: {reexCount}");
 
             reexCount = 0;
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 inputAM.Value = 20;
                 inputBM.Value = 30;
@@ -201,7 +198,7 @@ namespace ExamplesCSharp
             }));
 
             reexCount = 0;
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 inputAM.Value = 20;
                 inputBM.Value = 30;
@@ -212,7 +209,7 @@ namespace ExamplesCSharp
             // interesting. also here we have tight reexecution count.
 
             reexCount = 0;
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 inputAM.Value = 20;
                 inputBM.Value = 30;
@@ -230,17 +227,20 @@ namespace ExamplesCSharp
             */
 
             // One could use the mod system as strange implementation of observable of course.
-            var inputEvil = Mod.Init(10);
-            var outputEvil = Mod.Init(0);
-            var sub = inputEvil.UnsafeRegisterCallbackNoGcRoot(i =>
+            var inputEvil = new ChangeableValue<int>(10);
+            var outputEvil = new ChangeableValue<int>(0);
+
+
+
+            var sub = inputEvil.AddCallback(i =>
             {
-                using (Adaptive.Transaction)
+                using (Adaptive.Transact)
                 {
                     outputEvil.Value = i * 2;
                 }
             });
 
-            using (Adaptive.Transaction)
+            using (Adaptive.Transact)
             {
                 inputEvil.Value = 20;
             }
@@ -272,16 +272,16 @@ namespace ExamplesCSharp
             // As a result there are many things which do not fit to observables, others do not fit to mods.
 
             // Given this list, Mods are particularly not immediately usable for tracking changes manually.
-            var resendOverNetwork = Mod.Init(false);
-            inputEvil.UnsafeRegisterCallbackNoGcRoot(s =>
+            var resendOverNetwork = new ChangeableValue<bool>(false);
+            inputEvil.AddCallback(s =>
             {
-                using (Adaptive.Transaction)
+                using (Adaptive.Transact)
                 {
                     resendOverNetwork.Value = true;
                 }
             }
             );
-            resendOverNetwork.UnsafeRegisterCallbackNoGcRoot(_ =>
+            resendOverNetwork.AddCallback(_ =>
             {
                 inputEvil.GetValue().ToString(); // send new contents of inputEvil
             });

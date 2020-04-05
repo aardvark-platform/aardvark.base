@@ -121,24 +121,24 @@ namespace Aardvark.Base
             s_backwardIndexedLerpMap
             = new Dictionary<Type, Func<Array, int[], Dictionary<int, Line1iPoint>, Array>>
             {
-                { typeof(float[]), (a, bm, im) => (Array)BackwardIndexedCopy((float[])a, bm, im, Fun.Lerp) },
+                { typeof(float[]), (a, bm, im) => (Array)BackwardIndexedCopy((float[])a, bm, im, (t, u, v) => Fun.Lerp((float) t, u, v)) },
                 { typeof(double[]), (a, bm, im) => (Array)BackwardIndexedCopy((double[])a, bm, im, Fun.Lerp) },
-                { typeof(C3b[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3b[])a, bm, im, ColFun.Lerp) },
-                { typeof(C3us[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3us[])a, bm, im, ColFun.Lerp) },
-                { typeof(C3ui[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3ui[])a, bm, im, ColFun.Lerp) },
-                { typeof(C3f[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3f[])a, bm, im, ColFun.Lerp) },
-                { typeof(C3d[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3d[])a, bm, im, ColFun.Lerp) },
-                { typeof(C4b[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4b[])a, bm, im, ColFun.Lerp) },
-                { typeof(C4us[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4us[])a, bm, im, ColFun.Lerp) },
-                { typeof(C4ui[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4ui[])a, bm, im, ColFun.Lerp) },
-                { typeof(C4f[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4f[])a, bm, im, ColFun.Lerp) },
-                { typeof(C4d[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4d[])a, bm, im, ColFun.Lerp) },
-                { typeof(V2f[]), (a, bm, im) => (Array)BackwardIndexedCopy((V2f[])a, bm, im, VecFun.Lerp) },
-                { typeof(V2d[]), (a, bm, im) => (Array)BackwardIndexedCopy((V2d[])a, bm, im, VecFun.Lerp) },
-                { typeof(V3f[]), (a, bm, im) => (Array)BackwardIndexedCopy((V3f[])a, bm, im, VecFun.Lerp) },
-                { typeof(V3d[]), (a, bm, im) => (Array)BackwardIndexedCopy((V3d[])a, bm, im, VecFun.Lerp) },
-                { typeof(V4f[]), (a, bm, im) => (Array)BackwardIndexedCopy((V4f[])a, bm, im, VecFun.Lerp) },
-                { typeof(V4d[]), (a, bm, im) => (Array)BackwardIndexedCopy((V4d[])a, bm, im, VecFun.Lerp) },
+                { typeof(C3b[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3b[])a, bm, im, Fun.Lerp) },
+                { typeof(C3us[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3us[])a, bm, im, Fun.Lerp) },
+                { typeof(C3ui[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3ui[])a, bm, im, Fun.Lerp) },
+                { typeof(C3f[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3f[])a, bm, im, (t, u, v) => Fun.Lerp((float) t, u, v)) },
+                { typeof(C3d[]), (a, bm, im) => (Array)BackwardIndexedCopy((C3d[])a, bm, im, Fun.Lerp) },
+                { typeof(C4b[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4b[])a, bm, im, Fun.Lerp) },
+                { typeof(C4us[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4us[])a, bm, im, Fun.Lerp) },
+                { typeof(C4ui[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4ui[])a, bm, im, Fun.Lerp) },
+                { typeof(C4f[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4f[])a, bm, im, (t, u, v) => Fun.Lerp((float) t, u, v)) },
+                { typeof(C4d[]), (a, bm, im) => (Array)BackwardIndexedCopy((C4d[])a, bm, im, Fun.Lerp) },
+                { typeof(V2f[]), (a, bm, im) => (Array)BackwardIndexedCopy((V2f[])a, bm, im, (t, u, v) => Fun.Lerp((float) t, u, v)) },
+                { typeof(V2d[]), (a, bm, im) => (Array)BackwardIndexedCopy((V2d[])a, bm, im, Fun.Lerp) },
+                { typeof(V3f[]), (a, bm, im) => (Array)BackwardIndexedCopy((V3f[])a, bm, im, (t, u, v) => Fun.Lerp((float) t, u, v)) },
+                { typeof(V3d[]), (a, bm, im) => (Array)BackwardIndexedCopy((V3d[])a, bm, im, Fun.Lerp) },
+                { typeof(V4f[]), (a, bm, im) => (Array)BackwardIndexedCopy((V4f[])a, bm, im, (t, u, v) => Fun.Lerp((float) t, u, v)) },
+                { typeof(V4d[]), (a, bm, im) => (Array)BackwardIndexedCopy((V4d[])a, bm, im, Fun.Lerp) },
             };
 
 
@@ -159,10 +159,10 @@ namespace Aardvark.Base
             {
                 { typeof(V3f[]), (a, bm, im) =>
                     (Array)BackwardIndexedCopy(
-                            (V3f[])a, bm, im, (t, v0, v1) => t.Lerp(v0, v1).Normalized) },
+                            (V3f[])a, bm, im, (t, v0, v1) => Fun.Lerp((float) t, v0, v1).Normalized) },
                 { typeof(V3d[]), (a, bm, im) =>
                     (Array)BackwardIndexedCopy(
-                            (V3d[])a, bm, im, (t, v0, v1) => t.Lerp(v0, v1).Normalized) },
+                            (V3d[])a, bm, im, (t, v0, v1) => Fun.Lerp((float) t, v0, v1).Normalized) },
             };
 
         public static Array BackwardIndexedNormalCopy(
@@ -317,19 +317,6 @@ namespace Aardvark.Base
     public static class V2dArrayExtensions
     {
         #region Transformations
-
-        /// <summary>
-        /// Gets centroid of this polygon's vertices.
-        /// </summary>
-        [Obsolete("Use VectorIEnumerableExtensions.ComputeCentroid instead.")]
-        public static V2d ComputeCentroid(this V2d[] points)
-        {
-            var sum = points[0];
-            long count = points.LongLength;
-            for (long i = 1; i < count; i++) sum += points[i];
-            double d = 1.0 / count;
-            return sum * d;
-        }
 
         /// <summary>
         /// Returns a version of the point array scaled by a factor of s about

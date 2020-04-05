@@ -1,3 +1,4 @@
+**/.DS_Store
 /.paket/paket.exe
 /src/Aardvark.Base/obj
 /src/*.suo
@@ -31,3 +32,5 @@ tmp
 Aardvark.log
 /build.fsx.lock
 .ionide
+/.vs
+.vscode

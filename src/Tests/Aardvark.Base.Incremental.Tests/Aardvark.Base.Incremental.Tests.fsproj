@@ -15,13 +15,6 @@
 	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.0</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="aset\Sim.fs" />
-    <Compile Include="aset\SimMod.fs" />
-    <Compile Include="aset\SimSet.fs" />
-    <Compile Include="aset\SimMap.fs" />
-    <Compile Include="aset\SimList.fs" />
-    <Compile Include="AdaptiveSetReference.fs" />
-    <Compile Include="ASetUtilities.fs" />
     <Compile Include="ModTests.fs" />
     <Compile Include="ASetTests.fs" />
     <Compile Include="AListTests.fs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -408,6 +409,23 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(__tpolygon__ a, __tpolygon__ b)
+        {
+            if (a.m_pointCount != b.m_pointCount) return false;
+            for (int pi = 0; pi < a.m_pointCount; pi++)
+                if (a.m_pointArray[pi] != b.m_pointArray[pi]) return false;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(__tpolygon__ a, __tpolygon__ b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -415,15 +433,17 @@ namespace Aardvark.Base
             return m_pointArray.GetCombinedHashCode(m_pointCount);
         }
 
-        public override bool Equals(object other)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__tpolygon__ other)
         {
-            if (!(other is __tpolygon__)) return false;
-            var o = (__tpolygon__)other;
-            if (m_pointCount != o.m_pointCount) return false;
+            if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
-                if (m_pointArray[pi] != o.m_pointArray[pi]) return false;
+                if (!m_pointArray[pi].Equals(other.m_pointArray[pi])) return false;
             return true;
         }
+
+        public override bool Equals(object other)
+            => (other is __tpolygon__ o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -451,6 +471,29 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="__tpolygon__"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __tpolygon__ a, __tpolygon__ b, double tolerance)
+        {
+            if (a.m_pointCount != b.m_pointCount) return false;
+            for (int pi = 0; pi < a.m_pointCount; pi++)
+                if (!ApproximateEquals(a.m_pointArray[pi], b.m_pointArray[pi], tolerance)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Returns whether the given <see cref="__tpolygon__"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __tpolygon__ a, __tpolygon__ b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -631,7 +674,7 @@ namespace Aardvark.Base
             for (int i = 0; i < pc; i++)
             {
                 var p1 = polygon[i];
-                r += __tvec__.Distance(p0, p1);
+                r += Vec.Distance(p0, p1);
                 p0 = p1;
             }
             return r;
@@ -699,9 +742,9 @@ namespace Aardvark.Base
             var pc = 0;
             pa[0] = polygon[0];
             for (int pi = 1; pi < opc; pi++)
-                if (__tvec__.DistanceSquared(pa[pc], polygon[pi]) > eps)
+                if (Vec.DistanceSquared(pa[pc], polygon[pi]) > eps)
                     pa[++pc] = polygon[pi];
-            if (__tvec__.DistanceSquared(pa[pc], polygon[0]) > eps)
+            if (Vec.DistanceSquared(pa[pc], polygon[0]) > eps)
                 ++pc;
             return new __tpolygon__(pa, pc);
         }
@@ -969,6 +1012,18 @@ namespace Aardvark.Base
         //# } // od
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(__type__ a, __type__ b)
+            => /*# pc.ForEach(i => { */(a.P__i__ == b.P__i__)/*# }, Sep(" && ")); */;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(__type__ a, __type__ b)
+            => !(a == b);
+
+        #endregion
+
         #region Overrides
 
         public override int GetHashCode()
@@ -976,15 +1031,12 @@ namespace Aardvark.Base
             return HashCode.GetCombined(/*# pc.ForEach(i => { */P__i__/*# }, Sep(", ")); */);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__type__ other)
+            => /*# pc.ForEach(i => { */P__i__.Equals(other.P__i__)/*# }, Sep(" && ")); */;
+
         public override bool Equals(object other)
-        {
-            if (other is __type__)
-            {
-                var o = (__type__)other;
-                return /*# pc.ForEach(i => { */P__i__ == o.P__i__/*# }, Sep(" && ")); */;
-            }
-            return false;
-        }
+             => (other is __type__ o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -1012,6 +1064,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="__type__"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a, __type__ b, double tolerance)
+            => /*# pc.ForEach(i => { */ApproximateEquals(a.P__i__, b.P__i__, tolerance)/*# }, Sep(" && ")); */;
+
+        /// <summary>
+        /// Returns whether the given <see cref="__type__"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __type__ a, __type__ b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
@@ -1085,7 +1155,7 @@ namespace Aardvark.Base
         /// </summary>
         public static __et__ FromConjugateDiameters(__vt__ center, /*# if (d == 3) { */__vt__ normal, /*# } */__vt__ a, __vt__ b)
         {
-            var ab = __vt__.Dot(a, b);
+            var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
             if (ab.IsTiny())
             {
@@ -1112,7 +1182,7 @@ namespace Aardvark.Base
         public static __et__ FromConjugateDiameters(__vt__ center, /*# if (d == 3) { */__vt__ normal, /*# } */__vt__ a, __vt__ b,
                 out double major2, out double minor2)
         {
-            var ab = __vt__.Dot(a, b);
+            var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
             if (ab.IsTiny())
             {
@@ -1182,6 +1252,86 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(__et__ a, __et__ b) => 
+            (a.Center == b.Center) && 
+            //# if (d == 3) {
+            (a.Normal == b.Normal) &&
+            //# }
+            (a.Axis0 == b.Axis0) && 
+            (a.Axis1 == b.Axis1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(__et__ a, __et__ b)
+            => !(a == b);
+
+        #endregion
+
+        #region Overrides
+
+        public override int GetHashCode()
+        {
+            return HashCode.GetCombined(Center, /*# if (d == 3) { */Normal, /*# }*/Axis0, Axis1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__et__ other) =>
+            Center.Equals(other.Center) &&
+            //# if (d == 3) {
+            Normal.Equals(other.Normal) &&
+            //# }
+            Axis0.Equals(other.Axis0) &&
+            Axis1.Equals(other.Axis1);
+
+        public override bool Equals(object other)
+             => (other is __et__ o) ? Equals(o) : false;
+
+        public override string ToString()
+        {
+            //# if (d == 3) {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", Center, Normal, Axis0, Axis1);
+            //# } else {
+            return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Center, Axis0, Axis1);
+            //# }
+        }
+
+        public static __et__ Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new __et__(
+                __vt__.Parse(x[0]),
+                __vt__.Parse(x[1]),
+                __vt__.Parse(x[2])/*# if (d == 3) { */,
+                __vt__.Parse(x[3])/*# }*/
+            );
+        }
+
+        #endregion
+    }
+
+    public static partial class Fun
+    {
+        /// <summary>
+        /// Returns whether the given <see cref="__et__"/> are equal within the given tolerance.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __et__ a, __et__ b, double tolerance) =>
+            ApproximateEquals(a.Center, b.Center, tolerance) &&
+            //# if (d == 3) {
+            ApproximateEquals(a.Normal, b.Normal, tolerance) &&
+            //# }
+            ApproximateEquals(a.Axis0, b.Axis0, tolerance) &&
+            ApproximateEquals(a.Axis1, b.Axis1, tolerance);
+
+        /// <summary>
+        /// Returns whether the given <see cref="__et__"/> are equal within
+        /// Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ApproximateEquals(this __et__ a, __et__ b)
+            => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
     #endregion
