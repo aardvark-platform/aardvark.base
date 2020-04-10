@@ -660,25 +660,24 @@ module Ag =
             let cacheName = "syn." + name
             scope.Enter()
             try
-                match scope.TryGetCacheValue cacheName with
-                | Some v ->
-                    v
-                | None -> 
-                    let t = node.GetType()
-                    match table.Value.TryGetSynRule(name, t, expectedType)  with
-                    | Some syn ->
-                        if syn.Cache then
-                            let newScope = scope.GetChildScope(node)
+                let t = node.GetType()
+                match table.Value.TryGetSynRule(name, t, expectedType)  with
+                | Some syn ->
+                    let newScope = scope.GetChildScope(node)
+                    if syn.Cache then
+                        match newScope.TryGetCacheValue cacheName with
+                        | Some v ->
+                            v
+                        | None -> 
                             let result = syn.Invoke (node :> obj) newScope |> Some
-                            scope.SetCacheValue(cacheName, result)
+                            newScope.SetCacheValue(cacheName, result)
                             result
-                        else
-                            scope.Exit()
-                            let newScope = scope.GetChildScope(node)
-                            syn.Invoke (node :> obj) newScope |> Some
+                    else
+                        scope.Exit()
+                        syn.Invoke (node :> obj) newScope |> Some
 
-                    | _ ->
-                        None
+                | _ ->
+                    None
                 finally
                     scope.Exit()
 
