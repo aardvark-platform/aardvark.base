@@ -13,6 +13,10 @@ open System.Runtime.InteropServices
 type RuleAttribute() =
     inherit Attribute()
 
+[<AttributeUsage(AttributeTargets.Method)>]
+type CacheSynthesizedAttribute() =
+    inherit Attribute()
+
 module Ag =
 
     let internal anyObj = obj()
@@ -123,7 +127,47 @@ module Ag =
                     None
             | _ ->
                 None
+                
 
+        member internal x.Locked (action : unit -> 'T) =
+            lock inherited action
+            
+
+        member internal x.Enter () =
+            System.Threading.Monitor.Enter inherited
+
+            
+        member internal x.Exit () =
+            if System.Threading.Monitor.IsEntered inherited then
+                System.Threading.Monitor.Exit inherited
+
+
+        member internal x.TryGetCacheValue(name : string) =
+            lock inherited (fun () ->
+                match inherited.TryGetValue name with
+                | (true, v) -> Some v
+                | _ -> None
+            )
+
+        member internal x.SetCacheValue(name : string, value : option<obj>) =
+            lock inherited (fun () ->
+                inherited.[name] <- value
+            )
+
+        member internal x.GetOrCreateCache(name : string, create : string -> option<'a>) =
+            lock inherited (fun () ->
+                match inherited.TryGetValue name with
+                | (true, v) -> 
+                    match v with
+                    | Some (:? 'a as v) -> Some v
+                    | _ -> None
+                | _ ->
+                    let res = create name
+                    match res with
+                    | Some v -> inherited.[name] <- Some (v :> obj)
+                    | None -> inherited.[name] <- None
+                    res
+            )
 
         member internal x.TryGetInheritedCache(name : string) : option<option<obj>> =
             lock inherited (fun () ->
@@ -212,9 +256,12 @@ module Ag =
                 
         [<StructuredFormatDisplay("{AsString}")>]
         type SynMethod(mi : MethodInfo, invoke : obj -> Scope -> obj) =
+            let cache = mi.GetCustomAttributes<CacheSynthesizedAttribute>() |> Seq.isEmpty |> not
+
             member x.MethodInfo = mi
             member x.Invoke = invoke
-            
+            member x.Cache = cache
+
             member private x.AsString = 
                 x.ToString()
 
@@ -610,13 +657,31 @@ module Ag =
         if isNull (node :> obj) then 
             None
         else
-            let t = node.GetType()
-            match table.Value.TryGetSynRule(name, t, expectedType)  with
-            | Some syn ->
-                let newScope = scope.GetChildScope(node)
-                syn.Invoke (node :> obj) newScope |> Some
-            | _ ->
-                None
+            let cacheName = "syn." + name
+            scope.Enter()
+            try
+                match scope.TryGetCacheValue cacheName with
+                | Some v ->
+                    v
+                | None -> 
+                    let t = node.GetType()
+                    match table.Value.TryGetSynRule(name, t, expectedType)  with
+                    | Some syn ->
+                        if syn.Cache then
+                            let newScope = scope.GetChildScope(node)
+                            let result = syn.Invoke (node :> obj) newScope |> Some
+                            scope.SetCacheValue(cacheName, result)
+                            result
+                        else
+                            scope.Exit()
+                            let newScope = scope.GetChildScope(node)
+                            syn.Invoke (node :> obj) newScope |> Some
+
+                    | _ ->
+                        None
+                finally
+                    scope.Exit()
+
    
     
     type System.Object with
