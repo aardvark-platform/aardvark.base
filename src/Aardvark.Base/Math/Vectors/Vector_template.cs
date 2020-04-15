@@ -2002,7 +2002,7 @@ namespace Aardvark.Base
 
         //# if (ft.IsReal) {
         /// <summary>
-        /// Returns the reflection direction of the given vector for the given normal (should be normalized).
+        /// Returns the reflection direction of the given vector v (pointing to the surface) for the given normal (should be normalized).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Reflect(this __vtype__ v, __vtype__ normal)
@@ -2011,8 +2011,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the refraction direction of the given vector for the given normal and ratio of refraction indices.
+        /// Returns the refraction direction of the given vector v (pointing to the surface) for the given normal and ratio of refraction indices (n_out / n_in).
         /// Both the input vectors should be normalized.
+        /// Returns a zero-vector in case of total internal reflection.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Refract(this __vtype__ v, __vtype__ normal, __ftype__ eta)
