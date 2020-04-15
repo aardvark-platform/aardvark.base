@@ -694,7 +694,7 @@ namespace Aardvark.Base
             => trafo.Backward.C3.XYZ;
 
         /// <summary>
-        /// Extracts the Z-Axis from the given transformation.
+        /// Extracts the forward vector from the given view transformation.
         /// NOTE: A left-handed coordinates system transformation is expected, 
         /// where the view-space z-axis points in forward direction.
         /// </summary>
@@ -703,13 +703,13 @@ namespace Aardvark.Base
             => trafo.Forward.GetViewDirectionLH();
 
         /// <summary>
-        /// Extracts the Z-Axis from the given transformation.
+        /// Extracts the forward vector from the given view transformation.
         /// NOTE: A right-handed coordinates system transformation is expected, where 
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vnt__ GetViewDirectionRH(this __type__ trafo)
-            => -trafo.Forward.GetViewDirectionRH();
+            => trafo.Forward.GetViewDirectionRH();
 
         /// <summary>
         /// Extracts the translation component of the given transformation, which when given 

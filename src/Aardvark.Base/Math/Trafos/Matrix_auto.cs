@@ -35301,7 +35301,7 @@ namespace Aardvark.Base
             => new V3f(m.C0.Length, m.C1.Length, m.C2.Length);
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A left-handed coordinates system transformation is expected, 
         /// where the view-space z-axis points in forward direction.
         /// </summary>
@@ -35310,7 +35310,7 @@ namespace Aardvark.Base
             => m.R2.XYZ.Normalized;
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A right-handed coordinates system transformation is expected, where 
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
@@ -37856,7 +37856,7 @@ namespace Aardvark.Base
             => new V3d(m.C0.Length, m.C1.Length, m.C2.Length);
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A left-handed coordinates system transformation is expected, 
         /// where the view-space z-axis points in forward direction.
         /// </summary>
@@ -37865,7 +37865,7 @@ namespace Aardvark.Base
             => m.R2.XYZ.Normalized;
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A right-handed coordinates system transformation is expected, where 
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
@@ -47243,7 +47243,7 @@ namespace Aardvark.Base
             => new V3f(m.C0.XYZ.Length, m.C1.XYZ.Length, m.C2.XYZ.Length);
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A left-handed coordinates system transformation is expected, 
         /// where the view-space z-axis points in forward direction.
         /// </summary>
@@ -47252,7 +47252,7 @@ namespace Aardvark.Base
             => m.R2.XYZ.Normalized;
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A right-handed coordinates system transformation is expected, where 
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
@@ -50570,7 +50570,7 @@ namespace Aardvark.Base
             => new V3d(m.C0.XYZ.Length, m.C1.XYZ.Length, m.C2.XYZ.Length);
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A left-handed coordinates system transformation is expected, 
         /// where the view-space z-axis points in forward direction.
         /// </summary>
@@ -50579,7 +50579,7 @@ namespace Aardvark.Base
             => m.R2.XYZ.Normalized;
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A right-handed coordinates system transformation is expected, where 
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
