@@ -190,7 +190,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
-        //# } 
+        //# }
         //# } // end For
         //# var vecTypes = new List<Meta.VecType>();
         //# var vecFieldTypes = vftmap[ft];
@@ -222,7 +222,7 @@ namespace Aardvark.Base
             A = alpha;
         }
 
-        //#         } 
+        //#         }
         //#     }
         //# }
         #endregion
@@ -244,7 +244,7 @@ namespace Aardvark.Base
         public static explicit operator __vt.Name__(__type__ color)
         {
             return new __vt.Name__(/*# channels.ForEach(c => { */
-                __convert__(color.__c__)/*# }, comma); 
+                __convert__(color.__c__)/*# }, comma);
                 if (d == 4) {
                     if (t.HasAlpha) { */,
                 __convert__(color.A)/*#
@@ -363,6 +363,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// __type__ with all components zero.
+        /// </summary>
+        public static __type__ Zero => new __type__(/*# fields.ForEach(f => {*/__t.MinValue__/*#}, comma); */);
+
         public static __type__ Black => new __type__(__t.MinValue__);
 
         public static __type__ Red => new __type__(__t.MaxValue__, __t.MinValue__, __t.MinValue__);
@@ -380,7 +385,7 @@ namespace Aardvark.Base
         public static __type__ DarkMagenta => new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
         public static __type__ DarkYellow => new __type__(__t.MaxValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
         public static __type__ Gray => new __type__(__t.MaxValue__ / 2);
-        
+
         //# if (isFloat) {
         //#     for (int i = 1; i < 10; i++) { double val = 0.1 * i; int percent = 10 * i;
         public static __type__ Gray__percent__ => new __type__(__val__f);
@@ -417,7 +422,7 @@ namespace Aardvark.Base
         public static __type__ operator *(__type__ col, double scalar)
         {
             return new __type__(/*# fields.ForEach(f => { */
-                (__ftype__)(col.__f__ * scalar)/*# }, comma); */);                
+                (__ftype__)(col.__f__ * scalar)/*# }, comma); */);
         }
 
         public static __type__ operator *(double scalar, __type__ col)
@@ -434,7 +439,7 @@ namespace Aardvark.Base
         }
 
         //# foreach (var t1 in Meta.ColorTypes) { if (t1.HasAlpha != t.HasAlpha) continue;
-        //#     
+        //#
         //#     var type1 = t1.Name; var ft1 = t1.FieldType;
         //#     var ft1_from_ft = t1 != t
         //#         ? (ft.IsReal && ft1.IsReal ? "(" + ftype + ")" : "Col." + ft.Caps + "From" + ft1.Caps)
@@ -498,7 +503,7 @@ namespace Aardvark.Base
         public static __vt.Name__ operator + (__vt.Name__ vec, __type__ color)
         {
             return new __vt.Name__(/*# vfields.ForEach(channels, (f, c) => { */
-                vec.__f__ + __convert__(color.__c__)/*# }, comma); 
+                vec.__f__ + __convert__(color.__c__)/*# }, comma);
                 if (d == 4) {
                     if (t.HasAlpha) { */,
                 vec.W + __convert__(color.A)/*#
@@ -512,7 +517,7 @@ namespace Aardvark.Base
         public static __vt.Name__ operator -(__vt.Name__ vec, __type__ color)
         {
             return new __vt.Name__(/*# vfields.ForEach(channels, (f, c) => { */
-                vec.__f__ - __convert__(color.__c__)/*# }, comma); 
+                vec.__f__ - __convert__(color.__c__)/*# }, comma);
                 if (d == 4) {
                     if (t.HasAlpha) { */,
                 vec.W - __convert__(color.A)/*#
