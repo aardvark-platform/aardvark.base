@@ -1,0 +1,21 @@
+name: MacOS
+
+on: 
+  push:
+    paths-ignore:
+    - 'README.md'
+    - 'docs/'
+  pull_request:
+    paths-ignore:
+    - 'README.md'
+    - 'docs/'
+    
+jobs:
+  build:
+
+    runs-on: macos
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build
+      run: bash ./build.sh

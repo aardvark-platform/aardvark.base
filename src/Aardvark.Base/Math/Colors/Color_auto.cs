@@ -818,6 +818,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C3b with all components zero.
+        /// </summary>
+        public static C3b Zero => new C3b(0, 0, 0);
+
         public static C3b Black => new C3b(0);
 
         public static C3b Red => new C3b(255, 0, 0);
@@ -835,7 +840,7 @@ namespace Aardvark.Base
         public static C3b DarkMagenta => new C3b(255 / 2, 0 / 2, 255 / 2);
         public static C3b DarkYellow => new C3b(255 / 2, 255 / 2, 0 / 2);
         public static C3b Gray => new C3b(255 / 2);
-        
+
         public static C3b VRVisGreen => new C3b(178, 217, 2);
 
         #endregion
@@ -2554,6 +2559,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C3us with all components zero.
+        /// </summary>
+        public static C3us Zero => new C3us(0, 0, 0);
+
         public static C3us Black => new C3us(0);
 
         public static C3us Red => new C3us(65535, 0, 0);
@@ -2571,7 +2581,7 @@ namespace Aardvark.Base
         public static C3us DarkMagenta => new C3us(65535 / 2, 0 / 2, 65535 / 2);
         public static C3us DarkYellow => new C3us(65535 / 2, 65535 / 2, 0 / 2);
         public static C3us Gray => new C3us(65535 / 2);
-        
+
         public static C3us VRVisGreen => new C3us(45743, 53411, 5243);
 
         #endregion
@@ -4215,6 +4225,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C3ui with all components zero.
+        /// </summary>
+        public static C3ui Zero => new C3ui(0, 0, 0);
+
         public static C3ui Black => new C3ui(0);
 
         public static C3ui Red => new C3ui(UInt32.MaxValue, 0, 0);
@@ -4232,7 +4247,7 @@ namespace Aardvark.Base
         public static C3ui DarkMagenta => new C3ui(UInt32.MaxValue / 2, 0 / 2, UInt32.MaxValue / 2);
         public static C3ui DarkYellow => new C3ui(UInt32.MaxValue / 2, UInt32.MaxValue / 2, 0 / 2);
         public static C3ui Gray => new C3ui(UInt32.MaxValue / 2);
-        
+
 
         #endregion
 
@@ -5745,6 +5760,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C3f with all components zero.
+        /// </summary>
+        public static C3f Zero => new C3f(0.0f, 0.0f, 0.0f);
+
         public static C3f Black => new C3f(0.0f);
 
         public static C3f Red => new C3f(1.0f, 0.0f, 0.0f);
@@ -5762,7 +5782,7 @@ namespace Aardvark.Base
         public static C3f DarkMagenta => new C3f(1.0f / 2, 0.0f / 2, 1.0f / 2);
         public static C3f DarkYellow => new C3f(1.0f / 2, 1.0f / 2, 0.0f / 2);
         public static C3f Gray => new C3f(1.0f / 2);
-        
+
         public static C3f Gray10 => new C3f(0.1f);
         public static C3f Gray20 => new C3f(0.2f);
         public static C3f Gray30 => new C3f(0.3f);
@@ -5800,7 +5820,7 @@ namespace Aardvark.Base
             return new C3f(
                 col.R * scalar, 
                 col.G * scalar, 
-                col.B * scalar);      
+                col.B * scalar);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7200,6 +7220,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C3d with all components zero.
+        /// </summary>
+        public static C3d Zero => new C3d(0, 0, 0);
+
         public static C3d Black => new C3d(0);
 
         public static C3d Red => new C3d(1.0, 0, 0);
@@ -7217,7 +7242,7 @@ namespace Aardvark.Base
         public static C3d DarkMagenta => new C3d(1.0 / 2, 0 / 2, 1.0 / 2);
         public static C3d DarkYellow => new C3d(1.0 / 2, 1.0 / 2, 0 / 2);
         public static C3d Gray => new C3d(1.0 / 2);
-        
+
 
         #endregion
 
@@ -7245,7 +7270,7 @@ namespace Aardvark.Base
             return new C3d(
                 col.R * scalar, 
                 col.G * scalar, 
-                col.B * scalar);      
+                col.B * scalar);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9097,6 +9122,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C4b with all components zero.
+        /// </summary>
+        public static C4b Zero => new C4b(0, 0, 0, 0);
+
         public static C4b Black => new C4b(0);
 
         public static C4b Red => new C4b(255, 0, 0);
@@ -9114,7 +9144,7 @@ namespace Aardvark.Base
         public static C4b DarkMagenta => new C4b(255 / 2, 0 / 2, 255 / 2);
         public static C4b DarkYellow => new C4b(255 / 2, 255 / 2, 0 / 2);
         public static C4b Gray => new C4b(255 / 2);
-        
+
         public static C4b VRVisGreen => new C4b(178, 217, 2);
 
         #endregion
@@ -11066,6 +11096,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C4us with all components zero.
+        /// </summary>
+        public static C4us Zero => new C4us(0, 0, 0, 0);
+
         public static C4us Black => new C4us(0);
 
         public static C4us Red => new C4us(65535, 0, 0);
@@ -11083,7 +11118,7 @@ namespace Aardvark.Base
         public static C4us DarkMagenta => new C4us(65535 / 2, 0 / 2, 65535 / 2);
         public static C4us DarkYellow => new C4us(65535 / 2, 65535 / 2, 0 / 2);
         public static C4us Gray => new C4us(65535 / 2);
-        
+
         public static C4us VRVisGreen => new C4us(45743, 53411, 5243);
 
         #endregion
@@ -12945,6 +12980,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C4ui with all components zero.
+        /// </summary>
+        public static C4ui Zero => new C4ui(0, 0, 0, 0);
+
         public static C4ui Black => new C4ui(0);
 
         public static C4ui Red => new C4ui(UInt32.MaxValue, 0, 0);
@@ -12962,7 +13002,7 @@ namespace Aardvark.Base
         public static C4ui DarkMagenta => new C4ui(UInt32.MaxValue / 2, 0 / 2, UInt32.MaxValue / 2);
         public static C4ui DarkYellow => new C4ui(UInt32.MaxValue / 2, UInt32.MaxValue / 2, 0 / 2);
         public static C4ui Gray => new C4ui(UInt32.MaxValue / 2);
-        
+
 
         #endregion
 
@@ -14632,6 +14672,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C4f with all components zero.
+        /// </summary>
+        public static C4f Zero => new C4f(0.0f, 0.0f, 0.0f, 0.0f);
+
         public static C4f Black => new C4f(0.0f);
 
         public static C4f Red => new C4f(1.0f, 0.0f, 0.0f);
@@ -14649,7 +14694,7 @@ namespace Aardvark.Base
         public static C4f DarkMagenta => new C4f(1.0f / 2, 0.0f / 2, 1.0f / 2);
         public static C4f DarkYellow => new C4f(1.0f / 2, 1.0f / 2, 0.0f / 2);
         public static C4f Gray => new C4f(1.0f / 2);
-        
+
         public static C4f Gray10 => new C4f(0.1f);
         public static C4f Gray20 => new C4f(0.2f);
         public static C4f Gray30 => new C4f(0.3f);
@@ -14688,7 +14733,7 @@ namespace Aardvark.Base
                 col.R * scalar, 
                 col.G * scalar, 
                 col.B * scalar, 
-                col.A * scalar);      
+                col.A * scalar);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16244,6 +16289,11 @@ namespace Aardvark.Base
 
         #region Constants
 
+        /// <summary>
+        /// C4d with all components zero.
+        /// </summary>
+        public static C4d Zero => new C4d(0, 0, 0, 0);
+
         public static C4d Black => new C4d(0);
 
         public static C4d Red => new C4d(1.0, 0, 0);
@@ -16261,7 +16311,7 @@ namespace Aardvark.Base
         public static C4d DarkMagenta => new C4d(1.0 / 2, 0 / 2, 1.0 / 2);
         public static C4d DarkYellow => new C4d(1.0 / 2, 1.0 / 2, 0 / 2);
         public static C4d Gray => new C4d(1.0 / 2);
-        
+
 
         #endregion
 
@@ -16290,7 +16340,7 @@ namespace Aardvark.Base
                 col.R * scalar, 
                 col.G * scalar, 
                 col.B * scalar, 
-                col.A * scalar);      
+                col.A * scalar);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

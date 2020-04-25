@@ -1403,7 +1403,7 @@ namespace Aardvark.Base
         //# }
         //# if (t > 1 && m == 4) {
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A left-handed coordinates system transformation is expected, 
         /// where the view-space z-axis points in forward direction.
         /// </summary>
@@ -1412,7 +1412,7 @@ namespace Aardvark.Base
             => m.R__msub2__.__xyzmsub1__.Normalized;
 
         /// <summary>
-        /// Extracts the z-axis from the given transformation matrix.
+        /// Extracts the forward vector from the given view transformation matrix.
         /// NOTE: A right-handed coordinates system transformation is expected, where 
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
