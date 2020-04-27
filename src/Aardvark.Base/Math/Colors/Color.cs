@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
@@ -64,7 +65,7 @@ namespace Aardvark.Base
             HSL,
             HSV,
 
-            // 
+            //
             NormalUV,
         }
 
@@ -535,48 +536,80 @@ namespace Aardvark.Base
 
         #region Special Color Channel Conversions
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ColByteInIntToFloat(this int i) { return (float)i * c_byteToFloat; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColFloatToByteInInt(this float f) { return (int)(f * c_floatToByte); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ColByteInIntToDouble(this int i) { return (double)i * c_byteToDouble; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ColDoubleToByteInInt(this double d) { return (int)(d * c_doubleToByte); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ColUShortInIntToDouble(this int i) { return (double)i * c_uShortToDouble; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColDoubleToUShortInInt(this double d) { return (int)(d * c_doubleToUShort); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColBitInByteToByte(this byte b) { return (byte)(b * 255); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteToBitInByte(this byte b) { return (byte)(b >> 7); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteInFloatToByte(this float f) { return (byte)(f + 0.5f); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteInDoubleToByte(this double d) { return (byte)(d + 0.5); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ColUShortInFloatToUShort(this float f) { return (ushort)(f + 0.5f); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ColUShortInDoubleToUShort(this double d) { return (ushort)(d + 0.5); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ColUIntInDoubleToUInt(this double d) { return (uint)(d + 0.5); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColFloatToByteInIntClamped(this float f) { return (int)(f * c_floatToByte).Clamp(0, 255); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColDoubleToUShortInIntClamped(this double d) { return (int)(d * c_doubleToUShort).Clamp(0, 65535); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteInFloatToByteClamped(this float f) { return (byte)(f.Clamp(0.0f, 255.0f) + 0.5f); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteInDoubleToByteClamped(this double d) { return (byte)(d.Clamp(0.0, 255.0) + 0.5); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ColUShortInFloatToUShortClamped(this float f) { return (ushort)(f.Clamp(0.0f, 65535.0f) + 0.5f); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ColUShortInDoubleToUShortClamped(this double d) { return (ushort)(d.Clamp(0.0, 65535.0) + 0.5); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ColUIntInDoubleToUIntClamped(this double d) { return (uint)(d.Clamp(0.0, (double)uint.MaxValue) + 0.5); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ColByteInFloatToFloat(this float f) { return f * c_byteToFloat; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ColFloatToByteInFloat(this float f) { return f * c_floatToByte; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ColByteInDoubleToDouble(this double d) { return d * c_byteToDouble; }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ColDoubleToByteInDouble(this double d) { return d * c_doubleToByte; }
 
-        public static float ColByteInFloatToFloatClamped(this float f) { return (f * c_byteToFloat).Clamp(0.0f, 1.0f); }
-        public static float ColFloatToByteInFloatClamped(this float f) { return (f * c_floatToByte).Clamp(0.0f, 255.0f); }
-
-        [Obsolete("(Typo) Use 'ColByteInFloatToByteClamped' instead", false)]
-        public static ushort ColUShortInFloaToUShortClamped(this float f) { return (ushort)(f.Clamp(0.0f, 65535.0f) + 0.5f); }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ColByteInFloatToFloatClamped(this float f) { return f.ColByteInFloatToFloat().Clamp(0, 1); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ColFloatToByteInFloatClamped(this float f) { return f.ColFloatToByteInFloat().Clamp(0, 255); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ColByteInDoubleToDoubleClamped(this double d) { return d.ColByteInDoubleToDouble().Clamp(0, 1); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ColDoubleToByteInDoubleClamped(this double d) { return d.ColDoubleToByteInDouble().Clamp(0, 255); }
 
         // explicit lambda function versions to aid type infererence
 
         public static readonly Func<int, float> FloatFromByteInInt = ColByteInIntToFloat;
         public static readonly Func<float, int> ByteInIntFromFloat = ColFloatToByteInInt;
+        public static readonly Func<int, double> DoubleFromByteInInt = ColByteInIntToDouble;
+        public static readonly Func<double, int> ByteInIntFromDouble = ColDoubleToByteInInt;
         public static readonly Func<int, double> DoubleFromUShortInInt = ColUShortInIntToDouble;
         public static readonly Func<double, int> UShortInIntFromDouble = ColDoubleToUShortInInt;
         public static readonly Func<byte, byte> ByteFromBitInByte = ColBitInByteToByte;
@@ -593,11 +626,14 @@ namespace Aardvark.Base
         public static readonly Func<float, ushort> UShortFromUShortInFloatClamped = ColUShortInFloatToUShortClamped;
         public static readonly Func<double, ushort> UShortFromUShortInDoubleClamped = ColUShortInDoubleToUShortClamped;
         public static readonly Func<double, uint> UIntFromUIntInDoubleClamped = ColUIntInDoubleToUIntClamped;
-
         public static readonly Func<float, float> FloatFromByteInFloat = ColByteInFloatToFloat;
         public static readonly Func<float, float> ByteInFloatFromFloat = ColFloatToByteInFloat;
         public static readonly Func<float, float> FloatFromByteInFloatClamped = ColByteInFloatToFloatClamped;
         public static readonly Func<float, float> ByteInFloatFromFloatClamped = ColFloatToByteInFloatClamped;
+        public static readonly Func<double, double> DoubleFromByteInDouble = ColByteInDoubleToDouble;
+        public static readonly Func<double, double> DoubleFromByteInDoubleClamped = ColByteInDoubleToDoubleClamped;
+        public static readonly Func<double, double> ByteInDoubleFromDouble = ColDoubleToByteInDouble;
+        public static readonly Func<double, double> ByteInDoubleFromDoubleClamped = ColDoubleToByteInDoubleClamped;
         #endregion
 
         #region Color to Gray Conversion Constants
@@ -803,7 +839,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Convert XYZ to linear SRGB with channel values in the range [0.0, 1.0].
         /// XYZ white (0.9505, 1.0000, 1.0890) at D65 with unit luminance is
-        /// converted to SRGB white (1, 1, 1) 
+        /// converted to SRGB white (1, 1, 1)
         /// </summary>
         public static C3f XYZinC3fToLinearSRGB(this C3f c)
         {
@@ -822,7 +858,7 @@ namespace Aardvark.Base
                            -0.5138850 * c.R + 1.4253036 * c.G + 0.0885814 * c.B,
                             0.0052982 * c.R - 0.0146949 * c.G + 1.0093968 * c.B);
         }
-        
+
         /// <summary>
         /// Convert SRGB with channel values in the range [0.0, 1.0] to XYZ.
         /// SRGB white (1, 1, 1) is converted to XYZ white (0.9505, 1.0000, 1.0890)
@@ -833,7 +869,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Convert XYZ to SRGB with channel values in the range [0.0, 1.0].
         /// XYZ white (0.9505, 1.0000, 1.0890) at D65 with unit luminance is
-        /// converted to SRGB white (1, 1, 1) 
+        /// converted to SRGB white (1, 1, 1)
         /// </summary>
         public static C3f XYZinC3fToSRGB(this C3f c) { return c.XYZinC3fToLinearSRGB().LinearSRGBToSRGB(); }
 
@@ -934,7 +970,7 @@ namespace Aardvark.Base
 
         public static readonly Func<CieXYZf, CieYxyf> CieYxyfFromCieXYZf = ToCieYxyf;
         public static readonly Func<CieYxyf, CieXYZf> CieXYZfFromCieXxyf = ToCieXYZf;
-        
+
         private const double s_labF_t3 = (6 / 29.0) * (6 / 29.0) * (6 / 29.0);
         private const double s_labF_t1 = (1 / 3.0) * (29 / 6.0) * (29 / 6.0);
         private const double s_labF_t0 = 4 / 29.0;
@@ -955,7 +991,7 @@ namespace Aardvark.Base
             var l = (c.L + 16.0) / 116.0;
             return new CieXYZf(white.Y * s_labFinv(l), white.X * s_labFinv(l + c.a * 0.002), white.Z * s_labFinv(l - c.b * 0.005));
         }
-        
+
         public static Trafo2d ConeResponseDomain_XYZScaling = new Trafo2d(M33d.Identity, M33d.Identity);
 
         public static Trafo2d ConeResponseDomain_Bradford = new Trafo2d(new M33d(0.8951000, 0.2664000, -0.1614000,
@@ -996,10 +1032,10 @@ namespace Aardvark.Base
                                     0, 0, det.Z);
             return coneResponseDomain.Backward * scaleMat * coneResponseDomain.Forward;
         }
-        
+
         public static CieLabf ToCieLabfD65(this CieXYZf c) { return ToCieLabf(c, CieXYZfD65White); }
         public static CieXYZf ToCieXYZfD65(this CieLabf c) { return ToCieXYZf(c, CieXYZfD65White); }
-        
+
         public static readonly Func<CieXYZf, CieXYZf, CieLabf> CieLabfFromCieXYZf = ToCieLabf;
         public static readonly Func<CieLabf, CieXYZf, CieXYZf> CieXYZfFromCieLabf = ToCieXYZf;
         public static readonly Func<CieXYZf, CieLabf> CieLabfFromCieXYZfD65 = ToCieLabfD65;
@@ -1491,7 +1527,7 @@ namespace Aardvark.Base
         public HSLf AsHSLf() { return new HSLf(R, G, B); }
 
         public HSVf AsHSVf() { return new HSVf(R, G, B); }
-    
+
     }
 
     #endregion
