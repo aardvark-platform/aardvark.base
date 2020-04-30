@@ -17,7 +17,6 @@
   <ItemGroup>
     <None Include="paket.references" />
     <Compile Include="Store.fs" />
-    <Compile Include="Trie.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

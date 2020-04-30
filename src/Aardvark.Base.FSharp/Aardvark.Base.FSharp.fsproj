@@ -40,6 +40,7 @@
     <Compile Include="Datastructures\Mutable\AVL.fs" />
     <Compile Include="Datastructures\Mutable\StableSet.fs" />
     <Compile Include="Datastructures\Mutable\ConcurrentHashQueue.fs" />
+    <Compile Include="Datastructures\Mutable\OrderMaintenanceTrie.fs" />
     <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />
     <Compile Include="Datastructures\Immutable\Graph.fs" />
