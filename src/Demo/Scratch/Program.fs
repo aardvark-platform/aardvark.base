@@ -365,6 +365,8 @@ open MBrace.FsPickler.Json
 [<EntryPoint; STAThread>]
 let main argv = 
 
+    Trie.OrderMaintenanceTrieTest.run()
+    exit 0
 
 
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]
