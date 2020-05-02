@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// Represents a discrete function that is represented by a probability density function (PDF)
-    /// and a cumulative density function (CDF).
+    /// and a cumulative distribution function (CDF).
     /// </summary>
     public class DistributionFunction
     {
@@ -15,23 +16,23 @@ namespace Aardvark.Base
         /// Gets the input probability density function.
         /// It is not necessarily normalized.
         /// </summary>
-        public double[] PDF { get { return m_pdf; } }
+        public double[] PDF { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return m_pdf; } }
 
         /// <summary>
-        /// Gets the calculated cumulative density function with +1 elements than the PDF.
+        /// Gets the calculated cumulative distribution function with +1 elements than the PDF.
         /// It is not necessarily normalized.
         /// </summary>
-        public double[] CDF { get { return m_cdf; } }
+        public double[] CDF { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return m_cdf; } }
 
         /// <summary>
         /// Returns the normalization factor of the PDF and CDF.
         /// In case the supplied PDF is not normalized this factor will be != 1.0 and
         /// needs to be considered when interpreting the raw PDF or CDF values.
         /// </summary>
-        public double Norm { get { return m_cdf[m_cdf.Length - 1]; } }
+        public double Norm { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return m_cdf[m_cdf.Length - 1]; } }
 
         /// <summary>
-        /// Create distribution from discrete probability distribution function (PDF).
+        /// Create distribution from a discrete probability distribution function (PDF).
         /// The PDF does not need to be normalized.
         /// </summary>
         public DistributionFunction(double[] pdf)
@@ -41,9 +42,21 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Create distribution from a discrete probability distribution function (PDF) 
+        /// and its cumulative distribution function (CDF).
+        /// The PDF does not need to be normalized.
+        /// </summary>
+        public DistributionFunction(double[] pdf, double[] cdf)
+        {
+            m_pdf = pdf;
+            m_cdf = cdf;
+        }
+
+        /// <summary>
         /// Retrieve random index distributed proportional to probability density function.
         /// Uses binary search O(log n).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Sample(IRandomUniform rnd)
         {
             return Sample(rnd.UniformDouble());
@@ -53,10 +66,30 @@ namespace Aardvark.Base
         /// Retrieve index to the discrete PDF where its cumulative distribution matches the random variable x1 [0, 1].
         /// Uses binary search O(log n).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Sample(double x1)
         {
-            var range = m_cdf.Length;
-            var valueToFind = x1 * m_cdf[range - 1]; // x1 * sum -> CDF threshold to find
+            return SampleCDF(m_cdf, x1);
+        }
+
+        /// <summary>
+        /// Retrieve random index of a discretized PDF given its cumulative distribution function (CDF).
+        /// Uses binary search O(log n).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int SampleCDF(double[] cdf, IRandomUniform rnd)
+        {
+            return SampleCDF(cdf, rnd.UniformDouble());
+        }
+
+        /// <summary>
+        /// Retrieve index of a discrete PDF given its cumulative distribution function (CDF) and a random variable x1 [0, 1].
+        /// Uses binary search O(log n).
+        /// </summary>
+        public static int SampleCDF(double[] cdf, double x1)
+        {
+            var range = cdf.Length;
+            var valueToFind = x1 * cdf[range - 1]; // x1 * sum -> CDF threshold to find
 
             var i0 = 0;
             // binary search
@@ -66,7 +99,7 @@ namespace Aardvark.Base
                 var center = i0 + halfRange;
 
                 // check if value is left or right
-                if (m_cdf[center] <= valueToFind)
+                if (cdf[center] <= valueToFind)
                 {
                     // right half
                     i0 = center + 1;
@@ -78,13 +111,14 @@ namespace Aardvark.Base
                     range = halfRange;
                 }
             }
-            return Fun.Clamp(i0 - 1, 0, m_cdf.Length - 2);
+            return Fun.Clamp(i0 - 1, 0, cdf.Length - 2);
         }
 
         /// <summary>
         /// Gets the normalized probability density function value at the supplied index.
         /// The function is normalized to integrate to a value of 1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double PDFValue(int index)
         {
             return m_pdf[index] / this.Norm;
@@ -94,9 +128,26 @@ namespace Aardvark.Base
         /// Gets the normalized cumulative distribution function value at the supplied index.
         /// The function is normalized to integrate to a value of 1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public double CDFValue(int index)
         {
             return m_cdf[index] / this.Norm;
+        }
+
+        /// <summary>
+        /// Inplace update of the CDF by re-integerating the PDF.
+        /// </summary>
+        public void UpdateCDF()
+        {
+            var cdf = m_cdf;
+            var pdf = m_pdf;
+            cdf[0] = 0;
+            double acc = 0;
+            for (int i = 0; i < pdf.Length;)
+            {
+                acc += pdf[i++];
+                cdf[i] = acc;
+            }
         }
     }
 }

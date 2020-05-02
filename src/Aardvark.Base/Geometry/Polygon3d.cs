@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -8,9 +9,11 @@ namespace Aardvark.Base
     {
         #region Conversions
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d ToPolygon2d(this Polygon3d polygon, Func<V3d, V2d> point_copyFun)
             => new Polygon2d(polygon.GetPointArray(point_copyFun));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d ToPolygon2d(
             this Polygon3d polygon, Func<V3d, int, V2d> point_index_copyFun
             )
@@ -27,6 +30,7 @@ namespace Aardvark.Base
         /// accurate than the computation via the 3d Newell normal
         /// (see Math.Tests/GeometryTests, rft 2013-05-04).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ComputeArea(this Polygon3d polygon)
             => 0.5 * polygon.ComputeDoubleAreaNormal().Length;
 
@@ -37,6 +41,7 @@ namespace Aardvark.Base
         /// accurate than the computation via the 3d Newell normal
         /// (see Math.Tests/GeometryTests, rft 2013-05-04).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d ComputeNormal(this Polygon3d polygon)
             => polygon.ComputeDoubleAreaNormal().Normalized;
 
@@ -103,12 +108,14 @@ namespace Aardvark.Base
         /// accurate than the computation via the 3d Newell normal
         /// (see Math.Tests/GeometryTests, rft 2013-05-04).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Plane3d ComputePlane3d(this Polygon3d polygon)
             => new Plane3d(polygon.ComputeNormal(), polygon.ComputeVertexCentroid());
 
         /// <summary>
         /// Returns the plane through the first 3 points of the polygon.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Plane3d GetPlane3d(this Polygon3d polygon)
             => new Plane3d(polygon[0], polygon[1], polygon[2]);
 
@@ -116,6 +123,7 @@ namespace Aardvark.Base
 
         #region FormFactor
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ComputeToPointFormFactor(
                 this Polygon3d sourcePolygon, double polygonArea,
                 V3d targetPoint, V3d targetNormal,
@@ -126,6 +134,7 @@ namespace Aardvark.Base
                     / (Constant.PiTimesTwo * polygonArea);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ComputeFromPointFormFactor(
                 this Polygon3d targetPolygon,
                 V3d sourcePoint, V3d sourceNormal,
@@ -206,6 +215,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if at least two vertices are coincident.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasCoincidentPoints(
                 this Polygon3d polygon, double toleranceAbsolute)
         {
@@ -234,6 +244,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if at least two edges intersect.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsSelfIntersecting(
                 this Polygon3d self, double toleranceAbsolute = 1e-10)
         {
@@ -265,6 +276,7 @@ namespace Aardvark.Base
         /// both outgoing edges meet at an angle that
         /// is less than the given threshold.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool HasSpikes(
                 this Polygon3d self, double toleranceInDegrees = 0.1)
         {
@@ -278,9 +290,11 @@ namespace Aardvark.Base
     {
         #region Conversions
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d ToPolygon3d(this IndexPolygon3d polygon, V2d[] pointArray)
             => new Polygon2d(polygon.GetPointArray(pointArray));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d ToPolygon3d(this IndexPolygon3d polygon, List<V2d> pointList)
             => new Polygon2d(polygon.GetPointArray(pointList));
 
