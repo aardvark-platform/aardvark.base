@@ -668,7 +668,7 @@ namespace Aardvark.Base
         /// </summary>
         public const uint FloatMantissaMask = 0x00FFFFFF;
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe int Log2IntRef(ref double v)
         {
             fixed (double* ptr = &v)
@@ -683,6 +683,7 @@ namespace Aardvark.Base
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe int Log2IntRef(ref float v)
         {
             fixed (float* ptr = &v)
@@ -698,19 +699,67 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
         /// </summary>
-        public static unsafe int Log2Int(this double v)
+        public static int Log2Int(this double v)
         {
             return Log2IntRef(ref v);
         }
 
         /// <summary>
-        /// efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
         /// </summary>
-        private static unsafe int Log2Int(this float v)
+        public static int Log2Int(this float v)
         {
             return Log2IntRef(ref v);
+        }
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// </summary>
+        public static int Log2Int(this int v)
+        {
+            #if NETCOREAPP3_0
+                return System.Numerics.BitOperations.Log2((uint)v);
+            #else
+                return Log2Int((float)v);
+            #endif
+        }
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// </summary>
+        public static int Log2Int(this uint v)
+        {
+            #if NETCOREAPP3_0
+                return System.Numerics.BitOperations.Log2(v);
+            #else
+                return Log2Int((float)v);
+            #endif
+        }
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// </summary>
+        public static int Log2Int(this long v)
+        {
+            #if NETCOREAPP3_0
+                return System.Numerics.BitOperations.Log2((ulong)v);
+            #else
+                return Log2Int((double)v);
+            #endif
+        }
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// </summary>
+        public static int Log2Int(this ulong v)
+        {
+            #if NETCOREAPP3_0
+                return System.Numerics.BitOperations.Log2(v);
+            #else
+                return Log2Int((double)v);
+            #endif
         }
 
         #endregion

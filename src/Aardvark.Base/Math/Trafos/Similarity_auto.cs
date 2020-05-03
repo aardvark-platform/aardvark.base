@@ -2999,8 +2999,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d TransformDir(this Similarity3d t, V3d v)
         {
-            var scaled = t.Scale * v;
-            return t.Euclidean.TransformDir(scaled);
+            return t.Euclidean.TransformDir(t.Scale * v);
         }
 
         /// <summary>
@@ -3009,8 +3008,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d TransformPos(this Similarity3d t, V3d p)
         {
-            var scaled = t.Scale * p;
-            return t.Euclidean.Rot.Transform(scaled) + t.Euclidean.Trans;;
+            return t.Euclidean.TransformPos(t.Scale * p);
         }
 
         /// <summary>
