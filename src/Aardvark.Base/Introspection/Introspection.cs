@@ -8,11 +8,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Linq;
-using System.Text.RegularExpressions;
 using System.Text;
-using System.Reflection.Metadata;
-using System.Reflection.PortableExecutable;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace Aardvark.Base
 {
@@ -256,19 +254,27 @@ namespace Aardvark.Base
         private static void RegisterAllAssembliesInCustomEntryPath()
         {
             Report.Warn("[Introspection] Assembly.GetEntryAssembly() == null");
-
             // hs: why is this necessary here? bootstrapper should be initialized before anything is loaded?
             // sm: so let's see who complains if we comment it out ;-)
             //Bootstrapper.Init();
 
-            Report.Begin("trying all dlls and exes in current directory: {0}", IntrospectionProperties.CurrentEntryPath);
-            foreach (var s in Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.dll").Concat(
-                              Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.exe")))
+            RegisterAllAssembliesInPath(IntrospectionProperties.CurrentEntryPath);
+        }
+
+        /// <summary>
+        /// Tries to load and register all assemblies in given path.
+        /// </summary>
+        [DebuggerNonUserCode]
+        public static void RegisterAllAssembliesInPath(string path)
+        {
+            Report.Begin("trying all dlls and exes in {0}", path);
+            var files = Directory.GetFiles(path, "*.dll").Concat(Directory.GetFiles(path, "*.exe"));
+            foreach (var file in files)
             {
                 try
                 {
-                    EnumerateAssemblies(AssemblyName.GetAssemblyName(s).Name);
-                    Report.Line("{0}", s);
+                    EnumerateAssemblies(AssemblyName.GetAssemblyName(file).Name);
+                    Report.Line("{0}", file);
                 }
                 catch
                 {
@@ -276,8 +282,6 @@ namespace Aardvark.Base
             }
             Report.End();
         }
-        
-        
 
         /// <summary>
         /// Note by hs: Since this function throws and catches exceptions in non exceptional cases we
@@ -459,7 +463,6 @@ namespace Aardvark.Base
 
         public const uint LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008;
 
-
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr LoadLibrary(string path);
 
@@ -495,8 +498,6 @@ namespace Aardvark.Base
         public static extern IntPtr dlsym(IntPtr handle, string name);
 
     }
-
-
 
     [Serializable]
     public class Aardvark
