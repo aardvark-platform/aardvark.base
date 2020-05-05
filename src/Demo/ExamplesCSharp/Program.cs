@@ -1,11 +1,11 @@
 ﻿/* 
 
-The purpose of this program is to demonstrate how to use the aardvark base libraries in C#.
+The purpose of this program is to demonstrate how to use the Aardvark base libraries in C#.
 C# and F# both compile to IL and therefore compose to some degree, i.e. libraries can be used
 in both directions.
 Aardvark.Base is somewhat special because it makes heavy use of F# features which have no direct
-C# equivalent (except for boilderplate). 
-Additionally, our C# interfaces for F# datatypes often lack convenience and C# idiomatic API (
+C# equivalent (except for boilerplate). 
+Additionally, our C# interfaces for F# datatypes often lack convenience and idiomatic C# API
 (are not always as complete as the real implementation).
 One goal of this file is to show the very basic interaction techniques and motivate developers to
 contribute to the convenience layers to C#.
@@ -13,17 +13,12 @@ contribute to the convenience layers to C#.
 PS.: please help to improve this tutorial (typos, non-english etc)
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reactive.Linq;
-using System.Reactive;
-
-using System.Reactive.Subjects;
-using FSharp.Data.Adaptive;
 using CSharp.Data.Adaptive;
+using FSharp.Data.Adaptive;
+using System;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using static Aardvark.Base.CSharpInterop;
 
 namespace ExamplesCSharp

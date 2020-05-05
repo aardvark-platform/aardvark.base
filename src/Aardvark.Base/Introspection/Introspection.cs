@@ -265,23 +265,29 @@ namespace Aardvark.Base
         /// Tries to load and register all assemblies in given path.
         /// </summary>
         [DebuggerNonUserCode]
-        public static void RegisterAllAssembliesInPath(string path)
+        public static void RegisterAllAssembliesInPath(string path, bool verbose)
         {
-            Report.Begin("trying all dlls and exes in {0}", path);
+            if (verbose) Report.Begin("[Introspection] registering all assemblies in {0}", path);
             var files = Directory.GetFiles(path, "*.dll").Concat(Directory.GetFiles(path, "*.exe"));
             foreach (var file in files)
             {
                 try
                 {
                     EnumerateAssemblies(AssemblyName.GetAssemblyName(file).Name);
-                    Report.Line("{0}", file);
+                    if (verbose) Report.Line("{0}", Path.GetFileName(file));
                 }
                 catch
                 {
                 }
             }
-            Report.End();
+            if (verbose) Report.End();
         }
+
+        /// <summary>
+        /// Tries to load and register all assemblies in given path.
+        /// </summary>
+        [DebuggerNonUserCode]
+        public static void RegisterAllAssembliesInPath(string path) => RegisterAllAssembliesInPath(path, false);
 
         /// <summary>
         /// Note by hs: Since this function throws and catches exceptions in non exceptional cases we
