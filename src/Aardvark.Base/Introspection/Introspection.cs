@@ -1266,6 +1266,24 @@ namespace Aardvark.Base
             }
             IntPtr ptr = IntPtr.Zero;
             string probe = Environment.CurrentDirectory;
+            var nextToAssembly = new string[0];
+
+            if (assembly != null)
+            {
+                try { nextToAssembly = new[] { Path.GetFullPath(Path.GetDirectoryName(assembly.Location)) }; }
+                catch (Exception) { }
+            }
+            else
+            {
+                try
+                {
+                    var entry = IntrospectionProperties.CustomEntryAssembly != null ? IntrospectionProperties.CustomEntryAssembly : Assembly.GetEntryAssembly();
+                    try { nextToAssembly = new[] { Path.GetFullPath(Path.GetDirectoryName(entry.Location)) }; }
+                    catch (Exception) { }
+                }
+                catch { }
+            }
+
             try
             {
                 string[] formats = new string[0];
@@ -1292,39 +1310,50 @@ namespace Aardvark.Base
                     paths = GetNativeLibraryPaths();
                 }
 
+                paths = nextToAssembly.Concat(paths);
 #if NETCOREAPP3_0
 
-            var realName = Path.GetFileNameWithoutExtension(nativeName);
-            foreach (var fmt in formats)
-            {
-                var libName = string.Format(fmt, realName);
-
-                // probe all paths.
-                foreach (var p in paths)
+                var realName = Path.GetFileNameWithoutExtension(nativeName);
+                Report.Begin(4, "probing paths for {0}", realName);
+                foreach(var path in paths)
                 {
-                    var lowerLibName = libName.ToLower();
-                    var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
-                    if (libPath != null)
+                    Report.Line(4, "{0}", path);
+                }
+                Report.End(4);
+
+
+                if (os == OS.Linux && realName.ToLower() == "devil") formats = new[] { "libIL.so" }.Concat(formats);
+
+                foreach (var fmt in formats)
+                {
+                    var libName = string.Format(fmt, realName);
+
+                    // probe all paths.
+                    foreach (var p in paths)
                     {
-                        probe = libPath;
-                        if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
-                        else Report.Warn("found native library {0} in {1} but it could not be loaded.", Path.GetFileName(libPath), p);
+                        var lowerLibName = libName.ToLower();
+                        var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
+                        if (libPath != null)
+                        {
+                            probe = libPath;
+                            if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
+                            else Report.Warn("found native library {0} in {1} but it could not be loaded.", Path.GetFileName(libPath), p);
+                        }
                     }
+
+                    // try the plain loading mechanism.
+                    probe = libName;
+                    if (assembly != null && NativeLibrary.TryLoad(libName, assembly, null, out ptr)) return ptr;
+                    else if (NativeLibrary.TryLoad(libName, out ptr)) return ptr;
+
                 }
 
-                // try the plain loading mechanism.
-                probe = libName;
-                if (assembly != null && NativeLibrary.TryLoad(libName, assembly, null, out ptr)) return ptr;
-                else if (NativeLibrary.TryLoad(libName, out ptr)) return ptr;
+                probe = nativeName;
+                // try the standard loading mechanism as a last resort.
+                if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
+                else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
 
-            }
-
-            probe = nativeName;
-            // try the standard loading mechanism as a last resort.
-            if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
-            else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
-
-            return IntPtr.Zero;
+                return IntPtr.Zero;
 #else
 
                 Func<string, IntPtr> loadLibrary;
