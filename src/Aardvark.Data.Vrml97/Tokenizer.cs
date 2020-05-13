@@ -2,6 +2,7 @@ using Aardvark.Base;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Text;
 
 namespace Aardvark.Data.Vrml97
 {
@@ -29,7 +30,7 @@ namespace Aardvark.Data.Vrml97
         internal Token NextNameToken()
         {
             var t = "";
-            if (!NextNonWhiteSpaceChar(out char c)) return Token.EOF;
+            if (!NextNonWhiteSpaceChar(out int c)) return Token.EOF;
 
             // comment
             while (c == '#')
@@ -44,7 +45,7 @@ namespace Aardvark.Data.Vrml97
             // other token (number, etc.)
             while (true)
             {
-                t += c;
+                t = Concat(t, c);
                 try
                 {
                     c = NextChar();
@@ -58,6 +59,14 @@ namespace Aardvark.Data.Vrml97
             }
         }
 
+        string Concat(string s, int c)
+        {
+            if (c < 0x0000ffff && (c < 0xD800 || c > 0xDFFF)) // check if single byte range with direct bit mapping
+                return s + (char)c;
+            else
+                return s + char.ConvertFromUtf32(c);
+        }
+
         internal Token NextToken()
         {
             if (m_pushedBackTokenValid)
@@ -67,7 +76,7 @@ namespace Aardvark.Data.Vrml97
             }
 
             var t = "";
-            if (!NextNonWhiteSpaceChar(out char c)) return Token.EOF;
+            if (!NextNonWhiteSpaceChar(out int c)) return Token.EOF;
 
             // comment
             while (c == '#')
@@ -80,7 +89,7 @@ namespace Aardvark.Data.Vrml97
             }
 
             // parenthesis
-            if (IsParenthesis(c)) return new Token(c.ToString());
+            if (IsParenthesis(c)) return new Token(char.ConvertFromUtf32(c));
 
             // string
             if (c == '"')
@@ -89,7 +98,7 @@ namespace Aardvark.Data.Vrml97
                 c = NextChar();
                 while (c != '"')
                 {
-                    t += c;
+                    t = Concat(t, c);
                     c = NextChar();
                 }
                 t += '"';
@@ -99,7 +108,7 @@ namespace Aardvark.Data.Vrml97
             // other token (number, etc.)
             while (true)
             {
-                t += c;
+                t = Concat(t, c);
                 try
                 {
                     c = NextChar();
@@ -160,7 +169,7 @@ namespace Aardvark.Data.Vrml97
 
         private bool Eof() => (m_bufferSize == 0) || (m_end < m_bufferSize && m_pos == m_end);
 
-        private bool IsWhiteSpace(char c)
+        private bool IsWhiteSpace(int c)
         {
             switch (c)
             {
@@ -175,7 +184,7 @@ namespace Aardvark.Data.Vrml97
             }
         }
 
-        private bool IsParenthesis(char c)
+        private bool IsParenthesis(int c)
         {
             switch (c)
             {
@@ -193,11 +202,8 @@ namespace Aardvark.Data.Vrml97
 
         private Stream m_in;
 
-        
-
-        private char NextChar() => (char)NextByte();
-
-        private byte NextByte()
+        /// get next character using UTF-32 encoding
+        private int NextChar()
         {
             if (m_pushedBackValid)
             {
@@ -205,6 +211,40 @@ namespace Aardvark.Data.Vrml97
                 return m_pushedBack;
             }
 
+            int res = NextByte();
+            if (res > 0x7f) // not ASCII (msb is: 1XXX XXXX)
+            {
+                // check how many surrogate bytes there are
+                if ((res & 0x20) != 0) // more than 2 byte (bit 6 set: XX1X XXXX)
+                {
+                    if ((res & 0x10) != 0) // 4 byte (bit 5 set: XXX1 XXXX)
+                    {
+                        int b2 = NextByte();
+                        int b3 = NextByte();
+                        int b4 = NextByte();
+                        // 3 bits from first + 6 bits from second + 6 bits from third + 6 bits from fourth
+                        res = ((res & 0x07) << 188) | ((b2 & 0x3f) << 12) | ((b3 & 0x3f) << 6) | (b4 & 0x3f);
+                    }
+                    else // 3 byte
+                    {
+                        int b2 = NextByte();
+                        int b3 = NextByte();
+                        // 4 bits from first + 6 bits from second + 6 bits from third
+                        res = ((res & 0x0f) << 12) | ((b2 & 0x3f) << 6) | (b3 & 0x3f);
+                    }
+                }
+                else // 2 byte
+                {
+                    int b2 = NextByte();
+                    // 5 bits from first + 6 bits from second
+                    res = ((res & 0x1f) << 6) | (b2 & 0x3f);
+                }
+            }
+            return res;
+        }
+
+        private byte NextByte()
+        {
             if (m_pos >= m_bufferSize)
             {
                 m_end = m_in.EndRead(m_asyncResult);
@@ -226,7 +266,7 @@ namespace Aardvark.Data.Vrml97
          * Gets next non-whitespace character from input stream.
          * Returns true on success, or false on reaching eof.
          **/
-        private bool NextNonWhiteSpaceChar(out char c)
+        private bool NextNonWhiteSpaceChar(out int c)
         {
             do
             {
@@ -245,7 +285,7 @@ namespace Aardvark.Data.Vrml97
          * Gets next character after end of current line.
          * Returns true on success, or false on reaching eof.
          **/
-        private bool NextCharAfterEol(out char c)
+        private bool NextCharAfterEol(out int c)
         {
             do
             {
@@ -282,7 +322,7 @@ namespace Aardvark.Data.Vrml97
         private int m_bufferSize;
         private byte[] m_buffer = new byte[s_bufferSize];
         private byte[] m_asyncReadTarget = new byte[s_bufferSize];
-        private byte m_pushedBack;
+        private int m_pushedBack;
         private bool m_pushedBackValid = false;
         private int m_pos;
         private int m_end;
