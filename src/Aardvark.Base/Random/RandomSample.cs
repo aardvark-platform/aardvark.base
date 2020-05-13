@@ -22,8 +22,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Supplied normal MUST be normalized, uses the 2 random series
-        /// (seriesIndex, seriesIndex+1).
+        /// Generate a cosine weighted random sample oriented in the supplied normal direction 
+        /// using two random series (seriesIndex, seriesIndex+1).
+        /// The normal is expected to be normalized.
         /// </summary>
         public static V3d Lambertian(V3d normal, IRandomSeries rnds, int seriesIndex)
         {
@@ -33,7 +34,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Supplied normal MUST be normalized, uses the 2 random variables x1 and x2.
+        /// Generate a cosine weighted random sample oriented in the supplied normal direction 
+        /// using the 2 random variables x1 and x2.
+        /// The normal is expected to be normalized.
         /// </summary>
         public static V3d Lambertian(V3d normal, double x1, double x2)
         {
@@ -52,7 +55,36 @@ namespace Aardvark.Base
             var norm = 1.0 / squareLen.Sqrt();
             return vec * norm;
         }
-        
+
+        /// <summary>
+        /// Generates a cosine weighted random direction using the 2 random series (seriesIndex, seriesIndex+1).
+        /// See Global Illuminatin Compendium, Dutre 2003, (35)
+        /// PDF = cos(theta)/PI
+        /// </summary>
+        public static V3d Lambertian(IRandomSeries rnds, int seriesIndex)
+        {
+            return Lambertian(
+                rnds.UniformDouble(seriesIndex),
+                rnds.UniformDouble(seriesIndex + 1));
+        }
+
+        /// <summary>
+        /// Generates a cosine weighted random direction using the 2 random varables x1 and x2.
+        /// See Global Illuminatin Compendium, Dutré 2003, (35)
+        /// PDF = cos(theta)/PI
+        /// </summary>
+        public static V3d Lambertian(double x1, double x2)
+        {
+            // random point on disk
+            var r = Fun.Sqrt(x1);
+            var phi = Constant.PiTimesTwo * x2;
+            var x = r * Fun.Cos(phi);
+            var y = r * Fun.Sin(phi);
+            // project to hemisphere
+            var z = Fun.Sqrt(1 - x1); // x1 = r^2
+            return new V3d(x, y, z);
+        }
+
         /// <summary>
         /// Generates a uniform distributed 2d random sample on a disk with radius 1.
         /// It uses two random series (seriesIndex, seriesIndex+1).
