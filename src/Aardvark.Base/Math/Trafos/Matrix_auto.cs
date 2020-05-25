@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -675,6 +676,18 @@ namespace Aardvark.Base
             => FromDiagonal(s);
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i DivideByInt(M22i m, int x)
+            => m / x;
 
         #endregion
 
@@ -2802,6 +2815,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l DivideByInt(M22l m, int x)
+            => m / x;
+
+        #endregion
+
         #region Properties and Indexers
 
         public bool IsValid
@@ -4854,6 +4879,18 @@ namespace Aardvark.Base
             => (M22f)r;
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f DivideByInt(M22f m, int x)
+            => m / x;
 
         #endregion
 
@@ -7131,6 +7168,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d DivideByInt(M22d m, int x)
+            => m / x;
+
+        #endregion
+
         #region Properties and Indexers
 
         public bool IsValid
@@ -9259,6 +9308,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i DivideByInt(M23i m, int x)
+            => m / x;
+
+        #endregion
+
         #region Properties and Indexers
 
         public bool IsValid
@@ -11359,6 +11420,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l DivideByInt(M23l m, int x)
+            => m / x;
+
+        #endregion
+
         #region Properties and Indexers
 
         public bool IsValid
@@ -13387,6 +13460,18 @@ namespace Aardvark.Base
             => (M23f)r;
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f DivideByInt(M23f m, int x)
+            => m / x;
 
         #endregion
 
@@ -15482,6 +15567,18 @@ namespace Aardvark.Base
             => (M23d)r;
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d DivideByInt(M23d m, int x)
+            => m / x;
 
         #endregion
 
@@ -17635,6 +17732,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i DivideByInt(M33i m, int x)
+            => m / x;
 
         #endregion
 
@@ -20359,6 +20468,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l DivideByInt(M33l m, int x)
+            => m / x;
 
         #endregion
 
@@ -23173,6 +23294,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f DivideByInt(M33f m, int x)
+            => m / x;
 
         #endregion
 
@@ -26207,6 +26340,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d DivideByInt(M33d m, int x)
+            => m / x;
+
+        #endregion
+
         #region Properties and Indexers
 
         public bool IsValid
@@ -28876,6 +29021,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i DivideByInt(M34i m, int x)
+            => m / x;
+
+        #endregion
+
         #region Properties and Indexers
 
         public bool IsValid
@@ -31454,6 +31611,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l DivideByInt(M34l m, int x)
+            => m / x;
 
         #endregion
 
@@ -34077,6 +34246,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f DivideByInt(M34f m, int x)
+            => m / x;
 
         #endregion
 
@@ -36782,6 +36963,18 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d DivideByInt(M34d m, int x)
+            => m / x;
+
+        #endregion
+
         #region Properties and Indexers
 
         public bool IsValid
@@ -39339,6 +39532,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i DivideByInt(M44i m, int x)
+            => m / x;
 
         #endregion
 
@@ -42514,6 +42719,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l DivideByInt(M44l m, int x)
+            => m / x;
 
         #endregion
 
@@ -45729,6 +45946,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f DivideByInt(M44f m, int x)
+            => m / x;
 
         #endregion
 
@@ -49196,6 +49425,18 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d DivideByInt(M44d m, int x)
+            => m / x;
 
         #endregion
 

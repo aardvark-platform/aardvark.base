@@ -369,6 +369,14 @@ namespace Aardvark.Base
         public static ComplexF Log10(ComplexF x)
             => x.Log10();
 
+        /// <summary>
+        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF DivideByInt(ComplexF x, int y)
+            => x / y;
+
         #endregion
 
         #region Operators
@@ -1344,6 +1352,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log10(ComplexD x)
             => x.Log10();
+
+        /// <summary>
+        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD DivideByInt(ComplexD x, int y)
+            => x / y;
 
         #endregion
 

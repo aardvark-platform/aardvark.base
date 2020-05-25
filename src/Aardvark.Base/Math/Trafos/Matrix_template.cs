@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -654,6 +655,18 @@ namespace Aardvark.Base
         #endregion
 
         //# }
+        #endregion
+
+        #region Static methods for F# core and Aardvark library support
+
+        /// <summary>
+        /// Returns the given matrix, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ DivideByInt(__nmtype__ m, int x)
+            => m / x;
+
         #endregion
 
         #region Properties and Indexers

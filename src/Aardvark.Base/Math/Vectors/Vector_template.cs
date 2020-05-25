@@ -1240,6 +1240,14 @@ namespace Aardvark.Base
         public static __vtype__ Saturate(__vtype__ v)
             => Fun.Saturate(v);
 
+        /// <summary>
+        /// Returns the given vector, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ DivideByInt(__vtype__ v, int x)
+            => v / x;
+
         #endregion
 
         #region Operations

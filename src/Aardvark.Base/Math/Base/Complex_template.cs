@@ -378,6 +378,14 @@ namespace Aardvark.Base
         public static __ct__ Log10(__ct__ x)
             => x.Log10();
 
+        /// <summary>
+        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ DivideByInt(__ct__ x, int y)
+            => x / y;
+
         #endregion
 
         #region Operators
