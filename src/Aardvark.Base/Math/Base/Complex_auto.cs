@@ -125,7 +125,7 @@ namespace Aardvark.Base
         public ComplexF Reciprocal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get 
+            get
             {
                 float t = 1 / NormSquared;
                 return new ComplexF(Real * t, -Imag * t);
@@ -385,6 +385,14 @@ namespace Aardvark.Base
         public static ComplexF Pow(ComplexF number, float exponent)
             => number.Pow(exponent);
 
+        /// <summary>
+        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF DivideByInt(ComplexF x, int y)
+            => x / y;
+
         #endregion
 
         #region Operators
@@ -552,7 +560,7 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray(2);
             return new ComplexF(
-                float.Parse(x[0], CultureInfo.InvariantCulture), 
+                float.Parse(x[0], CultureInfo.InvariantCulture),
                 float.Parse(x[1], CultureInfo.InvariantCulture)
             );
         }
@@ -612,7 +620,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Pow(this ComplexF number, ComplexF exponent)
-        {    
+        {
             if (number.IsZero)
                 return ComplexF.Zero;
             else if (exponent.IsZero)
@@ -1093,7 +1101,7 @@ namespace Aardvark.Base
         public ComplexD Reciprocal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get 
+            get
             {
                 double t = 1 / NormSquared;
                 return new ComplexD(Real * t, -Imag * t);
@@ -1353,6 +1361,14 @@ namespace Aardvark.Base
         public static ComplexD Pow(ComplexD number, double exponent)
             => number.Pow(exponent);
 
+        /// <summary>
+        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD DivideByInt(ComplexD x, int y)
+            => x / y;
+
         #endregion
 
         #region Operators
@@ -1520,7 +1536,7 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray(2);
             return new ComplexD(
-                double.Parse(x[0], CultureInfo.InvariantCulture), 
+                double.Parse(x[0], CultureInfo.InvariantCulture),
                 double.Parse(x[1], CultureInfo.InvariantCulture)
             );
         }
@@ -1580,7 +1596,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Pow(this ComplexD number, ComplexD exponent)
-        {    
+        {
             if (number.IsZero)
                 return ComplexD.Zero;
             else if (exponent.IsZero)

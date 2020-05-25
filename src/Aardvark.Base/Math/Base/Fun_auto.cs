@@ -3585,7 +3585,8 @@ namespace Aardvark.Base
         public static float Log2(this float x)
         {
             #if NETCOREAPP3_0
-                return MathF.Log2(x);
+                //return MathF.Log2(x); // MathF.Log2 actually uses a conversion to double internally and has bad perfromance, see Aardvark.Base.Benchmarks/Log2Int.cs
+                return x.Log() * (float)Constant.Ln2Inv;
             #else
                 return x.Log() * (float)Constant.Ln2Inv;
             #endif

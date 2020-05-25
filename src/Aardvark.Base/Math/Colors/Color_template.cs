@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -821,6 +822,14 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             };
+
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ DivideByInt(__type__ c, int x)
+            => c / x;
 
         #endregion
 

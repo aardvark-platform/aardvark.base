@@ -964,7 +964,8 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
                 return Math.__fname__(x);
             //# } else {
-                return MathF.__fname__(x);
+                //return MathF.__fname__(x); // MathF.Log2 actually uses a conversion to double internally and has bad perfromance, see Aardvark.Base.Benchmarks/Log2Int.cs
+                return x.Log() * __rcast__Constant.Ln2Inv;
             //# }
             #else
                 return x.Log() * __rcast__Constant.Ln2Inv;

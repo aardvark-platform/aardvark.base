@@ -364,9 +364,6 @@ open MBrace.FsPickler.Json
 
 [<EntryPoint; STAThread>]
 let main argv = 
-
-
-
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]
    
     let pickler = FsPickler.CreateJsonSerializer(true, false)

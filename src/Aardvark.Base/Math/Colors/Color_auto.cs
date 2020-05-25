@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -1162,6 +1163,14 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             };
+
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b DivideByInt(C3b c, int x)
+            => c / x;
 
         #endregion
 
@@ -2904,6 +2913,14 @@ namespace Aardvark.Base
                 }
             };
 
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us DivideByInt(C3us c, int x)
+            => c / x;
+
         #endregion
 
         #region Parsing
@@ -4569,6 +4586,14 @@ namespace Aardvark.Base
                 }
             };
 
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui DivideByInt(C3ui c, int x)
+            => c / x;
+
         #endregion
 
         #region Parsing
@@ -6082,6 +6107,14 @@ namespace Aardvark.Base
                 }
             };
 
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f DivideByInt(C3f c, int x)
+            => c / x;
+
         #endregion
 
         #region Parsing
@@ -7531,6 +7564,14 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             };
+
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d DivideByInt(C3d c, int x)
+            => c / x;
 
         #endregion
 
@@ -9484,6 +9525,14 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             };
+
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b DivideByInt(C4b c, int x)
+            => c / x;
 
         #endregion
 
@@ -11459,6 +11508,14 @@ namespace Aardvark.Base
                 }
             };
 
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us DivideByInt(C4us c, int x)
+            => c / x;
+
         #endregion
 
         #region Parsing
@@ -13342,6 +13399,14 @@ namespace Aardvark.Base
                 }
             };
 
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui DivideByInt(C4ui c, int x)
+            => c / x;
+
         #endregion
 
         #region Parsing
@@ -15009,6 +15074,14 @@ namespace Aardvark.Base
                 }
             };
 
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f DivideByInt(C4f c, int x)
+            => c / x;
+
         #endregion
 
         #region Parsing
@@ -16615,6 +16688,14 @@ namespace Aardvark.Base
                     default: throw new IndexOutOfRangeException();
                 }
             };
+
+        /// <summary>
+        /// Returns the given color, with each element divided by <paramref name="x"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d DivideByInt(C4d c, int x)
+            => c / x;
 
         #endregion
 

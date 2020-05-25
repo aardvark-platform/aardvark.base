@@ -72,6 +72,21 @@ namespace Aardvark.Tests
                 (a, v) => (a * new V4d(v, 1)).XYZ);
 
         [Test]
+        public static void MultiplicationAffine3x4Test()
+            => TrafoTesting.GenericTest(rnd =>
+            {
+                var a = TrafoTesting.GetRandomAffine(rnd);
+                var b = TrafoTesting.GetRandomAffine(rnd);
+                var ma = (M34d) a;
+                var mb = (M34d) b;
+
+                var a_x_b = a * b;
+                var ma_x_mb = Mat.MultiplyAffine(ma, mb);
+
+                TrafoTesting.AreEqual((M34d)a_x_b, ma_x_mb);
+            });
+
+        [Test]
         public static void MultiplicationFull4x4Test()
             => TrafoTesting.GenericFull4x4MultiplicationTest(TrafoTesting.GetRandomAffine);
 

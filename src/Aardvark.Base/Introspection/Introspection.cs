@@ -8,11 +8,9 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Linq;
-using System.Text.RegularExpressions;
 using System.Text;
-using System.Reflection.Metadata;
-using System.Reflection.PortableExecutable;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace Aardvark.Base
 {
@@ -256,28 +254,40 @@ namespace Aardvark.Base
         private static void RegisterAllAssembliesInCustomEntryPath()
         {
             Report.Warn("[Introspection] Assembly.GetEntryAssembly() == null");
-
             // hs: why is this necessary here? bootstrapper should be initialized before anything is loaded?
             // sm: so let's see who complains if we comment it out ;-)
             //Bootstrapper.Init();
 
-            Report.Begin("trying all dlls and exes in current directory: {0}", IntrospectionProperties.CurrentEntryPath);
-            foreach (var s in Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.dll").Concat(
-                              Directory.GetFiles(IntrospectionProperties.CurrentEntryPath, "*.exe")))
+            RegisterAllAssembliesInPath(IntrospectionProperties.CurrentEntryPath);
+        }
+
+        /// <summary>
+        /// Tries to load and register all assemblies in given path.
+        /// </summary>
+        [DebuggerNonUserCode]
+        public static void RegisterAllAssembliesInPath(string path, bool verbose)
+        {
+            if (verbose) Report.Begin("[Introspection] registering all assemblies in {0}", path);
+            var files = Directory.GetFiles(path, "*.dll").Concat(Directory.GetFiles(path, "*.exe"));
+            foreach (var file in files)
             {
                 try
                 {
-                    EnumerateAssemblies(AssemblyName.GetAssemblyName(s).Name);
-                    Report.Line("{0}", s);
+                    EnumerateAssemblies(AssemblyName.GetAssemblyName(file).Name);
+                    if (verbose) Report.Line("{0}", Path.GetFileName(file));
                 }
                 catch
                 {
                 }
             }
-            Report.End();
+            if (verbose) Report.End();
         }
-        
-        
+
+        /// <summary>
+        /// Tries to load and register all assemblies in given path.
+        /// </summary>
+        [DebuggerNonUserCode]
+        public static void RegisterAllAssembliesInPath(string path) => RegisterAllAssembliesInPath(path, false);
 
         /// <summary>
         /// Note by hs: Since this function throws and catches exceptions in non exceptional cases we
@@ -459,7 +469,6 @@ namespace Aardvark.Base
 
         public const uint LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008;
 
-
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr LoadLibrary(string path);
 
@@ -495,8 +504,6 @@ namespace Aardvark.Base
         public static extern IntPtr dlsym(IntPtr handle, string name);
 
     }
-
-
 
     [Serializable]
     public class Aardvark
@@ -1259,6 +1266,24 @@ namespace Aardvark.Base
             }
             IntPtr ptr = IntPtr.Zero;
             string probe = Environment.CurrentDirectory;
+            var nextToAssembly = new string[0];
+
+            if (assembly != null)
+            {
+                try { nextToAssembly = new[] { Path.GetFullPath(Path.GetDirectoryName(assembly.Location)) }; }
+                catch (Exception) { }
+            }
+            else
+            {
+                try
+                {
+                    var entry = IntrospectionProperties.CustomEntryAssembly != null ? IntrospectionProperties.CustomEntryAssembly : Assembly.GetEntryAssembly();
+                    try { nextToAssembly = new[] { Path.GetFullPath(Path.GetDirectoryName(entry.Location)) }; }
+                    catch (Exception) { }
+                }
+                catch { }
+            }
+
             try
             {
                 string[] formats = new string[0];
@@ -1285,39 +1310,50 @@ namespace Aardvark.Base
                     paths = GetNativeLibraryPaths();
                 }
 
+                paths = nextToAssembly.Concat(paths);
 #if NETCOREAPP3_0
 
-            var realName = Path.GetFileNameWithoutExtension(nativeName);
-            foreach (var fmt in formats)
-            {
-                var libName = string.Format(fmt, realName);
-
-                // probe all paths.
-                foreach (var p in paths)
+                var realName = Path.GetFileNameWithoutExtension(nativeName);
+                Report.Begin(4, "probing paths for {0}", realName);
+                foreach(var path in paths)
                 {
-                    var lowerLibName = libName.ToLower();
-                    var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
-                    if (libPath != null)
+                    Report.Line(4, "{0}", path);
+                }
+                Report.End(4);
+
+
+                if (os == OS.Linux && realName.ToLower() == "devil") formats = new[] { "libIL.so" }.Concat(formats);
+
+                foreach (var fmt in formats)
+                {
+                    var libName = string.Format(fmt, realName);
+
+                    // probe all paths.
+                    foreach (var p in paths)
                     {
-                        probe = libPath;
-                        if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
-                        else Report.Warn("found native library {0} in {1} but it could not be loaded.", Path.GetFileName(libPath), p);
+                        var lowerLibName = libName.ToLower();
+                        var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
+                        if (libPath != null)
+                        {
+                            probe = libPath;
+                            if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
+                            else Report.Warn("found native library {0} in {1} but it could not be loaded.", Path.GetFileName(libPath), p);
+                        }
                     }
+
+                    // try the plain loading mechanism.
+                    probe = libName;
+                    if (assembly != null && NativeLibrary.TryLoad(libName, assembly, null, out ptr)) return ptr;
+                    else if (NativeLibrary.TryLoad(libName, out ptr)) return ptr;
+
                 }
 
-                // try the plain loading mechanism.
-                probe = libName;
-                if (assembly != null && NativeLibrary.TryLoad(libName, assembly, null, out ptr)) return ptr;
-                else if (NativeLibrary.TryLoad(libName, out ptr)) return ptr;
+                probe = nativeName;
+                // try the standard loading mechanism as a last resort.
+                if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
+                else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
 
-            }
-
-            probe = nativeName;
-            // try the standard loading mechanism as a last resort.
-            if (assembly != null && NativeLibrary.TryLoad(nativeName, assembly, null, out ptr)) return ptr;
-            else if (NativeLibrary.TryLoad(nativeName, out ptr)) return ptr;
-
-            return IntPtr.Zero;
+                return IntPtr.Zero;
 #else
 
                 Func<string, IntPtr> loadLibrary;

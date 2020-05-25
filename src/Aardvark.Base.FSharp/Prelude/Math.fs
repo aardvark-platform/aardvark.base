@@ -431,6 +431,13 @@ module FSharpMath =
                 let a : ComplexD = tanh ComplexD.One
                 ()
 
+            let listAverageWorking() =
+                let a : V2f = List.average [V2f.One; V2f.Zero]
+                let a : C4us = List.average [C4us.Black; C4us.White]
+                let a : M34d = List.average [M34d.Zero; M34d.Zero]
+                let a : ComplexD = List.average [ComplexD.One; ComplexD.Zero]
+                ()
+
             ()
 
         let zeroWorking() =

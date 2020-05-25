@@ -26,6 +26,7 @@
     <Compile Include="ControlTests.fs" />
     <Compile Include="SortedSetExt.fs" />
     <Compile Include="MapExt.fs" />
+    <Compile Include="OrderMaintenanceTrie.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

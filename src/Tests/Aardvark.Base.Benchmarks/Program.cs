@@ -66,7 +66,10 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<Indexers2>();
             //BenchmarkRunner.Run<Indexers3>();
             //BenchmarkRunner.Run<Indexers4>();
-            BenchmarkRunner.Run<MatrixMinor>();
+            //BenchmarkRunner.Run<MatrixMinor>();
+            BenchmarkRunner.Run<TransformV3d>();
+            //BenchmarkRunner.Run<Log2Int>();
+            //BenchmarkRunner.Run<Log2>();
         }
     }
 }

@@ -134,7 +134,7 @@ namespace Aardvark.Base
         public __ct__ Reciprocal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get 
+            get
             {
                 __ft__ t = 1 / NormSquared;
                 return new __ct__(Real * t, -Imag * t);
@@ -394,6 +394,14 @@ namespace Aardvark.Base
         public static __ct__ Pow(__ct__ number, __ft__ exponent)
             => number.Pow(exponent);
 
+        /// <summary>
+        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ DivideByInt(__ct__ x, int y)
+            => x / y;
+
         #endregion
 
         #region Operators
@@ -561,7 +569,7 @@ namespace Aardvark.Base
         {
             var x = s.NestedBracketSplitLevelOne().ToArray(2);
             return new __ct__(
-                __ft__.Parse(x[0], CultureInfo.InvariantCulture), 
+                __ft__.Parse(x[0], CultureInfo.InvariantCulture),
                 __ft__.Parse(x[1], CultureInfo.InvariantCulture)
             );
         }
@@ -621,7 +629,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Pow(this __ct__ number, __ct__ exponent)
-        {    
+        {
             if (number.IsZero)
                 return __ct__.Zero;
             else if (exponent.IsZero)
