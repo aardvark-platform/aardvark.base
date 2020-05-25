@@ -1738,6 +1738,20 @@ namespace Aardvark.Base
 
         //# } // n != m
         //# } // m > 2
+        //# if (m == n + 1) {
+        /// <summary>
+        /// Multiplies two <see cref="__nmtype__"/> matrices as __m__x__m__ matrices.
+        /// </summary>
+        public static __nmtype__ MultiplyAffine(this __nmtype__ a, __nmtype__ b)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { m.ForEach(c => { */
+                /*# n.ForEach(j => {*/a.M__r____j__ * b.M__j____c__/*# }, add);
+                  if (c == m - 1) {*/ + a.M__r____c__/*# }
+                  }, comma);}, comma); */
+            );
+        }
+
+        //# }
         #endregion
 
         #region Operations

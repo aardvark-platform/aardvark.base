@@ -10620,6 +10620,21 @@ namespace Aardvark.Base
                 );
         }
 
+        /// <summary>
+        /// Multiplies two <see cref="M23i"/> matrices as 3x3 matrices.
+        /// </summary>
+        public static M23i MultiplyAffine(this M23i a, M23i b)
+        {
+            return new M23i(
+                a.M00 * b.M00 + a.M01 * b.M10, 
+                a.M00 * b.M01 + a.M01 * b.M11, 
+                a.M00 * b.M02 + a.M01 * b.M12 + a.M02, 
+                a.M10 * b.M00 + a.M11 * b.M10, 
+                a.M10 * b.M01 + a.M11 * b.M11, 
+                a.M10 * b.M02 + a.M11 * b.M12 + a.M12
+            );
+        }
+
         #endregion
 
         #region Operations
@@ -12591,6 +12606,21 @@ namespace Aardvark.Base
                 m.M00 * p.X + m.M01 * p.Y + m.M02, 
                 m.M10 * p.X + m.M11 * p.Y + m.M12
                 );
+        }
+
+        /// <summary>
+        /// Multiplies two <see cref="M23l"/> matrices as 3x3 matrices.
+        /// </summary>
+        public static M23l MultiplyAffine(this M23l a, M23l b)
+        {
+            return new M23l(
+                a.M00 * b.M00 + a.M01 * b.M10, 
+                a.M00 * b.M01 + a.M01 * b.M11, 
+                a.M00 * b.M02 + a.M01 * b.M12 + a.M02, 
+                a.M10 * b.M00 + a.M11 * b.M10, 
+                a.M10 * b.M01 + a.M11 * b.M11, 
+                a.M10 * b.M02 + a.M11 * b.M12 + a.M12
+            );
         }
 
         #endregion
@@ -14641,6 +14671,21 @@ namespace Aardvark.Base
                 );
         }
 
+        /// <summary>
+        /// Multiplies two <see cref="M23f"/> matrices as 3x3 matrices.
+        /// </summary>
+        public static M23f MultiplyAffine(this M23f a, M23f b)
+        {
+            return new M23f(
+                a.M00 * b.M00 + a.M01 * b.M10, 
+                a.M00 * b.M01 + a.M01 * b.M11, 
+                a.M00 * b.M02 + a.M01 * b.M12 + a.M02, 
+                a.M10 * b.M00 + a.M11 * b.M10, 
+                a.M10 * b.M01 + a.M11 * b.M11, 
+                a.M10 * b.M02 + a.M11 * b.M12 + a.M12
+            );
+        }
+
         #endregion
 
         #region Operations
@@ -16607,6 +16652,21 @@ namespace Aardvark.Base
                 m.M00 * p.X + m.M01 * p.Y + m.M02, 
                 m.M10 * p.X + m.M11 * p.Y + m.M12
                 );
+        }
+
+        /// <summary>
+        /// Multiplies two <see cref="M23d"/> matrices as 3x3 matrices.
+        /// </summary>
+        public static M23d MultiplyAffine(this M23d a, M23d b)
+        {
+            return new M23d(
+                a.M00 * b.M00 + a.M01 * b.M10, 
+                a.M00 * b.M01 + a.M01 * b.M11, 
+                a.M00 * b.M02 + a.M01 * b.M12 + a.M02, 
+                a.M10 * b.M00 + a.M11 * b.M10, 
+                a.M10 * b.M01 + a.M11 * b.M11, 
+                a.M10 * b.M02 + a.M11 * b.M12 + a.M12
+            );
         }
 
         #endregion
@@ -30457,6 +30517,27 @@ namespace Aardvark.Base
                 );
         }
 
+        /// <summary>
+        /// Multiplies two <see cref="M34i"/> matrices as 4x4 matrices.
+        /// </summary>
+        public static M34i MultiplyAffine(this M34i a, M34i b)
+        {
+            return new M34i(
+                a.M00 * b.M00 + a.M01 * b.M10 + a.M02 * b.M20, 
+                a.M00 * b.M01 + a.M01 * b.M11 + a.M02 * b.M21, 
+                a.M00 * b.M02 + a.M01 * b.M12 + a.M02 * b.M22, 
+                a.M00 * b.M03 + a.M01 * b.M13 + a.M02 * b.M23 + a.M03, 
+                a.M10 * b.M00 + a.M11 * b.M10 + a.M12 * b.M20, 
+                a.M10 * b.M01 + a.M11 * b.M11 + a.M12 * b.M21, 
+                a.M10 * b.M02 + a.M11 * b.M12 + a.M12 * b.M22, 
+                a.M10 * b.M03 + a.M11 * b.M13 + a.M12 * b.M23 + a.M13, 
+                a.M20 * b.M00 + a.M21 * b.M10 + a.M22 * b.M20, 
+                a.M20 * b.M01 + a.M21 * b.M11 + a.M22 * b.M21, 
+                a.M20 * b.M02 + a.M21 * b.M12 + a.M22 * b.M22, 
+                a.M20 * b.M03 + a.M21 * b.M13 + a.M22 * b.M23 + a.M23
+            );
+        }
+
         #endregion
 
         #region Operations
@@ -32889,6 +32970,27 @@ namespace Aardvark.Base
                 m.M10 * p.X + m.M11 * p.Y + m.M12 * p.Z + m.M13, 
                 m.M20 * p.X + m.M21 * p.Y + m.M22 * p.Z + m.M23
                 );
+        }
+
+        /// <summary>
+        /// Multiplies two <see cref="M34l"/> matrices as 4x4 matrices.
+        /// </summary>
+        public static M34l MultiplyAffine(this M34l a, M34l b)
+        {
+            return new M34l(
+                a.M00 * b.M00 + a.M01 * b.M10 + a.M02 * b.M20, 
+                a.M00 * b.M01 + a.M01 * b.M11 + a.M02 * b.M21, 
+                a.M00 * b.M02 + a.M01 * b.M12 + a.M02 * b.M22, 
+                a.M00 * b.M03 + a.M01 * b.M13 + a.M02 * b.M23 + a.M03, 
+                a.M10 * b.M00 + a.M11 * b.M10 + a.M12 * b.M20, 
+                a.M10 * b.M01 + a.M11 * b.M11 + a.M12 * b.M21, 
+                a.M10 * b.M02 + a.M11 * b.M12 + a.M12 * b.M22, 
+                a.M10 * b.M03 + a.M11 * b.M13 + a.M12 * b.M23 + a.M13, 
+                a.M20 * b.M00 + a.M21 * b.M10 + a.M22 * b.M20, 
+                a.M20 * b.M01 + a.M21 * b.M11 + a.M22 * b.M21, 
+                a.M20 * b.M02 + a.M21 * b.M12 + a.M22 * b.M22, 
+                a.M20 * b.M03 + a.M21 * b.M13 + a.M22 * b.M23 + a.M23
+            );
         }
 
         #endregion
@@ -35540,6 +35642,27 @@ namespace Aardvark.Base
                 );
         }
 
+        /// <summary>
+        /// Multiplies two <see cref="M34f"/> matrices as 4x4 matrices.
+        /// </summary>
+        public static M34f MultiplyAffine(this M34f a, M34f b)
+        {
+            return new M34f(
+                a.M00 * b.M00 + a.M01 * b.M10 + a.M02 * b.M20, 
+                a.M00 * b.M01 + a.M01 * b.M11 + a.M02 * b.M21, 
+                a.M00 * b.M02 + a.M01 * b.M12 + a.M02 * b.M22, 
+                a.M00 * b.M03 + a.M01 * b.M13 + a.M02 * b.M23 + a.M03, 
+                a.M10 * b.M00 + a.M11 * b.M10 + a.M12 * b.M20, 
+                a.M10 * b.M01 + a.M11 * b.M11 + a.M12 * b.M21, 
+                a.M10 * b.M02 + a.M11 * b.M12 + a.M12 * b.M22, 
+                a.M10 * b.M03 + a.M11 * b.M13 + a.M12 * b.M23 + a.M13, 
+                a.M20 * b.M00 + a.M21 * b.M10 + a.M22 * b.M20, 
+                a.M20 * b.M01 + a.M21 * b.M11 + a.M22 * b.M21, 
+                a.M20 * b.M02 + a.M21 * b.M12 + a.M22 * b.M22, 
+                a.M20 * b.M03 + a.M21 * b.M13 + a.M22 * b.M23 + a.M23
+            );
+        }
+
         #endregion
 
         #region Operations
@@ -38093,6 +38216,27 @@ namespace Aardvark.Base
                 m.M10 * p.X + m.M11 * p.Y + m.M12 * p.Z + m.M13, 
                 m.M20 * p.X + m.M21 * p.Y + m.M22 * p.Z + m.M23
                 );
+        }
+
+        /// <summary>
+        /// Multiplies two <see cref="M34d"/> matrices as 4x4 matrices.
+        /// </summary>
+        public static M34d MultiplyAffine(this M34d a, M34d b)
+        {
+            return new M34d(
+                a.M00 * b.M00 + a.M01 * b.M10 + a.M02 * b.M20, 
+                a.M00 * b.M01 + a.M01 * b.M11 + a.M02 * b.M21, 
+                a.M00 * b.M02 + a.M01 * b.M12 + a.M02 * b.M22, 
+                a.M00 * b.M03 + a.M01 * b.M13 + a.M02 * b.M23 + a.M03, 
+                a.M10 * b.M00 + a.M11 * b.M10 + a.M12 * b.M20, 
+                a.M10 * b.M01 + a.M11 * b.M11 + a.M12 * b.M21, 
+                a.M10 * b.M02 + a.M11 * b.M12 + a.M12 * b.M22, 
+                a.M10 * b.M03 + a.M11 * b.M13 + a.M12 * b.M23 + a.M13, 
+                a.M20 * b.M00 + a.M21 * b.M10 + a.M22 * b.M20, 
+                a.M20 * b.M01 + a.M21 * b.M11 + a.M22 * b.M21, 
+                a.M20 * b.M02 + a.M21 * b.M12 + a.M22 * b.M22, 
+                a.M20 * b.M03 + a.M21 * b.M13 + a.M22 * b.M23 + a.M23
+            );
         }
 
         #endregion
