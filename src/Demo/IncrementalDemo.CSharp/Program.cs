@@ -51,7 +51,7 @@ namespace IncrementalDemo.CSharp
             var set = new ChangeableHashSet<int>(new [] { 1, 2, 3, 4 });
 
 
-            var greater1 = from i in set where i > 1 select i;
+            var greater1 = set.Filter(i => i > 1);
 
 
             var reader = greater1.GetReader();
@@ -109,7 +109,7 @@ namespace IncrementalDemo.CSharp
 
         static void AdvancedASetTest()
         {
-            Action<FSharp.Data.Traceable.IOpReader<CountingHashSet<int>, HashSetDelta<int>>> print = (r) =>
+            Action<IOpReader<CountingHashSet<int>, FSharpHashSetDelta<int>>> print = (r) =>
             {
                 var deltas = r.GetChanges(AdaptiveToken.Top);
                 var content = r.State;

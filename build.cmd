@@ -3,7 +3,7 @@ SETLOCAL
 PUSHD %~dp0
 
 IF NOT exist .paket\paket.exe (
-	dotnet tool install Paket --tool-path .paket
+	dotnet tool install Paket --tool-path .paket --version [5.242.2]
 )
 
 if NOT exist paket.lock (
