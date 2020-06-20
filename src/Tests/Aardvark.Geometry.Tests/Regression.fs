@@ -130,31 +130,31 @@ module Regression3dTests =
 
             } |> Arb.fromGen
 
-    let checkPlane (r : Regression3d) (points : V3d[]) =
+    let checkPlane (r : LinearRegression3d) (points : V3d[]) =
         let plane = r.GetPlane()
         let error = points |> Array.map (plane.Height >> abs) |> Array.max
         error |> should be (lessThanOrEqualTo 1E-6)
 
-    let checkTrafo (r : Regression3d) (points : V3d[]) =
+    let checkTrafo (r : LinearRegression3d) (points : V3d[]) =
         let trafo = r.GetTrafo()
         let error = points |> Array.map (fun p -> trafo.Backward.TransformPos(p).Z |> abs) |> Array.max
         error |> should be (lessThanOrEqualTo 1E-6)
         
-    let check (points : V3d[]) (r : Regression3d) =
+    let check (points : V3d[]) (r : LinearRegression3d) =
         checkPlane r points
         checkTrafo r points
         
-    let checkPlane2d (r : Regression2d) (points : V2d[]) =
+    let checkPlane2d (r : LinearRegression2d) (points : V2d[]) =
         let struct(plane, _) = r.GetPlaneAndConfidence()
         let error = points |> Array.map (plane.Height >> abs) |> Array.max
         error |> should be (lessThanOrEqualTo 1E-6)
         
-    let checkTrafo2d (r : Regression2d) (points : V2d[]) =
+    let checkTrafo2d (r : LinearRegression2d) (points : V2d[]) =
         let trafo = r.GetTrafo()
         let error = points |> Array.map (fun p -> trafo.Backward.TransformPos(p).Y |> abs) |> Array.max
         error |> should be (lessThanOrEqualTo 1E-6)
         
-    let check2d (points : V2d[]) (r : Regression2d) =
+    let check2d (points : V2d[]) (r : LinearRegression2d) =
         checkPlane2d r points
         checkTrafo2d r points
 
@@ -165,21 +165,21 @@ module Regression3dTests =
             |> Array.map (fun p -> trafo.TransformPos(V3d(p, 0.0)))
 
         // add working
-        pts |> Array.fold (+) Regression3d.empty |> check pts
+        pts |> Array.fold (+) LinearRegression3d.empty |> check pts
 
         // ofArray/ofSeq working
-        pts |> Regression3d.ofArray |> check pts
-        pts |> Regression3d.ofSeq |> check pts
+        pts |> LinearRegression3d.ofArray |> check pts
+        pts |> LinearRegression3d.ofSeq |> check pts
 
         // constructor working
-        pts |> Regression3d |> check pts
+        pts |> LinearRegression3d |> check pts
 
         // regression addition working
         let n2 = pts.Length / 2
-        Regression3d.ofArray pts.[..n2-1] + Regression3d.ofArray pts.[n2..] |> check pts
+        LinearRegression3d.ofArray pts.[..n2-1] + LinearRegression3d.ofArray pts.[n2..] |> check pts
 
         // remove working
-        pts |> Array.fold (+) (Regression3d V3d.Zero) |> Regression3d.remove V3d.Zero |> check pts
+        pts |> Array.fold (+) (LinearRegression3d V3d.Zero) |> LinearRegression3d.remove V3d.Zero |> check pts
         
 
     [<Property(Arbitrary = [| typeof<EuclideanGenerator> |])>]
@@ -187,18 +187,18 @@ module Regression3dTests =
         let pts = points.Value |> Array.map (fun (GaussFloat v) -> trafo.TransformPos(V2d(v * 10.0, 0.0)))
         
         // add working
-        pts |> Array.fold (+) Regression2d.empty |> check2d pts
+        pts |> Array.fold (+) LinearRegression2d.empty |> check2d pts
 
         // ofArray/ofSeq working
-        pts |> Regression2d.ofArray |> check2d pts
-        pts |> Regression2d.ofSeq |> check2d pts
+        pts |> LinearRegression2d.ofArray |> check2d pts
+        pts |> LinearRegression2d.ofSeq |> check2d pts
 
         // constructor working
-        pts |> Regression2d |> check2d pts
+        pts |> LinearRegression2d |> check2d pts
 
         // regression addition working
         let n2 = pts.Length / 2
-        Regression2d.ofArray pts.[..n2-1] + Regression2d.ofArray pts.[n2..] |> check2d pts
+        LinearRegression2d.ofArray pts.[..n2-1] + LinearRegression2d.ofArray pts.[n2..] |> check2d pts
 
         // remove working
-        pts |> Array.fold (+) (Regression2d V2d.Zero) |> Regression2d.remove V2d.Zero |> check2d pts
+        pts |> Array.fold (+) (LinearRegression2d V2d.Zero) |> LinearRegression2d.remove V2d.Zero |> check2d pts

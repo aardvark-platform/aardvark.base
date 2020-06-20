@@ -29,7 +29,7 @@ module private RegressionHelpers =
 
 
 [<Struct>]
-type Regression2d =
+type LinearRegression2d =
     
     val mutable private _reference : V2d
     val mutable private _sum : V2d
@@ -65,16 +65,16 @@ type Regression2d =
             { _reference = reference; _sum = sum; _sumSq = sumSq; _off = off; _count = count }
          
     /// Creates a new regression from the given points.
-    new(s : seq<V2d>) = Regression2d(Seq.toArray s)
+    new(s : seq<V2d>) = LinearRegression2d(Seq.toArray s)
     
     /// Creates a new regression from the given points.
-    new(s : list<V2d>) = Regression2d(List.toArray s)
+    new(s : list<V2d>) = LinearRegression2d(List.toArray s)
     
     /// A regression holding no points.
-    static member Zero = Regression2d(V2d.Zero, V2d.Zero, V2d.Zero, 0.0, 0)
+    static member Zero = LinearRegression2d(V2d.Zero, V2d.Zero, V2d.Zero, 0.0, 0)
 
     /// A regression holding no points.
-    static member Empty = Regression2d(V2d.Zero, V2d.Zero, V2d.Zero, 0.0, 0)
+    static member Empty = LinearRegression2d(V2d.Zero, V2d.Zero, V2d.Zero, 0.0, 0)
    
     /// The total number of points added. Note that at least 3 points are required to fit a plane.
     member x.Count = x._count
@@ -94,7 +94,7 @@ type Regression2d =
             // sum (xi+d)^2 
             // sum (xi^2 + 2xi*d + d^2)
             // sum (xi^2) + 2*d*sum(xi) + n*d^2
-            Regression2d(
+            LinearRegression2d(
                 r, 
                 x._sum + n*d,
                 x._sumSq + 2.0*d*x._sum + n*sqr d,
@@ -111,10 +111,10 @@ type Regression2d =
     /// Adds the given point to the regression.
     member x.Add(pt : V2d) =
         if x._count = 0 then
-            Regression2d(pt, V2d.Zero, V2d.Zero, 0.0, 1)
+            LinearRegression2d(pt, V2d.Zero, V2d.Zero, 0.0, 1)
         else
             let pt = pt - x._reference
-            Regression2d(
+            LinearRegression2d(
                 x._reference,
                 x._sum + pt,
                 x._sumSq + sqr pt,
@@ -142,10 +142,10 @@ type Regression2d =
     /// NOTE: when removing non-added points the regression will produce inconsistent results.
     member x.Remove(pt : V2d) =
         if x._count <= 1 then
-            Regression2d.Empty
+            LinearRegression2d.Empty
         else
             let pt = pt - x._reference
-            Regression2d(
+            LinearRegression2d(
                 x._reference,
                 x._sum - pt,
                 x._sumSq - sqr pt |> max V2d.Zero,
@@ -279,14 +279,14 @@ type Regression2d =
         let struct(t, _) = x.GetTrafoAndSizes()
         t
   
-    static member (+) (l : Regression2d, r : Regression2d) =
+    static member (+) (l : LinearRegression2d, r : LinearRegression2d) =
         if r.Count <= 0 then l
         elif l.Count <= 0 then r
         elif l.Count = 1 then r.Add l._reference
         elif r.Count = 1 then l.Add r._reference
         else
             let r1 = r.WithReferencePoint l._reference
-            Regression2d(
+            LinearRegression2d(
                 l._reference,
                 l._sum + r1._sum,
                 l._sumSq + r1._sumSq,
@@ -294,13 +294,13 @@ type Regression2d =
                 l._count + r1._count
             )
         
-    static member (-) (l : Regression2d, r : Regression2d) =
+    static member (-) (l : LinearRegression2d, r : LinearRegression2d) =
         if r.Count <= 0 then l
-        elif l.Count <= r.Count then Regression2d.Zero
+        elif l.Count <= r.Count then LinearRegression2d.Zero
         elif r.Count = 1 then l.Remove r._reference
         else
             let r = r.WithReferencePoint l._reference
-            Regression2d(
+            LinearRegression2d(
                 l._reference,
                 l._sum - r._sum,
                 l._sumSq - r._sumSq,
@@ -308,44 +308,44 @@ type Regression2d =
                 l._count - r._count
             )
         
-    static member (+) (l : Regression2d, r : V2d) =
+    static member (+) (l : LinearRegression2d, r : V2d) =
         l.Add r
         
-    static member (+) (l : V2d, r : Regression2d) =
+    static member (+) (l : V2d, r : LinearRegression2d) =
         r.Add l
         
-    static member (-) (l : Regression2d, r : V2d) =
+    static member (-) (l : LinearRegression2d, r : V2d) =
         l.Remove r
 
-module Regression2d =
+module LinearRegression2d =
 
     /// A regression holding no points.
-    let empty = Regression2d.Zero
+    let empty = LinearRegression2d.Zero
 
     /// Removes the given point from the regression assuming that it has previously been added.
     /// NOTE: when removing non-added points the regression will produce inconsistent results.
-    let inline remove (pt : V2d) (s : Regression2d) = s.Remove pt
+    let inline remove (pt : V2d) (s : LinearRegression2d) = s.Remove pt
 
     /// Adds the given point to the regression.
-    let inline add (pt : V2d) (s : Regression2d) = s.Add pt
+    let inline add (pt : V2d) (s : LinearRegression2d) = s.Add pt
 
     /// Gets the least-squares plane.
-    let inline getPlane (s : Regression2d) = s.GetPlane()
+    let inline getPlane (s : LinearRegression2d) = s.GetPlane()
 
     /// Gets a Trafo2d for the entire plane using its principal components.
-    let inline getTrafo (s : Regression2d) = s.GetTrafo()
+    let inline getTrafo (s : LinearRegression2d) = s.GetTrafo()
     
     /// The total number of points added. Note that at least 2 points are required to fit a line.
-    let inline count (s : Regression2d) = s.Count
+    let inline count (s : LinearRegression2d) = s.Count
     
     /// The centroid of all added points.
-    let inline centroid (s : Regression2d) = s.Centroid
+    let inline centroid (s : LinearRegression2d) = s.Centroid
     
     /// Gets the variances as [Var(X), Var(Y)]
-    let inline variance (s : Regression2d) = s.Variance
+    let inline variance (s : LinearRegression2d) = s.Variance
 
     /// Gets the covariance.
-    let inline covariance (s : Regression2d) = s.Covariance
+    let inline covariance (s : LinearRegression2d) = s.Covariance
 
     /// Creates a regression from the given points.
     let ofSeq (points : seq<V2d>) =
@@ -368,7 +368,7 @@ module Regression2d =
 
 
 [<Struct>]
-type Regression3d =
+type LinearRegression3d =
     
     val mutable private _reference : V3d
     val mutable private _sum : V3d
@@ -404,17 +404,17 @@ type Regression3d =
             { _reference = reference; _sum = sum; _sumSq = sumSq; _off = off; _count = count }
         
     /// Creates a new regression from the given points.
-    new(s : seq<V3d>) = Regression3d(Seq.toArray s)
+    new(s : seq<V3d>) = LinearRegression3d(Seq.toArray s)
     
     /// Creates a new regression from the given points.
-    new(s : list<V3d>) = Regression3d(List.toArray s)
+    new(s : list<V3d>) = LinearRegression3d(List.toArray s)
 
 
     /// A regression holding no points.
-    static member Zero = Regression3d(V3d.Zero, V3d.Zero, V3d.Zero, V3d.Zero, 0)
+    static member Zero = LinearRegression3d(V3d.Zero, V3d.Zero, V3d.Zero, V3d.Zero, 0)
 
     /// A regression holding no points.
-    static member Empty = Regression3d(V3d.Zero, V3d.Zero, V3d.Zero, V3d.Zero, 0)
+    static member Empty = LinearRegression3d(V3d.Zero, V3d.Zero, V3d.Zero, V3d.Zero, 0)
     
     /// The total number of points added. Note that at least 3 points are required to fit a plane.
     member x.Count = x._count
@@ -437,7 +437,7 @@ type Regression3d =
             // sum (xi^2 + 2xi*d + d^2)
             // sum (xi^2) + 2*d*sum(xi) + n*d^2
 
-            Regression3d(
+            LinearRegression3d(
                 r, 
                 x._sum + n*d,
                 x._sumSq + 2.0*d*x._sum + n*sqr d,
@@ -453,10 +453,10 @@ type Regression3d =
     /// Adds the given point to the regression.
     member x.Add(pt : V3d) =
         if x._count = 0 then
-            Regression3d(pt, V3d.Zero, V3d.Zero, V3d.Zero, 1)
+            LinearRegression3d(pt, V3d.Zero, V3d.Zero, V3d.Zero, 1)
         else
             let pt = pt - x._reference
-            Regression3d(
+            LinearRegression3d(
                 x._reference,
                 x._sum + pt,
                 x._sumSq + sqr pt,
@@ -484,10 +484,10 @@ type Regression3d =
     /// NOTE: when removing non-added points the regression will produce inconsistent results.
     member x.Remove(pt : V3d) =
         if x._count <= 1 then
-            Regression3d.Empty
+            LinearRegression3d.Empty
         else
             let pt = pt - x._reference
-            Regression3d(
+            LinearRegression3d(
                 x._reference,
                 x._sum - pt,
                 x._sumSq - sqr pt |> max V3d.Zero,
@@ -687,14 +687,14 @@ type Regression3d =
         let struct(t, _) = x.GetTrafoAndSizes()
         t
 
-    static member (+) (l : Regression3d, r : Regression3d) =
+    static member (+) (l : LinearRegression3d, r : LinearRegression3d) =
         if r.Count <= 0 then l
         elif l.Count <= 0 then r
         elif l.Count = 1 then r.Add l._reference
         elif r.Count = 1 then l.Add r._reference
         else
             let r1 = r.WithReferencePoint l._reference
-            Regression3d(
+            LinearRegression3d(
                 l._reference,
                 l._sum + r1._sum,
                 l._sumSq + r1._sumSq,
@@ -702,13 +702,13 @@ type Regression3d =
                 l._count + r1._count
             )
         
-    static member (-) (l : Regression3d, r : Regression3d) =
+    static member (-) (l : LinearRegression3d, r : LinearRegression3d) =
         if r.Count <= 0 then l
-        elif l.Count <= r.Count then Regression3d.Zero
+        elif l.Count <= r.Count then LinearRegression3d.Zero
         elif r.Count = 1 then l.Remove r._reference
         else
             let r = r.WithReferencePoint l._reference
-            Regression3d(
+            LinearRegression3d(
                 l._reference,
                 l._sum - r._sum,
                 l._sumSq - r._sumSq,
@@ -716,50 +716,50 @@ type Regression3d =
                 l._count - r._count
             )
         
-    static member (+) (l : Regression3d, r : V3d) =
+    static member (+) (l : LinearRegression3d, r : V3d) =
         l.Add r
         
-    static member (+) (l : V3d, r : Regression3d) =
+    static member (+) (l : V3d, r : LinearRegression3d) =
         r.Add l
         
-    static member (-) (l : Regression3d, r : V3d) =
+    static member (-) (l : LinearRegression3d, r : V3d) =
         l.Remove r
 
-module Regression3d =
+module LinearRegression3d =
 
     /// A regression holding no points.
-    let empty = Regression3d.Zero
+    let empty = LinearRegression3d.Zero
 
     /// Removes the given point from the regression assuming that it has previously been added.
     /// NOTE: when removing non-added points the regression will produce inconsistent results.
-    let inline remove (pt : V3d) (s : Regression3d) = s.Remove pt
+    let inline remove (pt : V3d) (s : LinearRegression3d) = s.Remove pt
 
     /// Adds the given point to the regression.
-    let inline add (pt : V3d) (s : Regression3d) = s.Add pt
+    let inline add (pt : V3d) (s : LinearRegression3d) = s.Add pt
 
     /// Gets the least-squares plane.
-    let inline getPlane (s : Regression3d) = s.GetPlane()
+    let inline getPlane (s : LinearRegression3d) = s.GetPlane()
 
     /// Gets a Trafo3d for the entire plane using its principal components.
-    let inline getTrafo (s : Regression3d) = s.GetTrafo()
+    let inline getTrafo (s : LinearRegression3d) = s.GetTrafo()
     
     /// The total number of points added. Note that at least 3 points are required to fit a plane.
-    let inline count (s : Regression3d) = s.Count
+    let inline count (s : LinearRegression3d) = s.Count
     
     /// The centroid of all added points.
-    let inline centroid (s : Regression3d) = s.Centroid
+    let inline centroid (s : LinearRegression3d) = s.Centroid
     
     /// Gets the variances as [Var(X), Var(Y), Var(Z)]
-    let inline variance (s : Regression3d) = s.Variance
+    let inline variance (s : LinearRegression3d) = s.Variance
 
     /// Gets the covariances as [Cov(Y,Z), Cov(X,Z), Cov(X,Y)]
-    let inline covariance (s : Regression3d) = s.Covariance
+    let inline covariance (s : LinearRegression3d) = s.Covariance
 
     /// Gets the covariance matrix as
     /// | Cov(X,X) | Cov(X,Y) | Cov(X,Z) |
     /// | Cov(X,Y) | Cov(Y,Y) | Cov(Y,Z) |
     /// | Cov(X,Z) | Cov(Y,Z) | Cov(Z,Z) |
-    let inline covarianceMatrix (pt : V3d) (s : Regression3d) = s.CovarianceMatrix
+    let inline covarianceMatrix (pt : V3d) (s : LinearRegression3d) = s.CovarianceMatrix
 
     /// Creates a regression from the given points.
     let ofSeq (points : seq<V3d>) =
