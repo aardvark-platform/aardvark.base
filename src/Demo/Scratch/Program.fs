@@ -362,8 +362,67 @@ open System.Runtime.Serialization.Formatters.Binary
 open MBrace.FsPickler
 open MBrace.FsPickler.Json
 
+
+let ellipsoidTest() =
+
+    let trafo =
+        Trafo3d.Scale(3.0, 2.0, 1.0) *
+        Trafo3d.Rotation(V3d.III.Normalized, 1.21312)
+        
+
+    let err = 0.0
+    let rand = RandomSystem()
+    let pts =
+        Array.init 2000 (fun _ ->
+            rand.UniformV3dDirection() * (1.0 + (rand.UniformDouble() - 0.5) * 2.0 * err) |> trafo.Forward.TransformPos
+        )
+
+
+    //let pts = 
+    //    let rx = Regex @"(-?[0-9]+)[ \t]+(-?[0-9]+)[ \t]+(-?[0-9]+)"
+    //    File.readAllLines @"C:\Users\Schorsch\Development\ellipsoid_fit_python\mag_out.txt"
+    //    |> Array.choose (fun l ->
+    //        let m = rx.Match l
+    //        if m.Success then Some (V3d(float m.Groups.[1].Value, float m.Groups.[2].Value, float m.Groups.[3].Value))
+    //        else None
+    //    )
+
+    let bb = Box3d(pts)
+    let f = 3.0 / bb.Size.NormMax
+    let c = bb.Center
+    let ellipsoid = EllipsoidRegression3d.ofArray pts |> EllipsoidRegression3d.getEllipsoid
+
+    let mutable minError = System.Double.PositiveInfinity
+    let mutable maxError = 0.0
+    let mutable sum = 0.0
+    let mutable sumSq = 0.0
+    let mutable cnt = 0
+    for p in pts do
+        let h = ellipsoid.Height(p) |> abs
+        minError <- min minError h
+        maxError <- max maxError h
+        sum <- sum + h
+        sumSq <- sumSq + sqr h
+        cnt <- cnt + 1
+        
+    Log.start "ellipsoid"
+    Log.line "r: %.5f %.5f %.5f" ellipsoid.Radii.X ellipsoid.Radii.Y ellipsoid.Radii.Z
+    Log.stop()
+
+    Log.start "errors"
+    Log.line "min: %.6e" minError
+    Log.line "max: %.6e" maxError
+    Log.line "avg: %.6e" (sum / float cnt)
+    Log.line "rms: %.6e" (sqrt (sumSq / float cnt))
+    Log.stop()
+
+
+
 [<EntryPoint; STAThread>]
 let main argv = 
+    ellipsoidTest()
+    exit 0
+
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]
    
     let pickler = FsPickler.CreateJsonSerializer(true, false)

@@ -16,6 +16,7 @@
     <Compile Include="PolyRegion2d.fs" />
     <Compile Include="Region3d.fs" />
     <Compile Include="LinearRegression.fs" />
+    <Compile Include="EllipsoidRegression.fs" />
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
