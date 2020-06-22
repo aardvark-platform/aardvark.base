@@ -240,7 +240,6 @@ module private rec D9Math =
 
         [<MethodImpl(MethodImplOptions.NoInlining)>]
         member x.LuSolve(rhs : V9d) =
-            let mutable rhs = rhs
 
             let ptr = NativePtr.stackalloc<V9d> 9
             NativePtr.set ptr 0 (V9d(x.M00, x.M01, x.M02, x.M03, x.M04, x.M05, x.M06, x.M07, x.M08))
@@ -253,6 +252,8 @@ module private rec D9Math =
             NativePtr.set ptr 7 (V9d(x.M70, x.M71, x.M72, x.M73, x.M74, x.M75, x.M76, x.M77, x.M78))
             NativePtr.set ptr 8 (V9d(x.M80, x.M81, x.M82, x.M83, x.M84, x.M85, x.M86, x.M87, x.M88))
             let pFloat : nativeptr<float> = NativePtr.cast ptr
+
+            let mutable rhs = rhs
             
             let inline get (r : int) (c : int) =
                 NativePtr.get pFloat (r * 9 + c)
@@ -272,22 +273,29 @@ module private rec D9Math =
                     rhs.WriteUnsafe(rj, t)
 
 
-            for i in 0 .. 8 do
+            let mutable i = 0
+            while i < 9 do
                 // pivoting
                 let vii = 
                     let mutable j = i
                     let mutable vmax = get i i
+                    let mutable vmaxAbs = abs vmax
                     for ii in i+1 .. 8 do
                         let vii = get ii i
-                        if abs vii > abs vmax then
+                        let viiAbs = abs vii
+                        if viiAbs > vmaxAbs then
                             j <- ii
                             vmax <- vii
+                            vmaxAbs <- viiAbs
 
                     swapRows i j
                     vmax
 
                 // elimination
-                if not (Fun.IsTiny vii) then
+                if Fun.IsTiny vii then
+                    // singular matrix
+                    i <- Int32.MaxValue
+                else
                     for j in i + 1 .. 8 do
                         let vji = get j i
                         let f = -vji / vii
@@ -297,21 +305,23 @@ module private rec D9Math =
                         set j i 5.0
                         for c in i + 1 .. 8 do
                             set j c (get j c + get i c * f) 
+                    i <- i + 1
 
+            if i > 9 then   
+                V9d()
+            else
+                // back substitution
+                let mutable res = V9d()
+                for ri in 0 .. 8 do
+                    let ri = 8 - ri
 
-            // back substitution
-            let mutable res = V9d()
-            for ri in 0 .. 8 do
-                let ri = 8 - ri
+                    let mutable s = rhs.ReadUnsafe(ri)
+                    for c in ri + 1 .. 8 do
+                        s <- s - get ri c * res.ReadUnsafe(c)
 
-                let mutable s = rhs.ReadUnsafe(ri)
-                for c in ri + 1 .. 8 do
-                    s <- s - get ri c * res.ReadUnsafe(c)
+                    res.WriteUnsafe(ri, s / get ri ri)
 
-                res.WriteUnsafe(ri, s / get ri ri)
-
-
-            res
+                res
 
 
         member x.ToMatrix() =
@@ -448,6 +458,122 @@ module private rec D9Math =
 
         new(m00 : float, m01 : float, m02 : float, m03 : float, m04 : float, m05 : float, m06 : float, m07 : float, m08 : float, m11 : float, m12 : float, m13 : float, m14 : float, m15 : float, m16 : float, m17 : float, m18 : float, m22 : float, m23 : float, m24 : float, m25 : float, m26 : float, m27 : float, m28 : float, m33 : float, m34 : float, m35 : float, m36 : float, m37 : float, m38 : float, m44 : float, m45 : float, m46 : float, m47 : float, m48 : float, m55 : float, m56 : float, m57 : float, m58 : float, m66 : float, m67 : float, m68 : float, m77 : float, m78 : float, m88 : float) = { M00 = m00; M01 = m01; M02 = m02; M03 = m03; M04 = m04; M05 = m05; M06 = m06; M07 = m07; M08 = m08; M11 = m11; M12 = m12; M13 = m13; M14 = m14; M15 = m15; M16 = m16; M17 = m17; M18 = m18; M22 = m22; M23 = m23; M24 = m24; M25 = m25; M26 = m26; M27 = m27; M28 = m28; M33 = m33; M34 = m34; M35 = m35; M36 = m36; M37 = m37; M38 = m38; M44 = m44; M45 = m45; M46 = m46; M47 = m47; M48 = m48; M55 = m55; M56 = m56; M57 = m57; M58 = m58; M66 = m66; M67 = m67; M68 = m68; M77 = m77; M78 = m78; M88 = m88 }
 
+    let luSolveInPlace (lhs : NativeMatrix<float>) (rhs : NativeVector<float>) (res : NativeVector<float>) =
+        if lhs.SY <> rhs.Size || lhs.SX <> rhs.Size || res.Size <> rhs.Size then raise <| IndexOutOfRangeException()
+
+        let n1 = int lhs.SY - 1
+
+        let inline get (r : int) (c : int) =
+            lhs.[r,c]
+
+        let inline set (r : int) (c : int) (v : float) =
+            lhs.[r,c] <- v
+                
+        let inline swapRows (ri : int) (rj : int) =
+            if ri <> rj then
+                for c in 0 .. n1 do
+                    let t = get ri c
+                    set ri c (get rj c)
+                    set rj c t
+
+                let t = rhs.[ri]
+                rhs.[ri] <- rhs.[rj]
+                rhs.[rj] <- t
+
+        let mutable i = 0
+        while i < n1 do
+            // pivoting
+            let vii = 
+                let mutable j = i
+                let mutable vmax = get i i
+                let mutable vmaxAbs = abs vmax
+                for ii in i+1 .. n1 do
+                    let vii = get ii i
+                    let viiAbs = abs vii
+                    if viiAbs > vmaxAbs then
+                        j <- ii
+                        vmax <- vii
+                        vmaxAbs <- viiAbs
+
+                swapRows i j
+                vmax
+
+            // elimination
+            if Fun.IsTiny vii then
+                // singular matrix
+                i <- Int32.MaxValue
+            else
+                for j in i + 1 .. n1 do
+                    let vji = get j i
+                    let f = -vji / vii
+
+                    rhs.[j] <- rhs.[j] + rhs.[i] * f
+
+                    set j i 0.0
+                    for c in i + 1 .. n1 do
+                        set j c (get j c + get i c * f) 
+                i <- i + 1
+
+        if i > n1 then   
+            false
+        else
+            // back substitution
+            for ri in 0 .. n1 do
+                let ri = n1 - ri
+
+                let mutable s = rhs.[ri]
+                for c in ri + 1 .. n1 do
+                    s <- s - get ri c * res.[c]
+
+                res.[ri] <- s / get ri ri
+            true
+
+    type M44d with
+        member x.LuSolveNew(rhs : V4d) =
+            let plhs = NativePtr.stackalloc 1
+            NativePtr.write plhs x
+
+            let prhs = NativePtr.stackalloc 1
+            NativePtr.write prhs rhs
+
+            let pres : nativeptr<V4d> = NativePtr.stackalloc 1
+
+            let tlhs = NativeMatrix(NativePtr.cast plhs, MatrixInfo(V2l(4,4)))
+            let trhs = NativeVector(NativePtr.cast prhs, VectorInfo(4))
+            let tres = NativeVector(NativePtr.cast pres, VectorInfo(4))
+
+            if luSolveInPlace tlhs trhs tres then
+                NativePtr.read pres
+            else
+                V4d.Zero
+
+    type M33d with
+        member x.LuSolveNew(rhs : V3d) =
+            let plhs = NativePtr.stackalloc 1
+            NativePtr.write plhs x
+
+            let prhs = NativePtr.stackalloc 1
+            NativePtr.write prhs rhs
+
+            let pres : nativeptr<V3d> = NativePtr.stackalloc 1
+
+            let tlhs = NativeMatrix(NativePtr.cast plhs, MatrixInfo(V2l(3,3)))
+            let trhs = NativeVector(NativePtr.cast prhs, VectorInfo(3))
+            let tres = NativeVector(NativePtr.cast pres, VectorInfo(3))
+
+            if luSolveInPlace tlhs trhs tres then
+                NativePtr.read pres
+            else
+                V3d.Zero
+
+
+
+
+
+
+
+
+
 [<Struct>]
 type Ellipsoid3d (euclidean : Euclidean3d, radii : V3d) =
     member x.Euclidean = euclidean
@@ -455,6 +581,9 @@ type Ellipsoid3d (euclidean : Euclidean3d, radii : V3d) =
     member x.Center = euclidean.Trans
 
     member x.BoundingBox3d =
+
+        // l*n = p/r^2 
+
         // TODO: tighter BB possible?
         let m : M44d = Euclidean3d.op_Explicit euclidean
         Box3d(-radii, radii).Transformed m
@@ -462,17 +591,103 @@ type Ellipsoid3d (euclidean : Euclidean3d, radii : V3d) =
     member x.Contains(pt : V3d) =
         Vec.length (euclidean.InvTransformPos pt / radii) <= 1.0
 
+    member x.GetClosestPointAndNormal(pt0 : V3d) =
+        let pt = euclidean.InvTransformPos pt0
+
+        let a = radii.X
+        let b = radii.Y
+        let c = radii.Z
+
+        let inline ff (t : V2d) =
+            let sp = sin t.Y
+            let cp = cos t.Y
+            let st = sin t.X
+            let ct = cos t.X
+            let a2 = sqr a
+            let b2 = sqr b
+            let st2 = sqr st
+            let ct2 = sqr ct
+            let ab2 = a2 - b2
+
+            struct (
+                V2d(
+                    ab2*ct*st*cp - pt.X*a*st + pt.Y*b*ct,
+                    (a2 * ct2 + b2 * st2 - sqr c)*sp*cp - pt.X*a*sp*ct - pt.Y*b*st*sp + pt.Z*c*cp
+                ),
+                M22d(
+                    ab2*(ct2 - st2)*cp - pt.X*a*ct - pt.Y*b*st, 
+                    -ab2*ct*st*sp,
+                    -2.0*ab2*ct*st*sp*cp + pt.X*a*st*sp - pt.Y*b*sp*ct, 
+                    (a2*ct2 + b2*st2 - sqr c)*(sqr cp-sqr sp) - pt.X*a*cp*ct - pt.Y*b*cp*st - pt.Z*c*sp
+                )
+            )
+
+        let theta0       = atan2 (a * pt.Y) (b * pt.X)
+        let phi0         = atan2 pt.Z (c * sqrt (sqr (pt.X / a) + sqr (pt.Y / b)))
+        let mutable ti = V2d(theta0, phi0)
+        let mutable tl = V2d(123123.10, 123123123.0)
+
+        while not (Fun.ApproximateEquals(ti, tl, 1E-8)) do
+            let struct(v, dv) = ff ti
+
+            let dvi =
+                let f = 1.0 / dv.Determinant
+                M22d(
+                     dv.M11 * f,   -dv.M01 * f,
+                    -dv.M10 * f,    dv.M00 * f
+                )
+
+            tl <- ti
+            ti <- ti - dvi * v
+            
+        let sp = sin ti.Y
+        let cp = cos ti.Y
+        let st = sin ti.X
+        let ct = cos ti.X
+        let closest = 
+            V3d(
+                a*cp*ct,
+                b*cp*st,
+                c*sp
+            )
+
+        // fx(p, t) = a*cos(p)*cos(t)
+        // fy(p, t) = b*cos(p)*sin(t)
+        // fz(p, t) = c*sin(p)
+
+        // dfx / dp = -a*sin(p)*cos(t)
+        // dfy / dp = -b*sin(p)*sin(t)
+        // dfz / dp =  c*cos(p)
+        
+        // dfx / dt = -a*cos(p)*sin(t)
+        // dfy / dt =  b*cos(p)*cos(t)
+        // dfz / dt =  0
+        //let tp = V3d(-a*sp*ct, -b*sp*st, c*cp)
+        //let tt = V3d(-a*cp*st, b*cp*ct, 0.0)
+        //let n = Vec.cross tp tt |> Vec.normalize
+
+        //let nx = -b*cp*ct*c*cp
+        //let ny = c*cp*a*cp*st
+        //let nz = -a*sp*ct*b*cp*ct - a*cp*st*b*sp*st
+
+        let n = closest / sqr radii |> Vec.normalize //V3d(-a*b*sp, -b*c*ct*cp, a*c*st*cp).Normalized
+        //let nz = -a*b * sp
+        //let nx = -b*c * ct*cp
+        //let ny =  a*c * st*cp
+
+        struct (euclidean.TransformPos closest, euclidean.TransformDir n)
+
     member x.GetClosestPoint(pt : V3d) =
-        Vec.normalize (euclidean.InvTransformPos pt / radii) * radii |> euclidean.TransformPos
+        let struct (p, _) = x.GetClosestPointAndNormal pt
+        p
 
     member x.Distance(pt : V3d) =
-        let c = Vec.normalize (euclidean.InvTransformPos pt / radii) * radii |> euclidean.TransformPos
-        Vec.distance c pt
+        let struct (p, _) = x.GetClosestPointAndNormal pt
+        Vec.distance p pt
 
     member x.Height(pt : V3d) =
-        let n = Vec.normalize (euclidean.InvTransformPos pt / radii) * radii |> euclidean.TransformDir
-        let c = n + euclidean.Trans
-        Vec.dot (pt - c) (Vec.normalize n)
+        let struct (p, n) = x.GetClosestPointAndNormal pt
+        Vec.dot (pt - p) n
 
     member x.SphereTrafo =
         Trafo3d.Scale radii * Trafo3d euclidean
@@ -652,7 +867,7 @@ type EllipsoidRegression3d =
 
             let lhs = -A.UpperLeftM33()
             let rhs = V3d(u.C5, u.C6, u.C7)
-            let center = lhs.Inverse * rhs
+            let center = lhs.LuSolveNew rhs
 
             let transMat =
                 M44d.FromCols(V4d.IOOO, V4d.OIOO, V4d.OOIO, V4d(center, 1.0))
