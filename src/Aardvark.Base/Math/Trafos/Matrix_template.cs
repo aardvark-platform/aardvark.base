@@ -41,6 +41,7 @@ namespace Aardvark.Base
     //#     var vmtype = "V"+ m + tchar;
     //#     var vmsub1type = "V"+ msub1 + tchar;
     //#     var vntype = "V"+ n + tchar;
+    //#     var vnitype = "V"+ n + "i";
     //#     var vnsub1type = "V"+ nsub1 + tchar;
     //#     var scalent = "Scale" + n + tchar;
     //#     var scalemt = "Scale" + m + tchar;
@@ -1251,25 +1252,50 @@ namespace Aardvark.Base
         /// Inverts the given matrix using lu factorization in place. Returns true
         /// if the matrix was invertible, otherwise the matrix remains unchanged.
         /// </summary>
-        public bool LuInvert()
+        public/*# if(ftype == "double") { Out(" unsafe"); } */ bool LuInvert()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return false;
-            this = (__nmtype__)(lu.LuInverse(p).Data);
-            return true;
+            //# if (ftype == "double") {
+            fixed (__nmtype__* self = &this)
+            {
+                var lu = this;
+                __vnitype__ perm;
+                if (NumericExtensions.LuFactorize((__ftype__*)&lu, 0, 1, __n__, (int*)&perm, __n__))
+                {
+                    NumericExtensions.LuInverse((__ftype__*)&lu, 0, 1, __n__, (int*)&perm, (__ftype__*)self, 0, 1, __n__, __n__);
+                    return true;
+                }
+                return false;
+            }
+            //# } else {
+            M__n____n__d dbl = (M__n____n__d)this;
+            if(dbl.LuInvert()) 
+            { 
+                this = (__nmtype__)dbl;
+                return true;
+            }
+            return false;
+            //# }
         }
 
         /// <summary>
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, __nmtype__.Zero is returned.
         /// </summary>
-        public __nmtype__ LuInverse()
+        public/*# if(ftype == "double") { Out(" unsafe"); } */ __nmtype__ LuInverse()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return __nmtype__.Zero;
-            return (__nmtype__)(lu.LuInverse(p).Data);
+            //# if (ftype == "double") {
+            var lu = this;
+            __nmtype__ res;
+            __vnitype__ perm;
+            if (NumericExtensions.LuFactorize((__ftype__*)&lu, 0, 1, __n__, (int*)&perm, __n__))
+            {
+                NumericExtensions.LuInverse((__ftype__*)&lu, 0, 1, __n__, (int*)&perm, (__ftype__*)&res, 0, 1, __n__, __n__);
+                return res;
+            }
+            return __nmtype__.Zero;
+            //# } else { 
+            return (__nmtype__)((M__n____n__d)this).LuInverse();
+            //# }
         }
 
         /// <summary>
