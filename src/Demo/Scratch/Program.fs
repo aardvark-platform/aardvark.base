@@ -626,49 +626,12 @@ let inline printM44d (name : string) (fmt : string) (mat : M44d) =
 
 
 let ellipsoidTest() =
-
-    //let a = M44d.Rotation(V3d.III.Normalized, 1.12314)
-
-    //let inv = a.LuInvertNew()
-    
-    //printM44d "inv" "0.000000" (a * inv)
-
-    //let mutable ma = a
-    //let pa = ma.LuFactorizeNew()
-
-    //let mm = ma
-    //let aa = mm.LuSolveNew(pa, V4d(1,2,3,4))
-
-    //printM44d "new" "0.000000" ma
-    //Log.line "%A" aa
-
-    ////Log.line "%.4f %.4f %.4f %.4f" ma.M00 ma.M01 ma.M02 ma.M03
-    ////Log.line "%.4f %.4f %.4f %.4f" ma.M10 ma.M11 ma.M12 ma.M13
-    ////Log.line "%.4f %.4f %.4f %.4f" ma.M20 ma.M21 ma.M22 ma.M23
-    ////Log.line "%.4f %.4f %.4f %.4f" ma.M30 ma.M31 ma.M32 ma.M33
-
-    //let mb = Matrix<float>(a.ToArray(), 0L, V2l(4,4), V2l(1,4))
-    //let pb = mb.LuFactorize()
-    //let ab = mb.LuSolve(pb, Vector<float>([|1.0; 2.0; 3.0; 4.0|], 4))
-    //let ma = M44d(mb.Data)
-    //let ab = V4d(ab.Data)
-    
-    //printM44d "old" "0.000000" ma
-    //Log.line "%A" ab
-    ////Log.line "%.4f %.4f %.4f %.4f" ma.M00 ma.M01 ma.M02 ma.M03
-    ////Log.line "%.4f %.4f %.4f %.4f" ma.M10 ma.M11 ma.M12 ma.M13
-    ////Log.line "%.4f %.4f %.4f %.4f" ma.M20 ma.M21 ma.M22 ma.M23
-    ////Log.line "%.4f %.4f %.4f %.4f" ma.M30 ma.M31 ma.M32 ma.M33
-
-
-    //exit 0
-
     let trafo =
-        Trafo3d.Scale(3.0, 2.0, 1.0) *
-        Trafo3d.Rotation(V3d.III.Normalized, 1.21312)
+        Trafo3d.Scale(3.0, 2.0, 1.0) //*
+        //Trafo3d.Rotation(V3d.III.Normalized, 1.21312)
         
 
-    let err = 1E-4
+    let err = 0.0
     let rand = RandomSystem()
     let pts =
         Array.init 2000 (fun _ ->
@@ -716,6 +679,76 @@ let ellipsoidTest() =
 
     Log.start "ellipsoid"
     Log.line "r: %.5f %.5f %.5f" ellipsoid.Radii.X ellipsoid.Radii.Y ellipsoid.Radii.Z
+    Log.line "x: %s" ((ellipsoid.Euclidean.TransformDir V3d.IOO).ToString "0.00000")
+    Log.line "y: %s" ((ellipsoid.Euclidean.TransformDir V3d.OIO).ToString "0.00000")
+    Log.line "z: %s" ((ellipsoid.Euclidean.TransformDir V3d.OOI).ToString "0.00000")
+    Log.stop()
+
+    Log.start "errors"
+    Log.line "min: %.6e" minError
+    Log.line "max: %.6e" maxError
+    Log.line "avg: %.6e" (sum / float cnt)
+    Log.line "rms: %.6e" (sqrt (sumSq / float cnt))
+    Log.stop()
+
+    
+let sphereTest() =
+    let trafo =
+        Trafo3d.Scale(5.0) *
+        Trafo3d.Translation(1.0, 2.0, 3.0)
+        
+
+    let err = 0.1
+    let rand = RandomSystem()
+    let pts =
+        Array.init 1000 (fun _ ->
+            let dir = rand.UniformV3dDirection() |> trafo.Forward.TransformDir
+            let pos = trafo.Forward.C3.XYZ + dir
+
+            pos + Vec.normalize dir * ((rand.UniformDouble() - 0.5) * 2.0 * err)
+
+        )
+
+
+    //let pts = 
+    //    let rx = Regex @"(-?[0-9]+)[ \t]+(-?[0-9]+)[ \t]+(-?[0-9]+)"
+    //    File.readAllLines @"C:\Users\Schorsch\Development\ellipsoid_fit_python\mag_out.txt"
+    //    |> Array.choose (fun l ->
+    //        let m = rx.Match l
+    //        if m.Success then Some (V3d(float m.Groups.[1].Value, float m.Groups.[2].Value, float m.Groups.[3].Value))
+    //        else None
+    //    )
+
+    let bb = Box3d(pts)
+    let f = 3.0 / bb.Size.NormMax
+    let c = bb.Center
+    let sphere = 
+        let r = (SphereRegression3d.Empty, pts) ||> Array.fold (fun r p -> r.Add p)
+        r.GetSphere()
+
+    let mutable minError = System.Double.PositiveInfinity
+    let mutable maxError = 0.0
+    let mutable sum = 0.0
+    let mutable sumSq = 0.0
+    let mutable cnt = 0
+    for p in pts do
+        let n0 = Vec.normalize (p - sphere.Center)
+        let p0 = n0 * sphere.Radius + sphere.Center
+        let h = Vec.distance p p0
+        let dn = Vec.dot n0 (p - p0)
+        
+        minError <- min minError h
+        maxError <- max maxError h
+        sum <- sum + h
+        sumSq <- sumSq + sqr h
+        cnt <- cnt + 1
+        
+    let q = trafo.Forward.TransformPos (V3d(1,0,0))
+
+
+    Log.start "sphere"
+    Log.line "r: %.5f" sphere.Radius
+    Log.line "c: %s" (sphere.Center.ToString "0.00000")
     Log.stop()
 
     Log.start "errors"
@@ -727,9 +760,10 @@ let ellipsoidTest() =
 
 
 
+
 [<EntryPoint; STAThread>]
 let main argv = 
-    ellipsoidTest()
+    sphereTest()
     exit 0
 
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]

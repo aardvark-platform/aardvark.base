@@ -566,14 +566,6 @@ module private rec D9Math =
             else
                 V3d.Zero
 
-
-
-
-
-
-
-
-
 [<Struct>]
 type Ellipsoid3d (euclidean : Euclidean3d, radii : V3d) =
     member x.Euclidean = euclidean
@@ -581,9 +573,6 @@ type Ellipsoid3d (euclidean : Euclidean3d, radii : V3d) =
     member x.Center = euclidean.Trans
 
     member x.BoundingBox3d =
-
-        // l*n = p/r^2 
-
         // TODO: tighter BB possible?
         let m : M44d = Euclidean3d.op_Explicit euclidean
         Box3d(-radii, radii).Transformed m
@@ -626,8 +615,8 @@ type Ellipsoid3d (euclidean : Euclidean3d, radii : V3d) =
         let phi0         = atan2 pt.Z (c * sqrt (sqr (pt.X / a) + sqr (pt.Y / b)))
         let mutable ti = V2d(theta0, phi0)
         let mutable tl = V2d(123123.10, 123123123.0)
-
-        while not (Fun.ApproximateEquals(ti, tl, 1E-8)) do
+        let mutable iter = 0
+        while not (Fun.ApproximateEquals(ti, tl, 1E-6)) && iter < 20 do
             let struct(v, dv) = ff ti
 
             let dvi =
@@ -638,8 +627,9 @@ type Ellipsoid3d (euclidean : Euclidean3d, radii : V3d) =
                 )
 
             tl <- ti
-            ti <- ti - dvi * v
-            
+            ti <- ti - 0.8 * dvi * v
+            iter <- iter + 1
+    
         let sp = sin ti.Y
         let cp = cos ti.Y
         let st = sin ti.X
@@ -650,31 +640,7 @@ type Ellipsoid3d (euclidean : Euclidean3d, radii : V3d) =
                 b*cp*st,
                 c*sp
             )
-
-        // fx(p, t) = a*cos(p)*cos(t)
-        // fy(p, t) = b*cos(p)*sin(t)
-        // fz(p, t) = c*sin(p)
-
-        // dfx / dp = -a*sin(p)*cos(t)
-        // dfy / dp = -b*sin(p)*sin(t)
-        // dfz / dp =  c*cos(p)
-        
-        // dfx / dt = -a*cos(p)*sin(t)
-        // dfy / dt =  b*cos(p)*cos(t)
-        // dfz / dt =  0
-        //let tp = V3d(-a*sp*ct, -b*sp*st, c*cp)
-        //let tt = V3d(-a*cp*st, b*cp*ct, 0.0)
-        //let n = Vec.cross tp tt |> Vec.normalize
-
-        //let nx = -b*cp*ct*c*cp
-        //let ny = c*cp*a*cp*st
-        //let nz = -a*sp*ct*b*cp*ct - a*cp*st*b*sp*st
-
-        let n = closest / sqr radii |> Vec.normalize //V3d(-a*b*sp, -b*c*ct*cp, a*c*st*cp).Normalized
-        //let nz = -a*b * sp
-        //let nx = -b*c * ct*cp
-        //let ny =  a*c * st*cp
-
+        let n = closest / sqr radii |> Vec.normalize
         struct (euclidean.TransformPos closest, euclidean.TransformDir n)
 
     member x.GetClosestPoint(pt : V3d) =
@@ -709,7 +675,7 @@ type EllipsoidRegression3d =
         else
 
             let reference = pts.[0]
-            let mutable lhs = SymmetricM99d()
+            let mutable lhs = SymmetricM99d(M88 = 1.0)
             let mutable rhs = V9d()
             let mutable count = 1
             for i in 1 .. pts.Length - 1 do
@@ -744,7 +710,7 @@ type EllipsoidRegression3d =
 
     member x.Add(pt : V3d) =
         if x._count <= 0 then
-            EllipsoidRegression3d(pt, D9Math.SymmetricM99d(), D9Math.V9d(), 1)
+            EllipsoidRegression3d(pt, D9Math.SymmetricM99d(M88 = 1.0), D9Math.V9d(), 1)
         else
             let pt = pt - x._reference
             let px = pt.X
@@ -772,6 +738,7 @@ type EllipsoidRegression3d =
         if x._count <= 0 then
             x._reference <- pt
             x._lhs.SetZero()
+            x._lhs.M88 <- 1.0
             x._rhs.SetZero()
             x._count <- 1
         else
@@ -878,7 +845,10 @@ type EllipsoidRegression3d =
             | Some(u, s, _vt) ->
                 let evals = s.Diagonal
                 let r = sqrt (1.0 / evals.Abs())
-                //let r = r * (V3d (evals.Sign()))
+
+                // make rx >= ry >= rz
+                let r = r.ZYX
+                let u = M33d.FromCols(u.C2, -u.C1, u.C0)
 
                 let trafo = Euclidean3d.FromM33dAndV3d(u, x._reference + center)
                 let scale = r
@@ -904,6 +874,178 @@ module EllipsoidRegression3d =
 
     /// The total number of points added. Note that at least 9 points are required to fit an ellipsoid.
     let inline count (s : EllipsoidRegression3d) = s.Count
+    
+    /// Creates a regression from the given points.
+    let ofSeq (points : seq<V3d>) =
+        let mutable r = empty
+        for p in points do r.AddInPlace p
+        r
+        
+    /// Creates a regression from the given points.
+    let ofList (points : list<V3d>) =
+        let mutable r = empty
+        for p in points do r.AddInPlace p
+        r
+        
+    /// Creates a regression from the given points.
+    let ofArray (points : V3d[]) =
+        let mutable r = empty
+        for p in points do r.AddInPlace p
+        r
+
+
+[<Struct>]
+type SphereRegression3d =
+
+    val mutable private _reference : V3d
+    val mutable private _lhs : M44d
+    val mutable private _rhs : V4d
+    val mutable private _count : int
+    
+    private new(reference : V3d, lhs : M44d, rhs : V4d, count : int) =
+        { _reference = reference; _lhs = lhs; _rhs = rhs; _count = count}
+
+    new([<ParamArray>] pts : V3d[]) =
+        if pts.Length <= 0 then
+            { _reference = V3d.Zero; _lhs = M44d.Zero; _rhs = V4d.Zero; _count = 0 }
+        else
+            let reference = pts.[0]
+            let mutable lhs = M44d(M33 = 1.0)
+            let mutable rhs = V4d.Zero
+            let mutable count = 1
+            for i in 1 .. pts.Length - 1 do
+                let pt = pts.[i] - reference
+                let px = pt.X
+                let py = pt.Y
+                let pz = pt.Z
+                let v = V4d(px, py, pz, 1.0)
+                lhs <- lhs + v.Outer v
+                rhs <- rhs - v * (sqr px + sqr py + sqr pz)
+                count <- count + 1
+
+            { _reference = reference; _lhs = lhs; _rhs = rhs; _count = count }
+
+    new(pts : seq<V3d>) =
+        let e = pts.GetEnumerator()
+        if e.MoveNext() then
+            let reference = e.Current
+            let mutable lhs = M44d(M33 = 1.0)
+            let mutable rhs = V4d.Zero
+            let mutable count = 1
+            while e.MoveNext() do
+                let pt = e.Current - reference
+                let px = pt.X
+                let py = pt.Y
+                let pz = pt.Z
+                let v = V4d(px, py, pz, 1.0)
+                lhs <- lhs + v.Outer v
+                rhs <- rhs - v * (sqr px + sqr py + sqr pz)
+                count <- count + 1
+                
+            e.Dispose()
+            { _reference = reference; _lhs = lhs; _rhs = rhs; _count = count }
+        else
+            e.Dispose()
+            { _reference = V3d.Zero; _lhs = M44d.Zero; _rhs = V4d.Zero; _count = 0 }
+
+    new(pts : list<V3d>) = SphereRegression3d(pts :> seq<_>)
+
+    static member Empty = 
+        SphereRegression3d(V3d.Zero, M44d.Zero, V4d.Zero, 0)
+        
+    member x.Count = x._count
+
+    member x.Add(pt : V3d) =
+        if x._count <= 0 then
+            SphereRegression3d(pt, M44d(M33 = 1.0), V4d.Zero, 1)
+        else
+            let pt = pt - x._reference
+            let px = pt.X
+            let py = pt.Y
+            let pz = pt.Z
+
+            let mutable lhs = x._lhs
+            let mutable rhs = x._rhs
+            let v = V4d(px, py, pz, 1.0)
+            lhs <- lhs + v.Outer v
+            rhs <- rhs - v * (sqr px + sqr py + sqr pz)
+            SphereRegression3d(x._reference, lhs, rhs, x._count + 1)
+   
+    member x.AddInPlace(pt : V3d) =
+        if x._count <= 0 then   
+            x._reference <- pt
+            x._lhs <- M44d(M33 = 1.0)
+            x._rhs <- V4d.Zero
+            x._count <- 1
+        else
+            let pt = pt - x._reference
+            let px = pt.X
+            let py = pt.Y
+            let pz = pt.Z
+
+            let v = V4d(px, py, pz, 1.0)
+            x._lhs <- x._lhs + v.Outer v
+            x._rhs <- x._rhs - v * (sqr px + sqr py + sqr pz)
+            x._count <- x._count + 1
+   
+    member x.Remove(pt : V3d) =
+        if x._count <= 1 then
+            SphereRegression3d.Empty
+        else
+            let pt = pt - x._reference
+            let px = pt.X
+            let py = pt.Y
+            let pz = pt.Z
+
+            let mutable lhs = x._lhs
+            let mutable rhs = x._rhs
+            let v = V4d(px, py, pz, 1.0)
+            lhs <- lhs - v.Outer v
+            rhs <- rhs + v * (sqr px + sqr py + sqr pz)
+            SphereRegression3d(x._reference, lhs, rhs, x._count - 1)
+
+    member x.RemoveInPlace(pt : V3d) =
+        if x._count <= 1 then
+            x._reference <- V3d.Zero
+            x._lhs <- M44d.Zero
+            x._rhs <- V4d.Zero
+            x._count <- 0
+        else
+            let pt = pt - x._reference
+            let px = pt.X
+            let py = pt.Y
+            let pz = pt.Z
+
+            let v = V4d(px, py, pz, 1.0)
+            x._lhs <- x._lhs - v.Outer v
+            x._rhs <- x._rhs + v * (sqr px + sqr py + sqr pz)
+   
+    member x.GetSphere() =
+        if x._count < 4 then   
+            Sphere3d(V3d.Zero, 0.0)
+        else
+            let u = x._lhs.Inverse * x._rhs
+            let center = -u.XYZ / 2.0
+            let r = sqrt (center.LengthSquared - u.W)
+            Sphere3d(x._reference + center, r)
+
+module SphereRegression3d =
+
+    /// A regression holding no points.
+    let empty = SphereRegression3d.Empty
+
+    /// Removes the given point from the regression assuming that it has previously been added.
+    /// NOTE: when removing non-added points the regression will produce inconsistent results.
+    let inline remove (pt : V3d) (s : SphereRegression3d) = s.Remove pt
+
+    /// Adds the given point to the regression.
+    let inline add (pt : V3d) (s : SphereRegression3d) = s.Add pt
+
+    /// Gets the least-squares ellipsoid.
+    let inline getSphere (s : SphereRegression3d) = s.GetSphere()
+
+    /// The total number of points added. Note that at least 9 points are required to fit an ellipsoid.
+    let inline count (s : SphereRegression3d) = s.Count
     
     /// Creates a regression from the given points.
     let ofSeq (points : seq<V3d>) =
