@@ -578,18 +578,12 @@ namespace Aardvark.Base
         public static __type__ DarkYellow => new __type__(__t.MaxValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
         public static __type__ Gray => new __type__(__t.MaxValue__ / 2);
 
-        //# if (isFloat) {
-        //#     for (int i = 1; i < 10; i++) { double val = 0.1 * i; int percent = 10 * i;
-        public static __type__ Gray__percent__ => new __type__(__val__f);
-        //#     }
-        public static __type__ VRVisGreen => new __type__(0.698f, 0.851f, 0.008f);
+        //# for (int i = 1; i < 10; i++) {
+        //# var val = 0.1 * i; int percent = 10 * i;
+        public static __type__ Gray__percent__ => new __type__(__d_to_ft__(__val__));
         //# }
-        //# if (isByte) {
-        public static __type__ VRVisGreen => new __type__(178, 217, 2);
-        //# }
-        //# if (isUShort) {
-        public static __type__ VRVisGreen => new __type__(45743, 53411, 5243);
-        //# }
+
+        public static __type__ VRVisGreen => new __type__(__d_to_ft__(0.698), __d_to_ft__(0.851), __d_to_ft__(0.008));
 
         #endregion
 
