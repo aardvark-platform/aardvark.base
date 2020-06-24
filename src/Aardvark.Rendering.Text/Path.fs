@@ -196,10 +196,11 @@ module Path =
                 }
             }
 
-        type Frag =
-            {
-                [<Color>] color : V4d
-                [<Depth>] depth : float
+        let depthBiasVs(v : Vertex) =
+            vertex {
+                let bias = 255.0 * v.layer * uniform.DepthBias
+                let p = v.p - V4d(0.0, 0.0, bias, 0.0)
+                return { v with p = p }
             }
 
         let pathFragment(v : Vertex) =
@@ -237,10 +238,7 @@ module Path =
                     elif kind > 5.5  then
                         color <- V4d.OOII
 
-
-                let sp = 0.5 * v.p.Z / v.p.W + 0.5
-                let bias = 255.0 * v.layer * uniform.DepthBias
-                return { color = color; depth = sp - bias }
+                return color
                     
             }
         

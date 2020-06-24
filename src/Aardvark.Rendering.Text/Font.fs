@@ -523,12 +523,14 @@ type ShapeCache(r : IRuntime) =
         FShade.Effect.compose [
             Path.Shader.pathVertex      |> toEffect
             //Path.Shader.pathTrafo       |> toEffect
+            Path.Shader.depthBiasVs     |> toEffect
             Path.Shader.pathFragment    |> toEffect
         ]
         
     let instancedEffect =
         FShade.Effect.compose [
             Path.Shader.pathVertexInstanced |> toEffect
+            Path.Shader.depthBiasVs         |> toEffect
             Path.Shader.pathFragment        |> toEffect
         ]
 
@@ -548,12 +550,14 @@ type ShapeCache(r : IRuntime) =
     let billboardEffect =
         FShade.Effect.compose [
             Path.Shader.pathVertexBillboard |> toEffect
-            Path.Shader.pathFragment    |> toEffect
+            Path.Shader.depthBiasVs         |> toEffect
+            Path.Shader.pathFragment        |> toEffect
         ]
         
     let instancedBillboardEffect =
         FShade.Effect.compose [
             Path.Shader.pathVertexInstancedBillboard |> toEffect
+            Path.Shader.depthBiasVs         |> toEffect
             Path.Shader.pathFragment        |> toEffect
         ]
 
