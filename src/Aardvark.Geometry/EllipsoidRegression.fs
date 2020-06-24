@@ -1286,6 +1286,8 @@ type SphereRegression3d =
     static member (+) (l : SphereRegression3d, r : SphereRegression3d) =
         if l._count <= 0 then r
         elif r._count <= 0 then l
+        elif l._count = 1 then r.Add l._reference
+        elif r._count = 1 then l.Add r._reference
         else
             let r = r.WithReferencePoint(l._reference)
         
@@ -1300,6 +1302,7 @@ type SphereRegression3d =
     static member (-) (l : SphereRegression3d, r : SphereRegression3d) =
         if l._count <= r._count then SphereRegression3d.Empty
         elif r._count = 0 then l
+        elif r._count = 1 then l.Remove r._reference
         else
             let r = r.WithReferencePoint(l._reference)
         
