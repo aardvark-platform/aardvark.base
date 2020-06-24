@@ -5877,11 +5877,13 @@ namespace Aardvark.Base
         /// </summary>
         public bool LuInvert()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return false;
-            this = (M22f)(lu.LuInverse(p).Data);
-            return true;
+            M22d dbl = (M22d)this;
+            if(dbl.LuInvert()) 
+            { 
+                this = (M22f)dbl;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -5890,10 +5892,7 @@ namespace Aardvark.Base
         /// </summary>
         public M22f LuInverse()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return M22f.Zero;
-            return (M22f)(lu.LuInverse(p).Data);
+            return (M22f)((M22d)this).LuInverse();
         }
 
         /// <summary>
@@ -8049,25 +8048,36 @@ namespace Aardvark.Base
         /// Inverts the given matrix using lu factorization in place. Returns true
         /// if the matrix was invertible, otherwise the matrix remains unchanged.
         /// </summary>
-        public bool LuInvert()
+        public unsafe bool LuInvert()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return false;
-            this = (M22d)(lu.LuInverse(p).Data);
-            return true;
+            fixed (M22d* self = &this)
+            {
+                var lu = this;
+                V2i perm;
+                if (NumericExtensions.LuFactorize((double*)&lu, 0, 1, 2, (int*)&perm, 2))
+                {
+                    NumericExtensions.LuInverse((double*)&lu, 0, 1, 2, (int*)&perm, (double*)self, 0, 1, 2, 2);
+                    return true;
+                }
+                return false;
+            }
         }
 
         /// <summary>
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M22d.Zero is returned.
         /// </summary>
-        public M22d LuInverse()
+        public unsafe M22d LuInverse()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return M22d.Zero;
-            return (M22d)(lu.LuInverse(p).Data);
+            var lu = this;
+            M22d res;
+            V2i perm;
+            if (NumericExtensions.LuFactorize((double*)&lu, 0, 1, 2, (int*)&perm, 2))
+            {
+                NumericExtensions.LuInverse((double*)&lu, 0, 1, 2, (int*)&perm, (double*)&res, 0, 1, 2, 2);
+                return res;
+            }
+            return M22d.Zero;
         }
 
         /// <summary>
@@ -24516,11 +24526,13 @@ namespace Aardvark.Base
         /// </summary>
         public bool LuInvert()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return false;
-            this = (M33f)(lu.LuInverse(p).Data);
-            return true;
+            M33d dbl = (M33d)this;
+            if(dbl.LuInvert()) 
+            { 
+                this = (M33f)dbl;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -24529,10 +24541,7 @@ namespace Aardvark.Base
         /// </summary>
         public M33f LuInverse()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return M33f.Zero;
-            return (M33f)(lu.LuInverse(p).Data);
+            return (M33f)((M33d)this).LuInverse();
         }
 
         /// <summary>
@@ -27431,25 +27440,36 @@ namespace Aardvark.Base
         /// Inverts the given matrix using lu factorization in place. Returns true
         /// if the matrix was invertible, otherwise the matrix remains unchanged.
         /// </summary>
-        public bool LuInvert()
+        public unsafe bool LuInvert()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return false;
-            this = (M33d)(lu.LuInverse(p).Data);
-            return true;
+            fixed (M33d* self = &this)
+            {
+                var lu = this;
+                V3i perm;
+                if (NumericExtensions.LuFactorize((double*)&lu, 0, 1, 3, (int*)&perm, 3))
+                {
+                    NumericExtensions.LuInverse((double*)&lu, 0, 1, 3, (int*)&perm, (double*)self, 0, 1, 3, 3);
+                    return true;
+                }
+                return false;
+            }
         }
 
         /// <summary>
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M33d.Zero is returned.
         /// </summary>
-        public M33d LuInverse()
+        public unsafe M33d LuInverse()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return M33d.Zero;
-            return (M33d)(lu.LuInverse(p).Data);
+            var lu = this;
+            M33d res;
+            V3i perm;
+            if (NumericExtensions.LuFactorize((double*)&lu, 0, 1, 3, (int*)&perm, 3))
+            {
+                NumericExtensions.LuInverse((double*)&lu, 0, 1, 3, (int*)&perm, (double*)&res, 0, 1, 3, 3);
+                return res;
+            }
+            return M33d.Zero;
         }
 
         /// <summary>
@@ -47435,11 +47455,13 @@ namespace Aardvark.Base
         /// </summary>
         public bool LuInvert()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return false;
-            this = (M44f)(lu.LuInverse(p).Data);
-            return true;
+            M44d dbl = (M44d)this;
+            if(dbl.LuInvert()) 
+            { 
+                this = (M44f)dbl;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -47448,10 +47470,7 @@ namespace Aardvark.Base
         /// </summary>
         public M44f LuInverse()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return M44f.Zero;
-            return (M44f)(lu.LuInverse(p).Data);
+            return (M44f)((M44d)this).LuInverse();
         }
 
         /// <summary>
@@ -50772,25 +50791,36 @@ namespace Aardvark.Base
         /// Inverts the given matrix using lu factorization in place. Returns true
         /// if the matrix was invertible, otherwise the matrix remains unchanged.
         /// </summary>
-        public bool LuInvert()
+        public unsafe bool LuInvert()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return false;
-            this = (M44d)(lu.LuInverse(p).Data);
-            return true;
+            fixed (M44d* self = &this)
+            {
+                var lu = this;
+                V4i perm;
+                if (NumericExtensions.LuFactorize((double*)&lu, 0, 1, 4, (int*)&perm, 4))
+                {
+                    NumericExtensions.LuInverse((double*)&lu, 0, 1, 4, (int*)&perm, (double*)self, 0, 1, 4, 4);
+                    return true;
+                }
+                return false;
+            }
         }
 
         /// <summary>
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M44d.Zero is returned.
         /// </summary>
-        public M44d LuInverse()
+        public unsafe M44d LuInverse()
         {
-            var lu = new Matrix<double>((double[])this, 0, s_luSize, s_luDelta);
-            var p = lu.LuFactorize();
-            if (p == null) return M44d.Zero;
-            return (M44d)(lu.LuInverse(p).Data);
+            var lu = this;
+            M44d res;
+            V4i perm;
+            if (NumericExtensions.LuFactorize((double*)&lu, 0, 1, 4, (int*)&perm, 4))
+            {
+                NumericExtensions.LuInverse((double*)&lu, 0, 1, 4, (int*)&perm, (double*)&res, 0, 1, 4, 4);
+                return res;
+            }
+            return M44d.Zero;
         }
 
         /// <summary>

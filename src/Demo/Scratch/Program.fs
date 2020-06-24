@@ -357,17 +357,278 @@ let testUnion (n : int) (m : int) =
 
 
 
+open System
 open Aardvark.Geometry
 open System.Runtime.Serialization.Formatters.Binary
 open MBrace.FsPickler
 open MBrace.FsPickler.Json
+open System.Runtime.CompilerServices
+
+type NativeMatrix =
+    static member inline Pin(matrix : inref<M44d>, action : NativeMatrix<float> -> 'r) =
+        action (NativeMatrix<float>(NativePtr.cast &&matrix, MatrixInfo(0L, V2l(4,4), V2l(1,4))))
+        
+    static member inline Pin(matrix : inref<M33d>, action : NativeMatrix<float> -> 'r) =
+        action (NativeMatrix<float>(NativePtr.cast &&matrix, MatrixInfo(0L, V2l(3,3), V2l(1,3))))
+
+    static member inline Pin(matrix : inref<M22d>, action : NativeMatrix<float> -> 'r) =
+        action (NativeMatrix<float>(NativePtr.cast &&matrix, MatrixInfo(0L, V2l(2,2), V2l(1,2))))
+
+    static member inline Pin(matrix : inref<M34d>, action : NativeMatrix<float> -> 'r) =
+        action (NativeMatrix<float>(NativePtr.cast &&matrix, MatrixInfo(0L, V2l(4,3), V2l(1,4))))
+
+    static member inline Pin(matrix : inref<M23d>, action : NativeMatrix<float> -> 'r) =
+        action (NativeMatrix<float>(NativePtr.cast &&matrix, MatrixInfo(0L, V2l(3,2), V2l(1,3))))
+
+type NativeVector =
+    static member inline Pin(vector : inref<V4d>, action : NativeVector<float> -> 'r) =
+        action (NativeVector<float>(NativePtr.cast &&vector, VectorInfo(0L, 4L, 1L)))
+
+    static member inline Pin(vector : inref<V3d>, action : NativeVector<float> -> 'r) =
+        action (NativeVector<float>(NativePtr.cast &&vector, VectorInfo(0L, 3L, 1L)))
+
+    static member inline Pin(vector : inref<V2d>, action : NativeVector<float> -> 'r) =
+        action (NativeVector<float>(NativePtr.cast &&vector, VectorInfo(0L, 2L, 1L)))
+    
+    static member inline Pin(vector : inref<V4f>, action : NativeVector<float32> -> 'r) =
+        action (NativeVector<float32>(NativePtr.cast &&vector, VectorInfo(0L, 4L, 1L)))
+
+    static member inline Pin(vector : inref<V3f>, action : NativeVector<float32> -> 'r) =
+        action (NativeVector<float32>(NativePtr.cast &&vector, VectorInfo(0L, 3L, 1L)))
+
+    static member inline Pin(vector : inref<V2f>, action : NativeVector<float32> -> 'r) =
+        action (NativeVector<float32>(NativePtr.cast &&vector, VectorInfo(0L, 2L, 1L)))
+    
+    static member inline Pin(vector : inref<V4i>, action : NativeVector<int> -> 'r) =
+        action (NativeVector<int>(NativePtr.cast &&vector, VectorInfo(0L, 4L, 1L)))
+
+    static member inline Pin(vector : inref<V3i>, action : NativeVector<int> -> 'r) =
+        action (NativeVector<int>(NativePtr.cast &&vector, VectorInfo(0L, 3L, 1L)))
+
+    static member inline Pin(vector : inref<V2i>, action : NativeVector<int> -> 'r) =
+        action (NativeVector<int>(NativePtr.cast &&vector, VectorInfo(0L, 2L, 1L)))
+
+let inline printMat (name : string) (fmt : string) (m : NativeMatrix< ^a >) =
+    let res = 
+        Array.init (int m.SX) (fun c -> Array.init (int m.SY) (fun r -> 
+            let str = (float m.[c,r]).ToString fmt
+            if str.StartsWith "-" then str
+            else " " + str
+        ))
+    let lens = res |> Array.map (fun col -> col |> Seq.map String.length |> Seq.max)
+    let pad (len : int) (s : string) =
+        if s.Length < len then s + (System.String(' ',len-s.Length))
+        else s
+
+    let padded =
+        res |> Array.mapi (fun i col -> 
+            col |> Array.map (pad lens.[i])
+        )
+         
+    let section = not (String.IsNullOrWhiteSpace name)
+    if section then Report.Begin("{0}", name)
+    for r in 0..int m.SY-1 do
+        let mutable line = ""
+        for c in 0..int m.SX-1 do
+            if c > 0 then line <- line + " "
+            line <- line + padded.[c].[r]
+        Report.Line("{0}", line.TrimEnd())
+    if section then Report.End() |> ignore
+    
+[<AbstractClass; Sealed; Extension>]
+type NativeMatrixExtensions private() =
+    [<Extension>]
+    static member LuFactorize(mat : NativeMatrix<float>, perm : NativeVector<int>) =
+        if mat.SX <> mat.SY then raise <| IndexOutOfRangeException()
+
+        perm.SetByCoord id
+
+        let n1 = int mat.SX - 1
+
+        let inline get (r : int) (c : int) =
+            mat.[c,r]
+
+        let inline set (r : int) (c : int) (v : float) =
+            mat.[c,r] <- v
+                
+        let inline swapRows (ri : int) (rj : int) =
+            if ri <> rj then
+                for c in 0 .. n1 do
+                    let t = get ri c
+                    set ri c (get rj c)
+                    set rj c t
+
+                let t = perm.[ri]
+                perm.[ri] <- perm.[rj]
+                perm.[rj] <- t
+
+        let mutable i = 0
+        while i < n1 do
+            // pivoting
+            let vii = 
+                let mutable j = i
+                let mutable vmax = get i i
+                let mutable vmaxAbs = abs vmax
+                for ii in i+1 .. n1 do
+                    let vii = get ii i
+                    let viiAbs = abs vii
+                    if viiAbs > vmaxAbs then
+                        j <- ii
+                        vmax <- vii
+                        vmaxAbs <- viiAbs
+
+                swapRows i j
+                vmax
+
+            // elimination
+            if Fun.IsTiny vii then
+                // singular matrix
+                i <- Int32.MaxValue
+            else
+                for j in i + 1 .. n1 do
+                    let vji = get j i
+                    let f = vji / vii
+
+                    set j i f
+                    for c in i + 1 .. n1 do
+                        set j c (get j c - get i c * f) 
+                i <- i + 1
+
+        if i > n1 then   
+            false
+        else
+            true
+
+    [<Extension>]
+    static member LuSolve(mat : NativeMatrix<float>, perm : NativeVector<int>, rhs : NativeVector<float>, res : NativeVector<float>) =
+        if mat.SX <> mat.SY || mat.SX <> perm.Size || mat.SX <> rhs.Size || mat.SX <> res.Size then raise <| IndexOutOfRangeException()
+        
+        let n1 = int mat.SX - 1
+        res.SetByCoord(fun (i : int) -> rhs.[perm.[i]])
+
+        for i in 0 .. n1 do
+            let pi = perm.[i]
+            for j in i + 1 .. n1 do
+                let f = mat.[i, j]
+                let pj = perm.[j]
+                rhs.[pj] <- rhs.[pj] - f * rhs.[pi]
+
+
+        // back substitution
+        for ri in 0 .. n1 do
+            let ri = n1 - ri
+
+            let mutable s = rhs.[perm.[ri]]
+            for c in ri + 1 .. n1 do
+                s <- s - mat.[c, ri] * res.[c]
+
+            res.[ri] <- s / mat.[ri, ri]
+
+        ()
+        
+    [<Extension>]
+    static member LuSolve(mat : NativeMatrix<float>, rhs : NativeVector<float>, res : NativeVector<float>) =
+        if mat.SX <> mat.SY || mat.SX <> rhs.Size || mat.SX <> res.Size then raise <| IndexOutOfRangeException()
+        
+        let n1 = int mat.SX - 1
+        res.SetByCoord(fun (i : int) -> rhs.[i])
+
+        for i in 0 .. n1 do
+            let pi = i
+            for j in i + 1 .. n1 do
+                let f = mat.[i, j]
+                let pj = j
+                rhs.[pj] <- rhs.[pj] - f * rhs.[pi]
+
+
+        // back substitution
+        for ri in 0 .. n1 do
+            let ri = n1 - ri
+
+            let mutable s = rhs.[ri]
+            for c in ri + 1 .. n1 do
+                s <- s - mat.[c, ri] * res.[c]
+
+            res.[ri] <- s / mat.[ri, ri]
+
+        ()
+        
+    [<Extension>]
+    static member LuInvert(mat : NativeMatrix<float>, inv : NativeMatrix<float>) =
+        if mat.SX <> mat.SY || mat.SX <> inv.SX || inv.SX <> inv.SY then raise <| IndexOutOfRangeException()
+        
+        let n = int mat.SY
+        let perm = NativePtr.stackalloc n
+        let pv = NativeVector<int>(perm, VectorInfo(n))
+        if mat.LuFactorize(pv) then
+            inv.SetByCoord(fun (c : V2i) ->
+                if c.X = NativePtr.get perm c.Y then 1.0
+                else 0.0
+            )
+
+            for c in 0 .. n - 1 do
+                mat.LuSolve(inv.[c, *], inv.[c, *])
+
+            true
+
+        else
+            false
+
+        
+    [<Extension; MethodImpl(MethodImplOptions.NoInlining)>]
+    static member LuFactorizeNew(m : byref<M44d>) =
+        NativeMatrix.Pin(&m, fun (tm : NativeMatrix<float>) ->
+            let pp = NativePtr.stackalloc<V4i> 1
+            let tp = NativeVector<int>(NativePtr.cast pp, VectorInfo(4))
+
+            if tm.LuFactorize(tp) then
+                NativePtr.read pp
+            else
+                V4i.Zero
+        )
+              
+    [<Extension; MethodImpl(MethodImplOptions.NoInlining)>]
+    static member LuSolveNew(m : inref<M44d>, perm : V4i, rhs : V4d) =
+        let mutable rhs = rhs
+        let mutable perm = perm
+
+        NativeMatrix.Pin(&m, fun (tm : NativeMatrix<float>) ->
+            NativeVector.Pin(&perm, fun (tp : NativeVector<int>) ->
+                NativeVector.Pin(&rhs, fun (tb : NativeVector<float>) ->
+                    let pr = NativePtr.stackalloc<V4d> 1
+                    let tr = NativeVector<float>(NativePtr.cast pr, VectorInfo(4))
+                    tm.LuSolve(tp, tb, tr)
+                    NativePtr.read pr
+                )
+            )
+        )
+        
+    [<Extension; MethodImpl(MethodImplOptions.NoInlining)>]
+    static member LuInvertNew(m : M44d) =
+        let pm = NativePtr.stackalloc<M44d> 1
+        NativePtr.write pm m
+        let tm = NativeMatrix<float>(NativePtr.cast pm, MatrixInfo(0L, V2l(4,4), V2l(1,4)))
+
+        let pi = NativePtr.stackalloc<M44d> 1
+        let ti = NativeMatrix<float>(NativePtr.cast pi, MatrixInfo(0L, V2l(4,4), V2l(1,4)))
+
+        if tm.LuInvert(ti) then
+            NativePtr.read pi
+        else
+            M44d.Zero
+              
+
+
+
+let inline printM44d (name : string) (fmt : string) (mat : M44d) =
+    let mb = Matrix<float>(mat.ToArray(), V2l(4,4))
+    NativeMatrix.using mb (printMat name fmt)
 
 
 let ellipsoidTest() =
-
     let trafo =
-        Trafo3d.Scale(3.0, 2.0, 1.0) *
-        Trafo3d.Rotation(V3d.III.Normalized, 1.21312)
+        Trafo3d.Scale(3.0, 2.0, 1.0) //*
+        //Trafo3d.Rotation(V3d.III.Normalized, 1.21312)
         
 
     let err = 0.0
@@ -398,15 +659,96 @@ let ellipsoidTest() =
     let mutable sumSq = 0.0
     let mutable cnt = 0
     for p in pts do
-        let h = ellipsoid.Height(p) |> abs
+        let struct(p0, n0) = ellipsoid.GetClosestPointAndNormal(p)
+        let h = Vec.distance p p0
+        let dn = Vec.dot n0 (p - p0)
+        
         minError <- min minError h
         maxError <- max maxError h
         sum <- sum + h
         sumSq <- sumSq + sqr h
         cnt <- cnt + 1
         
+    let q = trafo.Forward.TransformPos (V3d(1,0,0))
+
+    let pt = q
+    let ps = ellipsoid.Euclidean.TransformPos ((ellipsoid.Euclidean.InvTransformPos(q) / ellipsoid.Radii).Normalized * ellipsoid.Radii)
+    let p0 = ellipsoid.GetClosestPoint(pt)
+
+
+
     Log.start "ellipsoid"
     Log.line "r: %.5f %.5f %.5f" ellipsoid.Radii.X ellipsoid.Radii.Y ellipsoid.Radii.Z
+    Log.line "x: %s" ((ellipsoid.Euclidean.TransformDir V3d.IOO).ToString "0.00000")
+    Log.line "y: %s" ((ellipsoid.Euclidean.TransformDir V3d.OIO).ToString "0.00000")
+    Log.line "z: %s" ((ellipsoid.Euclidean.TransformDir V3d.OOI).ToString "0.00000")
+    Log.stop()
+
+    Log.start "errors"
+    Log.line "min: %.6e" minError
+    Log.line "max: %.6e" maxError
+    Log.line "avg: %.6e" (sum / float cnt)
+    Log.line "rms: %.6e" (sqrt (sumSq / float cnt))
+    Log.stop()
+
+    
+let sphereTest() =
+    let trafo =
+        Trafo3d.Scale(5.0) *
+        Trafo3d.Translation(1.0, 2.0, 3.0)
+        
+
+    let err = 0.1
+    let rand = RandomSystem()
+    let pts =
+        Array.init 1000 (fun _ ->
+            let dir = rand.UniformV3dDirection() |> trafo.Forward.TransformDir
+            let pos = trafo.Forward.C3.XYZ + dir
+
+            pos + Vec.normalize dir * ((rand.UniformDouble() - 0.5) * 2.0 * err)
+
+        )
+
+
+    //let pts = 
+    //    let rx = Regex @"(-?[0-9]+)[ \t]+(-?[0-9]+)[ \t]+(-?[0-9]+)"
+    //    File.readAllLines @"C:\Users\Schorsch\Development\ellipsoid_fit_python\mag_out.txt"
+    //    |> Array.choose (fun l ->
+    //        let m = rx.Match l
+    //        if m.Success then Some (V3d(float m.Groups.[1].Value, float m.Groups.[2].Value, float m.Groups.[3].Value))
+    //        else None
+    //    )
+
+    let bb = Box3d(pts)
+    let f = 3.0 / bb.Size.NormMax
+    let c = bb.Center
+    let sphere = 
+        let r = (SphereRegression3d.Empty, pts) ||> Array.fold (fun r p -> r.Add p)
+        r.GetSphere()
+
+    let mutable minError = System.Double.PositiveInfinity
+    let mutable maxError = 0.0
+    let mutable sum = 0.0
+    let mutable sumSq = 0.0
+    let mutable cnt = 0
+    for p in pts do
+        let n0 = Vec.normalize (p - sphere.Center)
+        let p0 = n0 * sphere.Radius + sphere.Center
+        let h = Vec.distance p p0
+        let dn = Vec.dot n0 (p - p0)
+        
+        minError <- min minError h
+        maxError <- max maxError h
+        sum <- sum + h
+        sumSq <- sumSq + sqr h
+        cnt <- cnt + 1
+        
+    let q = trafo.Forward.TransformPos (V3d(1,0,0))
+
+
+    Log.start "sphere"
+    Log.line "r: %.5f" sphere.Radius
+    Log.line "c: %s" (sphere.Center.ToString "0.00000")
     Log.stop()
 
     Log.start "errors"
@@ -418,9 +760,10 @@ let ellipsoidTest() =
 
 
 
+
 [<EntryPoint; STAThread>]
 let main argv = 
-    ellipsoidTest()
+    sphereTest()
     exit 0
 
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]

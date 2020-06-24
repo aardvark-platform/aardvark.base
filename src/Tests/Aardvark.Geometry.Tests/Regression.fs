@@ -107,6 +107,14 @@ module Regression3dTests =
                 return V2d(x,y)
             } |> Arb.fromGen
             
+        static member V3d =
+            gen {
+                let! x = Gen.gauss 0.0 500.0
+                let! y = Gen.gauss 0.0 100.0
+                let! z = Gen.gauss 0.0 300.0
+                return V3d(x,y,z)
+            } |> Arb.fromGen
+            
         static member Euclidean2d =
             gen {
                 let! x = Gen.gauss 0.0 300.0
@@ -158,8 +166,14 @@ module Regression3dTests =
         checkPlane2d r points
         checkTrafo2d r points
 
+        
+    let checkSphere (points : V3d[]) (r : SphereRegression3d) =
+        let s = r.GetSphere()
+        let error = points |> Array.map (fun p -> abs (Vec.distance p s.Center - s.Radius)) |> Array.max
+        error |> should be (lessThanOrEqualTo 1E-6)
+
     [<Property(Arbitrary = [| typeof<EuclideanGenerator> |])>]
-    let ``Regression3d plane working`` (trafo : Euclidean3d) (points : AtLeast<8 N, V2d>) =
+    let ``LinearRegression3d working`` (trafo : Euclidean3d) (points : AtLeast<8 N, V2d>) =
         let pts = 
             points.Value
             |> Array.map (fun p -> trafo.TransformPos(V3d(p, 0.0)))
@@ -183,7 +197,7 @@ module Regression3dTests =
         
 
     [<Property(Arbitrary = [| typeof<EuclideanGenerator> |])>]
-    let ``Regression2d plane working`` (trafo : Euclidean2d) (points : AtLeast<8 N, GaussFloat>) =
+    let ``LinearRegression2d working`` (trafo : Euclidean2d) (points : AtLeast<8 N, GaussFloat>) =
         let pts = points.Value |> Array.map (fun (GaussFloat v) -> trafo.TransformPos(V2d(v * 10.0, 0.0)))
         
         // add working
@@ -202,3 +216,32 @@ module Regression3dTests =
 
         // remove working
         pts |> Array.fold (+) (LinearRegression2d V2d.Zero) |> LinearRegression2d.remove V2d.Zero |> check2d pts
+
+    [<Property(Arbitrary = [| typeof<EuclideanGenerator> |])>]
+    let ``SphereRegression3d working`` (center : V3d) (GaussFloat radius) (bad : V3d) (points : AtLeast<100 N, V2d>) =
+        let pts = 
+            points.Value
+            |> Array.map (fun p -> center + p.CartesianFromSpherical() * radius)
+
+        let bb = Box3d pts
+        let r = (bad / bb.Size)
+        let somePoint = bb.Center + bb.Size * r / r.NormMax
+
+        // add working
+        pts |> Array.fold (+) SphereRegression3d.empty |> checkSphere pts
+
+        // ofArray/ofSeq working
+        pts |> SphereRegression3d.ofArray |> checkSphere pts
+        pts |> SphereRegression3d.ofSeq |> checkSphere pts
+
+        // constructor working
+        pts |> SphereRegression3d |> checkSphere pts
+
+        // regression addition working
+        let n2 = pts.Length / 2
+        SphereRegression3d.ofArray pts.[..n2-1] + SphereRegression3d.ofArray pts.[n2..] |> checkSphere pts
+
+        // remove working
+        pts |> Array.fold (+) (SphereRegression3d somePoint) |> SphereRegression3d.remove somePoint |> checkSphere pts
+        
+
