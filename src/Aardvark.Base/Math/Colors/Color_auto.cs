@@ -465,7 +465,17 @@ namespace Aardvark.Base
         public static C3b DarkYellow => new C3b(255 / 2, 255 / 2, 0 / 2);
         public static C3b Gray => new C3b(255 / 2);
 
-        public static C3b VRVisGreen => new C3b(178, 217, 2);
+        public static C3b Gray10 => new C3b(Col.ByteFromDoubleClamped(0.1));
+        public static C3b Gray20 => new C3b(Col.ByteFromDoubleClamped(0.2));
+        public static C3b Gray30 => new C3b(Col.ByteFromDoubleClamped(0.3));
+        public static C3b Gray40 => new C3b(Col.ByteFromDoubleClamped(0.4));
+        public static C3b Gray50 => new C3b(Col.ByteFromDoubleClamped(0.5));
+        public static C3b Gray60 => new C3b(Col.ByteFromDoubleClamped(0.6));
+        public static C3b Gray70 => new C3b(Col.ByteFromDoubleClamped(0.7));
+        public static C3b Gray80 => new C3b(Col.ByteFromDoubleClamped(0.8));
+        public static C3b Gray90 => new C3b(Col.ByteFromDoubleClamped(0.9));
+
+        public static C3b VRVisGreen => new C3b(Col.ByteFromDoubleClamped(0.698), Col.ByteFromDoubleClamped(0.851), Col.ByteFromDoubleClamped(0.008));
 
         #endregion
 
@@ -1844,7 +1854,17 @@ namespace Aardvark.Base
         public static C3us DarkYellow => new C3us(65535 / 2, 65535 / 2, 0 / 2);
         public static C3us Gray => new C3us(65535 / 2);
 
-        public static C3us VRVisGreen => new C3us(45743, 53411, 5243);
+        public static C3us Gray10 => new C3us(Col.UShortFromDoubleClamped(0.1));
+        public static C3us Gray20 => new C3us(Col.UShortFromDoubleClamped(0.2));
+        public static C3us Gray30 => new C3us(Col.UShortFromDoubleClamped(0.3));
+        public static C3us Gray40 => new C3us(Col.UShortFromDoubleClamped(0.4));
+        public static C3us Gray50 => new C3us(Col.UShortFromDoubleClamped(0.5));
+        public static C3us Gray60 => new C3us(Col.UShortFromDoubleClamped(0.6));
+        public static C3us Gray70 => new C3us(Col.UShortFromDoubleClamped(0.7));
+        public static C3us Gray80 => new C3us(Col.UShortFromDoubleClamped(0.8));
+        public static C3us Gray90 => new C3us(Col.UShortFromDoubleClamped(0.9));
+
+        public static C3us VRVisGreen => new C3us(Col.UShortFromDoubleClamped(0.698), Col.UShortFromDoubleClamped(0.851), Col.UShortFromDoubleClamped(0.008));
 
         #endregion
 
@@ -3182,6 +3202,17 @@ namespace Aardvark.Base
         public static C3ui DarkYellow => new C3ui(UInt32.MaxValue / 2, UInt32.MaxValue / 2, 0 / 2);
         public static C3ui Gray => new C3ui(UInt32.MaxValue / 2);
 
+        public static C3ui Gray10 => new C3ui(Col.UIntFromDoubleClamped(0.1));
+        public static C3ui Gray20 => new C3ui(Col.UIntFromDoubleClamped(0.2));
+        public static C3ui Gray30 => new C3ui(Col.UIntFromDoubleClamped(0.3));
+        public static C3ui Gray40 => new C3ui(Col.UIntFromDoubleClamped(0.4));
+        public static C3ui Gray50 => new C3ui(Col.UIntFromDoubleClamped(0.5));
+        public static C3ui Gray60 => new C3ui(Col.UIntFromDoubleClamped(0.6));
+        public static C3ui Gray70 => new C3ui(Col.UIntFromDoubleClamped(0.7));
+        public static C3ui Gray80 => new C3ui(Col.UIntFromDoubleClamped(0.8));
+        public static C3ui Gray90 => new C3ui(Col.UIntFromDoubleClamped(0.9));
+
+        public static C3ui VRVisGreen => new C3ui(Col.UIntFromDoubleClamped(0.698), Col.UIntFromDoubleClamped(0.851), Col.UIntFromDoubleClamped(0.008));
 
         #endregion
 
@@ -4538,16 +4569,17 @@ namespace Aardvark.Base
         public static C3f DarkYellow => new C3f(1.0f / 2, 1.0f / 2, 0.0f / 2);
         public static C3f Gray => new C3f(1.0f / 2);
 
-        public static C3f Gray10 => new C3f(0.1f);
-        public static C3f Gray20 => new C3f(0.2f);
-        public static C3f Gray30 => new C3f(0.3f);
-        public static C3f Gray40 => new C3f(0.4f);
-        public static C3f Gray50 => new C3f(0.5f);
-        public static C3f Gray60 => new C3f(0.6f);
-        public static C3f Gray70 => new C3f(0.7f);
-        public static C3f Gray80 => new C3f(0.8f);
-        public static C3f Gray90 => new C3f(0.9f);
-        public static C3f VRVisGreen => new C3f(0.698f, 0.851f, 0.008f);
+        public static C3f Gray10 => new C3f((float)(0.1));
+        public static C3f Gray20 => new C3f((float)(0.2));
+        public static C3f Gray30 => new C3f((float)(0.3));
+        public static C3f Gray40 => new C3f((float)(0.4));
+        public static C3f Gray50 => new C3f((float)(0.5));
+        public static C3f Gray60 => new C3f((float)(0.6));
+        public static C3f Gray70 => new C3f((float)(0.7));
+        public static C3f Gray80 => new C3f((float)(0.8));
+        public static C3f Gray90 => new C3f((float)(0.9));
+
+        public static C3f VRVisGreen => new C3f((float)(0.698), (float)(0.851), (float)(0.008));
 
         #endregion
 
@@ -5945,6 +5977,17 @@ namespace Aardvark.Base
         public static C3d DarkYellow => new C3d(1.0 / 2, 1.0 / 2, 0 / 2);
         public static C3d Gray => new C3d(1.0 / 2);
 
+        public static C3d Gray10 => new C3d((0.1));
+        public static C3d Gray20 => new C3d((0.2));
+        public static C3d Gray30 => new C3d((0.3));
+        public static C3d Gray40 => new C3d((0.4));
+        public static C3d Gray50 => new C3d((0.5));
+        public static C3d Gray60 => new C3d((0.6));
+        public static C3d Gray70 => new C3d((0.7));
+        public static C3d Gray80 => new C3d((0.8));
+        public static C3d Gray90 => new C3d((0.9));
+
+        public static C3d VRVisGreen => new C3d((0.698), (0.851), (0.008));
 
         #endregion
 
@@ -7472,7 +7515,17 @@ namespace Aardvark.Base
         public static C4b DarkYellow => new C4b(255 / 2, 255 / 2, 0 / 2);
         public static C4b Gray => new C4b(255 / 2);
 
-        public static C4b VRVisGreen => new C4b(178, 217, 2);
+        public static C4b Gray10 => new C4b(Col.ByteFromDoubleClamped(0.1));
+        public static C4b Gray20 => new C4b(Col.ByteFromDoubleClamped(0.2));
+        public static C4b Gray30 => new C4b(Col.ByteFromDoubleClamped(0.3));
+        public static C4b Gray40 => new C4b(Col.ByteFromDoubleClamped(0.4));
+        public static C4b Gray50 => new C4b(Col.ByteFromDoubleClamped(0.5));
+        public static C4b Gray60 => new C4b(Col.ByteFromDoubleClamped(0.6));
+        public static C4b Gray70 => new C4b(Col.ByteFromDoubleClamped(0.7));
+        public static C4b Gray80 => new C4b(Col.ByteFromDoubleClamped(0.8));
+        public static C4b Gray90 => new C4b(Col.ByteFromDoubleClamped(0.9));
+
+        public static C4b VRVisGreen => new C4b(Col.ByteFromDoubleClamped(0.698), Col.ByteFromDoubleClamped(0.851), Col.ByteFromDoubleClamped(0.008));
 
         #endregion
 
@@ -8980,7 +9033,17 @@ namespace Aardvark.Base
         public static C4us DarkYellow => new C4us(65535 / 2, 65535 / 2, 0 / 2);
         public static C4us Gray => new C4us(65535 / 2);
 
-        public static C4us VRVisGreen => new C4us(45743, 53411, 5243);
+        public static C4us Gray10 => new C4us(Col.UShortFromDoubleClamped(0.1));
+        public static C4us Gray20 => new C4us(Col.UShortFromDoubleClamped(0.2));
+        public static C4us Gray30 => new C4us(Col.UShortFromDoubleClamped(0.3));
+        public static C4us Gray40 => new C4us(Col.UShortFromDoubleClamped(0.4));
+        public static C4us Gray50 => new C4us(Col.UShortFromDoubleClamped(0.5));
+        public static C4us Gray60 => new C4us(Col.UShortFromDoubleClamped(0.6));
+        public static C4us Gray70 => new C4us(Col.UShortFromDoubleClamped(0.7));
+        public static C4us Gray80 => new C4us(Col.UShortFromDoubleClamped(0.8));
+        public static C4us Gray90 => new C4us(Col.UShortFromDoubleClamped(0.9));
+
+        public static C4us VRVisGreen => new C4us(Col.UShortFromDoubleClamped(0.698), Col.UShortFromDoubleClamped(0.851), Col.UShortFromDoubleClamped(0.008));
 
         #endregion
 
@@ -10437,6 +10500,17 @@ namespace Aardvark.Base
         public static C4ui DarkYellow => new C4ui(UInt32.MaxValue / 2, UInt32.MaxValue / 2, 0 / 2);
         public static C4ui Gray => new C4ui(UInt32.MaxValue / 2);
 
+        public static C4ui Gray10 => new C4ui(Col.UIntFromDoubleClamped(0.1));
+        public static C4ui Gray20 => new C4ui(Col.UIntFromDoubleClamped(0.2));
+        public static C4ui Gray30 => new C4ui(Col.UIntFromDoubleClamped(0.3));
+        public static C4ui Gray40 => new C4ui(Col.UIntFromDoubleClamped(0.4));
+        public static C4ui Gray50 => new C4ui(Col.UIntFromDoubleClamped(0.5));
+        public static C4ui Gray60 => new C4ui(Col.UIntFromDoubleClamped(0.6));
+        public static C4ui Gray70 => new C4ui(Col.UIntFromDoubleClamped(0.7));
+        public static C4ui Gray80 => new C4ui(Col.UIntFromDoubleClamped(0.8));
+        public static C4ui Gray90 => new C4ui(Col.UIntFromDoubleClamped(0.9));
+
+        public static C4ui VRVisGreen => new C4ui(Col.UIntFromDoubleClamped(0.698), Col.UIntFromDoubleClamped(0.851), Col.UIntFromDoubleClamped(0.008));
 
         #endregion
 
@@ -11922,16 +11996,17 @@ namespace Aardvark.Base
         public static C4f DarkYellow => new C4f(1.0f / 2, 1.0f / 2, 0.0f / 2);
         public static C4f Gray => new C4f(1.0f / 2);
 
-        public static C4f Gray10 => new C4f(0.1f);
-        public static C4f Gray20 => new C4f(0.2f);
-        public static C4f Gray30 => new C4f(0.3f);
-        public static C4f Gray40 => new C4f(0.4f);
-        public static C4f Gray50 => new C4f(0.5f);
-        public static C4f Gray60 => new C4f(0.6f);
-        public static C4f Gray70 => new C4f(0.7f);
-        public static C4f Gray80 => new C4f(0.8f);
-        public static C4f Gray90 => new C4f(0.9f);
-        public static C4f VRVisGreen => new C4f(0.698f, 0.851f, 0.008f);
+        public static C4f Gray10 => new C4f((float)(0.1));
+        public static C4f Gray20 => new C4f((float)(0.2));
+        public static C4f Gray30 => new C4f((float)(0.3));
+        public static C4f Gray40 => new C4f((float)(0.4));
+        public static C4f Gray50 => new C4f((float)(0.5));
+        public static C4f Gray60 => new C4f((float)(0.6));
+        public static C4f Gray70 => new C4f((float)(0.7));
+        public static C4f Gray80 => new C4f((float)(0.8));
+        public static C4f Gray90 => new C4f((float)(0.9));
+
+        public static C4f VRVisGreen => new C4f((float)(0.698), (float)(0.851), (float)(0.008));
 
         #endregion
 
@@ -13447,6 +13522,17 @@ namespace Aardvark.Base
         public static C4d DarkYellow => new C4d(1.0 / 2, 1.0 / 2, 0 / 2);
         public static C4d Gray => new C4d(1.0 / 2);
 
+        public static C4d Gray10 => new C4d((0.1));
+        public static C4d Gray20 => new C4d((0.2));
+        public static C4d Gray30 => new C4d((0.3));
+        public static C4d Gray40 => new C4d((0.4));
+        public static C4d Gray50 => new C4d((0.5));
+        public static C4d Gray60 => new C4d((0.6));
+        public static C4d Gray70 => new C4d((0.7));
+        public static C4d Gray80 => new C4d((0.8));
+        public static C4d Gray90 => new C4d((0.9));
+
+        public static C4d VRVisGreen => new C4d((0.698), (0.851), (0.008));
 
         #endregion
 
