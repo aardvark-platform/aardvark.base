@@ -986,88 +986,156 @@ module private rec D4Math =
                 x.M03, x.M13, x.M23, x.M33
             ).Inverse
 
+    [<Struct>]
+    type SymmetricM33d =
+        val mutable public M00 : float
+        val mutable public M01 : float
+        val mutable public M02 : float
+        val mutable public M11 : float
+        val mutable public M12 : float
+        val mutable public M22 : float
+
+        new(m00, m01, m02, m11, m12, m22) =
+            { M00 = m00; M01 = m01; M02 = m02; M11 = m11; M12 = m12;  M22 = m22 }
+
+        static member Zero = SymmetricM33d(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+
+        member x.AddOuterProduct(v : V3d) =
+            x.M00 <- x.M00 + v.X*v.X
+            x.M01 <- x.M01 + v.X*v.Y
+            x.M02 <- x.M02 + v.X*v.Z
+            x.M11 <- x.M11 + v.Y*v.Y
+            x.M12 <- x.M12 + v.Y*v.Z
+            x.M22 <- x.M22 + v.Z*v.Z
+
+        member x.SubOuterProduct(v : V3d) =
+            x.M00 <- x.M00 - v.X*v.X
+            x.M01 <- x.M01 - v.X*v.Y
+            x.M02 <- x.M02 - v.X*v.Z
+            x.M11 <- x.M11 - v.Y*v.Y
+            x.M12 <- x.M12 - v.Y*v.Z
+            x.M22 <- x.M22 - v.Z*v.Z
+
+        static member Add(l : SymmetricM33d, r : SymmetricM33d) =
+            SymmetricM33d(
+                l.M00 + r.M00, l.M01 + r.M01, l.M02 + r.M02,
+                               l.M11 + r.M11, l.M12 + r.M12,
+                                              l.M22 + r.M22      
+            )
+            
+        static member Sub(l : SymmetricM33d, r : SymmetricM33d) =
+            SymmetricM33d(
+                l.M00 - r.M00, l.M01 - r.M01, l.M02 - r.M02,
+                               l.M11 - r.M11, l.M12 - r.M12,
+                                              l.M22 - r.M22  
+            )
+
+        member x.AddInPlace(o : SymmetricM33d) =
+            x.M00 <- x.M00 + o.M00
+            x.M01 <- x.M01 + o.M01
+            x.M02 <- x.M02 + o.M02
+            x.M11 <- x.M11 + o.M11
+            x.M12 <- x.M12 + o.M12
+            x.M22 <- x.M22 + o.M22
+
+        member x.SubInPlace(o : SymmetricM33d) =
+            x.M00 <- x.M00 - o.M00
+            x.M01 <- x.M01 - o.M01
+            x.M02 <- x.M02 - o.M02
+            x.M11 <- x.M11 - o.M11
+            x.M12 <- x.M12 - o.M12
+            x.M22 <- x.M22 - o.M22
+
+        member x.Inverse =
+            M33d(
+                x.M00, x.M01, x.M02,
+                x.M01, x.M11, x.M12,
+                x.M02, x.M12, x.M22
+            ).Inverse
+
 
 [<Struct>]
 type SphereRegression3d =
 
     val mutable private _reference : V3d
-    val mutable private _lhs : SymmetricM44d
+    val mutable private _lhs : SymmetricM33d
+    val mutable private _sum : V3d
     val mutable private _rhs : V4d
     val mutable private _count : int
     
-    private new(reference : V3d, lhs : SymmetricM44d, rhs : V4d, count : int) =
-        { _reference = reference; _lhs = lhs; _rhs = rhs; _count = count}
+    private new(reference : V3d, lhs : SymmetricM33d, sum : V3d, rhs : V4d, count : int) =
+        { _reference = reference; _lhs = lhs; _sum = sum; _rhs = rhs; _count = count}
         
     /// Creates a new regression with a single point.
     new(point : V3d) =
-        { _reference = point; _lhs = SymmetricM44d(M33 = 1.0); _rhs = V4d.Zero; _count = 1 }
+        { _reference = point; _lhs = SymmetricM33d(); _sum = V3d.Zero; _rhs = V4d.Zero; _count = 1 }
         
     /// Creates a new regression from the given points.
     new([<ParamArray>] pts : V3d[]) =
         if pts.Length <= 0 then
-            { _reference = V3d.Zero; _lhs = SymmetricM44d.Zero;  _rhs = V4d.Zero; _count = 0 }
+            { _reference = V3d.Zero; _lhs = SymmetricM33d.Zero; _sum = V3d.Zero;  _rhs = V4d.Zero; _count = 0 }
         else
             let reference = pts.[0]
-            let mutable lhs = SymmetricM44d(M33 = 1.0)
+            let mutable lhs = SymmetricM33d()
+            let mutable sum = V3d.Zero
             let mutable rhs = V4d.Zero
             let mutable count = 1
             for i in 1 .. pts.Length - 1 do
                 let pt = pts.[i] - reference
-                let pt2 = sqr pt
-                let v = V4d(pt, 1.0)
-                lhs.AddOuterProduct v
-                rhs <- rhs - v * (pt2.X + pt2.Y + pt2.Z)
+                lhs.AddOuterProduct pt
+                sum <- sum + pt
+                rhs <- rhs - V4d(pt, 1.0) * pt.LengthSquared
                 count <- count + 1
 
-            { _reference = reference; _lhs = lhs; _rhs = rhs; _count = count }
+            { _reference = reference; _lhs = lhs; _sum = sum; _rhs = rhs; _count = count }
 
     /// Creates a new regression from the given points.
     new(pts : seq<V3d>) =
         let e = pts.GetEnumerator()
         if e.MoveNext() then
             let reference = e.Current
-            let mutable lhs = SymmetricM44d(M33 = 1.0)
+            let mutable lhs = SymmetricM33d()
+            let mutable sum = V3d.Zero
             let mutable rhs = V4d.Zero
             let mutable count = 1
             while e.MoveNext() do
                 let pt = e.Current - reference
-                let pt2 = sqr pt
-                let v = V4d(pt, 1.0)
-                lhs.AddOuterProduct v
-                rhs <- rhs - v * (pt2.X + pt2.Y + pt2.Z)
+                lhs.AddOuterProduct pt
+                sum <- sum + pt
+                rhs <- rhs - V4d(pt, 1.0) * pt.LengthSquared
                 count <- count + 1
 
             e.Dispose()
-            { _reference = reference; _lhs = lhs; _rhs = rhs; _count = count }
+            { _reference = reference; _lhs = lhs; _sum = sum; _rhs = rhs; _count = count }
         else
             e.Dispose()
-            { _reference = V3d.Zero; _lhs = SymmetricM44d.Zero; _rhs = V4d.Zero; _count = 0 }
+            { _reference = V3d.Zero; _lhs = SymmetricM33d.Zero; _sum = V3d.Zero; _rhs = V4d.Zero; _count = 0 }
 
     /// Creates a new regression from the given points.
     new(pts : list<V3d>) = SphereRegression3d(pts :> seq<_>)
     
     /// A regression holding no points.
     static member Empty = 
-        SphereRegression3d(V3d.Zero, SymmetricM44d.Zero, V4d.Zero, 0)
+        SphereRegression3d(V3d.Zero, SymmetricM33d.Zero, V3d.Zero, V4d.Zero, 0)
         
     /// A regression holding no points.
     static member Zero = 
-        SphereRegression3d(V3d.Zero, SymmetricM44d.Zero, V4d.Zero, 0)
+        SphereRegression3d(V3d.Zero, SymmetricM33d.Zero, V3d.Zero, V4d.Zero, 0)
         
     /// The total number of points added. Note that at least 4 points are required to fit a sphere.
     member x.Count = x._count
     
     /// The centroid of all added points.
     member x.Centroid = 
-        let n = x._lhs.M33
-        x._reference + V3d(x._lhs.M03 / n, x._lhs.M13 / n, x._lhs.M23 / n)
+        let n = float x._count
+        x._reference + x._sum / n
         
     /// Gets the variances of the added points as [Var(X), Var(Y), Var(Z)]
     member x.Variance =
         if x._count < 2 then
             V3d.Zero
         else
-            let sum = V3d(x._lhs.M03, x._lhs.M13, x._lhs.M23)
+            let sum = x._sum
             let sumSq = V3d(x._lhs.M00, x._lhs.M11, x._lhs.M22)
             let n = float x._count
             let avg = sum / n
@@ -1081,7 +1149,7 @@ type SphereRegression3d =
         if x._count < 2 then
             V3d.Zero
         else
-            let sum = V3d(x._lhs.M03, x._lhs.M13, x._lhs.M23)
+            let sum = x._sum
             let off = V3d(x._lhs.M12, x._lhs.M02, x._lhs.M01)
             let n = float x._count
             let avg = sum / n
@@ -1099,7 +1167,7 @@ type SphereRegression3d =
             M33d.Zero
         else
             let n = float x._count
-            let sum = V3d(x._lhs.M03, x._lhs.M13, x._lhs.M23)
+            let sum = x._sum
             let sumSq = V3d(x._lhs.M00, x._lhs.M11, x._lhs.M22)
             let off = V3d(x._lhs.M12, x._lhs.M02, x._lhs.M01)
 
@@ -1120,126 +1188,127 @@ type SphereRegression3d =
 
     member private x.WithReferencePoint(r : V3d) =
         let c = x._reference - r
-        let sum = V3d(x._lhs.M03, x._lhs.M13, x._lhs.M23)
-        let sumSq = V3d(x._lhs.M00, x._lhs.M11, x._lhs.M22)
-        let cov = V3d(x._lhs.M12, x._lhs.M02, x._lhs.M01)
+        if x._reference + c = x._reference then
+            x
+        else
+            let sum = x._sum
+            let sumSq = V3d(x._lhs.M00, x._lhs.M11, x._lhs.M22)
+            let cov = V3d(x._lhs.M12, x._lhs.M02, x._lhs.M01)
 
-        let c2 = sqr c
-        let lc2 = c2.X + c2.Y + c2.Z
-        let cs = c * sum
+            let c2 = sqr c
+            let lc2 = c2.X + c2.Y + c2.Z
+            let cs = c * sum
 
-        let n = x._lhs.M33
+            let n = float x._count
 
-        // l00 = sum((x+cx)*(x+cx))
-        // = sum(x^2 + 2*cx*x + cx^2)
-        // = sum(x^2) + 2*cx*sum(x) + n*cx^2
+            // l00 = sum((x+cx)*(x+cx))
+            // = sum(x^2 + 2*cx*x + cx^2)
+            // = sum(x^2) + 2*cx*sum(x) + n*cx^2
 
-        // l01 = sum((x+cx)*(y+cy)) 
-        // = sum(x*y + cx*y + cy*x + cx*cy) 
-        // = sum(x*y) + cx*sum(y) + cy*sum(x) + n*cx*cy
-        let dlhs = 
-            SymmetricM44d(
-                2.0*cs.X + n*c2.X,      c.X*sum.Y + c.Y*sum.X + n*c.X*c.Y,      c.X*sum.Z + c.Z*sum.X + n*c.X*c.Z,      n*c.X,
-                                        2.0*cs.Y + n*c2.Y,                      c.Y*sum.Z + c.Z*sum.Y + n*c.Y*c.Z,      n*c.Y,
-                                                                                2.0*cs.Z + n*c2.Z,                      n*c.Z,
-                                                                                                                        0.0
-            )
+            // l01 = sum((x+cx)*(y+cy)) 
+            // = sum(x*y + cx*y + cy*x + cx*cy) 
+            // = sum(x*y) + cx*sum(y) + cy*sum(x) + n*cx*cy
+            let dlhs = 
+                SymmetricM33d(
+                    2.0*cs.X + n*c2.X,      c.X*sum.Y + c.Y*sum.X + n*c.X*c.Y,      c.X*sum.Z + c.Z*sum.X + n*c.X*c.Z,
+                                            2.0*cs.Y + n*c2.Y,                      c.Y*sum.Z + c.Z*sum.Y + n*c.Y*c.Z,
+                                                                                    2.0*cs.Z + n*c2.Z                    
+                )
+
+            let dsum = n * c
 
 
-        // sum(x*(x^2 + y^2 + z^2))
-        // sum(x^3 + x*y^2 + x*z^2)
-        //rx = sum((x+cx) * ((x+cx)^2 + (y+cy)^2 + (z+cz)^2))
-        //rx = sum((x + cx) * (x^2 + 2*x*cx + cx^2 + y^2 + 2*y*cy + cy^2 + z^2 + 2*z*cz + cz^2)
-        // sum (
-        //     x^3 + 2*x^2*cx + x*cx^2 + x*y^2 + 2*x*y*cy + x*cy^2 + x*z^2 + 2*x*z*cz + x*cz^2 +
-        //     cx*x^2 + 2*x*cx^2 + cx^3 + cx*y^2 + 2*y*cx*cy + cx*cy^2 + cx*z^2 + 2*z*cx*cz + cx*cz^2
-        // )
+            // sum(x*(x^2 + y^2 + z^2))
+            // sum(x^3 + x*y^2 + x*z^2)
+            //rx = sum((x+cx) * ((x+cx)^2 + (y+cy)^2 + (z+cz)^2))
+            //rx = sum((x + cx) * (x^2 + 2*x*cx + cx^2 + y^2 + 2*y*cy + cy^2 + z^2 + 2*z*cz + cz^2)
+            // sum (
+            //     x^3 + 2*x^2*cx + x*cx^2 + x*y^2 + 2*x*y*cy + x*cy^2 + x*z^2 + 2*x*z*cz + x*cz^2 +
+            //     cx*x^2 + 2*x*cx^2 + cx^3 + cx*y^2 + 2*y*cx*cy + cx*cy^2 + cx*z^2 + 2*z*cx*cz + cx*cz^2
+            // )
 
-        // sum (cx^3 + cx*cy^2 + cx*cz^2) +
-        // 3*cx * sum(x^2) + 
-        // cx * sum(y^2) +
-        // cx * sum(z^2)
-        // (3*cx^2 + cy^2 + cz^2) * sum(x) +
-        // 2*cy*sum(x*y) +
-        // 2*cz*sum(x*z) +
-        // 2*cx*cy*sum(y) +
-        // 2*cx*cz*sum(z) +
-        // n*(cx^3 + cx*cy^2 + cx*cz^2)
+            // sum (cx^3 + cx*cy^2 + cx*cz^2) +
+            // 3*cx * sum(x^2) + 
+            // cx * sum(y^2) +
+            // cx * sum(z^2)
+            // (3*cx^2 + cy^2 + cz^2) * sum(x) +
+            // 2*cy*sum(x*y) +
+            // 2*cz*sum(x*z) +
+            // 2*cx*cy*sum(y) +
+            // 2*cx*cz*sum(z) +
+            // n*(cx^3 + cx*cy^2 + cx*cz^2)
 
-        let drx = 
-            3.0*c.X*sumSq.X + c.X*sumSq.Y + c.X*sumSq.Z +
-            (3.0*c2.X + c2.Y + c2.Z)*sum.X +
-            2.0*c.Y*cov.Z + 2.0*c.Z*cov.Y +
-            2.0*c.X*cs.Y +
-            2.0*c.X*cs.Z +
-            n * c.X * lc2
+            let drx = 
+                3.0*c.X*sumSq.X + c.X*sumSq.Y + c.X*sumSq.Z +
+                (3.0*c2.X + c2.Y + c2.Z)*sum.X +
+                2.0*c.Y*cov.Z + 2.0*c.Z*cov.Y +
+                2.0*c.X*cs.Y +
+                2.0*c.X*cs.Z +
+                n * c.X * lc2
             
-        let dry = 
-            3.0*c.Y*sumSq.Y + c.Y*sumSq.X + c.Y*sumSq.Z +
-            (3.0*c2.Y + c2.X + c2.Z)*sum.Y +
-            2.0*c.X*cov.Z + 2.0*c.Z*cov.X +
-            2.0*c.Y*cs.X +
-            2.0*c.Y*cs.Z +
-            n * c.Y * lc2
+            let dry = 
+                3.0*c.Y*sumSq.Y + c.Y*sumSq.X + c.Y*sumSq.Z +
+                (3.0*c2.Y + c2.X + c2.Z)*sum.Y +
+                2.0*c.X*cov.Z + 2.0*c.Z*cov.X +
+                2.0*c.Y*cs.X +
+                2.0*c.Y*cs.Z +
+                n * c.Y * lc2
             
-        let drz = 
-            3.0*c.Z*sumSq.Z + c.Z*sumSq.Y + c.Z*sumSq.X +
-            (3.0*c2.Z + c2.Y + c2.X)*sum.Z +
-            2.0*c.Y*cov.X + 2.0*c.X*cov.Y +
-            2.0*c.Z*cs.Y +
-            2.0*c.Z*cs.X +
-            n * c.Z * lc2
+            let drz = 
+                3.0*c.Z*sumSq.Z + c.Z*sumSq.Y + c.Z*sumSq.X +
+                (3.0*c2.Z + c2.Y + c2.X)*sum.Z +
+                2.0*c.Y*cov.X + 2.0*c.X*cov.Y +
+                2.0*c.Z*cs.Y +
+                2.0*c.Z*cs.X +
+                n * c.Z * lc2
 
-        let drw =
-            2.0 * (cs.X + cs.Y + cs.Z) +
-            n * lc2
+            let drw =
+                2.0 * (cs.X + cs.Y + cs.Z) +
+                n * lc2
 
-        // sum((x+cx)^2 + (y+cy)^2 + (z+cz)^2)
-        // sum(x^2 + 2*x*cx + cx^2 + y^2 + 2*y*cy + cy^2 + z^2 + 2*z*cz + cz^2)
-        // sum(x^2) + 2*cx*sum(x) + n*cx^2 + sum(y^2) + 2*cy*sum(y) + n*cy^2 + sum(z^2) + 2*cz*sum(z) + n*cz^2
+            // sum((x+cx)^2 + (y+cy)^2 + (z+cz)^2)
+            // sum(x^2 + 2*x*cx + cx^2 + y^2 + 2*y*cy + cy^2 + z^2 + 2*z*cz + cz^2)
+            // sum(x^2) + 2*cx*sum(x) + n*cx^2 + sum(y^2) + 2*cy*sum(y) + n*cy^2 + sum(z^2) + 2*cz*sum(z) + n*cz^2
 
         
-        // n*cx^2 + n*cy^2 + n*cz^2
+            // n*cx^2 + n*cy^2 + n*cz^2
 
-        // (sum(x^2) + sum(y^2) + sum(z^2)) +
-        // 2*(cx*sum(x) + cy*sum(y) + cz*sum(z) +
-        // n * (cx^2+cy^2+cz^2)
+            // (sum(x^2) + sum(y^2) + sum(z^2)) +
+            // 2*(cx*sum(x) + cy*sum(y) + cz*sum(z) +
+            // n * (cx^2+cy^2+cz^2)
 
 
-        let mutable lhs = x._lhs
-        lhs.AddInPlace(dlhs)
+            let mutable lhs = x._lhs
+            lhs.AddInPlace(dlhs)
 
-        SphereRegression3d(r, lhs, x._rhs - V4d(drx, dry, drz, drw), x._count)
+            SphereRegression3d(r, lhs, x._sum + dsum, x._rhs - V4d(drx, dry, drz, drw), x._count)
         
     /// Adds the given point to the regression.
     member x.Add(pt : V3d) =
         if x._count <= 0 then
-            SphereRegression3d(pt, SymmetricM44d(M33 = 1.0), V4d.Zero, 1)
+            SphereRegression3d(pt, SymmetricM33d(), V3d.Zero, V4d.Zero, 1)
         else
             let pt = pt - x._reference
-            let pt2 = sqr pt
-
             let mutable lhs = x._lhs
             let mutable rhs = x._rhs
-            let v = V4d(pt, 1.0)
-            lhs.AddOuterProduct v
-            rhs <- rhs - v * (pt2.X + pt2.Y + pt2.Z)
-            SphereRegression3d(x._reference, lhs, rhs, x._count + 1)
+            lhs.AddOuterProduct pt
+            let sum = x._sum + pt
+            rhs <- rhs - V4d(pt, 1.0) * pt.LengthSquared
+            SphereRegression3d(x._reference, lhs, sum, rhs, x._count + 1)
    
     /// Adds the given point to the regression (mutating the regression).
     member x.AddInPlace(pt : V3d) =
         if x._count <= 0 then   
             x._reference <- pt
-            x._lhs <- SymmetricM44d(M33 = 1.0)
+            x._lhs <- SymmetricM33d()
+            x._sum <- V3d.Zero
             x._rhs <- V4d.Zero
             x._count <- 1
         else
             let pt = pt - x._reference
-            let pt2 = sqr pt
-
-            let v = V4d(pt, 1.0)
-            x._lhs.AddOuterProduct v
-            x._rhs <- x._rhs - v * (pt2.X + pt2.Y + pt2.Z)
+            x._lhs.AddOuterProduct pt
+            x._sum <- x._sum + pt
+            x._rhs <- x._rhs - V4d(pt, 1.0) * pt.LengthSquared
             x._count <- x._count + 1
    
     /// Removes the given point from the regression assuming that it has previously been added.
@@ -1247,38 +1316,59 @@ type SphereRegression3d =
     member x.Remove(pt : V3d) =
         if x._count <= 1 then
             SphereRegression3d.Empty
+        elif x._count = 2 then
+            // x._sum = (pt - reference) + (other - reference)
+            // x._sum - pt + reference = other - reference
+            // x._sum - pt + 2*reference = other
+            let other = x._sum - pt + 2.0*x._reference
+            SphereRegression3d(other, SymmetricM33d(), V3d.Zero, V4d.Zero, 1)
         else
             let pt = pt - x._reference
-            let pt2 = sqr pt
-
             let mutable lhs = x._lhs
             let mutable rhs = x._rhs
-            let v = V4d(pt, 1.0)
-            lhs.SubOuterProduct v
-            rhs <- rhs + v * (pt2.X + pt2.Y + pt2.Z)
-            SphereRegression3d(x._reference, lhs, rhs, x._count - 1)
+            lhs.SubOuterProduct pt
+            let sum = x._sum - pt
+            rhs <- rhs + V4d(pt, 1.0) * pt.LengthSquared
+            SphereRegression3d(x._reference, lhs, sum, rhs, x._count - 1)
             
     /// Removes the given point from the regression assuming that it has previously been added.
     /// NOTE: when removing non-added points the regression will produce inconsistent results.
     member x.RemoveInPlace(pt : V3d) =
         if x._count <= 1 then
             x._reference <- V3d.Zero
-            x._lhs <- SymmetricM44d.Zero
+            x._lhs <- SymmetricM33d.Zero
+            x._sum <- V3d.Zero
             x._rhs <- V4d.Zero
             x._count <- 0
+        elif x._count = 2 then
+            // x._sum = (pt - reference) + (other - reference)
+            // x._sum - pt + reference = other - reference
+            // x._sum - pt + 2*reference = other
+            x._reference <- x._sum - pt + 2.0*x._reference
+            x._lhs <- SymmetricM33d.Zero
+            x._sum <- V3d.Zero
+            x._rhs <- V4d.Zero
+            x._count <- 1
         else
             let pt = pt - x._reference
-            let pt2 = sqr pt
-            let v = V4d(pt, 1.0)
-            x._lhs.SubOuterProduct v
-            x._rhs <- x._rhs + v * (pt2.X + pt2.Y + pt2.Z)
+            x._lhs.SubOuterProduct pt
+            x._sum <- x._sum - pt
+            x._rhs <- x._rhs + V4d(pt, 1.0) * pt.LengthSquared
+            x._count <- x._count - 1
    
     /// Gets the least-squares sphere.
     member x.GetSphere() =
         if x._count < 4 then   
             Sphere3d(V3d.Zero, 0.0)
         else
-            let u = x._lhs.Inverse * x._rhs
+            let m =
+                M44d(
+                    x._lhs.M00, x._lhs.M01, x._lhs.M02, x._sum.X,
+                    x._lhs.M01, x._lhs.M11, x._lhs.M12, x._sum.Y,
+                    x._lhs.M02, x._lhs.M12, x._lhs.M22, x._sum.Z,
+                    x._sum.X,   x._sum.Y,   x._sum.Z,   float x._count
+                )
+            let u = m.Inverse * x._rhs
             let center = -u.XYZ / 2.0
             let r = sqrt (center.LengthSquared - u.W)
             Sphere3d(x._reference + center, r)
@@ -1296,8 +1386,9 @@ type SphereRegression3d =
 
             let rhs = l._rhs + r._rhs
             let count = l._count + r._count
+            let sum = l._sum + r._sum
 
-            SphereRegression3d(l._reference, lhs, rhs, count)
+            SphereRegression3d(l._reference, lhs, sum, rhs, count)
        
     static member (-) (l : SphereRegression3d, r : SphereRegression3d) =
         if l._count <= r._count then SphereRegression3d.Empty
@@ -1311,8 +1402,9 @@ type SphereRegression3d =
 
             let rhs = l._rhs - r._rhs
             let count = l._count - r._count
+            let sum = l._sum - r._sum
 
-            SphereRegression3d(l._reference, lhs, rhs, count)
+            SphereRegression3d(l._reference, lhs, sum, rhs, count)
 
     static member (+) (l : SphereRegression3d, r : V3d) = l.Add r
     static member (+) (l : V3d, r : SphereRegression3d) = r.Add l

@@ -8,6 +8,158 @@ namespace Aardvark.Base
 {
     // AUTO GENERATED CODE - DO NOT CHANGE!
 
+    //# var ColorNames
+    //#    = new Dictionary<string, V3d>()
+    //#    {
+    //#        { "AliceBlue", new V3d(0.941176, 0.972549, 1.000000) },
+    //#        { "AntiqueWhite", new V3d(0.980392, 0.921569, 0.843137) },
+    //#        { "Aqua", new V3d(0.000000, 1.000000, 1.000000) },
+    //#        { "Aquamarine", new V3d(0.498039, 1.000000, 0.831373) },
+    //#        { "Azure", new V3d(0.941176, 1.000000, 1.000000) },
+    //#        { "Beige", new V3d(0.960784, 0.960784, 0.862745) },
+    //#        { "Bisque", new V3d(1.000000, 0.894118, 0.768627) },
+    //#        { "Black", new V3d(0.000000, 0.000000, 0.000000) },
+    //#        { "BlanchedAlmond", new V3d(1.000000, 0.921569, 0.803922) },
+    //#        { "Blue", new V3d(0.000000, 0.000000, 1.000000) },
+    //#        { "BlueViolet", new V3d(0.541176, 0.168627, 0.886275) },
+    //#        { "Brown", new V3d(0.647059, 0.164706, 0.164706) },
+    //#        { "BurlyWood", new V3d(0.870588, 0.721569, 0.529412) },
+    //#        { "CadetBlue", new V3d(0.372549, 0.619608, 0.627451) },
+    //#        { "Chartreuse", new V3d(0.498039, 1.000000, 0.000000) },
+    //#        { "Chocolate", new V3d(0.823529, 0.411765, 0.117647) },
+    //#        { "Coral", new V3d(1.000000, 0.498039, 0.313725) },
+    //#        { "CornflowerBlue", new V3d(0.392157, 0.584314, 0.929412) },
+    //#        { "Cornsilk", new V3d(1.000000, 0.972549, 0.862745) },
+    //#        { "Crimson", new V3d(0.862745, 0.078431, 0.235294) },
+    //#        { "Cyan", new V3d(0.000000, 1.000000, 1.000000) },
+    //#        { "DarkBlue", new V3d(0.000000, 0.000000, 0.545098) },
+    //#        { "DarkCyan", new V3d(0.000000, 0.545098, 0.545098) },
+    //#        { "DarkGoldenRod", new V3d(0.721569, 0.525490, 0.043137) },
+    //#        { "DarkGray", new V3d(0.662745, 0.662745, 0.662745) },
+    //#        { "DarkGrey", new V3d(0.662745, 0.662745, 0.662745) },
+    //#        { "DarkGreen", new V3d(0.000000, 0.392157, 0.000000) },
+    //#        { "DarkKhaki", new V3d(0.741176, 0.717647, 0.419608) },
+    //#        { "DarkMagenta", new V3d(0.545098, 0.000000, 0.545098) },
+    //#        { "DarkOliveGreen", new V3d(0.333333, 0.419608, 0.184314) },
+    //#        { "DarkOrange", new V3d(1.000000, 0.549020, 0.000000) },
+    //#        { "DarkOrchid", new V3d(0.600000, 0.196078, 0.800000) },
+    //#        { "DarkRed", new V3d(0.545098, 0.000000, 0.000000) },
+    //#        { "DarkSalmon", new V3d(0.913725, 0.588235, 0.478431) },
+    //#        { "DarkSeaGreen", new V3d(0.560784, 0.737255, 0.560784) },
+    //#        { "DarkSlateBlue", new V3d(0.282353, 0.239216, 0.545098) },
+    //#        { "DarkSlateGray", new V3d(0.184314, 0.309804, 0.309804) },
+    //#        { "DarkSlateGrey", new V3d(0.184314, 0.309804, 0.309804) },
+    //#        { "DarkTurquoise", new V3d(0.000000, 0.807843, 0.819608) },
+    //#        { "DarkViolet", new V3d(0.580392, 0.000000, 0.827451) },
+    //#        { "DeepPink", new V3d(1.000000, 0.078431, 0.576471) },
+    //#        { "DeepSkyBlue", new V3d(0.000000, 0.749020, 1.000000) },
+    //#        { "DimGray", new V3d(0.411765, 0.411765, 0.411765) },
+    //#        { "DimGrey", new V3d(0.411765, 0.411765, 0.411765) },
+    //#        { "DodgerBlue", new V3d(0.117647, 0.564706, 1.000000) },
+    //#        { "FireBrick", new V3d(0.698039, 0.133333, 0.133333) },
+    //#        { "FloralWhite", new V3d(1.000000, 0.980392, 0.941176) },
+    //#        { "ForestGreen", new V3d(0.133333, 0.545098, 0.133333) },
+    //#        { "Fuchsia", new V3d(1.000000, 0.000000, 1.000000) },
+    //#        { "Gainsboro", new V3d(0.862745, 0.862745, 0.862745) },
+    //#        { "GhostWhite", new V3d(0.972549, 0.972549, 1.000000) },
+    //#        { "Gold", new V3d(1.000000, 0.843137, 0.000000) },
+    //#        { "GoldenRod", new V3d(0.854902, 0.647059, 0.125490) },
+    //#        { "Gray", new V3d(0.501961, 0.501961, 0.501961) },
+    //#        { "Grey", new V3d(0.501961, 0.501961, 0.501961) },
+    //#        { "Green", new V3d(0.000000, 0.501961, 0.000000) },
+    //#        { "GreenYellow", new V3d(0.678431, 1.000000, 0.184314) },
+    //#        { "HoneyDew", new V3d(0.941176, 1.000000, 0.941176) },
+    //#        { "HotPink", new V3d(1.000000, 0.411765, 0.705882) },
+    //#        { "IndianRed ", new V3d(0.803922, 0.360784, 0.360784) },
+    //#        { "Indigo ", new V3d(0.294118, 0.000000, 0.509804) },
+    //#        { "Ivory", new V3d(1.000000, 1.000000, 0.941176) },
+    //#        { "Khaki", new V3d(0.941176, 0.901961, 0.549020) },
+    //#        { "Lavender", new V3d(0.901961, 0.901961, 0.980392) },
+    //#        { "LavenderBlush", new V3d(1.000000, 0.941176, 0.960784) },
+    //#        { "LawnGreen", new V3d(0.486275, 0.988235, 0.000000) },
+    //#        { "LemonChiffon", new V3d(1.000000, 0.980392, 0.803922) },
+    //#        { "LightBlue", new V3d(0.678431, 0.847059, 0.901961) },
+    //#        { "LightCoral", new V3d(0.941176, 0.501961, 0.501961) },
+    //#        { "LightCyan", new V3d(0.878431, 1.000000, 1.000000) },
+    //#        { "LightGoldenRodYellow", new V3d(0.980392, 0.980392, 0.823529) },
+    //#        { "LightGray", new V3d(0.827451, 0.827451, 0.827451) },
+    //#        { "LightGrey", new V3d(0.827451, 0.827451, 0.827451) },
+    //#        { "LightGreen", new V3d(0.564706, 0.933333, 0.564706) },
+    //#        { "LightPink", new V3d(1.000000, 0.713725, 0.756863) },
+    //#        { "LightSalmon", new V3d(1.000000, 0.627451, 0.478431) },
+    //#        { "LightSeaGreen", new V3d(0.125490, 0.698039, 0.666667) },
+    //#        { "LightSkyBlue", new V3d(0.529412, 0.807843, 0.980392) },
+    //#        { "LightSlateGray", new V3d(0.466667, 0.533333, 0.600000) },
+    //#        { "LightSlateGrey", new V3d(0.466667, 0.533333, 0.600000) },
+    //#        { "LightSteelBlue", new V3d(0.690196, 0.768627, 0.870588) },
+    //#        { "LightYellow", new V3d(1.000000, 1.000000, 0.878431) },
+    //#        { "Lime", new V3d(0.000000, 1.000000, 0.000000) },
+    //#        { "LimeGreen", new V3d(0.196078, 0.803922, 0.196078) },
+    //#        { "Linen", new V3d(0.980392, 0.941176, 0.901961) },
+    //#        { "Magenta", new V3d(1.000000, 0.000000, 1.000000) },
+    //#        { "Maroon", new V3d(0.501961, 0.000000, 0.000000) },
+    //#        { "MediumAquaMarine", new V3d(0.400000, 0.803922, 0.666667) },
+    //#        { "MediumBlue", new V3d(0.000000, 0.000000, 0.803922) },
+    //#        { "MediumOrchid", new V3d(0.729412, 0.333333, 0.827451) },
+    //#        { "MediumPurple", new V3d(0.576471, 0.439216, 0.847059) },
+    //#        { "MediumSeaGreen", new V3d(0.235294, 0.701961, 0.443137) },
+    //#        { "MediumSlateBlue", new V3d(0.482353, 0.407843, 0.933333) },
+    //#        { "MediumSpringGreen", new V3d(0.000000, 0.980392, 0.603922) },
+    //#        { "MediumTurquoise", new V3d(0.282353, 0.819608, 0.800000) },
+    //#        { "MediumVioletRed", new V3d(0.780392, 0.082353, 0.521569) },
+    //#        { "MidnightBlue", new V3d(0.098039, 0.098039, 0.439216) },
+    //#        { "MintCream", new V3d(0.960784, 1.000000, 0.980392) },
+    //#        { "MistyRose", new V3d(1.000000, 0.894118, 0.882353) },
+    //#        { "Moccasin", new V3d(1.000000, 0.894118, 0.709804) },
+    //#        { "NavajoWhite", new V3d(1.000000, 0.870588, 0.678431) },
+    //#        { "Navy", new V3d(0.000000, 0.000000, 0.501961) },
+    //#        { "OldLace", new V3d(0.992157, 0.960784, 0.901961) },
+    //#        { "Olive", new V3d(0.501961, 0.501961, 0.000000) },
+    //#        { "OliveDrab", new V3d(0.419608, 0.556863, 0.137255) },
+    //#        { "Orange", new V3d(1.000000, 0.647059, 0.000000) },
+    //#        { "OrangeRed", new V3d(1.000000, 0.270588, 0.000000) },
+    //#        { "Orchid", new V3d(0.854902, 0.439216, 0.839216) },
+    //#        { "PaleGoldenRod", new V3d(0.933333, 0.909804, 0.666667) },
+    //#        { "PaleGreen", new V3d(0.596078, 0.984314, 0.596078) },
+    //#        { "PaleTurquoise", new V3d(0.686275, 0.933333, 0.933333) },
+    //#        { "PaleVioletRed", new V3d(0.847059, 0.439216, 0.576471) },
+    //#        { "PapayaWhip", new V3d(1.000000, 0.937255, 0.835294) },
+    //#        { "PeachPuff", new V3d(1.000000, 0.854902, 0.725490) },
+    //#        { "Peru", new V3d(0.803922, 0.521569, 0.247059) },
+    //#        { "Pink", new V3d(1.000000, 0.752941, 0.796078) },
+    //#        { "Plum", new V3d(0.866667, 0.627451, 0.866667) },
+    //#        { "PowderBlue", new V3d(0.690196, 0.878431, 0.901961) },
+    //#        { "Purple", new V3d(0.501961, 0.000000, 0.501961) },
+    //#        { "Red", new V3d(1.000000, 0.000000, 0.000000) },
+    //#        { "RosyBrown", new V3d(0.737255, 0.560784, 0.560784) },
+    //#        { "RoyalBlue", new V3d(0.254902, 0.411765, 0.882353) },
+    //#        { "SaddleBrown", new V3d(0.545098, 0.270588, 0.074510) },
+    //#        { "Salmon", new V3d(0.980392, 0.501961, 0.447059) },
+    //#        { "SandyBrown", new V3d(0.956863, 0.643137, 0.376471) },
+    //#        { "SeaGreen", new V3d(0.180392, 0.545098, 0.341176) },
+    //#        { "SeaShell", new V3d(1.000000, 0.960784, 0.933333) },
+    //#        { "Sienna", new V3d(0.627451, 0.321569, 0.176471) },
+    //#        { "Silver", new V3d(0.752941, 0.752941, 0.752941) },
+    //#        { "SkyBlue", new V3d(0.529412, 0.807843, 0.921569) },
+    //#        { "SlateBlue", new V3d(0.415686, 0.352941, 0.803922) },
+    //#        { "SlateGray", new V3d(0.439216, 0.501961, 0.564706) },
+    //#        { "SlateGrey", new V3d(0.439216, 0.501961, 0.564706) },
+    //#        { "Snow", new V3d(1.000000, 0.980392, 0.980392) },
+    //#        { "SpringGreen", new V3d(0.000000, 1.000000, 0.498039) },
+    //#        { "SteelBlue", new V3d(0.274510, 0.509804, 0.705882) },
+    //#        { "Tan", new V3d(0.823529, 0.705882, 0.549020) },
+    //#        { "Teal", new V3d(0.000000, 0.501961, 0.501961) },
+    //#        { "Thistle", new V3d(0.847059, 0.749020, 0.847059) },
+    //#        { "Tomato", new V3d(1.000000, 0.388235, 0.278431) },
+    //#        { "Turquoise", new V3d(0.250980, 0.878431, 0.815686) },
+    //#        { "Violet", new V3d(0.933333, 0.509804, 0.933333) },
+    //#        { "Wheat", new V3d(0.960784, 0.870588, 0.701961) },
+    //#        { "White", new V3d(1.000000, 1.000000, 1.000000) },
+    //#        { "WhiteSmoke", new V3d(0.960784, 0.960784, 0.960784) },
+    //#        { "Yellow", new V3d(1.000000, 1.000000, 0.000000) },
+    //#        { "YellowGreen", new V3d(0.603922, 0.803922, 0.196078) },
+    //#    };
+    //#
     //# Action andand = () => Out(" && ");
     //# Action add = () => Out(" + ");
     //# Action addbetween = () => Out(" + between ");
@@ -560,30 +712,21 @@ namespace Aardvark.Base
         /// </summary>
         public static __type__ Zero => new __type__(/*# fields.ForEach(f => {*/__t.MinValue__/*#}, comma); */);
 
-        public static __type__ Black => new __type__(__t.MinValue__);
+        // Web colors
+        //# foreach(KeyValuePair<string, V3d> entry in ColorNames) {
+        //# var name = entry.Key;
+        //# var color = new C3d(entry.Value);
+        public static __type__ __name__ => new __type__(__d_to_ft__(__color.R__), __d_to_ft__(__color.G__), __d_to_ft__(__color.B__));
+        //# }
 
-        public static __type__ Red => new __type__(__t.MaxValue__, __t.MinValue__, __t.MinValue__);
-        public static __type__ Green => new __type__(__t.MinValue__, __t.MaxValue__, __t.MinValue__);
-        public static __type__ Blue => new __type__(__t.MinValue__, __t.MinValue__, __t.MaxValue__);
-        public static __type__ Cyan => new __type__(__t.MinValue__, __t.MaxValue__, __t.MaxValue__);
-        public static __type__ Magenta => new __type__(__t.MaxValue__, __t.MinValue__, __t.MaxValue__);
-        public static __type__ Yellow => new __type__(__t.MaxValue__, __t.MaxValue__, __t.MinValue__);
-        public static __type__ White => new __type__(__t.MaxValue__);
+        public static __type__ DarkYellow => Olive;
 
-        public static __type__ DarkRed => new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MinValue__ / 2);
-        public static __type__ DarkGreen => new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
-        public static __type__ DarkBlue => new __type__(__t.MinValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
-        public static __type__ DarkCyan => new __type__(__t.MinValue__ / 2, __t.MaxValue__ / 2, __t.MaxValue__ / 2);
-        public static __type__ DarkMagenta => new __type__(__t.MaxValue__ / 2, __t.MinValue__ / 2, __t.MaxValue__ / 2);
-        public static __type__ DarkYellow => new __type__(__t.MaxValue__ / 2, __t.MaxValue__ / 2, __t.MinValue__ / 2);
-        public static __type__ Gray => new __type__(__t.MaxValue__ / 2);
+        public static __type__ VRVisGreen => new __type__(__d_to_ft__(0.698), __d_to_ft__(0.851), __d_to_ft__(0.008));
 
         //# for (int i = 1; i < 10; i++) {
         //# var val = 0.1 * i; int percent = 10 * i;
         public static __type__ Gray__percent__ => new __type__(__d_to_ft__(__val__));
         //# }
-
-        public static __type__ VRVisGreen => new __type__(__d_to_ft__(0.698), __d_to_ft__(0.851), __d_to_ft__(0.008));
 
         #endregion
 
