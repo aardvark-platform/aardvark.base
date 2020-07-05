@@ -408,15 +408,21 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public static Cell Parse(byte[] buffer, int offset = 0)
+        public static Cell Parse(byte[] buffer)
         {
-            using (var ms = new MemoryStream(buffer, 0, 28))
-            using (var br = new BinaryReader(ms))
-            {
-                var x = br.ReadInt64(); var y = br.ReadInt64(); var z = br.ReadInt64(); var e = br.ReadInt32();
-                return new Cell(x, y, z, e);
-            }
+            using var ms = new MemoryStream(buffer, 0, 28);
+            using var br = new BinaryReader(ms);
+            var x = br.ReadInt64(); var y = br.ReadInt64(); var z = br.ReadInt64(); var e = br.ReadInt32();
+            return new Cell(x, y, z, e);
         }
+
+#pragma warning disable IDE0060
+        /// <summary>
+        /// </summary>
+        [Obsolete("Parameter 'offset' is not respected, use Parse(buffer) instead.")]
+        public static Cell Parse(byte[] buffer, int offset)
+            => Parse(buffer);
+#pragma warning restore IDE0060
 
         #endregion
 
