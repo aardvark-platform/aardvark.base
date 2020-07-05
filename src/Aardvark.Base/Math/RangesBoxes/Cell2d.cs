@@ -206,7 +206,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets indices of the 8 subcells.
+        /// Gets the 4 subcells.
+        /// Order is (0,0), (1,0), (0,1), (1,1).
         /// </summary>
         public Cell2d[] Children
         {
