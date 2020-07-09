@@ -40,9 +40,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a 2^exponent sized square positioned at (x,y) * 2^exponent.
+        /// </summary>
+        public Cell2d(int x, int y, int exponent)
+        {
+            X = x; Y = y; Exponent = exponent;
+        }
+
+        /// <summary>
         /// Cell with min corner at index*2^exponent and dimension 2^exponent.
         /// </summary>
         public Cell2d(V2l index, int exponent) : this(index.X, index.Y, exponent) { }
+
+        /// <summary>
+        /// Cell with min corner at index*2^exponent and dimension 2^exponent.
+        /// </summary>
+        public Cell2d(V2i index, int exponent) : this(index.X, index.Y, exponent) { }
 
         /// <summary>
         /// Special cell, which is centered at origin, with dimension 2^exponent.
