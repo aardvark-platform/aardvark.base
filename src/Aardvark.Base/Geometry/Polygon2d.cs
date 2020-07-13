@@ -317,7 +317,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the 'other' polygon is fully contained inside this polygon.
+        /// Returns true if this polygon is fully contained inside the 'other' polygon.
         /// </summary>
         public static bool IsFullyContainedInside(this Polygon2d self, Polygon2d other)
         {
