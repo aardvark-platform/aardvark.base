@@ -492,6 +492,9 @@ namespace Aardvark.Base
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr GetProcAddress(IntPtr handle, string name);
+
+        [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
+        public static extern uint SetErrorMode(uint mode);
     }
 
     internal static class Dl
@@ -1537,7 +1540,7 @@ namespace Aardvark.Base
                                 {
                                     if (platform == "windows")
                                     {
-                                        var err = Kernel32.GetLastError(); // so far always returned 0, NOTE: check documentation of SetErrorMode
+                                        var err = Kernel32.GetLastError();
                                         Report.Warn("could not load native library: {0} Error={1}", file, err);
                                     }
                                     else
@@ -1607,6 +1610,10 @@ namespace Aardvark.Base
                 try { return LoadLibrary(null, name); }
                 catch (Exception) { return IntPtr.Zero; }
             };
+#else
+            var platform = GetOS();
+            if (platform == OS.Win32)
+                Kernel32.SetErrorMode(1); // set error mode to SEM_FAILCRITICALERRORS 0x0001: do not display cirital error message boxes
 #endif
 
             AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
