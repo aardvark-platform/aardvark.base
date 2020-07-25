@@ -50,6 +50,7 @@
     <None Include="Algorithms\Generator.fsx" />
     <Compile Include="Algorithms\QR.fs" />
     <Compile Include="Algorithms\SVD.fs" />
+    <Compile Include="Algorithms\Solver.fs" />
     <Compile Include="Algorithms\PolygonSimplification.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
