@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -13,6 +14,7 @@ namespace Aardvark.Base
         /// <summary>
         /// P0
         /// </summary>
+        [XmlIgnore]
         public V3d Origin
         {
             get { return P0; }
@@ -22,6 +24,7 @@ namespace Aardvark.Base
         /// <summary>
         /// P1 - P0
         /// </summary>
+        [XmlIgnore]
         public V3d Direction
         {
             get { return P1 - P0; }

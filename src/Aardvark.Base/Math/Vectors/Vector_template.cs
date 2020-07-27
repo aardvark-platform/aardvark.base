@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 #if NETCOREAPP3_0
 using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics;
@@ -449,6 +450,7 @@ namespace Aardvark.Base
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [XmlIgnore]
         public __ftype__ __pf__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

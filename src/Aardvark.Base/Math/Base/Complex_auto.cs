@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -144,6 +145,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Gaussian Norm (modulus) of the complex number.
         /// </summary>
+        [XmlIgnore]
         public float Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -160,6 +162,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Retruns the argument of the complex number.
         /// </summary>
+        [XmlIgnore]
         public float Argument
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1120,6 +1123,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Gaussian Norm (modulus) of the complex number.
         /// </summary>
+        [XmlIgnore]
         public double Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1136,6 +1140,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Retruns the argument of the complex number.
         /// </summary>
+        [XmlIgnore]
         public double Argument
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

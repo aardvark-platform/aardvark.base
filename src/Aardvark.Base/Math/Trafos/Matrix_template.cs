@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using System.Diagnostics;
 
 namespace Aardvark.Base
@@ -719,6 +720,7 @@ namespace Aardvark.Base
         }
 
         //# n.ForEach(k => { 
+        [XmlIgnore]
         public __vmtype__ R__k__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -734,6 +736,7 @@ namespace Aardvark.Base
 
         //# });
         //# m.ForEach(k => {
+        [XmlIgnore]
         public __vntype__ C__k__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

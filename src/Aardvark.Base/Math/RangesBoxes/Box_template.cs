@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -444,6 +445,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.X.
         /// </summary>
+        [XmlIgnore]
         public __ftype__ Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -455,6 +457,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.X.
         /// </summary>
+        [XmlIgnore]
         public __ftype__ Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -466,6 +469,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.Y.
         /// </summary>
+        [XmlIgnore]
         public __ftype__ Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -477,6 +481,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.Y.
         /// </summary>
+        [XmlIgnore]
         public __ftype__ Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -489,6 +494,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the __bname__.
         /// </summary>
+        [XmlIgnore]
         public __ltype__ Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -518,6 +524,7 @@ namespace Aardvark.Base
         //# } // dim == 1
         //# if (dim > 1) {
         //# fields.ForEach(f => {
+        [XmlIgnore]
         public __ftype__ Size__f__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

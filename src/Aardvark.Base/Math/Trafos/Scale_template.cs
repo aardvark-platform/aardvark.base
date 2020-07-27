@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -51,6 +52,7 @@ namespace Aardvark.Base
     public partial struct __type__
     {
         [DataMember]
+        [XmlIgnore]
         public __vdt__ V;
 
         #region Constructors

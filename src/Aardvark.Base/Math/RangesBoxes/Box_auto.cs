@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -453,6 +454,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public byte Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1444,6 +1446,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public sbyte Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2435,6 +2438,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public short Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3426,6 +3430,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public ushort Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4417,6 +4422,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public int Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5408,6 +5414,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public uint Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6399,6 +6406,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public long Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7390,6 +7398,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public ulong Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -8381,6 +8390,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public float Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9391,6 +9401,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the range.
         /// </summary>
+        [XmlIgnore]
         public double Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10343,6 +10354,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.X.
         /// </summary>
+        [XmlIgnore]
         public int Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10354,6 +10366,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.X.
         /// </summary>
+        [XmlIgnore]
         public int Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10365,6 +10378,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.Y.
         /// </summary>
+        [XmlIgnore]
         public int Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10376,6 +10390,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.Y.
         /// </summary>
+        [XmlIgnore]
         public int Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10387,6 +10402,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the box.
         /// </summary>
+        [XmlIgnore]
         public V2i Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10401,6 +10417,7 @@ namespace Aardvark.Base
             get { return ((Min + Max) / 2); }
         }
 
+        [XmlIgnore]
         public int SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10415,6 +10432,7 @@ namespace Aardvark.Base
             get { return new Range1i(Min.X, Max.X); }
         }
 
+        [XmlIgnore]
         public int SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11857,6 +11875,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.X.
         /// </summary>
+        [XmlIgnore]
         public long Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11868,6 +11887,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.X.
         /// </summary>
+        [XmlIgnore]
         public long Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11879,6 +11899,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.Y.
         /// </summary>
+        [XmlIgnore]
         public long Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11890,6 +11911,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.Y.
         /// </summary>
+        [XmlIgnore]
         public long Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11901,6 +11923,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the box.
         /// </summary>
+        [XmlIgnore]
         public V2l Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11915,6 +11938,7 @@ namespace Aardvark.Base
             get { return ((Min + Max) / 2); }
         }
 
+        [XmlIgnore]
         public long SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11929,6 +11953,7 @@ namespace Aardvark.Base
             get { return new Range1l(Min.X, Max.X); }
         }
 
+        [XmlIgnore]
         public long SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13371,6 +13396,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.X.
         /// </summary>
+        [XmlIgnore]
         public float Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13382,6 +13408,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.X.
         /// </summary>
+        [XmlIgnore]
         public float Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13393,6 +13420,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.Y.
         /// </summary>
+        [XmlIgnore]
         public float Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13404,6 +13432,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.Y.
         /// </summary>
+        [XmlIgnore]
         public float Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13415,6 +13444,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the box.
         /// </summary>
+        [XmlIgnore]
         public V2f Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13429,6 +13459,7 @@ namespace Aardvark.Base
             get { return ((Min + Max) / 2); }
         }
 
+        [XmlIgnore]
         public float SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13443,6 +13474,7 @@ namespace Aardvark.Base
             get { return new Range1f(Min.X, Max.X); }
         }
 
+        [XmlIgnore]
         public float SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14991,6 +15023,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.X.
         /// </summary>
+        [XmlIgnore]
         public double Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15002,6 +15035,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.X.
         /// </summary>
+        [XmlIgnore]
         public double Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15013,6 +15047,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Min.Y.
         /// </summary>
+        [XmlIgnore]
         public double Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15024,6 +15059,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Same as Max.Y.
         /// </summary>
+        [XmlIgnore]
         public double Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15035,6 +15071,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the box.
         /// </summary>
+        [XmlIgnore]
         public V2d Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15049,6 +15086,7 @@ namespace Aardvark.Base
             get { return ((Min + Max) / 2); }
         }
 
+        [XmlIgnore]
         public double SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15063,6 +15101,7 @@ namespace Aardvark.Base
             get { return new Range1d(Min.X, Max.X); }
         }
 
+        [XmlIgnore]
         public double SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16616,6 +16655,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the box.
         /// </summary>
+        [XmlIgnore]
         public V3i Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16630,6 +16670,7 @@ namespace Aardvark.Base
             get { return ((Min + Max) / 2); }
         }
 
+        [XmlIgnore]
         public int SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16644,6 +16685,7 @@ namespace Aardvark.Base
             get { return new Range1i(Min.X, Max.X); }
         }
 
+        [XmlIgnore]
         public int SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16658,6 +16700,7 @@ namespace Aardvark.Base
             get { return new Range1i(Min.Y, Max.Y); }
         }
 
+        [XmlIgnore]
         public int SizeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -18459,6 +18502,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the box.
         /// </summary>
+        [XmlIgnore]
         public V3l Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -18473,6 +18517,7 @@ namespace Aardvark.Base
             get { return ((Min + Max) / 2); }
         }
 
+        [XmlIgnore]
         public long SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -18487,6 +18532,7 @@ namespace Aardvark.Base
             get { return new Range1l(Min.X, Max.X); }
         }
 
+        [XmlIgnore]
         public long SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -18501,6 +18547,7 @@ namespace Aardvark.Base
             get { return new Range1l(Min.Y, Max.Y); }
         }
 
+        [XmlIgnore]
         public long SizeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20302,6 +20349,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the box.
         /// </summary>
+        [XmlIgnore]
         public V3f Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20316,6 +20364,7 @@ namespace Aardvark.Base
             get { return ((Min + Max) / 2); }
         }
 
+        [XmlIgnore]
         public float SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20330,6 +20379,7 @@ namespace Aardvark.Base
             get { return new Range1f(Min.X, Max.X); }
         }
 
+        [XmlIgnore]
         public float SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20344,6 +20394,7 @@ namespace Aardvark.Base
             get { return new Range1f(Min.Y, Max.Y); }
         }
 
+        [XmlIgnore]
         public float SizeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22256,6 +22307,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculates size of the box.
         /// </summary>
+        [XmlIgnore]
         public V3d Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22270,6 +22322,7 @@ namespace Aardvark.Base
             get { return ((Min + Max) / 2); }
         }
 
+        [XmlIgnore]
         public double SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22284,6 +22337,7 @@ namespace Aardvark.Base
             get { return new Range1d(Min.X, Max.X); }
         }
 
+        [XmlIgnore]
         public double SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22298,6 +22352,7 @@ namespace Aardvark.Base
             get { return new Range1d(Min.Y, Max.Y); }
         }
 
+        [XmlIgnore]
         public double SizeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

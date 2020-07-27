@@ -3,6 +3,7 @@ using System.Globalization;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -1055,6 +1056,7 @@ namespace Aardvark.Base
         //# if (t.HasAlpha) {
         #region IOpacity Members
 
+        [XmlIgnore]
         public double Opacity
         {
             get { return __ft_to_d__(A); }
