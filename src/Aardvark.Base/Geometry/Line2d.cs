@@ -1,4 +1,6 @@
-﻿namespace Aardvark.Base
+﻿using System.Xml.Serialization;
+
+namespace Aardvark.Base
 {
     /// <summary>
     /// A two dimensional line with specified start and end points.
@@ -12,6 +14,7 @@
         /// <summary>
         /// P0
         /// </summary>
+        [XmlIgnore]
         public V2d Origin
         {
             get { return P0; }
@@ -21,6 +24,7 @@
         /// <summary>
         /// P1 - P0
         /// </summary>
+        [XmlIgnore]
         public V2d Direction
         {
             get { return P1 - P0; }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -119,6 +120,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets or sets the vector part (x, y, z) of this <see cref="Rot3f"/> unit quaternion.
         /// </summary>
+        [XmlIgnore]
         public V3f V
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1333,6 +1335,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets or sets the vector part (x, y, z) of this <see cref="Rot3d"/> unit quaternion.
         /// </summary>
+        [XmlIgnore]
         public V3d V
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -92,6 +93,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The point on the plane which is closest to the origin.
         /// </summary>
+        [XmlIgnore]
         public V3d Point
         {
             get { return Normal * Distance; }

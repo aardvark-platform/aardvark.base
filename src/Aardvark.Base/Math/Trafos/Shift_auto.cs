@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -20,6 +21,7 @@ namespace Aardvark.Base
     public partial struct Shift2f
     {
         [DataMember]
+        [XmlIgnore]
         public V2f V;
 
         #region Constructors
@@ -711,6 +713,7 @@ namespace Aardvark.Base
     public partial struct Shift3f
     {
         [DataMember]
+        [XmlIgnore]
         public V3f V;
 
         #region Constructors
@@ -1435,6 +1438,7 @@ namespace Aardvark.Base
     public partial struct Shift2d
     {
         [DataMember]
+        [XmlIgnore]
         public V2d V;
 
         #region Constructors
@@ -2126,6 +2130,7 @@ namespace Aardvark.Base
     public partial struct Shift3d
     {
         [DataMember]
+        [XmlIgnore]
         public V3d V;
 
         #region Constructors

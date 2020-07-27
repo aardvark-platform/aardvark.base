@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -139,6 +140,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets or sets the vector part (x, y, z) of this <see cref="__type__"/>.
         /// </summary>
+        [XmlIgnore]
         public __v3t__ V
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

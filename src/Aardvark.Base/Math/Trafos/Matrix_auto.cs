@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using System.Diagnostics;
 
 namespace Aardvark.Base
@@ -737,6 +738,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -749,6 +751,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -761,6 +764,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -773,6 +777,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2873,6 +2878,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2885,6 +2891,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2897,6 +2904,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2909,6 +2917,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4940,6 +4949,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4952,6 +4962,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4964,6 +4975,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4976,6 +4988,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7225,6 +7238,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7237,6 +7251,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7249,6 +7264,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7261,6 +7277,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9379,6 +9396,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9392,6 +9410,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9405,6 +9424,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9417,6 +9437,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9429,6 +9450,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2i C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11491,6 +11513,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11504,6 +11527,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11517,6 +11541,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11529,6 +11554,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11541,6 +11567,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2l C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13534,6 +13561,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13547,6 +13575,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13560,6 +13589,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13572,6 +13602,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13584,6 +13615,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2f C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15641,6 +15673,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15654,6 +15687,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15667,6 +15701,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15679,6 +15714,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15691,6 +15727,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V2d C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17810,6 +17847,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17823,6 +17861,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17836,6 +17875,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17849,6 +17889,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17862,6 +17903,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17875,6 +17917,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20546,6 +20589,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20559,6 +20603,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20572,6 +20617,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20585,6 +20631,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20598,6 +20645,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20611,6 +20659,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23372,6 +23421,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23385,6 +23435,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23398,6 +23449,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23411,6 +23463,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23424,6 +23477,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23437,6 +23491,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26414,6 +26469,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26427,6 +26483,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26440,6 +26497,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26453,6 +26511,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26466,6 +26525,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26479,6 +26539,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29110,6 +29171,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29124,6 +29186,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29138,6 +29201,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29152,6 +29216,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29165,6 +29230,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29178,6 +29244,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29191,6 +29258,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3i C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31703,6 +31771,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31717,6 +31786,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31731,6 +31801,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31745,6 +31816,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31758,6 +31830,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31771,6 +31844,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -31784,6 +31858,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3l C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34338,6 +34413,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34352,6 +34428,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34366,6 +34443,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34380,6 +34458,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34393,6 +34472,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34406,6 +34486,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34419,6 +34500,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3f C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37052,6 +37134,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37066,6 +37149,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37080,6 +37164,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37094,6 +37179,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37107,6 +37193,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37120,6 +37207,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37133,6 +37221,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V3d C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -39629,6 +39718,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -39643,6 +39733,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -39657,6 +39748,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -39671,6 +39763,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i R3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -39685,6 +39778,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -39699,6 +39793,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -39713,6 +39808,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -39727,6 +39823,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4i C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42816,6 +42913,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42830,6 +42928,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42844,6 +42943,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42858,6 +42958,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l R3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42872,6 +42973,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42886,6 +42988,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42900,6 +43003,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42914,6 +43018,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4l C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46043,6 +46148,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46057,6 +46163,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46071,6 +46178,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46085,6 +46193,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f R3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46099,6 +46208,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46113,6 +46223,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46127,6 +46238,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46141,6 +46253,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4f C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49521,6 +49634,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49535,6 +49649,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49549,6 +49664,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49563,6 +49679,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d R3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49577,6 +49694,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49591,6 +49709,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49605,6 +49724,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49619,6 +49739,7 @@ namespace Aardvark.Base
             }
         }
 
+        [XmlIgnore]
         public V4d C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 
 namespace Aardvark.Base
 {
@@ -8758,6 +8759,7 @@ namespace Aardvark.Base
 
         #region IOpacity Members
 
+        [XmlIgnore]
         public double Opacity
         {
             get { return Col.DoubleFromByte(A); }
@@ -10409,6 +10411,7 @@ namespace Aardvark.Base
 
         #region IOpacity Members
 
+        [XmlIgnore]
         public double Opacity
         {
             get { return Col.DoubleFromUShort(A); }
@@ -11971,6 +11974,7 @@ namespace Aardvark.Base
 
         #region IOpacity Members
 
+        [XmlIgnore]
         public double Opacity
         {
             get { return Col.DoubleFromUInt(A); }
@@ -13692,6 +13696,7 @@ namespace Aardvark.Base
 
         #region IOpacity Members
 
+        [XmlIgnore]
         public double Opacity
         {
             get { return (double)(A); }
@@ -15297,6 +15302,7 @@ namespace Aardvark.Base
 
         #region IOpacity Members
 
+        [XmlIgnore]
         public double Opacity
         {
             get { return (A); }
