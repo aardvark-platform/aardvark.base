@@ -122,7 +122,10 @@ namespace Aardvark.Base
 
                 IL.BindImage(img);
                 if (!IL.LoadStream(stream))
-                    throw new ImageLoadException("stream");
+                {
+                    var code = IL.GetError();
+                    throw new ImageLoadException(String.Format("CreateRawDevil] could not load image, error code = {0}", code));
+                }
 
                 return LoadImage(img);
 
