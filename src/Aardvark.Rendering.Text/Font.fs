@@ -4,14 +4,10 @@
 #nowarn "51"
 
 open System
-open System.Linq
-open System.Threading
-open System.Collections.Generic
 open System.Collections.Concurrent
 open System.Runtime.CompilerServices
 open Aardvark.Base
-open Aardvark.Base.Rendering
-open System.Drawing
+open Aardvark.Rendering
 
 
 [<Flags>]

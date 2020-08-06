@@ -2,6 +2,7 @@
 
 open FSharp.Data.Adaptive
 open Aardvark.Base
+open Aardvark.Rendering
 open Aardvark.Rendering.Text
 open Aardvark.Rendering.Text.BvhImpl
 
