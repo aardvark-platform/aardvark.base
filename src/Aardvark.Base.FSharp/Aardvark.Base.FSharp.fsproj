@@ -19,6 +19,7 @@
     <Compile Include="Prelude\Measures.fs" />
     <Compile Include="Prelude\Lens.fs" />
     <Compile Include="Prelude\Monoid.fs" />
+    <Compile Include="Prelude\AverageWindow.fs" />
     <Compile Include="Interop\Dictionary.fs" />
     <Compile Include="Interop\Symbol.fs" />
     <Compile Include="Interop\Vectors.fs" />
@@ -30,6 +31,8 @@
     <Compile Include="Interop\CSharpList.fs" />
     <Compile Include="Interop\Tensors.fs" />
     <Compile Include="Interop\NativeTensors.fs" />
+    <Compile Include="Interop\ImageTrafo.fs" />
+    <Compile Include="Interop\PixImageCube.fs" />
     <None Include="Datastructures\Mutable\NativeTensorGenerator.fsx" />
     <Compile Include="Datastructures\Mutable\NativeTensorGenerated.fs" />
     <Compile Include="Datastructures\Mutable\NativeTensorExtensions.fs" />
@@ -41,6 +44,7 @@
     <Compile Include="Datastructures\Mutable\StableSet.fs" />
     <Compile Include="Datastructures\Mutable\ConcurrentHashQueue.fs" />
     <Compile Include="Datastructures\Mutable\OrderMaintenanceTrie.fs" />
+    <Compile Include="Datastructures\Mutable\ReferenceCountingSet.fs" />
     <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />
     <Compile Include="Datastructures\Immutable\Graph.fs" />
