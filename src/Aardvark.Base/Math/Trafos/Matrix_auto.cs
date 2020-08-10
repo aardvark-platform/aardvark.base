@@ -30,8 +30,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22i(int value)
         {
-            M00 = value; M01 = value; 
-            M10 = value; M11 = value; 
+            M00 = value; M01 = 0; 
+            M10 = 0; M11 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2128,8 +2128,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22l(long value)
         {
-            M00 = value; M01 = value; 
-            M10 = value; M11 = value; 
+            M00 = value; M01 = 0; 
+            M10 = 0; M11 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4114,8 +4114,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22f(float value)
         {
-            M00 = value; M01 = value; 
-            M10 = value; M11 = value; 
+            M00 = value; M01 = 0; 
+            M10 = 0; M11 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6361,8 +6361,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M22d(double value)
         {
-            M00 = value; M01 = value; 
-            M10 = value; M11 = value; 
+            M00 = value; M01 = 0; 
+            M10 = 0; M11 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -8508,8 +8508,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23i(int value)
         {
-            M00 = value; M01 = value; M02 = value; 
-            M10 = value; M11 = value; M12 = value; 
+            M00 = value; M01 = 0; M02 = 0; 
+            M10 = 0; M11 = value; M12 = 0; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10574,8 +10574,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23l(long value)
         {
-            M00 = value; M01 = value; M02 = value; 
-            M10 = value; M11 = value; M12 = value; 
+            M00 = value; M01 = 0; M02 = 0; 
+            M10 = 0; M11 = value; M12 = 0; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -12528,8 +12528,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23f(float value)
         {
-            M00 = value; M01 = value; M02 = value; 
-            M10 = value; M11 = value; M12 = value; 
+            M00 = value; M01 = 0; M02 = 0; 
+            M10 = 0; M11 = value; M12 = 0; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14589,8 +14589,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M23d(double value)
         {
-            M00 = value; M01 = value; M02 = value; 
-            M10 = value; M11 = value; M12 = value; 
+            M00 = value; M01 = 0; M02 = 0; 
+            M10 = 0; M11 = value; M12 = 0; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16540,9 +16540,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33i(int value)
         {
-            M00 = value; M01 = value; M02 = value; 
-            M10 = value; M11 = value; M12 = value; 
-            M20 = value; M21 = value; M22 = value; 
+            M00 = value; M01 = 0; M02 = 0; 
+            M10 = 0; M11 = value; M12 = 0; 
+            M20 = 0; M21 = 0; M22 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -19210,9 +19210,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33l(long value)
         {
-            M00 = value; M01 = value; M02 = value; 
-            M10 = value; M11 = value; M12 = value; 
-            M20 = value; M21 = value; M22 = value; 
+            M00 = value; M01 = 0; M02 = 0; 
+            M10 = 0; M11 = value; M12 = 0; 
+            M20 = 0; M21 = 0; M22 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -21754,9 +21754,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33f(float value)
         {
-            M00 = value; M01 = value; M02 = value; 
-            M10 = value; M11 = value; M12 = value; 
-            M20 = value; M21 = value; M22 = value; 
+            M00 = value; M01 = 0; M02 = 0; 
+            M10 = 0; M11 = value; M12 = 0; 
+            M20 = 0; M21 = 0; M22 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -24730,9 +24730,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M33d(double value)
         {
-            M00 = value; M01 = value; M02 = value; 
-            M10 = value; M11 = value; M12 = value; 
-            M20 = value; M21 = value; M22 = value; 
+            M00 = value; M01 = 0; M02 = 0; 
+            M10 = 0; M11 = value; M12 = 0; 
+            M20 = 0; M21 = 0; M22 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -27592,9 +27592,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34i(int value)
         {
-            M00 = value; M01 = value; M02 = value; M03 = value; 
-            M10 = value; M11 = value; M12 = value; M13 = value; 
-            M20 = value; M21 = value; M22 = value; M23 = value; 
+            M00 = value; M01 = 0; M02 = 0; M03 = 0; 
+            M10 = 0; M11 = value; M12 = 0; M13 = 0; 
+            M20 = 0; M21 = 0; M22 = value; M23 = 0; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -30107,9 +30107,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34l(long value)
         {
-            M00 = value; M01 = value; M02 = value; M03 = value; 
-            M10 = value; M11 = value; M12 = value; M13 = value; 
-            M20 = value; M21 = value; M22 = value; M23 = value; 
+            M00 = value; M01 = 0; M02 = 0; M03 = 0; 
+            M10 = 0; M11 = value; M12 = 0; M13 = 0; 
+            M20 = 0; M21 = 0; M22 = value; M23 = 0; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32496,9 +32496,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34f(float value)
         {
-            M00 = value; M01 = value; M02 = value; M03 = value; 
-            M10 = value; M11 = value; M12 = value; M13 = value; 
-            M20 = value; M21 = value; M22 = value; M23 = value; 
+            M00 = value; M01 = 0; M02 = 0; M03 = 0; 
+            M10 = 0; M11 = value; M12 = 0; M13 = 0; 
+            M20 = 0; M21 = 0; M22 = value; M23 = 0; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -35132,9 +35132,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M34d(double value)
         {
-            M00 = value; M01 = value; M02 = value; M03 = value; 
-            M10 = value; M11 = value; M12 = value; M13 = value; 
-            M20 = value; M21 = value; M22 = value; M23 = value; 
+            M00 = value; M01 = 0; M02 = 0; M03 = 0; 
+            M10 = 0; M11 = value; M12 = 0; M13 = 0; 
+            M20 = 0; M21 = 0; M22 = value; M23 = 0; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37644,10 +37644,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44i(int value)
         {
-            M00 = value; M01 = value; M02 = value; M03 = value; 
-            M10 = value; M11 = value; M12 = value; M13 = value; 
-            M20 = value; M21 = value; M22 = value; M23 = value; 
-            M30 = value; M31 = value; M32 = value; M33 = value; 
+            M00 = value; M01 = 0; M02 = 0; M03 = 0; 
+            M10 = 0; M11 = value; M12 = 0; M13 = 0; 
+            M20 = 0; M21 = 0; M22 = value; M23 = 0; 
+            M30 = 0; M31 = 0; M32 = 0; M33 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40729,10 +40729,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44l(long value)
         {
-            M00 = value; M01 = value; M02 = value; M03 = value; 
-            M10 = value; M11 = value; M12 = value; M13 = value; 
-            M20 = value; M21 = value; M22 = value; M23 = value; 
-            M30 = value; M31 = value; M32 = value; M33 = value; 
+            M00 = value; M01 = 0; M02 = 0; M03 = 0; 
+            M10 = 0; M11 = value; M12 = 0; M13 = 0; 
+            M20 = 0; M21 = 0; M22 = value; M23 = 0; 
+            M30 = 0; M31 = 0; M32 = 0; M33 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -43674,10 +43674,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44f(float value)
         {
-            M00 = value; M01 = value; M02 = value; M03 = value; 
-            M10 = value; M11 = value; M12 = value; M13 = value; 
-            M20 = value; M21 = value; M22 = value; M23 = value; 
-            M30 = value; M31 = value; M32 = value; M33 = value; 
+            M00 = value; M01 = 0; M02 = 0; M03 = 0; 
+            M10 = 0; M11 = value; M12 = 0; M13 = 0; 
+            M20 = 0; M21 = 0; M22 = value; M23 = 0; 
+            M30 = 0; M31 = 0; M32 = 0; M33 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -47050,10 +47050,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public M44d(double value)
         {
-            M00 = value; M01 = value; M02 = value; M03 = value; 
-            M10 = value; M11 = value; M12 = value; M13 = value; 
-            M20 = value; M21 = value; M22 = value; M23 = value; 
-            M30 = value; M31 = value; M32 = value; M33 = value; 
+            M00 = value; M01 = 0; M02 = 0; M03 = 0; 
+            M10 = 0; M11 = value; M12 = 0; M13 = 0; 
+            M20 = 0; M21 = 0; M22 = value; M23 = 0; 
+            M30 = 0; M31 = 0; M32 = 0; M33 = value; 
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

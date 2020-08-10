@@ -82,7 +82,7 @@ namespace Aardvark.Base
         public __nmtype__(__ftype__ value)
         {
             //# n.ForEach(r => {
-            /*# m.ForEach(s => { */M__r____s__ = value; /*# }); */
+            /*# m.ForEach(s => { var v = r == s ? "value" : "0"; */M__r____s__ = __v__; /*# }); */
             //# });
         }
 
