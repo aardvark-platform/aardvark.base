@@ -752,7 +752,7 @@ namespace Aardvark.Base
 
             // calculate T of point projected to line.Ray2d and clamp to [0, 1]
             var t = Fun.Clamp(Vec.Dot(a, u) / lu2, 0, 1);
-            // calculate distance to projected point
+            // calculate distance between query point and clamped projected point
             return Vec.Distance(point, line.P0 + u * t);
         }
         #endregion
