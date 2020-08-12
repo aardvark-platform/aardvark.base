@@ -664,6 +664,47 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Ray2d - Ray2d
+
+        /// <summary>
+        /// returns the minimal distance between the given rays.
+        /// </summary>
+        public static double GetMinimalDistanceTo(this Ray2d ray0, Ray2d ray1)
+            => ray0.GetMinimalDistanceTo(ray1, out double t0, out double t1);
+
+        /// <summary>
+        /// returns the minimal distance between the given rays.
+        /// t0 and t1 hold the correspunding ray parameters.
+        /// if both rays are parallel the t0 and t1 are from the origin of ray1
+        /// </summary>
+        public static double GetMinimalDistanceTo(this Ray2d ray0, Ray2d ray1, out double t0, out double t1)
+        {
+            // NOTE: copy of Ray3d to Ray3d distance
+
+            var a = ray0.Origin - ray1.Origin;
+            var u = ray0.Direction.Normalized;
+            var v = ray1.Direction.Normalized;
+
+            var uDotv = u.Dot(v);
+            if (uDotv.Abs().ApproximateEquals(1, Constant<double>.PositiveTinyValue)) // rays are parallel
+            {
+                // return origin of ray 1
+                t1 = 0;
+                t0 = ray0.GetT(ray1.Origin);
+            }
+            else
+            {
+                // change by lui: added normalization (ortherwise in case the directions are not normalized t0 and t1 are wrong)
+                t1 = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1.0);
+                t0 = (t1 * uDotv - a.Dot(u)) / ray0.Direction.Length;
+                t1 = t1 / ray1.Direction.Length;
+            }
+
+            return (t1 * ray1.Direction - a - t0 * ray0.Direction).Length;
+        }
+
+        #endregion
+
         #region Box2d - Box2d
 
         public static double GetMinimalDistanceTo(this Box2d box0, Box2d box1)
@@ -696,8 +737,51 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region V2d - Line2d
+        /// <summary>
+        /// returns the minimal distance between the point and the Line
+        /// </summary>
+        public static double GetMinimalDistanceTo(this V2d point, Line2d line)
+        {
+            var a = point - line.P0;
+            var u = line.P1 - line.P0;
+            var lu2 = u.LengthSquared;
+
+            // check if line is degenerated
+            if (lu2.IsTiny()) return a.Length;
+
+            // calculate T of point projected to line.Ray2d and clamp to [0, 1]
+            var t = Fun.Clamp(Vec.Dot(a, u) / lu2, 0, 1);
+            // calculate distance to projected point
+            return Vec.Distance(point, line.P0 + u * t);
+        }
+        #endregion
+
+        #region Line2d - Line2d
+        /// <summary>
+        /// returns the minimal distance between the given lines.
+        /// </summary>
+        public static double GetMinimalDistanceTo(this Line2d l0, Line2d l1)
+        {
+            var r0 = l0.Ray2d;
+            var r1 = l1.Ray2d;
+
+            if (!r0.IsParallelTo(r1)) // t1 and t0 of following computation are invalid if lines are parallel
+            {
+                var distance = r0.GetMinimalDistanceTo(r1, out double t0, out double t1);
+
+                if (t0 >= 0 && t0 <= 1 && t1 >= 0 && t1 <= 1)
+                    return distance;
+            }
+
+            // lines are parallel or t0 and t1 are outside of the line
+            return Fun.Min(l0.P0.GetMinimalDistanceTo(l1), l0.P1.GetMinimalDistanceTo(l1),
+                l1.P0.GetMinimalDistanceTo(l0), l1.P1.GetMinimalDistanceTo(l0));
+        }
+        #endregion
+
         #region V3d - Line3d
-        
+
         /*  Performance Test .........................................................................
                 Faster Method:                                      V3d.MinimalDistanceTo(Line3d)
                 V3d.MinimalDistanceTo(Line3d):                      2,418s
@@ -877,7 +961,7 @@ namespace Aardvark.Base
                     return distance;
             }
 
-            // t0 and t1 are outside of line
+            // lines are parallel or t0 and t1 are outside of the line
             return Fun.Min(l0.P0.GetMinimalDistanceTo(l1), l0.P1.GetMinimalDistanceTo(l1),
                 l1.P0.GetMinimalDistanceTo(l0), l1.P1.GetMinimalDistanceTo(l0));
         }
