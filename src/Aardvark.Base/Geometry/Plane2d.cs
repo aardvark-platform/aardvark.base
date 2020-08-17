@@ -137,6 +137,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// The signed height of the supplied point over the plane.
+        /// IMPORTANT: If the plane is not normalized the returned height is scaled with the magnitued of the plane normal.
         /// </summary>
         public double Height(V2d p) => Vec.Dot(Normal, p) - Distance;
 

@@ -58,7 +58,7 @@ namespace Aardvark.Base
 
         public Line2d Line2d => new Line2d(Origin, Origin + Direction);
 
-        public Plane2d Plane2d => new Plane2d(new V2d(-Direction.Y, Direction.X), Origin);
+        public Plane2d Plane2d => new Plane2d(new V2d(-Direction.Y, Direction.X), Origin); // Direction.Rot90
 
         public Ray2d Reversed => new Ray2d(Origin, -Direction);
 
