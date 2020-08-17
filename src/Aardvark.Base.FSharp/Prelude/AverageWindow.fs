@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Rendering
+﻿namespace Aardvark.Base
 
 /// Represents a moving average window of a sequence.
 /// It builds the average of the last N inserted values.
