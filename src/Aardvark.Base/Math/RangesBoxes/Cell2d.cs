@@ -249,7 +249,7 @@ namespace Aardvark.Base
         /// True if one corner of this cell touches the origin.
         /// Centered cells DO NOT touch the origin.
         /// </summary>
-        public bool TouchesOrigin => IsCenteredAtOrigin ? false : (X == -1 || X == 0) && (Y == -1 || Y == 0);
+        public bool TouchesOrigin => !IsCenteredAtOrigin && (X == -1 || X == 0) && (Y == -1 || Y == 0);
 
         /// <summary>
         /// Gets cell's bounds.
@@ -295,14 +295,14 @@ namespace Aardvark.Base
         public int? GetQuadrant(Cell2d other)
         {
             // if other cell is bigger or same size, 
-            // then it cannot be contained in any octant
+            // then it cannot be contained in any quadrant
             if (other.Exponent >= Exponent) return null;
 
             if (IsCenteredAtOrigin)
             {
                 if (other.IsCenteredAtOrigin) return null;
 
-                // scale up other to scale of this cell's quadrants
+                // scale up other to scale of this cell's octants
                 // where coord values 0 or 1 mean left or right,
                 // and all other values mean that the other cell is outside
                 other <<= Exponent - other.Exponent - 1;
@@ -319,9 +319,11 @@ namespace Aardvark.Base
                 // where coord values -1 or 0 mean left or right,
                 // and all other values mean that the other cell is outside
                 other <<= Exponent - other.Exponent - 1;
+                var x = X << 1;
+                var y = Y << 1;
                 var o = 0;
-                if (other.X == 1) o = 1; else if (other.X != 0) return null;
-                if (other.Y == 1) o |= 2; else if (other.Y != 0) return null;
+                if (other.X == x + 1) o = 1; else if (other.X != x) return null;
+                if (other.Y == y + 1) o |= 2; else if (other.Y != y) return null;
                 return o;
             }
         }
@@ -380,7 +382,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public override bool Equals(object obj) => obj is Cell2d && this == (Cell2d)obj;
+        public override bool Equals(object obj) => obj is Cell2d other && this == other;
 
         /// <summary>
         /// </summary>
