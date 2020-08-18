@@ -2628,6 +2628,12 @@ namespace Aardvark.Base
             #endif
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this byte x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
@@ -2637,6 +2643,12 @@ namespace Aardvark.Base
         {
             return Math.Pow(x, y);
         }
+
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this byte x, double y)
+            => Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2675,6 +2687,12 @@ namespace Aardvark.Base
             #endif
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this sbyte x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
@@ -2684,6 +2702,12 @@ namespace Aardvark.Base
         {
             return Math.Pow(x, y);
         }
+
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this sbyte x, double y)
+            => Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2723,6 +2747,12 @@ namespace Aardvark.Base
             #endif
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this short x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
@@ -2732,6 +2762,12 @@ namespace Aardvark.Base
         {
             return Math.Pow(x, y);
         }
+
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this short x, double y)
+            => Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2771,6 +2807,12 @@ namespace Aardvark.Base
             #endif
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this ushort x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
@@ -2780,6 +2822,12 @@ namespace Aardvark.Base
         {
             return Math.Pow(x, y);
         }
+
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this ushort x, double y)
+            => Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2814,6 +2862,12 @@ namespace Aardvark.Base
             return (float)Math.Pow(x, y);
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this int x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
@@ -2823,6 +2877,12 @@ namespace Aardvark.Base
         {
             return Math.Pow(x, y);
         }
+
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this int x, double y)
+            => Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2854,6 +2914,12 @@ namespace Aardvark.Base
             return (float)Math.Pow(x, y);
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this uint x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified power.
         /// </summary>
@@ -2863,6 +2929,12 @@ namespace Aardvark.Base
         {
             return Math.Pow(x, y);
         }
+
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this uint x, double y)
+            => Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2913,9 +2985,15 @@ namespace Aardvark.Base
             return (float)Math.Pow(x, y);
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this long x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified power.
-        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double. 
+        /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2923,6 +3001,12 @@ namespace Aardvark.Base
         {
             return Math.Pow(x, y);
         }
+
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this long x, double y)
+            => Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -2974,9 +3058,15 @@ namespace Aardvark.Base
             return (float)Math.Pow(x, y);
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this ulong x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified power.
-        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double. 
+        /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2984,6 +3074,12 @@ namespace Aardvark.Base
         {
             return Math.Pow(x, y);
         }
+
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this ulong x, double y)
+            => Pow(x, y);
 
         /// <summary>
         /// Returns the number raised to the specified integer power.
@@ -3038,6 +3134,12 @@ namespace Aardvark.Base
             #endif
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Power(this float x, float y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified integer power.
         /// The exponent <paramref name="y"/> must not be negative.
@@ -3068,6 +3170,12 @@ namespace Aardvark.Base
             return Math.Pow(x, y);
         }
 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Power(this double x, double y)
+            => Pow(x, y);
+
         /// <summary>
         /// Returns the number raised to the specified integer power.
         /// The exponent <paramref name="y"/> must not be negative.
@@ -3094,7 +3202,7 @@ namespace Aardvark.Base
         #region Exp and Log
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3148,7 +3256,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3202,7 +3310,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3256,7 +3364,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3310,7 +3418,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3364,7 +3472,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3418,7 +3526,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [Pure]
@@ -3477,7 +3585,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// Note: This function uses a double representation internally, but not all ulong values can be represented exactly as double.
         /// </summary>
         [Pure]
@@ -3536,7 +3644,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3607,7 +3715,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4189,7 +4297,7 @@ namespace Aardvark.Base
         #region ModP
 
         /// <summary>
-        /// Returns the positive modulo operation a mod b giving values between [0,b[ 
+        /// Returns the positive modulo operation a mod b giving values between [0,b[
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
@@ -4203,7 +4311,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the positive modulo operation a mod b giving values between [0,b[ 
+        /// Returns the positive modulo operation a mod b giving values between [0,b[
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
@@ -4217,7 +4325,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the positive modulo operation a mod b giving values between [0,b[ 
+        /// Returns the positive modulo operation a mod b giving values between [0,b[
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
@@ -4231,7 +4339,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the positive modulo operation a mod b giving values between [0,b[ 
+        /// Returns the positive modulo operation a mod b giving values between [0,b[
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
@@ -4245,7 +4353,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the positive modulo operation a mod b giving values between [0,b[ 
+        /// Returns the positive modulo operation a mod b giving values between [0,b[
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
@@ -4259,7 +4367,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the positive modulo operation a mod b giving values between [0,b[ 
+        /// Returns the positive modulo operation a mod b giving values between [0,b[
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
@@ -4273,7 +4381,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the positive modulo operation a mod b giving values between [0,b[ 
+        /// Returns the positive modulo operation a mod b giving values between [0,b[
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
@@ -5475,7 +5583,7 @@ namespace Aardvark.Base
         }
 
 
-        #endregion 
+        #endregion
 
         #region CountNegatives
 
@@ -5557,7 +5665,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+
         #region Primes
 
         /// <summary>

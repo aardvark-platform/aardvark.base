@@ -248,7 +248,7 @@ namespace Aardvark.Base
             //# });
         }
 
-        //# } 
+        //# }
         //# if (d == 3 || d == 4) {
         //#     foreach (var t1 in Meta.ColorTypes) { var ft1 = t1.FieldType;
         //#         if (coltovecsupported(ft1, ft)) {
@@ -279,7 +279,7 @@ namespace Aardvark.Base
 
         //#     } }
         //# }
-        #endregion 
+        #endregion
 
         #region Conversions
 
@@ -558,7 +558,7 @@ namespace Aardvark.Base
         }
 
         //# }); // quantArray
-        //# }); // condArray 
+        //# }); // condArray
         /// <summary>
         /// Returns true if any component of the vector is NaN, false otherwise.
         /// </summary>
@@ -646,7 +646,7 @@ namespace Aardvark.Base
         {
             get { return new __vtype__(/*# d.ForEach(i => { */__ftype__.NegativeInfinity/*# }, comma); */); }
         }
-        
+
         /// <summary>
         /// All elements set to positive infinity.
         /// </summary>
@@ -654,7 +654,7 @@ namespace Aardvark.Base
         {
             get { return new __vtype__(/*# d.ForEach(i => { */__ftype__.PositiveInfinity/*# }, comma); */); }
         }
-     
+
         /// <summary>
         /// All elements set to NaN.
         /// </summary>
@@ -796,7 +796,7 @@ namespace Aardvark.Base
 
         //# } // d = 3
         //# } // ft.IsReal
-        #endregion  
+        #endregion
 
         #region Norms
 
@@ -840,7 +840,7 @@ namespace Aardvark.Base
         public __ctype__ Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get 
+            get
             {
                 //# if (ft == Meta.FloatType && d == 4) {
 #if NETCOREAPP3_0
@@ -851,7 +851,7 @@ namespace Aardvark.Base
                 return Fun.Sqrt(/*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */);
             }
         }
-        
+
         /// <summary>
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |x| + |y| + ...
@@ -910,7 +910,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Vector rotated 90° counter clockwise: (-Y, X)
         /// </summary>
-        public __vtype__ Rot90 
+        public __vtype__ Rot90
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new __vtype__(-Y, X); }
@@ -1050,7 +1050,7 @@ namespace Aardvark.Base
         }
 
         //# } // d > 3
-        //# } // ft.IsReal   
+        //# } // ft.IsReal
         #endregion
 
         #region Static methods for F# core and Aardvark library support
@@ -1211,24 +1211,6 @@ namespace Aardvark.Base
         public static __vtype__ Log10(__vtype__ v)
             => Fun.Log10(v);
 
-        /// <summary>
-        /// Returns a vector, with each element being the result of pow() applied
-        /// to each element pair of the given vectors.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Pow(__vtype__ x, __vtype__ y)
-            => Fun.Pow(x, y);
-
-        /// <summary>
-        /// Returns a vector, with each element being the result of pow() applied
-        /// to it and <paramref name="y"/>.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Pow(__vtype__ x, __ftype__ y)
-            => Fun.Pow(x, y);
-
         //# } // ft.IsReal
         /// <summary>
         /// Returns the componentwise minimum vector.
@@ -1366,8 +1348,8 @@ namespace Aardvark.Base
 
         //#     }
         //# }
-        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;, 
-        /// since these are not defined in a Vector space. 
+        /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;,
+        /// since these are not defined in a Vector space.
         /// Use AllSmaller() and similar comparators!
         #endregion
 
@@ -1427,7 +1409,7 @@ namespace Aardvark.Base
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
-        
+
         public string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
@@ -1449,7 +1431,7 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.GetCombined(/*# fields.ForEach(f => { */__f__/*# }, comma); */); 
+            return HashCode.GetCombined(/*# fields.ForEach(f => { */__f__/*# }, comma); */);
         }
 
         public override bool Equals(object other)
@@ -1495,7 +1477,7 @@ namespace Aardvark.Base
         //# var getName = new Func<bool, int, string>((anyN, i) => anyN && i == 1 ? "P" : snames[i]);
         //# for (int xi = 0; xi < s; xi++) { var x = svalues[xi];
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
-        //#         var anyN = xi == 2 || yi == 2; // replace I by P if any N 
+        //#         var anyN = xi == 2 || yi == 2; // replace I by P if any N
         //#         var name = getName(anyN, xi) + getName(anyN, yi);
         //#         if (xi < 3 && yi < 3) { // check for constant -> otherwise property
         //#             if (d == 2) { // only constants of matching size
@@ -1514,14 +1496,14 @@ namespace Aardvark.Base
         //# for (int xi = 0; xi < s; xi++) { var x = svalues[xi];
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#         for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
-        //#             var anyN = xi == 2 || yi == 2 || zi == 2; // replace I by P if any N 
+        //#             var anyN = xi == 2 || yi == 2 || zi == 2; // replace I by P if any N
         //#             var name = getName(anyN, xi) + getName(anyN, yi) + getName(anyN, zi);
         //#             if (xi < 3 && yi < 3 && zi < 3) { // check for constant -> otherwise property
         //#                 if (d == 3) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public static __v3type__ __name__ => new __v3type__(__x__, __y__, __z__);   
-        //#                 } 
+        public static __v3type__ __name__ => new __v3type__(__x__, __y__, __z__);
+        //#                 }
         //#             }
         //#             else {
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1536,19 +1518,19 @@ namespace Aardvark.Base
         //#         for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#             for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
         //#                 for (int wi = 0; wi < s; wi++) { var w = svalues[wi];
-        //#                     var anyN = xi == 2 || yi == 2 || zi == 2 || wi == 2; // replace I by P if any N 
+        //#                     var anyN = xi == 2 || yi == 2 || zi == 2 || wi == 2; // replace I by P if any N
         //#                     var name = getName(anyN, xi) + getName(anyN, yi) + getName(anyN, zi) + getName(anyN, wi);
         //#                     if (xi < 3 && yi < 3 && zi < 3 && wi < 3) { // check for constant -> otherwise property
         //#                         if (d == 4) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public static __v4type__ __name__ => new __v4type__(__x__, __y__, __z__, __w__);
-        //#                         } 
+        //#                         }
         //#                     }
         //#                     else {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __v4type__ __name__ { get { return new __v4type__(__x__, __y__, __z__, __w__); } }      
+        public __v4type__ __name__ { get { return new __v4type__(__x__, __y__, __z__, __w__); } }
         //#                     }
         //#                 }
         //#             }
@@ -1629,7 +1611,7 @@ namespace Aardvark.Base
         //#    };
         //# foreach (var group in Meta.ElementwiseFuns.Keys) {
         #region __group__
-        
+
         //# foreach (var fun in Meta.ElementwiseFuns[group]) {
         //# if (!fun.Domain.Contains(ft)) continue;
         //# var retType = Meta.VecTypeOf(d, fun.ReturnType ?? ft).Name;
@@ -1647,7 +1629,7 @@ namespace Aardvark.Base
         var ext = fun.IsExtension && (i == 0);
         if (ext) { */this /*# } */__ptype__ __name__/*#}, comma); */)
         {
-            return new __retType__(/*# fields.ForEach(f => {*/__fun.Name__(/*# fun.Parameters.ForEach(p => { 
+            return new __retType__(/*# fields.ForEach(f => {*/__fun.Name__(/*# fun.Parameters.ForEach(p => {
             */__p.Name__/*#if (!p.IsScalar()) {*/.__f__/*#} }, comma); */)/*#}, comma); */);
         }
 
@@ -2088,7 +2070,7 @@ namespace Aardvark.Base
         //# if (d == 2) {
         /// <summary>
         /// Returns the cross product of vector a.
-        /// In 2D the cross product is simply a vector that is normal 
+        /// In 2D the cross product is simply a vector that is normal
         /// to the given vector (i.e. {x,y} -> {-y,x})
         /// </summary>
         public static __vtype__ Cross(this __vtype__ a)
@@ -2329,7 +2311,7 @@ namespace Aardvark.Base
             return /*# tpc.ForEach(i => { */p__i__ * w.E__i__/*# }, add); */;
         }
 
-        //# } // tpc       
+        //# } // tpc
         //# } // isreal
         #endregion
 
@@ -2477,7 +2459,7 @@ namespace Aardvark.Base
         //# }
         //# }
         //# if (ft.IsReal) {
-        //# var cast = (ft != Meta.DoubleType) ? "(" + ftype + ") " : ""; 
+        //# var cast = (ft != Meta.DoubleType) ? "(" + ftype + ") " : "";
         //# variants = (ft == Meta.FloatType) ? new string[] { "" } : new string[] { "", "Full" };
         //# foreach (var v in variants) {
         //# if (d == 2) {
