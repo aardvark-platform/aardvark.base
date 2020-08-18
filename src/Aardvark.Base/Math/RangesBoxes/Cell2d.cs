@@ -302,7 +302,7 @@ namespace Aardvark.Base
             {
                 if (other.IsCenteredAtOrigin) return null;
 
-                // scale up other to scale of this cell's octants
+                // scale up other to scale of this cell's quadrants
                 // where coord values 0 or 1 mean left or right,
                 // and all other values mean that the other cell is outside
                 other <<= Exponent - other.Exponent - 1;
