@@ -161,7 +161,7 @@ namespace Aardvark.Tests
         public void CanSerializeCellToBinary()
         {
             var a = new Cell(1, 2, 3, -1);
-            var buffer = a.ToByteArray();
+            _ = a.ToByteArray();
         }
 
         [Test]
@@ -638,7 +638,6 @@ namespace Aardvark.Tests
             Assert.IsTrue(c.GetOctant(new Cell(0, 0, 0, 2)) == null);
 
             Assert.IsTrue(c.GetOctant(new Cell(-1, -1, -1, 0)) == 0);
-            var foo = c.GetOctant(new Cell(0, -1, -1, 0));
             Assert.IsTrue(c.GetOctant(new Cell( 0, -1, -1, 0)) == 1);
             Assert.IsTrue(c.GetOctant(new Cell(-1,  0, -1, 0)) == 2);
             Assert.IsTrue(c.GetOctant(new Cell( 0,  0, -1, 0)) == 3);

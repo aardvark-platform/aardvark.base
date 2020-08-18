@@ -222,8 +222,9 @@ namespace Aardvark.Base
             return winding;
         }
 
-        private static Func<V2d, V2d, bool> c_ccwFun = (a, b) => (a.X * b.Y - a.Y * b.X) >= 0.0;
-        private static Func<V2d, V2d, bool> c_cwFun = (a, b) => (a.X * b.Y - a.Y * b.X) <= 0.0;
+        private const int V = 1;
+        private static readonly Func<V2d, V2d, bool> c_ccwFun = (a, b) => (a.X * b.Y - a.Y * b.X) >= 0.0;
+        private static readonly Func<V2d, V2d, bool> c_cwFun = (a, b) => (a.X * b.Y - a.Y * b.X) <= 0.0;
 
         /// <summary>
         /// Check if a polygon has a specified winding.
@@ -278,15 +279,14 @@ namespace Aardvark.Base
         {
             var pointCount = poly.PointCount;
             if (absoluteEpsilon < 0.0) throw new ArgumentOutOfRangeException();
-            int i = 0;
-            int u1 = 0;
-            int worst = 1;
+            int worst = V;
             V2d n0;
 
             //Triangles cannot have self-intersections
             if (pointCount == 3) return 1;
 
             Line2d line;
+            int i;
             for (i = 0; i < pointCount - 1; i++)
             {
                 //line between i and i+1
@@ -299,7 +299,7 @@ namespace Aardvark.Base
                 {
                     //Polygon not degenerated -> Line cannot intersect with line directly before and directly after
                     //All lines prior to (u,u1) have already been tested with (i,i+1)
-                    u1 = (u + 1) % pointCount;
+                    int u1 = (u + 1) % pointCount;
 
                     if (line.IntersectsLine(poly[u], poly[u1]))
                     {
@@ -398,7 +398,7 @@ namespace Aardvark.Base
         /// other supplied polygon. O(n).
         /// </summary>
         public static double MinDistanceTo(this Polygon2d polygon, Polygon2d polygon1)
-            => polygon.MinDistanceTo(polygon1, out int pi0, out int pi1, out bool lineOnThis);
+            => polygon.MinDistanceTo(polygon1, out _, out _, out _);
 
         /// <summary>
         /// Returns the minimal distance between the polygon and the non-
