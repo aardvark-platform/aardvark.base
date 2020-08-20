@@ -7,7 +7,7 @@ nuget Microsoft.NETFramework.ReferenceAssemblies >= 1.0.0 lowest_matching: true
 nuget Aardvark.Base.TypeProviders  ~> 4.5.15
 nuget System.Collections.Immutable ~> 1.7.0
 
-nuget System.Reactive              ~> 4.1.5
+nuget System.Reactive              >= 4.3.1 lowest_matching: true
 nuget System.Dynamic.Runtime       ~> 4.3.0
 nuget DevILSharp                   ~> 0.2.9
 nuget System.Reflection.Metadata   ~> 1.8.0
