@@ -245,7 +245,7 @@ namespace Aardvark.Base
         /// True if one corner of this cell touches the origin.
         /// Centered cells DO NOT touch the origin.
         /// </summary>
-        public bool TouchesOrigin => IsCenteredAtOrigin ? false : (X == -1 || X == 0) && (Y == -1 || Y == 0) && (Z == -1 || Z == 0);
+        public bool TouchesOrigin => !IsCenteredAtOrigin && (X == -1 || X == 0) && (Y == -1 || Y == 0) && (Z == -1 || Z == 0);
 
         /// <summary>
         /// Gets cell's bounds.
@@ -383,7 +383,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// </summary>
-        public override bool Equals(object obj) => obj is Cell && this == (Cell)obj;
+        public override bool Equals(object obj) => obj is Cell cell && this == cell;
 
         /// <summary>
         /// </summary>
@@ -416,13 +416,11 @@ namespace Aardvark.Base
             return new Cell(x, y, z, e);
         }
 
-#pragma warning disable IDE0060
         /// <summary>
         /// </summary>
         [Obsolete("Parameter 'offset' is not respected, use Parse(buffer) instead.")]
         public static Cell Parse(byte[] buffer, int offset)
             => Parse(buffer);
-#pragma warning restore IDE0060
 
         #endregion
 

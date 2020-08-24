@@ -429,7 +429,7 @@ namespace Aardvark.Base
         /// If the segments are parallel and overlap, then no intersection is returned.
         /// </summary>
         public static bool IntersectsLine(this Line2d line, V2d p0, V2d p1)
-            => line.IntersectsLine(p0, p1, out V2d dummy);
+            => line.IntersectsLine(p0, p1, out _);
 
         /// <summary>
         /// Returns true if the line segment intersects the line segment between p0 and p1.
@@ -611,8 +611,7 @@ namespace Aardvark.Base
             Line2d line
             )
         {
-            double t;
-            return ray.IntersectsLine(line.P0,line.P1, out t);
+            return ray.IntersectsLine(line.P0, line.P1, out _);
         }
 
         /// <summary>
@@ -1338,14 +1337,14 @@ namespace Aardvark.Base
         {
             if (nx.IsTiny()) // horizontal
             {
-                if (d <= ymin || d >= ymax) { line = default(Line2d); return false; }
+                if (d <= ymin || d >= ymax) { line = default; return false; }
                 line = new Line2d(new V2d(xmin, d), new V2d(xmax, d));
                 return true;
             }
 
             if (ny.IsTiny()) // vertical
             {
-                if (d <= xmin || d >= xmax) { line = default(Line2d); return false; }
+                if (d <= xmin || d >= xmax) { line = default; return false; }
                 line = new Line2d(new V2d(d, ymin), new V2d(d, ymax));
                 return true;
             }
@@ -1353,17 +1352,17 @@ namespace Aardvark.Base
             if (nx.Sign() != ny.Sign())
             {
                 double x0 = (d - ny * ymin) / nx;
-                if (x0 >= xmax) { line = default(Line2d); return false; }
+                if (x0 >= xmax) { line = default; return false; }
                 if (x0 > xmin) xmin = x0;
                 double x1 = (d - ny * ymax) / nx;
-                if (x1 <= xmin) { line = default(Line2d); return false; }
+                if (x1 <= xmin) { line = default; return false; }
                 if (x1 < xmax) xmax = x1;
 
                 double y0 = (d - nx * xmin) / ny;
-                if (y0 >= ymax) { line = default(Line2d); return false; }
+                if (y0 >= ymax) { line = default; return false; }
                 if (y0 > ymin) ymin = y0;
                 double y1 = (d - nx * xmax) / ny;
-                if (y1 <= ymin) { line = default(Line2d); return false; }
+                if (y1 <= ymin) { line = default; return false; }
                 if (y1 < ymax) ymax = y1;
 
                 line = new Line2d(new V2d(xmin, ymin), new V2d(xmax, ymax));
@@ -1371,16 +1370,16 @@ namespace Aardvark.Base
             else
             {
                 double x0 = (d - ny * ymax) / nx;
-                if (x0 >= xmax) { line = default(Line2d); return false; }
+                if (x0 >= xmax) { line = default; return false; }
                 if (x0 > xmin) xmin = x0;
                 double x1 = (d - ny * ymin) / nx;
-                if (x1 <= xmin) { line = default(Line2d); return false; }
+                if (x1 <= xmin) { line = default; return false; }
                 if (x1 < xmax) xmax = x1;
                 double y0 = (d - nx * xmax) / ny;
-                if (y0 >= ymax) { line = default(Line2d); return false; }
+                if (y0 >= ymax) { line = default; return false; }
                 if (y0 > ymin) ymin = y0;
                 double y1 = (d - nx * xmin) / ny;
-                if (y1 <= ymin) { line = default(Line2d); return false; }
+                if (y1 <= ymin) { line = default; return false; }
                 if (y1 < ymax) ymax = y1;
 
                 line = new Line2d(new V2d(xmax, ymin), new V2d(xmin, ymax));
@@ -1823,11 +1822,9 @@ namespace Aardvark.Base
         {
             double min = double.MaxValue;
             double max = double.MinValue;
-
-            double dotproduct = 0;
             foreach (var p in poly.Points)
             {
-                dotproduct = p.Dot(dir);
+                double dotproduct = p.Dot(dir);
 
                 if (dotproduct < min) min = dotproduct;
                 if (dotproduct > max) max = dotproduct;
@@ -1923,8 +1920,7 @@ namespace Aardvark.Base
             Triangle3d triangle
             )
         {
-            double temp;
-            return line.Ray3d.IntersectsTriangle(triangle.P0, triangle.P1, triangle.P2, 0.0, 1.0, out temp);
+            return line.Ray3d.IntersectsTriangle(triangle.P0, triangle.P1, triangle.P2, 0.0, 1.0, out _);
         }
 
         /// <summary>
@@ -1938,14 +1934,13 @@ namespace Aardvark.Base
             )
         {
             Ray3d ray = line.Ray3d;
-            double temp;
 
-            if (ray.IntersectsTriangle(triangle.P0, triangle.P1, triangle.P2, 0.0, 1.0, out temp))
+            if (ray.IntersectsTriangle(triangle.P0, triangle.P1, triangle.P2, 0.0, 1.0, out double temp))
             {
                 point = ray.GetPointOnRay(temp);
                 return true;
             }
-            else 
+            else
             {
                 point = V3d.NaN;
                 return false;
@@ -2007,8 +2002,7 @@ namespace Aardvark.Base
             Ray3d r1
             )
         {
-            double t0, t1;
-            return r0.Intersects(r1, out t0, out t1, Constant<double>.PositiveTinyValue);
+            return r0.Intersects(r1, out _, out _, Constant<double>.PositiveTinyValue);
         }
 
         /// <summary>
@@ -2034,8 +2028,7 @@ namespace Aardvark.Base
             double absoluteEpsilon
             )
         {
-            double t0, t1;
-            return r0.Intersects(r1, out t0, out t1, absoluteEpsilon);
+            return r0.Intersects(r1, out _, out _, absoluteEpsilon);
         }
 
         /// <summary>
@@ -2096,7 +2089,7 @@ namespace Aardvark.Base
         /// about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool IntersectsTriangle(this Ray3d ray, V3d p0, V3d p1, V3d p2, double tmin, double tmax)
-            => ray.IntersectsTriangle(p0, p1, p2, tmin, tmax, out double temp);
+            => ray.IntersectsTriangle(p0, p1, p2, tmin, tmax, out double _);
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
@@ -2133,7 +2126,7 @@ namespace Aardvark.Base
         /// about the hit point see the Ray3d.Hits method.
         /// </summary>
         public static bool IntersectsTrianglePointAndEdges(this Ray3d ray, V3d p0, V3d edge01, V3d edge02, double tmin, double tmax)
-            => ray.IntersectsTrianglePointAndEdges(p0, edge01, edge02, tmin, tmax, out double temp);
+            => ray.IntersectsTrianglePointAndEdges(p0, edge01, edge02, tmin, tmax, out _);
 
         /// <summary>
         /// Returns true if the ray and the triangle intersect within the
@@ -2206,7 +2199,7 @@ namespace Aardvark.Base
         /// supplied parameter interval of the ray.
         /// </summary>
         public static bool Intersects(this Ray3d ray, Polygon3d poly, double tmin, double tmax)
-            => ray.Intersects(poly, tmin, tmax, out double temp);
+            => ray.Intersects(poly, tmin, tmax, out _);
 
         /// <summary>
         /// Returns true if the ray and the polygon intersect within the
@@ -2339,8 +2332,7 @@ namespace Aardvark.Base
             Line3d line
             )
         {
-            V3d temp;
-            return tri.IntersectsLine(line.P0, line.P1, out temp);
+            return tri.IntersectsLine(line.P0, line.P1, out _);
         }
 
         /// <summary>
@@ -2451,8 +2443,7 @@ namespace Aardvark.Base
             Ray3d ray
             )
         {
-            double temp;
-            return tri.Intersects(ray, double.MinValue, double.MaxValue, out temp);
+            return tri.Intersects(ray, double.MinValue, double.MaxValue, out _);
         }
 
         /// <summary>
@@ -2465,8 +2456,7 @@ namespace Aardvark.Base
             double tmin, double tmax
             )
         {
-            double temp;
-            return tri.Intersects(ray, tmin, tmax, out temp);
+            return tri.Intersects(ray, tmin, tmax, out _);
         }
 
         /// <summary>
@@ -2509,14 +2499,13 @@ namespace Aardvark.Base
             Triangle3d t1
             )
         { 
-            V3d temp;
-            if (t0.IntersectsLine(t1.P0, t1.P1, out temp)) return true;
-            if (t0.IntersectsLine(t1.P1, t1.P2, out temp)) return true;
-            if (t0.IntersectsLine(t1.P2, t1.P0, out temp)) return true;
+            if (t0.IntersectsLine(t1.P0, t1.P1, out _)) return true;
+            if (t0.IntersectsLine(t1.P1, t1.P2, out _)) return true;
+            if (t0.IntersectsLine(t1.P2, t1.P0, out _)) return true;
 
-            if (t1.IntersectsLine(t0.P0, t0.P1, out temp)) return true;
-            if (t1.IntersectsLine(t0.P1, t0.P2, out temp)) return true;
-            if (t1.IntersectsLine(t0.P2, t0.P0, out temp)) return true;
+            if (t1.IntersectsLine(t0.P0, t0.P1, out _)) return true;
+            if (t1.IntersectsLine(t0.P1, t0.P2, out _)) return true;
+            if (t1.IntersectsLine(t0.P2, t0.P0, out _)) return true;
 
             return false;
         }
@@ -2532,9 +2521,8 @@ namespace Aardvark.Base
             )
         {
             List<V3d> points = new List<V3d>();
-            V3d temp;
 
-            if (t0.IntersectsLine(t1.P0, t1.P1, out temp)) points.Add(temp);
+            if (t0.IntersectsLine(t1.P0, t1.P1, out V3d temp)) points.Add(temp);
             if (t0.IntersectsLine(t1.P1, t1.P2, out temp)) points.Add(temp);
             if (t0.IntersectsLine(t1.P2, t1.P0, out temp)) points.Add(temp);
 
@@ -2570,8 +2558,7 @@ namespace Aardvark.Base
             this Quad3d quad,
             Line3d line)
         {
-            V3d temp;
-            return quad.IntersectsLine(line.P0, line.P1, out temp);
+            return quad.IntersectsLine(line.P0, line.P1, out _);
         }
 
         /// <summary>
@@ -2594,9 +2581,8 @@ namespace Aardvark.Base
             this Quad3d quad,
             V3d p0, V3d p1)
         {
-            double t;
             Ray3d ray = new Ray3d(p0, p1 - p0);
-            if (quad.Intersects(ray, 0.0, 1.0, out t))
+            if (quad.Intersects(ray, 0.0, 1.0, out _))
             {
                 return true;
             }
@@ -2615,9 +2601,8 @@ namespace Aardvark.Base
             V3d p0, V3d p1,
             out V3d point)
         {
-            double t;
             Ray3d ray = new Ray3d(p0, p1 - p0);
-            if (quad.Intersects(ray, 0.0, 1.0, out t))
+            if (quad.Intersects(ray, 0.0, 1.0, out double t))
             {
                 point = ray.GetPointOnRay(t);
                 return true;
@@ -2642,8 +2627,7 @@ namespace Aardvark.Base
             Ray3d ray
             )
         {
-            double temp;
-            return quad.Intersects(ray, double.MinValue, double.MaxValue, out temp);
+            return quad.Intersects(ray, double.MinValue, double.MaxValue, out _);
         }
 
         /// <summary>
@@ -2669,8 +2653,7 @@ namespace Aardvark.Base
             double tmin, double tmax
             )
         {
-            double temp;
-            return quad.Intersects(ray, tmin, tmax, out temp);
+            return quad.Intersects(ray, tmin, tmax, out _);
         }
 
         /// <summary>
@@ -3055,7 +3038,6 @@ namespace Aardvark.Base
             }
             else
             {
-                V3d point;
                 int pointcount = 0;
                 V3d[] linePoints = new V3d[2];
                 for (int i = 0; i < count; i++)
@@ -3064,7 +3046,7 @@ namespace Aardvark.Base
 
                     if (signs[i] != signs[u] || signs[i] == 0 || signs[u] == 0)
                     {
-                        if (plane.IntersectsLine(polygon[i], polygon[u], absoluteEpsilon, out point))
+                        if (plane.IntersectsLine(polygon[i], polygon[u], absoluteEpsilon, out V3d point))
                         {
                             linePoints[pointcount++] = point;
                             //If Endpoint is on Plane => Next startpoint is on plane => same intersection point
@@ -3131,7 +3113,7 @@ namespace Aardvark.Base
             }
 
             var dir = cylinder.Axis.Direction.Normalized;
-            cylinder.Axis.Ray3d.Intersects(plane, out double t, out V3d center);
+            cylinder.Axis.Ray3d.Intersects(plane, out _, out V3d center);
             var cosTheta = dir.Dot(plane.Normal);
 
             var eNormal = plane.Normal;
@@ -3140,7 +3122,7 @@ namespace Aardvark.Base
             var eMinor = (eNormal.Cross(eMajor)).Normalized;
             eMajor = eNormal.Cross(eMinor).Normalized; //to be sure - if ellipse is nearly a circle
             eMajor = eMajor * cylinder.Radius / cosTheta.Abs();
-            eMinor = eMinor * cylinder.Radius;
+            eMinor *= cylinder.Radius;
             ellipse = new Ellipse3d(eCenter, eNormal, eMajor, eMinor);
             return true;
         }
@@ -3331,8 +3313,7 @@ namespace Aardvark.Base
 
             Box3d largeBox = box.EnlargedByRelativeEps(1E-5);
             double tmin = double.PositiveInfinity;
-            double ttemp = 0.0;
-
+            double ttemp;
             if ((out0 & Box.Flags.X) != 0)
             {
                 if (!Fun.IsTiny(ray.Direction.X))
@@ -3841,13 +3822,12 @@ namespace Aardvark.Base
             var r3 = projection.R3;
 
 
-            V3d min, max;
             V4d plane;
             V3d n;
 
             //left
             plane = r3 + r0;
-            n = plane.XYZ; box.GetMinMaxInDirection(n, out min, out max);
+            n = plane.XYZ; box.GetMinMaxInDirection(n, out V3d min, out V3d max);
             if (min.Dot(n) + plane.W < 0 && max.Dot(n) + plane.W < 0) return false;
 
             //right
@@ -3898,8 +3878,7 @@ namespace Aardvark.Base
             if (hull.Contains(line.P0)) return true;
             if (hull.Contains(line.P1)) return true;
 
-            double temp;
-            return hull.Intersects(line.Ray3d, 0.0, 1.0, out temp);
+            return hull.Intersects(line.Ray3d, 0.0, 1.0, out _);
         }
 
         /// <summary>
@@ -3927,8 +3906,7 @@ namespace Aardvark.Base
             Ray3d ray
             )
         {
-            double t;
-            return hull.Intersects(ray, double.NegativeInfinity, double.PositiveInfinity, out t);
+            return hull.Intersects(ray, double.NegativeInfinity, double.PositiveInfinity, out _);
         }
 
         /// <summary>
@@ -3961,12 +3939,11 @@ namespace Aardvark.Base
             if (!double.IsInfinity(t_min) && hull.Contains(ray.GetPointOnRay(t_min))) { t = t_min; return true; }
             if (!double.IsInfinity(t_max) && hull.Contains(ray.GetPointOnRay(t_max))) { t = t_max; return true; }
 
-            double temp_t;
-            Plane3d[] planes = hull.PlaneArray;
+            var planes = hull.PlaneArray;
             for (int i = 0; i < planes.Length; i++)
             {
                 if (!Fun.IsTiny(planes[i].Normal.Dot(ray.Direction)) &&
-                    ray.Intersects(planes[i], out temp_t) &&
+                    ray.Intersects(planes[i], out double temp_t) &&
                     temp_t >= t_min && temp_t <= t_max)
                 {
                     V3d candidatePoint = ray.GetPointOnRay(temp_t);
@@ -4006,10 +3983,9 @@ namespace Aardvark.Base
             Plane3d plane
             )
         {
-            Ray3d ray;
             foreach (var p in hull.PlaneArray)
             {
-                if (!p.Normal.IsParallelTo(plane.Normal) && p.Intersects(plane, out ray))
+                if (!p.Normal.IsParallelTo(plane.Normal) && p.Intersects(plane, out Ray3d ray))
                 {
                     if (hull.Intersects(ray)) return true;
                 }
@@ -4033,8 +4009,7 @@ namespace Aardvark.Base
             bool intersecting = false;
             foreach (Plane3d p in hull.PlaneArray)
             {
-                V3d min, max;
-                box.GetMinMaxInDirection(p.Normal, out min, out max);
+                box.GetMinMaxInDirection(p.Normal, out V3d min, out V3d max);
                 if (p.Height(min) > 0) return false; // outside
                 if (p.Height(max) >= 0) intersecting = true;
             }
