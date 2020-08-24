@@ -382,22 +382,6 @@ namespace Aardvark.Base
             => x.Log10();
 
         /// <summary>
-        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct__ Pow(__ct__ number, __ct__ exponent)
-            => number.Pow(exponent);
-
-        /// <summary>
-        /// Returns the complex number <paramref name="number"/> raised to the power of <paramref name="exponent"/>.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct__ Pow(__ct__ number, __ft__ exponent)
-            => number.Pow(exponent);
-
-        /// <summary>
         /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -687,6 +671,21 @@ namespace Aardvark.Base
                     return __ct__.CreateRadial(Pow(number, a), b * Log(number));
             }
         }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Power(this __ct__ number, __ct__ exponent)
+            => Pow(number, exponent);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Power(this __ct__ number, __ft__ exponent)
+            => Pow(number, exponent);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Power(this __ft__ number, __ct__ exponent)
+            => Pow(number, exponent);
 
         #endregion
 

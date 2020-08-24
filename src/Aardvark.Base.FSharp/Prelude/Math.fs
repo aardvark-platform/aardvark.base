@@ -3,7 +3,7 @@
 open System
 
 /// Provides generic math functions that work for both scalars and vectors (element-wise).
-/// Functions already provided by the F# core library are only redefined if necessary 
+/// Functions already provided by the F# core library are only redefined if necessary
 /// (e.g. different signature)
 [<AutoOpen>]
 module FSharpMath =
@@ -24,7 +24,7 @@ module FSharpMath =
             static member inline Min(a : int64, b : V2l) = V2l.Min(b, a)
             static member inline Min(a : int64, b : V3l) = V3l.Min(b, a)
             static member inline Min(a : int64, b : V4l) = V4l.Min(b, a)
-            
+
             static member inline Max< ^a when ^a : comparison>(a : ^a, b : ^a) = Operators.max a b
 
             static member inline Max(a : float, b : V2d) = V2d.Max(b, a)
@@ -55,21 +55,23 @@ module FSharpMath =
             static member inline Saturate(x : float) = x |> max 0.0 |> min 1.0
             static member inline Saturate(x : float32) = x |> max 0.0f |> min 1.0f
             static member inline Saturate(x : decimal) = x |> max 0m |> min 1m
-            
+
         type Signs =
             static member inline Signum (a : ^a) =
                 if a < LanguagePrimitives.GenericZero< ^a> then -LanguagePrimitives.GenericOne
                 elif a > LanguagePrimitives.GenericZero< ^a> then LanguagePrimitives.GenericOne
                 else LanguagePrimitives.GenericZero< ^a >
-                
+
             static member inline Signumi (a : ^a) =
                 if a < LanguagePrimitives.GenericZero< ^a> then -1
                 elif a > LanguagePrimitives.GenericZero< ^a> then 1
                 else 0
 
         type Power() =
+            static member inline Power(a : ^a, b : ^b) = Operators.( ** ) a b
+
             static member inline Pown(a : ^a, b : int) = Operators.pown a b
-        
+
         type Log2() =
             static member inline Log2(a : ^a) =
                 log a / log (LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne)
@@ -126,6 +128,11 @@ module FSharpMath =
         // Making the power functions more general with ^a -> ^b -> ^c
         // generally works but requires manual type annotations in some cases
         // It's not worth the hassle so we restrict them to ^a -> ^b -> ^a
+        // Also using the default pow / Pow() doesn't work with code quotations
+        // for some reason.
+        let inline powAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
+            ((^z or ^y or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^a) (x, y))
+
         let inline pownAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
             ((^z or ^y or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^a) (x, y))
 
@@ -143,14 +150,14 @@ module FSharpMath =
 
         let inline cbrtAux (_ : ^z) (x : ^a) =
             ((^z or ^a) : (static member Cbrt : ^a -> ^a) x)
-        
+
         // See comment for powAux
         let inline minAux (_ : ^z) (x : ^a) (y : ^b) =
             ((^z or ^a or ^b or ^c) : (static member Min : ^a * ^b -> ^b) (x, y))
 
         let inline maxAux (_ : ^z) (x : ^a) (y : ^b) =
             ((^z or ^a or ^b or ^c) : (static member Max : ^a * ^b -> ^b) (x, y))
-            
+
         // Simply using min and max directly will resolve to the comparison overload for some reason.
         // Therefore we need to do it the dumb (incomplete) way. E.g. won't work for Version.
         let inline saturateAux (_ : ^z) (x : ^a) =
@@ -196,7 +203,7 @@ module FSharpMath =
     [<GeneralizableValue>]
     let inline one< ^T when ^T : (static member One : ^T) > : ^T =
         LanguagePrimitives.GenericOne
-        
+
     /// Returns -1 if x is less than zero, 0 if x is equal to zero, and 1 if
     /// x is greater than zero. The result has the same type as the input.
     let inline signum x =
@@ -210,7 +217,12 @@ module FSharpMath =
     /// Returns x raised by the power of y (must be float or double).
     // F# variant does not support integers!
     let inline pow x y =
-        x ** y
+        powAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
+
+    /// Returns x raised by the power of y.
+    // F# variant does not support integers!
+    let inline ( ** ) x y =
+        pow x y
 
     /// Returns x raised by the integer power of y (must not be negative).
     // F# variant has signature a' -> int -> 'a, which does not permit for example V2f -> V2i -> V2f
@@ -218,7 +230,7 @@ module FSharpMath =
         pownAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
 
     /// Returns the base 2 logarithm of x.
-    let inline log2 x = 
+    let inline log2 x =
         log2Aux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Log2> x
 
     /// Returns the inverse hyperbolic sine of x.
@@ -299,7 +311,7 @@ module FSharpMath =
         (x |> isInfinity |> not) && (x |> isNaN |> not)
 
     [<CompilerMessage("testing purposes", 1337, IsHidden = true)>]
-    module ``Math compiler tests 😀😁`` = 
+    module ``Math compiler tests 😀😁`` =
         type MyCustomNumericTypeExtensionTestTypeForInternalTesting() =
             static member Pow(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : float) = h
             static member (*)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
@@ -323,7 +335,7 @@ module FSharpMath =
 
         let fsharpCoreWorking() =
 
-            let absWorking() = 
+            let absWorking() =
                 let a : V2i = abs V2i.One
                 let a : V3f = abs V3f.One
                 ()
@@ -482,7 +494,7 @@ module FSharpMath =
 
             let a : V2f = pown V2f.One 1
             let a : V2f = pown V2f.One V2i.One
-            
+
             let a : V2i = pown V2i.One 1
             let a : V2i = pown V2i.One V2i.One
 
@@ -498,7 +510,12 @@ module FSharpMath =
             let a : float32 = pow 1.0f 2.0f
             let a = log (2.0 + 8.0 * (pow V3d.III V3d.III))
 
-            let a = pow (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 12.0
+            let a = pow (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 12.
+
+            // This doesn't work if we just extend the built-in pow function
+            // by adding Pow() members to the vector types...
+            let a : V2d -> float -> V2d = pow
+            let a : V2d -> float -> V2d = ( ** )
 
             let a : V2d = pow V2d.II V2d.II
             let a : V2d = pow V2d.II 1.0
@@ -510,7 +527,7 @@ module FSharpMath =
         let powOpWorking() =
             let a : float = 1.0 ** 2.0
             let a : float32 = 1.0f ** 2.0f
-            
+
             let a = MyCustomNumericTypeExtensionTestTypeForInternalTesting() ** 12.0
 
             let a : V2d = V2d.II ** V2d.II
@@ -519,7 +536,7 @@ module FSharpMath =
             let a : ComplexD = ComplexD.One ** ComplexD.One
             let a : ComplexD = ComplexD.One ** 1.0
             ()
-            
+
         let log2Working() =
             let a : float = log2 10.0
             let a : V2d =  log2 V2d.II
@@ -553,14 +570,14 @@ module FSharpMath =
             let a : ComplexD = atanh ComplexD.One
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = atanh (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
-            
+
         let cbrtWorking() =
             let a : float = cbrt 10.0
             let a : V2d =  cbrt V2d.II
             let a : ComplexD = cbrt ComplexD.One
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = cbrt (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
-            
+
         let sqrWorking() =
             let a : byte = sqr 4uy
             let a : float = sqr 10.0

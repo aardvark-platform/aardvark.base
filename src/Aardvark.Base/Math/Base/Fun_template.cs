@@ -800,7 +800,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the number raised to the specified power.
         //# if (rt == Meta.DoubleType && !dreptypes.Contains(t)) {
-        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double. 
+        /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
         //# }
         /// </summary>
         [Pure]
@@ -818,7 +818,13 @@ namespace Aardvark.Base
             //# }
         }
 
-        //# } 
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rt.Name__ Power(this __t.Name__ x, __rt.Name__ y)
+            => Pow(x, y);
+
+        //# }
         //# });
         //# if (!fdtypes.Contains(t) && t != Meta.IntType) {
         /// <summary>
@@ -884,7 +890,7 @@ namespace Aardvark.Base
         //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
         //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
         /// <summary>
-        /// Returns e raised to the specified number. 
+        /// Returns e raised to the specified number.
         //# if (!dreptypes.Contains(t)) {
         /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
         //# }
@@ -1028,14 +1034,14 @@ namespace Aardvark.Base
         }
 
         //# } // rt
-        //# } // tpc       
+        //# } // tpc
         #endregion
 
         #region ModP
 
         //# signedtypes.ForEach(t => {
         /// <summary>
-        /// Returns the positive modulo operation a mod b giving values between [0,b[ 
+        /// Returns the positive modulo operation a mod b giving values between [0,b[
         /// instead of a % b giving values between ]-b,b[.
         /// </summary>
         [Pure]
@@ -1628,7 +1634,7 @@ namespace Aardvark.Base
 
         //# });
 
-        #endregion 
+        #endregion
 
         #region CountNegatives
 
@@ -1646,7 +1652,7 @@ namespace Aardvark.Base
 
         //# });
         #endregion
-        
+
         #region Primes
 
         //# iltypes.ForEach(t => {

@@ -348,7 +348,7 @@ namespace Aardvark.Base
             Name = "Trafo2f",
             Read = "ReadTrafo2f",
         };
-        
+
         public static readonly SimpleType Trafo2dType = new SimpleType()
         {
             Name = "Trafo2d",
@@ -360,7 +360,7 @@ namespace Aardvark.Base
             Name = "Trafo3f",
             Read = "ReadTrafo3f",
         };
-        
+
         public static readonly SimpleType Trafo3dType = new SimpleType()
         {
             Name = "Trafo3d",
@@ -863,7 +863,7 @@ namespace Aardvark.Base
         #region Fun related
         // Instead of manually copy pasting methods defined in the Fun class to work
         // elementwise with vectors and matrices, we simply define the methods we are interested in here.
-        // It's a bit verbose since we require a lot of meta information, but much easier and less error-prone than 
+        // It's a bit verbose since we require a lot of meta information, but much easier and less error-prone than
         // manually copy pasting the code.
 
         public class ElementwiseFun
@@ -1115,16 +1115,27 @@ namespace Aardvark.Base
                 Method("Pown", AllExcept(IntType), Tensor("x"), Scalar("y", IntType)),
                 Method("Pown", AllExcept(IntType), Scalar("x"), Tensor("y", IntType)),
 
-                Method("Pow",   OnlyReal(), Tensor("x"), Tensor("y")),
-                Method("Pow",   OnlyReal(), Tensor("x"), Scalar("y")),
-                Method("Pow",   OnlyReal(), Scalar("x"), Tensor("y")),
+                Method("Pow", OnlyReal(), Tensor("x"), Tensor("y")),
+                Method("Pow", OnlyReal(), Tensor("x"), Scalar("y")),
+                Method("Pow", OnlyReal(), Scalar("x"), Tensor("y")),
 
-                Method("Pow",   FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
-                Method("Pow",   FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
-                Method("Pow",   FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
-                Method("Pow",   DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
-                Method("Pow",   DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
-                Method("Pow",   DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType))
+                Method("Pow", FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
+                Method("Pow", FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
+                Method("Pow", FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
+                Method("Pow", DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
+                Method("Pow", DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
+                Method("Pow", DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType)),
+
+                MethodHidden("Power", OnlyReal(), Tensor("x"), Tensor("y")),
+                MethodHidden("Power", OnlyReal(), Tensor("x"), Scalar("y")),
+                MethodHidden("Power", OnlyReal(), Scalar("x"), Tensor("y")),
+
+                MethodHidden("Power", FloatType, NotReal(), Tensor("x"), Tensor("y", FloatType)),
+                MethodHidden("Power", FloatType, NotReal(), Tensor("x"), Scalar("y", FloatType)),
+                MethodHidden("Power", FloatType, NotReal(), Scalar("x"), Tensor("y", FloatType)),
+                MethodHidden("Power", DoubleType, NotReal(), Tensor("x"), Tensor("y", DoubleType)),
+                MethodHidden("Power", DoubleType, NotReal(), Tensor("x"), Scalar("y", DoubleType)),
+                MethodHidden("Power", DoubleType, NotReal(), Scalar("x"), Tensor("y", DoubleType))
             );
             #endregion
 
