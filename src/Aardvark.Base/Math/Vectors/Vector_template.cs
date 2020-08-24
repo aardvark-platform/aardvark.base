@@ -258,6 +258,9 @@ namespace Aardvark.Base
         //#             var maxval = colmaxvalmap[ft1];
         /// <summary>
         /// Creates a vector from a <see cref="__type1__"/> color.
+        //# if (iscolormapped(ft, ft1)) {
+        /// The values are not mapped from the <see cref="__type1__"/> color range.
+        //# }
         //# if (d == 4 && !t1.HasAlpha) {
         /// W is set to __maxval__.
         //# }
@@ -279,23 +282,29 @@ namespace Aardvark.Base
 
         //#     } }
         //# }
-        #endregion 
+        #endregion
 
         #region Conversions
 
-        //# foreach (var ft1 in Meta.VecFieldTypes) {
-        //#     var vt1 = Meta.VecTypeOf(d, ft1);
-        //#     var ftype1 = ft1.Name;
+        //# foreach (var vt1 in Meta.VecTypes) {
         //#     var vtype1 = vt1.Name;
-        //#     if (ft != ft1) {
+        //#     if (vt != vt1) {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __vtype__(__vtype1__ v)
-            => new __vtype__(/*# fields.ForEach(f => { */(__ftype__)v.__f__/*# }, comma); */);
+            => new __vtype__(v);
 
+        //# } }
+        //# foreach (var vt1 in Meta.VecTypes) {
+        //#     var ft1 = vt1.FieldType;
+        //#     var vtype1 = vt1.Name;
+        //#     var d1 = vt1.Len;
+        //#     if (vt != vt1 && (ft != ft1 || d < d1)) {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype1__ To__vtype1__() => (__vtype1__)this;
 
-        //#     }
+        //# } }
+        //# foreach (var ft1 in Meta.VecFieldTypes) {
+        //#     var ftype1 = ft1.Name;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __ftype1__[](__vtype__ v)
             => new __ftype1__[] { /*# fields.ForEach(f => {
@@ -315,28 +324,20 @@ namespace Aardvark.Base
         //#             var convert = ft != ft1 ? "("+ ftype +")" : "";
         //#             var maxval = colmaxvalmap[ft1];
         /// <summary>
-        /// Converts the given vector to a <see cref="__type1__"/> color.
+        /// Converts the given <see cref="__type1__"/> color to a <see cref="__vtype__"/> vector.
         //# if (iscolormapped(ft, ft1)) {
-        /// The values are not mapped to the <see cref="__type1__"/> color range.
+        /// The values are not mapped from the <see cref="__type1__"/> color range.
         //# }
-        //# if (d == 3 && t1.HasAlpha) {
-        /// The alpha channel is set to __maxval__.
+        //# if (d == 4 && !t1.HasAlpha) {
+        /// W is set to __maxval__.
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __type1__(__vtype__ v)
-            => new __type1__(/*# t1.Channels.ForEach(fields, (c, f) => { */
-                __convert__(v.__f__)/*# }, comma);
-                if (t1.HasAlpha) {
-                    if (d == 4) { */,
-                __convert__(v.W)/*#
-                    } else { */,
-                __convert__(__t1.MaxValue__)/*#
-                    }
-                } */);
+        public static explicit operator __vtype__(__type1__ v)
+            => new __vtype__(v);
 
         /// <summary>
-        /// Converts the given vector to a <see cref="__type1__"/> color.
+        /// Converts the given <see cref="__vtype__"/> vector to a <see cref="__type1__"/> color.
         //# if (iscolormapped(ft, ft1)) {
         /// The values are not mapped to the <see cref="__type1__"/> color range.
         //# }
@@ -398,19 +399,18 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype1__ Copy(Func<__ftype__, __ftype1__> element_fun)
-        {
-            return new __vtype1__(/*# fields.ForEach(f => { */element_fun(__f__)/*# }, comma); */);
-        }
+            => new __vtype1__(/*# fields.ForEach(f => { */element_fun(__f__)/*# }, comma); */);
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __vtype1__ Copy(Func<__ftype__, int, __ftype1__> element_index_fun)
-        {
-            return new __vtype1__(/*# fields.ForEach((f, i) => { */element_index_fun(__f__, __i__)/*# }, comma); */);
-        }
+            => new __vtype1__(/*# fields.ForEach((f, i) => { */element_index_fun(__f__, __i__)/*# }, comma); */);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(__ftype1__[] array, int start)
         {
             //# fields.ForEach((f, i) => {
@@ -419,6 +419,7 @@ namespace Aardvark.Base
         }
 
         //# }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<__ftype__, T> element_fun)
         {
             //# fields.ForEach((f, i) => {
@@ -426,6 +427,7 @@ namespace Aardvark.Base
             //# });
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<__ftype__, int, T> element_index_fun)
         {
             //# fields.ForEach((f, i) => {
@@ -433,10 +435,9 @@ namespace Aardvark.Base
             //# });
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __ftype__[] ToArray()
-        {
-            return new __ftype__[] { /*# fields.ForEach((f, i) => { */__f__/*# }, comma); */ };
-        }
+            => new __ftype__[] { /*# fields.ForEach((f, i) => { */__f__/*# }, comma); */ };
 
         #endregion
 
@@ -763,6 +764,9 @@ namespace Aardvark.Base
         //#             var maxval = colmaxvalmap[ft1];
         /// <summary>
         /// Creates a vector from the given <see cref="__type1__"/> color.
+        //# if (iscolormapped(ft, ft1)) {
+        /// The values are not mapped from the <see cref="__type1__"/> color range.
+        //# }
         //# if (d == 4 && !t1.HasAlpha) {
         /// W is set to __maxval__.
         //# }

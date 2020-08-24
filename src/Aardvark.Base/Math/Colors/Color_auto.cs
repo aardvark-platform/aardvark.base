@@ -328,253 +328,246 @@ namespace Aardvark.Base
             B = index_fun(2);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(byte[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(byte[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(ushort[] values)
+        {
+            R = Col.ByteFromUShort(values[0]);
+            G = Col.ByteFromUShort(values[1]);
+            B = Col.ByteFromUShort(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(ushort[] values, int start)
+        {
+            R = Col.ByteFromUShort(values[start + 0]);
+            G = Col.ByteFromUShort(values[start + 1]);
+            B = Col.ByteFromUShort(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(uint[] values)
+        {
+            R = Col.ByteFromUInt(values[0]);
+            G = Col.ByteFromUInt(values[1]);
+            B = Col.ByteFromUInt(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(uint[] values, int start)
+        {
+            R = Col.ByteFromUInt(values[start + 0]);
+            G = Col.ByteFromUInt(values[start + 1]);
+            B = Col.ByteFromUInt(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(float[] values)
+        {
+            R = Col.ByteFromFloat(values[0]);
+            G = Col.ByteFromFloat(values[1]);
+            B = Col.ByteFromFloat(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(float[] values, int start)
+        {
+            R = Col.ByteFromFloat(values[start + 0]);
+            G = Col.ByteFromFloat(values[start + 1]);
+            B = Col.ByteFromFloat(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(double[] values)
+        {
+            R = Col.ByteFromDouble(values[0]);
+            G = Col.ByteFromDouble(values[1]);
+            B = Col.ByteFromDouble(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(double[] values, int start)
+        {
+            R = Col.ByteFromDouble(values[start + 0]);
+            G = Col.ByteFromDouble(values[start + 1]);
+            B = Col.ByteFromDouble(values[start + 2]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C3b"/> color.
+        /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C3b color)
-            => new C3us(color);
+        public static explicit operator C3b(C3us color)
+            => new C3b(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C3b color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C3b color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C3b color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The alpha channel is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C3b color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
-        /// The alpha channel is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C3b color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
-        /// The alpha channel is set to 2^32 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C3b color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4f"/> color range.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C3b color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4d"/> color range.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C3b color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3i"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3i(C3b color)
-            => new V3i(
-                (int)(color.R), 
-                (int)(color.G), 
-                (int)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3l(C3b color)
-            => new V3l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C3b color)
-            => new V3f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C3b color)
-            => new V3d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4i"/> vector.
-        /// W is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4i(C3b color)
-            => new V4i(
-                (int)(color.R), 
-                (int)(color.G), 
-                (int)(color.B),
-                (int)(255)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
-        /// W is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4l(C3b color)
-            => new V4l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B),
-                (long)(255)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// W is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C3b color)
-            => new V4f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B),
-                (float)(255)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// W is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C3b color)
-            => new V4d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B),
-                (double)(255)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC3us(C3us c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C3b"/> color.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(C3ui color)
+            => new C3b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC3ui(C3ui c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C3b"/> color.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(C3f color)
+            => new C3b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC3f(C3f c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C3b"/> color.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(C3d color)
+            => new C3b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC3d(C3d c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3b"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(C4b color)
+            => new C3b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4b"/> color.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C4b"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC4b(C4b c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3b"/> color.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(C4us color)
+            => new C3b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -582,14 +575,22 @@ namespace Aardvark.Base
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC4us(C4us c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3b"/> color.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(C4ui color)
+            => new C3b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -597,14 +598,22 @@ namespace Aardvark.Base
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC4ui(C4ui c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3b"/> color.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(C4f color)
+            => new C3b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -612,14 +621,22 @@ namespace Aardvark.Base
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC4f(C4f c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3b"/> color.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(C4d color)
+            => new C3b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -627,123 +644,274 @@ namespace Aardvark.Base
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C3b"/> color from the given <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC4d(C4d c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3i"/> vector.
+        /// Converts the given <see cref="V3i"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V3i v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V3i"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3i ToV3i() => (V3i)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3i"/> vector.
+        /// Creates a <see cref="C3b"/> color from a <see cref="V3i"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV3i(V3i c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
+        /// Converts the given <see cref="V3l"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V3l v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V3l"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3l ToV3l() => (V3l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3l"/> vector.
+        /// Creates a <see cref="C3b"/> color from a <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV3l(V3l c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V3f v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V3f"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C3b"/> color from a <see cref="V3f"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV3f(V3f c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V3d v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V3d"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C3b"/> color from a <see cref="V3d"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV3d(V3d c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4i"/> vector.
+        /// Converts the given <see cref="V4i"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V4i v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V4i"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4i ToV4i() => (V4i)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4i"/> vector.
+        /// Creates a <see cref="C3b"/> color from a <see cref="V4i"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV4i(V4i c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
+        /// Converts the given <see cref="V4l"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V4l v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V4l"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4l ToV4l() => (V4l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4l"/> vector.
+        /// Creates a <see cref="C3b"/> color from a <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV4l(V4l c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V4f v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V4f"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C3b"/> color from a <see cref="V4f"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV4f(V4f c) => new C3b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V4d v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V4d"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C3b"/> color from a <see cref="V4d"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV4d(V4d c) => new C3b(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(byte[] values)
+            => new C3b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C3b"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C3b color)
+            => new byte[] { (color.R), (color.G), (color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(ushort[] values)
+            => new C3b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C3b"/> color.
+        /// The values are mapped from the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C3b color)
+            => new ushort[] { Col.UShortFromByte(color.R), Col.UShortFromByte(color.G), Col.UShortFromByte(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(uint[] values)
+            => new C3b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C3b"/> color.
+        /// The values are mapped from the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C3b color)
+            => new uint[] { Col.UIntFromByte(color.R), Col.UIntFromByte(color.G), Col.UIntFromByte(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(float[] values)
+            => new C3b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C3b"/> color.
+        /// The values are mapped from the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C3b color)
+            => new float[] { Col.FloatFromByte(color.R), Col.FloatFromByte(color.G), Col.FloatFromByte(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(double[] values)
+            => new C3b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C3b"/> color.
+        /// The values are mapped from the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C3b color)
+            => new double[] { Col.DoubleFromByte(color.R), Col.DoubleFromByte(color.G), Col.DoubleFromByte(color.B) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b Map(Func<byte, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -752,6 +920,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us Map(Func<byte, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -760,6 +929,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui Map(Func<byte, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -768,6 +938,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f Map(Func<byte, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -776,11 +947,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d Map(Func<byte, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -788,12 +961,17 @@ namespace Aardvark.Base
             array[start + 2] = element_fun(B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<byte, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
             array[start + 2] = element_index_fun(B, 2);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte[] ToArray()
+            => (byte[])this;
 
         #endregion
 
@@ -2220,240 +2398,226 @@ namespace Aardvark.Base
             B = index_fun(2);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(byte[] values)
+        {
+            R = Col.UShortFromByte(values[0]);
+            G = Col.UShortFromByte(values[1]);
+            B = Col.UShortFromByte(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(byte[] values, int start)
+        {
+            R = Col.UShortFromByte(values[start + 0]);
+            G = Col.UShortFromByte(values[start + 1]);
+            B = Col.UShortFromByte(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(ushort[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(ushort[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(uint[] values)
+        {
+            R = Col.UShortFromUInt(values[0]);
+            G = Col.UShortFromUInt(values[1]);
+            B = Col.UShortFromUInt(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(uint[] values, int start)
+        {
+            R = Col.UShortFromUInt(values[start + 0]);
+            G = Col.UShortFromUInt(values[start + 1]);
+            B = Col.UShortFromUInt(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(float[] values)
+        {
+            R = Col.UShortFromFloat(values[0]);
+            G = Col.UShortFromFloat(values[1]);
+            B = Col.UShortFromFloat(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(float[] values, int start)
+        {
+            R = Col.UShortFromFloat(values[start + 0]);
+            G = Col.UShortFromFloat(values[start + 1]);
+            B = Col.UShortFromFloat(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(double[] values)
+        {
+            R = Col.UShortFromDouble(values[0]);
+            G = Col.UShortFromDouble(values[1]);
+            B = Col.UShortFromDouble(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(double[] values, int start)
+        {
+            R = Col.UShortFromDouble(values[start + 0]);
+            G = Col.UShortFromDouble(values[start + 1]);
+            B = Col.UShortFromDouble(values[start + 2]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C3us"/> color.
+        /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C3us color)
-            => new C3b(color);
+        public static explicit operator C3us(C3b color)
+            => new C3us(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C3us color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C3us color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C3us color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
-        /// The alpha channel is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C3us color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The alpha channel is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C3us color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
-        /// The alpha channel is set to 2^32 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C3us color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4f"/> color range.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C3us color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4d"/> color range.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C3us color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3i"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3i(C3us color)
-            => new V3i(
-                (int)(color.R), 
-                (int)(color.G), 
-                (int)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3l(C3us color)
-            => new V3l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C3us color)
-            => new V3f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C3us color)
-            => new V3d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4i"/> vector.
-        /// W is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4i(C3us color)
-            => new V4i(
-                (int)(color.R), 
-                (int)(color.G), 
-                (int)(color.B),
-                (int)(65535)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
-        /// W is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4l(C3us color)
-            => new V4l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B),
-                (long)(65535)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// W is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C3us color)
-            => new V4f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B),
-                (float)(65535)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// W is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C3us color)
-            => new V4d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B),
-                (double)(65535)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC3b(C3b c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C3us"/> color.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(C3ui color)
+            => new C3us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC3ui(C3ui c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C3us"/> color.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(C3f color)
+            => new C3us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC3f(C3f c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C3us"/> color.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(C3d color)
+            => new C3us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC3d(C3d c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3us"/> color.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(C4b color)
+            => new C3us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -2461,27 +2625,42 @@ namespace Aardvark.Base
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC4b(C4b c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3us"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(C4us color)
+            => new C3us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4us"/> color.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C4us"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC4us(C4us c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3us"/> color.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(C4ui color)
+            => new C3us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -2489,14 +2668,22 @@ namespace Aardvark.Base
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC4ui(C4ui c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3us"/> color.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(C4f color)
+            => new C3us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -2504,14 +2691,22 @@ namespace Aardvark.Base
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC4f(C4f c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3us"/> color.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(C4d color)
+            => new C3us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -2519,123 +2714,274 @@ namespace Aardvark.Base
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C3us"/> color from the given <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC4d(C4d c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3i"/> vector.
+        /// Converts the given <see cref="V3i"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V3i v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V3i"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3i ToV3i() => (V3i)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3i"/> vector.
+        /// Creates a <see cref="C3us"/> color from a <see cref="V3i"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV3i(V3i c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
+        /// Converts the given <see cref="V3l"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V3l v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V3l"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3l ToV3l() => (V3l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3l"/> vector.
+        /// Creates a <see cref="C3us"/> color from a <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV3l(V3l c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V3f v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V3f"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C3us"/> color from a <see cref="V3f"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV3f(V3f c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V3d v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V3d"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C3us"/> color from a <see cref="V3d"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV3d(V3d c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4i"/> vector.
+        /// Converts the given <see cref="V4i"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V4i v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V4i"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4i ToV4i() => (V4i)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4i"/> vector.
+        /// Creates a <see cref="C3us"/> color from a <see cref="V4i"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV4i(V4i c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
+        /// Converts the given <see cref="V4l"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V4l v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V4l"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4l ToV4l() => (V4l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4l"/> vector.
+        /// Creates a <see cref="C3us"/> color from a <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV4l(V4l c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V4f v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V4f"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C3us"/> color from a <see cref="V4f"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV4f(V4f c) => new C3us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V4d v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V4d"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C3us"/> color from a <see cref="V4d"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV4d(V4d c) => new C3us(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(byte[] values)
+            => new C3us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C3us"/> color.
+        /// The values are mapped from the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C3us color)
+            => new byte[] { Col.ByteFromUShort(color.R), Col.ByteFromUShort(color.G), Col.ByteFromUShort(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(ushort[] values)
+            => new C3us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C3us"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C3us color)
+            => new ushort[] { (color.R), (color.G), (color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(uint[] values)
+            => new C3us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C3us"/> color.
+        /// The values are mapped from the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C3us color)
+            => new uint[] { Col.UIntFromUShort(color.R), Col.UIntFromUShort(color.G), Col.UIntFromUShort(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(float[] values)
+            => new C3us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C3us"/> color.
+        /// The values are mapped from the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C3us color)
+            => new float[] { Col.FloatFromUShort(color.R), Col.FloatFromUShort(color.G), Col.FloatFromUShort(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(double[] values)
+            => new C3us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C3us"/> color.
+        /// The values are mapped from the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C3us color)
+            => new double[] { Col.DoubleFromUShort(color.R), Col.DoubleFromUShort(color.G), Col.DoubleFromUShort(color.B) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b Map(Func<ushort, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -2644,6 +2990,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us Map(Func<ushort, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -2652,6 +2999,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui Map(Func<ushort, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -2660,6 +3008,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f Map(Func<ushort, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -2668,11 +3017,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d Map(Func<ushort, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -2680,12 +3031,17 @@ namespace Aardvark.Base
             array[start + 2] = element_fun(B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<ushort, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
             array[start + 2] = element_index_fun(B, 2);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ushort[] ToArray()
+            => (ushort[])this;
 
         #endregion
 
@@ -4088,216 +4444,226 @@ namespace Aardvark.Base
             B = index_fun(2);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(byte[] values)
+        {
+            R = Col.UIntFromByte(values[0]);
+            G = Col.UIntFromByte(values[1]);
+            B = Col.UIntFromByte(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(byte[] values, int start)
+        {
+            R = Col.UIntFromByte(values[start + 0]);
+            G = Col.UIntFromByte(values[start + 1]);
+            B = Col.UIntFromByte(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(ushort[] values)
+        {
+            R = Col.UIntFromUShort(values[0]);
+            G = Col.UIntFromUShort(values[1]);
+            B = Col.UIntFromUShort(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(ushort[] values, int start)
+        {
+            R = Col.UIntFromUShort(values[start + 0]);
+            G = Col.UIntFromUShort(values[start + 1]);
+            B = Col.UIntFromUShort(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(uint[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(uint[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(float[] values)
+        {
+            R = Col.UIntFromFloat(values[0]);
+            G = Col.UIntFromFloat(values[1]);
+            B = Col.UIntFromFloat(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(float[] values, int start)
+        {
+            R = Col.UIntFromFloat(values[start + 0]);
+            G = Col.UIntFromFloat(values[start + 1]);
+            B = Col.UIntFromFloat(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(double[] values)
+        {
+            R = Col.UIntFromDouble(values[0]);
+            G = Col.UIntFromDouble(values[1]);
+            B = Col.UIntFromDouble(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(double[] values, int start)
+        {
+            R = Col.UIntFromDouble(values[start + 0]);
+            G = Col.UIntFromDouble(values[start + 1]);
+            B = Col.UIntFromDouble(values[start + 2]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C3ui"/> color.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C3ui color)
-            => new C3b(color);
+        public static explicit operator C3ui(C3b color)
+            => new C3ui(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C3ui color)
-            => new C3us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C3ui color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C3ui color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
-        /// The alpha channel is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C3ui color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
-        /// The alpha channel is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C3ui color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The alpha channel is set to 2^32 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C3ui color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4f"/> color range.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C3ui color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4d"/> color range.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C3ui color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3l(C3ui color)
-            => new V3l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C3ui color)
-            => new V3f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C3ui color)
-            => new V3d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
-        /// W is set to 2^32 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4l(C3ui color)
-            => new V4l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B),
-                (long)(UInt32.MaxValue)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// W is set to 2^32 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C3ui color)
-            => new V4f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B),
-                (float)(UInt32.MaxValue)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// W is set to 2^32 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C3ui color)
-            => new V4d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B),
-                (double)(UInt32.MaxValue)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC3b(C3b c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C3ui"/> color.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(C3us color)
+            => new C3ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC3us(C3us c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C3ui"/> color.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(C3f color)
+            => new C3ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC3f(C3f c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C3ui"/> color.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(C3d color)
+            => new C3ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC3d(C3d c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3ui"/> color.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(C4b color)
+            => new C3ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -4305,14 +4671,22 @@ namespace Aardvark.Base
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC4b(C4b c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3ui"/> color.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(C4us color)
+            => new C3ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -4320,27 +4694,42 @@ namespace Aardvark.Base
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC4us(C4us c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3ui"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(C4ui color)
+            => new C3ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4ui"/> color.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C4ui"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC4ui(C4ui c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3ui"/> color.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(C4f color)
+            => new C3ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -4348,14 +4737,22 @@ namespace Aardvark.Base
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC4f(C4f c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3ui"/> color.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(C4d color)
+            => new C3ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -4363,96 +4760,229 @@ namespace Aardvark.Base
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C3ui"/> color from the given <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC4d(C4d c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
+        /// Converts the given <see cref="V3l"/> vector to a <see cref="C3ui"/> color.
+        /// The values are not mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(V3l v)
+            => new C3ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="V3l"/> vector.
+        /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3l ToV3l() => (V3l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3l"/> vector.
+        /// Creates a <see cref="C3ui"/> color from a <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromV3l(V3l c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C3ui"/> color.
+        /// The values are not mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(V3f v)
+            => new C3ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="V3f"/> vector.
+        /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C3ui"/> color from a <see cref="V3f"/> vector.
         /// The values are not mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromV3f(V3f c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C3ui"/> color.
+        /// The values are not mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(V3d v)
+            => new C3ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="V3d"/> vector.
+        /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C3ui"/> color from a <see cref="V3d"/> vector.
         /// The values are not mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromV3d(V3d c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
+        /// Converts the given <see cref="V4l"/> vector to a <see cref="C3ui"/> color.
+        /// The values are not mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(V4l v)
+            => new C3ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="V4l"/> vector.
+        /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// W is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4l ToV4l() => (V4l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4l"/> vector.
+        /// Creates a <see cref="C3ui"/> color from a <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromV4l(V4l c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C3ui"/> color.
+        /// The values are not mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(V4f v)
+            => new C3ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="V4f"/> vector.
+        /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// W is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C3ui"/> color from a <see cref="V4f"/> vector.
         /// The values are not mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromV4f(V4f c) => new C3ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C3ui"/> color.
+        /// The values are not mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(V4d v)
+            => new C3ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="V4d"/> vector.
+        /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// W is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C3ui"/> color from a <see cref="V4d"/> vector.
         /// The values are not mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromV4d(V4d c) => new C3ui(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(byte[] values)
+            => new C3ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C3ui"/> color.
+        /// The values are mapped from the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C3ui color)
+            => new byte[] { Col.ByteFromUInt(color.R), Col.ByteFromUInt(color.G), Col.ByteFromUInt(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(ushort[] values)
+            => new C3ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C3ui"/> color.
+        /// The values are mapped from the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C3ui color)
+            => new ushort[] { Col.UShortFromUInt(color.R), Col.UShortFromUInt(color.G), Col.UShortFromUInt(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(uint[] values)
+            => new C3ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C3ui"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C3ui color)
+            => new uint[] { (color.R), (color.G), (color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(float[] values)
+            => new C3ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C3ui"/> color.
+        /// The values are mapped from the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C3ui color)
+            => new float[] { Col.FloatFromUInt(color.R), Col.FloatFromUInt(color.G), Col.FloatFromUInt(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(double[] values)
+            => new C3ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C3ui"/> color.
+        /// The values are mapped from the <see cref="C3ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C3ui color)
+            => new double[] { Col.DoubleFromUInt(color.R), Col.DoubleFromUInt(color.G), Col.DoubleFromUInt(color.B) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b Map(Func<uint, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -4461,6 +4991,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us Map(Func<uint, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -4469,6 +5000,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui Map(Func<uint, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -4477,6 +5009,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f Map(Func<uint, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -4485,11 +5018,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d Map(Func<uint, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -4497,12 +5032,17 @@ namespace Aardvark.Base
             array[start + 2] = element_fun(B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<uint, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
             array[start + 2] = element_index_fun(B, 2);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint[] ToArray()
+            => (uint[])this;
 
         #endregion
 
@@ -5836,188 +6376,221 @@ namespace Aardvark.Base
             B = index_fun(2);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(byte[] values)
+        {
+            R = Col.FloatFromByte(values[0]);
+            G = Col.FloatFromByte(values[1]);
+            B = Col.FloatFromByte(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(byte[] values, int start)
+        {
+            R = Col.FloatFromByte(values[start + 0]);
+            G = Col.FloatFromByte(values[start + 1]);
+            B = Col.FloatFromByte(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(ushort[] values)
+        {
+            R = Col.FloatFromUShort(values[0]);
+            G = Col.FloatFromUShort(values[1]);
+            B = Col.FloatFromUShort(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(ushort[] values, int start)
+        {
+            R = Col.FloatFromUShort(values[start + 0]);
+            G = Col.FloatFromUShort(values[start + 1]);
+            B = Col.FloatFromUShort(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(uint[] values)
+        {
+            R = Col.FloatFromUInt(values[0]);
+            G = Col.FloatFromUInt(values[1]);
+            B = Col.FloatFromUInt(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(uint[] values, int start)
+        {
+            R = Col.FloatFromUInt(values[start + 0]);
+            G = Col.FloatFromUInt(values[start + 1]);
+            B = Col.FloatFromUInt(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(float[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(float[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(double[] values)
+        {
+            R = Col.FloatFromDouble(values[0]);
+            G = Col.FloatFromDouble(values[1]);
+            B = Col.FloatFromDouble(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(double[] values, int start)
+        {
+            R = Col.FloatFromDouble(values[start + 0]);
+            G = Col.FloatFromDouble(values[start + 1]);
+            B = Col.FloatFromDouble(values[start + 2]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C3f"/> color.
+        /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C3f color)
-            => new C3b(color);
+        public static explicit operator C3f(C3b color)
+            => new C3f(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C3f color)
-            => new C3us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C3f color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C3f color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
-        /// The alpha channel is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C3f color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
-        /// The alpha channel is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C3f color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
-        /// The alpha channel is set to 2^32 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C3f color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C3f color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C3f color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C3f color)
-            => new V3f(
-                (color.R), 
-                (color.G), 
-                (color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C3f color)
-            => new V3d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// W is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C3f color)
-            => new V4f(
-                (color.R), 
-                (color.G), 
-                (color.B),
-                (1.0f)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// W is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C3f color)
-            => new V4d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B),
-                (double)(1.0f)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC3b(C3b c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C3f"/> color.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(C3us color)
+            => new C3f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC3us(C3us c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C3f"/> color.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(C3ui color)
+            => new C3f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC3ui(C3ui c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(C3d color)
+            => new C3f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C3d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C3d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC3d(C3d c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3f"/> color.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(C4b color)
+            => new C3f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -6025,14 +6598,22 @@ namespace Aardvark.Base
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC4b(C4b c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3f"/> color.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(C4us color)
+            => new C3f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -6040,14 +6621,22 @@ namespace Aardvark.Base
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC4us(C4us c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3f"/> color.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(C4ui color)
+            => new C3f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -6055,91 +6644,210 @@ namespace Aardvark.Base
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC4ui(C4ui c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(C4f color)
+            => new C3f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4f"/> color.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C4f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC4f(C4f c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(C4d color)
+            => new C3f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4d"/> color.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C3f"/> color from the given <see cref="C4d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromC4d(C4d c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(V3f v)
+            => new C3f(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C3f"/> color from a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromV3f(V3f c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(V3d v)
+            => new C3f(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C3f"/> color from a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromV3d(V3d c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(V4f v)
+            => new C3f(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="V4f"/> vector.
         /// W is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C3f"/> color from a <see cref="V4f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromV4f(V4f c) => new C3f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(V4d v)
+            => new C3f(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3f"/> color to a <see cref="V4d"/> vector.
         /// W is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C3f"/> color from a <see cref="V4d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f FromV4d(V4d c) => new C3f(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(byte[] values)
+            => new C3f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C3f"/> color.
+        /// The values are mapped from the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C3f color)
+            => new byte[] { Col.ByteFromFloat(color.R), Col.ByteFromFloat(color.G), Col.ByteFromFloat(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(ushort[] values)
+            => new C3f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C3f"/> color.
+        /// The values are mapped from the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C3f color)
+            => new ushort[] { Col.UShortFromFloat(color.R), Col.UShortFromFloat(color.G), Col.UShortFromFloat(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(uint[] values)
+            => new C3f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C3f"/> color.
+        /// The values are mapped from the <see cref="C3f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C3f color)
+            => new uint[] { Col.UIntFromFloat(color.R), Col.UIntFromFloat(color.G), Col.UIntFromFloat(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(float[] values)
+            => new C3f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C3f color)
+            => new float[] { (color.R), (color.G), (color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3f(double[] values)
+            => new C3f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C3f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C3f color)
+            => new double[] { Col.DoubleFromFloat(color.R), Col.DoubleFromFloat(color.G), Col.DoubleFromFloat(color.B) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b Map(Func<float, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -6148,6 +6856,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us Map(Func<float, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -6156,6 +6865,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui Map(Func<float, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -6164,6 +6874,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f Map(Func<float, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -6172,11 +6883,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d Map(Func<float, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -6184,12 +6897,17 @@ namespace Aardvark.Base
             array[start + 2] = element_fun(B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<float, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
             array[start + 2] = element_index_fun(B, 2);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float[] ToArray()
+            => (float[])this;
 
         #endregion
 
@@ -7438,188 +8156,221 @@ namespace Aardvark.Base
             B = index_fun(2);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(byte[] values)
+        {
+            R = Col.DoubleFromByte(values[0]);
+            G = Col.DoubleFromByte(values[1]);
+            B = Col.DoubleFromByte(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(byte[] values, int start)
+        {
+            R = Col.DoubleFromByte(values[start + 0]);
+            G = Col.DoubleFromByte(values[start + 1]);
+            B = Col.DoubleFromByte(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(ushort[] values)
+        {
+            R = Col.DoubleFromUShort(values[0]);
+            G = Col.DoubleFromUShort(values[1]);
+            B = Col.DoubleFromUShort(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(ushort[] values, int start)
+        {
+            R = Col.DoubleFromUShort(values[start + 0]);
+            G = Col.DoubleFromUShort(values[start + 1]);
+            B = Col.DoubleFromUShort(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(uint[] values)
+        {
+            R = Col.DoubleFromUInt(values[0]);
+            G = Col.DoubleFromUInt(values[1]);
+            B = Col.DoubleFromUInt(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(uint[] values, int start)
+        {
+            R = Col.DoubleFromUInt(values[start + 0]);
+            G = Col.DoubleFromUInt(values[start + 1]);
+            B = Col.DoubleFromUInt(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(float[] values)
+        {
+            R = Col.DoubleFromFloat(values[0]);
+            G = Col.DoubleFromFloat(values[1]);
+            B = Col.DoubleFromFloat(values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(float[] values, int start)
+        {
+            R = Col.DoubleFromFloat(values[start + 0]);
+            G = Col.DoubleFromFloat(values[start + 1]);
+            B = Col.DoubleFromFloat(values[start + 2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(double[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(double[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C3d"/> color.
+        /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C3d color)
-            => new C3b(color);
+        public static explicit operator C3d(C3b color)
+            => new C3d(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C3d color)
-            => new C3us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C3d color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C3d color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
-        /// The alpha channel is set to 255.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C3d color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
-        /// The alpha channel is set to 2^16 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C3d color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
-        /// The alpha channel is set to 2^32 - 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C3d color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C3d color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// The alpha channel is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C3d color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C3d color)
-            => new V3f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C3d color)
-            => new V3d(
-                (color.R), 
-                (color.G), 
-                (color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// W is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C3d color)
-            => new V4f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B),
-                (float)(1.0)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// W is set to 1.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C3d color)
-            => new V4d(
-                (color.R), 
-                (color.G), 
-                (color.B),
-                (1.0)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC3b(C3b c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C3d"/> color.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(C3us color)
+            => new C3d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC3us(C3us c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C3d"/> color.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(C3ui color)
+            => new C3d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC3ui(C3ui c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(C3f color)
+            => new C3d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C3f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C3f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC3f(C3f c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3d"/> color.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(C4b color)
+            => new C3d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -7627,14 +8378,22 @@ namespace Aardvark.Base
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC4b(C4b c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3d"/> color.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(C4us color)
+            => new C3d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -7642,14 +8401,22 @@ namespace Aardvark.Base
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC4us(C4us c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3d"/> color.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(C4ui color)
+            => new C3d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -7657,91 +8424,210 @@ namespace Aardvark.Base
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC4ui(C4ui c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(C4f color)
+            => new C3d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4f"/> color.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C4f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC4f(C4f c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(C4d color)
+            => new C3d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4d"/> color.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C3d"/> color from the given <see cref="C4d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromC4d(C4d c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(V3f v)
+            => new C3d(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C3d"/> color from a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromV3f(V3f c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(V3d v)
+            => new C3d(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C3d"/> color from a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromV3d(V3d c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(V4f v)
+            => new C3d(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="V4f"/> vector.
         /// W is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C3d"/> color from a <see cref="V4f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromV4f(V4f c) => new C3d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(V4d v)
+            => new C3d(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3d"/> color to a <see cref="V4d"/> vector.
         /// W is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C3d"/> color from a <see cref="V4d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d FromV4d(V4d c) => new C3d(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(byte[] values)
+            => new C3d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C3d"/> color.
+        /// The values are mapped from the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C3d color)
+            => new byte[] { Col.ByteFromDouble(color.R), Col.ByteFromDouble(color.G), Col.ByteFromDouble(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(ushort[] values)
+            => new C3d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C3d"/> color.
+        /// The values are mapped from the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C3d color)
+            => new ushort[] { Col.UShortFromDouble(color.R), Col.UShortFromDouble(color.G), Col.UShortFromDouble(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(uint[] values)
+            => new C3d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C3d"/> color.
+        /// The values are mapped from the <see cref="C3d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C3d color)
+            => new uint[] { Col.UIntFromDouble(color.R), Col.UIntFromDouble(color.G), Col.UIntFromDouble(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(float[] values)
+            => new C3d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C3d color)
+            => new float[] { Col.FloatFromDouble(color.R), Col.FloatFromDouble(color.G), Col.FloatFromDouble(color.B) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3d(double[] values)
+            => new C3d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C3d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C3d color)
+            => new double[] { (color.R), (color.G), (color.B) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b Map(Func<double, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -7750,6 +8636,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us Map(Func<double, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -7758,6 +8645,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui Map(Func<double, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -7766,6 +8654,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f Map(Func<double, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
@@ -7774,11 +8663,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d Map(Func<double, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -7786,12 +8677,17 @@ namespace Aardvark.Base
             array[start + 2] = element_fun(B);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<double, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
             array[start + 2] = element_index_fun(B, 2);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double[] ToArray()
+            => (double[])this;
 
         #endregion
 
@@ -9387,195 +10283,177 @@ namespace Aardvark.Base
             A = index_fun(3);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(byte[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+            A = (values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(byte[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+            A = (values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(ushort[] values)
+        {
+            R = Col.ByteFromUShort(values[0]);
+            G = Col.ByteFromUShort(values[1]);
+            B = Col.ByteFromUShort(values[2]);
+            A = Col.ByteFromUShort(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(ushort[] values, int start)
+        {
+            R = Col.ByteFromUShort(values[start + 0]);
+            G = Col.ByteFromUShort(values[start + 1]);
+            B = Col.ByteFromUShort(values[start + 2]);
+            A = Col.ByteFromUShort(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(uint[] values)
+        {
+            R = Col.ByteFromUInt(values[0]);
+            G = Col.ByteFromUInt(values[1]);
+            B = Col.ByteFromUInt(values[2]);
+            A = Col.ByteFromUInt(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(uint[] values, int start)
+        {
+            R = Col.ByteFromUInt(values[start + 0]);
+            G = Col.ByteFromUInt(values[start + 1]);
+            B = Col.ByteFromUInt(values[start + 2]);
+            A = Col.ByteFromUInt(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(float[] values)
+        {
+            R = Col.ByteFromFloat(values[0]);
+            G = Col.ByteFromFloat(values[1]);
+            B = Col.ByteFromFloat(values[2]);
+            A = Col.ByteFromFloat(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(float[] values, int start)
+        {
+            R = Col.ByteFromFloat(values[start + 0]);
+            G = Col.ByteFromFloat(values[start + 1]);
+            B = Col.ByteFromFloat(values[start + 2]);
+            A = Col.ByteFromFloat(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(double[] values)
+        {
+            R = Col.ByteFromDouble(values[0]);
+            G = Col.ByteFromDouble(values[1]);
+            B = Col.ByteFromDouble(values[2]);
+            A = Col.ByteFromDouble(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(double[] values, int start)
+        {
+            R = Col.ByteFromDouble(values[start + 0]);
+            G = Col.ByteFromDouble(values[start + 1]);
+            B = Col.ByteFromDouble(values[start + 2]);
+            A = Col.ByteFromDouble(values[start + 3]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4b"/> color.
+        /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C4b color)
-            => new C3b(color);
+        public static explicit operator C4b(C3b color)
+            => new C4b(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C4b color)
-            => new C3us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C4b color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C4b color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C4b color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C4b color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C4b color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C4b color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C4b color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3i"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3i(C4b color)
-            => new V3i(
-                (int)(color.R), 
-                (int)(color.G), 
-                (int)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3l(C4b color)
-            => new V3l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C4b color)
-            => new V3f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C4b color)
-            => new V3d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4i"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4i(C4b color)
-            => new V4i(
-                (int)(color.R), 
-                (int)(color.G), 
-                (int)(color.B),
-                (int)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4l(C4b color)
-            => new V4l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B),
-                (long)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C4b color)
-            => new V4f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B),
-                (float)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C4b color)
-            => new V4d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B),
-                (double)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3b"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C3b"/> color.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromC3b(C3b c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4b"/> color.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(C3us color)
+            => new C4b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -9583,14 +10461,23 @@ namespace Aardvark.Base
         public static C4b FromC3us(C3us c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4b"/> color.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(C3ui color)
+            => new C4b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -9598,14 +10485,23 @@ namespace Aardvark.Base
         public static C4b FromC3ui(C3ui c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4b"/> color.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(C3f color)
+            => new C4b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -9613,14 +10509,23 @@ namespace Aardvark.Base
         public static C4b FromC3f(C3f c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4b"/> color.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(C3d color)
+            => new C4b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -9628,69 +10533,111 @@ namespace Aardvark.Base
         public static C4b FromC3d(C3d c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C4b"/> color.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(C4us color)
+            => new C4b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromC4us(C4us c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C4b"/> color.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(C4ui color)
+            => new C4b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromC4ui(C4ui c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C4b"/> color.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(C4f color)
+            => new C4b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromC4f(C4f c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C4b"/> color.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(C4d color)
+            => new C4b(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C4b"/> color from the given <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromC4d(C4d c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3i"/> vector.
+        /// Converts the given <see cref="V3i"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V3i v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V3i"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3i ToV3i() => (V3i)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3i"/> vector.
+        /// Creates a <see cref="C4b"/> color from a <see cref="V3i"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -9698,13 +10645,23 @@ namespace Aardvark.Base
         public static C4b FromV3i(V3i c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
+        /// Converts the given <see cref="V3l"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V3l v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V3l"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3l ToV3l() => (V3l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3l"/> vector.
+        /// Creates a <see cref="C4b"/> color from a <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -9712,13 +10669,23 @@ namespace Aardvark.Base
         public static C4b FromV3l(V3l c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V3f v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V3f"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C4b"/> color from a <see cref="V3f"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -9726,13 +10693,23 @@ namespace Aardvark.Base
         public static C4b FromV3f(V3f c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V3d v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V3d"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C4b"/> color from a <see cref="V3d"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
@@ -9740,60 +10717,175 @@ namespace Aardvark.Base
         public static C4b FromV3d(V3d c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4i"/> vector.
+        /// Converts the given <see cref="V4i"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V4i v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V4i"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4i ToV4i() => (V4i)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4i"/> vector.
+        /// Creates a <see cref="C4b"/> color from a <see cref="V4i"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromV4i(V4i c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
+        /// Converts the given <see cref="V4l"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V4l v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V4l"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4l ToV4l() => (V4l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4l"/> vector.
+        /// Creates a <see cref="C4b"/> color from a <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromV4l(V4l c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V4f v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V4f"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C4b"/> color from a <see cref="V4f"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromV4f(V4f c) => new C4b(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V4d v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V4d"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C4b"/> color from a <see cref="V4d"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromV4d(V4d c) => new C4b(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(byte[] values)
+            => new C4b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C4b"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C4b color)
+            => new byte[] { (color.R), (color.G), (color.B), (color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(ushort[] values)
+            => new C4b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C4b"/> color.
+        /// The values are mapped from the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C4b color)
+            => new ushort[] { Col.UShortFromByte(color.R), Col.UShortFromByte(color.G), Col.UShortFromByte(color.B), Col.UShortFromByte(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(uint[] values)
+            => new C4b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C4b"/> color.
+        /// The values are mapped from the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C4b color)
+            => new uint[] { Col.UIntFromByte(color.R), Col.UIntFromByte(color.G), Col.UIntFromByte(color.B), Col.UIntFromByte(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(float[] values)
+            => new C4b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C4b"/> color.
+        /// The values are mapped from the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C4b color)
+            => new float[] { Col.FloatFromByte(color.R), Col.FloatFromByte(color.G), Col.FloatFromByte(color.B), Col.FloatFromByte(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(double[] values)
+            => new C4b(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C4b"/> color.
+        /// The values are mapped from the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C4b color)
+            => new double[] { Col.DoubleFromByte(color.R), Col.DoubleFromByte(color.G), Col.DoubleFromByte(color.B), Col.DoubleFromByte(color.A) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b Map(Func<byte, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -9802,6 +10894,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us Map(Func<byte, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -9810,6 +10903,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui Map(Func<byte, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -9818,6 +10912,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f Map(Func<byte, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -9826,11 +10921,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d Map(Func<byte, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -9839,6 +10936,7 @@ namespace Aardvark.Base
             array[start + 3] = element_fun(A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<byte, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
@@ -9846,6 +10944,10 @@ namespace Aardvark.Base
             array[start + 2] = element_index_fun(B, 2);
             array[start + 3] = element_index_fun(A, 3);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte[] ToArray()
+            => (byte[])this;
 
         #endregion
 
@@ -11513,182 +12615,156 @@ namespace Aardvark.Base
             A = index_fun(3);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(byte[] values)
+        {
+            R = Col.UShortFromByte(values[0]);
+            G = Col.UShortFromByte(values[1]);
+            B = Col.UShortFromByte(values[2]);
+            A = Col.UShortFromByte(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(byte[] values, int start)
+        {
+            R = Col.UShortFromByte(values[start + 0]);
+            G = Col.UShortFromByte(values[start + 1]);
+            B = Col.UShortFromByte(values[start + 2]);
+            A = Col.UShortFromByte(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(ushort[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+            A = (values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(ushort[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+            A = (values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(uint[] values)
+        {
+            R = Col.UShortFromUInt(values[0]);
+            G = Col.UShortFromUInt(values[1]);
+            B = Col.UShortFromUInt(values[2]);
+            A = Col.UShortFromUInt(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(uint[] values, int start)
+        {
+            R = Col.UShortFromUInt(values[start + 0]);
+            G = Col.UShortFromUInt(values[start + 1]);
+            B = Col.UShortFromUInt(values[start + 2]);
+            A = Col.UShortFromUInt(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(float[] values)
+        {
+            R = Col.UShortFromFloat(values[0]);
+            G = Col.UShortFromFloat(values[1]);
+            B = Col.UShortFromFloat(values[2]);
+            A = Col.UShortFromFloat(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(float[] values, int start)
+        {
+            R = Col.UShortFromFloat(values[start + 0]);
+            G = Col.UShortFromFloat(values[start + 1]);
+            B = Col.UShortFromFloat(values[start + 2]);
+            A = Col.UShortFromFloat(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(double[] values)
+        {
+            R = Col.UShortFromDouble(values[0]);
+            G = Col.UShortFromDouble(values[1]);
+            B = Col.UShortFromDouble(values[2]);
+            A = Col.UShortFromDouble(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(double[] values, int start)
+        {
+            R = Col.UShortFromDouble(values[start + 0]);
+            G = Col.UShortFromDouble(values[start + 1]);
+            B = Col.UShortFromDouble(values[start + 2]);
+            A = Col.UShortFromDouble(values[start + 3]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4us"/> color.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C4us color)
-            => new C3b(color);
+        public static explicit operator C4us(C3b color)
+            => new C4us(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C4us color)
-            => new C3us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C4us color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C4us color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C4us color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C4us color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C4us color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C4us color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C4us color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3i"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3i(C4us color)
-            => new V3i(
-                (int)(color.R), 
-                (int)(color.G), 
-                (int)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3l(C4us color)
-            => new V3l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C4us color)
-            => new V3f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C4us color)
-            => new V3d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4i"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4i(C4us color)
-            => new V4i(
-                (int)(color.R), 
-                (int)(color.G), 
-                (int)(color.B),
-                (int)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4l(C4us color)
-            => new V4l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B),
-                (long)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C4us color)
-            => new V4f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B),
-                (float)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C4us color)
-            => new V4d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B),
-                (double)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -11696,27 +12772,44 @@ namespace Aardvark.Base
         public static C4us FromC3b(C3b c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4us"/> color.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(C3us color)
+            => new C4us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3us"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C3us"/> color.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromC3us(C3us c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4us"/> color.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(C3ui color)
+            => new C4us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -11724,14 +12817,23 @@ namespace Aardvark.Base
         public static C4us FromC3ui(C3ui c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4us"/> color.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(C3f color)
+            => new C4us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -11739,14 +12841,23 @@ namespace Aardvark.Base
         public static C4us FromC3f(C3f c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4us"/> color.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(C3d color)
+            => new C4us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -11754,69 +12865,111 @@ namespace Aardvark.Base
         public static C4us FromC3d(C3d c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C4us"/> color.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(C4b color)
+            => new C4us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromC4b(C4b c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C4us"/> color.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(C4ui color)
+            => new C4us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromC4ui(C4ui c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C4us"/> color.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(C4f color)
+            => new C4us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromC4f(C4f c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C4us"/> color.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(C4d color)
+            => new C4us(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C4us"/> color from the given <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromC4d(C4d c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3i"/> vector.
+        /// Converts the given <see cref="V3i"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V3i v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V3i"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3i ToV3i() => (V3i)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3i"/> vector.
+        /// Creates a <see cref="C4us"/> color from a <see cref="V3i"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -11824,13 +12977,23 @@ namespace Aardvark.Base
         public static C4us FromV3i(V3i c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
+        /// Converts the given <see cref="V3l"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V3l v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V3l"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3l ToV3l() => (V3l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3l"/> vector.
+        /// Creates a <see cref="C4us"/> color from a <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -11838,13 +13001,23 @@ namespace Aardvark.Base
         public static C4us FromV3l(V3l c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V3f v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V3f"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C4us"/> color from a <see cref="V3f"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -11852,13 +13025,23 @@ namespace Aardvark.Base
         public static C4us FromV3f(V3f c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V3d v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V3d"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C4us"/> color from a <see cref="V3d"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
@@ -11866,60 +13049,175 @@ namespace Aardvark.Base
         public static C4us FromV3d(V3d c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4i"/> vector.
+        /// Converts the given <see cref="V4i"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V4i v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V4i"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4i ToV4i() => (V4i)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4i"/> vector.
+        /// Creates a <see cref="C4us"/> color from a <see cref="V4i"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromV4i(V4i c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
+        /// Converts the given <see cref="V4l"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V4l v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V4l"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4l ToV4l() => (V4l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4l"/> vector.
+        /// Creates a <see cref="C4us"/> color from a <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromV4l(V4l c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V4f v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V4f"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C4us"/> color from a <see cref="V4f"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromV4f(V4f c) => new C4us(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V4d v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V4d"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C4us"/> color from a <see cref="V4d"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromV4d(V4d c) => new C4us(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(byte[] values)
+            => new C4us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C4us"/> color.
+        /// The values are mapped from the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C4us color)
+            => new byte[] { Col.ByteFromUShort(color.R), Col.ByteFromUShort(color.G), Col.ByteFromUShort(color.B), Col.ByteFromUShort(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(ushort[] values)
+            => new C4us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C4us"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C4us color)
+            => new ushort[] { (color.R), (color.G), (color.B), (color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(uint[] values)
+            => new C4us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C4us"/> color.
+        /// The values are mapped from the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C4us color)
+            => new uint[] { Col.UIntFromUShort(color.R), Col.UIntFromUShort(color.G), Col.UIntFromUShort(color.B), Col.UIntFromUShort(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(float[] values)
+            => new C4us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C4us"/> color.
+        /// The values are mapped from the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C4us color)
+            => new float[] { Col.FloatFromUShort(color.R), Col.FloatFromUShort(color.G), Col.FloatFromUShort(color.B), Col.FloatFromUShort(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(double[] values)
+            => new C4us(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C4us"/> color.
+        /// The values are mapped from the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C4us color)
+            => new double[] { Col.DoubleFromUShort(color.R), Col.DoubleFromUShort(color.G), Col.DoubleFromUShort(color.B), Col.DoubleFromUShort(color.A) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b Map(Func<ushort, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -11928,6 +13226,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us Map(Func<ushort, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -11936,6 +13235,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui Map(Func<ushort, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -11944,6 +13244,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f Map(Func<ushort, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -11952,11 +13253,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d Map(Func<ushort, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -11965,6 +13268,7 @@ namespace Aardvark.Base
             array[start + 3] = element_fun(A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<ushort, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
@@ -11972,6 +13276,10 @@ namespace Aardvark.Base
             array[start + 2] = element_index_fun(B, 2);
             array[start + 3] = element_index_fun(A, 3);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ushort[] ToArray()
+            => (ushort[])this;
 
         #endregion
 
@@ -13599,159 +14907,156 @@ namespace Aardvark.Base
             A = index_fun(3);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(byte[] values)
+        {
+            R = Col.UIntFromByte(values[0]);
+            G = Col.UIntFromByte(values[1]);
+            B = Col.UIntFromByte(values[2]);
+            A = Col.UIntFromByte(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(byte[] values, int start)
+        {
+            R = Col.UIntFromByte(values[start + 0]);
+            G = Col.UIntFromByte(values[start + 1]);
+            B = Col.UIntFromByte(values[start + 2]);
+            A = Col.UIntFromByte(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(ushort[] values)
+        {
+            R = Col.UIntFromUShort(values[0]);
+            G = Col.UIntFromUShort(values[1]);
+            B = Col.UIntFromUShort(values[2]);
+            A = Col.UIntFromUShort(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(ushort[] values, int start)
+        {
+            R = Col.UIntFromUShort(values[start + 0]);
+            G = Col.UIntFromUShort(values[start + 1]);
+            B = Col.UIntFromUShort(values[start + 2]);
+            A = Col.UIntFromUShort(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(uint[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+            A = (values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(uint[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+            A = (values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(float[] values)
+        {
+            R = Col.UIntFromFloat(values[0]);
+            G = Col.UIntFromFloat(values[1]);
+            B = Col.UIntFromFloat(values[2]);
+            A = Col.UIntFromFloat(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(float[] values, int start)
+        {
+            R = Col.UIntFromFloat(values[start + 0]);
+            G = Col.UIntFromFloat(values[start + 1]);
+            B = Col.UIntFromFloat(values[start + 2]);
+            A = Col.UIntFromFloat(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(double[] values)
+        {
+            R = Col.UIntFromDouble(values[0]);
+            G = Col.UIntFromDouble(values[1]);
+            B = Col.UIntFromDouble(values[2]);
+            A = Col.UIntFromDouble(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(double[] values, int start)
+        {
+            R = Col.UIntFromDouble(values[start + 0]);
+            G = Col.UIntFromDouble(values[start + 1]);
+            B = Col.UIntFromDouble(values[start + 2]);
+            A = Col.UIntFromDouble(values[start + 3]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4ui"/> color.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C4ui color)
-            => new C3b(color);
+        public static explicit operator C4ui(C3b color)
+            => new C4ui(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C4ui color)
-            => new C3us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C4ui color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C4ui color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C4ui color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C4ui color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C4ui color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4f"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C4ui color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4d"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C4ui color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3l(C4ui color)
-            => new V3l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C4ui color)
-            => new V3f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C4ui color)
-            => new V3d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4l(C4ui color)
-            => new V4l(
-                (long)(color.R), 
-                (long)(color.G), 
-                (long)(color.B),
-                (long)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C4ui color)
-            => new V4f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B),
-                (float)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C4ui color)
-            => new V4d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B),
-                (double)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -13759,14 +15064,23 @@ namespace Aardvark.Base
         public static C4ui FromC3b(C3b c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4ui"/> color.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(C3us color)
+            => new C4ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -13774,27 +15088,44 @@ namespace Aardvark.Base
         public static C4ui FromC3us(C3us c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4ui"/> color.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(C3ui color)
+            => new C4ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3ui"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C3ui"/> color.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromC3ui(C3ui c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4ui"/> color.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(C3f color)
+            => new C4ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C3f"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -13802,14 +15133,23 @@ namespace Aardvark.Base
         public static C4ui FromC3f(C3f c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4ui"/> color.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(C3d color)
+            => new C4ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C3d"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -13817,69 +15157,111 @@ namespace Aardvark.Base
         public static C4ui FromC3d(C3d c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C4ui"/> color.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(C4b color)
+            => new C4ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromC4b(C4b c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C4ui"/> color.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(C4us color)
+            => new C4ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromC4us(C4us c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C4ui"/> color.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(C4f color)
+            => new C4ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C4f"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromC4f(C4f c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C4ui"/> color.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(C4d color)
+            => new C4ui(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C4ui"/> color from the given <see cref="C4d"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromC4d(C4d c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3l"/> vector.
+        /// Converts the given <see cref="V3l"/> vector to a <see cref="C4ui"/> color.
+        /// The values are not mapped to the <see cref="C4ui"/> color range.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(V3l v)
+            => new C4ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="V3l"/> vector.
+        /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3l ToV3l() => (V3l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3l"/> vector.
+        /// Creates a <see cref="C4ui"/> color from a <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -13887,13 +15269,23 @@ namespace Aardvark.Base
         public static C4ui FromV3l(V3l c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C4ui"/> color.
+        /// The values are not mapped to the <see cref="C4ui"/> color range.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(V3f v)
+            => new C4ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="V3f"/> vector.
+        /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C4ui"/> color from a <see cref="V3f"/> vector.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -13901,13 +15293,23 @@ namespace Aardvark.Base
         public static C4ui FromV3f(V3f c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C4ui"/> color.
+        /// The values are not mapped to the <see cref="C4ui"/> color range.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(V3d v)
+            => new C4ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="V3d"/> vector.
+        /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C4ui"/> color from a <see cref="V3d"/> vector.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
@@ -13915,47 +15317,153 @@ namespace Aardvark.Base
         public static C4ui FromV3d(V3d c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4l"/> vector.
+        /// Converts the given <see cref="V4l"/> vector to a <see cref="C4ui"/> color.
+        /// The values are not mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(V4l v)
+            => new C4ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="V4l"/> vector.
+        /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4l ToV4l() => (V4l)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4l"/> vector.
+        /// Creates a <see cref="C4ui"/> color from a <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromV4l(V4l c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C4ui"/> color.
+        /// The values are not mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(V4f v)
+            => new C4ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="V4f"/> vector.
+        /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C4ui"/> color from a <see cref="V4f"/> vector.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromV4f(V4f c) => new C4ui(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C4ui"/> color.
+        /// The values are not mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(V4d v)
+            => new C4ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="V4d"/> vector.
+        /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C4ui"/> color from a <see cref="V4d"/> vector.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromV4d(V4d c) => new C4ui(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(byte[] values)
+            => new C4ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C4ui"/> color.
+        /// The values are mapped from the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C4ui color)
+            => new byte[] { Col.ByteFromUInt(color.R), Col.ByteFromUInt(color.G), Col.ByteFromUInt(color.B), Col.ByteFromUInt(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(ushort[] values)
+            => new C4ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C4ui"/> color.
+        /// The values are mapped from the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C4ui color)
+            => new ushort[] { Col.UShortFromUInt(color.R), Col.UShortFromUInt(color.G), Col.UShortFromUInt(color.B), Col.UShortFromUInt(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(uint[] values)
+            => new C4ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C4ui"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C4ui color)
+            => new uint[] { (color.R), (color.G), (color.B), (color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(float[] values)
+            => new C4ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C4ui"/> color.
+        /// The values are mapped from the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C4ui color)
+            => new float[] { Col.FloatFromUInt(color.R), Col.FloatFromUInt(color.G), Col.FloatFromUInt(color.B), Col.FloatFromUInt(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(double[] values)
+            => new C4ui(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C4ui"/> color.
+        /// The values are mapped from the <see cref="C4ui"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C4ui color)
+            => new double[] { Col.DoubleFromUInt(color.R), Col.DoubleFromUInt(color.G), Col.DoubleFromUInt(color.B), Col.DoubleFromUInt(color.A) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b Map(Func<uint, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -13964,6 +15472,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us Map(Func<uint, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -13972,6 +15481,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui Map(Func<uint, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -13980,6 +15490,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f Map(Func<uint, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -13988,11 +15499,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d Map(Func<uint, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -14001,6 +15514,7 @@ namespace Aardvark.Base
             array[start + 3] = element_fun(A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<uint, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
@@ -14008,6 +15522,10 @@ namespace Aardvark.Base
             array[start + 2] = element_index_fun(B, 2);
             array[start + 3] = element_index_fun(A, 3);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint[] ToArray()
+            => (uint[])this;
 
         #endregion
 
@@ -15504,134 +17022,154 @@ namespace Aardvark.Base
             A = index_fun(3);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(byte[] values)
+        {
+            R = Col.FloatFromByte(values[0]);
+            G = Col.FloatFromByte(values[1]);
+            B = Col.FloatFromByte(values[2]);
+            A = Col.FloatFromByte(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(byte[] values, int start)
+        {
+            R = Col.FloatFromByte(values[start + 0]);
+            G = Col.FloatFromByte(values[start + 1]);
+            B = Col.FloatFromByte(values[start + 2]);
+            A = Col.FloatFromByte(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(ushort[] values)
+        {
+            R = Col.FloatFromUShort(values[0]);
+            G = Col.FloatFromUShort(values[1]);
+            B = Col.FloatFromUShort(values[2]);
+            A = Col.FloatFromUShort(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(ushort[] values, int start)
+        {
+            R = Col.FloatFromUShort(values[start + 0]);
+            G = Col.FloatFromUShort(values[start + 1]);
+            B = Col.FloatFromUShort(values[start + 2]);
+            A = Col.FloatFromUShort(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(uint[] values)
+        {
+            R = Col.FloatFromUInt(values[0]);
+            G = Col.FloatFromUInt(values[1]);
+            B = Col.FloatFromUInt(values[2]);
+            A = Col.FloatFromUInt(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(uint[] values, int start)
+        {
+            R = Col.FloatFromUInt(values[start + 0]);
+            G = Col.FloatFromUInt(values[start + 1]);
+            B = Col.FloatFromUInt(values[start + 2]);
+            A = Col.FloatFromUInt(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(float[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+            A = (values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(float[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+            A = (values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(double[] values)
+        {
+            R = Col.FloatFromDouble(values[0]);
+            G = Col.FloatFromDouble(values[1]);
+            B = Col.FloatFromDouble(values[2]);
+            A = Col.FloatFromDouble(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(double[] values, int start)
+        {
+            R = Col.FloatFromDouble(values[start + 0]);
+            G = Col.FloatFromDouble(values[start + 1]);
+            B = Col.FloatFromDouble(values[start + 2]);
+            A = Col.FloatFromDouble(values[start + 3]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4f"/> color.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C4f color)
-            => new C3b(color);
+        public static explicit operator C4f(C3b color)
+            => new C4f(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C4f color)
-            => new C3us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C4f color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C4f color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C4f color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C4f color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C4f color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C4f color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4d(C4f color)
-            => new C4d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C4f color)
-            => new V3f(
-                (color.R), 
-                (color.G), 
-                (color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C4f color)
-            => new V3d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C4f color)
-            => new V4f(
-                (color.R), 
-                (color.G), 
-                (color.B),
-                (color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C4f color)
-            => new V4d(
-                (double)(color.R), 
-                (double)(color.G), 
-                (double)(color.B),
-                (double)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -15639,14 +17177,23 @@ namespace Aardvark.Base
         public static C4f FromC3b(C3b c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4f"/> color.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(C3us color)
+            => new C4f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -15654,14 +17201,23 @@ namespace Aardvark.Base
         public static C4f FromC3us(C3us c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4f"/> color.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(C3ui color)
+            => new C4f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -15669,138 +17225,292 @@ namespace Aardvark.Base
         public static C4f FromC3ui(C3ui c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4f"/> color.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(C3f color)
+            => new C4f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C3f"/> color.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromC3f(C3f c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4f"/> color.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(C3d color)
+            => new C4f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C3d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C3d"/> color.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromC3d(C3d c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C4f"/> color.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(C4b color)
+            => new C4f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromC4b(C4b c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C4f"/> color.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(C4us color)
+            => new C4f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromC4us(C4us c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C4f"/> color.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(C4ui color)
+            => new C4f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromC4ui(C4ui c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4d"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C4f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(C4d color)
+            => new C4f(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C4d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d ToC4d() => (C4d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4d"/> color.
+        /// Creates a <see cref="C4f"/> color from the given <see cref="C4d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromC4d(C4d c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C4f"/> color.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(V3f v)
+            => new C4f(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C4f"/> color from a <see cref="V3f"/> vector.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromV3f(V3f c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C4f"/> color.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(V3d v)
+            => new C4f(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C4f"/> color from a <see cref="V3d"/> vector.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromV3d(V3d c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C4f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(V4f v)
+            => new C4f(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="V4f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C4f"/> color from a <see cref="V4f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromV4f(V4f c) => new C4f(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C4f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(V4d v)
+            => new C4f(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4f"/> color to a <see cref="V4d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C4f"/> color from a <see cref="V4d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f FromV4d(V4d c) => new C4f(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(byte[] values)
+            => new C4f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C4f"/> color.
+        /// The values are mapped from the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C4f color)
+            => new byte[] { Col.ByteFromFloat(color.R), Col.ByteFromFloat(color.G), Col.ByteFromFloat(color.B), Col.ByteFromFloat(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(ushort[] values)
+            => new C4f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C4f"/> color.
+        /// The values are mapped from the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C4f color)
+            => new ushort[] { Col.UShortFromFloat(color.R), Col.UShortFromFloat(color.G), Col.UShortFromFloat(color.B), Col.UShortFromFloat(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(uint[] values)
+            => new C4f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C4f"/> color.
+        /// The values are mapped from the <see cref="C4f"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C4f color)
+            => new uint[] { Col.UIntFromFloat(color.R), Col.UIntFromFloat(color.G), Col.UIntFromFloat(color.B), Col.UIntFromFloat(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(float[] values)
+            => new C4f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C4f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C4f color)
+            => new float[] { (color.R), (color.G), (color.B), (color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4f(double[] values)
+            => new C4f(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C4f"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C4f color)
+            => new double[] { Col.DoubleFromFloat(color.R), Col.DoubleFromFloat(color.G), Col.DoubleFromFloat(color.B), Col.DoubleFromFloat(color.A) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b Map(Func<float, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -15809,6 +17519,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us Map(Func<float, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -15817,6 +17528,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui Map(Func<float, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -15825,6 +17537,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f Map(Func<float, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -15833,11 +17546,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d Map(Func<float, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -15846,6 +17561,7 @@ namespace Aardvark.Base
             array[start + 3] = element_fun(A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<float, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
@@ -15853,6 +17569,10 @@ namespace Aardvark.Base
             array[start + 2] = element_index_fun(B, 2);
             array[start + 3] = element_index_fun(A, 3);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float[] ToArray()
+            => (float[])this;
 
         #endregion
 
@@ -17264,134 +18984,154 @@ namespace Aardvark.Base
             A = index_fun(3);
         }
 
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(byte[] values)
+        {
+            R = Col.DoubleFromByte(values[0]);
+            G = Col.DoubleFromByte(values[1]);
+            B = Col.DoubleFromByte(values[2]);
+            A = Col.DoubleFromByte(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(byte[] values, int start)
+        {
+            R = Col.DoubleFromByte(values[start + 0]);
+            G = Col.DoubleFromByte(values[start + 1]);
+            B = Col.DoubleFromByte(values[start + 2]);
+            A = Col.DoubleFromByte(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(ushort[] values)
+        {
+            R = Col.DoubleFromUShort(values[0]);
+            G = Col.DoubleFromUShort(values[1]);
+            B = Col.DoubleFromUShort(values[2]);
+            A = Col.DoubleFromUShort(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(ushort[] values, int start)
+        {
+            R = Col.DoubleFromUShort(values[start + 0]);
+            G = Col.DoubleFromUShort(values[start + 1]);
+            B = Col.DoubleFromUShort(values[start + 2]);
+            A = Col.DoubleFromUShort(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(uint[] values)
+        {
+            R = Col.DoubleFromUInt(values[0]);
+            G = Col.DoubleFromUInt(values[1]);
+            B = Col.DoubleFromUInt(values[2]);
+            A = Col.DoubleFromUInt(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array, starting at the specified index.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(uint[] values, int start)
+        {
+            R = Col.DoubleFromUInt(values[start + 0]);
+            G = Col.DoubleFromUInt(values[start + 1]);
+            B = Col.DoubleFromUInt(values[start + 2]);
+            A = Col.DoubleFromUInt(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(float[] values)
+        {
+            R = Col.DoubleFromFloat(values[0]);
+            G = Col.DoubleFromFloat(values[1]);
+            B = Col.DoubleFromFloat(values[2]);
+            A = Col.DoubleFromFloat(values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(float[] values, int start)
+        {
+            R = Col.DoubleFromFloat(values[start + 0]);
+            G = Col.DoubleFromFloat(values[start + 1]);
+            B = Col.DoubleFromFloat(values[start + 2]);
+            A = Col.DoubleFromFloat(values[start + 3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(double[] values)
+        {
+            R = (values[0]);
+            G = (values[1]);
+            B = (values[2]);
+            A = (values[3]);
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(double[] values, int start)
+        {
+            R = (values[start + 0]);
+            G = (values[start + 1]);
+            B = (values[start + 2]);
+            A = (values[start + 3]);
+        }
+
         #endregion
 
         #region Conversions
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// Converts the given <see cref="C3b"/> color to a <see cref="C4d"/> color.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3b(C4d color)
-            => new C3b(color);
+        public static explicit operator C4d(C3b color)
+            => new C4d(color);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3us(C4d color)
-            => new C3us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3ui(C4d color)
-            => new C3ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3f(C4d color)
-            => new C3f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C3d(C4d color)
-            => new C3d(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4b(C4d color)
-            => new C4b(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4us(C4d color)
-            => new C4us(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4ui(C4d color)
-            => new C4ui(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator C4f(C4d color)
-            => new C4f(color);
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3f(C4d color)
-            => new V3f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V3d(C4d color)
-            => new V3d(
-                (color.R), 
-                (color.G), 
-                (color.B)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4f(C4d color)
-            => new V4f(
-                (float)(color.R), 
-                (float)(color.G), 
-                (float)(color.B),
-                (float)(color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V4d(C4d color)
-            => new V4d(
-                (color.R), 
-                (color.G), 
-                (color.B),
-                (color.A)
-                );
-
-        /// <summary>
-        /// Converts the given color to a <see cref="C3b"/> color.
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b ToC3b() => (C3b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3b"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -17399,14 +19139,23 @@ namespace Aardvark.Base
         public static C4d FromC3b(C3b c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3us"/> color.
+        /// Converts the given <see cref="C3us"/> color to a <see cref="C4d"/> color.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(C3us color)
+            => new C4d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us ToC3us() => (C3us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3us"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C3us"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -17414,14 +19163,23 @@ namespace Aardvark.Base
         public static C4d FromC3us(C3us c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3ui"/> color.
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="C4d"/> color.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(C3ui color)
+            => new C4d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3ui"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C3ui"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// The alpha channel is set to 1.
         /// </summary>
@@ -17429,138 +19187,292 @@ namespace Aardvark.Base
         public static C4d FromC3ui(C3ui c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3f"/> color.
+        /// Converts the given <see cref="C3f"/> color to a <see cref="C4d"/> color.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(C3f color)
+            => new C4d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f ToC3f() => (C3f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3f"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C3f"/> color.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromC3f(C3f c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C3d"/> color.
+        /// Converts the given <see cref="C3d"/> color to a <see cref="C4d"/> color.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(C3d color)
+            => new C4d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C3d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d ToC3d() => (C3d)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C3d"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C3d"/> color.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromC3d(C3d c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4b"/> color.
+        /// Converts the given <see cref="C4b"/> color to a <see cref="C4d"/> color.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(C4b color)
+            => new C4d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b ToC4b() => (C4b)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4b"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C4b"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromC4b(C4b c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4us"/> color.
+        /// Converts the given <see cref="C4us"/> color to a <see cref="C4d"/> color.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(C4us color)
+            => new C4d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us ToC4us() => (C4us)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4us"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C4us"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromC4us(C4us c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4ui"/> color.
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="C4d"/> color.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(C4ui color)
+            => new C4d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4ui"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C4ui"/> color.
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromC4ui(C4ui c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="C4f"/> color.
+        /// Converts the given <see cref="C4f"/> color to a <see cref="C4d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(C4f color)
+            => new C4d(color);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="C4f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f ToC4f() => (C4f)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="C4f"/> color.
+        /// Creates a <see cref="C4d"/> color from the given <see cref="C4f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromC4f(C4f c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3f"/> vector.
+        /// Converts the given <see cref="V3f"/> vector to a <see cref="C4d"/> color.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(V3f v)
+            => new C4d(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3f ToV3f() => (V3f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3f"/> vector.
+        /// Creates a <see cref="C4d"/> color from a <see cref="V3f"/> vector.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromV3f(V3f c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V3d"/> vector.
+        /// Converts the given <see cref="V3d"/> vector to a <see cref="C4d"/> color.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(V3d v)
+            => new C4d(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d ToV3d() => (V3d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V3d"/> vector.
+        /// Creates a <see cref="C4d"/> color from a <see cref="V3d"/> vector.
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromV3d(V3d c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4f"/> vector.
+        /// Converts the given <see cref="V4f"/> vector to a <see cref="C4d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(V4f v)
+            => new C4d(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="V4f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4f ToV4f() => (V4f)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4f"/> vector.
+        /// Creates a <see cref="C4d"/> color from a <see cref="V4f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromV4f(V4f c) => new C4d(c);
 
         /// <summary>
-        /// Converts the given color to a <see cref="V4d"/> vector.
+        /// Converts the given <see cref="V4d"/> vector to a <see cref="C4d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(V4d v)
+            => new C4d(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4d"/> color to a <see cref="V4d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V4d ToV4d() => (V4d)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="V4d"/> vector.
+        /// Creates a <see cref="C4d"/> color from a <see cref="V4d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d FromV4d(V4d c) => new C4d(c);
 
         /// <summary>
+        /// Creates a new color from the given <see cref="byte"/> array.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(byte[] values)
+            => new C4d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="byte"/> array from the given <see cref="C4d"/> color.
+        /// The values are mapped from the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator byte[](C4d color)
+            => new byte[] { Col.ByteFromDouble(color.R), Col.ByteFromDouble(color.G), Col.ByteFromDouble(color.B), Col.ByteFromDouble(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="ushort"/> array.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(ushort[] values)
+            => new C4d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="ushort"/> array from the given <see cref="C4d"/> color.
+        /// The values are mapped from the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ushort[](C4d color)
+            => new ushort[] { Col.UShortFromDouble(color.R), Col.UShortFromDouble(color.G), Col.UShortFromDouble(color.B), Col.UShortFromDouble(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="uint"/> array.
+        /// The values are mapped to the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(uint[] values)
+            => new C4d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="uint"/> array from the given <see cref="C4d"/> color.
+        /// The values are mapped from the <see cref="C4d"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator uint[](C4d color)
+            => new uint[] { Col.UIntFromDouble(color.R), Col.UIntFromDouble(color.G), Col.UIntFromDouble(color.B), Col.UIntFromDouble(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="float"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(float[] values)
+            => new C4d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="float"/> array from the given <see cref="C4d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator float[](C4d color)
+            => new float[] { Col.FloatFromDouble(color.R), Col.FloatFromDouble(color.G), Col.FloatFromDouble(color.B), Col.FloatFromDouble(color.A) };
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="double"/> array.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4d(double[] values)
+            => new C4d(values);
+
+        /// <summary>
+        /// Creates a new <see cref="double"/> array from the given <see cref="C4d"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator double[](C4d color)
+            => new double[] { (color.R), (color.G), (color.B), (color.A) };
+
+        /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b Map(Func<double, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -17569,6 +19481,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us Map(Func<double, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -17577,6 +19490,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui Map(Func<double, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -17585,6 +19499,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f Map(Func<double, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
@@ -17593,11 +19508,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d Map(Func<double, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
         {
             array[start + 0] = element_fun(R);
@@ -17606,6 +19523,7 @@ namespace Aardvark.Base
             array[start + 3] = element_fun(A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<double, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
@@ -17613,6 +19531,10 @@ namespace Aardvark.Base
             array[start + 2] = element_index_fun(B, 2);
             array[start + 3] = element_index_fun(A, 3);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double[] ToArray()
+            => (double[])this;
 
         #endregion
 

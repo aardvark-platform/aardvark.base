@@ -20,11 +20,11 @@
     <Compile Include="Prelude\Lens.fs" />
     <Compile Include="Prelude\Monoid.fs" />
     <Compile Include="Prelude\AverageWindow.fs" />
+    <Compile Include="Interop\Converters.fs" />
     <Compile Include="Interop\Dictionary.fs" />
     <Compile Include="Interop\Symbol.fs" />
     <Compile Include="Interop\Vectors.fs" />
     <Compile Include="Interop\Matrix.fs" />
-    <Compile Include="Interop\Color.fs" />
     <Compile Include="Interop\String.fs" />
     <Compile Include="Interop\SortedSet.fs" />
     <Compile Include="Interop\HashSet.fs" />

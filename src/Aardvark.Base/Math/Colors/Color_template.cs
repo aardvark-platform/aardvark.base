@@ -560,6 +560,40 @@ namespace Aardvark.Base
             //# });
         }
 
+        //# foreach (var ft1 in Meta.ColorFieldTypes) {
+        //#     var ftype1 = ft1.Name;
+        //#     var convert = ft != ft1
+        //#         ? "Col." + ft.Caps + "From" + ft1.Caps
+        //#         : "";
+        /// <summary>
+        /// Creates a new color from the given <see cref="__ftype1__"/> array.
+        //# if (ismapped(ft, ft1)) {
+        /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__ftype1__[] values)
+        {
+            //# fields.ForEach((f, i) => {
+            __f__ = __convert__(values[__i__]);
+            //# });
+        }
+
+        /// <summary>
+        /// Creates a new color from the given <see cref="__ftype1__"/> array, starting at the specified index.
+        //# if (ismapped(ft, ft1)) {
+        /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__ftype1__[] values, int start)
+        {
+            //# fields.ForEach((f, i) => {
+            __f__ = __convert__(values[start + __i__]);
+            //# });
+        }
+
+        //# }
         #endregion
 
         #region Conversions
@@ -567,47 +601,20 @@ namespace Aardvark.Base
         //# foreach (var t1 in Meta.ColorTypes) if (t1 != t) {
         //#     var type1 = t1.Name;
         /// <summary>
-        /// Converts the given color to a <see cref="__type1__"/> color.
+        /// Converts the given <see cref="__type1__"/> color to a <see cref="__type__"/> color.
         //# if (ismapped(ft, t1.FieldType)) {
-        /// The values are mapped to the <see cref="__type1__"/> color range.
+        /// The values are mapped to the <see cref="__type__"/> color range.
         //# }
-        //# if (t1.HasAlpha && !t.HasAlpha) {
-        /// The alpha channel is set to __maxvalmap[t1.FieldType]__.
-        //# }
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __type1__(__type__ color)
-            => new __type1__(color);
-
-        //# }
-        //# for (int d = 3; d <= 4; d++) {
-        //#     foreach (var vft in Meta.VecFieldTypes) { if (coltovecsupported(ft, vft)) {
-        //#         var vt = Meta.VecTypeOf(d, vft);
-        //#         var convert = ft != vft ? "("+ vft.Name+")" : "";
-        /// <summary>
-        /// Converts the given color to a <see cref="__vt.Name__"/> vector.
-        //# if (d == 4 && dim == 3) {
-        /// W is set to __maxval__.
+        //# if (t.HasAlpha && !t1.HasAlpha) {
+        /// The alpha channel is set to __maxvalmap[t.FieldType]__.
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator __vt.Name__(__type__ color)
-            => new __vt.Name__(/*# channels.ForEach(c => { */
-                __convert__(color.__c__)/*# }, comma);
-                if (d == 4) {
-                    if (t.HasAlpha) { */,
-                __convert__(color.A)/*#
-                    } else { */,
-                __convert__(__t.MaxValue__)/*#
-                    }
-                } */
-                );
+        public static explicit operator __type__(__type1__ color)
+            => new __type__(color);
 
-        //# } } }
-        //# foreach (var t1 in Meta.ColorTypes) if (t1 != t) {
-        //#     var type1 = t1.Name;
         /// <summary>
-        /// Converts the given color to a <see cref="__type1__"/> color.
+        /// Converts the given <see cref="__type__"/> color to a <see cref="__type1__"/> color.
         //# if (ismapped(ft, t1.FieldType)) {
         /// The values are mapped to the <see cref="__type1__"/> color range.
         //# }
@@ -619,7 +626,7 @@ namespace Aardvark.Base
         public __type1__ To__type1__() => (__type1__)this;
 
         /// <summary>
-        /// Creates a color from the given <see cref="__type1__"/> color.
+        /// Creates a <see cref="__type__"/> color from the given <see cref="__type1__"/> color.
         //# if (ismapped(ft, t1.FieldType)) {
         /// The values are mapped to the <see cref="__type__"/> color range.
         //# }
@@ -633,29 +640,74 @@ namespace Aardvark.Base
         //# }
         //# for (int d = 3; d <= 4; d++) {
         //#     foreach (var vft in Meta.VecFieldTypes) { if (coltovecsupported(ft, vft)) {
-        //#         var type1 = Meta.VecTypeOf(d, vft).Name;
+        //#         var vt = Meta.VecTypeOf(d, vft);
+        //#         var vtype = vt.Name;
+        //#         var convert = ft != vft ? "("+ vft.Name+")" : "";
         /// <summary>
-        /// Converts the given color to a <see cref="__type1__"/> vector.
+        /// Converts the given <see cref="__vtype__"/> vector to a <see cref="__type__"/> color.
+        //# if (ismapped(ft, vft)) {
+        /// The values are not mapped to the <see cref="__type__"/> color range.
+        //# }
+        //# if (d == 3 && t.HasAlpha) {
+        /// The alpha channel is set to __maxval__.
+        //# }
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type__(__vtype__ v)
+            => new __type__(v);
+
+        /// <summary>
+        /// Converts the given <see cref="__type__"/> color to a <see cref="__vtype__"/> vector.
+        //# if (ismapped(ft, vft)) {
+        /// The values are not mapped from the <see cref="__type__"/> color range.
+        //# }
         //# if (d == 4 && dim == 3) {
         /// W is set to __maxval__.
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type1__ To__type1__() => (__type1__)this;
+        public __vtype__ To__vtype__() => (__vtype__)this;
 
         /// <summary>
-        /// Creates a color from a <see cref="__type1__"/> vector.
+        /// Creates a <see cref="__type__"/> color from a <see cref="__vtype__"/> vector.
         //# if (ismapped(ft, vft)) {
         /// The values are not mapped to the <see cref="__type__"/> color range.
         //# }
-        //# if (dim == 4 && d == 3) {
+        //# if (d == 3 && t.HasAlpha) {
         /// The alpha channel is set to __maxval__.
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ From__type1__(__type1__ c) => new __type__(c);
+        public static __type__ From__vtype__(__vtype__ c) => new __type__(c);
 
-        //# } } }
+        //#     } }
+        //# }
+        //# foreach (var ft1 in Meta.ColorFieldTypes) {
+        //#     var ftype1 = ft1.Name;
+        //#     var convert = ft != ft1
+        //#         ? "Col." + ft1.Caps + "From" + ft.Caps
+        //#         : "";
+        /// <summary>
+        /// Creates a new color from the given <see cref="__ftype1__"/> array.
+        //# if (ismapped(ft, ft1)) {
+        /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type__(__ftype1__[] values)
+            => new __type__(values);
+
+        /// <summary>
+        /// Creates a new <see cref="__ftype1__"/> array from the given <see cref="__type__"/> color.
+        //# if (ismapped(ft, ft1)) {
+        /// The values are mapped from the <see cref="__type__"/> color range.
+        //# }
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __ftype1__[](__type__ color)
+            => new __ftype1__[] { /*# fields.ForEach(f => {*/__convert__(color.__f__)/*# }, comma); */ };
+
+        //# }
         //# foreach (var t1 in Meta.ColorTypes) {
         //#     if (t.Fields.Length != t1.Fields.Length) continue;
         //#     var type1 = t1.Name;
@@ -663,12 +715,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type1__ Map(Func<__ftype__, __ftype1__> channel_fun)
         {
             return new __type1__(/*# fields.ForEach(f => { */channel_fun(__f__)/*# }, comma); */);
         }
 
         //# }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<__ftype__, T> element_fun)
         {
             //# fields.ForEach((f, i) => {
@@ -676,12 +730,17 @@ namespace Aardvark.Base
             //# });
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo<T>(T[] array, int start, Func<__ftype__, int, T> element_index_fun)
         {
             //# fields.ForEach((f, i) => {
             array[start + __i__] = element_index_fun(__f__, __i__);
             //# });
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __ftype__[] ToArray()
+            => (__ftype__[])this;
 
         #endregion
 
