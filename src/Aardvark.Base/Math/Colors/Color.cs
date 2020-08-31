@@ -1610,7 +1610,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CieLabf
+    public struct CieLabf : IEquatable<CieLabf>
     {
         [DataMember]
         public float L;
@@ -1621,6 +1621,10 @@ namespace Aardvark.Base
 
         public CieLabf(float _L, float _a, float _b) { L = _L; a = _a; b = _b; }
         public CieLabf(double _L, double _a, double _b) { L = (float)_L; a = (float)_a; b = (float)_b; }
+
+        public bool Equals(CieLabf other) => L == other.L && a == other.a && b == other.b;
+        public override bool Equals(object other) => (other is CieLabf o) ? Equals(o) : false;
+        public override int GetHashCode() => HashCode.GetCombined(L, a, b);
     }
 
     #endregion
@@ -1629,7 +1633,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CIeLuvf
+    public struct CIeLuvf : IEquatable<CIeLuvf>
     {
         [DataMember]
         public float L;
@@ -1642,6 +1646,10 @@ namespace Aardvark.Base
         public CIeLuvf(double _L, double _u, double _v) { L = (float)_L; u = (float)_u; v = (float)_v; }
 
         public C3f AsC3f() { return new C3f(L, u, v); }
+
+        public bool Equals(CIeLuvf other) => L == other.L && u == other.u && v == other.v;
+        public override bool Equals(object other) => (other is CIeLuvf o) ? Equals(o) : false;
+        public override int GetHashCode() => HashCode.GetCombined(L, u, v);
     }
 
     #endregion
@@ -1654,7 +1662,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CieXYZf
+    public struct CieXYZf : IEquatable<CieXYZf>
     {
         [DataMember]
         public float X;
@@ -1665,6 +1673,10 @@ namespace Aardvark.Base
 
         public CieXYZf(float _X, float _Y, float _Z) { X = _X; Y = _Y; Z = _Z; }
         public CieXYZf(double _X, double _Y, double _Z) { X = (float)_X; Y = (float)_Y; Z = (float)_Z; }
+
+        public bool Equals(CieXYZf other) => X == other.X && Y == other.Y && Z == other.Z;
+        public override bool Equals(object other) => (other is CieXYZf o) ? Equals(o) : false;
+        public override int GetHashCode() => HashCode.GetCombined(X, Y, Z);
     }
 
     #endregion
@@ -1673,7 +1685,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CieYxyf
+    public struct CieYxyf : IEquatable<CieYxyf>
     {
         [DataMember]
         public float Y;
@@ -1684,6 +1696,10 @@ namespace Aardvark.Base
 
         public CieYxyf(float _Y, float _x, float _y) { Y = _Y; x = _x; y = _y; }
         public CieYxyf(double _Y, double _x, double _y) { Y = (float)_Y; x = (float)_x; y = (float)_y; }
+
+        public bool Equals(CieYxyf other) => Y == other.Y && x == other.x && y == other.y;
+        public override bool Equals(object other) => (other is CieYxyf o) ? Equals(o) : false;
+        public override int GetHashCode() => HashCode.GetCombined(Y, x, y);
     }
 
     #endregion
@@ -1692,7 +1708,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CMYKf
+    public struct CMYKf : IEquatable<CMYKf>
     {
         [DataMember]
         public float C;
@@ -1706,6 +1722,10 @@ namespace Aardvark.Base
         public CMYKf(float _C, float _M, float _Y, float _K) { C = _C; M = _M; Y = _Y; K = _K; }
         public CMYKf(double _C, double _M, double _Y, double _K)
                 { C = (float)_C; M = (float)_M; Y = (float)_Y; K = (float)_K; }
+
+        public bool Equals(CMYKf other) => C == other.C && M == other.M && Y == other.Y && K == other.K;
+        public override bool Equals(object other) => (other is CMYKf o) ? Equals(o) : false;
+        public override int GetHashCode() => HashCode.GetCombined(C, M, Y, K);
     }
 
     #endregion
@@ -1717,7 +1737,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct HSLf
+    public struct HSLf : IEquatable<HSLf>
     {
         [DataMember]
         public float H;
@@ -1746,6 +1766,10 @@ namespace Aardvark.Base
         public C3f AsC3f() { return new C3f(H, S, L); }
 
         #endregion
+
+        public bool Equals(HSLf other) => H == other.H && S == other.S && L == other.L;
+        public override bool Equals(object other) => (other is HSLf o) ? Equals(o) : false;
+        public override int GetHashCode() => HashCode.GetCombined(H, S, L);
     }
 
     #endregion
@@ -1757,7 +1781,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct HSVf
+    public struct HSVf : IEquatable<HSVf>
     {
         [DataMember]
         public float H;
@@ -1786,6 +1810,10 @@ namespace Aardvark.Base
         public C3f AsC3f() { return new C3f(H, S, V); }
 
         #endregion
+
+        public bool Equals(HSVf other) => H == other.H && S == other.S && V == other.V;
+        public override bool Equals(object other) => (other is HSVf o) ? Equals(o) : false;
+        public override int GetHashCode() => HashCode.GetCombined(H, S, V);
     }
 
     #endregion
@@ -1794,7 +1822,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Yuvf
+    public struct Yuvf : IEquatable<Yuvf>
     {
         [DataMember]
         public float Y;
@@ -1807,6 +1835,10 @@ namespace Aardvark.Base
         public Yuvf(double _Y, double _u, double _v) { Y = (float)_Y; u = (float)_u; v = (float)_v; }
 
         public C3f AsC3f() { return new C3f(Y, u, v); }
+
+        public bool Equals(Yuvf other) => Y == other.Y && u == other.u && v == other.v;
+        public override bool Equals(object other) => (other is Yuvf o) ? Equals(o) : false;
+        public override int GetHashCode() => HashCode.GetCombined(Y, u, v);
     }
 
     #endregion

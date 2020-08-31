@@ -136,7 +136,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct __type__
-        : IRange<__ltype__, __type__>, /*# if (dim > 1) {
+        : IEquatable<__type__>, IRange<__ltype__, __type__>, /*# if (dim > 1) {
                 */IBoundingBox__dim__d, ISize__dim__d,/*# } */ IFormattable
     {
         [DataMember]

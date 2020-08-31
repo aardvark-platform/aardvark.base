@@ -68,7 +68,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __nmtype__ : IValidity, IMatrix<double>
+    public partial struct __nmtype__ : IEquatable<__nmtype__>, IValidity, IMatrix<double>
     {
         //# n.ForEach(j => {
         [DataMember]
