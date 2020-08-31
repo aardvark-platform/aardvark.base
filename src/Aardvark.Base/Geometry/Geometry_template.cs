@@ -55,7 +55,7 @@ namespace Aardvark.Base
     /// points, and bigger than 2 for a polygon to be geometrically valid.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __tpolygon__ : IValidity, IPolygon<__tvec__>, IBounding__tbox__
+    public partial struct __tpolygon__ : IEquatable<__tpolygon__>, IValidity, IPolygon<__tvec__>, IBounding__tbox__
     {
         internal int m_pointCount;
         internal __tvec__[] m_pointArray;
@@ -831,7 +831,7 @@ namespace Aardvark.Base
     #region __type__
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __type__ : IValidity, IPolygon<__tvec__>, IBounding__tbox__
+    public partial struct __type__ : IEquatable<__type__>, IValidity, IPolygon<__tvec__>, IBounding__tbox__
     {
         public __tvec__ /*# pc.ForEach(i => { */P__i__/*# }, Sep(", ")); */;
 

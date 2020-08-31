@@ -18,7 +18,7 @@ namespace Aardvark.Base
     /// points, and bigger than 2 for a polygon to be geometrically valid.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Polygon2d : IValidity, IPolygon<V2d>, IBoundingBox2d
+    public partial struct Polygon2d : IEquatable<Polygon2d>, IValidity, IPolygon<V2d>, IBoundingBox2d
     {
         internal int m_pointCount;
         internal V2d[] m_pointArray;
@@ -822,7 +822,7 @@ namespace Aardvark.Base
     #region Line2d
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Line2d : IValidity, IPolygon<V2d>, IBoundingBox2d
+    public partial struct Line2d : IEquatable<Line2d>, IValidity, IPolygon<V2d>, IBoundingBox2d
     {
         public V2d P0, P1;
 
@@ -1001,7 +1001,7 @@ namespace Aardvark.Base
     #region Triangle2d
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Triangle2d : IValidity, IPolygon<V2d>, IBoundingBox2d
+    public partial struct Triangle2d : IEquatable<Triangle2d>, IValidity, IPolygon<V2d>, IBoundingBox2d
     {
         public V2d P0, P1, P2;
 
@@ -1281,7 +1281,7 @@ namespace Aardvark.Base
     #region Quad2d
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Quad2d : IValidity, IPolygon<V2d>, IBoundingBox2d
+    public partial struct Quad2d : IEquatable<Quad2d>, IValidity, IPolygon<V2d>, IBoundingBox2d
     {
         public V2d P0, P1, P2, P3;
 
@@ -1597,7 +1597,7 @@ namespace Aardvark.Base
     /// points, and bigger than 2 for a polygon to be geometrically valid.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Polygon3d : IValidity, IPolygon<V3d>, IBoundingBox3d
+    public partial struct Polygon3d : IEquatable<Polygon3d>, IValidity, IPolygon<V3d>, IBoundingBox3d
     {
         internal int m_pointCount;
         internal V3d[] m_pointArray;
@@ -2402,7 +2402,7 @@ namespace Aardvark.Base
     #region Line3d
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Line3d : IValidity, IPolygon<V3d>, IBoundingBox3d
+    public partial struct Line3d : IEquatable<Line3d>, IValidity, IPolygon<V3d>, IBoundingBox3d
     {
         public V3d P0, P1;
 
@@ -2581,7 +2581,7 @@ namespace Aardvark.Base
     #region Triangle3d
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Triangle3d : IValidity, IPolygon<V3d>, IBoundingBox3d
+    public partial struct Triangle3d : IEquatable<Triangle3d>, IValidity, IPolygon<V3d>, IBoundingBox3d
     {
         public V3d P0, P1, P2;
 
@@ -2861,7 +2861,7 @@ namespace Aardvark.Base
     #region Quad3d
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Quad3d : IValidity, IPolygon<V3d>, IBoundingBox3d
+    public partial struct Quad3d : IEquatable<Quad3d>, IValidity, IPolygon<V3d>, IBoundingBox3d
     {
         public V3d P0, P1, P2, P3;
 

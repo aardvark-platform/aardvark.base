@@ -13,7 +13,7 @@ namespace Aardvark.Base
     /// normalized normal vector.
     /// Equation for points p on the plane: Normal dot p == Distance
     /// </summary>
-    public struct Plane3d : IValidity, IBoundingBox3d
+    public struct Plane3d : IEquatable<Plane3d>, IValidity, IBoundingBox3d
     {
         /// <summary>
         /// Plane normal.

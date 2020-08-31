@@ -1,16 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Capsule3d : IValidity, IBoundingBox3d
+    public struct Capsule3d : IEquatable<Capsule3d>, IValidity, IBoundingBox3d
     {
+        [DataMember]
         public V3d P0;
+        [DataMember]
         public V3d P1;
+        [DataMember]
         public double Radius;
 
         #region Constructors
@@ -55,5 +60,28 @@ namespace Aardvark.Base
             new Sphere3d(P1, Radius).BoundingBox3d);
 
         #endregion
+
+        #region Overrides
+
+        public override int GetHashCode() => HashCode.GetCombined(P0, P1, Radius);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Capsule3d other)
+            => P0.Equals(other.P0) && P1.Equals(other.P1) && Radius.Equals(other.Radius);
+
+        public override bool Equals(object other)
+            => (other is ObliqueCone3d o) ? Equals(o) : false;
+
+        public override string ToString()
+            => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, Radius);
+
+        public static Capsule3d Parse(string s)
+        {
+            var x = s.NestedBracketSplitLevelOne().ToArray();
+            return new Capsule3d(V3d.Parse(x[0]), V3d.Parse(x[1]), double.Parse(x[2], CultureInfo.InvariantCulture));
+        }
+
+        #endregion
+
     }
 }

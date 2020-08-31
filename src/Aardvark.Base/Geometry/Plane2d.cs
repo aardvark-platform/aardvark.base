@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
@@ -11,7 +12,7 @@ namespace Aardvark.Base
     /// normalized normal vector.
     /// Equation for points p on the plane: Normal dot p == Distance
     /// </summary>
-    public struct Plane2d : IValidity // should be InfiniteLine2d
+    public struct Plane2d : IEquatable<Plane2d>, IValidity // should be InfiniteLine2d
     {
         public V2d Normal;
         public double Distance;

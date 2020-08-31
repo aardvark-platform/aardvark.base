@@ -1,17 +1,22 @@
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// A three-dimensional ray with an origin and a direction.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Ray3d : IValidity, IBoundingBox3d
+    public struct Ray3d : IEquatable<Ray3d>, IValidity, IBoundingBox3d
     {
+        [DataMember]
         public V3d Origin;
+        [DataMember]
         public V3d Direction;
 
         #region Constructors
@@ -626,12 +631,19 @@ namespace Aardvark.Base
     /// store which part of a multi-part object was hit. If no multi-part
     /// objects are used, this field remains 0.
     /// </summary>
+    [DataContract]
+    [StructLayout(LayoutKind.Sequential)]
     public struct RayHit3d
     {
+        [DataMember]
         public double T;
+        [DataMember]
         public V3d Point;
+        [DataMember]
         public V2d Coord;
+        [DataMember]
         public bool BackSide;
+        [DataMember]
         public int Part;
 
         #region Constructor
@@ -659,10 +671,15 @@ namespace Aardvark.Base
     /// fields for fast intersection computation with bounding boxes and
     /// other axis-aligned sturctures such as kd-Trees.
     /// </summary>
+    [DataContract]
+    [StructLayout(LayoutKind.Sequential)]
     public struct FastRay3d
     {
+        [DataMember]
         public readonly Ray3d Ray;
+        [DataMember]
         public readonly DirFlags DirFlags;
+        [DataMember]
         public readonly V3d InvDir;
 
         #region Constructors

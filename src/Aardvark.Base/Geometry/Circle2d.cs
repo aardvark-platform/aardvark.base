@@ -1,5 +1,5 @@
 /*
-    Copyright 2006-2018. The Aardvark Platform Team.
+    Copyright 2006-2020. The Aardvark Platform Team.
     
         https://aardvark.graphics
     
@@ -20,16 +20,21 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// A two dimensional circle represented by center and radius.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Circle2d : IBoundingBox2d, IValidity
+    public struct Circle2d : IEquatable<Circle2d>, IBoundingBox2d, IValidity
     {
+        [DataMember]
         public V2d Center;
+
+        [DataMember]
         public double Radius;
 
         #region Constructors

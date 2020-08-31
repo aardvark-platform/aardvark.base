@@ -1,19 +1,25 @@
 ﻿using System;
 using System.Globalization;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     #region ObliqueCone3d
 
+    /// <summary>
+    /// An oblique cone in 3-space represented by its origin (apex) and base circle.
+    /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct ObliqueCone3d
+    public struct ObliqueCone3d : IEquatable<ObliqueCone3d>
     {
+        [DataMember]
         public readonly V3d Origin;
+
+        [DataMember]
         public readonly Circle3d Circle;
 
         #region Constructor
@@ -115,12 +121,27 @@ namespace Aardvark.Base
 
     #region Cone3d
 
+    /// <summary>
+    /// A cone in 3-space represented by its origin, axis of revolution (Direction), and the angle between axis and outer edge.
+    /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Cone3d : IValidity
+    public struct Cone3d : IEquatable<Cone3d>, IValidity
     {
+        [DataMember]
         public V3d Origin;
-        public V3d Direction; // axis of revolution
-        public double Angle; // angle between axis and outer edge
+
+        /// <summary>
+        /// Axis of revolution.
+        /// </summary>
+        [DataMember]
+        public V3d Direction;
+
+        /// <summary>
+        /// Angle between axis and outer edge (in radians).
+        /// </summary>
+        [DataMember]
+        public double Angle;
 
         #region Constructor
 

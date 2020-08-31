@@ -4,16 +4,20 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// A three dimensional sphere represented by center and radius.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Sphere3d : IBoundingBox3d, IValidity
+    public struct Sphere3d : IEquatable<Sphere3d>, IBoundingBox3d, IValidity
     {
+        [DataMember]
         public V3d Center;
+        [DataMember]
         public double Radius;
 
         #region Constructors
