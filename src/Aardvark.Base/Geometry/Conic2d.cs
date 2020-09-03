@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
@@ -8,14 +9,21 @@ namespace Aardvark.Base
     /// Defines the conic section CXX x^2 + CYY y^2 + CZZ z^2 + CXY xy + CYZ yz + CYZ yz = 0
     /// with (x,y,z) being homogenous coordinates.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct Conic2d
     {
+        [DataMember]
         public double CXX;
+        [DataMember]
         public double CYY;
+        [DataMember]
         public double CZZ;
+        [DataMember]
         public double CXY;
+        [DataMember]
         public double CXZ;
+        [DataMember]
         public double CYZ;
 
         public Conic2d(double cxx, double cyy, double czz, double cxy, double cxz, double cyz)

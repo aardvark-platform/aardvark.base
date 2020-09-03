@@ -5,15 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Cylinder3d : IBoundingBox3d, IValidity
+    public struct Cylinder3d : IEquatable<Cylinder3d>, IBoundingBox3d, IValidity
     {
+        [DataMember]
         public V3d P0;
+        [DataMember]
         public V3d P1;
+        [DataMember]
         public double Radius;
+        [DataMember]
         public double DistanceScale;
 
         #region Constructors

@@ -18,7 +18,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M22i : IValidity, IMatrix<double>
+    public partial struct M22i : IEquatable<M22i>, IValidity, IMatrix<double>
     {
         [DataMember]
         public int M00, M01;
@@ -2116,7 +2116,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M22l : IValidity, IMatrix<double>
+    public partial struct M22l : IEquatable<M22l>, IValidity, IMatrix<double>
     {
         [DataMember]
         public long M00, M01;
@@ -4102,7 +4102,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M22f : IValidity, IMatrix<double>
+    public partial struct M22f : IEquatable<M22f>, IValidity, IMatrix<double>
     {
         [DataMember]
         public float M00, M01;
@@ -6349,7 +6349,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M22d : IValidity, IMatrix<double>
+    public partial struct M22d : IEquatable<M22d>, IValidity, IMatrix<double>
     {
         [DataMember]
         public double M00, M01;
@@ -8496,7 +8496,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M23i : IValidity, IMatrix<double>
+    public partial struct M23i : IEquatable<M23i>, IValidity, IMatrix<double>
     {
         [DataMember]
         public int M00, M01, M02;
@@ -10562,7 +10562,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M23l : IValidity, IMatrix<double>
+    public partial struct M23l : IEquatable<M23l>, IValidity, IMatrix<double>
     {
         [DataMember]
         public long M00, M01, M02;
@@ -12516,7 +12516,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M23f : IValidity, IMatrix<double>
+    public partial struct M23f : IEquatable<M23f>, IValidity, IMatrix<double>
     {
         [DataMember]
         public float M00, M01, M02;
@@ -14577,7 +14577,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M23d : IValidity, IMatrix<double>
+    public partial struct M23d : IEquatable<M23d>, IValidity, IMatrix<double>
     {
         [DataMember]
         public double M00, M01, M02;
@@ -16526,7 +16526,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M33i : IValidity, IMatrix<double>
+    public partial struct M33i : IEquatable<M33i>, IValidity, IMatrix<double>
     {
         [DataMember]
         public int M00, M01, M02;
@@ -19196,7 +19196,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M33l : IValidity, IMatrix<double>
+    public partial struct M33l : IEquatable<M33l>, IValidity, IMatrix<double>
     {
         [DataMember]
         public long M00, M01, M02;
@@ -21740,7 +21740,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M33f : IValidity, IMatrix<double>
+    public partial struct M33f : IEquatable<M33f>, IValidity, IMatrix<double>
     {
         [DataMember]
         public float M00, M01, M02;
@@ -24716,7 +24716,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M33d : IValidity, IMatrix<double>
+    public partial struct M33d : IEquatable<M33d>, IValidity, IMatrix<double>
     {
         [DataMember]
         public double M00, M01, M02;
@@ -27578,7 +27578,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M34i : IValidity, IMatrix<double>
+    public partial struct M34i : IEquatable<M34i>, IValidity, IMatrix<double>
     {
         [DataMember]
         public int M00, M01, M02, M03;
@@ -30093,7 +30093,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M34l : IValidity, IMatrix<double>
+    public partial struct M34l : IEquatable<M34l>, IValidity, IMatrix<double>
     {
         [DataMember]
         public long M00, M01, M02, M03;
@@ -32482,7 +32482,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M34f : IValidity, IMatrix<double>
+    public partial struct M34f : IEquatable<M34f>, IValidity, IMatrix<double>
     {
         [DataMember]
         public float M00, M01, M02, M03;
@@ -35118,7 +35118,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M34d : IValidity, IMatrix<double>
+    public partial struct M34d : IEquatable<M34d>, IValidity, IMatrix<double>
     {
         [DataMember]
         public double M00, M01, M02, M03;
@@ -37628,7 +37628,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M44i : IValidity, IMatrix<double>
+    public partial struct M44i : IEquatable<M44i>, IValidity, IMatrix<double>
     {
         [DataMember]
         public int M00, M01, M02, M03;
@@ -40713,7 +40713,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M44l : IValidity, IMatrix<double>
+    public partial struct M44l : IEquatable<M44l>, IValidity, IMatrix<double>
     {
         [DataMember]
         public long M00, M01, M02, M03;
@@ -43658,7 +43658,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M44f : IValidity, IMatrix<double>
+    public partial struct M44f : IEquatable<M44f>, IValidity, IMatrix<double>
     {
         [DataMember]
         public float M00, M01, M02, M03;
@@ -47034,7 +47034,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct M44d : IValidity, IMatrix<double>
+    public partial struct M44d : IEquatable<M44d>, IValidity, IMatrix<double>
     {
         [DataMember]
         public double M00, M01, M02, M03;

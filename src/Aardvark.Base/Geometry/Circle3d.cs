@@ -4,17 +4,24 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// A circle in 3-space represented by its center, normal (normalized), and a radius.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Circle3d : IBoundingBox3d, IValidity
+    public struct Circle3d : IEquatable<Circle3d>, IBoundingBox3d, IValidity
     {
+        [DataMember]
         public V3d Center;
+
+        [DataMember]
         public V3d Normal;
+
+        [DataMember]
         public double Radius;
 
         #region Constructors

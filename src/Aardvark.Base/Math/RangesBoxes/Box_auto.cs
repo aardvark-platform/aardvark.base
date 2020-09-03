@@ -113,7 +113,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1b
-        : IRange<byte, Range1b>,  IFormattable
+        : IEquatable<Range1b>, IRange<byte, Range1b>,  IFormattable
     {
         [DataMember]
         public byte Min;
@@ -1105,7 +1105,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1sb
-        : IRange<sbyte, Range1sb>,  IFormattable
+        : IEquatable<Range1sb>, IRange<sbyte, Range1sb>,  IFormattable
     {
         [DataMember]
         public sbyte Min;
@@ -2097,7 +2097,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1s
-        : IRange<short, Range1s>,  IFormattable
+        : IEquatable<Range1s>, IRange<short, Range1s>,  IFormattable
     {
         [DataMember]
         public short Min;
@@ -3089,7 +3089,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1us
-        : IRange<ushort, Range1us>,  IFormattable
+        : IEquatable<Range1us>, IRange<ushort, Range1us>,  IFormattable
     {
         [DataMember]
         public ushort Min;
@@ -4081,7 +4081,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1i
-        : IRange<int, Range1i>,  IFormattable
+        : IEquatable<Range1i>, IRange<int, Range1i>,  IFormattable
     {
         [DataMember]
         public int Min;
@@ -5073,7 +5073,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1ui
-        : IRange<uint, Range1ui>,  IFormattable
+        : IEquatable<Range1ui>, IRange<uint, Range1ui>,  IFormattable
     {
         [DataMember]
         public uint Min;
@@ -6065,7 +6065,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1l
-        : IRange<long, Range1l>,  IFormattable
+        : IEquatable<Range1l>, IRange<long, Range1l>,  IFormattable
     {
         [DataMember]
         public long Min;
@@ -7057,7 +7057,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1ul
-        : IRange<ulong, Range1ul>,  IFormattable
+        : IEquatable<Range1ul>, IRange<ulong, Range1ul>,  IFormattable
     {
         [DataMember]
         public ulong Min;
@@ -8049,7 +8049,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1f
-        : IRange<float, Range1f>,  IFormattable
+        : IEquatable<Range1f>, IRange<float, Range1f>,  IFormattable
     {
         [DataMember]
         public float Min;
@@ -9060,7 +9060,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1d
-        : IRange<double, Range1d>,  IFormattable
+        : IEquatable<Range1d>, IRange<double, Range1d>,  IFormattable
     {
         [DataMember]
         public double Min;
@@ -10071,7 +10071,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2i
-        : IRange<V2i, Box2i>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2i>, IRange<V2i, Box2i>, IBoundingBox2d, ISize2d, IFormattable
     {
         [DataMember]
         public V2i Min;
@@ -11592,7 +11592,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2l
-        : IRange<V2l, Box2l>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2l>, IRange<V2l, Box2l>, IBoundingBox2d, ISize2d, IFormattable
     {
         [DataMember]
         public V2l Min;
@@ -13113,7 +13113,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2f
-        : IRange<V2f, Box2f>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2f>, IRange<V2f, Box2f>, IBoundingBox2d, ISize2d, IFormattable
     {
         [DataMember]
         public V2f Min;
@@ -14740,7 +14740,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2d
-        : IRange<V2d, Box2d>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2d>, IRange<V2d, Box2d>, IBoundingBox2d, ISize2d, IFormattable
     {
         [DataMember]
         public V2d Min;
@@ -16367,7 +16367,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3i
-        : IRange<V3i, Box3i>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3i>, IRange<V3i, Box3i>, IBoundingBox3d, ISize3d, IFormattable
     {
         [DataMember]
         public V3i Min;
@@ -18214,7 +18214,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3l
-        : IRange<V3l, Box3l>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3l>, IRange<V3l, Box3l>, IBoundingBox3d, ISize3d, IFormattable
     {
         [DataMember]
         public V3l Min;
@@ -20061,7 +20061,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3f
-        : IRange<V3f, Box3f>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3f>, IRange<V3f, Box3f>, IBoundingBox3d, ISize3d, IFormattable
     {
         [DataMember]
         public V3f Min;
@@ -22019,7 +22019,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3d
-        : IRange<V3d, Box3d>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3d>, IRange<V3d, Box3d>, IBoundingBox3d, ISize3d, IFormattable
     {
         [DataMember]
         public V3d Min;

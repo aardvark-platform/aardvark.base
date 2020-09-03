@@ -1,17 +1,23 @@
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System;
+using System.Runtime.Serialization;
 
 namespace Aardvark.Base
 {
     /// <summary>
     /// A two-dimensional ray with an origin and a direction.
     /// </summary>
+    [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Ray2d : IValidity, IBoundingBox2d
+    public struct Ray2d : IEquatable<Ray2d>, IValidity, IBoundingBox2d
     {
+        [DataMember]
         public V2d Origin;
+        [DataMember]
         public V2d Direction;
 
         #region Constructors
@@ -235,10 +241,15 @@ namespace Aardvark.Base
     /// fields for fast intersection computation with bounding boxes and
     /// other axis-aligned sturctures such as kd-Trees.
     /// </summary>
+    [DataContract]
+    [StructLayout(LayoutKind.Sequential)]
     public struct FastRay2d
     {
+        [DataMember]
         public readonly Ray2d Ray;
+        [DataMember]
         public readonly DirFlags DirFlags;
+        [DataMember]
         public readonly V2d InvDir;
 
         #region Constructors
