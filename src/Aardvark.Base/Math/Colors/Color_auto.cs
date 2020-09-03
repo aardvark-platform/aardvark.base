@@ -10413,6 +10413,12 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Members
+
+        public C3b RGB => (C3b)this;
+
+        #endregion
+
         #region Conversions
 
         /// <summary>
@@ -12745,6 +12751,12 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Members
+
+        public C3us RGB => (C3us)this;
+
+        #endregion
+
         #region Conversions
 
         /// <summary>
@@ -15037,6 +15049,12 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Members
+
+        public C3ui RGB => (C3ui)this;
+
+        #endregion
+
         #region Conversions
 
         /// <summary>
@@ -17150,6 +17168,12 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Members
+
+        public C3f RGB => (C3f)this;
+
+        #endregion
+
         #region Conversions
 
         /// <summary>
@@ -19109,6 +19133,12 @@ namespace Aardvark.Base
             B = (values[start + 2]);
             A = (values[start + 3]);
         }
+
+        #endregion
+
+        #region Members
+
+        public C3d RGB => (C3d)this;
 
         #endregion
 

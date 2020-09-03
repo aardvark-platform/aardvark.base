@@ -596,6 +596,16 @@ namespace Aardvark.Base
         //# }
         #endregion
 
+        //# if (t.HasAlpha) {
+        #region Members
+
+        //#     var t1 = Meta.ColorTypeOf(3, ft);
+        //#     var type1 = t1.Name;
+        public __type1__ RGB => (__type1__)this;
+
+        #endregion
+
+        //# }
         #region Conversions
 
         //# foreach (var t1 in Meta.ColorTypes) if (t1 != t) {
