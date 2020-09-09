@@ -297,9 +297,23 @@ namespace Aardvark.Base
             return new __type__(__mmmt__.Scale(s), __mmmt__.Scale(t));
         }
 
+        /// <summary>
+        /// Creates a scaling transformation using a <see cref="__scalent__"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Scale(__scalent__ scale)
+            => new __type__(scale);
+
         #endregion
 
         #region Rotation
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="__rotnt__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Rotation(__rotnt__ rotation)
+            => new __type__(rotation);
 
         //# if (n == 2) {
         /// <summary>

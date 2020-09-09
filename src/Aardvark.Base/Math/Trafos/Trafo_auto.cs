@@ -254,9 +254,23 @@ namespace Aardvark.Base
             return new Trafo2f(M33f.Scale(s), M33f.Scale(t));
         }
 
+        /// <summary>
+        /// Creates a scaling transformation using a <see cref="Scale2f"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f Scale(Scale2f scale)
+            => new Trafo2f(scale);
+
         #endregion
 
         #region Rotation
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2f Rotation(Rot2f rotation)
+            => new Trafo2f(rotation);
 
         /// <summary>
         /// Creates a rotation transformation with the specified angle in radians.
@@ -608,9 +622,23 @@ namespace Aardvark.Base
             return new Trafo3f(M44f.Scale(s), M44f.Scale(t));
         }
 
+        /// <summary>
+        /// Creates a scaling transformation using a <see cref="Scale3f"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo3f Scale(Scale3f scale)
+            => new Trafo3f(scale);
+
         #endregion
 
         #region Rotation
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo3f Rotation(Rot3f rotation)
+            => new Trafo3f(rotation);
 
         /// <summary>
         /// Creates a rotation transformation from an axis vector and an angle in radians.
@@ -1321,9 +1349,23 @@ namespace Aardvark.Base
             return new Trafo2d(M33d.Scale(s), M33d.Scale(t));
         }
 
+        /// <summary>
+        /// Creates a scaling transformation using a <see cref="Scale2d"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d Scale(Scale2d scale)
+            => new Trafo2d(scale);
+
         #endregion
 
         #region Rotation
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo2d Rotation(Rot2d rotation)
+            => new Trafo2d(rotation);
 
         /// <summary>
         /// Creates a rotation transformation with the specified angle in radians.
@@ -1675,9 +1717,23 @@ namespace Aardvark.Base
             return new Trafo3d(M44d.Scale(s), M44d.Scale(t));
         }
 
+        /// <summary>
+        /// Creates a scaling transformation using a <see cref="Scale3d"/> as scaling factor.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo3d Scale(Scale3d scale)
+            => new Trafo3d(scale);
+
         #endregion
 
         #region Rotation
+
+        /// <summary>
+        /// Creates a rotation transformation from a <see cref="Rot3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo3d Rotation(Rot3d rotation)
+            => new Trafo3d(rotation);
 
         /// <summary>
         /// Creates a rotation transformation from an axis vector and an angle in radians.
