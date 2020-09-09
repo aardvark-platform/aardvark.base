@@ -54,6 +54,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Shift2f"/> transformation from a <see cref="Shift2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Shift2f(Shift2d shift)
+        {
+            V = (V2f)shift.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Shift2f"/> transformation from a float-array.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -728,6 +737,15 @@ namespace Aardvark.Base
         public Shift3f(Shift3f s)
         {
             V = s.V;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Shift3f"/> transformation from a <see cref="Shift3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Shift3f(Shift3d shift)
+        {
+            V = (V3f)shift.V;
         }
 
         /// <summary>
@@ -1439,6 +1457,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Shift2d"/> transformation from a <see cref="Shift2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Shift2d(Shift2f shift)
+        {
+            V = (V2d)shift.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Shift2d"/> transformation from a double-array.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2113,6 +2140,15 @@ namespace Aardvark.Base
         public Shift3d(Shift3d s)
         {
             V = s.V;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Shift3d"/> transformation from a <see cref="Shift3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Shift3d(Shift3f shift)
+        {
+            V = (V3d)shift.V;
         }
 
         /// <summary>

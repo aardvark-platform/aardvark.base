@@ -96,6 +96,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="QuaternionF"/> from the given <see cref="QuaternionD"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public QuaternionF(QuaternionD q)
+        {
+            W = (float)q.W; X = (float)q.X; Y = (float)q.Y; Z = (float)q.Z; 
+        }
+
+        /// <summary>
         /// Creates a <see cref="QuaternionF"/> from an array.
         /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
         /// </summary>
@@ -380,6 +389,13 @@ namespace Aardvark.Base
         #endregion
 
         #region Conversions
+
+        /// <summary>
+        /// Conversion from a <see cref="QuaternionF"/> to a <see cref="QuaternionD"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator QuaternionD(QuaternionF q)
+            => new QuaternionD(q);
 
         /// <summary>
         /// Returns this <see cref="QuaternionF"/> as a 4x4 matrix. Quaternions are represented as matrices in such
@@ -676,6 +692,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="QuaternionD"/> from the given <see cref="QuaternionF"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public QuaternionD(QuaternionF q)
+        {
+            W = (double)q.W; X = (double)q.X; Y = (double)q.Y; Z = (double)q.Z; 
+        }
+
+        /// <summary>
         /// Creates a <see cref="QuaternionD"/> from an array.
         /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
         /// </summary>
@@ -960,6 +985,13 @@ namespace Aardvark.Base
         #endregion
 
         #region Conversions
+
+        /// <summary>
+        /// Conversion from a <see cref="QuaternionD"/> to a <see cref="QuaternionF"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator QuaternionF(QuaternionD q)
+            => new QuaternionF(q);
 
         /// <summary>
         /// Returns this <see cref="QuaternionD"/> as a 4x4 matrix. Quaternions are represented as matrices in such

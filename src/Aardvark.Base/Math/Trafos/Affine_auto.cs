@@ -38,6 +38,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Affine2f"/> transformation from a <see cref="Affine2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine2f(Affine2d affine)
+        {
+            Linear = (M22f)affine.Linear;
+            Trans = (V2f)affine.Trans;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
@@ -682,6 +692,16 @@ namespace Aardvark.Base
         {
             Linear = affine.Linear;
             Trans = affine.Trans;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Affine3f"/> transformation from a <see cref="Affine3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine3f(Affine3d affine)
+        {
+            Linear = (M33f)affine.Linear;
+            Trans = (V3f)affine.Trans;
         }
 
         /// <summary>
@@ -1483,6 +1503,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Affine2d"/> transformation from a <see cref="Affine2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine2d(Affine2f affine)
+        {
+            Linear = (M22d)affine.Linear;
+            Trans = (V2d)affine.Trans;
+        }
+
+        /// <summary>
         /// Constructs an affine transformation from a linear map and a translation.
         /// The matrix <paramref name="linear"/> must be invertible.
         /// </summary>
@@ -2127,6 +2157,16 @@ namespace Aardvark.Base
         {
             Linear = affine.Linear;
             Trans = affine.Trans;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Affine3d"/> transformation from a <see cref="Affine3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Affine3d(Affine3f affine)
+        {
+            Linear = (M33d)affine.Linear;
+            Trans = (V3d)affine.Trans;
         }
 
         /// <summary>

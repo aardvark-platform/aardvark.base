@@ -90,6 +90,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Rot3f"/> transformation from a <see cref="Rot3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rot3f(Rot3d r)
+        {
+            W = (float)r.W; X = (float)r.X; Y = (float)r.Y; Z = (float)r.Z; 
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Rot3f"/> transformation from the quaternion (a[0], (a[1], a[2], a[3])).
         /// The quaternion must be of unit length.
         /// </summary>
@@ -1288,6 +1297,15 @@ namespace Aardvark.Base
         {
             W = r.W; X = r.X; Y = r.Y; Z = r.Z; 
             Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Rot3d"/> transformation from a <see cref="Rot3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rot3d(Rot3f r)
+        {
+            W = (double)r.W; X = (double)r.X; Y = (double)r.Y; Z = (double)r.Z; 
         }
 
         /// <summary>

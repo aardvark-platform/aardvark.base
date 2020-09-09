@@ -39,6 +39,15 @@ namespace Aardvark.Base
             Angle = r.Angle;
         }
 
+        /// <summary>
+        /// Constructs a <see cref="Rot2f"/> transformation from a <see cref="Rot2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rot2f(Rot2d r)
+        {
+            Angle = (float)r.Angle;
+        }
+
         #endregion
 
         #region Constants
@@ -632,6 +641,15 @@ namespace Aardvark.Base
         public Rot2d(Rot2d r)
         {
             Angle = r.Angle;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Rot2d"/> transformation from a <see cref="Rot2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rot2d(Rot2f r)
+        {
+            Angle = (double)r.Angle;
         }
 
         #endregion

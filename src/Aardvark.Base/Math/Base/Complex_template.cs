@@ -14,8 +14,11 @@ namespace Aardvark.Base
     //# var dreptypes = Meta.DoubleRepresentableTypes;
     //# foreach (var isDouble in new[] { false, true }) {
     //#   var ftype = isDouble ? Meta.DoubleType : Meta.FloatType;
+    //#   var ftype2 = isDouble ? Meta.FloatType : Meta.DoubleType;
     //#   var ft = ftype.Name;
+    //#   var ft2 = ftype2.Name;
     //#   var ct = isDouble ? "ComplexD" : "ComplexF";
+    //#   var ct2 = isDouble ? "ComplexF" : "ComplexD";
     //#   var cast = isDouble ? "" : "(" + ft + ")";
     //#   var half = isDouble ? "0.5" : "0.5f";
     [DataContract]
@@ -47,6 +50,16 @@ namespace Aardvark.Base
         {
             Real = real;
             Imag = imag;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="__ct__"/> from a <see cref="__ct2__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __ct__(__ct2__ complex)
+        {
+            Real = (__ft__)complex.Real;
+            Imag = (__ft__)complex.Imag;
         }
 
         #endregion
@@ -392,6 +405,13 @@ namespace Aardvark.Base
         #endregion
 
         #region Operators
+
+        /// <summary>
+        /// Conversion from a <see cref="__ct__"/> to a <see cref="__ct2__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __ct2__(__ct__ c)
+            => new __ct2__(c);
 
         /// <summary>
         /// Implicit conversion from a <see cref="__ft__"/> to a <see cref="__ct__"/>.

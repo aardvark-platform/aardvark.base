@@ -21,9 +21,13 @@ namespace Aardvark.Base
     //# var qfieldsL = new[] {"w", "x", "y", "z"};
     //# foreach (var isDouble in new[] { false, true }) {
     //#   var ftype = isDouble ? "double" : "float";
+    //#   var ftype2 = isDouble ? "float" : "double";
     //#   var tc = isDouble ? "d" : "f";
+    //#   var tc2 = isDouble ? "f" : "d";
     //#   var tccaps = tc.ToUpper();
+    //#   var tccaps2 = tc2.ToUpper();
     //#   var type = "Quaternion" + tccaps;
+    //#   var type2 = "Quaternion" + tccaps2;
     //#   var v3t = "V3" + tc;
     //#   var v4t = "V4" + tc;
     //#   var m44t = "M44" + tc;
@@ -110,6 +114,15 @@ namespace Aardvark.Base
         public __type__(__type__ q)
         {
             /*# qfields.ForEach(f => {*/__f__ = q.__f__; /*# });*/
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> from the given <see cref="__type2__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type2__ q)
+        {
+            /*# qfields.ForEach(f => {*/__f__ = (__ftype__)q.__f__; /*# });*/
         }
 
         /// <summary>
@@ -397,6 +410,13 @@ namespace Aardvark.Base
         #endregion
 
         #region Conversions
+
+        /// <summary>
+        /// Conversion from a <see cref="__type__"/> to a <see cref="__type2__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type2__(__type__ q)
+            => new __type2__(q);
 
         /// <summary>
         /// Returns this <see cref="__type__"/> as a 4x4 matrix. Quaternions are represented as matrices in such

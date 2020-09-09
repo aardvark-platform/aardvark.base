@@ -63,6 +63,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Scale2f"/> transformation from a <see cref="Scale2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Scale2f(Scale2d scale)
+        {
+            V = (V2f)scale.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Scale2f"/> transformation from a float-array.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -688,6 +697,15 @@ namespace Aardvark.Base
         public Scale3f(Scale3f scale)
         {
             V = scale.V;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Scale3f"/> transformation from a <see cref="Scale3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Scale3f(Scale3d scale)
+        {
+            V = (V3f)scale.V;
         }
 
         /// <summary>
@@ -1332,6 +1350,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Scale2d"/> transformation from a <see cref="Scale2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Scale2d(Scale2f scale)
+        {
+            V = (V2d)scale.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Scale2d"/> transformation from a double-array.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1957,6 +1984,15 @@ namespace Aardvark.Base
         public Scale3d(Scale3d scale)
         {
             V = scale.V;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Scale3d"/> transformation from a <see cref="Scale3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Scale3d(Scale3f scale)
+        {
+            V = (V3d)scale.V;
         }
 
         /// <summary>

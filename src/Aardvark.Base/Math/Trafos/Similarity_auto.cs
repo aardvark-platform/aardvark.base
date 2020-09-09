@@ -54,6 +54,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Similarity2f"/> transformation from a <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2f(Similarity2d s)
+        {
+            Scale = (float)s.Scale;
+            Euclidean = (Euclidean2f)s.Euclidean;
+        }
+
+        /// <summary>
         /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -737,6 +747,16 @@ namespace Aardvark.Base
         {
             Scale = s.Scale;
             Euclidean = s.Euclidean;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Similarity3f"/> transformation from a <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3f(Similarity3d s)
+        {
+            Scale = (float)s.Scale;
+            Euclidean = (Euclidean3f)s.Euclidean;
         }
 
         /// <summary>
@@ -1580,6 +1600,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Similarity2d"/> transformation from a <see cref="Similarity2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity2d(Similarity2f s)
+        {
+            Scale = (double)s.Scale;
+            Euclidean = (Euclidean2d)s.Euclidean;
+        }
+
+        /// <summary>
         /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2263,6 +2293,16 @@ namespace Aardvark.Base
         {
             Scale = s.Scale;
             Euclidean = s.Euclidean;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Similarity3d"/> transformation from a <see cref="Similarity3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Similarity3d(Similarity3f s)
+        {
+            Scale = (double)s.Scale;
+            Euclidean = (Euclidean3d)s.Euclidean;
         }
 
         /// <summary>

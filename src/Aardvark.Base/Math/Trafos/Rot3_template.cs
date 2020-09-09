@@ -128,6 +128,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="__type__"/> transformation from a <see cref="__type2__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type2__ r)
+        {
+            /*# qfields.ForEach(f => {*/__f__ = (__ftype__)r.__f__; /*# });*/
+        }
+
+        /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from the quaternion (a[0], (a[1], a[2], a[3])).
         /// The quaternion must be of unit length.
         /// </summary>

@@ -37,6 +37,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Euclidean2f"/> transformation from a <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2f(Euclidean2d e)
+        {
+            Rot = (Rot2f)e.Rot;
+            Trans = (V2f)e.Trans;
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -636,6 +646,16 @@ namespace Aardvark.Base
         {
             Rot = e.Rot;
             Trans = e.Trans;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Euclidean3f"/> transformation from a <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3f(Euclidean3d e)
+        {
+            Rot = (Rot3f)e.Rot;
+            Trans = (V3f)e.Trans;
         }
 
         /// <summary>
@@ -1393,6 +1413,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Euclidean2d"/> transformation from a <see cref="Euclidean2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean2d(Euclidean2f e)
+        {
+            Rot = (Rot2d)e.Rot;
+            Trans = (V2d)e.Trans;
+        }
+
+        /// <summary>
         /// Creates a rigid transformation from a rotation <paramref name="rot"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1992,6 +2022,16 @@ namespace Aardvark.Base
         {
             Rot = e.Rot;
             Trans = e.Trans;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Euclidean3d"/> transformation from a <see cref="Euclidean3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Euclidean3d(Euclidean3f e)
+        {
+            Rot = (Rot3d)e.Rot;
+            Trans = (V3d)e.Trans;
         }
 
         /// <summary>

@@ -40,6 +40,16 @@ namespace Aardvark.Base
             Imag = imag;
         }
 
+        /// <summary>
+        /// Constructs a <see cref="ComplexF"/> from a <see cref="ComplexD"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ComplexF(ComplexD complex)
+        {
+            Real = (float)complex.Real;
+            Imag = (float)complex.Imag;
+        }
+
         #endregion
 
         #region Constants
@@ -383,6 +393,13 @@ namespace Aardvark.Base
         #endregion
 
         #region Operators
+
+        /// <summary>
+        /// Conversion from a <see cref="ComplexF"/> to a <see cref="ComplexD"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ComplexD(ComplexF c)
+            => new ComplexD(c);
 
         /// <summary>
         /// Implicit conversion from a <see cref="float"/> to a <see cref="ComplexF"/>.
@@ -1017,6 +1034,16 @@ namespace Aardvark.Base
             Imag = imag;
         }
 
+        /// <summary>
+        /// Constructs a <see cref="ComplexD"/> from a <see cref="ComplexF"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ComplexD(ComplexF complex)
+        {
+            Real = (double)complex.Real;
+            Imag = (double)complex.Imag;
+        }
+
         #endregion
 
         #region Constants
@@ -1360,6 +1387,13 @@ namespace Aardvark.Base
         #endregion
 
         #region Operators
+
+        /// <summary>
+        /// Conversion from a <see cref="ComplexD"/> to a <see cref="ComplexF"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator ComplexF(ComplexD c)
+            => new ComplexF(c);
 
         /// <summary>
         /// Implicit conversion from a <see cref="double"/> to a <see cref="ComplexD"/>.

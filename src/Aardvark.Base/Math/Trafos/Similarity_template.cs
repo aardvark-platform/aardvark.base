@@ -89,6 +89,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="__type__"/> transformation from a <see cref="__type2__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type2__ s)
+        {
+            Scale = (__ftype__)s.Scale;
+            Euclidean = (__euclideannt__)s.Euclidean;
+        }
+
+        /// <summary>
         /// Creates a similarity transformation from an uniform scale by factor <paramref name="scale"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

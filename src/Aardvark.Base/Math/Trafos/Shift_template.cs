@@ -87,6 +87,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="__type__"/> transformation from a <see cref="__type2__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type2__ shift)
+        {
+            V = (__vdt__)shift.V;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="__type__"/> transformation from a __ftype__-array.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
