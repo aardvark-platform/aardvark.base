@@ -17,11 +17,17 @@ namespace Aardvark.Base
     //# foreach (var rt in Meta.RealTypes) {
     //# for (int n = 2; n <= 3; n++) {
     //#     var m = n + 1;
-    //#     var tc = rt.Char;
-    //#     var type = "Trafo" + n + tc;
+    //#     var rt2 = (rt == Meta.DoubleType) ? Meta.FloatType : Meta.DoubleType;
     //#     var rtype = rt.Name;
+    //#     var rtype2 = rt2.Name;
+    //#     var tc = rt.Char;
+    //#     var tc2 = rt2.Char;
+    //#     var type = "Trafo" + n + tc;
+    //#     var type2 = "Trafo" + n + tc2;
     //#     var mnnt = "M" + n + n + tc;
+    //#     var mnnt2 = "M" + n + n + tc2;
     //#     var mmmt = "M" + m + m + tc;
+    //#     var mmmt2 = "M" + m + m + tc2;
     //#     var rotnt = "Rot" + n + tc;
     //#     var euclideannt = "Euclidean" + n + tc;
     //#     var similaritynt = "Similarity" + n + tc;
@@ -67,6 +73,16 @@ namespace Aardvark.Base
         {
             Forward = trafo.Forward;
             Backward = trafo.Backward;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="__type__"/> from a <see cref="__type2__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type2__ trafo)
+        {
+            Forward = (__mmmt__)trafo.Forward;
+            Backward = (__mmmt__)trafo.Backward;
         }
 
         /// <summary>
@@ -641,6 +657,14 @@ namespace Aardvark.Base
         #endregion
 
         //# }
+        #endregion
+
+        #region Conversion Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type2__(__type__ r)
+            => new __type2__(r);
+
         #endregion
 
         #region Operators

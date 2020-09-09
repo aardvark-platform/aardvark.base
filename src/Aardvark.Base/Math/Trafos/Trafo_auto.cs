@@ -45,6 +45,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Trafo2f"/> from a <see cref="Trafo2d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Trafo2f(Trafo2d trafo)
+        {
+            Forward = (M33f)trafo.Forward;
+            Backward = (M33f)trafo.Backward;
+        }
+
+        /// <summary>
         /// Constructs a <see cref="Trafo2f"/> from an <see cref="Affine2f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -290,6 +300,14 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Conversion Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2d(Trafo2f r)
+            => new Trafo2d(r);
+
+        #endregion
+
         #region Operators
 
         /// <summary>
@@ -399,6 +417,16 @@ namespace Aardvark.Base
         {
             Forward = trafo.Forward;
             Backward = trafo.Backward;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Trafo3f"/> from a <see cref="Trafo3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Trafo3f(Trafo3d trafo)
+        {
+            Forward = (M44f)trafo.Forward;
+            Backward = (M44f)trafo.Backward;
         }
 
         /// <summary>
@@ -949,6 +977,14 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Conversion Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3d(Trafo3f r)
+            => new Trafo3d(r);
+
+        #endregion
+
         #region Operators
 
         /// <summary>
@@ -1137,6 +1173,16 @@ namespace Aardvark.Base
         {
             Forward = trafo.Forward;
             Backward = trafo.Backward;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Trafo2d"/> from a <see cref="Trafo2f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Trafo2d(Trafo2f trafo)
+        {
+            Forward = (M33d)trafo.Forward;
+            Backward = (M33d)trafo.Backward;
         }
 
         /// <summary>
@@ -1385,6 +1431,14 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Conversion Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo2f(Trafo2d r)
+            => new Trafo2f(r);
+
+        #endregion
+
         #region Operators
 
         /// <summary>
@@ -1494,6 +1548,16 @@ namespace Aardvark.Base
         {
             Forward = trafo.Forward;
             Backward = trafo.Backward;
+        }
+
+        /// <summary>
+        /// Constructs a <see cref="Trafo3d"/> from a <see cref="Trafo3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Trafo3d(Trafo3f trafo)
+        {
+            Forward = (M44d)trafo.Forward;
+            Backward = (M44d)trafo.Backward;
         }
 
         /// <summary>
@@ -2041,6 +2105,14 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #endregion
+
+        #region Conversion Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Trafo3f(Trafo3d r)
+            => new Trafo3f(r);
 
         #endregion
 
