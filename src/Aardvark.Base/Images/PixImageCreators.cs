@@ -36,6 +36,26 @@ namespace Aardvark.Base
             return image;
         }
 
+        /// <summary>
+        /// Returns 6 square monochrome PixImages of the supplied size containing the
+        /// textures of a cube map in the following arrangement (right-handed):
+        /// UV ->
+        /// |       | 4 |
+        /// v   | 0 | 1 | 2 | 3 |
+        ///         | 5 |
+        /// XN YP XP YN ZP ZN
+        /// </summary>
+        public static PixImage<T> CreateCubeMapSide<T>(
+                int cubeSide, int size, Func<V3d, T> vec_valueFun)
+        {
+            var image = new PixImage<T>(size, size, 1);
+            var mat = image.Matrix;
+            var d = 1.0 / size;
+            V3d dx = d * s_dx[cubeSide], dy = d * s_dy[cubeSide], v0 = s_v0[cubeSide] + 0.5 * dx + 0.5 * dy;
+            mat.SetByCoordParallelY((x, y) => { var v = v0 + x * dx + y * dy; return vec_valueFun(v.Normalized); });
+            return image;
+        }
+
         public static PixImage<T> CreateCylinder<T, Tcol>(
                 int width, int height, int channelCount,
                 Func<double, double, Tcol> phi_theta_colFun)
