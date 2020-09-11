@@ -336,7 +336,7 @@ namespace Aardvark.Base
 
     public static partial class Trafo
     {
-        #region Inverse
+        #region Operations
 
         /// <summary>
         /// Returns the inverse of the given <see cref="Trafo2f"/>.
@@ -344,6 +344,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo2f Inverse(Trafo2f trafo)
             => trafo.Inverse;
+
+        /// <summary>
+        /// Returns the forward matrix the given <see cref="Trafo2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Forward(Trafo2f trafo)
+            => trafo.Forward;
+
+        /// <summary>
+        /// Returns the backward matrix the given <see cref="Trafo2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f Backward(Trafo2f trafo)
+            => trafo.Backward;
 
         #endregion
 
@@ -1013,7 +1027,7 @@ namespace Aardvark.Base
 
     public static partial class Trafo
     {
-        #region Inverse
+        #region Operations
 
         /// <summary>
         /// Returns the inverse of the given <see cref="Trafo3f"/>.
@@ -1021,6 +1035,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo3f Inverse(Trafo3f trafo)
             => trafo.Inverse;
+
+        /// <summary>
+        /// Returns the forward matrix the given <see cref="Trafo3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Forward(Trafo3f trafo)
+            => trafo.Forward;
+
+        /// <summary>
+        /// Returns the backward matrix the given <see cref="Trafo3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f Backward(Trafo3f trafo)
+            => trafo.Backward;
 
         #endregion
 
@@ -1467,7 +1495,7 @@ namespace Aardvark.Base
 
     public static partial class Trafo
     {
-        #region Inverse
+        #region Operations
 
         /// <summary>
         /// Returns the inverse of the given <see cref="Trafo2d"/>.
@@ -1475,6 +1503,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo2d Inverse(Trafo2d trafo)
             => trafo.Inverse;
+
+        /// <summary>
+        /// Returns the forward matrix the given <see cref="Trafo2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Forward(Trafo2d trafo)
+            => trafo.Forward;
+
+        /// <summary>
+        /// Returns the backward matrix the given <see cref="Trafo2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d Backward(Trafo2d trafo)
+            => trafo.Backward;
 
         #endregion
 
@@ -2144,7 +2186,7 @@ namespace Aardvark.Base
 
     public static partial class Trafo
     {
-        #region Inverse
+        #region Operations
 
         /// <summary>
         /// Returns the inverse of the given <see cref="Trafo3d"/>.
@@ -2152,6 +2194,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo3d Inverse(Trafo3d trafo)
             => trafo.Inverse;
+
+        /// <summary>
+        /// Returns the forward matrix the given <see cref="Trafo3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Forward(Trafo3d trafo)
+            => trafo.Forward;
+
+        /// <summary>
+        /// Returns the backward matrix the given <see cref="Trafo3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d Backward(Trafo3d trafo)
+            => trafo.Backward;
 
         #endregion
 

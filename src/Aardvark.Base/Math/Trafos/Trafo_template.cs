@@ -695,7 +695,7 @@ namespace Aardvark.Base
 
     public static partial class Trafo
     {
-        #region Inverse
+        #region Operations
 
         /// <summary>
         /// Returns the inverse of the given <see cref="__type__"/>.
@@ -703,6 +703,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Inverse(__type__ trafo)
             => trafo.Inverse;
+
+        /// <summary>
+        /// Returns the forward matrix the given <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mmmt__ Forward(__type__ trafo)
+            => trafo.Forward;
+
+        /// <summary>
+        /// Returns the backward matrix the given <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __mmmt__ Backward(__type__ trafo)
+            => trafo.Backward;
 
         #endregion
 
