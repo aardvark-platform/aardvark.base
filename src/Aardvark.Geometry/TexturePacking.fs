@@ -52,7 +52,7 @@ module private TexturePackerHelpers =
                 free
 
     module Seq =
-        let inline tryMinByV (mapping : 'a -> ValueOption<'b>) (l : seq<'a>) =
+        let inline tryMinByV (mapping : 'a -> ValueOption<struct('b * 'c)>) (l : seq<'a>) =
             use e = l.GetEnumerator()
 
             let mutable best = ValueNone
@@ -60,9 +60,9 @@ module private TexturePackerHelpers =
             while ValueOption.isNone best && e.MoveNext() do
                 let c = e.Current
                 match mapping c with
-                | ValueSome s ->
+                | ValueSome(s, v) ->
                     bestScore <- s
-                    best <- ValueSome c
+                    best <- ValueSome(struct(c, v))
                 | ValueNone ->
                     ()
 
@@ -73,10 +73,10 @@ module private TexturePackerHelpers =
                 while e.MoveNext() do
                     let c = e.Current
                     match mapping c with
-                    | ValueSome s ->
+                    | ValueSome(s, v) ->
                         if s < bestScore then
                             bestScore <- s
-                            best <- c
+                            best <- struct(c, v)
                         
                     | ValueNone ->
                         ()
@@ -127,17 +127,28 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                     x.Remove(id).TryAdd(id, size)
                     
             | None ->   
-                let area = float size.X * float size.Y
-                let error (b : Box2i) =
+                let error (b : Box2i) : voption<struct(float * bool)> =
                     let sh = getSize b
 
-                    if sh.AllGreaterOrEqual size then
+                    let f0 = sh.AllGreaterOrEqual size
+                    let f1 = sh.AllGreaterOrEqual size.YX
+                    let w0 = (sh.X - size.X) * (sh.Y - size.Y)
+                    let w1 = (sh.X - size.Y) * (sh.Y - size.X)
 
-                        let waste =
-                            (sh.X - size.X) * (sh.Y - size.Y)
+                    let inline w (v : int) =
+                        float v
+                        //1.0 / (1.0 + float v)
 
-                        ValueSome (float waste) //(float sh.X * float sh.Y - area)
+                    if f0 && f1 then
+                        if w0 < w1 then ValueSome struct(w w0, true)
+                        else ValueSome struct(w w1, false)
 
+                    elif f0 then
+                        ValueSome struct(w w0, true)
+                        
+                    elif f1 then
+                        ValueSome struct(w w1, false)
+                        
                     else
                         ValueNone
 
@@ -147,7 +158,11 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                     |> Seq.tryMinByV error
 
                 match fitting with
-                | ValueSome fitting -> 
+                | ValueSome (struct(fitting, upright)) -> 
+                    let size = 
+                        if upright then size
+                        else size.YX
+
                     let r0 = Box2i(fitting.Min + V2i(size.X, 0), fitting.Max)
                     let r1 = Box2i(fitting.Min + V2i(0, size.Y), fitting.Max)
 

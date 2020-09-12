@@ -51,6 +51,19 @@ module Packer =
                 range.ExtendBy o
                 sum <- sum + o
                 cnt <- cnt + 1
+
+                let all = TexturePacking.toArray packing
+                if all.Length <> rects then failwith "bad count"
+                for i in 0 .. all.Length - 1 do
+                    for j in i + 1 .. all.Length - 1 do
+                        let (_, bi) = all.[i]
+                        let (_, bj) = all.[j]
+
+                        if bi.Intersects bj then
+                            failwith "bad"
+
+
+
                 //Log.line "packed %A (%.2f%%)" packing.Size (100.0 * o)
 
             Log.line "time: %A" (sw.MicroTime / cnt)
