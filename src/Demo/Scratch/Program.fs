@@ -1101,7 +1101,7 @@ module Temp =
             open System.Linq
 
             let map (mapping : 'a -> 'b) (source : seq<'a>) =
-                source.AsParallel().Select(mapping) :> seq<_>
+                source.AsParallel().AsOrdered().Select(mapping) :> seq<_>
                 
             let choose (mapping : 'a -> option<'b>) (source : seq<'a>) =
                 source.AsParallel().Select(mapping).Where(Option.isSome).Select(Option.get) :> seq<_>
@@ -1245,10 +1245,21 @@ module Temp =
 
         printfn "%A" a
         printfn "%A" b
-
+         
 [<EntryPoint; STAThread>]
 let main argv = 
-    Packer.test()
+
+    let a = Array.init (1 <<< 20) id
+
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    let x = a |> Temp.Seq.Parallel.map ((+) 2) |> Seq.toArray
+    printfn "%A" sw.MicroTime
+    sw.Restart()
+    let y = a |> Seq.map ((+) 2) |> Seq.toArray
+    printfn "%A" sw.MicroTime
+
+
+    //Packer.test()
     exit 0
 
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]

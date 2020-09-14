@@ -248,7 +248,7 @@ module TexturePacking =
             
     /// Tries to add several elements with the given sizes and (optionally) returns a new TexturePacking.
     let inline tryAddMany (elements : #seq<'a * V2i>) (packing : TexturePacking<'a>) =
-        let sorted = elements |> Seq.sortByDescending (fun (_,v) -> v.X * v.Y)
+        let sorted = elements |> Seq.sortByDescending (fun (_,v) -> max v.X v.Y)
         packing.TryAdd sorted
 
     /// Tries to create a TexturePacking with the given size for all elements.
@@ -269,7 +269,7 @@ module TexturePacking =
     /// Tries to create an optimal square packing for the given elements.
     let square (elements : seq<'a * V2i>) =
         let elements = Seq.toArray elements
-        elements.QuickSortDescending(fun (_,v) -> v.X * v.Y)
+        elements.QuickSortDescending(fun (_,v) -> max v.X v.Y)
         if elements.Length <= 0 then
             empty V2i.Zero
         elif elements.Length = 1 then
