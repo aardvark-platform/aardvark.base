@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Aardvark.Base
 {
@@ -9,6 +12,7 @@ namespace Aardvark.Base
     /// A 2^Exponent sized cube positioned at (X,Y,Z) * 2^Exponent.
     /// </summary>
     [DataContract]
+    [JsonConverter(typeof(Converter))]
     public struct Cell : IEquatable<Cell>
     {
         /// <summary>
@@ -119,8 +123,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// </summary>
+        [JsonIgnore]
+        public V3l XYZ => new V3l(X, Y, Y);
+
+        /// <summary>
         /// Gets whether this cell is a special cell centered at origin.
         /// </summary>
+        [JsonIgnore]
         public bool IsCenteredAtOrigin => X == long.MaxValue && Y == long.MaxValue && Z == long.MaxValue;
 
         /// <summary>
@@ -214,6 +224,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets indices of the 8 subcells.
         /// </summary>
+        [JsonIgnore]
         public Cell[] Children
         {
             get
@@ -239,17 +250,20 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets parent cell.
         /// </summary>
+        [JsonIgnore]
         public Cell Parent => IsCenteredAtOrigin ? new Cell(Exponent + 1) : new Cell(X >> 1, Y >> 1, Z >> 1, Exponent + 1);
 
         /// <summary>
         /// True if one corner of this cell touches the origin.
         /// Centered cells DO NOT touch the origin.
         /// </summary>
+        [JsonIgnore]
         public bool TouchesOrigin => !IsCenteredAtOrigin && (X == -1 || X == 0) && (Y == -1 || Y == 0) && (Z == -1 || Z == 0);
 
         /// <summary>
         /// Gets cell's bounds.
         /// </summary>
+        [JsonIgnore]
         public Box3d BoundingBox => ComputeBoundingBox(X, Y, Z, Exponent);
 
         /// <summary>
@@ -430,12 +444,70 @@ namespace Aardvark.Base
             return $"[{X}, {Y}, {Z}, {Exponent}]";
         }
 
+        public static Cell Parse(string s)
+        {
+            var xs = s.Substring(1, s.Length-2).Split(',');
+            return new Cell(long.Parse(xs[0]), long.Parse(xs[1]), long.Parse(xs[2]), int.Parse (xs[3]));
+        }
+
         private static Box3d ComputeBoundingBox(long x, long y, long z, int e)
         {
             var d = Math.Pow(2.0, e);
             var isCenteredAtOrigin = x == long.MaxValue && y == long.MaxValue && z == long.MaxValue;
             var min = isCenteredAtOrigin ? new V3d(-0.5 * d) : new V3d(x * d, y * d, z * d);
             return Box3d.FromMinAndSize(min, new V3d(d, d, d));
+        }
+
+        public class Converter : JsonConverter<Cell>
+        {
+            public override Cell Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetInt64();
+                    reader.Read(); var y = reader.GetInt64();
+                    reader.Read(); var z = reader.GetInt64();
+                    reader.Read(); var e = reader.GetInt32();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Cell(x, y, z, e);
+                }
+                else if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    var x = 0L; var y = 0L; var z = 0L; var e = 0;
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read(); Debug.Assert(reader.TokenType == JsonTokenType.Number);
+                        switch (p)
+                        {
+                            case "x": case "X": x = reader.GetInt64(); break;
+                            case "y": case "Y": y = reader.GetInt64(); break;
+                            case "z": case "Z": z = reader.GetInt64(); break;
+                            case "e": case "E": e = reader.GetInt32(); break;
+                            default: throw new JsonException($"Invalid property {p}. Error cd4c223f-8acf-4e79-8801-4446e563ae3a.");
+                        }
+                    }
+
+                    return new Cell(x, y, z, e);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Cell value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteNumberValue(value.Z);
+                writer.WriteNumberValue(value.Exponent);
+                writer.WriteEndArray();
+            }
         }
     }
 }

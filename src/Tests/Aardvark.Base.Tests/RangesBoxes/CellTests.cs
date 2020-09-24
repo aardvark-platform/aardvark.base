@@ -175,6 +175,53 @@ namespace Aardvark.Tests
             Assert.IsTrue(a == b);
         }
 
+        [Test]
+        public void CanDeserializeCellFromString()
+        {
+            var a = new Cell(1, 2, 3, -1);
+            var s = a.ToString();
+
+            var b = Cell.Parse(s);
+
+            Assert.IsTrue(a == b);
+        }
+
+        [Test]
+        public void CanRoundtripCellWithSystemTextJson()
+        {
+            var a = new Cell(1, 2, 3, -1);
+            var json = System.Text.Json.JsonSerializer.Serialize(a);
+            var b = System.Text.Json.JsonSerializer.Deserialize<Cell>(json);
+            Assert.IsTrue(a == b);
+        }
+
+        //[Test]
+        //public void CanRoundtripCellWithSystemTextJsonAndNewtonsoft()
+        //{
+        //    var a = new Cell(1, 2, 3, -1);
+        //    var json = System.Text.Json.JsonSerializer.Serialize(a);
+        //    var b = Newtonsoft.Json.JsonConvert.DeserializeObject<Cell>(json);
+        //    Assert.IsTrue(a == b);
+        //}
+
+        [Test]
+        public void CanRoundtripCellWithNewtonsoft()
+        {
+            var a = new Cell(1, 2, 3, -1);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(a);
+            var b = Newtonsoft.Json.JsonConvert.DeserializeObject<Cell>(json);
+            Assert.IsTrue(a == b);
+        }
+
+        [Test]
+        public void CanRoundtripCellWithNewtonsoftAndSystemTextJson()
+        {
+            var a = new Cell(1, 2, 3, -1);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(a);
+            var b = System.Text.Json.JsonSerializer.Deserialize<Cell>(json);
+            Assert.IsTrue(a == b);
+        }
+
         #endregion
 
         #region CellIsCenteredAtOrigin
