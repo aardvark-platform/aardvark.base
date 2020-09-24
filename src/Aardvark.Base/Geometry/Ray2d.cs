@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
-using System;
 using System.Runtime.Serialization;
 
 namespace Aardvark.Base
