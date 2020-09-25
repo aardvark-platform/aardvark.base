@@ -26,6 +26,10 @@ namespace Aardvark.Base.Tests.Json
         [Test] public void V3l() => RoundtripTest(new V3l(1, 0, -2));
         [Test] public void V3f() => RoundtripTest(new V3f(1.1, 0, -2.2));
         [Test] public void V3d() => RoundtripTest(new V3d(1.1, 0, -2.2));
+        [Test] public void V4i() => RoundtripTest(new V4i(1, 0, -2, 3));
+        [Test] public void V4l() => RoundtripTest(new V4l(1, 0, -2, 3));
+        [Test] public void V4f() => RoundtripTest(new V4f(1.1, 0, -2.2, 3.3));
+        [Test] public void V4d() => RoundtripTest(new V4d(1.1, 0, -2.2, 3.3));
 
         [Test] public void Box2i_Roundtrip() => RoundtripTest(new Box2i(new V2i(1, -2), new V2i(-17, 0)));
         [Test] public void Box2l_Roundtrip() => RoundtripTest(new Box2l(new V2l(1, -2), new V2l(-17, 0)));
