@@ -40,6 +40,8 @@ namespace Aardvark.Base
         [DataMember(Name = "E")]
         public readonly int Exponent;
 
+        #region constructors
+
         /// <summary>
         /// Creates a 2^exponent sized cube positioned at (x,y,z) * 2^exponent.
         /// </summary>
@@ -121,6 +123,8 @@ namespace Aardvark.Base
                 Z = (long)Math.Floor(a.Z / s);
             }
         }
+
+        #endregion
 
         /// <summary>
         /// </summary>
@@ -266,6 +270,14 @@ namespace Aardvark.Base
         [JsonIgnore]
         public Box3d BoundingBox => ComputeBoundingBox(X, Y, Z, Exponent);
 
+        private static Box3d ComputeBoundingBox(long x, long y, long z, int e)
+        {
+            var d = Math.Pow(2.0, e);
+            var isCenteredAtOrigin = x == long.MaxValue && y == long.MaxValue && z == long.MaxValue;
+            var min = isCenteredAtOrigin ? new V3d(-0.5 * d) : new V3d(x * d, y * d, z * d);
+            return Box3d.FromMinAndSize(min, new V3d(d, d, d));
+        }
+
         /// <summary>
         /// Computes cell's center.
         /// </summary>
@@ -404,7 +416,23 @@ namespace Aardvark.Base
         public override int GetHashCode() => HashCode.GetCombined(X, Y, Z, Exponent);
 
         #endregion
-        
+
+        #region string serialization
+
+        /// <summary></summary>
+        public override string ToString()
+        {
+            return $"[{X}, {Y}, {Z}, {Exponent}]";
+        }
+
+        public static Cell Parse(string s)
+        {
+            var xs = s.Substring(1, s.Length - 2).Split(',');
+            return new Cell(long.Parse(xs[0]), long.Parse(xs[1]), long.Parse(xs[2]), int.Parse(xs[3]));
+        }
+
+        #endregion
+
         #region binary serialization
 
         /// <summary>
@@ -438,25 +466,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        /// <summary></summary>
-        public override string ToString()
-        {
-            return $"[{X}, {Y}, {Z}, {Exponent}]";
-        }
-
-        public static Cell Parse(string s)
-        {
-            var xs = s.Substring(1, s.Length-2).Split(',');
-            return new Cell(long.Parse(xs[0]), long.Parse(xs[1]), long.Parse(xs[2]), int.Parse (xs[3]));
-        }
-
-        private static Box3d ComputeBoundingBox(long x, long y, long z, int e)
-        {
-            var d = Math.Pow(2.0, e);
-            var isCenteredAtOrigin = x == long.MaxValue && y == long.MaxValue && z == long.MaxValue;
-            var min = isCenteredAtOrigin ? new V3d(-0.5 * d) : new V3d(x * d, y * d, z * d);
-            return Box3d.FromMinAndSize(min, new V3d(d, d, d));
-        }
+        #region json serialization
 
         public class Converter : JsonConverter<Cell>
         {
@@ -509,5 +519,7 @@ namespace Aardvark.Base
                 writer.WriteEndArray();
             }
         }
+
+        #endregion
     }
 }

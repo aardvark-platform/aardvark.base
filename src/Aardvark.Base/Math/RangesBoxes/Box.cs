@@ -1,5 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Aardvark.Base
 {
@@ -99,6 +102,564 @@ namespace Aardvark.Base
         }
 
         #endregion
+    }
+
+    #endregion
+
+    #region json serialization (System.Text.Json)
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct V2i
+    {
+        public class Converter : JsonConverter<V2i>
+        {
+            public override V2i Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetInt32();
+                    reader.Read(); var y = reader.GetInt32();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new V2i(x, y);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, V2i value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct V2l
+    {
+        public class Converter : JsonConverter<V2l>
+        {
+            public override V2l Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetInt64();
+                    reader.Read(); var y = reader.GetInt64();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new V2l(x, y);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, V2l value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct V2f
+    {
+        public class Converter : JsonConverter<V2f>
+        {
+            public override V2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetSingle();
+                    reader.Read(); var y = reader.GetSingle();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new V2f(x, y);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, V2f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct V2d
+    {
+        public class Converter : JsonConverter<V2d>
+        {
+            public override V2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetDouble();
+                    reader.Read(); var y = reader.GetDouble();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new V2d(x, y);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, V2d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct V3i
+    {
+        public class Converter : JsonConverter<V3i>
+        {
+            public override V3i Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetInt32();
+                    reader.Read(); var y = reader.GetInt32();
+                    reader.Read(); var z = reader.GetInt32();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new V3i(x, y, z);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, V3i value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteNumberValue(value.Z);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct V3l
+    {
+        public class Converter : JsonConverter<V3l>
+        {
+            public override V3l Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetInt64();
+                    reader.Read(); var y = reader.GetInt64();
+                    reader.Read(); var z = reader.GetInt64();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new V3l(x, y, z);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, V3l value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteNumberValue(value.Z);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct V3f
+    {
+        public class Converter : JsonConverter<V3f>
+        {
+            public override V3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetSingle();
+                    reader.Read(); var y = reader.GetSingle();
+                    reader.Read(); var z = reader.GetSingle();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new V3f(x, y, z);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, V3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteNumberValue(value.Z);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct V3d
+    {
+        public class Converter : JsonConverter<V3d>
+        {
+            public override V3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetDouble();
+                    reader.Read(); var y = reader.GetDouble();
+                    reader.Read(); var z = reader.GetDouble();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new V3d(x, y, z);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, V3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteNumberValue(value.Z);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct Box2i
+    {
+        public class Converter : JsonConverter<Box2i>
+        {
+            public override Box2i Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    var min = new V2i();
+                    reader.Read(); min.X = reader.GetInt32();
+                    reader.Read(); min.Y = reader.GetInt32();
+                    var max = new V2i();
+                    reader.Read(); max.X = reader.GetInt32();
+                    reader.Read(); max.Y = reader.GetInt32();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Box2i(min, max);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Box2i value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.Min.X);
+                writer.WriteNumberValue(value.Min.Y);
+                writer.WriteNumberValue(value.Max.X);
+                writer.WriteNumberValue(value.Max.Y);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct Box2l
+    {
+        public class Converter : JsonConverter<Box2l>
+        {
+            public override Box2l Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    var min = new V2l();
+                    reader.Read(); min.X = reader.GetInt64();
+                    reader.Read(); min.Y = reader.GetInt64();
+                    var max = new V2l();
+                    reader.Read(); max.X = reader.GetInt64();
+                    reader.Read(); max.Y = reader.GetInt64();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Box2l(min, max);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Box2l value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.Min.X);
+                writer.WriteNumberValue(value.Min.Y);
+                writer.WriteNumberValue(value.Max.X);
+                writer.WriteNumberValue(value.Max.Y);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct Box2f
+    {
+        public class Converter : JsonConverter<Box2f>
+        {
+            public override Box2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    var min = new V2f();
+                    reader.Read(); min.X = reader.GetSingle();
+                    reader.Read(); min.Y = reader.GetSingle();
+                    var max = new V2f();
+                    reader.Read(); max.X = reader.GetSingle();
+                    reader.Read(); max.Y = reader.GetSingle();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Box2f(min, max);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Box2f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.Min.X);
+                writer.WriteNumberValue(value.Min.Y);
+                writer.WriteNumberValue(value.Max.X);
+                writer.WriteNumberValue(value.Max.Y);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct Box2d
+    {
+        public class Converter : JsonConverter<Box2d>
+        {
+            public override Box2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    var min = new V2d();
+                    reader.Read(); min.X = reader.GetDouble();
+                    reader.Read(); min.Y = reader.GetDouble();
+                    var max = new V2d();
+                    reader.Read(); max.X = reader.GetDouble();
+                    reader.Read(); max.Y = reader.GetDouble();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Box2d(min, max);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Box2d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.Min.X);
+                writer.WriteNumberValue(value.Min.Y);
+                writer.WriteNumberValue(value.Max.X);
+                writer.WriteNumberValue(value.Max.Y);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct Box3i
+    {
+        public class Converter : JsonConverter<Box3i>
+        {
+            public override Box3i Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    var min = new V3i();
+                    reader.Read(); min.X = reader.GetInt32();
+                    reader.Read(); min.Y = reader.GetInt32();
+                    reader.Read(); min.Z = reader.GetInt32();
+                    var max = new V3i();
+                    reader.Read(); max.X = reader.GetInt32();
+                    reader.Read(); max.Y = reader.GetInt32();
+                    reader.Read(); max.Z = reader.GetInt32();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Box3i(min, max);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Box3i value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.Min.X);
+                writer.WriteNumberValue(value.Min.Y);
+                writer.WriteNumberValue(value.Min.Z);
+                writer.WriteNumberValue(value.Max.X);
+                writer.WriteNumberValue(value.Max.Y);
+                writer.WriteNumberValue(value.Max.Z);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct Box3l
+    {
+        public class Converter : JsonConverter<Box3l>
+        {
+            public override Box3l Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    var min = new V3l();
+                    reader.Read(); min.X = reader.GetInt64();
+                    reader.Read(); min.Y = reader.GetInt64();
+                    reader.Read(); min.Z = reader.GetInt64();
+                    var max = new V3l();
+                    reader.Read(); max.X = reader.GetInt64();
+                    reader.Read(); max.Y = reader.GetInt64();
+                    reader.Read(); max.Z = reader.GetInt64();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Box3l(min, max);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Box3l value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.Min.X);
+                writer.WriteNumberValue(value.Min.Y);
+                writer.WriteNumberValue(value.Min.Z);
+                writer.WriteNumberValue(value.Max.X);
+                writer.WriteNumberValue(value.Max.Y);
+                writer.WriteNumberValue(value.Max.Z);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct Box3f
+    {
+        public class Converter : JsonConverter<Box3f>
+        {
+            public override Box3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    var min = new V3f();
+                    reader.Read(); min.X = reader.GetSingle();
+                    reader.Read(); min.Y = reader.GetSingle();
+                    reader.Read(); min.Z = reader.GetSingle();
+                    var max = new V3f();
+                    reader.Read(); max.X = reader.GetSingle();
+                    reader.Read(); max.Y = reader.GetSingle();
+                    reader.Read(); max.Z = reader.GetSingle();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Box3f(min, max);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Box3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.Min.X);
+                writer.WriteNumberValue(value.Min.Y);
+                writer.WriteNumberValue(value.Min.Z);
+                writer.WriteNumberValue(value.Max.X);
+                writer.WriteNumberValue(value.Max.Y);
+                writer.WriteNumberValue(value.Max.Z);
+                writer.WriteEndArray();
+            }
+        }
+    }
+
+    [JsonConverter(typeof(Converter))]
+    public partial struct Box3d
+    {
+        public class Converter : JsonConverter<Box3d>
+        {
+            public override Box3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    var min = new V3d();
+                    reader.Read(); min.X = reader.GetDouble();
+                    reader.Read(); min.Y = reader.GetDouble();
+                    reader.Read(); min.Z = reader.GetDouble();
+                    var max = new V3d();
+                    reader.Read(); max.X = reader.GetDouble();
+                    reader.Read(); max.Y = reader.GetDouble();
+                    reader.Read(); max.Z = reader.GetDouble();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Box3d(min, max);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Box3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.Min.X);
+                writer.WriteNumberValue(value.Min.Y);
+                writer.WriteNumberValue(value.Min.Z);
+                writer.WriteNumberValue(value.Max.X);
+                writer.WriteNumberValue(value.Max.Y);
+                writer.WriteNumberValue(value.Max.Z);
+                writer.WriteEndArray();
+            }
+        }
     }
 
     #endregion

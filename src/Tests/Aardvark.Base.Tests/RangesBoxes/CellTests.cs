@@ -186,15 +186,6 @@ namespace Aardvark.Tests
             Assert.IsTrue(a == b);
         }
 
-        [Test]
-        public void CanRoundtripCellWithSystemTextJson()
-        {
-            var a = new Cell(1, 2, 3, -1);
-            var json = System.Text.Json.JsonSerializer.Serialize(a);
-            var b = System.Text.Json.JsonSerializer.Deserialize<Cell>(json);
-            Assert.IsTrue(a == b);
-        }
-
         //[Test]
         //public void CanRoundtripCellWithSystemTextJsonAndNewtonsoft()
         //{

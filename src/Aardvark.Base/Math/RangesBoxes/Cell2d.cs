@@ -35,6 +35,8 @@ namespace Aardvark.Base
         [DataMember(Name = "E")]
         public readonly int Exponent;
 
+        #region constructors
+
         /// <summary>
         /// Creates a 2^exponent sized square positioned at (x,y) * 2^exponent.
         /// </summary>
@@ -127,6 +129,8 @@ namespace Aardvark.Base
                 Y = (long)Math.Floor(a.Y / s);
             }
         }
+
+        #endregion
 
         /// <summary>
         /// </summary>
@@ -265,6 +269,14 @@ namespace Aardvark.Base
         /// </summary>
         [JsonIgnore]
         public Box2d BoundingBox => ComputeBoundingBox(X, Y, Exponent);
+
+        private static Box2d ComputeBoundingBox(long x, long y, int e)
+        {
+            var d = Math.Pow(2.0, e);
+            var isCenteredAtOrigin = x == long.MaxValue && y == long.MaxValue;
+            var min = isCenteredAtOrigin ? new V2d(-0.5 * d) : new V2d(x * d, y * d);
+            return Box2d.FromMinAndSize(min, new V2d(d, d));
+        }
 
         /// <summary>
         /// Computes cell's center.
@@ -425,6 +437,8 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region string serialization
+
         /// <summary></summary>
         public override string ToString()
         {
@@ -437,13 +451,9 @@ namespace Aardvark.Base
             return new Cell2d(long.Parse(xs[0]), long.Parse(xs[1]), int.Parse(xs[2]));
         }
 
-        private static Box2d ComputeBoundingBox(long x, long y, int e)
-        {
-            var d = Math.Pow(2.0, e);
-            var isCenteredAtOrigin = x == long.MaxValue && y == long.MaxValue;
-            var min = isCenteredAtOrigin ? new V2d(-0.5 * d) : new V2d(x * d, y * d);
-            return Box2d.FromMinAndSize(min, new V2d(d, d));
-        }
+        #endregion
+
+        #region json serialization
 
         public class Converter : JsonConverter<Cell2d>
         {
@@ -493,5 +503,7 @@ namespace Aardvark.Base
                 writer.WriteEndArray();
             }
         }
+
+        #endregion
     }
 }
