@@ -12,7 +12,71 @@ open FSharp.Data.Adaptive
 open System.IO
 open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
+open Aardvark.Geometry
 
+module Packer =
+  
+    let test() =
+        let rand = RandomSystem(123842112)
+
+        let data =
+            List.init 1000 (fun _ ->
+                [
+                    for i in 1 .. 1000 do
+                        yield i, rand.UniformV2i(V2i(127, 127)) + V2i.II
+                ] |> List.sortByDescending (fun (_,s) -> s.X * s.Y)
+            )
+
+        for rects in [100 .. 100 .. 1000] do
+            Log.start "%d" rects
+            let mutable sum = 0.0
+            let mutable cnt = 0
+            let mutable range = Range1d.Invalid
+            let sw = System.Diagnostics.Stopwatch()
+
+            use e = (data :> seq<_>).GetEnumerator()
+
+            while sw.Elapsed.TotalSeconds < 5.0 do
+                let data = 
+                    [
+                        for i in 1 .. rects do
+                            yield i, rand.UniformV2i(V2i(127, 127)) + V2i.II
+                    ]
+
+                sw.Start()
+                let packing = TexturePacking.square data
+                sw.Stop()
+
+                let o = packing.Occupancy
+                range.ExtendBy o
+                sum <- sum + o
+                cnt <- cnt + 1
+
+                let all = TexturePacking.toArray packing
+                if all.Length <> rects then failwith "bad count"
+                for i in 0 .. all.Length - 1 do
+                    for j in i + 1 .. all.Length - 1 do
+                        let (_, bi) = all.[i]
+                        let (_, bj) = all.[j]
+
+                        if bi.Intersects bj then
+                            failwith "bad"
+
+
+
+                //Log.line "packed %A (%.2f%%)" packing.Size (100.0 * o)
+
+            Log.line "time: %A" (sw.MicroTime / cnt)
+            Log.line "min:  %.2f%%" (100.0 * range.Min)
+            Log.line "max:  %.2f%%" (100.0 * range.Max)
+            Log.line "avg:  %.2f%%" (100.0 * sum / float cnt)
+            Log.stop()
+
+        //for (id, box) in packing.Used do
+        //    let s = V2i.II + box.Max - box.Min
+        //    Log.line "%d: (%d,%d) (%dx%d)" id box.Min.X box.Min.Y s.X s.Y
+
+        //Log.stop()
 #nowarn "9"
 #nowarn "51"
 
@@ -761,9 +825,441 @@ let sphereTest() =
 
 
 
+module Temp =
+
+    module Seq =
+        open System.Collections.Generic
+
+        [<AbstractClass>]
+        type AbstractEnumerator<'a>() =
+        
+            abstract member MoveNext : unit -> bool
+            abstract member Current : 'a
+            abstract member Reset : unit -> unit
+            abstract member Dispose : unit -> unit
+
+            interface IDisposable with
+                member x.Dispose() = x.Dispose()
+
+            interface System.Collections.IEnumerator with
+                member x.MoveNext() = x.MoveNext()
+                member x.Current = x.Current :> obj
+                member x.Reset() = x.Reset()
+
+            interface IEnumerator<'a> with
+                member x.Current = x.Current
+
+        module private Enumerators = 
+
+            type FilterIndexEnumerator<'a>(seq : seq<'a>, predicate : OptimizedClosures.FSharpFunc<int, 'a, bool>) =
+                inherit AbstractEnumerator<'a>()
+
+                let e = seq.GetEnumerator()
+                let mutable i = -1
+                override x.MoveNext() =
+                    if e.MoveNext() then
+                        i <- i + 1
+                        if predicate.Invoke(i, e.Current) then
+                            true
+                        else
+                            x.MoveNext()
+                    else
+                        false
+
+                override x.Current = e.Current
+                override x.Reset() = 
+                    i <- -1
+                    e.Reset()
+                override x.Dispose() =
+                    i <- -1
+                    e.Dispose()
+
+            type ChooseIndexEnumerator<'a, 'b>(seq : seq<'a>, mapping : OptimizedClosures.FSharpFunc<int, 'a, option<'b>>) =
+                inherit AbstractEnumerator<'b>()
+
+                let e = seq.GetEnumerator()
+                let mutable i = -1
+                let mutable current = Unchecked.defaultof<'b>
+
+                override x.MoveNext() =
+                    if e.MoveNext() then
+                        i <- i + 1
+                        match mapping.Invoke(i, e.Current) with
+                        | Some b ->
+                            current <- b
+                            true
+                        | None -> 
+                            x.MoveNext()
+                    else
+                        false
+
+                override x.Current = current
+                override x.Reset() = 
+                    current <- Unchecked.defaultof<_>
+                    i <- -1
+                    e.Reset()
+                override x.Dispose() =
+                    current <- Unchecked.defaultof<_>
+                    i <- -1
+                    e.Dispose()
+
+            type ChooseValueEnumerator<'a, 'b>(seq : seq<'a>, mapping : 'a -> voption<'b>) =
+                inherit AbstractEnumerator<'b>()
+
+                let e = seq.GetEnumerator()
+                let mutable current = Unchecked.defaultof<'b>
+
+                override x.MoveNext() =
+                    if e.MoveNext() then
+                        match mapping e.Current with
+                        | ValueSome b ->
+                            current <- b
+                            true
+                        | ValueNone -> 
+                            x.MoveNext()
+                    else
+                        false
+
+                override x.Current = current
+                override x.Reset() = 
+                    current <- Unchecked.defaultof<_>
+                    e.Reset()
+                override x.Dispose() =
+                    current <- Unchecked.defaultof<_>
+                    e.Dispose()
+
+            type ChooseValueIndexEnumerator<'a, 'b>(seq : seq<'a>, mapping : OptimizedClosures.FSharpFunc<int, 'a, voption<'b>>) =
+                inherit AbstractEnumerator<'b>()
+
+                let e = seq.GetEnumerator()
+                let mutable i = -1
+                let mutable current = Unchecked.defaultof<'b>
+
+                override x.MoveNext() =
+                    if e.MoveNext() then
+                        i <- i + 1
+                        match mapping.Invoke(i, e.Current) with
+                        | ValueSome b ->
+                            current <- b
+                            true
+                        | ValueNone -> 
+                            x.MoveNext()
+                    else
+                        false
+
+                override x.Current = current
+                override x.Reset() = 
+                    current <- Unchecked.defaultof<_>
+                    i <- -1
+                    e.Reset()
+                override x.Dispose() =
+                    current <- Unchecked.defaultof<_>
+                    i <- -1
+                    e.Dispose()
+                
+            type CollectIndexEnumerator<'a, 'b>(seq : seq<'a>, mapping : OptimizedClosures.FSharpFunc<int, 'a, seq<'b>>) =
+                inherit AbstractEnumerator<'b>()
+
+                let e = seq.GetEnumerator()
+                let mutable i = -1
+                let mutable current : voption<IEnumerator<'b>> = ValueNone
+
+                override x.MoveNext() =
+                    match current with
+                    | ValueSome inner ->
+                        if inner.MoveNext() then
+                            true
+                        elif e.MoveNext() then
+                            inner.Dispose()
+                            i <- i + 1
+                            let s = mapping.Invoke(i, e.Current)
+                            let ni = s.GetEnumerator()
+                            current <- ValueSome ni
+                            x.MoveNext()
+                        else
+                            false
+                    | ValueNone ->
+                        if e.MoveNext() then
+                            i <- i + 1
+                            let s = mapping.Invoke(i, e.Current)
+                            let ni = s.GetEnumerator()
+                            current <- ValueSome ni
+                            x.MoveNext()
+                        else
+                            false
+                    
+
+                override x.Current = 
+                    current.Value.Current
+
+                override x.Reset() = 
+                    match current with
+                    | ValueSome c -> 
+                        c.Dispose()
+                        current <- ValueNone
+                    | ValueNone ->
+                        ()
+                    i <- -1
+                    e.Reset()
+                override x.Dispose() =
+                    match current with
+                    | ValueSome c -> 
+                        c.Dispose()
+                        current <- ValueNone
+                    | ValueNone ->
+                        ()
+                    i <- -1
+                    e.Dispose()
+
+
+
+        let ofEnumerator (create : unit -> #IEnumerator<'a>) =
+            { new seq<'a> with
+                member x.GetEnumerator() = create() :> IEnumerator<'a>
+                member x.GetEnumerator() = create() :> System.Collections.IEnumerator
+            }
+
+        let filteri (predicate : int -> 'a -> bool) (source : seq<'a>) =   
+            let predicate = OptimizedClosures.FSharpFunc<int, 'a, bool>.Adapt predicate
+            ofEnumerator <| fun () -> new Enumerators.FilterIndexEnumerator<_>(source, predicate)
+
+        let choosei (mapping : int -> 'a -> option<'b>) (source : seq<'a>) =
+            let mapping = OptimizedClosures.FSharpFunc<int, 'a, option<'b>>.Adapt mapping
+            ofEnumerator <| fun () -> new Enumerators.ChooseIndexEnumerator<_,_>(source, mapping)
+            
+        let collecti (mapping : int -> 'a -> seq<'b>) (source : seq<'a>) =
+            let mapping = OptimizedClosures.FSharpFunc<int, 'a, seq<'b>>.Adapt mapping
+            ofEnumerator <| fun () -> new Enumerators.CollectIndexEnumerator<_,_>(source, mapping)
+
+        let chooseV (mapping : 'a -> voption<'b>) (source : seq<'a>) =
+            ofEnumerator <| fun () -> new Enumerators.ChooseValueEnumerator<_,_>(source, mapping)
+
+        let chooseiV (mapping : int -> 'a -> voption<'b>) (source : seq<'a>) =
+            let mapping = OptimizedClosures.FSharpFunc<int, 'a, voption<'b>>.Adapt mapping
+            ofEnumerator <| fun () -> new Enumerators.ChooseValueIndexEnumerator<_,_>(source, mapping)
+
+        let tryMin (source : seq<'a>) =
+            use e = source.GetEnumerator()
+            if e.MoveNext() then
+                let mutable best = e.Current
+                while e.MoveNext() do
+                    let c = e.Current
+                    if c < best then
+                        best <- c
+                Some best
+            else
+                None
+            
+        let tryMax (source : seq<'a>) =
+            use e = source.GetEnumerator()
+            if e.MoveNext() then
+                let mutable best = e.Current
+                while e.MoveNext() do
+                    let c = e.Current
+                    if c > best then
+                        best <- c
+                Some best
+            else
+                None
+
+        let tryMinBy (mapping : 'a -> 'b) (source : seq<'a>) =
+            use e = source.GetEnumerator()
+            if e.MoveNext() then
+                let mutable best = e.Current
+                let mutable bestValue = mapping best
+
+                while e.MoveNext() do
+                    let c = e.Current
+                    let v = mapping c
+                    if v < bestValue then
+                        best <- c
+                        bestValue <- v
+
+                Some best
+            else
+                None
+
+        let tryMaxBy (mapping : 'a -> 'b) (source : seq<'a>) =
+            use e = source.GetEnumerator()
+            if e.MoveNext() then
+                let mutable best = e.Current
+                let mutable bestValue = mapping best
+
+                while e.MoveNext() do
+                    let c = e.Current
+                    let v = mapping c
+                    if v > bestValue then
+                        best <- c
+                        bestValue <- v
+
+                Some best
+            else
+                None
+        
+        module Parallel =
+            open System.Threading.Tasks
+            open System.Linq
+
+            let map (mapping : 'a -> 'b) (source : seq<'a>) =
+                source.AsParallel().AsOrdered().Select(mapping) :> seq<_>
+                
+            let choose (mapping : 'a -> option<'b>) (source : seq<'a>) =
+                source.AsParallel().Select(mapping).Where(Option.isSome).Select(Option.get) :> seq<_>
+
+    module List =
+        open System.Reflection
+        open Microsoft.FSharp.Reflection
+        open Aardvark.Base.IL
+
+        type private SetTail<'a> private() =
+            static let tailProperty =
+                let tailField = typeof<list<'a>>.GetField("tail", BindingFlags.NonPublic ||| BindingFlags.Instance)
+                tailField
+
+            static let setTail : list<'a> -> list<'a> -> unit =
+                cil {
+                    do! IL.ldarg 0
+                    do! IL.ldarg 1
+                    do! IL.stfld tailProperty
+                    do! IL.ret
+                }
+
+
+            static member SetTail(l : list<'a>, tail : list<'a>) =
+                setTail l tail
+
+        let inline private setTail (cons : list<'a>) (t : list<'a>) =
+            SetTail<'a>.SetTail(cons, t)
+
+        let rec chooseV (mapping : 'a -> voption<'b>) (source : list<'a>) =
+            match source with
+            | [] -> []
+            | h :: t -> 
+                match mapping h with
+                | ValueSome r ->
+                    let start = [r]
+                    let mutable c = start
+
+                    for e in t do
+                        match mapping e with
+                        | ValueSome e ->
+                            let m = [e]
+                            setTail c m
+                            c <- m
+                        | ValueNone ->
+                            ()
+
+                    start
+                | ValueNone ->
+                    chooseV mapping t
+
+        let rec private chooseiAux (i : int) (mapping : OptimizedClosures.FSharpFunc<int, 'a, option<'b>>) (source : list<'a>) =
+            match source with
+            | [] ->
+                []
+            | h :: t ->
+                match mapping.Invoke(i, h) with
+                | Some r ->
+                    let start = [r]
+                    let mutable c = start
+                    let mutable i = i + 1
+                    for e in t do
+                        match mapping.Invoke(i, e) with
+                        | Some v ->
+                            let l = [v]
+                            setTail c l
+                            c <- l
+                        | None ->
+                            ()
+                    start
+                | None ->
+                    chooseiAux (i + 1) mapping t
+
+        let choosei (mapping : int -> 'a -> option<'b>) (source : list<'a>) =
+            let mapping = OptimizedClosures.FSharpFunc<int, 'a, option<'b>>.Adapt mapping
+            chooseiAux 0 mapping source
+
+        let rec private chooseiVAux (i : int) (mapping : OptimizedClosures.FSharpFunc<int, 'a, voption<'b>>) (source : list<'a>) =
+            match source with
+            | [] ->
+                []
+            | h :: t ->
+                match mapping.Invoke(i, h) with
+                | ValueSome r ->
+                    let start = [r]
+                    let mutable c = start
+                    let mutable i = i + 1
+                    for e in t do
+                        match mapping.Invoke(i, e) with
+                        | ValueSome v ->
+                            let l = [v]
+                            setTail c l
+                            c <- l
+                        | ValueNone ->
+                            ()
+                    start
+                | ValueNone ->
+                    chooseiVAux (i + 1) mapping t
+
+        let chooseiV (mapping : int -> 'a -> voption<'b>) (source : list<'a>) =
+            let mapping = OptimizedClosures.FSharpFunc<int, 'a, voption<'b>>.Adapt mapping
+            chooseiVAux 0 mapping source
+
+        let rec private collectiAux (i : int) (mapping : OptimizedClosures.FSharpFunc<int, 'a, list<'b>>) (source : list<'a>) =
+            match source with
+            | [] ->
+                []
+            | ha :: ta ->
+                match mapping.Invoke(i, ha) with
+                | [] ->
+                    collectiAux (i + 1) mapping ta
+                | hb :: tb ->
+                    let start = [hb]
+                    let mutable c = start
+                    for e in tb do
+                        let m = [e]
+                        setTail c m
+                        c <- m
+                         
+                    let mutable i = i + 1
+                    for a in ta do
+                        let res = mapping.Invoke(i, a)
+                        for e in res do
+                            let m = [e]
+                            setTail c m
+                            c <- m
+                        i <- i + 1
+                         
+                    start
+   
+        let collecti (mapping : int -> 'a -> list<'b>) (source : list<'a>) =
+            let mapping = OptimizedClosures.FSharpFunc<int, 'a, list<'b>>.Adapt mapping
+            collectiAux 0 mapping source
+                 
+
+    let test() =
+
+    
+        let a = [0;1;2;3] |> List.chooseV (fun v -> if v % 2 = 1 then ValueSome v else ValueNone)
+        let b = [0;1;2;3] |> List.collecti (fun i v -> if i % 2 = 1 then [v] else [])
+
+        printfn "%A" a
+        printfn "%A" b
+         
 [<EntryPoint; STAThread>]
 let main argv = 
-    sphereTest()
+
+    let a = Array.init (1 <<< 20) id
+
+    let sw = System.Diagnostics.Stopwatch.StartNew()
+    let x = a |> Temp.Seq.Parallel.map ((+) 2) |> Seq.toArray
+    printfn "%A" sw.MicroTime
+    sw.Restart()
+    let y = a |> Seq.map ((+) 2) |> Seq.toArray
+    printfn "%A" sw.MicroTime
+
+
+    //Packer.test()
     exit 0
 
     let s = MapExt.ofList [1,1;2,2;3,2;4,4]

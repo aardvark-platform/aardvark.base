@@ -17,6 +17,7 @@
   <ItemGroup>
     <Compile Include="PolyRegion2dTests.fs" />
     <Compile Include="Regression.fs" />
+    <Compile Include="TexturePacking.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />

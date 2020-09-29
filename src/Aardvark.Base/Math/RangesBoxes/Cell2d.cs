@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Aardvark.Base
 {
@@ -9,6 +12,7 @@ namespace Aardvark.Base
     /// A 2^Exponent sized square positioned at (X,Y) * 2^Exponent.
     /// </summary>
     [DataContract]
+    [JsonConverter(typeof(Converter))]
     public struct Cell2d : IEquatable<Cell2d>
     {
         /// <summary>
@@ -30,6 +34,8 @@ namespace Aardvark.Base
         /// </summary>
         [DataMember(Name = "E")]
         public readonly int Exponent;
+
+        #region constructors
 
         /// <summary>
         /// Creates a 2^exponent sized square positioned at (x,y) * 2^exponent.
@@ -124,13 +130,17 @@ namespace Aardvark.Base
             }
         }
 
+        #endregion
+
         /// <summary>
         /// </summary>
+        [JsonIgnore]
         public V2l XY => new V2l(X, Y);
 
         /// <summary>
         /// Gets whether this cell is a special cell centered at origin.
         /// </summary>
+        [JsonIgnore]
         public bool IsCenteredAtOrigin => X == long.MaxValue && Y == long.MaxValue;
 
         /// <summary>
@@ -222,6 +232,7 @@ namespace Aardvark.Base
         /// Gets the 4 subcells.
         /// Order is (0,0), (1,0), (0,1), (1,1).
         /// </summary>
+        [JsonIgnore]
         public Cell2d[] Children
         {
             get
@@ -243,18 +254,29 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets parent cell.
         /// </summary>
+        [JsonIgnore]
         public Cell2d Parent => IsCenteredAtOrigin ? new Cell2d(Exponent + 1) : new Cell2d(X >> 1, Y >> 1, Exponent + 1);
 
         /// <summary>
         /// True if one corner of this cell touches the origin.
         /// Centered cells DO NOT touch the origin.
         /// </summary>
+        [JsonIgnore]
         public bool TouchesOrigin => !IsCenteredAtOrigin && (X == -1 || X == 0) && (Y == -1 || Y == 0);
 
         /// <summary>
         /// Gets cell's bounds.
         /// </summary>
+        [JsonIgnore]
         public Box2d BoundingBox => ComputeBoundingBox(X, Y, Exponent);
+
+        private static Box2d ComputeBoundingBox(long x, long y, int e)
+        {
+            var d = Math.Pow(2.0, e);
+            var isCenteredAtOrigin = x == long.MaxValue && y == long.MaxValue;
+            var min = isCenteredAtOrigin ? new V2d(-0.5 * d) : new V2d(x * d, y * d);
+            return Box2d.FromMinAndSize(min, new V2d(d, d));
+        }
 
         /// <summary>
         /// Computes cell's center.
@@ -415,18 +437,73 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region string serialization
+
         /// <summary></summary>
         public override string ToString()
         {
             return $"[{X}, {Y}, {Exponent}]";
         }
 
-        private static Box2d ComputeBoundingBox(long x, long y, int e)
+        public static Cell2d Parse(string s)
         {
-            var d = Math.Pow(2.0, e);
-            var isCenteredAtOrigin = x == long.MaxValue && y == long.MaxValue;
-            var min = isCenteredAtOrigin ? new V2d(-0.5 * d) : new V2d(x * d, y * d);
-            return Box2d.FromMinAndSize(min, new V2d(d, d));
+            var xs = s.Substring(1, s.Length - 2).Split(',');
+            return new Cell2d(long.Parse(xs[0]), long.Parse(xs[1]), int.Parse(xs[2]));
         }
+
+        #endregion
+
+        #region json serialization
+
+        public class Converter : JsonConverter<Cell2d>
+        {
+            public override Cell2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartArray)
+                {
+                    reader.Read(); var x = reader.GetInt64();
+                    reader.Read(); var y = reader.GetInt64();
+                    reader.Read(); var e = reader.GetInt32();
+                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                    return new Cell2d(x, y, e);
+                }
+                else if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    var x = 0L; var y = 0L; var e = 0;
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read(); Debug.Assert(reader.TokenType == JsonTokenType.Number);
+                        switch (p)
+                        {
+                            case "x": case "X": x = reader.GetInt64(); break;
+                            case "y": case "Y": y = reader.GetInt64(); break;
+                            case "e": case "E": e = reader.GetInt32(); break;
+                            default: throw new JsonException($"Invalid property {p}. Error 09514e99-055a-4f0a-8573-0e10bcb29446.");
+                        }
+                    }
+
+                    return new Cell2d(x, y, e);
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+
+            public override void Write(Utf8JsonWriter writer, Cell2d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartArray();
+                writer.WriteNumberValue(value.X);
+                writer.WriteNumberValue(value.Y);
+                writer.WriteNumberValue(value.Exponent);
+                writer.WriteEndArray();
+            }
+        }
+
+        #endregion
     }
 }

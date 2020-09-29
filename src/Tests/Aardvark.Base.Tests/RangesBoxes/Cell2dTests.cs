@@ -175,6 +175,44 @@ namespace Aardvark.Tests
             Assert.IsTrue(a == b);
         }
 
+        [Test]
+        public void CanDeserializeCellFromString()
+        {
+            var a = new Cell2d(1, 2, -1);
+            var s = a.ToString();
+
+            var b = Cell2d.Parse(s);
+
+            Assert.IsTrue(a == b);
+        }
+
+        //[Test]
+        //public void CanRoundtripCell2dWithSystemTextJsonAndNewtonsoft()
+        //{
+        //    var a = new Cell2d(1, 2, -1);
+        //    var json = System.Text.Json.JsonSerializer.Serialize(a);
+        //    var b = Newtonsoft.Json.JsonConvert.DeserializeObject<Cell2d>(json);
+        //    Assert.IsTrue(a == b);
+        //}
+
+        [Test]
+        public void CanRoundtripCell2dWithNewtonsoft()
+        {
+            var a = new Cell2d(1, 2, -1);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(a);
+            var b = Newtonsoft.Json.JsonConvert.DeserializeObject<Cell2d>(json);
+            Assert.IsTrue(a == b);
+        }
+
+        [Test]
+        public void CanRoundtripCell2dWithNewtonsoftAndSystemTextJson()
+        {
+            var a = new Cell2d(1, 2, -1);
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(a);
+            var b = System.Text.Json.JsonSerializer.Deserialize<Cell2d>(json);
+            Assert.IsTrue(a == b);
+        }
+
         #endregion
 
         #region CellIsCenteredAtOrigin
