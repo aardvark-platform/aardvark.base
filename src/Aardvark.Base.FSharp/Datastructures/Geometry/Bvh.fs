@@ -295,16 +295,15 @@ type BvhTree<'a>(data : 'a[], bounds : Box3d, root : Option<BvhNode>) =
     interface ICullable<'a> with
         member x.Cull hull = x.Cull hull
 
-    new(getBounds : 'a -> Box3d, data : 'a[]) =
-        if data.Length > 0 then
-            let boxes = data |> Array.map getBounds
-            let bounds = Box3d(boxes)
-            let root = BvhNode.build boxes (Array.init boxes.Length id) 0 boxes.Length bounds
-            BvhTree(data, bounds, Some root)
-        else
-            BvhTree(data, Box3d.Invalid, None)
-
     new(data : array<'a * Box3d>) =
+        let data = 
+            data |> Array.choose (fun (k, b) ->
+                if b.IsValid then   
+                    let nb = Box3d.FromCenterAndSize(b.Center, b.Size + V3d(1E-8, 1E-8, 1E-8))
+                    Some (k, nb)
+                else
+                    None
+            )
         if data.Length > 0 then
             let data, boxes = data |> Array.unzip
             let bounds = Box3d(boxes)
@@ -312,6 +311,10 @@ type BvhTree<'a>(data : 'a[], bounds : Box3d, root : Option<BvhNode>) =
             BvhTree<'a>(data, bounds, Some root)
         else
             BvhTree<'a>([||], Box3d.Invalid, None)
+
+    new(getBounds : 'a -> Box3d, data : 'a[]) =
+        let boxes = data |> Array.map(fun d -> d, getBounds d)
+        BvhTree<'a>(boxes)
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module BvhTree =
