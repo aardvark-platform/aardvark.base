@@ -1909,7 +1909,7 @@ open MapExtImplementation
 [<System.Diagnostics.DebuggerDisplay("Count = {Count}")>]
 [<Sealed>]
 [<StructuredFormatDisplay("{AsString}")>]
-type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonConditionalOn>]'Value when 'Key : comparison >(comparer: IComparer<'Key>, tree: MapTree<'Key,'Value>) =
+type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonConditionalOn>]'Value when 'Key : comparison > internal(comparer: IComparer<'Key>, tree: MapTree<'Key,'Value>) =
 
     static let defaultComparer = LanguagePrimitives.FastGenericComparer<'Key> 
     // We use .NET generics per-instantiation static fields to avoid allocating a new object for each empty
@@ -1978,7 +1978,7 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     member m.ChooseMonotonic<'Key2, 'Value2 when 'Key2 : comparison> (f : 'Key -> 'Value -> option<'Key2 * 'Value2>) : MapExt<'Key2,'Value2> = 
         new MapExt<'Key2,'Value2>(LanguagePrimitives.FastGenericComparer<'Key2>, MapTree.chooseiMonotonic f tree)
     
-    member x.GetReference key =
+    member internal x.GetReference key =
         MapTree.getReference comparer 0 key tree
         
     member x.TryIndexOf key =
@@ -2132,7 +2132,7 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
         let mutable res = 0
         for (KeyValue(x,y)) in this do
             res <- combineHash res (hash x)
-            res <- combineHash res (DefaultEquality.hash y)
+            res <- combineHash res (Unchecked.hash y)
         abs res
 
     override this.Equals(that) = 
@@ -2146,7 +2146,7 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
                 let rec loop () = 
                     let m1 = e1.MoveNext() 
                     let m2 = e2.MoveNext()
-                    (m1 = m2) && (not m1 || let e1c, e2c = e1.Current, e2.Current in ((e1c.Key = e2c.Key) && (DefaultEquality.equals e1c.Value e2c.Value) && loop()))
+                    (m1 = m2) && (not m1 || let e1c, e2c = e1.Current, e2.Current in ((e1c.Key = e2c.Key) && (Unchecked.equals e1c.Value e2c.Value) && loop()))
                 loop()
             | _ -> false
 
@@ -2406,7 +2406,7 @@ module MapExt =
     let tryIndexOf i (m:MapExt<_,_>) = m.TryIndexOf i
 
     [<CompiledName("GetReference")>]
-    let reference i (m:MapExt<_,_>) = m.GetReference i
+    let internal reference i (m:MapExt<_,_>) = m.GetReference i
 
 
     [<CompiledName("Union")>]
