@@ -14,6 +14,9 @@ open System.Collections.Generic
 open System.Diagnostics
 open Microsoft.FSharp.Core
 open Microsoft.FSharp.Core.LanguagePrimitives.IntrinsicOperators
+open FSharp.Data.Adaptive
+open MBrace.FsPickler
+open MBrace.FsPickler.Combinators
 
 module internal MapExtImplementation = 
     [<CompilationRepresentation(CompilationRepresentationFlags.UseNullAsTrueValue)>]
@@ -1907,7 +1910,7 @@ open MapExtImplementation
 
 [<System.Diagnostics.DebuggerTypeProxy(typedefof<MapDebugView<_,_>>)>]
 [<System.Diagnostics.DebuggerDisplay("Count = {Count}")>]
-[<Sealed>]
+[<Sealed;CustomPickler>]
 [<StructuredFormatDisplay("{AsString}")>]
 type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonConditionalOn>]'Value when 'Key : comparison > internal(comparer: IComparer<'Key>, tree: MapTree<'Key,'Value>) =
 
@@ -1915,6 +1918,30 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     // We use .NET generics per-instantiation static fields to avoid allocating a new object for each empty
     // set (it is just a lookup into a .NET table of type-instantiation-indexed static fields).
     static let empty = new MapExt<'Key,'Value>(defaultComparer, MapTree<_,_>.MapEmpty)
+
+    static member private CreatePickler (r : IPicklerResolver) =
+        let pInt = r.Resolve<int>()
+        let pKey = r.Resolve<'Key>()
+        let pValue = r.Resolve<'Value>()
+        let pArray = Pickler.array (Pickler.pair pKey pValue)
+
+        let read (rs : ReadState) =
+            let _cnt = pInt.Read rs "count"
+            let arr = pArray.Read rs "items"
+            MapExt<'Key, 'Value>(defaultComparer, MapTree.ofArray defaultComparer arr)
+
+        let write (ws : WriteState) (m : MapExt<'Key, 'Value>) =
+            pInt.Write ws "count" m.Count
+            pArray.Write ws "items" (m.ToArray())
+
+        let clone (cs : CloneState) (m : MapExt<'Key, 'Value>) =
+            m.MapMonotonic (fun k v -> pKey.Clone cs k, pValue.Clone cs v)
+
+        let accept (vs : VisitState) (m : MapExt<'Key, 'Value>) =
+            for kv in m do pKey.Accept vs kv.Key; pValue.Accept vs kv.Value
+
+        Pickler.FromPrimitives(read, write, clone, accept)
+
 
     static member Empty : MapExt<'Key,'Value> = empty
 
