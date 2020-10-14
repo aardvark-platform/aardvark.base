@@ -423,40 +423,28 @@ namespace Aardvark.Base
                     semicolon); if (t.HasAlpha) {*/; A = __t.MaxValue__/*# } */;
         }
 
-        //# if (!isReal) {
+        //# foreach (var ft1 in Meta.RealTypes) { if (ft != ft1) {
+        //#     var ftype1 = ft1.Name;
+        //#     var convert = "Col." + ft.Caps + "From" + ft1.Caps + "Clamped";
         /// <summary>
-        /// Creates a color from a single <see cref="float"/> value.
+        /// Creates a color from a single <see cref="__ftype1__"/> value.
+        //# if (ismapped(ft, ft1)) {
         /// The value is mapped from [0, 1] to the <see cref="__type__"/> color range.
+        //# }
         //# if (t.HasAlpha) {
         /// The alpha channel is set to __maxval__.
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(float gray)
+        public __type__(__ftype1__ gray)
         {
-            var value = __f_to_ft__(gray);
+            var value = __convert__(gray);
             /*# channels.ForEach(
                     c => { */__c__ = value/*# },
                     semicolon); if (t.HasAlpha) {*/; A = __t.MaxValue__/*# } */;
         }
 
-        /// <summary>
-        /// Creates a color from a single <see cref="double"/> value.
-        /// The value is mapped from [0, 1] to the <see cref="__type__"/> color range.
-        //# if (t.HasAlpha) {
-        /// The alpha channel is set to __maxval__.
-        //# }
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__(double gray)
-        {
-            var value = __d_to_ft__(gray);
-            /*# channels.ForEach(
-                    c => { */__c__ = value/*# },
-                    semicolon); if (t.HasAlpha) {*/; A = __t.MaxValue__/*# } */;
-        }
-
-        //# } // !isReal
+        //# } }
         //# foreach (var t1 in Meta.ColorTypes) {
         //#     var convert = t.FieldType != t1.FieldType
         //#         ? "Col." + t.FieldType.Caps + "From" + t1.FieldType.Caps

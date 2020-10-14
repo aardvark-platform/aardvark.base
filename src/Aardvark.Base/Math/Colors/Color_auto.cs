@@ -6206,6 +6206,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from a single <see cref="double"/> value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3f(double gray)
+        {
+            var value = Col.FloatFromDoubleClamped(gray);
+            R = value; G = value; B = value;
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
@@ -7983,6 +7993,16 @@ namespace Aardvark.Base
         public C3d(double gray)
         {
             R = gray; G = gray; B = gray;
+        }
+
+        /// <summary>
+        /// Creates a color from a single <see cref="float"/> value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3d(float gray)
+        {
+            var value = Col.DoubleFromFloatClamped(gray);
+            R = value; G = value; B = value;
         }
 
         /// <summary>
@@ -16761,6 +16781,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from a single <see cref="double"/> value.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4f(double gray)
+        {
+            var value = Col.FloatFromDoubleClamped(gray);
+            R = value; G = value; B = value; A = 1.0f;
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="C3b"/> color.
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// The alpha channel is set to 1.
@@ -18726,6 +18757,17 @@ namespace Aardvark.Base
         public C4d(double gray)
         {
             R = gray; G = gray; B = gray; A = 1.0;
+        }
+
+        /// <summary>
+        /// Creates a color from a single <see cref="float"/> value.
+        /// The alpha channel is set to 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4d(float gray)
+        {
+            var value = Col.DoubleFromFloatClamped(gray);
+            R = value; G = value; B = value; A = 1.0;
         }
 
         /// <summary>

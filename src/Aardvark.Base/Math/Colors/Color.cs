@@ -501,6 +501,8 @@ namespace Aardvark.Base
         public static byte ColDoubleToByteClamped(this double d) { return (byte)(c_doubleToByte * d).Clamp(0, 255); }
         public static ushort ColDoubleToUShortClamped(this double d) { return (ushort)(c_doubleToUShort * d).Clamp(0, 65535); }
         public static uint ColDoubleToUIntClamped(this double d) { return (uint)(c_doubleToUInt * d).Clamp(0, 4294967295); }
+        public static double ColFloatToDoubleClamped(this float f) { return ((double) f).Clamp(0, 1); }
+        public static float ColDoubleToFloatClamped(this double d) { return ((float) d).Clamp(0, 1); }
 
         // explicit lambda function versions to aid type infererence
 
@@ -531,6 +533,8 @@ namespace Aardvark.Base
         public static Func<double, byte> ByteFromDoubleClamped = ColDoubleToByteClamped;
         public static Func<double, ushort> UShortFromDoubleClamped = ColDoubleToUShortClamped;
         public static Func<double, uint> UIntFromDoubleClamped = ColDoubleToUIntClamped;
+        public static Func<float, double> DoubleFromFloatClamped = ColFloatToDoubleClamped;
+        public static Func<double, float> FloatFromDoubleClamped = ColDoubleToFloatClamped;
 
         #endregion
 
