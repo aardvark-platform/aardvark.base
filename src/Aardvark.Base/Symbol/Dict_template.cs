@@ -274,6 +274,32 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Returns the number of items currently contained in the __type__
+        /// as long.
+        /// </summary>
+        public __uitype__ Capacity
+        {
+            get
+            {
+                //# if (wrapped) {
+                return m_dict.Capacity;
+                //# } else {
+                return m_capacity;
+                //# }
+            }
+            set
+            {
+                //# if (wrapped) {
+                m_dict.Capacity = value;
+                //# } else {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+                //# }
+            }
+        }
+
         //# if (!wrapped) {
         /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune

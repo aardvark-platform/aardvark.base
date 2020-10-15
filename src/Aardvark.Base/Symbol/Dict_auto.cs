@@ -142,6 +142,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the Dict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -1916,6 +1934,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the DictSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -2813,6 +2849,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the IntDict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -4075,6 +4129,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the IntSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -4772,6 +4844,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the SymbolDict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -6146,6 +6236,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the SymbolSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -6827,6 +6935,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the BigDict
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -8595,6 +8721,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the BigDictSet
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -9475,6 +9619,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the LongDict
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -10725,6 +10887,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the LongSet
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -11326,6 +11506,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentDict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentDict.
         /// </summary>
         public Dict<TKey, TValue> NonConcurrent
@@ -11916,6 +12112,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentDictSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentDictSet.
         /// </summary>
         public DictSet<TKey> NonConcurrent
@@ -12155,6 +12367,22 @@ namespace Aardvark.Base
             get
             {
                 return m_dict.LongCount;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentIntDict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
             }
         }
 
@@ -12585,6 +12813,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentIntSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentIntSet.
         /// </summary>
         public IntSet NonConcurrent
@@ -12762,6 +13006,22 @@ namespace Aardvark.Base
             get
             {
                 return m_dict.LongCount;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentSymbolDict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
             }
         }
 
@@ -13301,6 +13561,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentSymbolSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentSymbolSet.
         /// </summary>
         public SymbolSet NonConcurrent
@@ -13480,6 +13756,22 @@ namespace Aardvark.Base
             get
             {
                 return m_dict.LongCount;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentBigDict
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
             }
         }
 
@@ -14063,6 +14355,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentBigDictSet
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentBigDictSet.
         /// </summary>
         public BigDictSet<TKey> NonConcurrent
@@ -14291,6 +14599,22 @@ namespace Aardvark.Base
             get
             {
                 return m_dict.LongCount;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentLongDict
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
             }
         }
 
@@ -14710,6 +15034,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentLongSet
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentLongSet.
         /// </summary>
         public LongSet NonConcurrent
@@ -14968,6 +15308,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentDict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -16870,6 +17228,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentDictSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -17786,6 +18162,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentIntDict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -19138,6 +19532,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentIntSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -19839,6 +20251,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentSymbolDict
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -21303,6 +21733,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentSymbolSet
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -21989,6 +22437,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentBigDict
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -23882,6 +24348,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentBigDictSet
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -24787,6 +25271,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentLongDict
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -26128,6 +26630,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentLongSet
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -26814,6 +27334,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the DictIEq
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -28593,6 +29131,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the DictSetIEq
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -29481,6 +30037,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the BigDictIEq
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -31250,6 +31824,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the BigDictSetIEq
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -32067,6 +32659,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentDictIEq
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentDictIEq.
         /// </summary>
         public DictIEq<TKey, TValue> NonConcurrent
@@ -32658,6 +33266,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentDictSetIEq
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentDictSetIEq.
         /// </summary>
         public DictSetIEq<TKey> NonConcurrent
@@ -32887,6 +33511,22 @@ namespace Aardvark.Base
             get
             {
                 return m_dict.LongCount;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentBigDictIEq
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
             }
         }
 
@@ -33471,6 +34111,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the ConcurrentBigDictSetIEq
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_dict.Capacity;
+            }
+            set
+            {
+                m_dict.Capacity = value;
+            }
+        }
+
+        /// <summary>
         /// Return the non-concurrent contained ConcurrentBigDictSetIEq.
         /// </summary>
         public BigDictSetIEq<TKey> NonConcurrent
@@ -33792,6 +34448,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentDictIEq
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -35695,6 +36369,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentDictSetIEq
+        /// as long.
+        /// </summary>
+        public uint Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
+            }
+        }
+
+        /// <summary>
         /// Setting the maximal fill factor makes it possible to fine-tune
         /// the performance for certain applications. Normally this should
         /// not be necessary.
@@ -36603,6 +37295,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentBigDictIEq
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
@@ -38493,6 +39203,24 @@ namespace Aardvark.Base
             get
             {
                 return (long)m_count;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the FastConcurrentBigDictSetIEq
+        /// as long.
+        /// </summary>
+        public ulong Capacity
+        {
+            get
+            {
+                return m_capacity;
+            }
+            set
+            {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
             }
         }
 
