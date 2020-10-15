@@ -1631,22 +1631,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        {
+            Dict<TKey, TValue> m_dict;
+            int m_index;
+            int m_extraIndex;
+            KeyValuePair<TKey, TValue> m_current;
+
+            public Enumerator(Dict<TKey, TValue> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(KeyValuePair<TKey, TValue>);
+            }
+
+            public KeyValuePair<TKey, TValue> Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = new KeyValuePair<TKey, TValue>(fa[m_index].Item.Key, fa[m_index].Item.Value);
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = new KeyValuePair<TKey, TValue>(ea[m_extraIndex].Item.Key, ea[m_extraIndex].Item.Value);
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default( KeyValuePair<TKey, TValue>);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -2525,22 +2593,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<TKey> Members
 
-        public IEnumerator<TKey> GetEnumerator()
+        IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<TKey>
+        {
+            DictSet<TKey> m_dict;
+            int m_index;
+            int m_extraIndex;
+            TKey m_current;
+
+            public Enumerator(DictSet<TKey> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(TKey);
+            }
+
+            public TKey Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = fa[m_index].Item.Key;
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = ea[m_extraIndex].Item.Key;
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(TKey);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -3826,22 +3962,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<int, TValue>> Members
 
-        public IEnumerator<KeyValuePair<int, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<int, TValue>> IEnumerable<KeyValuePair<int, TValue>>.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<int, TValue>>
+        {
+            IntDict<TValue> m_dict;
+            int m_index;
+            int m_extraIndex;
+            KeyValuePair<int, TValue> m_current;
+
+            public Enumerator(IntDict<TValue> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(KeyValuePair<int, TValue>);
+            }
+
+            public KeyValuePair<int, TValue> Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = new KeyValuePair<int, TValue>(fa[m_index].Item.Key, fa[m_index].Item.Value);
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = new KeyValuePair<int, TValue>(ea[m_extraIndex].Item.Key, ea[m_extraIndex].Item.Value);
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default( KeyValuePair<int, TValue>);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -4505,22 +4709,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<int> Members
 
-        public IEnumerator<int> GetEnumerator()
+        IEnumerator<int> IEnumerable<int>.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<int>
+        {
+            IntSet m_dict;
+            int m_index;
+            int m_extraIndex;
+            int m_current;
+
+            public Enumerator(IntSet dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(int);
+            }
+
+            public int Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = fa[m_index].Item;
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = ea[m_extraIndex].Item;
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(int);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -5922,22 +6194,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<Symbol, TValue>> Members
 
-        public IEnumerator<KeyValuePair<Symbol, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<Symbol, TValue>> IEnumerable<KeyValuePair<Symbol, TValue>>.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<Symbol, TValue>>
+        {
+            SymbolDict<TValue> m_dict;
+            int m_index;
+            int m_extraIndex;
+            KeyValuePair<Symbol, TValue> m_current;
+
+            public Enumerator(SymbolDict<TValue> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(KeyValuePair<Symbol, TValue>);
+            }
+
+            public KeyValuePair<Symbol, TValue> Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = new KeyValuePair<Symbol, TValue>(fa[m_index].Item.Key, fa[m_index].Item.Value);
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = new KeyValuePair<Symbol, TValue>(ea[m_extraIndex].Item.Key, ea[m_extraIndex].Item.Value);
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default( KeyValuePair<Symbol, TValue>);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -6621,22 +6961,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<Symbol> Members
 
-        public IEnumerator<Symbol> GetEnumerator()
+        IEnumerator<Symbol> IEnumerable<Symbol>.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<Symbol>
+        {
+            SymbolSet m_dict;
+            int m_index;
+            int m_extraIndex;
+            Symbol m_current;
+
+            public Enumerator(SymbolSet dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(Symbol);
+            }
+
+            public Symbol Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = fa[m_index].Item;
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = ea[m_extraIndex].Item;
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(Symbol);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -8428,22 +8836,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        {
+            BigDict<TKey, TValue> m_dict;
+            long m_index;
+            long m_extraIndex;
+            KeyValuePair<TKey, TValue> m_current;
+
+            public Enumerator(BigDict<TKey, TValue> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(KeyValuePair<TKey, TValue>);
+            }
+
+            public KeyValuePair<TKey, TValue> Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = new KeyValuePair<TKey, TValue>(fa[m_index].Item.Key, fa[m_index].Item.Value);
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = new KeyValuePair<TKey, TValue>(ea[m_extraIndex].Item.Key, ea[m_extraIndex].Item.Value);
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default( KeyValuePair<TKey, TValue>);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -9307,22 +9783,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<TKey> Members
 
-        public IEnumerator<TKey> GetEnumerator()
+        IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<TKey>
+        {
+            BigDictSet<TKey> m_dict;
+            long m_index;
+            long m_extraIndex;
+            TKey m_current;
+
+            public Enumerator(BigDictSet<TKey> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(TKey);
+            }
+
+            public TKey Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = fa[m_index].Item.Key;
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = ea[m_extraIndex].Item.Key;
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(TKey);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -10596,22 +11140,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<long, TValue>> Members
 
-        public IEnumerator<KeyValuePair<long, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<long, TValue>> IEnumerable<KeyValuePair<long, TValue>>.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<long, TValue>>
+        {
+            LongDict<TValue> m_dict;
+            long m_index;
+            long m_extraIndex;
+            KeyValuePair<long, TValue> m_current;
+
+            public Enumerator(LongDict<TValue> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(KeyValuePair<long, TValue>);
+            }
+
+            public KeyValuePair<long, TValue> Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = new KeyValuePair<long, TValue>(fa[m_index].Item.Key, fa[m_index].Item.Value);
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = new KeyValuePair<long, TValue>(ea[m_extraIndex].Item.Key, ea[m_extraIndex].Item.Value);
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default( KeyValuePair<long, TValue>);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -11258,22 +11870,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<long> Members
 
-        public IEnumerator<long> GetEnumerator()
+        IEnumerator<long> IEnumerable<long>.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<long>
+        {
+            LongSet m_dict;
+            long m_index;
+            long m_extraIndex;
+            long m_current;
+
+            public Enumerator(LongSet dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(long);
+            }
+
+            public long Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = fa[m_index].Item;
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = ea[m_extraIndex].Item;
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(long);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -16924,22 +17604,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -17837,22 +18521,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<TKey> Members
 
-        public IEnumerator<TKey> GetEnumerator()
+        IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -19228,22 +19916,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<int, TValue>> Members
 
-        public IEnumerator<KeyValuePair<int, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<int, TValue>> IEnumerable<KeyValuePair<int, TValue>>.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -19911,22 +20603,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<int> Members
 
-        public IEnumerator<int> GetEnumerator()
+        IEnumerator<int> IEnumerable<int>.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -21418,22 +22114,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<Symbol, TValue>> Members
 
-        public IEnumerator<KeyValuePair<Symbol, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<Symbol, TValue>> IEnumerable<KeyValuePair<Symbol, TValue>>.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -22121,22 +22821,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<Symbol> Members
 
-        public IEnumerator<Symbol> GetEnumerator()
+        IEnumerator<Symbol> IEnumerable<Symbol>.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -24053,22 +24757,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -24957,22 +25665,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<TKey> Members
 
-        public IEnumerator<TKey> GetEnumerator()
+        IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -26337,22 +27049,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<long, TValue>> Members
 
-        public IEnumerator<KeyValuePair<long, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<long, TValue>> IEnumerable<KeyValuePair<long, TValue>>.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -27009,22 +27725,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<long> Members
 
-        public IEnumerator<long> GetEnumerator()
+        IEnumerator<long> IEnumerable<long>.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -28827,22 +29547,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        {
+            DictIEq<TKey, TValue> m_dict;
+            int m_index;
+            int m_extraIndex;
+            KeyValuePair<TKey, TValue> m_current;
+
+            public Enumerator(DictIEq<TKey, TValue> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(KeyValuePair<TKey, TValue>);
+            }
+
+            public KeyValuePair<TKey, TValue> Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = new KeyValuePair<TKey, TValue>(fa[m_index].Item.Key, fa[m_index].Item.Value);
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = new KeyValuePair<TKey, TValue>(ea[m_extraIndex].Item.Key, ea[m_extraIndex].Item.Value);
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default( KeyValuePair<TKey, TValue>);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -29722,22 +30510,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<TKey> Members
 
-        public IEnumerator<TKey> GetEnumerator()
+        IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<TKey>
+        {
+            DictSetIEq<TKey> m_dict;
+            int m_index;
+            int m_extraIndex;
+            TKey m_current;
+
+            public Enumerator(DictSetIEq<TKey> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(TKey);
+            }
+
+            public TKey Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = fa[m_index].Item.Key;
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = ea[m_extraIndex].Item.Key;
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(TKey);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -31530,22 +32386,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return KeyValuePairs.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        {
+            BigDictIEq<TKey, TValue> m_dict;
+            long m_index;
+            long m_extraIndex;
+            KeyValuePair<TKey, TValue> m_current;
+
+            public Enumerator(BigDictIEq<TKey, TValue> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(KeyValuePair<TKey, TValue>);
+            }
+
+            public KeyValuePair<TKey, TValue> Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = new KeyValuePair<TKey, TValue>(fa[m_index].Item.Key, fa[m_index].Item.Value);
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = new KeyValuePair<TKey, TValue>(ea[m_extraIndex].Item.Key, ea[m_extraIndex].Item.Value);
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default( KeyValuePair<TKey, TValue>);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -32410,22 +33334,90 @@ namespace Aardvark.Base
 
         #region IEnumerable<TKey> Members
 
-        public IEnumerator<TKey> GetEnumerator()
+        IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return Keys.GetEnumerator();
+            
+            return new Enumerator(this);
+            
         }
 
         #endregion
+        
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator<TKey>
+        {
+            BigDictSetIEq<TKey> m_dict;
+            long m_index;
+            long m_extraIndex;
+            TKey m_current;
+
+            public Enumerator(BigDictSetIEq<TKey> dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(TKey);
+            }
+
+            public TKey Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = fa[m_index].Item.Key;
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = ea[m_extraIndex].Item.Key;
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(TKey);
+            }
+        }
+
+        #endregion
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -36064,22 +37056,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -36978,22 +37974,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<TKey> Members
 
-        public IEnumerator<TKey> GetEnumerator()
+        IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -38911,22 +39911,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
 
-        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return KeyValuePairs.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -39816,22 +40820,26 @@ namespace Aardvark.Base
 
         #region IEnumerable<TKey> Members
 
-        public IEnumerator<TKey> GetEnumerator()
+        IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            
             return Keys.GetEnumerator();
+            
         }
 
         #endregion
-
+        
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
