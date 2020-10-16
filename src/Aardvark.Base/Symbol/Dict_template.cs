@@ -177,7 +177,7 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(/*# if (fun) { */Func<__tkey__, __itype__> hfun, /*# } */IEnumerable</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */> items/*# if (hasValue) { */,
                 bool stackDuplicateKeys = false/*# } */)
-            : this(/*# if (fun) { */hfun, /*# } */DictConstant.PrimeSizes__ext__[0], (__uitype__)DictConstant.MinExtraCapacity/*# if (hasValue) { */,
+            : this(/*# if (fun) { */hfun, /*# } */Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes__ext__[0]), (__uitype__)DictConstant.MinExtraCapacity/*# if (hasValue) { */,
                    stackDuplicateKeys/*# } */)
         {
             foreach (var item in items) Add(item);
@@ -195,7 +195,7 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(IEnumerable</*# if (hasValue) { */KeyValuePair</*# } */string/*# if (hasValue) { */, TValue>/*# } */> items/*# if (hasValue) { */,
                 bool stackDuplicateKeys = false/*# } */)
-            : this(DictConstant.PrimeSizes__ext__[0], DictConstant.MinExtraCapacity/*# if (hasValue) { */,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes__ext__[0]), DictConstant.MinExtraCapacity/*# if (hasValue) { */,
                    stackDuplicateKeys/*# } */)
         {
             foreach (var item in items) Add(item);

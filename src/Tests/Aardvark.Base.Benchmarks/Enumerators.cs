@@ -8,6 +8,7 @@ using System.Linq;
 using BenchmarkDotNet.Jobs;
 using System.Runtime.InteropServices;
 using System.Collections;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Aardvark.Base.Benchmarks
 {
@@ -20,8 +21,8 @@ namespace Aardvark.Base.Benchmarks
     //|   ForEachDictionaryKeys |     1 |   6.0921 ns | 0.0758 ns | 0.0709 ns |   6.0765 ns |
     //|       ForEachDictionary |     1 |  22.6252 ns | 0.2217 ns | 0.2074 ns |  22.6664 ns |
     //|           ForEachIntSet |     1 |  17.9450 ns | 0.3709 ns | 0.5077 ns |
-    //|       ForEachDictValues |     1 |  47.0700 ns | 0.9420 ns | 0.8810 ns |
-    //|         ForEachDictKeys |     1 |  44.2800 ns | 0.2590 ns | 0.2420 ns |
+    //|       ForEachDictValues |     1 |  47.0700 ns | 0.9420 ns | 0.8810 ns |                 -> TODO ValuesEnumerator
+    //|         ForEachDictKeys |     1 |  44.2800 ns | 0.2590 ns | 0.2420 ns |                 -> TODO KeysEnumerator
     //|             ForEachDict |     1 |  31.9100 ns | 0.3090 ns | 0.2890 ns |
     //| ForEachSymbolDictValues |     1 |  46.0600 ns | 0.9700 ns | 1.1910 ns |
     //|            ForEachArray |    10 |   4.8354 ns | 0.0848 ns | 0.0793 ns |   4.8315 ns |
@@ -31,8 +32,8 @@ namespace Aardvark.Base.Benchmarks
     //|   ForEachDictionaryKeys |    10 |  27.8722 ns | 0.5367 ns | 0.5020 ns |  27.8217 ns |
     //|       ForEachDictionary |    10 |  81.7141 ns | 0.5350 ns | 0.5004 ns |  81.7748 ns |
     //|           ForEachIntSet |    10 |  28.5740 ns | 0.3391 ns | 0.3172 ns |
-    //|       ForEachDictValues |    10 | 109.1000 ns | 0.9110 ns | 0.7600 ns |
-    //|         ForEachDictKeys |    10 | 117.8300 ns | 2.3690 ns | 2.9960 ns |
+    //|       ForEachDictValues |    10 | 109.1000 ns | 0.9110 ns | 0.7600 ns |                 -> TODO ValuesEnumerator
+    //|         ForEachDictKeys |    10 | 117.8300 ns | 2.3690 ns | 2.9960 ns |                 -> TODO KeysEnumerator
     //|             ForEachDict |    10 |  97.1700 ns | 1.9020 ns | 1.6860 ns |
     //| ForEachSymbolDictValues |    10 | 111.6800 ns | 2.1870 ns | 2.6040 ns |
     //|            ForEachArray |   100 |  41.0627 ns | 0.3538 ns | 0.3309 ns |  41.0444 ns |
@@ -42,8 +43,8 @@ namespace Aardvark.Base.Benchmarks
     //|   ForEachDictionaryKeys |   100 | 260.9201 ns | 4.6225 ns | 4.3239 ns | 260.8970 ns |
     //|       ForEachDictionary |   100 | 687.7312 ns | 3.6999 ns | 3.4609 ns | 687.1103 ns |
     //|           ForEachIntSet |   100 | 302.3810 ns | 1.8455 ns | 1.7262 ns |
-    //|       ForEachDictValues |   100 | 693.5000 ns |13.5200 ns |12.6500 ns |
-    //|         ForEachDictKeys |   100 | 668.2000 ns |12.9200 ns |12.6800 ns |
+    //|       ForEachDictValues |   100 | 693.5000 ns |13.5200 ns |12.6500 ns |                 -> TODO ValuesEnumerator
+    //|         ForEachDictKeys |   100 | 668.2000 ns |12.9200 ns |12.6800 ns |                 -> TODO KeysEnumerator
     //|             ForEachDict |   100 | 692.1000 ns | 1.9000 ns | 1.6800 ns |
     //| ForEachSymbolDictValues |   100 | 632.1000 ns | 7.6100 ns | 7.1200 ns |
 
@@ -199,6 +200,94 @@ namespace Aardvark.Base.Benchmarks
                 Assert.IsTrue(refSum == ForEachDict());
                 Assert.IsTrue(refSum == ForEachSymbolDictValues());
             }
+        }
+    }
+
+    //|                        Method | Count |      Mean |    Error |   StdDev |
+    //|------------------------------ |------ |----------:|---------:|---------:|
+    //|        CreateHashSetFromArray | 10000 | 177.68 us | 2.284 us | 2.137 us |
+    //|         CreateIntSetFromArray | 10000 | 127.80 us | 1.310 us | 1.160 us |
+    //| CreateHashSetFromArrayWithAdd | 10000 | 142.21 us | 2.390 us | 2.118 us |
+    //|  CreateIntSetFromArrayWithAdd | 10000 |  93.21 us | 0.503 us | 0.446 us |
+    //|         CreateHashSetFromList | 10000 | 195.84 us | 2.056 us | 1.923 us |
+    //|          CreateIntSetFromList | 10000 | 146.70 us | 2.740 us | 3.040 us |
+    //|  CreateHashSetFromListWithAdd | 10000 | 157.95 us | 1.004 us | 0.939 us |
+    //|   CreateIntSetFromListWithAdd | 10000 | 108.20 us | 0.909 us | 0.850 us |
+
+    [PlainExporter]
+    public class IntSetCreator
+    {
+        int[] m_array;
+        List<int> m_list;
+
+        [Params(10000)]
+        public int Count;
+
+        [GlobalSetup]
+        public void GlobalSetup()
+        {
+            m_array = new int[Count].SetByIndex(i => i + 1);
+            m_list = new List<int>(1.UpTo(Count));
+        }
+
+        [Benchmark]
+        public int CreateHashSetFromArray()
+        {
+            return new HashSet<int>(m_array).Count;
+        }
+
+        [Benchmark]
+        public int CreateIntSetFromArray()
+        {
+            return new IntSet(m_array).Count;
+        }
+
+        [Benchmark]
+        public int CreateHashSetFromArrayWithAdd()
+        {
+            var set = new HashSet<int>(m_array.Length);
+            foreach (var x in m_array)
+                set.Add(x);
+            return set.Count;
+        }
+
+        [Benchmark]
+        public int CreateIntSetFromArrayWithAdd()
+        {
+            var set = new IntSet(m_array.Length);
+            foreach (var x in m_array)
+                set.Add(x);
+            return set.Count;
+        }
+
+        [Benchmark]
+        public int CreateHashSetFromList()
+        {
+            return new HashSet<int>(m_list).Count;
+        }
+
+        [Benchmark]
+        public int CreateIntSetFromList()
+        {
+            return new IntSet(m_list).Count;
+        }
+
+        [Benchmark]
+        public int CreateHashSetFromListWithAdd()
+        {
+            var set = new HashSet<int>(m_list.Count);
+            foreach (var x in m_list)
+                set.Add(x);
+            return set.Count;
+        }
+
+        [Benchmark]
+        public int CreateIntSetFromListWithAdd()
+        {
+            var set = new IntSet(m_list.Count);
+            foreach (var x in m_list)
+                set.Add(x);
+            return set.Count;
         }
     }
 }

@@ -82,7 +82,7 @@ namespace Aardvark.Base
         /// </summary>
         public Dict(IEnumerable<KeyValuePair<TKey, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -1945,7 +1945,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public DictSet(IEnumerable<TKey> items)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -2929,7 +2929,7 @@ namespace Aardvark.Base
         /// </summary>
         public IntDict(IEnumerable<KeyValuePair<int, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -4276,7 +4276,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public IntSet(IEnumerable<int> items)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -5045,7 +5045,7 @@ namespace Aardvark.Base
         /// </summary>
         public SymbolDict(IEnumerable<KeyValuePair<Symbol, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -5060,7 +5060,7 @@ namespace Aardvark.Base
         /// </summary>
         public SymbolDict(IEnumerable<KeyValuePair<string, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -6508,7 +6508,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public SymbolSet(IEnumerable<Symbol> items)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -6519,7 +6519,7 @@ namespace Aardvark.Base
         /// to symbols.
         /// </summary>
         public SymbolSet(IEnumerable<string> items)
-            : this(DictConstant.PrimeSizes[0], DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -7297,7 +7297,7 @@ namespace Aardvark.Base
         /// </summary>
         public BigDict(Func<TKey, long> hfun, IEnumerable<KeyValuePair<TKey, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(hfun, DictConstant.PrimeSizesLong[0], (ulong)DictConstant.MinExtraCapacity,
+            : this(hfun, Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizesLong[0]), (ulong)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -9150,7 +9150,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public BigDictSet(Func<TKey, long> hfun, IEnumerable<TKey> items)
-            : this(hfun, DictConstant.PrimeSizesLong[0], (ulong)DictConstant.MinExtraCapacity)
+            : this(hfun, Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizesLong[0]), (ulong)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -10118,7 +10118,7 @@ namespace Aardvark.Base
         /// </summary>
         public LongDict(IEnumerable<KeyValuePair<long, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (ulong)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (ulong)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -11453,7 +11453,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public LongSet(IEnumerable<long> items)
-            : this(DictConstant.PrimeSizes[0], (ulong)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (ulong)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -15931,7 +15931,7 @@ namespace Aardvark.Base
         /// </summary>
         public FastConcurrentDict(IEnumerable<KeyValuePair<TKey, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -17854,7 +17854,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public FastConcurrentDictSet(IEnumerable<TKey> items)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -18793,7 +18793,7 @@ namespace Aardvark.Base
         /// </summary>
         public FastConcurrentIntDict(IEnumerable<KeyValuePair<int, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -20166,7 +20166,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public FastConcurrentIntSet(IEnumerable<int> items)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -20875,7 +20875,7 @@ namespace Aardvark.Base
         /// </summary>
         public FastConcurrentSymbolDict(IEnumerable<KeyValuePair<Symbol, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -20890,7 +20890,7 @@ namespace Aardvark.Base
         /// </summary>
         public FastConcurrentSymbolDict(IEnumerable<KeyValuePair<string, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -22364,7 +22364,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public FastConcurrentSymbolSet(IEnumerable<Symbol> items)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -22375,7 +22375,7 @@ namespace Aardvark.Base
         /// to symbols.
         /// </summary>
         public FastConcurrentSymbolSet(IEnumerable<string> items)
-            : this(DictConstant.PrimeSizes[0], DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -23094,7 +23094,7 @@ namespace Aardvark.Base
         /// </summary>
         public FastConcurrentBigDict(Func<TKey, long> hfun, IEnumerable<KeyValuePair<TKey, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(hfun, DictConstant.PrimeSizesLong[0], (ulong)DictConstant.MinExtraCapacity,
+            : this(hfun, Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizesLong[0]), (ulong)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -25008,7 +25008,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public FastConcurrentBigDictSet(Func<TKey, long> hfun, IEnumerable<TKey> items)
-            : this(hfun, DictConstant.PrimeSizesLong[0], (ulong)DictConstant.MinExtraCapacity)
+            : this(hfun, Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizesLong[0]), (ulong)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -25937,7 +25937,7 @@ namespace Aardvark.Base
         /// </summary>
         public FastConcurrentLongDict(IEnumerable<KeyValuePair<long, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (ulong)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (ulong)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -27299,7 +27299,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public FastConcurrentLongSet(IEnumerable<long> items)
-            : this(DictConstant.PrimeSizes[0], (ulong)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (ulong)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -27998,7 +27998,7 @@ namespace Aardvark.Base
         /// </summary>
         public DictIEq(IEnumerable<KeyValuePair<TKey, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -29862,7 +29862,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public DictSetIEq(IEnumerable<TKey> items)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -30847,7 +30847,7 @@ namespace Aardvark.Base
         /// </summary>
         public BigDictIEq(Func<TKey, long> hfun, IEnumerable<KeyValuePair<TKey, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(hfun, DictConstant.PrimeSizesLong[0], (ulong)DictConstant.MinExtraCapacity,
+            : this(hfun, Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizesLong[0]), (ulong)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -32701,7 +32701,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public BigDictSetIEq(Func<TKey, long> hfun, IEnumerable<TKey> items)
-            : this(hfun, DictConstant.PrimeSizesLong[0], (ulong)DictConstant.MinExtraCapacity)
+            : this(hfun, Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizesLong[0]), (ulong)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -35383,7 +35383,7 @@ namespace Aardvark.Base
         /// </summary>
         public FastConcurrentDictIEq(IEnumerable<KeyValuePair<TKey, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -37307,7 +37307,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public FastConcurrentDictSetIEq(IEnumerable<TKey> items)
-            : this(DictConstant.PrimeSizes[0], (uint)DictConstant.MinExtraCapacity)
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes[0]), (uint)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
@@ -38248,7 +38248,7 @@ namespace Aardvark.Base
         /// </summary>
         public FastConcurrentBigDictIEq(Func<TKey, long> hfun, IEnumerable<KeyValuePair<TKey, TValue>> items,
                 bool stackDuplicateKeys = false)
-            : this(hfun, DictConstant.PrimeSizesLong[0], (ulong)DictConstant.MinExtraCapacity,
+            : this(hfun, Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizesLong[0]), (ulong)DictConstant.MinExtraCapacity,
                    stackDuplicateKeys)
         {
             foreach (var item in items) Add(item);
@@ -40163,7 +40163,7 @@ namespace Aardvark.Base
         /// items.
         /// </summary>
         public FastConcurrentBigDictSetIEq(Func<TKey, long> hfun, IEnumerable<TKey> items)
-            : this(hfun, DictConstant.PrimeSizesLong[0], (ulong)DictConstant.MinExtraCapacity)
+            : this(hfun, Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizesLong[0]), (ulong)DictConstant.MinExtraCapacity)
         {
             foreach (var item in items) Add(item);
         }
