@@ -290,4 +290,105 @@ namespace Aardvark.Base.Benchmarks
             return set.Count;
         }
     }
+
+
+    //|               Method | Count |      Mean |     Error |    StdDev |    Median |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+    //|--------------------- |------ |----------:|----------:|----------:|----------:|-------:|------:|------:|----------:|
+    //|                 Loop |    10 |  5.107 ns | 0.0318 ns | 0.0282 ns |  5.093 ns |      - |     - |     - |         - |
+    //|           SetByIndex |    10 | 18.724 ns | 0.3955 ns | 0.7807 ns | 19.057 ns |      - |     - |     - |         - |
+    //|              ForEach |    10 | 28.495 ns | 0.1415 ns | 0.1255 ns | 28.484 ns | 0.0210 |     - |     - |      88 B |
+
+    [PlainExporter]
+    [MemoryDiagnoser]
+    public class ArrayInit
+    {
+        int[] m_array;
+
+        [Params(10)]
+        public int Count;
+
+        [GlobalSetup]
+        public void GlobalSetup()
+        {
+            m_array = new int[Count];
+        }
+
+        [Benchmark]
+        public void Loop()
+        {
+            var arr = m_array;
+            var cnt = arr.Length;
+            for (int i = 0; i < cnt; i++)
+                arr[i] = i;
+        }
+
+        [Benchmark]
+        public void SetByIndex()
+        {
+            m_array.SetByIndex(i => i);
+        }
+
+        [Benchmark]
+        public void ForEach()
+        {
+            var arr = m_array;
+            arr.ForEach(i => arr[i] = i);
+        }
+    }
+
+    //|               Method | Count |      Mean |     Error |    StdDev |    Median |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+    //|--------------------- |------ |----------:|----------:|----------:|----------:|-------:|------:|------:|----------:|
+    //|           SumWithFor |    10 |  3.524 ns | 0.0254 ns | 0.0237 ns |  3.519 ns |      - |     - |     - |         - |
+    //|       SumWithForEach |    10 |  2.811 ns | 0.0238 ns | 0.0223 ns |  2.814 ns |      - |     - |     - |         - | // !!! cannot be reproduced, currently runs in 5ns
+    //| SumWithForEachLambda |    10 | 27.273 ns | 0.1075 ns | 0.0898 ns | 27.272 ns | 0.0210 |     - |     - |      88 B |
+    //|     SumWithExtension |    10 | 49.211 ns | 0.3346 ns | 0.2966 ns | 49.188 ns | 0.0076 |     - |     - |      32 B |
+    [PlainExporter]
+    [MemoryDiagnoser]
+    public class ArraySum
+    {
+        int[] m_array;
+
+        [Params(10)]
+        public int Count = 10;
+
+        [GlobalSetup]
+        public void GlobalSetup()
+        {
+            m_array = new int[Count].SetByIndex(i => i);
+        }
+
+        [Benchmark]
+        public int SumWithFor()
+        {
+            var arr = m_array;
+            var cnt = arr.Length;
+            var sum = 0;
+            for (int i = 0; i < cnt; i++)
+                sum += arr[i];
+            return sum;
+        }
+
+        [Benchmark]
+        public int SumWithForEach()
+        {
+            var sum = 0;
+            foreach (var x in m_array)
+                sum += x;
+            return sum;
+        }
+
+        [Benchmark]
+        public int SumWithForEachLambda()
+        {
+            var sum = 0;
+            m_array.ForEach(x => sum += x);
+            return sum;
+        }
+
+        [Benchmark]
+        public int SumWithExtension()
+        {
+            return m_array.Sum();
+        }
+    }
 }

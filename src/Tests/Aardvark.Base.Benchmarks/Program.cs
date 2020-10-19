@@ -70,7 +70,10 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<TransformV3d>();
             //BenchmarkRunner.Run<Log2Int>();
             //BenchmarkRunner.Run<Log2>();
-            BenchmarkRunner.Run<IntSetCreator>();
+            //BenchmarkRunner.Run<Enumerators>();
+            //BenchmarkRunner.Run<IntSetCreator>();
+            //BenchmarkRunner.Run<ArrayInit>();
+            BenchmarkRunner.Run<ArraySum>();
 
             //new Enumerators().Test();
         }
