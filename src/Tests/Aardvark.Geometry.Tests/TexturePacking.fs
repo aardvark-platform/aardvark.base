@@ -71,7 +71,7 @@ module TexturePackingTests =
         for size in [1;2;5;10;30] do
             let tests = Gen.eval size seed (Gen.listOfLength 1000 (Gen.nonEmptyListOf SizeGenerator.SizeGen))
 
-            let tests = [ List.init size (fun _ -> Size(V2i(37,37))) ] :: tests
+            let tests = ( List.init size (fun _ -> Size(V2i(37,37))) ) :: tests
 
             for t in tests do
                 ``square producing correct results`` (NonEmptyArray (List.toArray t))
