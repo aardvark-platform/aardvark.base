@@ -207,7 +207,7 @@ module private TexturePackerHelpers =
                 ValueNone
 
 /// TexturePacking represents an immutable 2D atlas.
-type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTree2d<Box2i, Box2i>, used : HashMap<'a, Box2i>) =
+type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, allowRotate : bool, free : BvhTree2d<Box2i, Box2i>, used : HashMap<'a, Box2i>) =
 
     let validate() =
         
@@ -265,7 +265,7 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
             //failwithf "bad free: %s" str
             Log.warn "bad free: %s" str
     
-    do validate()
+    //do validate()
 
     
     /// All free MaxRects.
@@ -287,12 +287,15 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
         area / (float atlasSize.X * float atlasSize.Y)
 
     /// Creates an empty TexturePacking with the given size.
-    static member Empty (size : V2i) : TexturePacking<'a> =
+    static member Empty (size : V2i, allowRotate : bool) : TexturePacking<'a> =
         if size.AnySmallerOrEqual 0 then
-            TexturePacking<'a>(V2i.Zero, BvhTree2d.empty, HashMap.empty)
+            TexturePacking<'a>(V2i.Zero, allowRotate, BvhTree2d.empty, HashMap.empty)
         else
             let bb = Box2i(V2i.Zero, size - V2i.II)
-            TexturePacking<'a>(size, BvhTree2d.ofList [bb, createBox bb, bb], HashMap.empty)
+            TexturePacking<'a>(size, allowRotate, BvhTree2d.ofList [bb, createBox bb, bb], HashMap.empty)
+            
+    static member Empty (size : V2i) : TexturePacking<'a> =
+        TexturePacking<'a>.Empty(size, true)
 
     /// Tries to add an element with the given size and (optionally) returns a new TexturePacking.
     member x.TryAdd(id : 'a, size : V2i) : option<TexturePacking<'a>> =
@@ -311,7 +314,7 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                     let sh = getSize b
 
                     let f0 = sh.AllGreaterOrEqual size
-                    let f1 = sh.AllGreaterOrEqual size.YX
+                    let f1 = if allowRotate then sh.AllGreaterOrEqual size.YX else false
                     let w0 = (sh.X - size.X) * (sh.Y - size.Y)
                     let w1 = (sh.X - size.Y) * (sh.Y - size.X)
 
@@ -364,7 +367,7 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                         )
 
                     let result =
-                        TexturePacking(atlasSize, free, HashMap.add id rect used)
+                        TexturePacking(atlasSize, allowRotate, free, HashMap.add id rect used)
 
                     Some result
                 | ValueNone ->
@@ -404,7 +407,7 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                 (free, merge rect adjacent)
                 ||> Seq.fold (fun free a -> addFree a free)
                 
-            TexturePacking(atlasSize, free, used)
+            TexturePacking(atlasSize, allowRotate, free, used)
         | ValueNone ->
             x
 
