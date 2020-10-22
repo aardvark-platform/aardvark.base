@@ -9,11 +9,13 @@ open FSharp.Data.Adaptive
 
 [<AutoOpen>]
 module private TexturePackerHelpers =
-
+    let inline createBox (box : Box2i) =
+        Box2d (V2d box.Min - V2d.Half, V2d box.Max + V2d.Half)
+       
     let inline getSize (b : Box2i) = V2i.II + b.Max - b.Min
     
     let inline split (a : Box2i) (b : Box2i) : list<Box2i> =
-        List.filter (fun (a : Box2i) -> a.IsNonEmpty) [
+        List.filter (fun (a : Box2i) -> a.Min.AllSmallerOrEqual a.Max) [
             (
                 let mutable a = a
                 a.Min.X <- b.Max.X + 1
@@ -35,19 +37,137 @@ module private TexturePackerHelpers =
                 a
             )
         ]
+            
 
-    let inline merge (boxes : HashSet<Box2i>) : seq<Box2i> =
-        if boxes.Count <= 1 then 
-            boxes :> seq<_>
+    let inline intersects (a : Box2i) (b : Box2i) =
+        (a.Min.X <= b.Max.X) && 
+        (a.Max.X >= b.Min.X) && 
+        (a.Min.Y <= b.Max.Y) && 
+        (a.Max.Y >= b.Min.Y)   
+
+    let maxRects (a : Box2i) (b : Box2i) =
+    
+        let inline intersects (a : Box2i) (b : Box2i) =
+            (a.Min.X <= b.Max.X + 1) && 
+            (a.Max.X >= b.Min.X - 1) && 
+            (a.Min.Y <= b.Max.Y + 1) && 
+            (a.Max.Y >= b.Min.Y - 1)   
+
+        if intersects a b then
+            if a.Contains b then
+                [a]
+            elif b.Contains a then
+                [b]
+            else
+                let ax = a.RangeX
+                let ay = a.RangeY
+                let bx = b.RangeX
+                let by = b.RangeY
+
+                let abx = ax.Contains bx
+                let bax = bx.Contains ax
+                        
+                let aby = ay.Contains by
+                let bay = by.Contains ay
+
+                if abx && bax then
+                    [ Box2i(ax, ay.Union by) ]
+
+                elif aby && bay then
+                    [ Box2i(ax.Union bx, ay) ]
+
+                elif abx then
+                    [
+                        Box2i(bx, ay.Union by)
+                        a
+                    ] 
+
+                elif bax then
+                    [
+                        Box2i(ax, ay.Union by)
+                        b
+                    ] 
+
+                elif aby then
+                    [
+                        Box2i(ax.Union bx, by)
+                        a
+                    ] 
+
+                elif bay then
+                    [
+                        Box2i(ax.Union bx, ay)
+                        b
+                    ] 
+
+                else
+                    [
+                        Box2i(ax.Union bx, ay.Intersection by)
+                        Box2i(ax.Intersection bx, ay.Union by)
+                        a
+                        b
+                    ]  |> List.filter (fun b -> b.IsValid)
+
+
+
+
+
+
+                    
+
+        else    
+            [a;b]
+                    
+    let merge (n : Box2i) (boxes : HashSet<Box2i>) : seq<Box2i> =
+        if boxes.Count <= 0 then 
+            Seq.singleton n
         else
-            failwith "[TexturePacking] remove not implemented: max-rects merge"
-        
+            // free is non-empty
+            // boxes are maxrects (and therefore non-empty)
+            // none of boxes contains free
+
+            let mutable free = BvhTree2d.empty
+
+            let add (b : Box2i) =   
+                let q = Box2i(b.Min - V2i.II, b.Max + V2i.II)
+                let touching = 
+                    free 
+                    |> BvhTree2d.getIntersecting (Box2d q)
+                    |> HashMap.keys
+                    |> HashSet.filter (fun o -> intersects o q)
+                
+
+                if HashSet.isEmpty touching then
+                    free <- BvhTree2d.add b (createBox b) b free
+
+                else
+                    for o in touching do
+                        free <- BvhTree2d.remove o free
+
+                        for r in maxRects o b do
+                            let notContained = BvhTree2d.getContaining (createBox r) free |> HashMap.isEmpty
+                            if notContained then
+                                for (k,_) in BvhTree2d.getContained (createBox r) free do
+                                    free <- BvhTree2d.remove k free
+
+                                free <- BvhTree2d.add r (createBox r) r free
+
+            add n
+            for b in boxes do add b
+
+
+            BvhTree2d.keys free
+
+
+
+
+
     let inline addFree (b : Box2i) (free : BvhTree2d<_,_>) =
-        if b.IsEmpty then free
+        if b.Min.AnyGreater b.Max then free
         else 
-            let c = BvhTree2d.getContaining (Box2d b) free
+            let c = BvhTree2d.getContaining (createBox b) free
             if c.IsEmpty then 
-                BvhTree2d.add b (Box2d b) b free
+                BvhTree2d.add b (createBox b) b free
             else 
                 free
 
@@ -87,7 +207,67 @@ module private TexturePackerHelpers =
                 ValueNone
 
 /// TexturePacking represents an immutable 2D atlas.
-type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTree2d<Box2i, Box2i>, used : HashMap<'a, Box2i>) =
+type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, allowRotate : bool, free : BvhTree2d<Box2i, Box2i>, used : HashMap<'a, Box2i>) =
+
+    let validate() =
+        
+        let u = used |> Seq.map snd |> Seq.toArray
+        let mutable all : HashSet<Box2i> = HashSet.empty
+
+
+        for minx in -1 .. u.Length do
+            for miny in -1 .. u.Length do
+                for maxx in -1 .. u.Length do
+                    for maxy in -1 .. u.Length do
+                        let lx = 
+                            if minx < 0 then 0
+                            elif minx >= u.Length then atlasSize.X - 1
+                            else u.[minx].Max.X + 1
+                                        
+                        let ly = 
+                            if miny < 0 then 0
+                            elif miny >= u.Length then atlasSize.Y - 1
+                            else u.[miny].Max.Y + 1
+                                        
+                        let hx = 
+                            if maxx < 0 then 0
+                            elif maxx >= u.Length then atlasSize.X - 1
+                            else u.[maxx].Min.X - 1
+                                        
+                        let hy = 
+                            if maxy < 0 then 0
+                            elif maxy >= u.Length then atlasSize.Y - 1
+                            else u.[maxy].Min.Y - 1
+
+                        let box = Box2i(V2i(lx, ly), V2i(hx, hy))
+                        if box.Min.AllSmallerOrEqual box.Max then
+                            let badbox = u |> Array.exists (fun u -> intersects u box)
+                            if not badbox then
+                                let n = box
+                                let isContained = all |> HashSet.exists (fun o -> o.Contains n)
+                                if not isContained then
+                                    all <- 
+                                        all 
+                                        |> HashSet.filter (fun o -> not (n.Contains o))
+                                        |> HashSet.add n
+
+
+        let free = BvhTree2d.keys free |> HashSet.ofSeq
+
+        let delta = HashSet.computeDelta all free
+        if not (HashSetDelta.isEmpty delta) then
+            let str = 
+                String.concat "\r\n" [
+                    delta |> Seq.map (function Add(_,v) -> sprintf "+%A" v | Rem(_,v) -> sprintf "-%A" v) |> String.concat "; "
+                    sprintf "%A" all
+                    sprintf "%A" free
+                ]
+            //failwithf "bad free: %s" str
+            Log.warn "bad free: %s" str
+    
+    //do validate()
+
+    
     /// All free MaxRects.
     member x.Free = free
 
@@ -107,12 +287,15 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
         area / (float atlasSize.X * float atlasSize.Y)
 
     /// Creates an empty TexturePacking with the given size.
-    static member Empty (size : V2i) : TexturePacking<'a> =
+    static member Empty (size : V2i, allowRotate : bool) : TexturePacking<'a> =
         if size.AnySmallerOrEqual 0 then
-            TexturePacking<'a>(V2i.Zero, BvhTree2d.empty, HashMap.empty)
+            TexturePacking<'a>(V2i.Zero, allowRotate, BvhTree2d.empty, HashMap.empty)
         else
             let bb = Box2i(V2i.Zero, size - V2i.II)
-            TexturePacking<'a>(size, BvhTree2d.ofList [bb, Box2d bb, bb], HashMap.empty)
+            TexturePacking<'a>(size, allowRotate, BvhTree2d.ofList [bb, createBox bb, bb], HashMap.empty)
+            
+    static member Empty (size : V2i) : TexturePacking<'a> =
+        TexturePacking<'a>.Empty(size, true)
 
     /// Tries to add an element with the given size and (optionally) returns a new TexturePacking.
     member x.TryAdd(id : 'a, size : V2i) : option<TexturePacking<'a>> =
@@ -131,7 +314,7 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                     let sh = getSize b
 
                     let f0 = sh.AllGreaterOrEqual size
-                    let f1 = sh.AllGreaterOrEqual size.YX
+                    let f1 = if allowRotate then sh.AllGreaterOrEqual size.YX else false
                     let w0 = (sh.X - size.X) * (sh.Y - size.Y)
                     let w1 = (sh.X - size.Y) * (sh.Y - size.X)
 
@@ -175,7 +358,7 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                         |> addFree r1
 
                     let intersecting = 
-                        BvhTree2d.getIntersecting (Box2d rect) free
+                        BvhTree2d.getIntersecting (createBox rect) free
 
                     let free = 
                         (free, intersecting) ||> HashMap.fold (fun free fid struct(_, other) ->
@@ -184,7 +367,7 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                         )
 
                     let result =
-                        TexturePacking(atlasSize, free, HashMap.add id rect used)
+                        TexturePacking(atlasSize, allowRotate, free, HashMap.add id rect used)
 
                     Some result
                 | ValueNone ->
@@ -203,16 +386,17 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
     member x.Remove(id : 'a) : TexturePacking<'a> =
         match HashMap.tryRemoveV id used with
         | ValueSome(rect, used) ->
-            let q = Box2i(rect.Min - V2i.II, rect.Max + V2i.II)
+
+            let qi = Box2i(rect.Min - V2i.II, rect.Max + V2i.II)
             let adjacent = 
                 free 
-                |> BvhTree2d.getIntersecting (Box2d q)
+                |> BvhTree2d.getIntersecting (Box2d qi)
                 |> HashMap.keys
                 |> HashSet.filter (fun b -> 
-                    b.Min.X = q.Max.X ||
-                    b.Max.X = q.Min.X ||
-                    b.Min.Y = q.Max.Y ||
-                    b.Max.Y = q.Min.Y
+                    b.Min.X = qi.Max.X ||
+                    b.Max.X = qi.Min.X ||
+                    b.Min.Y = qi.Max.Y ||
+                    b.Max.Y = qi.Min.Y
                 )
 
             let free = 
@@ -220,10 +404,10 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, free : BvhTr
                 ||> HashSet.fold (fun free a -> BvhTree2d.remove a free)
 
             let free = 
-                (free, merge (HashSet.add rect adjacent))
+                (free, merge rect adjacent)
                 ||> Seq.fold (fun free a -> addFree a free)
                 
-            TexturePacking(atlasSize, free, used)
+            TexturePacking(atlasSize, allowRotate, free, used)
         | ValueNone ->
             x
 

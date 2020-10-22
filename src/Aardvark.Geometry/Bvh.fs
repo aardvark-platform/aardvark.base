@@ -563,6 +563,32 @@ module internal BvhNode2d =
             else
                 HashMap.empty
 
+    let rec all (node : BvhNode2d<'K, 'V>) =
+        match node with
+        | Leaf(_,_,v) -> v
+        | Node(_,_,_,l,r) -> HashMap.union (all l) (all r)
+
+    let rec getContained (query : Box2d) (node : BvhNode2d<'K, 'V>) =
+        match node with
+        | Leaf(_, bounds, values) ->
+            if query.Contains bounds then
+                values
+
+            elif query.Intersects bounds then
+                values |> HashMap.filter (fun _ struct(b,_) -> query.Contains b)
+
+            else
+                HashMap.empty
+
+        | Node(_bestCost, _cnt, bounds, l, r) ->
+            if query.Contains bounds then
+                all node
+            elif query.Intersects bounds then
+                HashMap.union (getContained query l) (getContained query r)
+            else
+                HashMap.empty
+        
+
     let rec getIntersecting (tests : ref<int>) (query : Box2d) (node : BvhNode2d<'K, 'V>) =
         match node with
         | Leaf(_, bounds, values) ->
@@ -789,6 +815,13 @@ type BvhTree2d<'K, 'V> private(limit : int, root : option<BvhNode2d<'K, 'V>>, ke
         | None ->
             HashMap.empty
             
+    member x.GetContained(query : Box2d) =
+        match root with
+        | Some r ->
+            BvhNode2d.getContained query r
+        | None ->
+            HashMap.empty
+            
     member x.GetIntersecting(query : Box2d, filter : 'K -> Box2d -> 'V -> option<'T>) =
         match root with
         | Some r ->
@@ -850,6 +883,7 @@ module BvhTree2d =
     let inline tryRemove (key : 'K) (t : BvhTree2d<'K, 'V>) = t.TryRemove(key)
 
     let inline getIntersecting (query : Box2d) (tree : BvhTree2d<'K, 'V>) = tree.GetIntersecting query
+    let inline getContained (query : Box2d) (tree : BvhTree2d<'K, 'V>) = tree.GetContained query
     let inline getContaining (query : Box2d) (tree : BvhTree2d<'K, 'V>) = tree.GetContaining query
 
     let inline ofSeq (elements : seq<'K * Box2d * 'V>)= BvhTree2d.Build(splitLimit, elements)

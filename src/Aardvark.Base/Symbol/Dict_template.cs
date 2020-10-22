@@ -177,7 +177,7 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(/*# if (fun) { */Func<__tkey__, __itype__> hfun, /*# } */IEnumerable</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */> items/*# if (hasValue) { */,
                 bool stackDuplicateKeys = false/*# } */)
-            : this(/*# if (fun) { */hfun, /*# } */DictConstant.PrimeSizes__ext__[0], (__uitype__)DictConstant.MinExtraCapacity/*# if (hasValue) { */,
+            : this(/*# if (fun) { */hfun, /*# } */Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes__ext__[0]), (__uitype__)DictConstant.MinExtraCapacity/*# if (hasValue) { */,
                    stackDuplicateKeys/*# } */)
         {
             foreach (var item in items) Add(item);
@@ -195,7 +195,7 @@ namespace Aardvark.Base
         /// </summary>
         public __type__(IEnumerable</*# if (hasValue) { */KeyValuePair</*# } */string/*# if (hasValue) { */, TValue>/*# } */> items/*# if (hasValue) { */,
                 bool stackDuplicateKeys = false/*# } */)
-            : this(DictConstant.PrimeSizes__ext__[0], DictConstant.MinExtraCapacity/*# if (hasValue) { */,
+            : this(Math.Max(items is ICollection c ? (uint)c.Count : 0u, DictConstant.PrimeSizes__ext__[0]), DictConstant.MinExtraCapacity/*# if (hasValue) { */,
                    stackDuplicateKeys/*# } */)
         {
             foreach (var item in items) Add(item);
@@ -270,6 +270,32 @@ namespace Aardvark.Base
                 return m_dict.LongCount;
                 //# } else {
                 return (long)m_count;
+                //# }
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of items currently contained in the __type__
+        /// as long.
+        /// </summary>
+        public __uitype__ Capacity
+        {
+            get
+            {
+                //# if (wrapped) {
+                return m_dict.Capacity;
+                //# } else {
+                return m_capacity;
+                //# }
+            }
+            set
+            {
+                //# if (wrapped) {
+                m_dict.Capacity = value;
+                //# } else {
+                if (value < m_count)
+                    throw new System.ArgumentOutOfRangeException("The new capacity is less than the current number of elements.");
+                Resize(value, m_capacity);
                 //# }
             }
         }
@@ -1836,22 +1862,94 @@ namespace Aardvark.Base
 
         #region IEnumerable</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */> Members
 
-        public IEnumerator</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */> GetEnumerator()
+        IEnumerator</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */> IEnumerable</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */>.GetEnumerator()
         {
+            /*# if (!concurrent) { */
+            return new Enumerator(this);
+            /*# } else { */
             return Key__ValuePair__s.GetEnumerator();
+            /*# } */
         }
-        
+
         #endregion
 
         #region IEnumerable Members
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
+            /*# if (!concurrent) { */
+            return new Enumerator(this);
+            /*# } else { */
             return Key__ValuePair__s.GetEnumerator();
+            /*# } */
         }
 
         #endregion
+        /*# if (!concurrent) { */
+        #region Enumerator
 
+        public Enumerator GetEnumerator() { return new Enumerator(this); }
+
+        public struct Enumerator : IEnumerator</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */>
+        {
+            __type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ m_dict;
+            __itype__ m_index;
+            __itype__ m_extraIndex;
+            /*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */ m_current;
+
+            public Enumerator(__type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ dict)
+            {
+                m_dict = dict;
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(/*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */);
+            }
+
+            public /*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */ Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex < 0)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var cap = fa.Length;
+                    while (m_index < cap)
+                    {
+                        var nxt = fa[m_index].Next;
+                        if (nxt != 0)
+                        {
+                            m_current = /*# if (hasValue) { */new KeyValuePair<__tkey__, TValue>(/*# } */fa[m_index].Item__Key__/*# if (hasValue) { */, fa[m_index].Item.Value)/*# } */;
+                            m_extraIndex = nxt;
+                            m_index++;
+                            return true;
+                        }
+                        m_index++;
+                    }
+                    return false;
+                }
+                else
+                {
+                    var ea = m_dict.m_extraArray;
+                    m_current = /*# if (hasValue) { */new KeyValuePair<__tkey__, TValue>(/*# } */ea[m_extraIndex].Item__Key__/*# if (hasValue) { */, ea[m_extraIndex].Item.Value)/*# } */;
+                    m_extraIndex = ea[m_extraIndex].Next;
+                    return true;
+                }
+            }
+
+            public void Reset()
+            {
+                m_index = 0;
+                m_extraIndex = -1;
+                m_current = default(/*# if (hasValue) { */ KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */);
+            }
+        }
+
+        #endregion
+        /*# } */
         #region Private Helper Methods
 
         private __uitype__ ComputeIncreaseThreshold(__uitype__ capacity)
