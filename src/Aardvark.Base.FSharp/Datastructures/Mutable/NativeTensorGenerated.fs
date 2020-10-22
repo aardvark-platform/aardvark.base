@@ -208,11 +208,11 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
+        let eX = yptr + sX
+        while yptr <> eX do
             NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
             xptr <- xptr + xjX
             yptr <- yptr + yjX
@@ -227,11 +227,11 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
+        let eX = yptr + sX
+        while yptr <> eX do
             NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
             xptr <- xptr + xjX
             yptr <- yptr + yjX
@@ -1066,16 +1066,16 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eY = xptr + sY
-            while xptr <> eY do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eY = yptr + sY
+            while yptr <> eY do
                 NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                 xptr <- xptr + xjY
                 yptr <- yptr + yjY
@@ -1087,16 +1087,16 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eX = xptr + sX
-            while xptr <> eX do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eX = yptr + sX
+            while yptr <> eX do
                 NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                 xptr <- xptr + xjX
                 yptr <- yptr + yjX
@@ -1115,16 +1115,16 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eY = xptr + sY
-            while xptr <> eY do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eY = yptr + sY
+            while yptr <> eY do
                 NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                 xptr <- xptr + xjY
                 yptr <- yptr + yjY
@@ -1137,16 +1137,16 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eX = xptr + sX
-            while xptr <> eX do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eX = yptr + sX
+            while yptr <> eX do
                 NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                 xptr <- xptr + xjX
                 yptr <- yptr + yjX
@@ -5765,21 +5765,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
                     NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                     xptr <- xptr + xjZ
                     yptr <- yptr + yjZ
@@ -5793,21 +5793,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
                     NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                     xptr <- xptr + xjZ
                     yptr <- yptr + yjZ
@@ -5821,21 +5821,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eX = xptr + sX
-                while xptr <> eX do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eX = yptr + sX
+                while yptr <> eX do
                     NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                     xptr <- xptr + xjX
                     yptr <- yptr + yjX
@@ -5849,21 +5849,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eY = xptr + sY
-                while xptr <> eY do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eY = yptr + sY
+                while yptr <> eY do
                     NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                     xptr <- xptr + xjY
                     yptr <- yptr + yjY
@@ -5877,21 +5877,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eY = xptr + sY
-                while xptr <> eY do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eY = yptr + sY
+                while yptr <> eY do
                     NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                     xptr <- xptr + xjY
                     yptr <- yptr + yjY
@@ -5905,21 +5905,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eX = xptr + sX
-                while xptr <> eX do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eX = yptr + sX
+                while yptr <> eX do
                     NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                     xptr <- xptr + xjX
                     yptr <- yptr + yjX
@@ -5946,21 +5946,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
                     NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                     xptr <- xptr + xjZ
                     yptr <- yptr + yjZ
@@ -5975,21 +5975,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
                     NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                     xptr <- xptr + xjZ
                     yptr <- yptr + yjZ
@@ -6004,21 +6004,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eX = xptr + sX
-                while xptr <> eX do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eX = yptr + sX
+                while yptr <> eX do
                     NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                     xptr <- xptr + xjX
                     yptr <- yptr + yjX
@@ -6033,21 +6033,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eY = xptr + sY
-                while xptr <> eY do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eY = yptr + sY
+                while yptr <> eY do
                     NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                     xptr <- xptr + xjY
                     yptr <- yptr + yjY
@@ -6062,21 +6062,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eY = xptr + sY
-                while xptr <> eY do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eY = yptr + sY
+                while yptr <> eY do
                     NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                     xptr <- xptr + xjY
                     yptr <- yptr + yjY
@@ -6091,21 +6091,21 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eX = xptr + sX
-                while xptr <> eX do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eX = yptr + sX
+                while yptr <> eX do
                     NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                     xptr <- xptr + xjX
                     yptr <- yptr + yjX
@@ -44111,26 +44111,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -44146,26 +44146,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -44181,26 +44181,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -44216,26 +44216,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -44251,26 +44251,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -44286,26 +44286,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sa
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -44321,26 +44321,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sa
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -44356,26 +44356,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -44391,26 +44391,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -44426,26 +44426,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -44461,26 +44461,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -44496,26 +44496,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -44531,26 +44531,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -44566,26 +44566,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -44601,26 +44601,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -44636,26 +44636,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -44671,26 +44671,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -44706,26 +44706,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sa
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -44741,26 +44741,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sa
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -44776,26 +44776,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -44811,26 +44811,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -44846,26 +44846,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -44881,26 +44881,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sa
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -44916,26 +44916,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sa
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'a> yptr) (NativePtr.read (NativePtr.ofNativeInt<'a> xptr))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -44985,26 +44985,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -45021,26 +45021,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -45057,26 +45057,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -45093,26 +45093,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -45129,26 +45129,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -45165,26 +45165,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sb
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -45201,26 +45201,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW) * sa
         let yjW = nativeint (y.DW) * sb
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eW = xptr + sW
-                    while xptr <> eW do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eW = yptr + sW
+                    while yptr <> eW do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjW
                         yptr <- yptr + yjW
@@ -45237,26 +45237,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -45273,26 +45273,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -45309,26 +45309,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -45345,26 +45345,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -45381,26 +45381,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SW * info.DW) * sa
         let yjZ = nativeint (y.DZ - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eZ = xptr + sZ
-        while xptr <> eZ do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eZ = yptr + sZ
+        while yptr <> eZ do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -45417,26 +45417,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -45453,26 +45453,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eW = xptr + sW
-                while xptr <> eW do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eW = yptr + sW
+                while yptr <> eW do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -45489,26 +45489,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -45525,26 +45525,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SW * info.DW) * sa
         let yjY = nativeint (y.DY - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eY = xptr + sY
-        while xptr <> eY do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eY = yptr + sY
+        while yptr <> eY do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -45561,26 +45561,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -45597,26 +45597,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sb
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -45633,26 +45633,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ) * sa
         let yjZ = nativeint (y.DZ) * sb
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eZ = xptr + sZ
-                    while xptr <> eZ do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eZ = yptr + sZ
+                    while yptr <> eZ do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjZ
                         yptr <- yptr + yjZ
@@ -45669,26 +45669,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SY * info.DY) * sa
         let yjW = nativeint (y.DW - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SZ * info.DZ) * sa
         let yjY = nativeint (y.DY - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eY = xptr + sY
-            while xptr <> eY do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eY = yptr + sY
+            while yptr <> eY do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
@@ -45705,26 +45705,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SW * info.DW) * sa
         let yjX = nativeint (y.DX - y.SW * y.DW) * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eX = xptr + sX
-        while xptr <> eX do
-            let eW = xptr + sW
-            while xptr <> eW do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eX = yptr + sX
+        while yptr <> eX do
+            let eW = yptr + sW
+            while yptr <> eW do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -45741,26 +45741,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SX * info.DX) * sa
         let yjW = nativeint (y.DW - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SZ * info.DZ) * sa
         let yjX = nativeint (y.DX - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eX = xptr + sX
-            while xptr <> eX do
-                let eZ = xptr + sZ
-                while xptr <> eZ do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eX = yptr + sX
+            while yptr <> eX do
+                let eZ = yptr + sZ
+                while yptr <> eZ do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -45777,26 +45777,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SX * info.DX) * sa
         let yjZ = nativeint (y.DZ - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX - info.SY * info.DY) * sa
         let yjX = nativeint (y.DX - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY) * sa
         let yjY = nativeint (y.DY) * sb
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eX = xptr + sX
-                while xptr <> eX do
-                    let eY = xptr + sY
-                    while xptr <> eY do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eX = yptr + sX
+                while yptr <> eX do
+                    let eY = yptr + sY
+                    while yptr <> eY do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjY
                         yptr <- yptr + yjY
@@ -45813,26 +45813,26 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         xptr <- xptr + nativeint info.Origin * sa
         let mutable yptr = y.Pointer |> NativePtr.toNativeInt
         yptr <- yptr + nativeint y.Info.Origin * sb
-        let sW = nativeint (info.SW * info.DW) * sa
+        let sW = nativeint (y.Info.SW * y.Info.DW) * sa
         let xjW = nativeint (info.DW - info.SZ * info.DZ) * sa
         let yjW = nativeint (y.DW - y.SZ * y.DZ) * sb
-        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let sZ = nativeint (y.Info.SZ * y.Info.DZ) * sa
         let xjZ = nativeint (info.DZ - info.SY * info.DY) * sa
         let yjZ = nativeint (y.DZ - y.SY * y.DY) * sb
-        let sY = nativeint (info.SY * info.DY) * sa
+        let sY = nativeint (y.Info.SY * y.Info.DY) * sa
         let xjY = nativeint (info.DY - info.SX * info.DX) * sa
         let yjY = nativeint (y.DY - y.SX * y.DX) * sb
-        let sX = nativeint (info.SX * info.DX) * sa
+        let sX = nativeint (y.Info.SX * y.Info.DX) * sa
         let xjX = nativeint (info.DX) * sa
         let yjX = nativeint (y.DX) * sb
-        let eW = xptr + sW
-        while xptr <> eW do
-            let eZ = xptr + sZ
-            while xptr <> eZ do
-                let eY = xptr + sY
-                while xptr <> eY do
-                    let eX = xptr + sX
-                    while xptr <> eX do
+        let eW = yptr + sW
+        while yptr <> eW do
+            let eZ = yptr + sZ
+            while yptr <> eZ do
+                let eY = yptr + sY
+                while yptr <> eY do
+                    let eX = yptr + sX
+                    while yptr <> eX do
                         NativePtr.write (NativePtr.ofNativeInt<'b> yptr) (f (NativePtr.read (NativePtr.ofNativeInt<'a> xptr)))
                         xptr <- xptr + xjX
                         yptr <- yptr + yjX
