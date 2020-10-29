@@ -765,6 +765,24 @@ namespace Aardvark.Base
         }
 
         //# }
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public __ftype__ MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(/*# n.ForEach(r => { m.ForEach(s => {*/M__r____s__/*#}, comma);}, comma); */);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public __ftype__ MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(/*# n.ForEach(r => { m.ForEach(s => {*/M__r____s__/*#}, comma);}, comma); */);
+        }
+
         public unsafe __ftype__ this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1927,6 +1945,24 @@ namespace Aardvark.Base
 
         //# }
         //# }
+        #endregion
+
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="__nmtype__"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ MinElement(__nmtype__ m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="__nmtype__"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ MaxElement(__nmtype__ m)
+            => m.MaxElement;
+
         #endregion
         //# if (m == n && isReal) {
 

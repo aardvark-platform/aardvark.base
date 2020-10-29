@@ -240,6 +240,30 @@ namespace Aardvark.Base
         #region Creating Randomly Filled Arrays
 
         /// <summary>
+        /// Create a random array of ints in the interval
+        /// [0, 2^31-1] of the specified length.
+        /// </summary>
+        public static int[] CreateUniformIntArray(
+                this IRandomUniform rnd, long length)
+        {
+            var array = new int[length];
+            rnd.FillUniform(array);
+            return array;
+        }
+
+        /// <summary>
+        /// Create a random array of longs in the interval
+        /// [0, 2^63-1] of the specified length.
+        /// </summary>
+        public static long[] CreateUniformLongArray(
+                this IRandomUniform rnd, long length)
+        {
+            var array = new long[length];
+            rnd.FillUniform(array);
+            return array;
+        }
+
+        /// <summary>
         /// Create a random array of floats in the half-open interval
         /// [0.0, 1.0) of the specified length.
         /// </summary>
@@ -284,6 +308,17 @@ namespace Aardvark.Base
             long count = array.LongLength;
             for (long i = 0; i < count; i++)
                 array[i] = rnd.UniformInt();
+        }
+
+        /// <summary>
+        /// Fills the specified array with random longs in the interval
+        /// [0, 2^63-1].
+        /// </summary>
+        public static void FillUniform(this IRandomUniform rnd, long[] array)
+        {
+            long count = array.LongLength;
+            for (long i = 0; i < count; i++)
+                array[i] = rnd.UniformLong();
         }
 
         /// <summary>

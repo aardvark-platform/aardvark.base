@@ -542,6 +542,24 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Returns the minimum element of the vector.
+        /// </summary>
+        public __ftype__ MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(/*# fields.ForEach(f => { */__f__/*# }, comma); */);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the vector.
+        /// </summary>
+        public __ftype__ MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(/*# fields.ForEach(f => { */__f__/*# }, comma); */);
+        }
+
         //# if (ft.IsReal) {
         //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
         //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
@@ -2176,6 +2194,24 @@ namespace Aardvark.Base
             //# });
             return 0;
         }
+
+        #endregion
+
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="__vtype__"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ MinElement(__vtype__ v)
+            => v.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="__vtype__"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ MaxElement(__vtype__ v)
+            => v.MaxElement;
 
         #endregion
 

@@ -14,6 +14,27 @@ namespace Aardvark.Tests
         public MatrixTests(TestSuite.Options options) : base(options) { }
 
         [Test]
+        public void MinMaxElementTest()
+        {
+            var rnd = new RandomSystem(1);
+            var m = new M44i(rnd.CreateUniformIntArray(16));
+
+            var min1 = m.MinElement;
+            var min2 = Mat.MinElement(m);
+            var min_ref = m.ToArray().Min();
+
+            Assert.AreEqual(min1, min_ref);
+            Assert.AreEqual(min2, min_ref);
+
+            var max1 = m.MaxElement;
+            var max2 = Mat.MaxElement(m);
+            var max_ref = m.ToArray().Max();
+
+            Assert.AreEqual(max1, max_ref);
+            Assert.AreEqual(max2, max_ref);
+        }
+
+        [Test]
         public void InPlaceTransposeTest()
         {
             var rand = new RandomSystem();

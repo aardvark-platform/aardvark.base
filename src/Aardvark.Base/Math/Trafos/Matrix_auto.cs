@@ -802,6 +802,24 @@ namespace Aardvark.Base
             get => new V2i(M01, M10);
         }
 
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public int MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M10, M11);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public int MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M10, M11);
+        }
+
         public unsafe int this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2092,6 +2110,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M22i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MinElement(M22i m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M22i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MaxElement(M22i m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -2927,6 +2963,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2l(M01, M10);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public long MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M10, M11);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public long MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M10, M11);
         }
 
         public unsafe long this[int index]
@@ -4107,6 +4161,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M22l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MinElement(M22l m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M22l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MaxElement(M22l m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -4985,6 +5057,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2f(M01, M10);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public float MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M10, M11);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public float MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M10, M11);
         }
 
         public unsafe float this[int index]
@@ -6310,6 +6400,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M22f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MinElement(M22f m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M22f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MaxElement(M22f m)
+            => m.MaxElement;
+
+        #endregion
+
         #region Orthogonalization
 
         /// <summary>
@@ -7321,6 +7429,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2d(M01, M10);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public double MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M10, M11);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public double MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M10, M11);
         }
 
         public unsafe double this[int index]
@@ -8546,6 +8672,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M22d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MinElement(M22d m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M22d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MaxElement(M22d m)
+            => m.MaxElement;
+
+        #endregion
+
         #region Orthogonalization
 
         /// <summary>
@@ -9535,6 +9679,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2i(M00, M11);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public int MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M10, M11, M12);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public int MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M10, M11, M12);
         }
 
         public unsafe int this[int index]
@@ -10774,6 +10936,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M23i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MinElement(M23i m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M23i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MaxElement(M23i m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -11630,6 +11810,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2l(M00, M11);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public long MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M10, M11, M12);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public long MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M10, M11, M12);
         }
 
         public unsafe long this[int index]
@@ -12757,6 +12955,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M23l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MinElement(M23l m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M23l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MaxElement(M23l m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -13656,6 +13872,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2f(M00, M11);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public float MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M10, M11, M12);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public float MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M10, M11, M12);
         }
 
         public unsafe float this[int index]
@@ -14824,6 +15058,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M23f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MinElement(M23f m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M23f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MaxElement(M23f m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -15806,6 +16058,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2d(M00, M11);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public double MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M10, M11, M12);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public double MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M10, M11, M12);
         }
 
         public unsafe double this[int index]
@@ -16859,6 +17129,24 @@ namespace Aardvark.Base
             double* ptr = &m.M00;
             return new V2d(ptr[index], ptr[index + 3]);
         }
+
+        #endregion
+
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M23d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MinElement(M23d m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M23d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MaxElement(M23d m)
+            => m.MaxElement;
 
         #endregion
 
@@ -18041,6 +18329,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3i(M02, M11, M20);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public int MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M10, M11, M12, M20, M21, M22);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public int MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M10, M11, M12, M20, M21, M22);
         }
 
         public unsafe int this[int index]
@@ -19644,6 +19950,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M33i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MinElement(M33i m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M33i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MaxElement(M33i m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -20740,6 +21064,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3l(M02, M11, M20);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public long MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M10, M11, M12, M20, M21, M22);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public long MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M10, M11, M12, M20, M21, M22);
         }
 
         public unsafe long this[int index]
@@ -22217,6 +22559,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M33l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MinElement(M33l m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M33l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MaxElement(M33l m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -23529,6 +23889,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3f(M02, M11, M20);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public float MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M10, M11, M12, M20, M21, M22);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public float MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M10, M11, M12, M20, M21, M22);
         }
 
         public unsafe float this[int index]
@@ -25140,6 +25518,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M33f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MinElement(M33f m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M33f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MaxElement(M33f m)
+            => m.MaxElement;
+
+        #endregion
+
         #region Orthogonalization
 
         /// <summary>
@@ -26594,6 +26990,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3d(M02, M11, M20);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public double MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M10, M11, M12, M20, M21, M22);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public double MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M10, M11, M12, M20, M21, M22);
         }
 
         public unsafe double this[int index]
@@ -28091,6 +28505,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M33d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MinElement(M33d m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M33d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MaxElement(M33d m)
+            => m.MaxElement;
+
+        #endregion
+
         #region Orthogonalization
 
         /// <summary>
@@ -29324,6 +29756,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3i(M00, M11, M22);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public int MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public int MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
         }
 
         public unsafe int this[int index]
@@ -30777,6 +31227,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M34i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MinElement(M34i m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M34i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MaxElement(M34i m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -31868,6 +32336,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3l(M00, M11, M22);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public long MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public long MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
         }
 
         public unsafe long this[int index]
@@ -33195,6 +33681,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M34l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MinElement(M34l m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M34l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MaxElement(M34l m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -34454,6 +34958,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3f(M00, M11, M22);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public float MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public float MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
         }
 
         public unsafe float this[int index]
@@ -35837,6 +36359,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M34f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MinElement(M34f m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M34f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MaxElement(M34f m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -37181,6 +37721,24 @@ namespace Aardvark.Base
             get => new V3d(M00, M11, M22);
         }
 
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public double MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public double MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
+        }
+
         public unsafe double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -38433,6 +38991,24 @@ namespace Aardvark.Base
             double* ptr = &m.M00;
             return new V3d(ptr[index], ptr[index + 4], ptr[index + 8]);
         }
+
+        #endregion
+
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M34d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MinElement(M34d m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M34d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MaxElement(M34d m)
+            => m.MaxElement;
 
         #endregion
 
@@ -39792,6 +40368,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4i(M03, M12, M21, M30);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public int MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public int MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
         }
 
         public unsafe int this[int index]
@@ -41633,6 +42227,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M44i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MinElement(M44i m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M44i"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MaxElement(M44i m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -42906,6 +43518,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4l(M03, M12, M21, M30);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public long MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public long MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
         }
 
         public unsafe long this[int index]
@@ -44607,6 +45237,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M44l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MinElement(M44l m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M44l"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MaxElement(M44l m)
+            => m.MaxElement;
+
+        #endregion
+
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -46060,6 +46708,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4f(M03, M12, M21, M30);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public float MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public float MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
         }
 
         public unsafe float this[int index]
@@ -47917,6 +48583,24 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M44f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MinElement(M44f m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M44f"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MaxElement(M44f m)
+            => m.MaxElement;
+
+        #endregion
+
         #region Orthogonalization
 
         /// <summary>
@@ -49525,6 +50209,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4d(M03, M12, M21, M30);
+        }
+
+        /// <summary>
+        /// Returns the minimum element of the matrix.
+        /// </summary>
+        public double MinElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
+        }
+
+        /// <summary>
+        /// Returns the maximum element of the matrix.
+        /// </summary>
+        public double MaxElement
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
         }
 
         public unsafe double this[int index]
@@ -51276,6 +51978,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOrthogonal(this M44d m)
             => IsOrthogonal(m, Constant<double>.PositiveTinyValue);
+
+        #endregion
+
+        #region Min- / MaxElement
+
+        /// <summary>
+        /// Returns the minimum element of the given <see cref="M44d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MinElement(M44d m)
+            => m.MinElement;
+
+        /// <summary>
+        /// Returns the maximum element of the given <see cref="M44d"/> matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double MaxElement(M44d m)
+            => m.MaxElement;
 
         #endregion
 
