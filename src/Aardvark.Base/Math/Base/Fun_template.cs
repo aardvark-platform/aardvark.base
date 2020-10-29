@@ -28,35 +28,69 @@ namespace Aardvark.Base
         #region Min and Max
 
         //# Meta.ComparableTypes.ForEach(t => { var type = t.Name;
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Min(this __type__ a, __type__ b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Max(this __type__ a, __type__ b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Min(this __type__ a, __type__ b, __type__ c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Max(this __type__ a, __type__ b, __type__ c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Min(this __type__ a, __type__ b, __type__ c, __type__ d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Max(this __type__ a, __type__ b, __type__ c, __type__ d)
             => Max(Max(a, b), Max(c, d));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Min(this __type__ x, params __type__[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Max(this __type__ x, params __type__[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
 
         //# });
         #endregion

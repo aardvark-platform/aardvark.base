@@ -1637,10 +1637,13 @@ namespace Aardvark.Base
         var name = p.Name;
         var ptype = getParamType(p).Name;
         var ext = fun.IsExtension && (i == 0);
-        if (ext) { */this /*# } */__ptype__ __name__/*#}, comma); */)
+        var varg = fun.HasVarArgs && (i == fun.Parameters.Length - 1);
+        if (ext) { */this /*# } if (varg) { */params /*# } */__ptype__/*# if (varg) {*/[]/*# }*/ __name__/*#}, comma); */)
         {
-            return new __retType__(/*# fields.ForEach(f => {*/__fun.Name__(/*# fun.Parameters.ForEach(p => {
-            */__p.Name__/*#if (!p.IsScalar()) {*/.__f__/*#} }, comma); */)/*#}, comma); */);
+            return new __retType__(/*# fields.ForEach(f => {*/__fun.Name__(/*# fun.Parameters.ForEach((p, i) => {
+            var vec = !p.IsScalar();
+            var varg = fun.HasVarArgs && (i == fun.Parameters.Length - 1);
+            */__p.Name__/*#if (vec) { if (varg) {*/.Map(a => a.__f__)/*# } else {*/.__f__/*#} } }, comma); */)/*#}, comma); */);
         }
 
         //# }

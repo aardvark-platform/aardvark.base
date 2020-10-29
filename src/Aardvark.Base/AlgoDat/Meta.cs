@@ -903,12 +903,14 @@ namespace Aardvark.Base
 
             public bool IsExtension { get; set; }
 
+            public bool HasVarArgs { get; set; }
+
             public bool EditorBrowsable { get; set; }
 
             // Only valid for the given element types
             public SimpleType[] Domain { get; set; }
 
-            public ElementwiseFun(string name, SimpleType returnType, bool extension,
+            public ElementwiseFun(string name, SimpleType returnType, bool extension, bool varArgs,
                                     SimpleType[] domain, bool editorBrowsable,
                                     params Parameter[] parameters)
             {
@@ -916,6 +918,7 @@ namespace Aardvark.Base
                 ReturnType = returnType;
                 Parameters = parameters;
                 IsExtension = extension;
+                HasVarArgs = varArgs;
                 Domain = domain;
                 EditorBrowsable = editorBrowsable;
             }
@@ -949,38 +952,52 @@ namespace Aardvark.Base
         private static ElementwiseFun Method(string name, SimpleType returnType,
                                                 SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
         {
-            return new ElementwiseFun(name, returnType, true, domain, true, parameters);
+            return new ElementwiseFun(name, returnType, true, false, domain, true, parameters);
+        }
+
+        private static ElementwiseFun MethodVarArgs(string name, SimpleType returnType,
+                                        SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return new ElementwiseFun(name, returnType, true, true, domain, true, parameters);
         }
 
         private static ElementwiseFun MethodHidden(string name, SimpleType returnType,
                                         SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
         {
-            return new ElementwiseFun(name, returnType, true, domain, false, parameters);
+            return new ElementwiseFun(name, returnType, true, false, domain, false, parameters);
         }
 
         private static ElementwiseFun Method(string name, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
         {
             return Method(name, null, domain, parameters);
         }
+        private static ElementwiseFun MethodVarArgs(string name, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
+        {
+            return MethodVarArgs(name, null, domain, parameters);
+        }
 
         private static ElementwiseFun MethodHidden(string name, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
         {
-            return new ElementwiseFun(name, null, true, domain, false, parameters);
+            return new ElementwiseFun(name, null, true, false, domain, false, parameters);
         }
 
         private static ElementwiseFun Method(string name, bool isExtension, SimpleType[] domain, params ElementwiseFun.Parameter[] parameters)
         {
-            return new ElementwiseFun(name, null, isExtension, domain, true, parameters);
+            return new ElementwiseFun(name, null, isExtension, false, domain, true, parameters);
         }
 
         private static ElementwiseFun Method(string name, SimpleType returnType, params ElementwiseFun.Parameter[] parameters)
         {
-            return new ElementwiseFun(name, returnType, true, VecFieldTypes, true, parameters);
+            return new ElementwiseFun(name, returnType, true, false, VecFieldTypes, true, parameters);
         }
 
         private static ElementwiseFun Method(string name, params ElementwiseFun.Parameter[] parameters)
         {
             return Method(name, VecFieldTypes, parameters);
+        }
+         private static ElementwiseFun MethodVarArgs(string name, params ElementwiseFun.Parameter[] parameters)
+        {
+            return MethodVarArgs(name, VecFieldTypes, parameters);
         }
 
         private static Dictionary<string, ElementwiseFun[]> getElementwiseFuns()
@@ -1016,7 +1033,9 @@ namespace Aardvark.Base
                 Method("Min", Tensor("a"), Tensor("b"), Tensor("c")),
                 Method("Max", Tensor("a"), Tensor("b"), Tensor("c")),
                 Method("Min", Tensor("a"), Tensor("b"), Tensor("c"), Tensor("d")),
-                Method("Max", Tensor("a"), Tensor("b"), Tensor("c"), Tensor("d"))
+                Method("Max", Tensor("a"), Tensor("b"), Tensor("c"), Tensor("d")),
+                MethodVarArgs("Min", Tensor("x"), Tensor("values")),
+                MethodVarArgs("Max", Tensor("x"), Tensor("values"))
             );
             #endregion
 

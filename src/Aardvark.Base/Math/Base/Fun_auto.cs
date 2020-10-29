@@ -12,425 +12,901 @@ namespace Aardvark.Base
     {
         #region Min and Max
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Min(this byte a, byte b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Max(this byte a, byte b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Min(this byte a, byte b, byte c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Max(this byte a, byte b, byte c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Min(this byte a, byte b, byte c, byte d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte Max(this byte a, byte b, byte c, byte d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Min(this byte x, params byte[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Max(this byte x, params byte[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Min(this sbyte a, sbyte b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Max(this sbyte a, sbyte b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Min(this sbyte a, sbyte b, sbyte c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Max(this sbyte a, sbyte b, sbyte c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Min(this sbyte a, sbyte b, sbyte c, sbyte d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static sbyte Max(this sbyte a, sbyte b, sbyte c, sbyte d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Min(this sbyte x, params sbyte[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Max(this sbyte x, params sbyte[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Min(this short a, short b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Max(this short a, short b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Min(this short a, short b, short c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Max(this short a, short b, short c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Min(this short a, short b, short c, short d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short Max(this short a, short b, short c, short d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Min(this short x, params short[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Max(this short x, params short[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Min(this ushort a, ushort b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Max(this ushort a, ushort b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Min(this ushort a, ushort b, ushort c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Max(this ushort a, ushort b, ushort c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Min(this ushort a, ushort b, ushort c, ushort d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort Max(this ushort a, ushort b, ushort c, ushort d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Min(this ushort x, params ushort[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Max(this ushort x, params ushort[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(this int a, int b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(this int a, int b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(this int a, int b, int c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(this int a, int b, int c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Min(this int a, int b, int c, int d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Max(this int a, int b, int c, int d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Min(this int x, params int[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Max(this int x, params int[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Min(this uint a, uint b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Max(this uint a, uint b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Min(this uint a, uint b, uint c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Max(this uint a, uint b, uint c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Min(this uint a, uint b, uint c, uint d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Max(this uint a, uint b, uint c, uint d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Min(this uint x, params uint[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Max(this uint x, params uint[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Min(this long a, long b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Max(this long a, long b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Min(this long a, long b, long c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Max(this long a, long b, long c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Min(this long a, long b, long c, long d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Max(this long a, long b, long c, long d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Min(this long x, params long[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Max(this long x, params long[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Min(this ulong a, ulong b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Max(this ulong a, ulong b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Min(this ulong a, ulong b, ulong c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Max(this ulong a, ulong b, ulong c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Min(this ulong a, ulong b, ulong c, ulong d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Max(this ulong a, ulong b, ulong c, ulong d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Min(this ulong x, params ulong[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Max(this ulong x, params ulong[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this float a, float b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this float a, float b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this float a, float b, float c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this float a, float b, float c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Min(this float a, float b, float c, float d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Max(this float a, float b, float c, float d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Min(this float x, params float[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Max(this float x, params float[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Min(this double a, double b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Max(this double a, double b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Min(this double a, double b, double c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Max(this double a, double b, double c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Min(this double a, double b, double c, double d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Max(this double a, double b, double c, double d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Min(this double x, params double[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Max(this double x, params double[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Min(this decimal a, decimal b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Max(this decimal a, decimal b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Min(this decimal a, decimal b, decimal c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Max(this decimal a, decimal b, decimal c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Min(this decimal a, decimal b, decimal c, decimal d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Max(this decimal a, decimal b, decimal c, decimal d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Min(this decimal x, params decimal[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Max(this decimal x, params decimal[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Min(this Fraction a, Fraction b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Max(this Fraction a, Fraction b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Min(this Fraction a, Fraction b, Fraction c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Max(this Fraction a, Fraction b, Fraction c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Min(this Fraction a, Fraction b, Fraction c, Fraction d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Fraction Max(this Fraction a, Fraction b, Fraction c, Fraction d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fraction Min(this Fraction x, params Fraction[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Fraction Max(this Fraction x, params Fraction[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Min(this DateTime a, DateTime b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Max(this DateTime a, DateTime b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Min(this DateTime a, DateTime b, DateTime c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Max(this DateTime a, DateTime b, DateTime c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Min(this DateTime a, DateTime b, DateTime c, DateTime d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime Max(this DateTime a, DateTime b, DateTime c, DateTime d)
             => Max(Max(a, b), Max(c, d));
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime Min(this DateTime x, params DateTime[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static DateTime Max(this DateTime x, params DateTime[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Min(this TimeSpan a, TimeSpan b)
             => a < b ? a : b;
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Max(this TimeSpan a, TimeSpan b)
             => a > b ? a : b;
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Min(this TimeSpan a, TimeSpan b, TimeSpan c)
             => a < b ? (a < c ? a : c) : (b < c ? b : c);
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Max(this TimeSpan a, TimeSpan b, TimeSpan c)
             => a > b ? (a > c ? a : c) : (b > c ? b : c);
 
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Min(this TimeSpan a, TimeSpan b, TimeSpan c, TimeSpan d)
             => Min(Min(a, b), Min(c, d));
 
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan Max(this TimeSpan a, TimeSpan b, TimeSpan c, TimeSpan d)
             => Max(Max(a, b), Max(c, d));
+
+        /// <summary>
+        /// Returns the minimum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TimeSpan Min(this TimeSpan x, params TimeSpan[] values)
+            => Min(x, System.Linq.Enumerable.Min(values));
+
+        /// <summary>
+        /// Returns the maximum of the given values.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TimeSpan Max(this TimeSpan x, params TimeSpan[] values)
+            => Max(x, System.Linq.Enumerable.Max(values));
 
         #endregion
 
