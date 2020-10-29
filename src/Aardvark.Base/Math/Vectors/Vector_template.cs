@@ -552,10 +552,7 @@ namespace Aardvark.Base
         public bool __qant____cond__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return /*# fields.ForEach((f, i) => { */__scope__.Is__cond__(__f__)/*# }, act); */;
-            }
+            get => /*# fields.ForEach((f, i) => { */__scope__.Is__cond__(__f__)/*# }, act); */;
         }
 
         //# }); // quantArray

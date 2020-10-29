@@ -1613,6 +1613,17 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3b"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C3b c, byte epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+
+        #endregion
     }
 
     public static partial class Col
@@ -3683,6 +3694,17 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3us"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C3us c, ushort epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+
+        #endregion
     }
 
     public static partial class Col
@@ -5684,6 +5706,17 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3ui"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C3ui c, uint epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+
+        #endregion
     }
 
     public static partial class Col
@@ -6500,6 +6533,97 @@ namespace Aardvark.Base
             R = Col.FloatFromDouble(values[start + 0]);
             G = Col.FloatFromDouble(values[start + 1]);
             B = Col.FloatFromDouble(values[start + 2]);
+        }
+
+        #endregion
+
+        #region Properities
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsNaN(R) || float.IsNaN(G) || float.IsNaN(B);
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsNaN(R) && float.IsNaN(G) && float.IsNaN(B);
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsInfinity(R) || float.IsInfinity(G) || float.IsInfinity(B);
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsInfinity(R) && float.IsInfinity(G) && float.IsInfinity(B);
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsPositiveInfinity(R) || float.IsPositiveInfinity(G) || float.IsPositiveInfinity(B);
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsPositiveInfinity(R) && float.IsPositiveInfinity(G) && float.IsPositiveInfinity(B);
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsNegativeInfinity(R) || float.IsNegativeInfinity(G) || float.IsNegativeInfinity(B);
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsNegativeInfinity(R) && float.IsNegativeInfinity(G) && float.IsNegativeInfinity(B);
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.IsTiny(R) || Fun.IsTiny(G) || Fun.IsTiny(B);
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B);
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -7524,6 +7648,49 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3f"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C3f c, float epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3f"/> is smaller than Constant&lt;float&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C3f c)
+            => c.R.IsTiny() && c.G.IsTiny() && c.B.IsTiny();
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any component of the given <see cref="C3f"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(C3f c)
+            => c.IsNaN;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="C3f"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(C3f c)
+            => c.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all components of the the given <see cref="C3f"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(C3f c)
+            => c.IsFinite;
+
+        #endregion
     }
 
     public static partial class Col
@@ -8290,6 +8457,97 @@ namespace Aardvark.Base
             R = (values[start + 0]);
             G = (values[start + 1]);
             B = (values[start + 2]);
+        }
+
+        #endregion
+
+        #region Properities
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsNaN(R) || double.IsNaN(G) || double.IsNaN(B);
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsNaN(R) && double.IsNaN(G) && double.IsNaN(B);
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsInfinity(R) || double.IsInfinity(G) || double.IsInfinity(B);
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsInfinity(R) && double.IsInfinity(G) && double.IsInfinity(B);
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsPositiveInfinity(R) || double.IsPositiveInfinity(G) || double.IsPositiveInfinity(B);
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsPositiveInfinity(R) && double.IsPositiveInfinity(G) && double.IsPositiveInfinity(B);
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsNegativeInfinity(R) || double.IsNegativeInfinity(G) || double.IsNegativeInfinity(B);
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsNegativeInfinity(R) && double.IsNegativeInfinity(G) && double.IsNegativeInfinity(B);
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.IsTiny(R) || Fun.IsTiny(G) || Fun.IsTiny(B);
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B);
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
         }
 
         #endregion
@@ -9312,6 +9570,49 @@ namespace Aardvark.Base
         {
             return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance);
         }
+
+        #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3d"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C3d c, double epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3d"/> is smaller than Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C3d c)
+            => c.R.IsTiny() && c.G.IsTiny() && c.B.IsTiny();
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any component of the given <see cref="C3d"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(C3d c)
+            => c.IsNaN;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="C3d"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(C3d c)
+            => c.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all components of the the given <see cref="C3d"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(C3d c)
+            => c.IsFinite;
 
         #endregion
     }
@@ -10433,7 +10734,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Members
+        #region Properities
 
         public C3b RGB => (C3b)this;
 
@@ -11645,6 +11946,17 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4b"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C4b c, byte epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+
+        #endregion
     }
 
     public static partial class Col
@@ -12771,7 +13083,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Members
+        #region Properities
 
         public C3us RGB => (C3us)this;
 
@@ -13983,6 +14295,17 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4us"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C4us c, ushort epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+
+        #endregion
     }
 
     public static partial class Col
@@ -15069,7 +15392,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Members
+        #region Properities
 
         public C3ui RGB => (C3ui)this;
 
@@ -16235,6 +16558,17 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4ui"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C4ui c, uint epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+
+        #endregion
     }
 
     public static partial class Col
@@ -17199,9 +17533,96 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Members
+        #region Properities
 
         public C3f RGB => (C3f)this;
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsNaN(R) || float.IsNaN(G) || float.IsNaN(B) || float.IsNaN(A);
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsNaN(R) && float.IsNaN(G) && float.IsNaN(B) && float.IsNaN(A);
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsInfinity(R) || float.IsInfinity(G) || float.IsInfinity(B) || float.IsInfinity(A);
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsInfinity(R) && float.IsInfinity(G) && float.IsInfinity(B) && float.IsInfinity(A);
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsPositiveInfinity(R) || float.IsPositiveInfinity(G) || float.IsPositiveInfinity(B) || float.IsPositiveInfinity(A);
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsPositiveInfinity(R) && float.IsPositiveInfinity(G) && float.IsPositiveInfinity(B) && float.IsPositiveInfinity(A);
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsNegativeInfinity(R) || float.IsNegativeInfinity(G) || float.IsNegativeInfinity(B) || float.IsNegativeInfinity(A);
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => float.IsNegativeInfinity(R) && float.IsNegativeInfinity(G) && float.IsNegativeInfinity(B) && float.IsNegativeInfinity(A);
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.IsTiny(R) || Fun.IsTiny(G) || Fun.IsTiny(B) || Fun.IsTiny(A);
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B) && Fun.IsTiny(A);
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
+        }
 
         #endregion
 
@@ -18261,6 +18682,49 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4f"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C4f c, float epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4f"/> is smaller than Constant&lt;float&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C4f c)
+            => c.R.IsTiny() && c.G.IsTiny() && c.B.IsTiny() && c.A.IsTiny();
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any component of the given <see cref="C4f"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(C4f c)
+            => c.IsNaN;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="C4f"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(C4f c)
+            => c.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all components of the the given <see cref="C4f"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(C4f c)
+            => c.IsFinite;
+
+        #endregion
     }
 
     public static partial class Col
@@ -19178,9 +19642,96 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Members
+        #region Properities
 
         public C3d RGB => (C3d)this;
+
+        public bool AnyNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsNaN(R) || double.IsNaN(G) || double.IsNaN(B) || double.IsNaN(A);
+        }
+
+        public bool AllNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsNaN(R) && double.IsNaN(G) && double.IsNaN(B) && double.IsNaN(A);
+        }
+
+        public bool AnyInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsInfinity(R) || double.IsInfinity(G) || double.IsInfinity(B) || double.IsInfinity(A);
+        }
+
+        public bool AllInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsInfinity(R) && double.IsInfinity(G) && double.IsInfinity(B) && double.IsInfinity(A);
+        }
+
+        public bool AnyPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsPositiveInfinity(R) || double.IsPositiveInfinity(G) || double.IsPositiveInfinity(B) || double.IsPositiveInfinity(A);
+        }
+
+        public bool AllPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsPositiveInfinity(R) && double.IsPositiveInfinity(G) && double.IsPositiveInfinity(B) && double.IsPositiveInfinity(A);
+        }
+
+        public bool AnyNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsNegativeInfinity(R) || double.IsNegativeInfinity(G) || double.IsNegativeInfinity(B) || double.IsNegativeInfinity(A);
+        }
+
+        public bool AllNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => double.IsNegativeInfinity(R) && double.IsNegativeInfinity(G) && double.IsNegativeInfinity(B) && double.IsNegativeInfinity(A);
+        }
+
+        public bool AnyTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.IsTiny(R) || Fun.IsTiny(G) || Fun.IsTiny(B) || Fun.IsTiny(A);
+        }
+
+        public bool AllTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B) && Fun.IsTiny(A);
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
+        }
 
         #endregion
 
@@ -20238,6 +20789,49 @@ namespace Aardvark.Base
         {
             return ApproximateEquals(a.R, b.R, tolerance) && ApproximateEquals(a.G, b.G, tolerance) && ApproximateEquals(a.B, b.B, tolerance) && ApproximateEquals(a.A, b.A, tolerance);
         }
+
+        #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4d"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C4d c, double epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4d"/> is smaller than Constant&lt;double&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this C4d c)
+            => c.R.IsTiny() && c.G.IsTiny() && c.B.IsTiny() && c.A.IsTiny();
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any component of the given <see cref="C4d"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(C4d c)
+            => c.IsNaN;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="C4d"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(C4d c)
+            => c.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all components of the the given <see cref="C4d"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(C4d c)
+            => c.IsFinite;
 
         #endregion
     }

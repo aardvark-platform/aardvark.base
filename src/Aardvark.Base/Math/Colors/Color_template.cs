@@ -584,13 +584,58 @@ namespace Aardvark.Base
         //# }
         #endregion
 
-        //# if (t.HasAlpha) {
-        #region Members
+        //# if (t.HasAlpha || isReal) {
+        #region Properities
 
+        //# if (t.HasAlpha) {
         //#     var t1 = Meta.ColorTypeOf(3, ft);
         //#     var type1 = t1.Name;
         public __type1__ RGB => (__type1__)this;
 
+        //# }
+        //# if (isReal) {
+        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var quantArray = new[] { "Any", "All" };
+        //# var actArray = new[] { oror, andand };
+        //# condArray.ForEach(scopeArray, (cond, scope) => {
+        //# quantArray.ForEach(actArray, (qant, act) => {
+        public bool __qant____cond__
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => /*# fields.ForEach((f, i) => { */__scope__.Is__cond__(__f__)/*# }, act); */;
+        }
+
+        //# }); // quantArray
+        //# }); // condArray
+        /// <summary>
+        /// Returns true if any component of the color is NaN, false otherwise.
+        /// </summary>
+        public bool IsNaN
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNaN;
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
+        /// </summary>
+        public bool IsInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => !(IsInfinity || IsNaN);
+        }
+
+        //# } // isReal
         #endregion
 
         //# }
@@ -1168,6 +1213,53 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="__type__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this __type__ c, __ftype__ epsilon)
+            => /*# fields.ForEach(f => { */c.__f__.IsTiny(epsilon)/*# }, andand);*/;
+
+        //# if (ft.IsReal) {
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="__type__"/> is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this __type__ c)
+            => /*# fields.ForEach(f => { */c.__f__.IsTiny()/*# }, andand);*/;
+
+        //# }
+        #endregion
+        //# if (isReal) {
+
+        #region Special Floating Point Value Checks
+
+        /// <summary>
+        /// Returns whether any component of the given <see cref="__type__"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNaN(__type__ c)
+            => c.IsNaN;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="__type__"/> is infinity (positive or negative).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsInfinity(__type__ c)
+            => c.IsInfinity;
+
+        /// <summary>
+        /// Returns whether all components of the the given <see cref="__type__"/> are finite (i.e. not NaN and not infinity).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsFinite(__type__ c)
+            => c.IsFinite;
+
+        #endregion
+        //# }
     }
 
     public static partial class Col
