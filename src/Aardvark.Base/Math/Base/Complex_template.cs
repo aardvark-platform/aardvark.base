@@ -262,6 +262,15 @@ namespace Aardvark.Base
             get { return (__ft__.IsInfinity(Real) || __ft__.IsInfinity(Imag)); }
         }
 
+        /// <summary>
+        /// Returns whether the complex number is finite (i.e. not NaN and not infinity).
+        /// </summary>
+        public bool IsFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return !(IsNaN || IsInfinity); }
+        }
+
         #endregion
 
         #region Static factories
@@ -1001,22 +1010,22 @@ namespace Aardvark.Base
         /// Returns whether the given <see cref="__ct__"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNaN(this __ct__ v)
+        public static bool IsNaN(__ct__ v)
             => v.IsNaN;
 
         /// <summary>
         /// Returns whether the given <see cref="__ct__"/> is infinity (positive or negative).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsInfinity(this __ct__ v)
+        public static bool IsInfinity(__ct__ v)
             => v.IsInfinity;
 
         /// <summary>
         /// Returns whether the given <see cref="__ct__"/> is finite (i.e. not NaN and not infinity).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFinite(this __ct__ v)
-            => !(v.IsNaN || v.IsInfinity);
+        public static bool IsFinite(__ct__ v)
+            => v.IsFinite;
 
         #endregion
     }
