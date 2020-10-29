@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Aardvark.Base
 {
     /// <summary>
@@ -7,18 +9,49 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
-        public double Area => (P1 - P0).Cross(P2 - P0).Length * 0.5;
+        /// <summary>
+        /// Returns the area of the triangle.
+        /// </summary>
+        public double Area
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Triangle.Area(this);
+        }
 
-        public bool IsDegenerated => (P1 - P0).Cross(P2 - P0).AllTiny; // area == 0 => degenerated 
+        /// <summary>
+        /// Returns whether the triangle is degenerated, i.e. its area is zero.
+        /// </summary>
+        public bool IsDegenerated
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Triangle.IsDegenerated(this);
+        }
 
-        public V3d Normal => (P1 - P0).Cross(P2 - P0).Normalized;
+        /// <summary>
+        /// Returns the normal of the triangle.
+        /// </summary>
+        public V3d Normal
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Triangle.Normal(this);
+        }
 
-        public Plane3d Plane => new Plane3d(Normal, P0);
+        /// <summary>
+        /// Returns the plane that contains the points of the triangle.
+        /// </summary>
+        public Plane3d Plane
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Triangle.Plane(this);
+        }
 
         #endregion
 
         #region IBoundingSphere3d Members
 
+        /// <summary>
+        /// Returns the bounding sphere of the triangle.
+        /// </summary>
         public Sphere3d BoundingSphere3d
         {
             get
@@ -49,6 +82,84 @@ namespace Aardvark.Base
                 return sph;
             }
         }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Contains static methods for triangles.
+    /// </summary>
+    public static partial class Triangle
+    {
+        #region Area
+
+        /// <summary>
+        /// Returns the area of the triangle defined by the given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Area(V3d p0, V3d p1, V3d p2)
+            => (p1 - p0).Cross(p2 - p0).Length * 0.5;
+
+        /// <summary>
+        /// Returns the area of the given triangle.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Area(Triangle3d t)
+            => Area(t.P0, t.P1, t.P2);
+
+        #endregion
+
+        #region IsDegenerated
+
+        /// <summary>
+        /// Returns whether the triangle defined by the give points is degenerated, i.e. its area is zero.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsDegenerated(V3d p0, V3d p1, V3d p2)
+            => (p1 - p0).Cross(p2 - p0).AllTiny;
+
+        /// <summary>
+        /// Returns whether the given triangle is degenerated, i.e. its area is zero.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsDegenerated(Triangle3d t)
+            => IsDegenerated(t.P0, t.P1, t.P2);
+
+        #endregion
+
+        #region Normal
+
+        /// <summary>
+        /// Returns the normal of the triangle defined by the given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d Normal(V3d p0, V3d p1, V3d p2)
+            => (p1 - p0).Cross(p2 - p0).Normalized;
+
+        /// <summary>
+        /// Returns the normal of the given triangle.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d Normal(Triangle3d t)
+            => Normal(t.P0, t.P1, t.P2);
+
+        #endregion
+
+        #region Plane
+
+        /// <summary>
+        /// Returns the plane that contains the given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Plane3d Plane(V3d p0, V3d p1, V3d p2)
+            => new Plane3d(Normal(p0, p1, p2), p0);
+
+        /// <summary>
+        /// Returns the plane that contains the points of the given triangle.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Plane3d Plane(Triangle3d t)
+            => Plane(t.P0, t.P1, t.P2);
 
         #endregion
     }

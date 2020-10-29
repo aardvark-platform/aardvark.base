@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -8,15 +9,34 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
-        public double Area => 0.5 * ((P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y)).Abs();
-
-        public bool IsDegenerated => WindingOrder.IsTiny();
+        /// <summary>
+        /// Returns the area of the triangle.
+        /// </summary>
+        public double Area
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Triangle.Area(this);
+        }
 
         /// <summary>
-        /// Returns a value less than zero for ccw and greater than zero for cw.
-        /// The magnitude is twice the area.
+        /// Returns whether the triangle is degenerated, i.e. its area is zero.
         /// </summary>
-        public double WindingOrder => (P1.X - P0.X) * (P2.Y - P0.Y) - (P2.X - P0.X) * (P1.Y - P0.Y);
+        public bool IsDegenerated
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Triangle.IsDegenerated(this);
+        }
+
+        /// <summary>
+        /// Returns a negative value if the triangle has a
+        /// counter-clockwise winding order, and a positive value if it has a clockwise winding-order.
+        /// The magnitude is twice the area of the triangle.
+        /// </summary>
+        public double WindingOrder
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Triangle.WindingOrder(this);
+        }
 
         #endregion
 
@@ -132,6 +152,70 @@ namespace Aardvark.Base
                 return cir;
             }
         }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Contains static methods for triangles.
+    /// </summary>
+    public static partial class Triangle
+    {
+        #region Area
+
+        /// <summary>
+        /// Returns the area of the triangle defined by the given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Area(V2d p0, V2d p1, V2d p2)
+            => WindingOrder(p0, p1, p2).Abs() * 0.5;
+
+        /// <summary>
+        /// Returns the area of the given triangle.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Area(Triangle2d t)
+            => Area(t.P0, t.P1, t.P2);
+
+        #endregion
+
+        #region IsDegenerated
+
+        /// <summary>
+        /// Returns whether the triangle defined by the give points is degenerated, i.e. its area is zero.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsDegenerated(V2d p0, V2d p1, V2d p2)
+            => WindingOrder(p0, p1, p2).IsTiny();
+
+        /// <summary>
+        /// Returns whether the given triangle is degenerated, i.e. its area is zero.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsDegenerated(Triangle2d t)
+            => WindingOrder(t).IsTiny();
+
+        #endregion
+
+        #region WindingOrder
+
+        /// <summary>
+        /// Returns a negative value if the triangle defined by the given points has a
+        /// counter-clockwise winding order, and a positive value if it has a clockwise winding-order.
+        /// The magnitude is twice the area of the triangle.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double WindingOrder(V2d p0, V2d p1, V2d p2)
+            => (p1.X - p0.X) * (p2.Y - p0.Y) - (p2.X - p0.X) * (p1.Y - p0.Y);
+
+        /// <summary>
+        /// Returns a negative value if the given triangle has a
+        /// counter-clockwise winding order, and a positive value if it has a clockwise winding-order.
+        /// The magnitude is twice the area of the triangle.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double WindingOrder(Triangle2d t)
+            => WindingOrder(t.P0, t.P1, t.P2);
 
         #endregion
     }
