@@ -2545,7 +2545,7 @@ namespace Aardvark.Base
         //# }
         //# }
         //# if (ft.IsReal) {
-        //# var cast = (ft != Meta.DoubleType) ? "(" + ftype + ") " : "";
+        //# var constant = (ft != Meta.DoubleType) ? "ConstantF" : "Constant";
         //# variants = (ft == Meta.FloatType) ? new string[] { "" } : new string[] { "", "Full" };
         //# foreach (var v in variants) {
         //# if (d == 2) {
@@ -2556,7 +2556,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Uniform__vtype____v__Direction(this IRandomUniform rnd)
         {
-            __ftype__ phi = rnd.Uniform__fcaps____v__() * __cast__Constant.PiTimesTwo;
+            __ftype__ phi = rnd.Uniform__fcaps____v__() * __constant__.PiTimesTwo;
             return new __vtype__(Fun.Cos(phi), Fun.Sin(phi));
         }
 
@@ -2570,7 +2570,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Uniform__vtype____v__Direction(this IRandomUniform rnd)
         {
-            __ftype__ phi = rnd.Uniform__fcaps____v__() * __cast__Constant.PiTimesTwo;
+            __ftype__ phi = rnd.Uniform__fcaps____v__() * __constant__.PiTimesTwo;
             __ftype__ z = 1 - rnd.Uniform__fcaps____v__() * 2;
             __ftype__ s = Fun.Sqrt(1 - z * z);
             return new __vtype__(Fun.Cos(phi) * s, Fun.Sin(phi) * s, z);

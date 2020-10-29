@@ -681,7 +681,7 @@ namespace Aardvark.Base
 
                 if (number < 0)
                 {
-                    var phi = (float)Constant.Pi;
+                    var phi = ConstantF.Pi;
                     return ComplexF.CreateRadial(Exp(Log(-number) * a - b * phi), a * phi + b * Log(-number));
                 }
                 else
@@ -715,7 +715,7 @@ namespace Aardvark.Base
         public static ComplexF Acos(this ComplexF x)
         {
             var t = Log(new ComplexF(-x.Imag, x.Real) + Sqrt(1 - x * x));
-            return new ComplexF(-t.Imag + (float)Constant.PiHalf, t.Real);
+            return new ComplexF(-t.Imag + ConstantF.PiHalf, t.Real);
         }
 
         /// <summary>
@@ -790,9 +790,9 @@ namespace Aardvark.Base
             else if (x == -ComplexF.I)
                 return ComplexF.NegativeInfinityI;
             else if (x == ComplexF.PositiveInfinity)
-                return new ComplexF((float)Constant.PiHalf);
+                return new ComplexF(ConstantF.PiHalf);
             else if (x == ComplexF.NegativeInfinity)
-                return new ComplexF(-(float)Constant.PiHalf);
+                return new ComplexF(-ConstantF.PiHalf);
             else
                 return new ComplexF(0, 0.5f) * Log((ComplexF.I + x) / (ComplexF.I - x));
         }
@@ -808,9 +808,9 @@ namespace Aardvark.Base
             else if (x == ComplexF.One)
                 return ComplexF.PositiveInfinity;
             else if (x == ComplexF.PositiveInfinity)
-                return new ComplexF(0, -(float)Constant.PiHalf);
+                return new ComplexF(0, -ConstantF.PiHalf);
             else if (x == ComplexF.I)
-                return new ComplexF(0, (float)Constant.PiQuarter);
+                return new ComplexF(0, ConstantF.PiQuarter);
             else
                 return 0.5f * (Log(1 + x) - Log(1 - x));
         }
@@ -876,7 +876,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log2(this ComplexF x)
-            => x.Log() * (float)Constant.Ln2Inv;
+            => x.Log() * ConstantF.Ln2Inv;
 
         #endregion
 
@@ -935,7 +935,7 @@ namespace Aardvark.Base
         public static ComplexF[] Csqrt(this ComplexF number)
         {
             ComplexF res0 = ComplexF.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
-            ComplexF res1 = ComplexF.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + (float)Constant.Pi);
+            ComplexF res1 = ComplexF.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + ConstantF.Pi);
 
             return new ComplexF[2] { res0, res1 };
         }
@@ -950,7 +950,7 @@ namespace Aardvark.Base
 
             float invN = 1 / (float)n;
             float phi = number.Argument / n;
-            float dphi = (float)Constant.PiTimesTwo * invN;
+            float dphi = ConstantF.PiTimesTwo * invN;
             float r = Pow(number.Norm, invN);
 
             for (int i = 0; i < n; i++)
@@ -1999,7 +1999,7 @@ namespace Aardvark.Base
         public static ComplexD[] Csqrt(this ComplexD number)
         {
             ComplexD res0 = ComplexD.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
-            ComplexD res1 = ComplexD.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + (double)Constant.Pi);
+            ComplexD res1 = ComplexD.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + Constant.Pi);
 
             return new ComplexD[2] { res0, res1 };
         }

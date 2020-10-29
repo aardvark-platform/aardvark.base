@@ -71,7 +71,7 @@ namespace Aardvark.Base
         /// </summary>
         public static float DegreesFromRadians(this float radians)
         {
-            return radians * (float)Constant.DegreesPerRadian;
+            return radians * ConstantF.DegreesPerRadian;
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Aardvark.Base
         /// </summary>
         public static float RadiansFromDegrees(this float degrees)
         {
-            return degrees * (float)Constant.RadiansPerDegree;
+            return degrees * ConstantF.RadiansPerDegree;
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Aardvark.Base
         /// </summary>
         public static float DegreesFromGons(this float gons)
         {
-            return gons * (float)Constant.DegreesPerGon;
+            return gons * ConstantF.DegreesPerGon;
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Aardvark.Base
         /// </summary>
         public static float RadiansFromGons(this float gons)
         {
-            return gons * (float)Constant.RadiansPerGon;
+            return gons * ConstantF.RadiansPerGon;
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace Aardvark.Base
         /// </summary>
         public static float GonsFromDegrees(this float degrees)
         {
-            return degrees * (float)Constant.GonsPerDegree;
+            return degrees * ConstantF.GonsPerDegree;
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Aardvark.Base
         /// </summary>
         public static float GonsFromRadians(this float radians)
         {
-            return radians * (float)Constant.GonsPerRadian;
+            return radians * ConstantF.GonsPerRadian;
         }
 
         /// <summary>

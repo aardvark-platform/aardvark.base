@@ -922,7 +922,7 @@ namespace Aardvark.Base
 
         //# numtypes.ForEach(t => {
         //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
-        //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
+        //# var rconst = (rtype != Meta.DoubleType) ? "ConstantF" : "Constant";
         /// <summary>
         /// Returns e raised to the specified number.
         //# if (!dreptypes.Contains(t)) {
@@ -1005,10 +1005,10 @@ namespace Aardvark.Base
                 return Math.__fname__(x);
             //# } else {
                 //return MathF.__fname__(x); // MathF.Log2 actually uses a conversion to double internally and has bad perfromance, see Aardvark.Base.Benchmarks/Log2Int.cs
-                return x.Log() * __rcast__Constant.Ln2Inv;
+                return x.Log() * __rconst__.Ln2Inv;
             //# }
             #else
-                return x.Log() * __rcast__Constant.Ln2Inv;
+                return x.Log() * __rconst__.Ln2Inv;
             #endif
         }
 

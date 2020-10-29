@@ -416,9 +416,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Distance(this __type__ r1, __type__ r2)
         {
-            //# var cast = isDouble ? "" : "(float)"; 
-            var phi = Fun.Abs(r2.Angle - r1.Angle) % __cast__Constant.PiTimesTwo;
-            return (phi > __cast__Constant.Pi) ? __cast__Constant.PiTimesTwo - phi : phi;
+            //# var constant = isDouble ? "Constant" : "ConstantF"; 
+            var phi = Fun.Abs(r2.Angle - r1.Angle) % __constant__.PiTimesTwo;
+            return (phi > __constant__.Pi) ? __constant__.PiTimesTwo - phi : phi;
         }
 
         #endregion

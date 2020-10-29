@@ -19,7 +19,7 @@ namespace Aardvark.Base
     //#   var ft2 = ftype2.Name;
     //#   var ct = isDouble ? "ComplexD" : "ComplexF";
     //#   var ct2 = isDouble ? "ComplexF" : "ComplexD";
-    //#   var cast = isDouble ? "" : "(" + ft + ")";
+    //#   var constant = isDouble ? "Constant" : "ConstantF";
     //#   var half = isDouble ? "0.5" : "0.5f";
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
@@ -693,7 +693,7 @@ namespace Aardvark.Base
 
                 if (number < 0)
                 {
-                    var phi = __cast__Constant.Pi;
+                    var phi = __constant__.Pi;
                     return __ct__.CreateRadial(Exp(Log(-number) * a - b * phi), a * phi + b * Log(-number));
                 }
                 else
@@ -727,7 +727,7 @@ namespace Aardvark.Base
         public static __ct__ Acos(this __ct__ x)
         {
             var t = Log(new __ct__(-x.Imag, x.Real) + Sqrt(1 - x * x));
-            return new __ct__(-t.Imag + __cast__Constant.PiHalf, t.Real);
+            return new __ct__(-t.Imag + __constant__.PiHalf, t.Real);
         }
 
         /// <summary>
@@ -802,9 +802,9 @@ namespace Aardvark.Base
             else if (x == -__ct__.I)
                 return __ct__.NegativeInfinityI;
             else if (x == __ct__.PositiveInfinity)
-                return new __ct__(__cast__Constant.PiHalf);
+                return new __ct__(__constant__.PiHalf);
             else if (x == __ct__.NegativeInfinity)
-                return new __ct__(-__cast__Constant.PiHalf);
+                return new __ct__(-__constant__.PiHalf);
             else
                 return new __ct__(0, __half__) * Log((__ct__.I + x) / (__ct__.I - x));
         }
@@ -820,9 +820,9 @@ namespace Aardvark.Base
             else if (x == __ct__.One)
                 return __ct__.PositiveInfinity;
             else if (x == __ct__.PositiveInfinity)
-                return new __ct__(0, -__cast__Constant.PiHalf);
+                return new __ct__(0, -__constant__.PiHalf);
             else if (x == __ct__.I)
-                return new __ct__(0, __cast__Constant.PiQuarter);
+                return new __ct__(0, __constant__.PiQuarter);
             else
                 return __half__ * (Log(1 + x) - Log(1 - x));
         }
@@ -888,7 +888,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log2(this __ct__ x)
-            => x.Log() * __cast__Constant.Ln2Inv;
+            => x.Log() * __constant__.Ln2Inv;
 
         #endregion
 
@@ -953,7 +953,7 @@ namespace Aardvark.Base
         public static __ct__[] Csqrt(this __ct__ number)
         {
             __ct__ res0 = __ct__.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
-            __ct__ res1 = __ct__.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + (__ft__)Constant.Pi);
+            __ct__ res1 = __ct__.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + __constant__.Pi);
 
             return new __ct__[2] { res0, res1 };
         }
@@ -968,7 +968,7 @@ namespace Aardvark.Base
 
             __ft__ invN = 1 / (__ft__)n;
             __ft__ phi = number.Argument / n;
-            __ft__ dphi = __cast__Constant.PiTimesTwo * invN;
+            __ft__ dphi = __constant__.PiTimesTwo * invN;
             __ft__ r = Pow(number.Norm, invN);
 
             for (int i = 0; i < n; i++)

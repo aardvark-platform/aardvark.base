@@ -512,8 +512,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Distance(this Rot2f r1, Rot2f r2)
         {
-            var phi = Fun.Abs(r2.Angle - r1.Angle) % (float)Constant.PiTimesTwo;
-            return (phi > (float)Constant.Pi) ? (float)Constant.PiTimesTwo - phi : phi;
+            var phi = Fun.Abs(r2.Angle - r1.Angle) % ConstantF.PiTimesTwo;
+            return (phi > ConstantF.Pi) ? ConstantF.PiTimesTwo - phi : phi;
         }
 
         #endregion

@@ -43,7 +43,7 @@ namespace Aardvark.Base
     //#   var assertEps = isDouble ? "1e-10" : "1e-6f";
     //#   var half = isDouble ? "0.5" : "0.5f";
     //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
-    //#   var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
+    //#   var piHalf = isDouble ? "Constant.PiHalf" : "ConstantF.PiHalf";
     //#   var assertNorm = "Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, " + assertEps + "))";
     //#   var eps = isDouble ? "1e-12" : "1e-5f";
     //#   var getptr = "&" + qfields[0];

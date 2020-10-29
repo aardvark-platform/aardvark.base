@@ -1148,14 +1148,14 @@ namespace Aardvark.Base
             {
                 return new V3f(
                     2 * Fun.Atan2(r.X, r.W),
-                    (float)Constant.PiHalf,
+                    ConstantF.PiHalf,
                     0);
             }
             if (test < -0.5f + Constant<float>.PositiveTinyValue) // singularity at south pole
             {
                 return new V3f(
                     2 * Fun.Atan2(r.X, r.W),
-                    -(float)Constant.PiHalf,
+                    -ConstantF.PiHalf,
                     0);
             }
             // From Wikipedia, conversion between quaternions and Euler angles.
