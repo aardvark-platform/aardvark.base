@@ -24,6 +24,7 @@ namespace Aardvark.Base
     //# Action el = () => Out("else ");
     //# var tcharA = new[] { "i", "l", "f", "d" };
     //# var ftypeA = new[] { "int", "long", "float", "double" };
+    //# var fcapsA = new[] { "Int", "Long", "Float", "Double" };
     //# var ctypeA = new[] { "double", "double", "float", "double" }; // computation types
     //# var fields = new[] {"X", "Y", "Z", "W"};
     //# var ops = new[] {" + ", " - ", " % ", " / ", " * "};
@@ -55,6 +56,7 @@ namespace Aardvark.Base
     //#     var mfields = fields.Take(m).ToArray();
     //#     var isReal = t > 1;    
     //#     var ftype = ftypeA[t];
+    //#     var fcaps = fcapsA[t];
     //#     var ctype = ctypeA[t];
     //#     var vnctype = "V"+ n + ctype[0];
     //#     var vnsub1ctype = "V"+ nsub1 + ctype[0];
@@ -2134,6 +2136,55 @@ namespace Aardvark.Base
 
         #endregion
         //# }
+    }
+
+    public static class IRandomUniform__nmtype__Extensions
+    {
+        #region IRandomUniform extensions for __nmtype__
+
+        //# string[] variants;
+        //# if (t == 2) {
+        //#     variants = new string[] { "", "Closed", "Open" };
+        //# } else if (t == 3) {
+        //#     variants = new string[] { "", "Closed", "Open", "Full", "FullClosed", "FullOpen" };
+        //# } else {
+        //#     variants = new string[] { "", "NonZero" };
+        //# }
+        //# foreach (var v in variants) {
+        /// <summary>
+        /// Uses Uniform__fcaps____v__() to generate the elements of an __nmtype__ matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Uniform__nmtype____v__(this IRandomUniform rnd)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(c => { var rf = fields[r]; */rnd.Uniform__fcaps____v__()/*#}, comma);}, comma); */);
+        }
+
+        //# }
+        //# if (!isReal) {
+        /// <summary>
+        /// Uses Uniform__fcaps__(__ftype__) to generate the elements of an __nmtype__ matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Uniform__nmtype__(this IRandomUniform rnd, __ftype__ size)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(c => { var rf = fields[r]; */rnd.Uniform__fcaps__(size)/*#}, comma);}, comma); */);
+        }
+
+        /// <summary>
+        /// Uses Uniform__fcaps__(__ftype__) to generate the elements of an __nmtype__ matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ Uniform__nmtype__(this IRandomUniform rnd, __nmtype__ size)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(c => { var rf = fields[r]; */rnd.Uniform__fcaps__(size.M__r____c__)/*#}, comma);}, comma); */);
+        }
+
+        //# }
+        #endregion
     }
 
     #endregion

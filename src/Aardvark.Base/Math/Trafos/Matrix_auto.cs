@@ -2174,6 +2174,57 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM22iExtensions
+    {
+        #region IRandomUniform extensions for M22i
+
+        /// <summary>
+        /// Uses UniformInt() to generate the elements of an M22i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i UniformM22i(this IRandomUniform rnd)
+        {
+            return new M22i(
+                rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt());
+        }
+
+        /// <summary>
+        /// Uses UniformIntNonZero() to generate the elements of an M22i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i UniformM22iNonZero(this IRandomUniform rnd)
+        {
+            return new M22i(
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M22i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i UniformM22i(this IRandomUniform rnd, int size)
+        {
+            return new M22i(
+                rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size));
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M22i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i UniformM22i(this IRandomUniform rnd, M22i size)
+        {
+            return new M22i(
+                rnd.UniformInt(size.M00), rnd.UniformInt(size.M01), 
+                rnd.UniformInt(size.M10), rnd.UniformInt(size.M11));
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M22l
@@ -4221,6 +4272,57 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this M22l m, long epsilon)
             => Mat.AllTiny(m, epsilon);
+
+        #endregion
+    }
+
+    public static class IRandomUniformM22lExtensions
+    {
+        #region IRandomUniform extensions for M22l
+
+        /// <summary>
+        /// Uses UniformLong() to generate the elements of an M22l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l UniformM22l(this IRandomUniform rnd)
+        {
+            return new M22l(
+                rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong());
+        }
+
+        /// <summary>
+        /// Uses UniformLongNonZero() to generate the elements of an M22l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l UniformM22lNonZero(this IRandomUniform rnd)
+        {
+            return new M22l(
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M22l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l UniformM22l(this IRandomUniform rnd, long size)
+        {
+            return new M22l(
+                rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size));
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M22l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l UniformM22l(this IRandomUniform rnd, M22l size)
+        {
+            return new M22l(
+                rnd.UniformLong(size.M00), rnd.UniformLong(size.M01), 
+                rnd.UniformLong(size.M10), rnd.UniformLong(size.M11));
+        }
 
         #endregion
     }
@@ -6597,6 +6699,46 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM22fExtensions
+    {
+        #region IRandomUniform extensions for M22f
+
+        /// <summary>
+        /// Uses UniformFloat() to generate the elements of an M22f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f UniformM22f(this IRandomUniform rnd)
+        {
+            return new M22f(
+                rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatClosed() to generate the elements of an M22f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f UniformM22fClosed(this IRandomUniform rnd)
+        {
+            return new M22f(
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatOpen() to generate the elements of an M22f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22f UniformM22fOpen(this IRandomUniform rnd)
+        {
+            return new M22f(
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M22d
@@ -8869,6 +9011,79 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM22dExtensions
+    {
+        #region IRandomUniform extensions for M22d
+
+        /// <summary>
+        /// Uses UniformDouble() to generate the elements of an M22d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d UniformM22d(this IRandomUniform rnd)
+        {
+            return new M22d(
+                rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleClosed() to generate the elements of an M22d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d UniformM22dClosed(this IRandomUniform rnd)
+        {
+            return new M22d(
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleOpen() to generate the elements of an M22d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d UniformM22dOpen(this IRandomUniform rnd)
+        {
+            return new M22d(
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFull() to generate the elements of an M22d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d UniformM22dFull(this IRandomUniform rnd)
+        {
+            return new M22d(
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullClosed() to generate the elements of an M22d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d UniformM22dFullClosed(this IRandomUniform rnd)
+        {
+            return new M22d(
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullOpen() to generate the elements of an M22d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22d UniformM22dFullOpen(this IRandomUniform rnd)
+        {
+            return new M22d(
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M23i
@@ -11000,6 +11215,57 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM23iExtensions
+    {
+        #region IRandomUniform extensions for M23i
+
+        /// <summary>
+        /// Uses UniformInt() to generate the elements of an M23i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i UniformM23i(this IRandomUniform rnd)
+        {
+            return new M23i(
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt());
+        }
+
+        /// <summary>
+        /// Uses UniformIntNonZero() to generate the elements of an M23i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i UniformM23iNonZero(this IRandomUniform rnd)
+        {
+            return new M23i(
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M23i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i UniformM23i(this IRandomUniform rnd, int size)
+        {
+            return new M23i(
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size));
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M23i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i UniformM23i(this IRandomUniform rnd, M23i size)
+        {
+            return new M23i(
+                rnd.UniformInt(size.M00), rnd.UniformInt(size.M01), rnd.UniformInt(size.M02), 
+                rnd.UniformInt(size.M10), rnd.UniformInt(size.M11), rnd.UniformInt(size.M12));
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M23l
@@ -13015,6 +13281,57 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this M23l m, long epsilon)
             => Mat.AllTiny(m, epsilon);
+
+        #endregion
+    }
+
+    public static class IRandomUniformM23lExtensions
+    {
+        #region IRandomUniform extensions for M23l
+
+        /// <summary>
+        /// Uses UniformLong() to generate the elements of an M23l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l UniformM23l(this IRandomUniform rnd)
+        {
+            return new M23l(
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong());
+        }
+
+        /// <summary>
+        /// Uses UniformLongNonZero() to generate the elements of an M23l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l UniformM23lNonZero(this IRandomUniform rnd)
+        {
+            return new M23l(
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M23l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l UniformM23l(this IRandomUniform rnd, long size)
+        {
+            return new M23l(
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size));
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M23l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l UniformM23l(this IRandomUniform rnd, M23l size)
+        {
+            return new M23l(
+                rnd.UniformLong(size.M00), rnd.UniformLong(size.M01), rnd.UniformLong(size.M02), 
+                rnd.UniformLong(size.M10), rnd.UniformLong(size.M11), rnd.UniformLong(size.M12));
+        }
 
         #endregion
     }
@@ -15205,6 +15522,46 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM23fExtensions
+    {
+        #region IRandomUniform extensions for M23f
+
+        /// <summary>
+        /// Uses UniformFloat() to generate the elements of an M23f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f UniformM23f(this IRandomUniform rnd)
+        {
+            return new M23f(
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatClosed() to generate the elements of an M23f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f UniformM23fClosed(this IRandomUniform rnd)
+        {
+            return new M23f(
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatOpen() to generate the elements of an M23f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23f UniformM23fOpen(this IRandomUniform rnd)
+        {
+            return new M23f(
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M23d
@@ -17275,6 +17632,79 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFinite(M23d v)
             => v.IsFinite;
+
+        #endregion
+    }
+
+    public static class IRandomUniformM23dExtensions
+    {
+        #region IRandomUniform extensions for M23d
+
+        /// <summary>
+        /// Uses UniformDouble() to generate the elements of an M23d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d UniformM23d(this IRandomUniform rnd)
+        {
+            return new M23d(
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleClosed() to generate the elements of an M23d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d UniformM23dClosed(this IRandomUniform rnd)
+        {
+            return new M23d(
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleOpen() to generate the elements of an M23d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d UniformM23dOpen(this IRandomUniform rnd)
+        {
+            return new M23d(
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFull() to generate the elements of an M23d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d UniformM23dFull(this IRandomUniform rnd)
+        {
+            return new M23d(
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullClosed() to generate the elements of an M23d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d UniformM23dFullClosed(this IRandomUniform rnd)
+        {
+            return new M23d(
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullOpen() to generate the elements of an M23d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23d UniformM23dFullOpen(this IRandomUniform rnd)
+        {
+            return new M23d(
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen());
+        }
 
         #endregion
     }
@@ -20014,6 +20444,61 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM33iExtensions
+    {
+        #region IRandomUniform extensions for M33i
+
+        /// <summary>
+        /// Uses UniformInt() to generate the elements of an M33i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i UniformM33i(this IRandomUniform rnd)
+        {
+            return new M33i(
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt());
+        }
+
+        /// <summary>
+        /// Uses UniformIntNonZero() to generate the elements of an M33i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i UniformM33iNonZero(this IRandomUniform rnd)
+        {
+            return new M33i(
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M33i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i UniformM33i(this IRandomUniform rnd, int size)
+        {
+            return new M33i(
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size));
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M33i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i UniformM33i(this IRandomUniform rnd, M33i size)
+        {
+            return new M33i(
+                rnd.UniformInt(size.M00), rnd.UniformInt(size.M01), rnd.UniformInt(size.M02), 
+                rnd.UniformInt(size.M10), rnd.UniformInt(size.M11), rnd.UniformInt(size.M12), 
+                rnd.UniformInt(size.M20), rnd.UniformInt(size.M21), rnd.UniformInt(size.M22));
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M33l
@@ -22619,6 +23104,61 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this M33l m, long epsilon)
             => Mat.AllTiny(m, epsilon);
+
+        #endregion
+    }
+
+    public static class IRandomUniformM33lExtensions
+    {
+        #region IRandomUniform extensions for M33l
+
+        /// <summary>
+        /// Uses UniformLong() to generate the elements of an M33l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l UniformM33l(this IRandomUniform rnd)
+        {
+            return new M33l(
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong());
+        }
+
+        /// <summary>
+        /// Uses UniformLongNonZero() to generate the elements of an M33l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l UniformM33lNonZero(this IRandomUniform rnd)
+        {
+            return new M33l(
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M33l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l UniformM33l(this IRandomUniform rnd, long size)
+        {
+            return new M33l(
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size));
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M33l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l UniformM33l(this IRandomUniform rnd, M33l size)
+        {
+            return new M33l(
+                rnd.UniformLong(size.M00), rnd.UniformLong(size.M01), rnd.UniformLong(size.M02), 
+                rnd.UniformLong(size.M10), rnd.UniformLong(size.M11), rnd.UniformLong(size.M12), 
+                rnd.UniformLong(size.M20), rnd.UniformLong(size.M21), rnd.UniformLong(size.M22));
+        }
 
         #endregion
     }
@@ -25724,6 +26264,49 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM33fExtensions
+    {
+        #region IRandomUniform extensions for M33f
+
+        /// <summary>
+        /// Uses UniformFloat() to generate the elements of an M33f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f UniformM33f(this IRandomUniform rnd)
+        {
+            return new M33f(
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatClosed() to generate the elements of an M33f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f UniformM33fClosed(this IRandomUniform rnd)
+        {
+            return new M33f(
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatOpen() to generate the elements of an M33f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33f UniformM33fOpen(this IRandomUniform rnd)
+        {
+            return new M33f(
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M33d
@@ -28711,6 +29294,85 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM33dExtensions
+    {
+        #region IRandomUniform extensions for M33d
+
+        /// <summary>
+        /// Uses UniformDouble() to generate the elements of an M33d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d UniformM33d(this IRandomUniform rnd)
+        {
+            return new M33d(
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleClosed() to generate the elements of an M33d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d UniformM33dClosed(this IRandomUniform rnd)
+        {
+            return new M33d(
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleOpen() to generate the elements of an M33d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d UniformM33dOpen(this IRandomUniform rnd)
+        {
+            return new M33d(
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFull() to generate the elements of an M33d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d UniformM33dFull(this IRandomUniform rnd)
+        {
+            return new M33d(
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullClosed() to generate the elements of an M33d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d UniformM33dFullClosed(this IRandomUniform rnd)
+        {
+            return new M33d(
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullOpen() to generate the elements of an M33d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33d UniformM33dFullOpen(this IRandomUniform rnd)
+        {
+            return new M33d(
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M34i
@@ -31291,6 +31953,61 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM34iExtensions
+    {
+        #region IRandomUniform extensions for M34i
+
+        /// <summary>
+        /// Uses UniformInt() to generate the elements of an M34i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i UniformM34i(this IRandomUniform rnd)
+        {
+            return new M34i(
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt());
+        }
+
+        /// <summary>
+        /// Uses UniformIntNonZero() to generate the elements of an M34i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i UniformM34iNonZero(this IRandomUniform rnd)
+        {
+            return new M34i(
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M34i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i UniformM34i(this IRandomUniform rnd, int size)
+        {
+            return new M34i(
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size));
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M34i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i UniformM34i(this IRandomUniform rnd, M34i size)
+        {
+            return new M34i(
+                rnd.UniformInt(size.M00), rnd.UniformInt(size.M01), rnd.UniformInt(size.M02), rnd.UniformInt(size.M03), 
+                rnd.UniformInt(size.M10), rnd.UniformInt(size.M11), rnd.UniformInt(size.M12), rnd.UniformInt(size.M13), 
+                rnd.UniformInt(size.M20), rnd.UniformInt(size.M21), rnd.UniformInt(size.M22), rnd.UniformInt(size.M23));
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M34l
@@ -33741,6 +34458,61 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this M34l m, long epsilon)
             => Mat.AllTiny(m, epsilon);
+
+        #endregion
+    }
+
+    public static class IRandomUniformM34lExtensions
+    {
+        #region IRandomUniform extensions for M34l
+
+        /// <summary>
+        /// Uses UniformLong() to generate the elements of an M34l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l UniformM34l(this IRandomUniform rnd)
+        {
+            return new M34l(
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong());
+        }
+
+        /// <summary>
+        /// Uses UniformLongNonZero() to generate the elements of an M34l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l UniformM34lNonZero(this IRandomUniform rnd)
+        {
+            return new M34l(
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M34l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l UniformM34l(this IRandomUniform rnd, long size)
+        {
+            return new M34l(
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size));
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M34l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l UniformM34l(this IRandomUniform rnd, M34l size)
+        {
+            return new M34l(
+                rnd.UniformLong(size.M00), rnd.UniformLong(size.M01), rnd.UniformLong(size.M02), rnd.UniformLong(size.M03), 
+                rnd.UniformLong(size.M10), rnd.UniformLong(size.M11), rnd.UniformLong(size.M12), rnd.UniformLong(size.M13), 
+                rnd.UniformLong(size.M20), rnd.UniformLong(size.M21), rnd.UniformLong(size.M22), rnd.UniformLong(size.M23));
+        }
 
         #endregion
     }
@@ -36506,6 +37278,49 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM34fExtensions
+    {
+        #region IRandomUniform extensions for M34f
+
+        /// <summary>
+        /// Uses UniformFloat() to generate the elements of an M34f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f UniformM34f(this IRandomUniform rnd)
+        {
+            return new M34f(
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatClosed() to generate the elements of an M34f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f UniformM34fClosed(this IRandomUniform rnd)
+        {
+            return new M34f(
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatOpen() to generate the elements of an M34f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34f UniformM34fOpen(this IRandomUniform rnd)
+        {
+            return new M34f(
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M34d
@@ -39137,6 +39952,85 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFinite(M34d v)
             => v.IsFinite;
+
+        #endregion
+    }
+
+    public static class IRandomUniformM34dExtensions
+    {
+        #region IRandomUniform extensions for M34d
+
+        /// <summary>
+        /// Uses UniformDouble() to generate the elements of an M34d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d UniformM34d(this IRandomUniform rnd)
+        {
+            return new M34d(
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleClosed() to generate the elements of an M34d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d UniformM34dClosed(this IRandomUniform rnd)
+        {
+            return new M34d(
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleOpen() to generate the elements of an M34d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d UniformM34dOpen(this IRandomUniform rnd)
+        {
+            return new M34d(
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFull() to generate the elements of an M34d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d UniformM34dFull(this IRandomUniform rnd)
+        {
+            return new M34d(
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullClosed() to generate the elements of an M34d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d UniformM34dFullClosed(this IRandomUniform rnd)
+        {
+            return new M34d(
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullOpen() to generate the elements of an M34d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34d UniformM34dFullOpen(this IRandomUniform rnd)
+        {
+            return new M34d(
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen());
+        }
 
         #endregion
     }
@@ -42291,6 +43185,65 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM44iExtensions
+    {
+        #region IRandomUniform extensions for M44i
+
+        /// <summary>
+        /// Uses UniformInt() to generate the elements of an M44i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i UniformM44i(this IRandomUniform rnd)
+        {
+            return new M44i(
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), 
+                rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt());
+        }
+
+        /// <summary>
+        /// Uses UniformIntNonZero() to generate the elements of an M44i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i UniformM44iNonZero(this IRandomUniform rnd)
+        {
+            return new M44i(
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), 
+                rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero(), rnd.UniformIntNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M44i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i UniformM44i(this IRandomUniform rnd, int size)
+        {
+            return new M44i(
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), 
+                rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size), rnd.UniformInt(size));
+        }
+
+        /// <summary>
+        /// Uses UniformInt(int) to generate the elements of an M44i matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i UniformM44i(this IRandomUniform rnd, M44i size)
+        {
+            return new M44i(
+                rnd.UniformInt(size.M00), rnd.UniformInt(size.M01), rnd.UniformInt(size.M02), rnd.UniformInt(size.M03), 
+                rnd.UniformInt(size.M10), rnd.UniformInt(size.M11), rnd.UniformInt(size.M12), rnd.UniformInt(size.M13), 
+                rnd.UniformInt(size.M20), rnd.UniformInt(size.M21), rnd.UniformInt(size.M22), rnd.UniformInt(size.M23), 
+                rnd.UniformInt(size.M30), rnd.UniformInt(size.M31), rnd.UniformInt(size.M32), rnd.UniformInt(size.M33));
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M44l
@@ -45297,6 +46250,65 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this M44l m, long epsilon)
             => Mat.AllTiny(m, epsilon);
+
+        #endregion
+    }
+
+    public static class IRandomUniformM44lExtensions
+    {
+        #region IRandomUniform extensions for M44l
+
+        /// <summary>
+        /// Uses UniformLong() to generate the elements of an M44l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l UniformM44l(this IRandomUniform rnd)
+        {
+            return new M44l(
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), 
+                rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong(), rnd.UniformLong());
+        }
+
+        /// <summary>
+        /// Uses UniformLongNonZero() to generate the elements of an M44l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l UniformM44lNonZero(this IRandomUniform rnd)
+        {
+            return new M44l(
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), 
+                rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero(), rnd.UniformLongNonZero());
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M44l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l UniformM44l(this IRandomUniform rnd, long size)
+        {
+            return new M44l(
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), 
+                rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size), rnd.UniformLong(size));
+        }
+
+        /// <summary>
+        /// Uses UniformLong(long) to generate the elements of an M44l matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l UniformM44l(this IRandomUniform rnd, M44l size)
+        {
+            return new M44l(
+                rnd.UniformLong(size.M00), rnd.UniformLong(size.M01), rnd.UniformLong(size.M02), rnd.UniformLong(size.M03), 
+                rnd.UniformLong(size.M10), rnd.UniformLong(size.M11), rnd.UniformLong(size.M12), rnd.UniformLong(size.M13), 
+                rnd.UniformLong(size.M20), rnd.UniformLong(size.M21), rnd.UniformLong(size.M22), rnd.UniformLong(size.M23), 
+                rnd.UniformLong(size.M30), rnd.UniformLong(size.M31), rnd.UniformLong(size.M32), rnd.UniformLong(size.M33));
+        }
 
         #endregion
     }
@@ -48802,6 +49814,52 @@ namespace Aardvark.Base
         #endregion
     }
 
+    public static class IRandomUniformM44fExtensions
+    {
+        #region IRandomUniform extensions for M44f
+
+        /// <summary>
+        /// Uses UniformFloat() to generate the elements of an M44f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f UniformM44f(this IRandomUniform rnd)
+        {
+            return new M44f(
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), 
+                rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat(), rnd.UniformFloat());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatClosed() to generate the elements of an M44f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f UniformM44fClosed(this IRandomUniform rnd)
+        {
+            return new M44f(
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), 
+                rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed(), rnd.UniformFloatClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformFloatOpen() to generate the elements of an M44f matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44f UniformM44fOpen(this IRandomUniform rnd)
+        {
+            return new M44f(
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), 
+                rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen(), rnd.UniformFloatOpen());
+        }
+
+        #endregion
+    }
+
     #endregion
 
     #region M44d
@@ -52196,6 +53254,91 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFinite(M44d v)
             => v.IsFinite;
+
+        #endregion
+    }
+
+    public static class IRandomUniformM44dExtensions
+    {
+        #region IRandomUniform extensions for M44d
+
+        /// <summary>
+        /// Uses UniformDouble() to generate the elements of an M44d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d UniformM44d(this IRandomUniform rnd)
+        {
+            return new M44d(
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), 
+                rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble(), rnd.UniformDouble());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleClosed() to generate the elements of an M44d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d UniformM44dClosed(this IRandomUniform rnd)
+        {
+            return new M44d(
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), 
+                rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed(), rnd.UniformDoubleClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleOpen() to generate the elements of an M44d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d UniformM44dOpen(this IRandomUniform rnd)
+        {
+            return new M44d(
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), 
+                rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen(), rnd.UniformDoubleOpen());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFull() to generate the elements of an M44d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d UniformM44dFull(this IRandomUniform rnd)
+        {
+            return new M44d(
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), 
+                rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull(), rnd.UniformDoubleFull());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullClosed() to generate the elements of an M44d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d UniformM44dFullClosed(this IRandomUniform rnd)
+        {
+            return new M44d(
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), 
+                rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed(), rnd.UniformDoubleFullClosed());
+        }
+
+        /// <summary>
+        /// Uses UniformDoubleFullOpen() to generate the elements of an M44d matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44d UniformM44dFullOpen(this IRandomUniform rnd)
+        {
+            return new M44d(
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), 
+                rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen(), rnd.UniformDoubleFullOpen());
+        }
 
         #endregion
     }

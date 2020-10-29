@@ -17,7 +17,7 @@ namespace Aardvark.Tests
         public void MinMaxElementTest()
         {
             var rnd = new RandomSystem(1);
-            var m = new M44i(rnd.CreateUniformIntArray(16));
+            var m = rnd.UniformM44i();
 
             var min1 = m.MinElement;
             var min2 = Mat.MinElement(m);
