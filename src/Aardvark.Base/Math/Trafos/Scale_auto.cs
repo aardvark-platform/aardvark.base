@@ -370,7 +370,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="Scale2f"/> transformation from a scaling <see cref="M22f"/> matrix.
+        /// Creates a <see cref="Scale2f"/> transformation from a <see cref="M22f"/> matrix.
+        /// The matrix must only contain scaling components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1033,7 +1034,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="Scale3f"/> transformation from a scaling <see cref="M33f"/> matrix.
+        /// Creates a <see cref="Scale3f"/> transformation from a <see cref="M33f"/> matrix.
+        /// The matrix must only contain scaling components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1657,7 +1659,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="Scale2d"/> transformation from a scaling <see cref="M22d"/> matrix.
+        /// Creates a <see cref="Scale2d"/> transformation from a <see cref="M22d"/> matrix.
+        /// The matrix must only contain scaling components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2320,7 +2323,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="Scale3d"/> transformation from a scaling <see cref="M33d"/> matrix.
+        /// Creates a <see cref="Scale3d"/> transformation from a <see cref="M33d"/> matrix.
+        /// The matrix must only contain scaling components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -563,6 +563,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="Rot3f"/> transformation from a rotation matrix.
+        /// The matrix must be orthonormal.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         public static Rot3f FromM33f(M33f m, float epsilon = (float)1e-6)
@@ -1773,6 +1774,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="Rot3d"/> transformation from a rotation matrix.
+        /// The matrix must be orthonormal.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         public static Rot3d FromM33d(M33d m, double epsilon = (double)1e-6)

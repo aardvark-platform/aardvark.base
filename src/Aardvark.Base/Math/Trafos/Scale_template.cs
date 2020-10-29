@@ -350,7 +350,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="__type__"/> transformation from a scaling <see cref="__mddt__"/> matrix.
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__mddt__"/> matrix.
+        /// The matrix must only contain scaling components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

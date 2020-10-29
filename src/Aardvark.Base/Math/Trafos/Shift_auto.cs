@@ -404,7 +404,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="Shift2f"/> transformation from a translation <see cref="M23f"/> matrix.
+        /// Creates a <see cref="Shift2f"/> transformation from a <see cref="M23f"/> matrix.
+        /// The matrix must only contain translation components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1133,7 +1134,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="Shift3f"/> transformation from a translation <see cref="M34f"/> matrix.
+        /// Creates a <see cref="Shift3f"/> transformation from a <see cref="M34f"/> matrix.
+        /// The matrix must only contain translation components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1807,7 +1809,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="Shift2d"/> transformation from a translation <see cref="M23d"/> matrix.
+        /// Creates a <see cref="Shift2d"/> transformation from a <see cref="M23d"/> matrix.
+        /// The matrix must only contain translation components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2536,7 +2539,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="Shift3d"/> transformation from a translation <see cref="M34d"/> matrix.
+        /// Creates a <see cref="Shift3d"/> transformation from a <see cref="M34d"/> matrix.
+        /// The matrix must only contain translation components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

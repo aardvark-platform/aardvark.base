@@ -559,6 +559,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="__type__"/> transformation from a rotation matrix.
+        /// The matrix must be orthonormal.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         public static __type__ From__m33t__(__m33t__ m, __ftype__ epsilon = (__ftype__)1e-6)

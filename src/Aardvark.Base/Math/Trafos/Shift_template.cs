@@ -408,7 +408,8 @@ namespace Aardvark.Base
         #region Static Creators
 
         /// <summary>
-        /// Creates a <see cref="__type__"/> transformation from a translation <see cref="__mdd1t__"/> matrix.
+        /// Creates a <see cref="__type__"/> transformation from a <see cref="__mdd1t__"/> matrix.
+        /// The matrix must only contain translation components.
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
