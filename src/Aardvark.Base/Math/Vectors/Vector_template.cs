@@ -558,6 +558,15 @@ namespace Aardvark.Base
         //# }); // quantArray
         //# }); // condArray
         /// <summary>
+        /// Returns true if the absolute value of each component of the vector is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue, false otherwise.
+        /// </summary>
+        public bool IsTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AllTiny;
+        }
+
+        /// <summary>
         /// Returns true if any component of the vector is NaN, false otherwise.
         /// </summary>
         public bool IsNaN
@@ -1672,7 +1681,7 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this __vtype__ v, __ftype__ epsilon)
-            => /*# fields.ForEach(f => { */v.__f__.IsTiny(epsilon)/*# }, andand);*/;
+            => Vec.AllTiny(v, epsilon);
 
         //# if (ft.IsReal) {
         /// <summary>
@@ -1680,8 +1689,8 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this __vtype__ v)
-            => /*# fields.ForEach(f => { */v.__f__.IsTiny()/*# }, andand);*/;
+        public static bool IsTiny(__vtype__ v)
+            => v.IsTiny;
 
         //# }
         #endregion
@@ -2228,7 +2237,44 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="__vtype__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this __vtype__ v, __ftype__ epsilon)
+            => /*# fields.ForEach(f => { */v.__f__.IsTiny(epsilon)/*# }, oror);*/;
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="__vtype__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this __vtype__ v, __ftype__ epsilon)
+            => /*# fields.ForEach(f => { */v.__f__.IsTiny(epsilon)/*# }, andand);*/;
+
+        #endregion
+
         //# if (ft.IsReal) {
+        #region Special Floating Point Value Checks
+
+        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var quantArray = new[] { "Any", "All" };
+        //# var actArray = new[] { oror, andand };
+        //# condArray.ForEach(scopeArray, (cond, scope) => {
+        //# quantArray.ForEach(actArray, (qant, act) => {
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool __qant____cond__(__vtype__ v)
+            => v.__qant____cond__;
+
+        //# }); // quantArray
+        //# }); // condArray
+        #endregion
+
         //# if (d == 2) {
         #region 2D Vector Arithmetics
 

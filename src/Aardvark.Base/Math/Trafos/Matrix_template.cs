@@ -813,6 +813,15 @@ namespace Aardvark.Base
         //# }); // quantArray
         //# }); // condArray 
         /// <summary>
+        /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue, false otherwise.
+        /// </summary>
+        public bool IsTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AllTiny;
+        }
+
+        /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
         public bool IsNaN
@@ -1981,6 +1990,42 @@ namespace Aardvark.Base
 
         #endregion
         //# }
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any element of the given <see cref="__nmtype__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this __nmtype__ m, __ftype__ epsilon)
+            => /*# n.ForEach(r => { m.ForEach(s => {*/m.M__r____s__.IsTiny(epsilon)/*# }, oror); }, oror);*/;
+
+        /// <summary>
+        /// Returns whether the absolute value of each element of the given <see cref="__nmtype__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this __nmtype__ m, __ftype__ epsilon)
+            => /*# n.ForEach(r => { m.ForEach(s => {*/m.M__r____s__.IsTiny(epsilon)/*# }, andand); }, andand);*/;
+
+        #endregion
+        //# if (isReal) {
+
+        #region Special Floating Point Value Checks
+
+        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var quantArray = new[] { "Any", "All" };
+        //# var actArray = new[] { oror, andand };
+        //# condArray.ForEach(scopeArray, (cond, scope) => {
+        //# quantArray.ForEach(actArray, (qant, act) => {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool __qant____cond__(__nmtype__ m)
+            => m.__qant____cond__;
+
+        //# }); // quantArray
+        //# }); // condArray
+        #endregion
+        //# } // isReal
     }
 
     public static partial class Fun
@@ -2005,6 +2050,26 @@ namespace Aardvark.Base
             return Mat.DistanceMax(a, b) <= epsilon; //Inefficient implementation, no early exit of comparisons.
         }
 
+        #endregion
+
+        #region IsTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of each element of the given <see cref="__nmtype__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(this __nmtype__ m, __ftype__ epsilon)
+            => Mat.AllTiny(m, epsilon);
+
+        //# if (isReal) {
+        /// <summary>
+        /// Returns whether the absolute value of each element of the given <see cref="__nmtype__"/> is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsTiny(__nmtype__ m)
+            => m.IsTiny;
+
+        //# }
         #endregion
         //# if (isReal) {
 

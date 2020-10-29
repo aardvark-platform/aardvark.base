@@ -1621,7 +1621,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C3b c, byte epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         #endregion
     }
@@ -2084,6 +2084,24 @@ namespace Aardvark.Base
                 p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
                 p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C3b"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C3b c, byte epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3b"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C3b c, byte epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
 
         #endregion
     }
@@ -3702,7 +3720,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C3us c, ushort epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         #endregion
     }
@@ -4165,6 +4183,24 @@ namespace Aardvark.Base
                 p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
                 p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C3us"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C3us c, ushort epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3us"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C3us c, ushort epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
 
         #endregion
     }
@@ -5714,7 +5750,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C3ui c, uint epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         #endregion
     }
@@ -6179,6 +6215,24 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C3ui"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C3ui c, uint epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3ui"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C3ui c, uint epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+
+        #endregion
     }
 
     public static class IRandomUniformC3uiExtensions
@@ -6597,6 +6651,15 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B);
+        }
+
+        /// <summary>
+        /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
+        /// </summary>
+        public bool IsTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AllTiny;
         }
 
         /// <summary>
@@ -7656,14 +7719,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C3f c, float epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         /// <summary>
         /// Returns whether the absolute value of each component of the given <see cref="C3f"/> is smaller than Constant&lt;float&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this C3f c)
-            => c.R.IsTiny() && c.G.IsTiny() && c.B.IsTiny();
+        public static bool IsTiny(C3f c)
+            => c.IsTiny;
 
         #endregion
 
@@ -8083,6 +8146,68 @@ namespace Aardvark.Base
                 (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
                 (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C3f"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C3f c, float epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3f"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C3f c, float epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyNaN(C3f c)
+            => c.AnyNaN;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllNaN(C3f c)
+            => c.AllNaN;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyInfinity(C3f c)
+            => c.AnyInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllInfinity(C3f c)
+            => c.AllInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyPositiveInfinity(C3f c)
+            => c.AnyPositiveInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllPositiveInfinity(C3f c)
+            => c.AllPositiveInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyNegativeInfinity(C3f c)
+            => c.AnyNegativeInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllNegativeInfinity(C3f c)
+            => c.AllNegativeInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(C3f c)
+            => c.AnyTiny;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(C3f c)
+            => c.AllTiny;
 
         #endregion
     }
@@ -8521,6 +8646,15 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B);
+        }
+
+        /// <summary>
+        /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
+        /// </summary>
+        public bool IsTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AllTiny;
         }
 
         /// <summary>
@@ -9580,14 +9714,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C3d c, double epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         /// <summary>
         /// Returns whether the absolute value of each component of the given <see cref="C3d"/> is smaller than Constant&lt;double&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this C3d c)
-            => c.R.IsTiny() && c.G.IsTiny() && c.B.IsTiny();
+        public static bool IsTiny(C3d c)
+            => c.IsTiny;
 
         #endregion
 
@@ -10007,6 +10141,68 @@ namespace Aardvark.Base
                 (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
                 (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C3d"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C3d c, double epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C3d"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C3d c, double epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon);
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyNaN(C3d c)
+            => c.AnyNaN;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllNaN(C3d c)
+            => c.AllNaN;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyInfinity(C3d c)
+            => c.AnyInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllInfinity(C3d c)
+            => c.AllInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyPositiveInfinity(C3d c)
+            => c.AnyPositiveInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllPositiveInfinity(C3d c)
+            => c.AllPositiveInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyNegativeInfinity(C3d c)
+            => c.AnyNegativeInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllNegativeInfinity(C3d c)
+            => c.AllNegativeInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(C3d c)
+            => c.AnyTiny;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(C3d c)
+            => c.AllTiny;
 
         #endregion
     }
@@ -11954,7 +12150,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C4b c, byte epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         #endregion
     }
@@ -12417,6 +12613,24 @@ namespace Aardvark.Base
                 p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
                 p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C4b"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C4b c, byte epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon) || c.A.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4b"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C4b c, byte epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
 
         #endregion
     }
@@ -14303,7 +14517,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C4us c, ushort epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         #endregion
     }
@@ -14766,6 +14980,24 @@ namespace Aardvark.Base
                 p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
                 p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C4us"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C4us c, ushort epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon) || c.A.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4us"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C4us c, ushort epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
 
         #endregion
     }
@@ -16566,7 +16798,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C4ui c, uint epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         #endregion
     }
@@ -17029,6 +17261,24 @@ namespace Aardvark.Base
                 p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5, 
                 p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5);
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C4ui"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C4ui c, uint epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon) || c.A.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4ui"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C4ui c, uint epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
 
         #endregion
     }
@@ -17595,6 +17845,15 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B) && Fun.IsTiny(A);
+        }
+
+        /// <summary>
+        /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
+        /// </summary>
+        public bool IsTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AllTiny;
         }
 
         /// <summary>
@@ -18690,14 +18949,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C4f c, float epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         /// <summary>
         /// Returns whether the absolute value of each component of the given <see cref="C4f"/> is smaller than Constant&lt;float&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this C4f c)
-            => c.R.IsTiny() && c.G.IsTiny() && c.B.IsTiny() && c.A.IsTiny();
+        public static bool IsTiny(C4f c)
+            => c.IsTiny;
 
         #endregion
 
@@ -19117,6 +19376,68 @@ namespace Aardvark.Base
                 (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
                 (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C4f"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C4f c, float epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon) || c.A.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4f"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C4f c, float epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyNaN(C4f c)
+            => c.AnyNaN;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllNaN(C4f c)
+            => c.AllNaN;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyInfinity(C4f c)
+            => c.AnyInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllInfinity(C4f c)
+            => c.AllInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyPositiveInfinity(C4f c)
+            => c.AnyPositiveInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllPositiveInfinity(C4f c)
+            => c.AllPositiveInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyNegativeInfinity(C4f c)
+            => c.AnyNegativeInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllNegativeInfinity(C4f c)
+            => c.AllNegativeInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(C4f c)
+            => c.AnyTiny;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(C4f c)
+            => c.AllTiny;
 
         #endregion
     }
@@ -19704,6 +20025,15 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B) && Fun.IsTiny(A);
+        }
+
+        /// <summary>
+        /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
+        /// </summary>
+        public bool IsTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AllTiny;
         }
 
         /// <summary>
@@ -20799,14 +21129,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this C4d c, double epsilon)
-            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+            => Col.AllTiny(c, epsilon);
 
         /// <summary>
         /// Returns whether the absolute value of each component of the given <see cref="C4d"/> is smaller than Constant&lt;double&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this C4d c)
-            => c.R.IsTiny() && c.G.IsTiny() && c.B.IsTiny() && c.A.IsTiny();
+        public static bool IsTiny(C4d c)
+            => c.IsTiny;
 
         #endregion
 
@@ -21226,6 +21556,68 @@ namespace Aardvark.Base
                 (p0.G * w.E0 + p1.G * w.E1 + p2.G * w.E2 + p3.G * w.E3 + p4.G * w.E4 + p5.G * w.E5), 
                 (p0.B * w.E0 + p1.B * w.E1 + p2.B * w.E2 + p3.B * w.E3 + p4.B * w.E4 + p5.B * w.E5));
         }
+
+        #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="C4d"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this C4d c, double epsilon)
+            => c.R.IsTiny(epsilon) || c.G.IsTiny(epsilon) || c.B.IsTiny(epsilon) || c.A.IsTiny(epsilon);
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="C4d"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this C4d c, double epsilon)
+            => c.R.IsTiny(epsilon) && c.G.IsTiny(epsilon) && c.B.IsTiny(epsilon) && c.A.IsTiny(epsilon);
+
+        #endregion
+
+        #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyNaN(C4d c)
+            => c.AnyNaN;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllNaN(C4d c)
+            => c.AllNaN;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyInfinity(C4d c)
+            => c.AnyInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllInfinity(C4d c)
+            => c.AllInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyPositiveInfinity(C4d c)
+            => c.AnyPositiveInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllPositiveInfinity(C4d c)
+            => c.AllPositiveInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyNegativeInfinity(C4d c)
+            => c.AnyNegativeInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllNegativeInfinity(C4d c)
+            => c.AllNegativeInfinity;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(C4d c)
+            => c.AnyTiny;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(C4d c)
+            => c.AllTiny;
 
         #endregion
     }

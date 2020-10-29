@@ -609,6 +609,15 @@ namespace Aardvark.Base
         //# }); // quantArray
         //# }); // condArray
         /// <summary>
+        /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue, false otherwise.
+        /// </summary>
+        public bool IsTiny
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AllTiny;
+        }
+
+        /// <summary>
         /// Returns true if any component of the color is NaN, false otherwise.
         /// </summary>
         public bool IsNaN
@@ -1221,15 +1230,15 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsTiny(this __type__ c, __ftype__ epsilon)
-            => /*# fields.ForEach(f => { */c.__f__.IsTiny(epsilon)/*# }, andand);*/;
+            => Col.AllTiny(c, epsilon);
 
         //# if (ft.IsReal) {
         /// <summary>
         /// Returns whether the absolute value of each component of the given <see cref="__type__"/> is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTiny(this __type__ c)
-            => /*# fields.ForEach(f => { */c.__f__.IsTiny()/*# }, andand);*/;
+        public static bool IsTiny(__type__ c)
+            => c.IsTiny;
 
         //# }
         #endregion
@@ -1369,6 +1378,42 @@ namespace Aardvark.Base
         //# } // rt
         //# } // tpc
         #endregion
+
+        #region AnyTiny, AllTiny
+
+        /// <summary>
+        /// Returns whether the absolute value of any component of the given <see cref="__type__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyTiny(this __type__ c, __ftype__ epsilon)
+            => /*# fields.ForEach(f => { */c.__f__.IsTiny(epsilon)/*# }, oror);*/;
+
+        /// <summary>
+        /// Returns whether the absolute value of each component of the given <see cref="__type__"/> is smaller than <paramref name="epsilon"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllTiny(this __type__ c, __ftype__ epsilon)
+            => /*# fields.ForEach(f => { */c.__f__.IsTiny(epsilon)/*# }, andand);*/;
+
+        #endregion
+        //# if (isReal) {
+
+        #region Special Floating Point Value Checks
+
+        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var quantArray = new[] { "Any", "All" };
+        //# var actArray = new[] { oror, andand };
+        //# condArray.ForEach(scopeArray, (cond, scope) => {
+        //# quantArray.ForEach(actArray, (qant, act) => {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool __qant____cond__(__type__ c)
+            => c.__qant____cond__;
+
+        //# }); // quantArray
+        //# }); // condArray
+        #endregion
+        //# }
     }
 
     //# if (ft != Meta.ByteType && ft != Meta.UShortType) {
