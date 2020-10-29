@@ -87,9 +87,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a Hull3d from the given box where plane normals point outside.
         /// </summary>
-        public static Hull3d Create(Box3d box)
+        public Hull3d(Box3d box)
         {
-            return new Hull3d(new[]
+            PlaneArray = new[]
             {
                 new Plane3d(-V3d.XAxis, box.Min),
                 new Plane3d(-V3d.YAxis, box.Min),
@@ -97,9 +97,12 @@ namespace Aardvark.Base
                 new Plane3d(V3d.XAxis, box.Max),
                 new Plane3d(V3d.YAxis, box.Max),
                 new Plane3d(V3d.ZAxis, box.Max)
-            });
+            };
         }
 
+        /// <summary>
+        /// Creates a Hull3d from another Hull3d.
+        /// </summary>
         public Hull3d(Hull3d hull)
         {
             PlaneArray = hull.PlaneArray.Copy();
