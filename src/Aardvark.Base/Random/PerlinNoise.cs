@@ -34,7 +34,7 @@ namespace Aardvark.Base
 
             m_interpolate = (a, b, x) =>
             {
-                x = (1 - (x * Constant.PiF).Cos()) * 0.5f;
+                x = (1 - (x * ConstantF.Pi).Cos()) * 0.5f;
                 return a * (1 - x) + b * x;
             };
 		}

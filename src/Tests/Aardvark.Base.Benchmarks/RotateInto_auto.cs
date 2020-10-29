@@ -26,7 +26,7 @@ namespace Aardvark.Base.Benchmarks
 
                 if (angle < 1e-6f)
                     return Rot3f.Identity;
-                else if (Constant.PiF - angle < 1e-6f)
+                else if (ConstantF.Pi - angle < 1e-6f)
                     return new Rot3f(0, from.AxisAlignedNormal());
                 else
                 {

@@ -1,3 +1,5 @@
+using System;
+
 namespace Aardvark.Base
 {
     public enum Metric
@@ -161,12 +163,17 @@ namespace Aardvark.Base
         /// Ratio of a circle's circumference to its diameter as float
         /// in Euclidean geometry. Also known as Archimedes' constant.
         /// </summary>
+        [Obsolete("Use ConstantF.Pi instead")]
         public const float PiF = (float)Pi;
 
         /// <summary>
         /// Two times PI: the circumference of the unit circle.
         /// </summary>
         public const double PiTimesTwo = 6.283185307179586476925286766559;
+
+        /// <summary>
+        /// Three times PI.
+        /// </summary>
         public const double PiTimesThree = 9.424777960769379715387930149839;
 
         /// <summary>
@@ -198,7 +205,7 @@ namespace Aardvark.Base
         /// Base of the natural logarithm.
         /// Also known as Euler's number.
         /// </summary>
-        public const double E = System.Math.E;
+        public const double E = Math.E;
 
         /// <summary>
         /// Golden Ratio.
@@ -222,6 +229,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Square root of 0.5.
         /// </summary>
+        [Obsolete("Use ConstantF.Sqrt2Half instead")]
         public const float Sqrt2HalfF = (float)Sqrt2Half;
 
         /// <summary>
@@ -242,6 +250,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Natural logarithm (base e) of 2 as float.
         /// </summary>
+        [Obsolete("Use ConstantF.Ln2 instead")]
         public const float Ln2F = (float)Ln2;
 
         /// <summary>
@@ -252,11 +261,18 @@ namespace Aardvark.Base
         /// <summary>
         /// 1 divided by logarithm of 2 (base e) as float.
         /// </summary>
+        [Obsolete("Use ConstantF.Ln2Inv instead")]
         public const float Ln2InvF = (float)Ln2Inv;
 
-
+        /// <summary>
+        /// 1 divided by 3.
+        /// </summary>
         public const double OneThird = 0.33333333333333333333333333333333;
 
+        /// <summary>
+        /// 1 divided by 3.
+        /// </summary>
+        [Obsolete("Use ConstantF.OneThird instead")]
         public const double OneThirdF = (float)OneThird;
 
         /// <summary>
@@ -309,5 +325,155 @@ namespace Aardvark.Base
         /// The speed of light in meters per second.
         /// </summary>
         public const double SpeedOfLight = 299792458.0;
+    }
+
+    /// <summary>
+    /// Mathematical constants.
+    /// </summary>
+    public static class ConstantF
+    {
+        /// <summary>
+        /// Ratio of a circle's circumference to its diameter
+        /// in Euclidean geometry. Also known as Archimedes' constant.
+        /// </summary>
+        public const float Pi = (float)Constant.Pi;
+
+        /// <summary>
+        /// One divided by Pi (1 / Pi).
+        /// </summary>
+        public const float PiInv = (float)Constant.PiInv;
+
+        /// <summary>
+        /// Two times PI: the circumference of the unit circle.
+        /// </summary>
+        public const float PiTimesTwo = (float)Constant.PiTimesTwo;
+
+        /// <summary>
+        /// Twree times PI.
+        /// </summary>
+        public const float PiTimesThree = (float)Constant.PiTimesThree;
+
+        /// <summary>
+        /// Four times PI: the surface area of the unit sphere.
+        /// </summary>
+        public const float PiTimesFour = (float)Constant.PiTimesFour;
+
+        /// <summary>
+        /// Half of PI.
+        /// </summary>
+        public const float PiHalf = (float)Constant.PiHalf;
+
+        /// <summary>
+        /// Quarter of PI.
+        /// </summary>
+        public const float PiQuarter = (float)Constant.PiQuarter;
+
+        /// <summary>
+        /// Square of PI.
+        /// </summary>
+        public const float PiSquared = (float)Constant.PiSquared;
+
+        /// <summary>
+        /// Sqrt(2 * PI).
+        /// </summary>
+        public const float SqrtPiTimesTwo = (float)Constant.SqrtPiTimesTwo;
+
+        /// <summary>
+        /// Base of the natural logarithm.
+        /// Also known as Euler's number.
+        /// </summary>
+        public const float E = (float)Constant.E;
+
+        /// <summary>
+        /// Golden Ratio.
+        /// The golden ratio expresses the relationship that
+        /// the sum of two quantities is to the larger quantity
+        /// as the larger is to the smaller.
+        /// It is defined as (1 + sqrt(5)) / 2).
+        /// </summary>
+        public const float Phi = (float)Constant.Phi;
+
+        /// <summary>
+        /// Square root of 2.
+        /// </summary>
+        public const float Sqrt2 = (float)Constant.Sqrt2;
+
+        /// <summary>
+        /// Square root of 0.5.
+        /// </summary>
+        public const float Sqrt2Half = (float)Constant.Sqrt2Half;
+
+        /// <summary>
+        /// Square root of 3.
+        /// </summary>
+        public const float Sqrt3 = (float)Constant.Sqrt3;
+
+        /// <summary>
+        /// Square root of 5.
+        /// </summary>
+        public const float Sqrt5 = (float)Constant.Sqrt5;
+
+        /// <summary>
+        /// Natural logarithm (base e) of 2.
+        /// </summary>
+        public const float Ln2 = (float)Constant.Ln2;
+
+        /// <summary>
+        /// 1 divided by logarithm of 2 (base e).
+        /// </summary>
+        public const float Ln2Inv = (float)Constant.Ln2Inv;
+
+        /// <summary>
+        /// 1 divided by 3.
+        /// </summary>
+        public const float OneThird = (float)Constant.OneThird;
+
+        /// <summary>
+        /// Used to convert degrees to radians.
+        /// See also <see cref="Conversion"/> class.
+        /// </summary>
+        public const float RadiansPerDegree = (float)Constant.RadiansPerDegree;
+
+        /// <summary>
+        /// Used to convert radians to degrees.
+        /// See also <see cref="Conversion"/> class.
+        /// </summary>
+        public const float DegreesPerRadian = (float)Constant.DegreesPerRadian;
+        /// <summary>
+        /// Used to convert gons to radians.
+        /// See also <see cref="Conversion"/> class.
+        /// </summary>
+        public const float RadiansPerGon = (float)Constant.RadiansPerGon;
+        /// <summary>
+        /// Used to convert radians to gons.
+        /// See also <see cref="Conversion"/> class.
+        /// </summary>
+        public const float GonsPerRadian = (float)Constant.GonsPerRadian;
+        /// <summary>
+        /// Used to convert gons to degrees.
+        /// See also <see cref="Conversion"/> class.
+        /// </summary>
+        public const float DegreesPerGon = (float)Constant.DegreesPerGon;
+
+        /// <summary>
+        /// Used to convert degrees to gons.
+        /// See also <see cref="Conversion"/> class.
+        /// </summary>
+        public const float GonsPerDegree = (float)Constant.GonsPerDegree;
+
+        /// <summary>
+        /// One sixtieth (1/60) of one degree (in radians).
+        /// </summary>
+        public const float ArcMinute = (float)Constant.ArcMinute;
+
+        /// <summary>
+        /// One sixtieth (1/60) of one arc minute (in radians).
+        /// </summary>
+        public const float ArcSecond = (float)Constant.ArcSecond;
+
+        /// <summary>
+        /// The speed of light in meters per second.
+        /// </summary>
+        public const float SpeedOfLight = (float)Constant.SpeedOfLight;
     }
 }

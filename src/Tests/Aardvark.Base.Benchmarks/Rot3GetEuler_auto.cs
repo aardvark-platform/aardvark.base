@@ -27,14 +27,14 @@ namespace Aardvark.Base.Benchmarks
                 {
                     return new V3f(
                         2 * Fun.Atan2(r.X, r.W),
-                        (float)Constant.PiHalf,
+                        ConstantF.PiHalf,
                         0);
                 }
                 if (test < -0.5f + Constant<float>.PositiveTinyValue) // singularity at south pole
                 {
                     return new V3f(
                         2 * Fun.Atan2(r.X, r.W),
-                        -(float)Constant.PiHalf,
+                        -ConstantF.PiHalf,
                         0);
                 }
                 // From Wikipedia, conversion between quaternions and Euler angles.
@@ -54,7 +54,7 @@ namespace Aardvark.Base.Benchmarks
                 {
                     return new V3f(
                         2 * Fun.Atan2(r.X, r.W),
-                        Fun.CopySign((float)Constant.PiHalf, test),
+                        Fun.CopySign(ConstantF.PiHalf, test),
                         0);
                 }
                 else
@@ -87,9 +87,9 @@ namespace Aardvark.Base.Benchmarks
             var rnd = new RandomSystem(1);
             EulerAngles.SetByIndex(i =>
             {
-                var vrnd = rnd.UniformV3f() * Constant.PiF * 2;
+                var vrnd = rnd.UniformV3f() * ConstantF.Pi * 2;
                 var veps = (rnd.UniformDouble() < 0.5) ? rnd.UniformV3f() * (i / (float)100) * 1e-12f : V3f.Zero;
-                var vspc = new V3f(rnd.UniformV3i(4)) * (float)Constant.PiHalf + veps;
+                var vspc = new V3f(rnd.UniformV3i(4)) * ConstantF.PiHalf + veps;
 
                 float roll = (rnd.UniformDouble() < 0.5) ? vrnd.X : vspc.X;
                 float pitch = (rnd.UniformDouble() < 0.5) ? vrnd.Y : vspc.Y;

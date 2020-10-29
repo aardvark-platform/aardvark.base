@@ -19,8 +19,8 @@ namespace Aardvark.Base.Benchmarks
     //#     var quatt = "Quaternion" + fc.ToUpper();
     //#     var v3t = Meta.VecTypeOf(3, rt).Name;
     //#     var half = isDouble ? "0.5" : "0.5f";
-    //#     var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
-    //#     var piHalf = isDouble ? "Constant.PiHalf" : "(float)Constant.PiHalf";
+    //#     var pi = isDouble ? "Constant.Pi" : "ConstantF.Pi";
+    //#     var piHalf = isDouble ? "Constant.PiHalf" : "ConstantF.PiHalf";
     //#     var eps = isDouble ? "1e-7" : "1e-2f";
     #region __rot3t__
 
