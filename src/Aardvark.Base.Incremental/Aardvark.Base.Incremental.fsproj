@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\Debug\</OutputPath>

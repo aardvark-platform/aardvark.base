@@ -5,6 +5,7 @@
     <AssemblyName>Aardvark.Base.Runtime</AssemblyName>
     <OutputType>Library</OutputType>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\Debug\</OutputPath>
