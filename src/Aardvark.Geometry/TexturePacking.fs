@@ -411,6 +411,33 @@ type TexturePacking<'a when 'a : equality> private(atlasSize : V2i, allowRotate 
         | ValueNone ->
             x
 
+    static member FromUsed(atlasSize : V2i, allowRotate : bool, used : HashMap<'a, Box2i>) =
+        let bb = Box2i(V2i.Zero, atlasSize - V2i.II)
+        let mutable free = BvhTree2d.ofList [bb, createBox bb, bb]
+
+        for (k, v) in used do
+        
+            let fitting, _ = free.GetContaining (createBox v) |> Seq.exactlyOne
+            let rest = split fitting v
+
+            let f =
+                (BvhTree2d.remove fitting free, rest)
+                ||> List.fold (fun f r -> addFree r f)
+
+            let intersecting = 
+                BvhTree2d.getIntersecting (createBox v) f
+
+            let f = 
+                (f, intersecting) ||> HashMap.fold (fun free fid struct(_, other) ->
+                    (BvhTree2d.remove fid free, split other v) 
+                    ||> List.fold (fun free p -> addFree p free)
+                )
+
+            free <- f
+
+
+        TexturePacking(atlasSize, allowRotate, free, used)
+
 /// TexturePacking represents an immutable 2D atlas.
 module TexturePacking =
     
