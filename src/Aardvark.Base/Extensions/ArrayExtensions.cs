@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
 using static System.Math;
 
 namespace Aardvark.Base
@@ -2394,7 +2395,8 @@ namespace Aardvark.Base
         /// <returns>128bit/16byte data hash</returns>
         public static byte[] ComputeMD5Hash(this byte[] data)
         {
-            return MD5.Create().ComputeHash(data);
+            using (var md5 = MD5.Create())
+                return md5.ComputeHash(data);
         }
 
         /// <summary>
@@ -2408,13 +2410,23 @@ namespace Aardvark.Base
             return hash;
         }
 
-        /// <summary>
-        /// Computes the SHA1 hash of the data array.
-        /// </summary>
-        /// <returns>160bit/20byte data hash</returns>
-        public static byte[] ComputeSHA1Hash(this byte[] data)
+		/// <summary>
+		/// Computes the MD5 hash of the given string.
+		/// <returns>128bit/16byte data hash</returns>
+		/// </summary>
+		public static byte[] ComputeMD5Hash(this string s)
+		{
+			return Encoding.Unicode.GetBytes(s).ComputeMD5Hash();
+		}
+
+		/// <summary>
+		/// Computes the SHA1 hash of the data array.
+		/// </summary>
+		/// <returns>160bit/20byte data hash</returns>
+		public static byte[] ComputeSHA1Hash(this byte[] data)
         {
-            return SHA1.Create().ComputeHash(data);
+			using (var sha1 = SHA1.Create())
+				return sha1.ComputeHash(data);
         }
 
         /// <summary>
@@ -2428,13 +2440,23 @@ namespace Aardvark.Base
             return hash;
         }
 
-        /// <summary>
-        /// Computes the SHA256 hash of the data array.
-        /// </summary>
-        /// <returns>256bit/32byte data hash</returns>
-        public static byte[] ComputeSHA256Hash(this byte[] data)
+		/// <summary>
+		/// Computes the SHA1 hash of the given string.
+		/// <returns>160bit/20byte data hash</returns>
+		/// </summary>
+		public static byte[] ComputeSHA1Hash(this string s)
+		{
+			return Encoding.Unicode.GetBytes(s).ComputeSHA1Hash();
+		}
+
+		/// <summary>
+		/// Computes the SHA256 hash of the data array.
+		/// </summary>
+		/// <returns>256bit/32byte data hash</returns>
+		public static byte[] ComputeSHA256Hash(this byte[] data)
         {
-            return SHA256.Create().ComputeHash(data);
+			using (var sha256 = SHA256.Create())
+				return sha256.ComputeHash(data);
         }
 
         /// <summary>
@@ -2448,13 +2470,23 @@ namespace Aardvark.Base
             return hash;
         }
 
-        /// <summary>
-        /// Computes the SHA512 hash of the data array.
-        /// </summary>
-        /// <returns>512bit/64byte data hash</returns>
-        public static byte[] ComputeSHA512Hash(this byte[] data)
+		/// <summary>
+		/// Computes the SHA256 hash of the given string.
+		/// </summary>
+		/// <returns>256bit/32byte data hash</returns>
+		public static byte[] ComputeSHA256Hash(this string s)
+		{
+			return Encoding.Unicode.GetBytes(s).ComputeSHA256Hash();
+		}
+
+		/// <summary>
+		/// Computes the SHA512 hash of the data array.
+		/// </summary>
+		/// <returns>512bit/64byte data hash</returns>
+		public static byte[] ComputeSHA512Hash(this byte[] data)
         {
-            return SHA512.Create().ComputeHash(data);
+			using (var sha512 = SHA512.Create())
+				return sha512.ComputeHash(data);
         }
 
         /// <summary>
@@ -2468,10 +2500,19 @@ namespace Aardvark.Base
             return hash;
         }
 
-        /// <summary>
-        /// Computes a checksum of the data array using the Adler-32 algorithm (<see cref="Adler32"/>).
-        /// </summary>
-        public static uint ComputeAdler32Checksum(this byte[] data)
+		/// <summary>
+		/// Computes the SHA512 hash of the given string.
+		/// </summary>
+		/// <returns>512bit/64byte data hash</returns>
+		public static byte[] ComputeSHA512Hash(this string s)
+		{
+			return Encoding.Unicode.GetBytes(s).ComputeSHA512Hash();
+		}
+
+		/// <summary>
+		/// Computes a checksum of the data array using the Adler-32 algorithm (<see cref="Adler32"/>).
+		/// </summary>
+		public static uint ComputeAdler32Checksum(this byte[] data)
         {
             var a = new Adler32();
             a.Update(data);
@@ -2488,6 +2529,14 @@ namespace Aardvark.Base
             return a.Checksum;            
         }
 
-        #endregion
-    }
+		/// <summary>
+		/// Computes a checksum of the given string using the Adler-32 algorithm (<see cref="Adler32"/>).
+		/// </summary>
+		public static uint ComputeAdler32Checksum(this string s)
+		{
+			return Encoding.Unicode.GetBytes(s).ComputeAdler32Checksum();
+		}
+
+		#endregion
+	}
 }
