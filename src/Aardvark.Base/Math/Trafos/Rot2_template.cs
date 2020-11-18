@@ -415,11 +415,15 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Distance(this __type__ r1, __type__ r2)
-        {
-            //# var constant = isDouble ? "Constant" : "ConstantF"; 
-            var phi = Fun.Abs(r2.Angle - r1.Angle) % __constant__.PiTimesTwo;
-            return (phi > __constant__.Pi) ? __constant__.PiTimesTwo - phi : phi;
-        }
+            => Fun.AngleDistance(r1.Angle, r2.Angle);
+
+        /// <summary>
+        /// Returns the signed difference in radians between two <see cref="__type__"/> rotations.
+        /// The result is within the range of [-Pi, Pi).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Difference(this __type__ r1, __type__ r2)
+            => Fun.AngleDifference(r1.Angle, r2.Angle);
 
         #endregion
 

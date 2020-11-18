@@ -120,6 +120,37 @@ namespace Aardvark.Base
         //# });
         #endregion
 
+        #region Angular Distance
+
+        //# fdtypes.ForEach(t => {
+        //# var constant = (t == Meta.DoubleType) ? "Constant" : "ConstantF";
+        /// <summary>
+        /// Returns the absolute difference between two angles in radians.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ AngleDistance(this __t.Name__ alphaInRadians, __t.Name__ betaInRadians)
+        {
+            var phi = Abs(betaInRadians - alphaInRadians) % __constant__.PiTimesTwo;
+            return (phi > __constant__.Pi) ? __constant__.PiTimesTwo - phi : phi;
+        }
+
+        /// <summary>
+        /// Returns the signed difference between two angles in radians.
+        /// The result is within the range of [-Pi, Pi).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ AngleDifference(this __t.Name__ alphaInRadians, __t.Name__ betaInRadians)
+        {
+            var phi = (betaInRadians - alphaInRadians + __constant__.Pi) % __constant__.PiTimesTwo - __constant__.Pi;
+            return (phi < -__constant__.Pi) ? phi + __constant__.PiTimesTwo : phi;
+        }
+
+        //# });
+        #endregion
+
         #region ApproximateEquals
 
         //# numtypes.ForEach(t => {

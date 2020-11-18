@@ -988,6 +988,58 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Angular Distance
+
+        /// <summary>
+        /// Returns the absolute difference between two angles in radians.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float AngleDistance(this float alphaInRadians, float betaInRadians)
+        {
+            var phi = Abs(betaInRadians - alphaInRadians) % ConstantF.PiTimesTwo;
+            return (phi > ConstantF.Pi) ? ConstantF.PiTimesTwo - phi : phi;
+        }
+
+        /// <summary>
+        /// Returns the signed difference between two angles in radians.
+        /// The result is within the range of [-Pi, Pi).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float AngleDifference(this float alphaInRadians, float betaInRadians)
+        {
+            var phi = (betaInRadians - alphaInRadians + ConstantF.Pi) % ConstantF.PiTimesTwo - ConstantF.Pi;
+            return (phi < -ConstantF.Pi) ? phi + ConstantF.PiTimesTwo : phi;
+        }
+
+        /// <summary>
+        /// Returns the absolute difference between two angles in radians.
+        /// The result is within the range of [0, Pi].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double AngleDistance(this double alphaInRadians, double betaInRadians)
+        {
+            var phi = Abs(betaInRadians - alphaInRadians) % Constant.PiTimesTwo;
+            return (phi > Constant.Pi) ? Constant.PiTimesTwo - phi : phi;
+        }
+
+        /// <summary>
+        /// Returns the signed difference between two angles in radians.
+        /// The result is within the range of [-Pi, Pi).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double AngleDifference(this double alphaInRadians, double betaInRadians)
+        {
+            var phi = (betaInRadians - alphaInRadians + Constant.Pi) % Constant.PiTimesTwo - Constant.Pi;
+            return (phi < -Constant.Pi) ? phi + Constant.PiTimesTwo : phi;
+        }
+
+        #endregion
+
         #region ApproximateEquals
 
         /// <summary>

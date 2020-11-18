@@ -1869,40 +1869,28 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DistanceSquared(this __vtype__ a, __vtype__ b)
-        {
-            return /*# fields.ForEach(f => { */
-                (b.__f__ - a.__f__) * (b.__f__ - a.__f__)/*# }, add); */;
-        }
+            => /*# fields.ForEach(f => { */Fun.Square(b.__f__ - a.__f__)/*# }, add); */;
 
         /// <summary>
         /// Returns the distance between the given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ctype__ Distance(this __vtype__ a, __vtype__ b)
-        {
-            return /*# if (ctype != "double") {*/(__ctype__)/*# } */Fun.Sqrt(/*# fields.ForEach(f => { */
-                        (b.__f__ - a.__f__) * (b.__f__ - a.__f__)/*# }, add); */);
-        }
+            => Fun.Sqrt(DistanceSquared(a, b));
 
         /// <summary>
         /// Returns the Manhatten (or 1-) distance between two vectors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ctype__ Distance1(this __vtype__ a, __vtype__ b)
-        {
-            return /*# fields.ForEach(f => { */
-                Fun.Abs(b.__f__ - a.__f__)/*# }, add); */;
-        }
+        public static __ftype__ Distance1(this __vtype__ a, __vtype__ b)
+            => /*# fields.ForEach(f => { */Fun.Abs(b.__f__ - a.__f__)/*# }, add); */;
 
         /// <summary>
         /// Returns the p-distance between two vectors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ctype__ Distance(this __vtype__ a, __vtype__ b, __ctype__ p)
-        {
-            return (/*# fields.ForEach(f => { */
-                        Fun.Abs(b.__f__ - a.__f__).Pow(p)/*# }, add); */).Pow(1 / p);
-        }
+            => (/*# fields.ForEach(f => { */Fun.Abs(b.__f__ - a.__f__).Pow(p)/*# }, add); */).Pow(1 / p);
 
         /// <summary>
         /// Returns the maximal absolute distance between the components of
@@ -1910,10 +1898,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DistanceMax(this __vtype__ a, __vtype__ b)
-        {
-            return Fun.Max(/*# fields.ForEach(f => { */
-                        Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
-        }
+            => Fun.Max(/*# fields.ForEach(f => { */Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
 
         /// <summary>
         /// Returns the minimal absolute distance between the components of
@@ -1921,10 +1906,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DistanceMin(this __vtype__ a, __vtype__ b)
-        {
-            return Fun.Min(/*# fields.ForEach(f => { */
-                        Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
-        }
+            => Fun.Min(/*# fields.ForEach(f => { */Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
 
         //# foreach (var hasT in new[] { false, true }) {
         //# var cast = (ft != ct) ? "(" + vctype + ") " : "";

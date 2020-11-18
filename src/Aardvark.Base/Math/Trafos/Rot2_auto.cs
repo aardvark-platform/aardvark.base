@@ -511,10 +511,15 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Distance(this Rot2f r1, Rot2f r2)
-        {
-            var phi = Fun.Abs(r2.Angle - r1.Angle) % ConstantF.PiTimesTwo;
-            return (phi > ConstantF.Pi) ? ConstantF.PiTimesTwo - phi : phi;
-        }
+            => Fun.AngleDistance(r1.Angle, r2.Angle);
+
+        /// <summary>
+        /// Returns the signed difference in radians between two <see cref="Rot2f"/> rotations.
+        /// The result is within the range of [-Pi, Pi).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Difference(this Rot2f r1, Rot2f r2)
+            => Fun.AngleDifference(r1.Angle, r2.Angle);
 
         #endregion
 
@@ -1115,10 +1120,15 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Distance(this Rot2d r1, Rot2d r2)
-        {
-            var phi = Fun.Abs(r2.Angle - r1.Angle) % Constant.PiTimesTwo;
-            return (phi > Constant.Pi) ? Constant.PiTimesTwo - phi : phi;
-        }
+            => Fun.AngleDistance(r1.Angle, r2.Angle);
+
+        /// <summary>
+        /// Returns the signed difference in radians between two <see cref="Rot2d"/> rotations.
+        /// The result is within the range of [-Pi, Pi).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Difference(this Rot2d r1, Rot2d r2)
+            => Fun.AngleDifference(r1.Angle, r2.Angle);
 
         #endregion
 

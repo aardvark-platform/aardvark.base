@@ -10,6 +10,41 @@ namespace Aardvark.Tests
         public FunTests(TestSuite.Options options) : base(options) { }
 
         [Test]
+        public static void AngleDistanceTest()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var alpha = rnd.UniformDouble() * Constant.PiTimesTwo;
+                var delta = (rnd.UniformDouble() - 0.5) * 2.0 * Constant.Pi;
+                var beta = alpha + (delta + Constant.PiTimesTwo * rnd.UniformInt(10));
+
+                var dist = alpha.AngleDistance(beta);
+                Assert.AreEqual(dist, Fun.Abs(delta), 1e-8);
+            }
+        }
+
+        [Test]
+        public static void AngleDifferenceTest()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var alpha = rnd.UniformDouble() * Constant.PiTimesTwo * rnd.UniformInt(10);
+                var delta = (rnd.UniformDouble() - 0.5) * Constant.Pi;
+                if (delta == Constant.Pi)
+                    delta = -Constant.Pi;
+
+                var beta = alpha + (delta + Constant.PiTimesTwo * rnd.UniformInt(10));
+
+                var dist = alpha.AngleDifference(beta);
+                Assert.AreEqual(dist, delta, 1e-8);
+            }
+        }
+
+        [Test]
         public void MinMaxVarArg()
         {
             var rnd = new RandomSystem(1);
