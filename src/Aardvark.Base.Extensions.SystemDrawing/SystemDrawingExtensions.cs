@@ -2,7 +2,9 @@
 
 namespace Aardvark.Base
 {
-    /// <summary></summary>
+    /// <summary>
+    /// Extensions for converting between System.Drawing and Aardvark data types.
+    /// </summary>
     public static class SystemDrawingExtensions
     {
         #region System.Drawing.Point
