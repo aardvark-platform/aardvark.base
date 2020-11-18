@@ -583,14 +583,21 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Enumerate all but last elements of an array. The number of
-        /// elements to omit is supplied as a parameter and defaults to
-        /// 1.
+        /// elements to omit is supplied as a parameter and defaults to 1.
         /// </summary>
-        public static IEnumerable<T> SkipLast<T>(
-                this T[] array, long count = 1)
+        public static IEnumerable<T> SkipLast<T>(this T[] array, long count = 1)
         {
             count = array.LongLength - count;
             for (long i = 0; i < count; i++) yield return array[i];
+        }
+
+        /// <summary>
+        /// Enumerate all but last elements of an array. The number of
+        /// elements to omit is supplied as a parameter and defaults to 1.
+        /// </summary>
+        public static IEnumerable<T> SkipLast<T>(this T[] array, int count = 1)
+        {
+            return SkipLast(array, (long)count);
         }
 
         /// <summary>
