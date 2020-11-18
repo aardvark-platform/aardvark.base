@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
 using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics;
 #endif
@@ -838,7 +838,7 @@ namespace Aardvark.Base
         }
 
         //# if (ft == Meta.FloatType && d == 4) {
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static __ctype__ Length_Sse41(__vtype__ vec)
         {
@@ -871,7 +871,7 @@ namespace Aardvark.Base
             get
             {
                 //# if (ft == Meta.FloatType && d == 4) {
-#if NETCOREAPP3_0
+#if NETCOREAPP3_1
                 if (Sse41.IsSupported)
                     return Length_Sse41(this);
 #endif

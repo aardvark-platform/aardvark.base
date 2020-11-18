@@ -109,7 +109,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return Math.__fname__(x);
@@ -198,7 +198,7 @@ namespace Aardvark.Base
             //# } else if (t == Meta.DoubleType) {
             return Math.__fname__(x);
             //# } else if (t == Meta.FloatType) {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float) Math.__fname__(x);
@@ -225,7 +225,7 @@ namespace Aardvark.Base
             //# } else if (t == Meta.DoubleType) {
             return Math.__fname__(x);
             //# } else if (t == Meta.FloatType) {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float) Math.__fname__(x);
@@ -252,7 +252,7 @@ namespace Aardvark.Base
             //# } else if (t == Meta.DoubleType) {
             return Math.__fname__(x);
             //# } else if (t == Meta.FloatType) {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float) Math.__fname__(x);
@@ -272,7 +272,7 @@ namespace Aardvark.Base
             //# } else if (t == Meta.DoubleType) {
             return Math.__fname__(x, mode);
             //# } else if (t == Meta.FloatType) {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x, mode);
             #else
                 return (float) Math.__fname__(x, mode);
@@ -292,7 +292,7 @@ namespace Aardvark.Base
             //# } else if (t == Meta.DoubleType) {
             return Math.__fname__(x, digits);
             //# } else if (t == Meta.FloatType) {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x, digits);
             #else
                 return (float) Math.__fname__(x, digits);
@@ -312,7 +312,7 @@ namespace Aardvark.Base
             //# } else if (t == Meta.DoubleType) {
             return Math.__fname__(x, digits, mode);
             //# } else if (t == Meta.FloatType) {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x, digits, mode);
             #else
                 return (float) Math.__fname__(x, digits, mode);
@@ -339,7 +339,7 @@ namespace Aardvark.Base
             //# } else if (t == Meta.DoubleType) {
             return Math.__fname__(x);
             //# } else if (t == Meta.FloatType) {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float) Math.__fname__(x);
@@ -561,7 +561,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return Math.__fname__(x);
@@ -588,7 +588,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return (__t.Name__) Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return Math.__fname__(x);
@@ -604,7 +604,7 @@ namespace Aardvark.Base
         //# fdtypes.ForEach(t => {
         //# var type = t.Name;
         //# var isDouble = (t == Meta.DoubleType);
-        #if NETCOREAPP3_0
+        #if NETCOREAPP3_1
         /// <summary>
         /// Returns (x * y) + z.
         /// Computes the result rounded as a single ternary operation.
@@ -618,7 +618,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ MultiplyAdd(__type__ x, __type__ y, __type__ z)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 //# if (isDouble) {
                 return Math.FusedMultiplyAdd(x, y, z);
                 //# } else {
@@ -691,7 +691,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ __fname__(__type__ x, __type__ y)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 //# if (t != Meta.FloatType) {
                 return Math.__fname__(x, y);
                 //# } else {
@@ -774,7 +774,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x, 1.0 / n);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x, 1.0f / n);
             #else
                 return (float)Math.__fname__(x, 1.0 / n);
@@ -799,7 +799,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -822,7 +822,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype.Name__ Cbrt(this __t.Name__ x)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 //# if (t != Meta.FloatType) {
                 return Math.__fname__(x);
                 //# } else {
@@ -875,7 +875,7 @@ namespace Aardvark.Base
             //# if (rt != Meta.FloatType || !freptypes.Contains(t)) {
             return __rcast__Math.Pow(x, y);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.Pow(x, y);
             #else
                 return __rcast__Math.Pow(x, y);
@@ -968,7 +968,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -990,7 +990,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1012,7 +1012,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1031,7 +1031,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype.Name__ __fname__(this __t.Name__ x)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
             //# if (t != Meta.FloatType) {
                 return Math.__fname__(x);
             //# } else {
@@ -1057,7 +1057,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x, basis);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x, basis);
             #else
                 return (float)Math.__fname__(x, basis);
@@ -1152,7 +1152,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.Pow(2, x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.Pow(2, x);
             #else
                 return (float)Math.Pow(2, x);
@@ -1222,7 +1222,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1241,7 +1241,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1260,7 +1260,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1279,7 +1279,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1298,7 +1298,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(Clamp(x, -1, 1));
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(Clamp(x, -1, 1));
             #else
                 return (float)Math.__fname__(Clamp(x, -1, 1));
@@ -1317,7 +1317,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1336,7 +1336,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(Clamp(x, -1, 1));
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(Clamp(x, -1, 1));
             #else
                 return (float)Math.__fname__(Clamp(x, -1, 1));
@@ -1355,7 +1355,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1375,7 +1375,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(y, x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(y, x);
             #else
                 return (float)Math.__fname__(y, x);
@@ -1420,7 +1420,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1439,7 +1439,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1458,7 +1458,7 @@ namespace Aardvark.Base
             //# if (t != Meta.FloatType) {
             return Math.__fname__(x);
             //# } else {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return MathF.__fname__(x);
             #else
                 return (float)Math.__fname__(x);
@@ -1474,7 +1474,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ __fname__(this __t.Name__ x)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
             //# if (t != Meta.FloatType) {
                 return Math.__fname__(x);
             //# } else {
@@ -1493,7 +1493,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ __fname__(this __t.Name__ x)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
             //# if (t != Meta.FloatType) {
                 return Math.__fname__(x);
             //# } else {
@@ -1513,7 +1513,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ __fname__(this __t.Name__ x)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
             //# if (t != Meta.FloatType) {
                 return Math.__fname__(x);
             //# } else {
@@ -1875,7 +1875,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFinite(this __type__ v)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return __clsnm__.IsFinite(v);
             #else
                 return !(IsNaN(v) || IsInfinity(v));
