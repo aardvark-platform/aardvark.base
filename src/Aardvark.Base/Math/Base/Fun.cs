@@ -719,7 +719,7 @@ namespace Aardvark.Base
         /// </summary>
         public static int Log2Int(this int v)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return System.Numerics.BitOperations.Log2((uint)v);
             #else
                 return Log2Int((float)v);
@@ -731,7 +731,7 @@ namespace Aardvark.Base
         /// </summary>
         public static int Log2Int(this uint v)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return System.Numerics.BitOperations.Log2(v);
             #else
                 return Log2Int((float)v);
@@ -743,7 +743,7 @@ namespace Aardvark.Base
         /// </summary>
         public static int Log2Int(this long v)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return System.Numerics.BitOperations.Log2((ulong)v);
             #else
                 return Log2Int((double)v);
@@ -755,7 +755,7 @@ namespace Aardvark.Base
         /// </summary>
         public static int Log2Int(this ulong v)
         {
-            #if NETCOREAPP3_0
+            #if NETCOREAPP3_1
                 return System.Numerics.BitOperations.Log2(v);
             #else
                 return Log2Int((double)v);
