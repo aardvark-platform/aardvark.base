@@ -2,18 +2,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>612;1591</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\Debug</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<NoWarn>612</NoWarn>
-    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\bin\Release</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<NoWarn>612</NoWarn>
-    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <ItemGroup>
 	<Compile Remove="**\*_template.cs" />
