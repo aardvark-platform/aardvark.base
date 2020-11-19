@@ -17,12 +17,14 @@ namespace SomeApp
 
     //|            Method | Count |     Mean |    Error |   StdDev |
     //|------------------ |------ |---------:|---------:|---------:|
-    //| Combine2_Aardvark | 10000 | 14.40 us | 0.563 us | 0.578 us |
-    //|   Combine2_System | 10000 | 20.58 us | 0.124 us | 0.110 us |
-    //| Combine4_Aardvark | 10000 | 24.28 us | 0.239 us | 0.212 us |
-    //|   Combine4_System | 10000 | 18.05 us | 0.163 us | 0.145 us |
-    //| Combine8_Aardvark | 10000 | 22.88 us | 0.284 us | 0.266 us |
-    //|   Combine8_System | 10000 | 15.95 us | 0.157 us | 0.131 us |
+    //| Combine2_Aardvark | 10000 | 13.80 us | 0.037 us | 0.029 us |
+    //|   Combine2_System | 10000 | 21.70 us | 0.159 us | 0.149 us |
+    //| Combine3_Aardvark | 10000 | 23.77 us | 0.240 us | 0.212 us |
+    //|   Combine3_System | 10000 | 18.88 us | 0.164 us | 0.153 us |
+    //| Combine4_Aardvark | 10000 | 22.38 us | 0.150 us | 0.133 us |
+    //|   Combine4_System | 10000 | 17.86 us | 0.032 us | 0.030 us |
+    //| Combine8_Aardvark | 10000 | 21.50 us | 0.097 us | 0.091 us |
+    //|   Combine8_System | 10000 | 16.55 us | 0.170 us | 0.150 us |
 
     public class HashCodeCombine
     {
@@ -41,7 +43,7 @@ namespace SomeApp
         public int Combine2_Aardvark()
         {
             int sum = 0;
-            for (int i = 0; i < m_data.Length - 2;)
+            for (int i = 0; i <= m_data.Length - 2;)
                 sum += Aardvark.Base.HashCode.Combine(
                             m_data[i++].GetHashCode(), 
                             m_data[i++].GetHashCode());
@@ -52,8 +54,32 @@ namespace SomeApp
         public int Combine2_System()
         {
             int sum = 0;
-            for (int i = 0; i < m_data.Length - 2;)
+            for (int i = 0; i <= m_data.Length - 2;)
                 sum += System.HashCode.Combine(
+                            m_data[i++],
+                            m_data[i++]);
+            return sum;
+        }
+
+        [Benchmark]
+        public int Combine3_Aardvark()
+        {
+            int sum = 0;
+            for (int i = 0; i <= m_data.Length - 3;)
+                sum += Aardvark.Base.HashCode.Combine(
+                            m_data[i++].GetHashCode(),
+                            m_data[i++].GetHashCode(),
+                            m_data[i++].GetHashCode());
+            return sum;
+        }
+
+        [Benchmark]
+        public int Combine3_System()
+        {
+            int sum = 0;
+            for (int i = 0; i <= m_data.Length - 3;)
+                sum += System.HashCode.Combine(
+                            m_data[i++],
                             m_data[i++],
                             m_data[i++]);
             return sum;
@@ -63,7 +89,7 @@ namespace SomeApp
         public int Combine4_Aardvark()
         {
             int sum = 0;
-            for (int i = 0; i < m_data.Length - 4;)
+            for (int i = 0; i <= m_data.Length - 4;)
                 sum += Aardvark.Base.HashCode.Combine(
                             m_data[i++].GetHashCode(),
                             m_data[i++].GetHashCode(),
@@ -76,7 +102,7 @@ namespace SomeApp
         public int Combine4_System()
         {
             int sum = 0;
-            for (int i = 0; i < m_data.Length - 4;)
+            for (int i = 0; i <= m_data.Length - 4;)
                 sum += System.HashCode.Combine(
                             m_data[i++],
                             m_data[i++],
@@ -89,7 +115,7 @@ namespace SomeApp
         public int Combine8_Aardvark()
         {
             int sum = 0;
-            for (int i = 0; i < m_data.Length - 8;)
+            for (int i = 0; i <= m_data.Length - 8;)
                 sum += Aardvark.Base.HashCode.Combine(
                             m_data[i++].GetHashCode(),
                             m_data[i++].GetHashCode(),
@@ -106,7 +132,7 @@ namespace SomeApp
         public int Combine8_System()
         {
             int sum = 0;
-            for (int i = 0; i < m_data.Length - 8;)
+            for (int i = 0; i <= m_data.Length - 8;)
                 sum += System.HashCode.Combine(
                             m_data[i++],
                             m_data[i++],
