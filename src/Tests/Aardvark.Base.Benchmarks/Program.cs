@@ -73,7 +73,8 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<Enumerators>();
             //BenchmarkRunner.Run<IntSetCreator>();
             //BenchmarkRunner.Run<ArrayInit>();
-            BenchmarkRunner.Run<ArraySum>();
+            //BenchmarkRunner.Run<ArraySum>();
+            BenchmarkRunner.Run<SomeApp.HashCodeCombine>();
 
             //new Enumerators().Test();
         }
