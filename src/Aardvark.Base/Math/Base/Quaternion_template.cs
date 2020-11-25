@@ -31,7 +31,12 @@ namespace Aardvark.Base
     //#   var v3t = "V3" + tc;
     //#   var v4t = "V4" + tc;
     //#   var m44t = "M44" + tc;
+    //#   var rot3t = "Rot3" + tc;
+    //#   var rot3t2 = "Rot3" + tc2;
     //#   var getptr = "&" + qfields[0];
+    //#   var half = isDouble ? "0.5" : "0.5f";
+    //#   var pi = isDouble ? "Constant.Pi" : "ConstantF.Pi";
+    //#   var piHalf = isDouble ? "Constant.PiHalf" : "ConstantF.PiHalf";
     #region __type__
 
     /// <summary>
@@ -123,6 +128,24 @@ namespace Aardvark.Base
         public __type__(__type2__ q)
         {
             /*# qfields.ForEach(f => {*/__f__ = (__ftype__)q.__f__; /*# });*/
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> from the given <see cref="__rot3t__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__rot3t__ r)
+        {
+            /*# qfields.ForEach(f => {*/__f__ = r.__f__; /*# });*/
+        }
+
+        /// <summary>
+        /// Creates a <see cref="__type__"/> from the given <see cref="__rot3t2__"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__rot3t2__ r)
+        {
+            /*# qfields.ForEach(f => {*/__f__ = (__ftype__)r.__f__; /*# });*/
         }
 
         /// <summary>
@@ -600,6 +623,69 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Norm(__type__ q)
             => q.Norm;
+
+        #endregion
+
+        #region Spherical Linear Interpolation
+
+        /// <summary>
+        /// Spherical linear interpolation.
+        ///
+        /// Assumes q1 and q2 are normalized and that t in [0,1].
+        ///
+        /// This method interpolates along the shortest arc between q1 and q2.
+        /// </summary>
+        public static __type__ SlerpShortest(this __type__ q1, __type__ q2, __ftype__ t)
+        {
+            __type__ q3 = q2;
+            __ftype__ cosomega = Dot(q1, q3);
+
+            if (cosomega < 0)
+            {
+                cosomega = -cosomega;
+                q3 = -q3;
+            }
+
+            if (cosomega >= 1)
+            {
+                // Special case: q1 and q2 are the same, so just return one of them.
+                // This also catches the case where cosomega is very slightly > 1.0
+                return q1;
+            }
+
+            __ftype__ sinomega = Fun.Sqrt(1 - cosomega * cosomega);
+
+            __type__ result;
+
+            if (sinomega * __ftype__.MaxValue > 1)
+            {
+                __ftype__ omega = Fun.Acos(cosomega);
+                __ftype__ s1 = Fun.Sin((1 - t) * omega) / sinomega;
+                __ftype__ s2 = Fun.Sin(t * omega) / sinomega;
+
+                result = new __type__(s1 * q1 + s2 * q3);
+            }
+            else if (cosomega > 0)
+            {
+                // omega == 0
+                __ftype__ s1 = 1 - t;
+                __ftype__ s2 = t;
+
+                result = new __type__(s1 * q1 + s2 * q3);
+            }
+            else
+            {
+                // omega == -pi
+                result = new __type__(q1.Z, -q1.Y, q1.X, -q1.W);
+
+                __ftype__ s1 = Fun.Sin((__half__ - t) * __pi__);
+                __ftype__ s2 = Fun.Sin(t * __pi__);
+
+                result = new __type__(s1 * q1 + s2 * result);
+            }
+
+            return result;
+        }
 
         #endregion
     }

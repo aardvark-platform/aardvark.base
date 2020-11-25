@@ -105,6 +105,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a <see cref="QuaternionF"/> from the given <see cref="Rot3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public QuaternionF(Rot3f r)
+        {
+            W = r.W; X = r.X; Y = r.Y; Z = r.Z; 
+        }
+
+        /// <summary>
+        /// Creates a <see cref="QuaternionF"/> from the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public QuaternionF(Rot3d r)
+        {
+            W = (float)r.W; X = (float)r.X; Y = (float)r.Y; Z = (float)r.Z; 
+        }
+
+        /// <summary>
         /// Creates a <see cref="QuaternionF"/> from an array.
         /// (w = a[0], (x = a[1], y = a[2], z = a[3])).
         /// </summary>
@@ -584,6 +602,69 @@ namespace Aardvark.Base
             => q.Norm;
 
         #endregion
+
+        #region Spherical Linear Interpolation
+
+        /// <summary>
+        /// Spherical linear interpolation.
+        ///
+        /// Assumes q1 and q2 are normalized and that t in [0,1].
+        ///
+        /// This method does interpolate along the shortest arc between q1 and q2.
+        /// </summary>
+        public static QuaternionF SlerpShortest(this QuaternionF q1, QuaternionF q2, float t)
+        {
+            QuaternionF q3 = q2;
+            float cosomega = Dot(q1, q3);
+
+            if (cosomega < 0)
+            {
+                cosomega = -cosomega;
+                q3 = -q3;
+            }
+
+            if (cosomega >= 1)
+            {
+                // Special case: q1 and q2 are the same, so just return one of them.
+                // This also catches the case where cosomega is very slightly > 1.0
+                return q1;
+            }
+
+            float sinomega = Fun.Sqrt(1 - cosomega * cosomega);
+
+            QuaternionF result;
+
+            if (sinomega * float.MaxValue > 1)
+            {
+                float omega = Fun.Acos(cosomega);
+                float s1 = Fun.Sin((1 - t) * omega) / sinomega;
+                float s2 = Fun.Sin(t * omega) / sinomega;
+
+                result = new QuaternionF(s1 * q1 + s2 * q3);
+            }
+            else if (cosomega > 0)
+            {
+                // omega == 0
+                float s1 = 1 - t;
+                float s2 = t;
+
+                result = new QuaternionF(s1 * q1 + s2 * q3);
+            }
+            else
+            {
+                // omega == -pi
+                result = new QuaternionF(q1.Z, -q1.Y, q1.X, -q1.W);
+
+                float s1 = Fun.Sin((0.5f - t) * ConstantF.Pi);
+                float s2 = Fun.Sin(t * ConstantF.Pi);
+
+                result = new QuaternionF(s1 * q1 + s2 * result);
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -698,6 +779,24 @@ namespace Aardvark.Base
         public QuaternionD(QuaternionF q)
         {
             W = (double)q.W; X = (double)q.X; Y = (double)q.Y; Z = (double)q.Z; 
+        }
+
+        /// <summary>
+        /// Creates a <see cref="QuaternionD"/> from the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public QuaternionD(Rot3d r)
+        {
+            W = r.W; X = r.X; Y = r.Y; Z = r.Z; 
+        }
+
+        /// <summary>
+        /// Creates a <see cref="QuaternionD"/> from the given <see cref="Rot3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public QuaternionD(Rot3f r)
+        {
+            W = (double)r.W; X = (double)r.X; Y = (double)r.Y; Z = (double)r.Z; 
         }
 
         /// <summary>
@@ -1178,6 +1277,69 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Norm(QuaternionD q)
             => q.Norm;
+
+        #endregion
+
+        #region Spherical Linear Interpolation
+
+        /// <summary>
+        /// Spherical linear interpolation.
+        ///
+        /// Assumes q1 and q2 are normalized and that t in [0,1].
+        ///
+        /// This method does interpolate along the shortest arc between q1 and q2.
+        /// </summary>
+        public static QuaternionD SlerpShortest(this QuaternionD q1, QuaternionD q2, double t)
+        {
+            QuaternionD q3 = q2;
+            double cosomega = Dot(q1, q3);
+
+            if (cosomega < 0)
+            {
+                cosomega = -cosomega;
+                q3 = -q3;
+            }
+
+            if (cosomega >= 1)
+            {
+                // Special case: q1 and q2 are the same, so just return one of them.
+                // This also catches the case where cosomega is very slightly > 1.0
+                return q1;
+            }
+
+            double sinomega = Fun.Sqrt(1 - cosomega * cosomega);
+
+            QuaternionD result;
+
+            if (sinomega * double.MaxValue > 1)
+            {
+                double omega = Fun.Acos(cosomega);
+                double s1 = Fun.Sin((1 - t) * omega) / sinomega;
+                double s2 = Fun.Sin(t * omega) / sinomega;
+
+                result = new QuaternionD(s1 * q1 + s2 * q3);
+            }
+            else if (cosomega > 0)
+            {
+                // omega == 0
+                double s1 = 1 - t;
+                double s2 = t;
+
+                result = new QuaternionD(s1 * q1 + s2 * q3);
+            }
+            else
+            {
+                // omega == -pi
+                result = new QuaternionD(q1.Z, -q1.Y, q1.X, -q1.W);
+
+                double s1 = Fun.Sin((0.5 - t) * Constant.Pi);
+                double s2 = Fun.Sin(t * Constant.Pi);
+
+                result = new QuaternionD(s1 * q1 + s2 * result);
+            }
+
+            return result;
+        }
 
         #endregion
     }

@@ -80,6 +80,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Rot3f"/> transformation from the quaternion <paramref name="q"/>.
+        /// The quaternion must be of unit length.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rot3f(QuaternionD q)
+        {
+            W = (float)q.W; X = (float)q.X; Y = (float)q.Y; Z = (float)q.Z; 
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+        }
+
+        /// <summary>
         /// Constructs a copy of a <see cref="Rot3f"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -96,6 +107,7 @@ namespace Aardvark.Base
         public Rot3f(Rot3d r)
         {
             W = (float)r.W; X = (float)r.X; Y = (float)r.Y; Z = (float)r.Z; 
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
         }
 
         /// <summary>
@@ -945,6 +957,14 @@ namespace Aardvark.Base
         public static explicit operator Rot3d(Rot3f r)
             => new Rot3d((double)r.W, (double)r.X, (double)r.Y, (double)r.Z);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator QuaternionF(Rot3f r)
+            => new QuaternionF(r.W, r.X, r.Y, r.Z);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator QuaternionD(Rot3f r)
+            => new QuaternionD((double)r.W, (double)r.X, (double)r.Y, (double)r.Z);
+
         #endregion
 
         #region Indexing
@@ -1197,6 +1217,69 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Spherical Linear Interpolation
+
+        /// <summary>
+        /// Spherical linear interpolation.
+        ///
+        /// Assumes q1 and q2 are normalized and that t in [0,1].
+        ///
+        /// This method does interpolate along the shortest arc between q1 and q2.
+        /// </summary>
+        public static Rot3f SlerpShortest(this Rot3f q1, Rot3f q2, float t)
+        {
+            Rot3f q3 = q2;
+            float cosomega = Dot(q1, q3);
+
+            if (cosomega < 0)
+            {
+                cosomega = -cosomega;
+                q3 = -q3;
+            }
+
+            if (cosomega >= 1)
+            {
+                // Special case: q1 and q2 are the same, so just return one of them.
+                // This also catches the case where cosomega is very slightly > 1.0
+                return q1;
+            }
+
+            float sinomega = Fun.Sqrt(1 - cosomega * cosomega);
+
+            Rot3f result;
+
+            if (sinomega * float.MaxValue > 1)
+            {
+                float omega = Fun.Acos(cosomega);
+                float s1 = Fun.Sin((1 - t) * omega) / sinomega;
+                float s2 = Fun.Sin(t * omega) / sinomega;
+
+                result = new Rot3f(s1 * q1 + s2 * q3);
+            }
+            else if (cosomega > 0)
+            {
+                // omega == 0
+                float s1 = 1 - t;
+                float s2 = t;
+
+                result = new Rot3f(s1 * q1 + s2 * q3);
+            }
+            else
+            {
+                // omega == -pi
+                result = new Rot3f(q1.Z, -q1.Y, q1.X, -q1.W);
+
+                float s1 = Fun.Sin((0.5f - t) * ConstantF.Pi);
+                float s2 = Fun.Sin(t * ConstantF.Pi);
+
+                result = new Rot3f(s1 * q1 + s2 * result);
+            }
+
+            return result;
+        }
+
+        #endregion
     }
 
     public static partial class Fun
@@ -1291,6 +1374,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="Rot3d"/> transformation from the quaternion <paramref name="q"/>.
+        /// The quaternion must be of unit length.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Rot3d(QuaternionF q)
+        {
+            W = (double)q.W; X = (double)q.X; Y = (double)q.Y; Z = (double)q.Z; 
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
+        }
+
+        /// <summary>
         /// Constructs a copy of a <see cref="Rot3d"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1307,6 +1401,7 @@ namespace Aardvark.Base
         public Rot3d(Rot3f r)
         {
             W = (double)r.W; X = (double)r.X; Y = (double)r.Y; Z = (double)r.Z; 
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-10));
         }
 
         /// <summary>
@@ -2156,6 +2251,14 @@ namespace Aardvark.Base
         public static explicit operator Rot3f(Rot3d r)
             => new Rot3f((float)r.W, (float)r.X, (float)r.Y, (float)r.Z);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator QuaternionD(Rot3d r)
+            => new QuaternionD(r.W, r.X, r.Y, r.Z);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator QuaternionF(Rot3d r)
+            => new QuaternionF((float)r.W, (float)r.X, (float)r.Y, (float)r.Z);
+
         #endregion
 
         #region Indexing
@@ -2405,6 +2508,69 @@ namespace Aardvark.Base
                 w * r.Y + y * r.W + z * r.X - x * r.Z,
                 w * r.Z + z * r.W + x * r.Y - y * r.X
                 );
+        }
+
+        #endregion
+
+        #region Spherical Linear Interpolation
+
+        /// <summary>
+        /// Spherical linear interpolation.
+        ///
+        /// Assumes q1 and q2 are normalized and that t in [0,1].
+        ///
+        /// This method does interpolate along the shortest arc between q1 and q2.
+        /// </summary>
+        public static Rot3d SlerpShortest(this Rot3d q1, Rot3d q2, double t)
+        {
+            Rot3d q3 = q2;
+            double cosomega = Dot(q1, q3);
+
+            if (cosomega < 0)
+            {
+                cosomega = -cosomega;
+                q3 = -q3;
+            }
+
+            if (cosomega >= 1)
+            {
+                // Special case: q1 and q2 are the same, so just return one of them.
+                // This also catches the case where cosomega is very slightly > 1.0
+                return q1;
+            }
+
+            double sinomega = Fun.Sqrt(1 - cosomega * cosomega);
+
+            Rot3d result;
+
+            if (sinomega * double.MaxValue > 1)
+            {
+                double omega = Fun.Acos(cosomega);
+                double s1 = Fun.Sin((1 - t) * omega) / sinomega;
+                double s2 = Fun.Sin(t * omega) / sinomega;
+
+                result = new Rot3d(s1 * q1 + s2 * q3);
+            }
+            else if (cosomega > 0)
+            {
+                // omega == 0
+                double s1 = 1 - t;
+                double s2 = t;
+
+                result = new Rot3d(s1 * q1 + s2 * q3);
+            }
+            else
+            {
+                // omega == -pi
+                result = new Rot3d(q1.Z, -q1.Y, q1.X, -q1.W);
+
+                double s1 = Fun.Sin((0.5 - t) * Constant.Pi);
+                double s2 = Fun.Sin(t * Constant.Pi);
+
+                result = new Rot3d(s1 * q1 + s2 * result);
+            }
+
+            return result;
         }
 
         #endregion

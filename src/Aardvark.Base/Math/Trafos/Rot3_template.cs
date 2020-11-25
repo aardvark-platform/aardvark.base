@@ -25,6 +25,7 @@ namespace Aardvark.Base
     //#   var type = "Rot3" + tc;
     //#   var type2 = "Rot3" + tc2;
     //#   var quatt = "Quaternion" + tc.ToUpper();
+    //#   var quatt2 = "Quaternion" + tc2.ToUpper();
     //#   var v2t = "V2" + tc;
     //#   var v3t = "V3" + tc;
     //#   var v4t = "V4" + tc;
@@ -42,7 +43,7 @@ namespace Aardvark.Base
     //#   var m44t = "M44" + tc;
     //#   var assertEps = isDouble ? "1e-10" : "1e-6f";
     //#   var half = isDouble ? "0.5" : "0.5f";
-    //#   var pi = isDouble ? "Constant.Pi" : "Constant.PiF";
+    //#   var pi = isDouble ? "Constant.Pi" : "ConstantF.Pi";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "ConstantF.PiHalf";
     //#   var assertNorm = "Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, " + assertEps + "))";
     //#   var eps = isDouble ? "1e-12" : "1e-5f";
@@ -118,6 +119,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Constructs a <see cref="__type__"/> transformation from the quaternion <paramref name="q"/>.
+        /// The quaternion must be of unit length.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__quatt2__ q)
+        {
+            /*# qfields.ForEach(f => {*/__f__ = (__ftype__)q.__f__; /*# });*/
+            __assertNorm__;
+        }
+
+        /// <summary>
         /// Constructs a copy of a <see cref="__type__"/> transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -134,6 +146,7 @@ namespace Aardvark.Base
         public __type__(__type2__ r)
         {
             /*# qfields.ForEach(f => {*/__f__ = (__ftype__)r.__f__; /*# });*/
+            __assertNorm__;
         }
 
         /// <summary>
@@ -885,6 +898,14 @@ namespace Aardvark.Base
         public static explicit operator __type2__(__type__ r)
             => new __type2__(/*# qfields.ForEach(f => {*/(__ftype2__)r.__f__/*# }, comma);*/);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __quatt__(__type__ r)
+            => new __quatt__(/*# qfields.ForEach(f => {*/r.__f__/*# }, comma);*/);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __quatt2__(__type__ r)
+            => new __quatt2__(/*# qfields.ForEach(f => {*/(__ftype2__)r.__f__/*# }, comma);*/);
+
         #endregion
 
         #region Indexing
@@ -1131,6 +1152,69 @@ namespace Aardvark.Base
                 w * r.Y + y * r.W + z * r.X - x * r.Z,
                 w * r.Z + z * r.W + x * r.Y - y * r.X
                 );
+        }
+
+        #endregion
+
+        #region Spherical Linear Interpolation
+
+        /// <summary>
+        /// Spherical linear interpolation.
+        ///
+        /// Assumes q1 and q2 are normalized and that t in [0,1].
+        ///
+        /// This method interpolates along the shortest arc between q1 and q2.
+        /// </summary>
+        public static __type__ SlerpShortest(this __type__ q1, __type__ q2, __ftype__ t)
+        {
+            __type__ q3 = q2;
+            __ftype__ cosomega = Dot(q1, q3);
+
+            if (cosomega < 0)
+            {
+                cosomega = -cosomega;
+                q3 = -q3;
+            }
+
+            if (cosomega >= 1)
+            {
+                // Special case: q1 and q2 are the same, so just return one of them.
+                // This also catches the case where cosomega is very slightly > 1.0
+                return q1;
+            }
+
+            __ftype__ sinomega = Fun.Sqrt(1 - cosomega * cosomega);
+
+            __type__ result;
+
+            if (sinomega * __ftype__.MaxValue > 1)
+            {
+                __ftype__ omega = Fun.Acos(cosomega);
+                __ftype__ s1 = Fun.Sin((1 - t) * omega) / sinomega;
+                __ftype__ s2 = Fun.Sin(t * omega) / sinomega;
+
+                result = new __type__(s1 * q1 + s2 * q3);
+            }
+            else if (cosomega > 0)
+            {
+                // omega == 0
+                __ftype__ s1 = 1 - t;
+                __ftype__ s2 = t;
+
+                result = new __type__(s1 * q1 + s2 * q3);
+            }
+            else
+            {
+                // omega == -pi
+                result = new __type__(q1.Z, -q1.Y, q1.X, -q1.W);
+
+                __ftype__ s1 = Fun.Sin((__half__ - t) * __pi__);
+                __ftype__ s2 = Fun.Sin(t * __pi__);
+
+                result = new __type__(s1 * q1 + s2 * result);
+            }
+
+            return result;
         }
 
         #endregion
