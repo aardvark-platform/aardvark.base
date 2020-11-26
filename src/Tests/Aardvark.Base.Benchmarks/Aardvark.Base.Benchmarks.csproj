@@ -27,6 +27,7 @@
     <None Include="**\*_template.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base.Telemetry\Aardvark.Base.Telemetry.csproj" />
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />

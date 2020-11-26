@@ -1,5 +1,7 @@
-﻿using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
 using System;
+using Aardvark.Base;
 
 namespace Aardvark.Base.Benchmarks
 {
@@ -74,7 +76,8 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<IntSetCreator>();
             //BenchmarkRunner.Run<ArrayInit>();
             //BenchmarkRunner.Run<ArraySum>();
-            BenchmarkRunner.Run<SomeApp.HashCodeCombine>();
+            //BenchmarkRunner.Run<SomeApp.HashCodeCombine>();
+            BenchmarkRunner.Run<TelemetryProbesBenchmark>();
 
             //new Enumerators().Test();
         }

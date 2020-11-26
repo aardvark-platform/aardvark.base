@@ -45,17 +45,19 @@ namespace Aardvark.Base
 
             public StopWatchTime() => OnReset += (s, e) => Interlocked.Exchange(ref m_sum, 0);
 
-            public IDisposable Timer
-            {
-                get
-                { 
-                    var stopwatch = new Stopwatch();
-                    stopwatch.Start();
+            public StopWatchTimeTimer Timer => new StopWatchTimeTimer(this, Stopwatch.StartNew());
 
-                    return ProbeDisposable.Create(() =>
-                    {
-                        Interlocked.Add(ref m_sum, stopwatch.Elapsed.Ticks);
-                    });
+            public struct StopWatchTimeTimer : IDisposable
+            {
+                StopWatchTime Source;
+                Stopwatch Watch;
+
+                internal StopWatchTimeTimer(StopWatchTime source, Stopwatch watch) { Source = source; Watch = watch; }
+                public void Dispose()
+                {
+                    if (Source == null) return;
+                    Interlocked.Add(ref Source.m_sum, Watch.Elapsed.Ticks);
+                    Source = null;
                 }
             }
 
@@ -77,22 +79,29 @@ namespace Aardvark.Base
 
             public WallClockTime() => OnReset += (s, e) => m_stopwatch.Reset();
             
-            public IDisposable Timer
+            public WallClockTimer Timer
             {
                 get
                 {
                     if (Interlocked.Increment(ref m_actives) == 1)
-                    {
                         m_stopwatch.Start();
-                    }
 
-                    return ProbeDisposable.Create(() =>
+                    return new WallClockTimer(this);
+                }
+            }
+
+            public struct WallClockTimer : IDisposable
+            {
+                WallClockTime Source;
+                internal WallClockTimer(WallClockTime source) { Source = source; }
+                public void Dispose()
+                {
+                    if (Interlocked.Decrement(ref Source.m_actives) == 0)
                     {
-                        if (Interlocked.Decrement(ref m_actives) == 0)
-                        {
-                            m_stopwatch.Stop();
-                        }
-                    });
+                        if (Source == null) return;
+                        Source.m_stopwatch.Stop();
+                        Source = null;
+                    }
                 }
             }
 
@@ -142,40 +151,46 @@ namespace Aardvark.Base
                 Interlocked.Exchange(ref m_sumPrivileged, 0);
             };
 
-            public IDisposable Timer
+            public CpuTimeTimer Timer
             {
                 get
                 {
-                    int threadId = Thread.CurrentThread.ManagedThreadId;
-
                     if (m_active.Value) throw new InvalidOperationException(
                         "Telemetry.StopWatchTime: nested start on same thread.");
 
                     long t0User = 0, t0Privileged = 0;
-                    long t1User = 0, t1Privileged = 0;
                     
                     var pt = GetCurrentProcessThread();
-                    if (pt == null) return Disposable.Create(() => { });
+                    if (pt == null) return new CpuTimeTimer();
                     var t0 = pt.TotalProcessorTime.Ticks;
                     if (m_measureUserTime) t0User = pt.UserProcessorTime.Ticks;
                     if (m_measurePrivilegedTime) t0Privileged = pt.PrivilegedProcessorTime.Ticks;
 
                     m_active.Value = true;
 
-                    return ProbeDisposable.Create(() =>
-                    {
-                        pt = GetCurrentProcessThread();
-                        var t1 = pt.TotalProcessorTime.Ticks;
-                        if (m_measureUserTime) t1User = pt.UserProcessorTime.Ticks;
-                        if (m_measurePrivilegedTime) t1Privileged = pt.PrivilegedProcessorTime.Ticks;
+                    return new CpuTimeTimer(this, t0, t0User, t0Privileged);
+                }
+            }
 
-                        Interlocked.Add(ref m_sum, t1 - t0);
-                        if (m_measureUserTime) Interlocked.Add(ref m_sumUser, t1User - t0User);
-                        if (m_measurePrivilegedTime) Interlocked.Add(ref m_sumPrivileged, t1Privileged - t0Privileged);
+            public struct CpuTimeTimer : IDisposable
+            {
+                CpuTime Source;
+                long T0, T0User, T0Privileged;
 
-                        m_active.Value = false;
-                    });
+                internal CpuTimeTimer(CpuTime source, long t0, long t0user, long t0priv) { Source = source; T0 = t0; T0User = t0user; T0Privileged = t0priv; }
+                
+                public void Dispose()
+                {
+                    if (Source == null) return;
 
+                    var pt = Source.GetCurrentProcessThread();
+
+                    Interlocked.Add(ref Source.m_sum, pt.TotalProcessorTime.Ticks - T0);
+                    if (Source.m_measureUserTime) Interlocked.Add(ref Source.m_sumUser, pt.UserProcessorTime.Ticks - T0User);
+                    if (Source.m_measurePrivilegedTime) Interlocked.Add(ref Source.m_sumPrivileged, pt.PrivilegedProcessorTime.Ticks - T0Privileged);
+
+                    Source.m_active.Value = false;
+                    Source = null;
                 }
             }
 
@@ -243,7 +258,7 @@ namespace Aardvark.Base
 
             public CpuTimeUser() => OnReset += (s, e) => { lock (m_threadIds) m_sum = TimeSpan.Zero; };
             
-            public IDisposable Timer
+            public CpuTimeUserTimer Timer
             {
                 get
                 {
@@ -259,25 +274,37 @@ namespace Aardvark.Base
                         else
                         {
                             var p = GetCurrentProcessThread();
-                            if (p == null) return Disposable.Create(() => { });
+                            if (p == null) return new CpuTimeUserTimer();
                             var t0 = p.UserProcessorTime;
                             m_threadIds.Add(threadId);
-                            return ProbeDisposable.Create(() =>
-                            {
-                                //if (GetCurrentWin32ThreadId() != tid) Debugger.Break();
-                                var p2 = GetCurrentProcessThread();
-                                if (p2 != null)
-                                {
-                                    var t1 = p2.UserProcessorTime;
-                                    lock (m_threadIds)
-                                    {
-                                        m_sum += t1 - t0;
-                                        m_threadIds.Remove(threadId);
-                                    }
-                                }
-                            });
+                            return new CpuTimeUserTimer(this, t0, threadId);
                         }
                     }
+                }
+            }
+
+            public struct CpuTimeUserTimer : IDisposable
+            {
+                CpuTimeUser Source;
+                TimeSpan T0;
+                int ThreadId;
+                
+                internal CpuTimeUserTimer(CpuTimeUser source, TimeSpan t0, int threadId) { Source = source; T0 = t0; ThreadId = threadId; }
+
+                public void Dispose()
+                {
+                    if (Source == null) return;
+                    var p2 = Source.GetCurrentProcessThread();
+                    if (p2 != null)
+                    {
+                        var t1 = p2.UserProcessorTime;
+                        lock (Source.m_threadIds)
+                        {
+                            Source.m_sum += t1 - T0;
+                            Source.m_threadIds.Remove(ThreadId);
+                        }
+                    }
+                    Source = null;
                 }
             }
 
@@ -321,7 +348,7 @@ namespace Aardvark.Base
                 OnReset += (s, e) => { lock (m_threadIds) m_sum = TimeSpan.Zero; };
             }
 
-            public IDisposable Timer
+            public CpuTimePrivilegedTimer Timer
             {
                 get
                 {
@@ -338,25 +365,38 @@ namespace Aardvark.Base
                         {
                             // /* var tid = */ HardwareThread.GetCurrentWin32ThreadId(); sm?
                             var p = GetCurrentProcessThread();
-                            if (p == null) return Disposable.Create(() => { });
+                            if (p == null) return new CpuTimePrivilegedTimer();
                             var t0 = p.PrivilegedProcessorTime;
                             m_threadIds.Add(threadId);
-                            return ProbeDisposable.Create(() =>
-                            {
-                                //if (GetCurrentWin32ThreadId() != tid) Debugger.Break();
-                                var p2 = GetCurrentProcessThread();
-                                if (p2 != null)
-                                {
-                                    var t1 = p2.PrivilegedProcessorTime;
-                                    lock (m_threadIds)
-                                    {
-                                        m_sum += t1 - t0;
-                                        m_threadIds.Remove(threadId);
-                                    }
-                                }
-                            });
+                            return new CpuTimePrivilegedTimer(this, t0, threadId);
                         }
                     }
+                }
+            }
+
+            public struct CpuTimePrivilegedTimer : IDisposable
+            {
+                CpuTimePrivileged Source;
+                TimeSpan T0;
+                int ThreadId;
+
+                internal CpuTimePrivilegedTimer(CpuTimePrivileged source, TimeSpan t0, int threadId) { Source = source; T0 = t0; ThreadId = threadId; }
+
+                public void Dispose()
+                {
+                    if (Source == null) return;
+                    //if (GetCurrentWin32ThreadId() != tid) Debugger.Break();
+                    var p2 = Source.GetCurrentProcessThread();
+                    if (p2 != null)
+                    {
+                        var t1 = p2.PrivilegedProcessorTime;
+                        lock (Source.m_threadIds)
+                        {
+                            Source.m_sum += t1 - T0;
+                            Source.m_threadIds.Remove(ThreadId);
+                        }
+                    }
+                    Source = null;
                 }
             }
 
@@ -491,19 +531,6 @@ namespace Aardvark.Base
             public TimeSpan Value => TimeSpan.FromTicks(m_base + m_probe.Value.Ticks);
 
             public double ValueDouble => Value.TotalSeconds;
-        }
-
-        #endregion
-
-        #region Private
-
-        private struct ProbeDisposable : IDisposable
-        {
-            public Action Action;
-
-            public void Dispose() => Action();
-
-            public static ProbeDisposable Create(Action a) => new ProbeDisposable { Action = a };
         }
 
         #endregion
