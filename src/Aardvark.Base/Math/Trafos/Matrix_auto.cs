@@ -1628,9 +1628,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01),
+                        HashCode.GetCombined(M10, M11));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3656,9 +3656,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01),
+                        HashCode.GetCombined(M10, M11));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5752,9 +5752,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01),
+                        HashCode.GetCombined(M10, M11));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7929,9 +7929,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01),
+                        HashCode.GetCombined(M10, M11));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10332,9 +10332,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02),
+                        HashCode.GetCombined(M10, M11, M12));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -12337,9 +12337,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02),
+                        HashCode.GetCombined(M10, M11, M12));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14410,9 +14410,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02),
+                        HashCode.GetCombined(M10, M11, M12));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -16410,9 +16410,9 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02),
+                        HashCode.GetCombined(M10, M11, M12));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -18945,10 +18945,10 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02),
+                        HashCode.GetCombined(M10, M11, M12),
+                        HashCode.GetCombined(M20, M21, M22));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -21561,10 +21561,10 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02),
+                        HashCode.GetCombined(M10, M11, M12),
+                        HashCode.GetCombined(M20, M21, M22));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -24414,10 +24414,10 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02),
+                        HashCode.GetCombined(M10, M11, M12),
+                        HashCode.GetCombined(M20, M21, M22));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -27336,10 +27336,10 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02),
+                        HashCode.GetCombined(M10, M11, M12),
+                        HashCode.GetCombined(M20, M21, M22));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -30338,10 +30338,10 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), M03.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), M13.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02, M03),
+                        HashCode.GetCombined(M10, M11, M12, M13),
+                        HashCode.GetCombined(M20, M21, M22, M23));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32812,10 +32812,10 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), M03.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), M13.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02, M03),
+                        HashCode.GetCombined(M10, M11, M12, M13),
+                        HashCode.GetCombined(M20, M21, M22, M23));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -35475,10 +35475,10 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), M03.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), M13.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02, M03),
+                        HashCode.GetCombined(M10, M11, M12, M13),
+                        HashCode.GetCombined(M20, M21, M22, M23));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -38070,10 +38070,10 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), M03.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), M13.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02, M03),
+                        HashCode.GetCombined(M10, M11, M12, M13),
+                        HashCode.GetCombined(M20, M21, M22, M23));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -41070,11 +41070,11 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), M03.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), M13.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode(), 
-                M30.GetHashCode(), M31.GetHashCode(), M32.GetHashCode(), M33.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02, M03),
+                        HashCode.GetCombined(M10, M11, M12, M13),
+                        HashCode.GetCombined(M20, M21, M22, M23),
+                        HashCode.GetCombined(M30, M31, M32, M33));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44125,11 +44125,11 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), M03.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), M13.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode(), 
-                M30.GetHashCode(), M31.GetHashCode(), M32.GetHashCode(), M33.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02, M03),
+                        HashCode.GetCombined(M10, M11, M12, M13),
+                        HashCode.GetCombined(M20, M21, M22, M23),
+                        HashCode.GetCombined(M30, M31, M32, M33));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -47377,11 +47377,11 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), M03.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), M13.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode(), 
-                M30.GetHashCode(), M31.GetHashCode(), M32.GetHashCode(), M33.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02, M03),
+                        HashCode.GetCombined(M10, M11, M12, M13),
+                        HashCode.GetCombined(M20, M21, M22, M23),
+                        HashCode.GetCombined(M30, M31, M32, M33));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50723,11 +50723,11 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(
-                M00.GetHashCode(), M01.GetHashCode(), M02.GetHashCode(), M03.GetHashCode(), 
-                M10.GetHashCode(), M11.GetHashCode(), M12.GetHashCode(), M13.GetHashCode(), 
-                M20.GetHashCode(), M21.GetHashCode(), M22.GetHashCode(), M23.GetHashCode(), 
-                M30.GetHashCode(), M31.GetHashCode(), M32.GetHashCode(), M33.GetHashCode());
+            return HashCode.GetCombined(
+                        HashCode.GetCombined(M00, M01, M02, M03),
+                        HashCode.GetCombined(M10, M11, M12, M13),
+                        HashCode.GetCombined(M20, M21, M22, M23),
+                        HashCode.GetCombined(M30, M31, M32, M33));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
