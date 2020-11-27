@@ -15,16 +15,16 @@ namespace SomeApp
     // [Host]     : .NET Core 3.1.9 (CoreCLR 4.700.20.47201, CoreFX 4.700.20.47203), X64 RyuJIT
     //  DefaultJob : .NET Core 3.1.9 (CoreCLR 4.700.20.47201, CoreFX 4.700.20.47203), X64 RyuJIT
 
-    //|            Method | Count |     Mean |    Error |   StdDev |
-    //|------------------ |------ |---------:|---------:|---------:|
-    //| Combine2_Aardvark | 10000 | 13.80 us | 0.037 us | 0.029 us |
-    //|   Combine2_System | 10000 | 21.70 us | 0.159 us | 0.149 us |
-    //| Combine3_Aardvark | 10000 | 23.77 us | 0.240 us | 0.212 us |
-    //|   Combine3_System | 10000 | 18.88 us | 0.164 us | 0.153 us |
-    //| Combine4_Aardvark | 10000 | 22.38 us | 0.150 us | 0.133 us |
-    //|   Combine4_System | 10000 | 17.86 us | 0.032 us | 0.030 us |
-    //| Combine8_Aardvark | 10000 | 21.50 us | 0.097 us | 0.091 us |
-    //|   Combine8_System | 10000 | 16.55 us | 0.170 us | 0.150 us |
+    //|            Method | Count |     Mean |    Error |   StdDev |   Gen 0 | Gen 1 | Gen 2 | Allocated |
+    //|------------------ |------ |---------:|---------:|---------:|--------:|------:|------:|----------:|
+    //| Combine2_Aardvark | 10000 | 14.88 us | 0.075 us | 0.070 us |       - |     - |     - |         - |
+    //|   Combine2_System | 10000 | 20.48 us | 0.249 us | 0.233 us |       - |     - |     - |         - |
+    //| Combine3_Aardvark | 10000 | 25.43 us | 0.471 us | 0.462 us | 16.9983 |     - |     - |  106656 B |
+    //|   Combine3_System | 10000 | 17.73 us | 0.096 us | 0.090 us |       - |     - |     - |         - |
+    //| Combine4_Aardvark | 10000 | 22.78 us | 0.209 us | 0.195 us | 12.7258 |     - |     - |   80000 B |
+    //|   Combine4_System | 10000 | 17.97 us | 0.303 us | 0.284 us |       - |     - |     - |         - |
+    //| Combine8_Aardvark | 10000 | 21.55 us | 0.243 us | 0.203 us |  9.5520 |     - |     - |   60000 B |
+    //|   Combine8_System | 10000 | 16.31 us | 0.061 us | 0.054 us |       - |     - |     - |         - |
 
     //|                          Method | Count |        Mean |     Error |    StdDev |    Gen 0 | Gen 1 | Gen 2 | Allocated |
     //|-------------------------------- |------ |------------:|----------:|----------:|---------:|------:|------:|----------:|
