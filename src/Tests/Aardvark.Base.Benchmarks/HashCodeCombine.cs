@@ -15,16 +15,19 @@ namespace SomeApp
     // [Host]     : .NET Core 3.1.9 (CoreCLR 4.700.20.47201, CoreFX 4.700.20.47203), X64 RyuJIT
     //  DefaultJob : .NET Core 3.1.9 (CoreCLR 4.700.20.47201, CoreFX 4.700.20.47203), X64 RyuJIT
 
-    //|            Method | Count |     Mean |    Error |   StdDev |   Gen 0 | Gen 1 | Gen 2 | Allocated |
-    //|------------------ |------ |---------:|---------:|---------:|--------:|------:|------:|----------:|
-    //| Combine2_Aardvark | 10000 | 14.88 us | 0.075 us | 0.070 us |       - |     - |     - |         - |
-    //|   Combine2_System | 10000 | 20.48 us | 0.249 us | 0.233 us |       - |     - |     - |         - |
-    //| Combine3_Aardvark | 10000 | 25.43 us | 0.471 us | 0.462 us | 16.9983 |     - |     - |  106656 B |
-    //|   Combine3_System | 10000 | 17.73 us | 0.096 us | 0.090 us |       - |     - |     - |         - |
-    //| Combine4_Aardvark | 10000 | 22.78 us | 0.209 us | 0.195 us | 12.7258 |     - |     - |   80000 B |
-    //|   Combine4_System | 10000 | 17.97 us | 0.303 us | 0.284 us |       - |     - |     - |         - |
-    //| Combine8_Aardvark | 10000 | 21.55 us | 0.243 us | 0.203 us |  9.5520 |     - |     - |   60000 B |
-    //|   Combine8_System | 10000 | 16.31 us | 0.061 us | 0.054 us |       - |     - |     - |         - |
+    //|                  Method | Count |     Mean |    Error |   StdDev |   Gen 0 | Gen 1 | Gen 2 | Allocated |
+    //|------------------------ |------ |---------:|---------:|---------:|--------:|------:|------:|----------:|
+    //|       Combine2_Aardvark | 10000 | 14.88 us | 0.075 us | 0.070 us |       - |     - |     - |         - |
+    //|         Combine2_System | 10000 | 20.48 us | 0.249 us | 0.233 us |       - |     - |     - |         - |
+    //|       Combine3_Aardvark | 10000 | 25.43 us | 0.471 us | 0.462 us | 16.9983 |     - |     - |  106656 B |
+    //| Combine3_Aardvark (NEW) | 10000 | 13.83 us | 0.157 us | 0.147 us |       - |     - |     - |         - |
+    //|         Combine3_System | 10000 | 17.73 us | 0.096 us | 0.090 us |       - |     - |     - |         - |
+    //|       Combine4_Aardvark | 10000 | 22.78 us | 0.209 us | 0.195 us | 12.7258 |     - |     - |   80000 B |
+    //| Combine4_Aardvark (NEW) | 10000 | 13.27 us | 0.076 us | 0.068 us |       - |     - |     - |         - |
+    //|         Combine4_System | 10000 | 17.97 us | 0.303 us | 0.284 us |       - |     - |     - |         - |
+    //|       Combine8_Aardvark | 10000 | 21.55 us | 0.243 us | 0.203 us |  9.5520 |     - |     - |   60000 B |
+    //| Combine8_Aardvark (NEW) | 10000 | 13.32 us | 0.114 us | 0.101 us |       - |     - |     - |         - |
+    //|         Combine8_System | 10000 | 16.31 us | 0.061 us | 0.054 us |       - |     - |     - |         - |
 
     //|                          Method | Count |        Mean |     Error |    StdDev |    Gen 0 | Gen 1 | Gen 2 | Allocated |
     //|-------------------------------- |------ |------------:|----------:|----------:|---------:|------:|------:|----------:|
@@ -69,16 +72,16 @@ namespace SomeApp
             return sum;
         }
 
-        [Benchmark]
-        public int Combine2_System()
-        {
-            int sum = 0;
-            for (int i = 0; i <= m_data.Length - 2;)
-                sum += System.HashCode.Combine(
-                            m_data[i++],
-                            m_data[i++]);
-            return sum;
-        }
+        //[Benchmark]
+        //public int Combine2_System()
+        //{
+        //    int sum = 0;
+        //    for (int i = 0; i <= m_data.Length - 2;)
+        //        sum += System.HashCode.Combine(
+        //                    m_data[i++],
+        //                    m_data[i++]);
+        //    return sum;
+        //}
 
         [Benchmark]
         public int Combine3_Aardvark()

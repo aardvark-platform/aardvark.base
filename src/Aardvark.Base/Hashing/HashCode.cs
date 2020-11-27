@@ -75,7 +75,43 @@ namespace Aardvark.Base
         public static int Combine(long a, long b)
             => Combine(UCombine((int)(a >> 32), (int)a),
                        UCombine((int)(b >> 32), (int)b));
-        
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Combine(int a, int b, int c)
+        {
+            return Combine(UCombine(a, b), c);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Combine(int a, int b, int c, int d)
+        {
+            return Combine(UCombine(UCombine(a, b), c), d);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Combine(int a, int b, int c, int d, int e)
+        {
+            return Combine(UCombine(UCombine(UCombine(a, b), c), d), e);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Combine(int a, int b, int c, int d, int e, int f)
+        {
+            return Combine(UCombine(UCombine(UCombine(UCombine(a, b), c), d), e), f);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Combine(int a, int b, int c, int d, int e, int f, int g)
+        {
+            return Combine(UCombine(UCombine(UCombine(UCombine(UCombine(a, b), c), d), e), f), g);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Combine(int a, int b, int c, int d, int e, int f, int g, int h)
+        {
+            return Combine(UCombine(UCombine(UCombine(UCombine(UCombine(UCombine(a, b), c), d), e), f), g), h);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Combine(int a, int b, params int[] rest)
         {

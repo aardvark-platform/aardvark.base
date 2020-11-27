@@ -76,8 +76,8 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<IntSetCreator>();
             //BenchmarkRunner.Run<ArrayInit>();
             //BenchmarkRunner.Run<ArraySum>();
-            //BenchmarkRunner.Run<SomeApp.HashCodeCombine>();
-            BenchmarkRunner.Run<MatrixSampling>();
+            BenchmarkRunner.Run<SomeApp.HashCodeCombine>();
+            //BenchmarkRunner.Run<MatrixSampling>();
             //BenchmarkRunner.Run<TelemetryProbesBenchmark>();
 
             //new Enumerators().Test();
