@@ -22,6 +22,7 @@ namespace Aardvark.Base
     //# Action addqcomma = () => Out(" + \",\" ");
     //# Action addbetweenM = () => Out(" + betweenM ");
     //# Action el = () => Out("else ");
+    //# Action bracketComma = () => Out("),");
     //# var tcharA = new[] { "i", "l", "f", "d" };
     //# var ftypeA = new[] { "int", "long", "float", "double" };
     //# var fcapsA = new[] { "Int", "Long", "Float", "Double" };
@@ -1071,8 +1072,8 @@ namespace Aardvark.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(/*# n.ForEach(r => { */
-                /*# m.ForEach(s => {*/M__r____s__.GetHashCode()/*# }, comma); }, comma); */);
+            return HashCode.GetCombined(/*# n.ForEach(r => { */
+                        HashCode.GetCombined(/*# m.ForEach(s => {*/M__r____s__/*# }, comma); }, bracketComma); */));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
