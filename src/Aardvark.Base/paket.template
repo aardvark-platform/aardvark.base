@@ -12,6 +12,6 @@ dependencies
         DevILSharp ~> LOCKEDVERSION
         System.Collections.Immutable ~> LOCKEDVERSION
         System.Reflection.Metadata ~> LOCKEDVERSION
-    framework: netcoreapp3.0
+    framework: netcoreapp3.1
         DevILSharp ~> LOCKEDVERSION
         System.Collections.Immutable ~> LOCKEDVERSION
