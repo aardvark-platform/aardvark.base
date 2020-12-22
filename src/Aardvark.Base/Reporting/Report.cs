@@ -297,7 +297,7 @@ namespace Aardvark.Base
         #region Static Reporting Methods
 
         /// <summary>
-        /// A shortcat for the verbosity of the ConsoleTarget.
+        /// A shortcut for the verbosity of the ConsoleTarget.
         /// </summary>
         public static int Verbosity
         {
