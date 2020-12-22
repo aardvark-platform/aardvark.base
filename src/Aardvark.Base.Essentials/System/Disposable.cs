@@ -36,7 +36,23 @@ namespace Aardvark.Base
         /// </summary>
         public static void DisposeAll(this IEnumerable<IDisposable> disposables)
         {
-            disposables.ForEach(x => x.Dispose());
+            foreach (var d in disposables) d.Dispose();
+        }
+
+        /// <summary>
+        /// Disposes a list of IDisposables.
+        /// </summary>
+        public static void DisposeAll(this List<IDisposable> disposables)
+        {
+            foreach (var d in disposables) d.Dispose();
+        }
+
+        /// <summary>
+        /// Disposes an array of IDisposables.
+        /// </summary>
+        public static void DisposeAll(this IDisposable[] disposables)
+        {
+            foreach (var d in disposables) d.Dispose();
         }
 
         /// <summary>
@@ -48,12 +64,21 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Disposes all disposables in a collections and clears the collection;
+        /// Disposes all disposables in a collections and clears the collection afterwards.
         /// </summary>
         public static void DisposeAllAndClear(this ICollection<IDisposable> disposables)
         {
             if (disposables.IsReadOnly) throw new Exception("The collection is read-only... it cannot be cleared.");
-            disposables.ForEach(x => x.Dispose());
+            foreach (var d in disposables) d.Dispose();
+            disposables.Clear();
+        }
+
+        /// <summary>
+        /// Disposes all disposables in the list and clears it afterwards.
+        /// </summary>
+        public static void DisposeAllAndClear(this List<IDisposable> disposables)
+        {
+            foreach (var d in disposables) d.Dispose();
             disposables.Clear();
         }
 
