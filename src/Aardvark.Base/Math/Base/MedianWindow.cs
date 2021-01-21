@@ -63,5 +63,16 @@ namespace Aardvark.Base
                 return m_buffer[m_write];
             }
         }
+
+        /// <summary>
+        /// Resets the median window.
+        /// </summary>
+        public void Reset()
+        {
+            m_median = 0;
+            m_write = -1;
+            m_count = 0;
+            m_indices.SetByIndex(i => i);
+        }
     }
 }

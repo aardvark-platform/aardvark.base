@@ -45,5 +45,17 @@
         /// Returns the average of the last N inserted values.
         /// </summary>
         public double Value => m_avg;
+
+        /// <summary>
+        /// Resets the average window.
+        /// </summary>
+        public void Reset()
+        {
+            m_write = 0;
+            m_sum = 0;
+            m_avg = 0;
+            m_count = 0;
+            m_buffer.Set(0);
+        }
     }
 }
