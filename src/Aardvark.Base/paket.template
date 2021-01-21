@@ -10,8 +10,8 @@ include-pdbs true
 dependencies
     framework: netstandard2.0
         DevILSharp ~> LOCKEDVERSION
-        System.Collections.Immutable ~> LOCKEDVERSION
-        System.Reflection.Metadata ~> LOCKEDVERSION
+        System.Collections.Immutable >= LOCKEDVERSION
+        System.Reflection.Metadata >= LOCKEDVERSION
     framework: netcoreapp3.1
         DevILSharp ~> LOCKEDVERSION
-        System.Collections.Immutable ~> LOCKEDVERSION
+        System.Collections.Immutable >= LOCKEDVERSION
