@@ -30,3 +30,9 @@ type AverageWindow(maxCount : int) =
     member x.Value =
         if count = 0 then 0.0
         else sum / float count
+
+    /// Resets the average window.
+    member x.Reset() =
+        index <- 0
+        count <- 0
+        sum <- 0.0

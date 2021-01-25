@@ -12,7 +12,7 @@
     <OutputPath>..\..\..\bin\Release</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
-	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.0</RunWorkingDirectory>
+	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.1</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DynamicCode.fs" />
