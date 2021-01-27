@@ -16,6 +16,22 @@ namespace Aardvark.Base
 {
     public static class CachingProperties
     {
+        /// <summary>
+        /// Naming schemes for cache files.
+        /// </summary>
+        public enum NamingScheme
+        {
+            /// <summary>
+            /// Name is based on the version of the assembly.
+            /// </summary>
+            Version,
+
+            /// <summary>
+            /// Name is based on the modification time of the assembly file.
+            /// </summary>
+            Timestamp
+        }
+
         private static string InitializeCacheDirectory()
         {
             var path = CustomCacheDirectory;
@@ -56,6 +72,39 @@ namespace Aardvark.Base
         /// <see cref="Environment.SpecialFolder.ApplicationData"/> will be used instead.
         /// </summary>
         public static string CacheDirectory => s_cacheDirectory.Value;
+
+        private static NamingScheme s_pluginsCacheFileNaming        = NamingScheme.Version;
+        private static NamingScheme s_introspectionCacheFileNaming  = NamingScheme.Timestamp;
+
+        /// <summary>
+        /// Gets or sets the naming scheme used for plugins cache files.
+        /// Default scheme is based on assembly version.
+        /// </summary>
+        public static NamingScheme PluginsCacheFileNaming
+        {
+            get => s_pluginsCacheFileNaming;
+            set => s_pluginsCacheFileNaming = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the naming scheme used for introspection cache files.
+        /// Default scheme is based on assembly file timestamp.
+        /// </summary>
+        public static NamingScheme IntrospectionCacheFileNaming
+        {
+            get => s_introspectionCacheFileNaming;
+            set => s_introspectionCacheFileNaming = value;
+        }
+
+        internal static string GetIdentifier(this Assembly asm, NamingScheme scheme)
+        {
+            return scheme switch
+            {
+                NamingScheme.Version =>   asm.GetName().Version.ToString(),
+                NamingScheme.Timestamp => File.GetLastWriteTimeUtc(asm.Location).ToBinary().ToString(),
+                _ => ""
+            };
+        }
     }
 
     public static class IntrospectionProperties
@@ -385,8 +434,15 @@ namespace Aardvark.Base
                 //Report.Warn("{0}", name);
             }
         }
-        private static string CreateCacheFileName(string fileName, Guid guid)
-            => Path.Combine(CachingProperties.CacheDirectory, string.Format(@"{0}.{1}.txt", Path.GetFileName(fileName), guid));
+
+        private static string GetQueryCacheFilename(Assembly asm, Guid queryGuid)
+        {
+            var name = Path.GetFileName(asm.Location);
+            var id = asm.GetIdentifier(CachingProperties.IntrospectionCacheFileNaming);
+            var fname = string.Format("{0}_{1}_{2}.txt", name, id, queryGuid);
+            return Path.Combine(CachingProperties.CacheDirectory, fname);
+        }
+
         private class CacheFileHeader
         {
             public int Version;
@@ -420,9 +476,8 @@ namespace Aardvark.Base
             Func<T[], IEnumerable<string>> encode
             )
         {
-            var assemblyFileName = a.Location;
-            var cacheFileName = CreateCacheFileName(assemblyFileName, discriminator.ToGuid());
-            var assemblyTimeStamp = File.GetLastWriteTimeUtc(assemblyFileName);
+            var cacheFileName = GetQueryCacheFilename(a, discriminator.ToGuid());
+            var assemblyTimeStamp = File.GetLastWriteTimeUtc(a.Location);
             if (File.Exists(cacheFileName))
             {
                 /* var cacheFileTimeStamp = */ File.GetLastWriteTimeUtc(cacheFileName);
@@ -540,8 +595,12 @@ namespace Aardvark.Base
 
         public Aardvark()
         {
-            CacheFile = Path.Combine(CachingProperties.CacheDirectory, IntrospectionProperties.CurrentEntryAssembly.GetName().Name + "_plugins.bin");
-            Directory.CreateDirectory(Path.GetDirectoryName(CacheFile));
+            Assembly asm = IntrospectionProperties.CurrentEntryAssembly;
+            string entryAssemblyName = asm?.GetName().Name ?? "unknown";
+            string entryAssemblyId = asm?.GetIdentifier(CachingProperties.PluginsCacheFileNaming) ?? "unknown";
+            string fileName = string.Format("{0}_{1}_plugins.bin", entryAssemblyName, entryAssemblyId);
+
+            CacheFile = Path.Combine(CachingProperties.CacheDirectory, fileName);
         }
 
         private Dictionary<string, Tuple<DateTime, bool>> ReadCacheFile()
