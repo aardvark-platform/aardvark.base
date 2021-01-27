@@ -41,11 +41,11 @@ namespace Aardvark.Base
                 if (string.IsNullOrWhiteSpace(path))
                 {
                     Report.Warn("Environment.SpecialFolder.ApplicationData does not exist!");
-                    path = "cache"; // using ./cache
+                    path = "Cache"; // using ./Cache
                 }
                 else
                 {
-                    path = Path.Combine(path, @"Aardvark\cache");
+                    path = Path.Combine(path, "Aardvark", "Cache");
                 }
             }
 
@@ -135,7 +135,26 @@ namespace Aardvark.Base
         private static Dictionary<string, Assembly> s_assemblies;
         private static HashSet<string> s_assembliesThatFailedToLoad = new HashSet<string>();
         private static HashSet<Assembly> s_allAssemblies = new HashSet<Assembly>();
-        
+
+        private static string InitializeCacheDirectory()
+        {
+            var path = Path.Combine(CachingProperties.CacheDirectory, "Introspection");
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return path;
+        }
+
+        private static Lazy<string> s_cacheDirectory = new Lazy<string>(InitializeCacheDirectory);
+
+        /// <summary>
+        /// Returns the directory of the introspection cache files.
+        /// </summary>
+        public static string CacheDirectory => s_cacheDirectory.Value;
+
         /// <summary>
         /// Registers an additional assembly at runtime to be
         /// used for subsequent introspection queries. This
@@ -440,7 +459,7 @@ namespace Aardvark.Base
             var name = Path.GetFileName(asm.Location);
             var id = asm.GetIdentifier(CachingProperties.IntrospectionCacheFileNaming);
             var fname = string.Format("{0}_{1}_{2}.txt", name, id, queryGuid);
-            return Path.Combine(CachingProperties.CacheDirectory, fname);
+            return Path.Combine(CacheDirectory, fname);
         }
 
         private class CacheFileHeader
@@ -591,6 +610,25 @@ namespace Aardvark.Base
     [Serializable]
     public class Aardvark
     {
+        private static string InitializeCacheDirectory()
+        {
+            var path = Path.Combine(CachingProperties.CacheDirectory, "Plugins");
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return path;
+        }
+
+        private static Lazy<string> s_cacheDirectory = new Lazy<string>(InitializeCacheDirectory);
+
+        /// <summary>
+        /// Returns the directory of the plugins cache files.
+        /// </summary>
+        public static string CacheDirectory => s_cacheDirectory.Value;
+
         public string CacheFile = string.Empty;
 
         public Aardvark()
@@ -600,7 +638,7 @@ namespace Aardvark.Base
             string entryAssemblyId = asm?.GetIdentifier(CachingProperties.PluginsCacheFileNaming) ?? "unknown";
             string fileName = string.Format("{0}_{1}_plugins.bin", entryAssemblyName, entryAssemblyId);
 
-            CacheFile = Path.Combine(CachingProperties.CacheDirectory, fileName);
+            CacheFile = Path.Combine(CacheDirectory, fileName);
         }
 
         private Dictionary<string, Tuple<DateTime, bool>> ReadCacheFile()
