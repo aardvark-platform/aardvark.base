@@ -14,6 +14,50 @@ using System.Xml.Linq;
 
 namespace Aardvark.Base
 {
+    public static class CachingProperties
+    {
+        private static string InitializeCacheDirectory()
+        {
+            var path = CustomCacheDirectory;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    Report.Warn("Environment.SpecialFolder.ApplicationData does not exist!");
+                    path = "cache"; // using ./cache
+                }
+                else
+                {
+                    path = Path.Combine(path, @"Aardvark\cache");
+                }
+            }
+
+            Report.Line(4, "using cache dir: {0}", path);
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return path;
+        }
+
+        private static readonly Lazy<string> s_cacheDirectory = new Lazy<string>(InitializeCacheDirectory);
+
+        /// <summary>
+        /// If set, determines the directory holding cache files. Otherwise, a default directory is used.
+        /// Must be set before <see cref="CacheDirectory"/> is used.
+        /// </summary>
+        public static string CustomCacheDirectory { get; set; }
+
+        /// <summary>
+        /// Directory holding cache files, if <see cref="CustomCacheDirectory"/> is not set, a default directory based on
+        /// <see cref="Environment.SpecialFolder.ApplicationData"/> will be used instead.
+        /// </summary>
+        public static string CacheDirectory => s_cacheDirectory.Value;
+    }
+
     public static class IntrospectionProperties
     {
         /// <summary>
@@ -39,7 +83,6 @@ namespace Aardvark.Base
     public static class Introspection
     {
         private static CultureInfo s_cultureInfoEnUs = new CultureInfo("en-us");
-        private static readonly string s_cacheDirName;
         private static Dictionary<string, Assembly> s_assemblies;
         private static HashSet<string> s_assembliesThatFailedToLoad = new HashSet<string>();
         private static HashSet<Assembly> s_allAssemblies = new HashSet<Assembly>();
@@ -191,25 +234,7 @@ namespace Aardvark.Base
             }
             .ForEach(x => s_assembliesThatFailedToLoad.Add(x));
 
-            // (2) setting up cache directory (s_cacheDirName)
-            s_cacheDirName = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            if (string.IsNullOrWhiteSpace(s_cacheDirName))
-            {
-                Report.Warn("SpecialFolder.CommonApplicationData does not exist!");
-                s_cacheDirName = "cache"; // using ./cache
-            }
-            else
-            {
-                s_cacheDirName = Path.Combine(s_cacheDirName, @"Aardvark\cache");
-            }
-            Report.Line(4, "using cache dir: {0}", s_cacheDirName);
-
-            if (!Directory.Exists(s_cacheDirName))
-            {
-                Directory.CreateDirectory(s_cacheDirName);
-            }
-
-            // (3) enumerating all assemblies reachable from entry assembly
+            // (2) enumerating all assemblies reachable from entry assembly
             s_assemblies = new Dictionary<string, Assembly>();
             var entryAssembly = Assembly.GetEntryAssembly();
 
@@ -361,7 +386,7 @@ namespace Aardvark.Base
             }
         }
         private static string CreateCacheFileName(string fileName, Guid guid)
-            => Path.Combine(s_cacheDirName, string.Format(@"{0}.{1}.txt", Path.GetFileName(fileName), guid));
+            => Path.Combine(CachingProperties.CacheDirectory, string.Format(@"{0}.{1}.txt", Path.GetFileName(fileName), guid));
         private class CacheFileHeader
         {
             public int Version;
@@ -511,16 +536,11 @@ namespace Aardvark.Base
     [Serializable]
     public class Aardvark
     {
-        private static string AppDataCache = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        private static string s_cacheFile =  IntrospectionProperties.CurrentEntryAssembly == null
-            ? ""
-            : Path.Combine(AppDataCache, "Aardvark", "cache", IntrospectionProperties.CurrentEntryAssembly.GetName().Name + "_plugins.bin");
-
         public string CacheFile = string.Empty;
-        
+
         public Aardvark()
         {
-            CacheFile = s_cacheFile;
+            CacheFile = Path.Combine(CachingProperties.CacheDirectory, IntrospectionProperties.CurrentEntryAssembly.GetName().Name + "_plugins.bin");
             Directory.CreateDirectory(Path.GetDirectoryName(CacheFile));
         }
 
@@ -676,8 +696,6 @@ namespace Aardvark.Base
             var cache = ReadCacheFile();
             var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
 
-            var verbosity = Report.Verbosity;
-            Report.Verbosity = 0;
             var folder = IntrospectionProperties.CurrentEntryPath; 
             var assemblies = Directory.EnumerateFiles(folder)
                                       .Where(p => { var ext = Path.GetExtension(p).ToLowerInvariant(); return ext == ".dll" || ext == ".exe"; })
@@ -732,7 +750,6 @@ namespace Aardvark.Base
 
 
             WriteCacheFile(newCache);
-            Report.Verbosity = verbosity;
             return paths.ToArray();
         }
 
@@ -755,8 +772,7 @@ namespace Aardvark.Base
                 //APPD var d = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, setup);
                 var aardvark = new Aardvark(); //APPD (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
 
-                Report.Line(3, "[LoadPlugins] Using plugin cache file name: {0}", Aardvark.s_cacheFile);
-                aardvark.CacheFile = Aardvark.s_cacheFile;
+                Report.Line(3, "[LoadPlugins] Using plugin cache file name: {0}", aardvark.CacheFile);
                 var paths = aardvark.GetPluginAssemblyPaths();
                 //APPD AppDomain.Unload(d);
 
@@ -1586,7 +1602,7 @@ namespace Aardvark.Base
             }
         }
 
-        public static void Init(string basePath)
+        public static void Init()
         {
             Report.BeginTimed("initializing aardvark");
 
@@ -1632,16 +1648,6 @@ namespace Aardvark.Base
             Report.End();
             LoadAll(pluginsList);
             Report.End();
-        }
-
-
-        public static void Init()
-        {
-            var baseDir =
-                IntrospectionProperties.CustomEntryAssembly != null
-                ? Path.GetDirectoryName(IntrospectionProperties.CustomEntryAssembly.Location)
-                : AppDomain.CurrentDomain.BaseDirectory;
-            Init(baseDir);
         }
 
         private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
