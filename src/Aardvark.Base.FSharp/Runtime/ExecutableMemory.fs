@@ -24,10 +24,10 @@ module private Kernel32 =
     
     module Imports = 
         [<DllImport("kernel32.dll", SetLastError=true)>]
-        extern IntPtr private VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
+        extern IntPtr internal VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
 
         [<DllImport("kernel32.dll", SetLastError=true)>]
-        extern bool private VirtualFree(IntPtr lpAddress, UIntPtr dwSize, FreeType freeType);
+        extern bool internal VirtualFree(IntPtr lpAddress, UIntPtr dwSize, FreeType freeType);
 
 
 module private Dl =
