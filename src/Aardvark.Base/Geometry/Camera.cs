@@ -160,21 +160,21 @@ namespace Aardvark.Base
                 FocalLength.Y * maxSize * yd + PrincipalPoint.Y * imageSize.Y);
         }
 
-        /// <summary>
-        /// Computes an undistorted Grid with (count.X + 1, count.Y + 1) vertices
-        /// the coordinates are roughly in the range [0..imageSize.X, 0..imageSize.Y].
-        /// These can be used for a piecewise linear undistortion using the graphics
-        /// card. If count is not given, it is set to iamgeSize / 8, for one grid
-        /// point each 8 pixels.
-        /// </summary>
-        Matrix<V2f> ComputeUndistortedGrid(V2i imageSize, V2i count = default(V2i))
-        {
-            if (count == default(V2i)) count = imageSize / 8;
-            var grid = new Matrix<V2f>(count + V2i.II);
-            var delta = imageSize.ToV2d() / count.ToV2d();
-            var self = this;
-            grid.SetByCoord((x, y) => self.UndistortPixel(new V2d(x * delta.X, y * delta.Y), imageSize).ToV2f());
-            return grid;
-        }
+        ///// <summary> TODO 51: where to put this?
+        ///// Computes an undistorted Grid with (count.X + 1, count.Y + 1) vertices
+        ///// the coordinates are roughly in the range [0..imageSize.X, 0..imageSize.Y].
+        ///// These can be used for a piecewise linear undistortion using the graphics
+        ///// card. If count is not given, it is set to iamgeSize / 8, for one grid
+        ///// point each 8 pixels.
+        ///// </summary>
+        //Matrix<V2f> ComputeUndistortedGrid(V2i imageSize, V2i count = default(V2i))
+        //{
+        //    if (count == default(V2i)) count = imageSize / 8;
+        //    var grid = new Matrix<V2f>(count + V2i.II);
+        //    var delta = imageSize.ToV2d() / count.ToV2d();
+        //    var self = this;
+        //    grid.SetByCoord((x, y) => self.UndistortPixel(new V2d(x * delta.X, y * delta.Y), imageSize).ToV2f());
+        //    return grid;
+        //}
     }
 }

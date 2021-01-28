@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <Compile Include="NativeTensors.fs" />
+    <None Include="NativeTensorGenerator.fsx" />
+    <Compile Include="NativeTensorGenerated.fs" />
+    <Compile Include="NativeTensorExtensions.fs" />
+    <Compile Include="PixImageCube.fs" />
+    <Compile Include="ImageTrafo.fs" />
+    <Compile Include="Tensors.fs" />
+    <Compile Include="Algorithms\QR.fs" />
+    <Compile Include="Algorithms\SVD.fs" />
+    <Compile Include="Algorithms\Solver.fs" />
+    <None Include="Algorithms\Generator.fsx" />
+    <Compile Include="PixImageImageSharp.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />
+    <ProjectReference Include="..\Aardvark.Base.Tensors.CSharp\Aardvark.Base.Tensors.CSharp.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

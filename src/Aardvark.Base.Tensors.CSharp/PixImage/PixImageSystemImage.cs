@@ -1,4 +1,5 @@
-//#define USE_STORAGESERVICE
+﻿//#define USE_STORAGESERVICE
+//#define USE_SYSTEMIMAGE
 #if USE_SYSTEMIMAGE
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Aardvark.Base
     public abstract partial class PixImage
     {
 
-        #region Static Tables and Methods
+#region Static Tables and Methods
 
         protected static Dictionary<PixFileFormat, Func<BitmapEncoder>> s_FormatEncoder =
             new Dictionary<PixFileFormat, Func<BitmapEncoder>>()
@@ -237,9 +238,9 @@ namespace Aardvark.Base
         }
 
 
-        #endregion
+#endregion
 
-        #region Conversions
+#region Conversions
 
         public abstract BitmapSource ToBitmapSource();
 
@@ -257,9 +258,9 @@ namespace Aardvark.Base
             return stream;
         }
 
-        #endregion
+#endregion
 
-        #region Save as Image
+#region Save as Image
 
         protected bool SaveAsImageSystem(
                 Stream stream, PixFileFormat fileFormat,
@@ -285,13 +286,13 @@ namespace Aardvark.Base
             return true;
         }
 
-        #endregion
+#endregion
 
     }
 
     public partial class PixImage<T>
     {
-        #region Conversions
+#region Conversions
 
         public override BitmapSource ToBitmapSource()
         {
@@ -328,7 +329,7 @@ namespace Aardvark.Base
                 storeFormats.E0, null, vol.Data, IntStride);
         }
 
-        #endregion
+#endregion
     }
 
 }

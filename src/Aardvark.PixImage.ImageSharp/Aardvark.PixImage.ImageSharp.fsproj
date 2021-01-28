@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />
+    <ProjectReference Include="..\Aardvark.Base.Tensors.CSharp\Aardvark.Base.Tensors.CSharp.csproj" />
+    <ProjectReference Include="..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

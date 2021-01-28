@@ -12,6 +12,7 @@
     <OutputPath>..\..\bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.Tensors.CSharp\Aardvark.Base.Tensors.CSharp.csproj" />
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

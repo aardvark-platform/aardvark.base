@@ -30,13 +30,6 @@
     <Compile Include="Interop\SortedSet.fs" />
     <Compile Include="Interop\HashSet.fs" />
     <Compile Include="Interop\CSharpList.fs" />
-    <Compile Include="Interop\Tensors.fs" />
-    <Compile Include="Interop\NativeTensors.fs" />
-    <Compile Include="Interop\ImageTrafo.fs" />
-    <Compile Include="Interop\PixImageCube.fs" />
-    <None Include="Datastructures\Mutable\NativeTensorGenerator.fsx" />
-    <Compile Include="Datastructures\Mutable\NativeTensorGenerated.fs" />
-    <Compile Include="Datastructures\Mutable\NativeTensorExtensions.fs" />
     <Compile Include="Datastructures\Mutable\FixedSizeArray.fs" />
     <Compile Include="Datastructures\Mutable\Order.fs" />
     <Compile Include="Datastructures\Mutable\OrderMaintenance.fs" />
@@ -52,10 +45,6 @@
     <Compile Include="Datastructures\Geometry\Boundable.fs" />
     <Compile Include="Datastructures\Geometry\KdTree.fs" />
     <Compile Include="Datastructures\Geometry\Bvh.fs" />
-    <None Include="Algorithms\Generator.fsx" />
-    <Compile Include="Algorithms\QR.fs" />
-    <Compile Include="Algorithms\SVD.fs" />
-    <Compile Include="Algorithms\Solver.fs" />
     <Compile Include="Algorithms\PolygonSimplification.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />

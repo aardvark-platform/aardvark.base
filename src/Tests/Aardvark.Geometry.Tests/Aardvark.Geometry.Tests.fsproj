@@ -21,6 +21,7 @@
     <Compile Include="TexturePacking.fs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
     <ProjectReference Include="..\..\Aardvark.Geometry\Aardvark.Geometry.fsproj" />
   </ItemGroup>
