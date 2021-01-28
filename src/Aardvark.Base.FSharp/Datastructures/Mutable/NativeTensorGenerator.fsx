@@ -883,13 +883,13 @@ module Generator =
         for d in 0 .. components.Length-2 do
             let mine = components.[d]
             let next = components.[d + 1]
-            line "let s%s = nativeint (y.Info.S%s * y.Info.D%s) * sa" mine mine mine
+            line "let s%s = nativeint (info.S%s * info.D%s) * sa" mine mine mine
             line "let xj%s = nativeint (info.D%s - info.S%s * info.D%s) * sa" mine mine next next
             line "let yj%s = nativeint (y.D%s - y.S%s * y.D%s) * %s" mine mine next next sb
 
 
         let mine = components.[components.Length-1]
-        line "let s%s = nativeint (y.Info.S%s * y.Info.D%s) * sa" mine mine mine
+        line "let s%s = nativeint (info.S%s * info.D%s) * sa" mine mine mine
         line "let xj%s = nativeint (info.D%s) * sa" mine mine
         line "let yj%s = nativeint (y.D%s) * %s" mine mine sb
 
@@ -899,8 +899,8 @@ module Generator =
                 line "%s" str
             else
                 let mine = components.[index]
-                line "let e%s = yptr + s%s" mine mine
-                start "while yptr <> e%s do" mine 
+                line "let e%s = xptr + s%s" mine mine
+                start "while xptr <> e%s do" mine 
                 buildLoop (index + 1)
                 line "xptr <- xptr + xj%s" mine
                 line "yptr <- yptr + yj%s" mine
