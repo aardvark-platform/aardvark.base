@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\bin\Release</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TensorExtensions_template.cs" />
+    <Compile Remove="TensorMathExt_template.cs" />
+    <Compile Remove="Tensors\Accessors_template.cs" />
+    <Compile Remove="Tensor_template.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="TensorExtensions_template.cs" />
+    <None Include="TensorMathExt_template.cs" />
+    <None Include="Tensors\Accessors_template.cs" />
+    <None Include="Tensor_template.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />
+  </ItemGroup>
+
+</Project>

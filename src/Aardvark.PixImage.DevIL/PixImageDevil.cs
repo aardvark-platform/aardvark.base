@@ -10,6 +10,8 @@ using DevILSharp;
 
 namespace Aardvark.Base
 {
+    using I = DevILSharp.IL;
+
     public static class PixImageDevil
     {
         private static object s_devilLock = new object();
@@ -22,11 +24,13 @@ namespace Aardvark.Base
             s_initialized = true;
 
             Bootstrap.Init();
-            IL.Init();
-            IL.Enable(EnableCap.AbsoluteOrigin);
-            IL.OriginFunc(OriginMode.UpperLeft);
-            IL.Enable(EnableCap.OverwriteExistingFile);
-            IL.Enable(EnableCap.ConvertPalette);
+            I.Init();
+            I.Enable(EnableCap.AbsoluteOrigin);
+            I.OriginFunc(OriginMode.UpperLeft);
+            I.Enable(EnableCap.OverwriteExistingFile);
+            I.Enable(EnableCap.ConvertPalette);
+
+            AddLoaders();
         }
 
         static PixImageDevil()
@@ -118,12 +122,12 @@ namespace Aardvark.Base
         {
             lock (s_devilLock)
             {
-                var img = IL.GenImage();
+                var img = I.GenImage();
 
-                IL.BindImage(img);
-                if (!IL.LoadStream(stream))
+                I.BindImage(img);
+                if (!I.LoadStream(stream))
                 {
-                    var code = IL.GetError();
+                    var code = I.GetError();
                     throw new ImageLoadException(String.Format("CreateRawDevil] could not load image, error code = {0}", code));
                 }
 
@@ -142,10 +146,10 @@ namespace Aardvark.Base
         {
             lock (s_devilLock)
             {
-                var img = IL.GenImage();
+                var img = I.GenImage();
 
-                IL.BindImage(img);
-                if (!IL.LoadImage(fileName))
+                I.BindImage(img);
+                if (!I.LoadImage(fileName))
                     throw new ImageLoadException(string.Format("Could not load image: {0}", fileName));
 
                 return LoadImage(img);
@@ -156,10 +160,10 @@ namespace Aardvark.Base
         private static PixImage LoadImage(int img)
         {
 
-            var size = new V2i(IL.GetInteger(IntName.ImageWidth), IL.GetInteger(IntName.ImageHeight));
-            var dataType = IL.GetDataType();
-            var format = IL.GetFormat();
-            var channels = IL.GetInteger(IntName.ImageChannels);
+            var size = new V2i(I.GetInteger(IntName.ImageWidth), I.GetInteger(IntName.ImageHeight));
+            var dataType = I.GetDataType();
+            var format = I.GetFormat();
+            var channels = I.GetInteger(IntName.ImageChannels);
             Type type;
             Col.Format fmt;
 
@@ -168,7 +172,7 @@ namespace Aardvark.Base
             if (!s_pixColorFormats.TryGetValue(format, out fmt)) return null;
 
             // if the image has a lower-left origin flip it
-            var mode = (OriginMode)IL.GetInteger((IntName)0x0603);
+            var mode = (OriginMode)I.GetInteger((IntName)0x0603);
             if (mode == OriginMode.LowerLeft && !ILU.FlipImage())
                 return null;
             
@@ -181,7 +185,7 @@ namespace Aardvark.Base
             var gc = GCHandle.Alloc(pix.Data, GCHandleType.Pinned);
             try
             {
-                var ptr = IL.GetData();
+                var ptr = I.GetData();
                 ptr.CopyTo(pix.Data, 0, pix.Data.Length);
             }
             finally
@@ -190,8 +194,8 @@ namespace Aardvark.Base
             }
 
             // unbind and delete the DevIL image
-            IL.BindImage(0);
-            IL.DeleteImage(img);
+            I.BindImage(0);
+            I.DeleteImage(img);
 
             return pix;
         }
@@ -202,8 +206,8 @@ namespace Aardvark.Base
             //if (!s_fileFormats.TryGetValue(format, out imageType))
             //    return false;
 
-            var img = IL.GenImage();
-            IL.BindImage(img);
+            var img = I.GenImage();
+            I.BindImage(img);
 
             ChannelType type;
             ChannelFormat fmt;
@@ -214,13 +218,13 @@ namespace Aardvark.Base
             var gc = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
             try
             {
-                if (!IL.TexImage(image.Size.X, image.Size.Y, 1, (byte)image.ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
+                if (!I.TexImage(image.Size.X, image.Size.Y, 1, (byte)image.ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
                     return false;
 
-                IL.RegisterOrigin(OriginMode.UpperLeft);
+                I.RegisterOrigin(OriginMode.UpperLeft);
 
                 if (qualityLevel != -1)
-                    IL.SetInteger(IntName.JpgQuality, qualityLevel);
+                    I.SetInteger(IntName.JpgQuality, qualityLevel);
 
                 return save();
             }
@@ -231,8 +235,8 @@ namespace Aardvark.Base
             finally
             {
                 gc.Free();
-                IL.BindImage(0);
-                IL.DeleteImage(img);
+                I.BindImage(0);
+                I.DeleteImage(img);
             }
         }
 
@@ -251,7 +255,7 @@ namespace Aardvark.Base
 
             lock (s_devilLock)
             {
-                return image.SaveDevIL(() => IL.SaveStream(imageType, stream), qualityLevel);
+                return image.SaveDevIL(() => I.SaveStream(imageType, stream), qualityLevel);
             }
         }
         
@@ -266,7 +270,7 @@ namespace Aardvark.Base
 
             lock (s_devilLock)
             {
-                return image.SaveDevIL(() => IL.Save(imageType, file), qualityLevel);
+                return image.SaveDevIL(() => I.Save(imageType, file), qualityLevel);
             }
         }
         
@@ -281,20 +285,20 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var img = IL.GenImage();
-                    IL.BindImage(img);
+                    var img = I.GenImage();
+                    I.BindImage(img);
 
-                    if (!IL.LoadImage(fileName))
+                    if (!I.LoadImage(fileName))
                         throw new ArgumentException("fileName");
 
-                    var dataType = IL.GetDataType();
-                    var format = IL.GetFormat();
-                    var width = IL.GetInteger(IntName.ImageWidth);
-                    var height = IL.GetInteger(IntName.ImageHeight);
-                    //var channels = IL.GetInteger(IntName.ImageChannels);
+                    var dataType = I.GetDataType();
+                    var format = I.GetFormat();
+                    var width = I.GetInteger(IntName.ImageWidth);
+                    var height = I.GetInteger(IntName.ImageHeight);
+                    //var channels = I.GetInteger(IntName.ImageChannels);
 
-                    IL.BindImage(0);
-                    IL.DeleteImage(img);
+                    I.BindImage(0);
+                    I.DeleteImage(img);
 
 
                     Type type;
@@ -311,6 +315,21 @@ namespace Aardvark.Base
                     return null;
                 }
             }
+        }
+
+
+        public static void AddLoaders()
+        {
+            Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool> fileSave =
+                    (file, o, format, q, pi) => SaveAsImageDevil(pi, file, format, o, q);
+            Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool> streamSave =
+                    (stream, o, format, q, pi) => SaveAsImageDevil(pi, stream, format, o, q);
+            Func<string, PixImageInfo> imageInfo = s => InfoFromFileNameDevil(s, PixLoadOptions.Default);
+
+            PixImage.RegisterLoadingLib(
+                CreateRawDevil,
+                CreateRawDevil,
+                fileSave, streamSave, imageInfo);
         }
     }
 }

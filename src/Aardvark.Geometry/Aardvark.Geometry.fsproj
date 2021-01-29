@@ -28,6 +28,8 @@
       <Project>{692a3617-719b-4ea2-abc1-407ae20094ae}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\Aardvark.Base.Tensors.CSharp\Aardvark.Base.Tensors.CSharp.csproj" />
+    <ProjectReference Include="..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Unofficial.LibTessDotNet" Version="2.0.2" />

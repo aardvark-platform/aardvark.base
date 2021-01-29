@@ -12,7 +12,11 @@ namespace PixImageDemo
             var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "PixImageDemo");
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
+
+            var a = PixImage.Create(@"C:\Users\hs\Desktop\Debug\gah.jpg");
+            a.SaveAsImage(@"C:\Users\hs\Desktop\PixImageDemo\urdar.jpg");
             
+
             PolygonDemo(dir);
             HowManyColorsIllusion(dir);
             ResampleDemo(dir);

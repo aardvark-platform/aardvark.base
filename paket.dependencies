@@ -10,6 +10,7 @@ nuget System.Collections.Immutable >= 1.7.0 lowest_matching: true
 nuget System.Reactive              >= 4.3.1 lowest_matching: true
 nuget System.Dynamic.Runtime       ~> 4.3.0
 nuget DevILSharp                   ~> 0.2.9
+nuget SixLabors.ImageSharp         ~> 1.0.2
 nuget System.Reflection.Metadata   >= 1.8.0 lowest_matching: true
 nuget System.Drawing.Common        ~> 4.7.0
 
@@ -32,9 +33,10 @@ nuget YoloDev.Expecto.TestSdk
 nuget FsPickler                    ~> 5.3.2
 nuget FsPickler.Json               ~> 5.3.2
 
-nuget BenchmarkDotNet			   0.12.0
+nuget BenchmarkDotNet              ~> 0.12.0
 
 nuget System.Text.Json             >= 4.7.2 lowest_matching: true
+
 
 
 group Build

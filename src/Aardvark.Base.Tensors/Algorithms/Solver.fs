@@ -144,8 +144,8 @@ module private MatrixSolver =
         let inline luSolveAux (dummy : ^d) (a : Matrix< ^a >) (perm : int[]) (b : Vector< ^c >) =
             ((^d or ^a) : (static member LuSolve : Matrix< ^a > * int[] * Vector< ^c > -> Vector< ^c > ) (a, perm, b))
             
-        let inline luFactorize a = luFactorizeAux Unchecked.defaultof<NumericExtensions> a
-        let inline luSolve a b c = luSolveAux Unchecked.defaultof<NumericExtensions> a b c
+        let inline luFactorize a = luFactorizeAux Unchecked.defaultof<TensorNumericExtensions> a
+        let inline luSolve a b c = luSolveAux Unchecked.defaultof<TensorNumericExtensions> a b c
 
     let inline solve (copy : bool) (mat : Matrix< ^a >) (vec : Vector< ^a >) (known : Map<int, ^a >) =
         if vec.Size <> mat.SY then failwithf "vec.Size <> mat.SY (%d vs %d)" vec.Size mat.SY

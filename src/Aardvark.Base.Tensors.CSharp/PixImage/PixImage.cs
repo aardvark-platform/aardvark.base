@@ -1,4 +1,4 @@
-#define USE_DEVIL
+//#define USE_DEVIL
 //#define USE_BITMAP
 
 using System;

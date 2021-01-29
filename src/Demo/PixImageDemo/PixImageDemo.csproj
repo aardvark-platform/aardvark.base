@@ -14,7 +14,9 @@
 	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.1</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
+    <ProjectReference Include="..\..\Aardvark.PixImage.DevIL\Aardvark.PixImage.DevIL.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
