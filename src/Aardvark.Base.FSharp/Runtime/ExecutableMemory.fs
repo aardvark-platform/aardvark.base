@@ -8,7 +8,7 @@ namespace Aardvark.Base
 
 
 
-module private Kernel32 =
+module internal Kernel32 =
     open System
     open System.Runtime.InteropServices
 
@@ -24,10 +24,10 @@ module private Kernel32 =
     
     module Imports = 
         [<DllImport("kernel32.dll", SetLastError=true)>]
-        extern IntPtr private VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
+        extern IntPtr VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, AllocationType flAllocationType, MemoryProtection flProtect);
 
         [<DllImport("kernel32.dll", SetLastError=true)>]
-        extern bool private VirtualFree(IntPtr lpAddress, UIntPtr dwSize, FreeType freeType);
+        extern bool VirtualFree(IntPtr lpAddress, UIntPtr dwSize, FreeType freeType);
 
 
 module private Dl =
