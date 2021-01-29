@@ -203,3 +203,51 @@ module NativeTensors =
         let inline iter2 (l : NativeVolume<'a>) (r : NativeVolume<'b>) (f : nativeptr<'a> -> nativeptr<'b> -> unit) =
             l.ForEachPtr(r, f) 
 
+        let pin (f : NativeVolume<'a> -> 'b) (pi : PixImage<'a>) : 'b =
+            let gc = GCHandle.Alloc(pi.Array, GCHandleType.Pinned)
+            let nv = gc.AddrOfPinnedObject() |> ofNativeInt pi.VolumeInfo
+            try
+                f nv
+            finally
+                gc.Free()
+
+        let pin2 (l : PixImage<'a>) (r : PixImage<'b>) (f : NativeVolume<'a> -> NativeVolume<'b> -> 'c)  : 'c =
+            let lgc = GCHandle.Alloc(l.Array, GCHandleType.Pinned)
+            let lv = lgc.AddrOfPinnedObject() |> ofNativeInt l.VolumeInfo
+
+            let rgc = GCHandle.Alloc(r.Array, GCHandleType.Pinned)
+            let rv = rgc.AddrOfPinnedObject() |> ofNativeInt r.VolumeInfo
+
+            try
+                f lv rv
+            finally
+                lgc.Free()
+                rgc.Free()
+  
+        type private CopyImpl<'a when 'a : unmanaged>() =
+            static member CopyImageToNative (src : PixImage<'a>, dst : nativeint, dstInfo : VolumeInfo) =
+                let dst = NativeVolume(NativePtr.ofNativeInt dst, dstInfo)
+                src |> pin (fun src ->
+                    iter2 src dst (fun s d -> NativePtr.write d (NativePtr.read s))
+                )
+
+            static member CopyNativeToImage (src : nativeint, srcInfo : VolumeInfo, dst : PixImage<'a>) =
+                let src = NativeVolume(NativePtr.ofNativeInt src, srcInfo)
+                dst |> pin (fun dst ->
+                    iter2 src dst (fun s d -> NativePtr.write d (NativePtr.read s))
+                )
+
+        let copy (src : PixImage<'a>) (dst : NativeVolume<'a>) =
+            src |> pin (fun src ->
+                iter2 src dst (fun s d -> NativePtr.write d (NativePtr.read s))
+            )
+
+        let copyImageToNative (src : PixImage) (dst : nativeint) (dstInfo : VolumeInfo) =
+            let t = typedefof<CopyImpl<byte>>.MakeGenericType [| src.PixFormat.Type |]
+            let mi = t.GetMethod("CopyImageToNative", BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public)
+            mi.Invoke(null, [|src; dst; dstInfo|]) |> ignore
+
+        let copyNativeToImage (src : nativeint) (srcInfo : VolumeInfo) (dst : PixImage)=
+            let t = typedefof<CopyImpl<byte>>.MakeGenericType [| dst.PixFormat.Type |]
+            let mi = t.GetMethod("CopyNativeToImage", BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public)
+            mi.Invoke(null, [|src; srcInfo; dst|]) |> ignore
