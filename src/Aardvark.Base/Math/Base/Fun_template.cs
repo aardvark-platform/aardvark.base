@@ -1211,6 +1211,32 @@ namespace Aardvark.Base
         //# fdtypes.ForEach(t => {
         //# var cast = t != Meta.DoubleType ? "(" + t.Name + ")" : "";
         //# var half = (t == Meta.DoubleType) ? "0.5" : "0.5f";
+        //# var constant = (t == Meta.DoubleType) ? "Constant" : "ConstantF";
+        /// <summary>
+        /// Normalized sinc function.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Sinc(this __t.Name__ x)
+        {
+            if (x != 0)
+            {
+                //# if (t != Meta.FloatType) {
+                return Math.Sin(__constant__.Pi * x) / (__constant__.Pi * x);
+                //# } else {
+                #if NETCOREAPP3_1
+                    return MathF.Sin(__constant__.Pi * x) / (__constant__.Pi * x);
+                #else
+                    return (float)Math.Sin(__constant__.Pi * x) / (__constant__.Pi * x); ;
+                #endif
+                //# }
+            }
+            else
+            {
+                return 1;
+            }
+        }
+
         /// <summary>
         /// Returns the sine of the specified angle in radians.
         /// </summary>
