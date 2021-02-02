@@ -89,6 +89,21 @@ namespace Aardvark.Tests
         private static float NextAfter(float input, int dir)
             => BitConverter.Int32BitsToSingle(BitConverter.SingleToInt32Bits(input) + dir);
 
+        private static float SincFloatImpl(float x)
+        {
+            return MathF.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
+        }
+
+        private static float SincFloatFallbackImpl(float x)
+        {
+            return (float)Math.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
+        }
+
+        private static double SincDoubleImpl(double x)
+        {
+            return Math.Sin(Constant.Pi * x) / (Constant.Pi * x);
+        }
+
         [Test]
         public void SincTest()
         {
@@ -129,7 +144,7 @@ namespace Aardvark.Tests
             // Finding values for eps
             if (findEps)
             {
-                Console.WriteLine("Finding eps for float");
+                Console.WriteLine("Finding eps for SincFloatImpl");
 
                 {
                     // Find biggest number with sinc(x) = 1
@@ -139,10 +154,10 @@ namespace Aardvark.Tests
                     while (output != 1.0f)
                     {
                         input = NextAfter(input, -1);
-                        output = Fun.Sinc(input);
+                        output = SincFloatImpl(input);
                     }
 
-                    Console.WriteLine("Fun.Sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
                 }
 
                 {
@@ -153,14 +168,45 @@ namespace Aardvark.Tests
                     while (output != 1.0f)
                     {
                         input = NextAfter(input, -1);
-                        output = Fun.Sinc(input);
+                        output = SincFloatImpl(input);
                     }
 
-                    Console.WriteLine("Fun.Sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("Finding eps for double");
+                Console.WriteLine("Finding eps for SincFloatFallbackImpl");
+
+                {
+                    // Find biggest number with sinc(x) = 1
+                    float input = 1.0f;
+                    float output = 0.0f;
+
+                    while (output != 1.0f)
+                    {
+                        input = NextAfter(input, -1);
+                        output = SincFloatFallbackImpl(input);
+                    }
+
+                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                }
+
+                {
+                    // Find smallest number with sinc(x) = 1
+                    float input = -1.0f;
+                    float output = 0.0f;
+
+                    while (output != 1.0f)
+                    {
+                        input = NextAfter(input, -1);
+                        output = SincFloatFallbackImpl(input);
+                    }
+
+                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Finding eps for SincDoubleImpl");
 
                 {
                     // Find biggest number with sinc(x) = 1
@@ -170,10 +216,10 @@ namespace Aardvark.Tests
                     while (output != 1.0)
                     {
                         input = NextAfter(input, -1);
-                        output = Fun.Sinc(input);
+                        output = SincDoubleImpl(input);
                     }
 
-                    Console.WriteLine("Fun.Sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
                 }
 
                 {
@@ -184,10 +230,10 @@ namespace Aardvark.Tests
                     while (output != 1.0)
                     {
                         input = NextAfter(input, -1);
-                        output = Fun.Sinc(input);
+                        output = SincDoubleImpl(input);
                     }
 
-                    Console.WriteLine("Fun.Sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
                 }
             }
         }

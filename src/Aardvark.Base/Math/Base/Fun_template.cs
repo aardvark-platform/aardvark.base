@@ -1234,7 +1234,7 @@ namespace Aardvark.Base
                 #if NETCOREAPP3_1
                     return MathF.Sin(__constant__.Pi * x) / (__constant__.Pi * x);
                 #else
-                    return (float)Math.Sin(__constant__.Pi * x) / (__constant__.Pi * x); ;
+                    return (float)Math.Sin(__constant__.Pi * x) / (__constant__.Pi * x);
                 #endif
                 //# }
             }
