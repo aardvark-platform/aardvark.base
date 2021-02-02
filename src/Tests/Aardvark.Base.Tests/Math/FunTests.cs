@@ -83,57 +83,112 @@ namespace Aardvark.Tests
             Assert.AreEqual(max, max_ref, "Max not equal to reference");
         }
 
-        private static double previous(double input)
-            => BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(input) - 1);
+        private static double NextAfter(double input, int dir)
+            => BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(input) + dir);
 
-        private static float previous(float input)
-            => BitConverter.Int32BitsToSingle(BitConverter.SingleToInt32Bits(input) - 1);
+        private static float NextAfter(float input, int dir)
+            => BitConverter.Int32BitsToSingle(BitConverter.SingleToInt32Bits(input) + dir);
 
         [Test]
         public void SincTest()
         {
+            bool findEps = false;
+            int iterations = 25000000;
+
+            // Check if sinc(x) != 1 for x with |x| > eps
             {
-                Action<float> test = (x) => Assert.IsTrue(Fun.IsFinite(Fun.Sinc(x)), "Fail: {0}", x);
+                float eps = 0.00017791693f;
+                float[] inputs = new float[] { eps, -eps };
 
-                // Test smallest numbers
-                test(0.0f);
-                test(float.Epsilon);
-                test(-float.Epsilon);
-
-                // Find biggest number with sinc(x) = 1
-                var input = 0.0002f;
-                var output = 0.0f;
-
-                while (output != 1.0f)
+                for (int n = 0; n < iterations; n++)
                 {
-                    input = previous(input);
-                    output = Fun.Sinc(input);
-                    Assert.IsTrue(output.IsFinite());
+                    for (int i = 0; i < inputs.Length; i++)
+                    {
+                        inputs[i] = NextAfter(inputs[i], 1);
+                        float output = Fun.Sinc(inputs[i]);
+                        Assert.IsTrue(output != 1, "Found input x with Fun.Sinc(x) = 1 and |x| > eps: x = {0}", inputs[i]);
+                    }
                 }
-
-                Console.WriteLine("{0} = {1}", input, output);
             }
 
             {
-                Action<double> test = (x) => Assert.IsTrue(Fun.IsFinite(Fun.Sinc(x)), "Fail: {0}", x);
+                double eps = 6.840859302478614E-09;
+                double[] inputs = new double[] { eps, -eps };
 
-                // Test smallest numbers
-                test(0.0);
-                test(double.Epsilon);
-                test(-double.Epsilon);
-
-                // Find biggest number with sinc(x) = 1
-                var input = 6.840859303578714E-09;
-                var output = 0.0;
-
-                while (output != 1.0)
+                for (int n = 0; n < iterations; n++)
                 {
-                    input = previous(input);
-                    output = Fun.Sinc(input);
-                    Assert.IsTrue(output.IsFinite());
+                    for (int i = 0; i < inputs.Length; i++)
+                    {
+                        inputs[i] = NextAfter(inputs[i], 1);
+                        double output = Fun.Sinc(inputs[i]);
+                        Assert.IsTrue(output != 1, "Found input x with Fun.Sinc(x) = 1 and |x| > eps: x = {0}", inputs[i]);
+                    }
+                }
+            }
+
+            // Finding values for eps
+            if (findEps)
+            {
+                Console.WriteLine("Finding eps for float");
+
+                {
+                    // Find biggest number with sinc(x) = 1
+                    float input = 1.0f;
+                    float output = 0.0f;
+
+                    while (output != 1.0f)
+                    {
+                        input = NextAfter(input, -1);
+                        output = Fun.Sinc(input);
+                    }
+
+                    Console.WriteLine("Fun.Sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
                 }
 
-                Console.WriteLine("{0} = {1}", input, output);
+                {
+                    // Find smallest number with sinc(x) = 1
+                    float input = -1.0f;
+                    float output = 0.0f;
+
+                    while (output != 1.0f)
+                    {
+                        input = NextAfter(input, -1);
+                        output = Fun.Sinc(input);
+                    }
+
+                    Console.WriteLine("Fun.Sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Finding eps for double");
+
+                {
+                    // Find biggest number with sinc(x) = 1
+                    double input = 6.84086E-09;
+                    double output = 0.0;
+
+                    while (output != 1.0)
+                    {
+                        input = NextAfter(input, -1);
+                        output = Fun.Sinc(input);
+                    }
+
+                    Console.WriteLine("Fun.Sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                }
+
+                {
+                    // Find smallest number with sinc(x) = 1
+                    double input = -6.84086E-09;
+                    double output = 0.0;
+
+                    while (output != 1.0)
+                    {
+                        input = NextAfter(input, -1);
+                        output = Fun.Sinc(input);
+                    }
+
+                    Console.WriteLine("Fun.Sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
+                }
             }
         }
     }

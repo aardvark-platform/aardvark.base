@@ -5056,17 +5056,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sinc(this float x)
         {
-            if (x != 0)
+            // See unit test for determining eps
+            if (Abs(x) < 0.00017791694f)
+            {
+                return 1;
+            }
+            else
             {
                 #if NETCOREAPP3_1
                     return MathF.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
                 #else
                     return (float)Math.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x); ;
                 #endif
-            }
-            else
-            {
-                return 1;
             }
         }
 
@@ -5315,13 +5316,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Sinc(this double x)
         {
-            if (x != 0)
+            // See unit test for determining eps
+            if (Abs(x) < 6.840859302478615E-09)
             {
-                return Math.Sin(Constant.Pi * x) / (Constant.Pi * x);
+                return 1;
             }
             else
             {
-                return 1;
+                return Math.Sin(Constant.Pi * x) / (Constant.Pi * x);
             }
         }
 
