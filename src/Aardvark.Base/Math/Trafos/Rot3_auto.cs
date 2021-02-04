@@ -1225,7 +1225,7 @@ namespace Aardvark.Base
         ///
         /// Assumes q1 and q2 are normalized and that t in [0,1].
         ///
-        /// This method does interpolate along the shortest arc between q1 and q2.
+        /// This method interpolates along the shortest arc between q1 and q2.
         /// </summary>
         public static Rot3f SlerpShortest(this Rot3f q1, Rot3f q2, float t)
         {
@@ -2519,7 +2519,7 @@ namespace Aardvark.Base
         ///
         /// Assumes q1 and q2 are normalized and that t in [0,1].
         ///
-        /// This method does interpolate along the shortest arc between q1 and q2.
+        /// This method interpolates along the shortest arc between q1 and q2.
         /// </summary>
         public static Rot3d SlerpShortest(this Rot3d q1, Rot3d q2, double t)
         {

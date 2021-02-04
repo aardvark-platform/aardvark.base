@@ -5050,6 +5050,28 @@ namespace Aardvark.Base
         #region Trigonometry
 
         /// <summary>
+        /// Normalized sinc function.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Sinc(this float x)
+        {
+            // See unit test for determining eps
+            if (Abs(x) < 0.00017791694f)
+            {
+                return 1;
+            }
+            else
+            {
+                #if NETCOREAPP3_1
+                    return MathF.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
+                #else
+                    return (float)Math.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
+                #endif
+            }
+        }
+
+        /// <summary>
         /// Returns the sine of the specified angle in radians.
         /// </summary>
         [Pure]
@@ -5285,6 +5307,24 @@ namespace Aardvark.Base
             #else
                 return 0.5f * Log((1 + x) / (1 - x));
             #endif
+        }
+
+        /// <summary>
+        /// Normalized sinc function.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Sinc(this double x)
+        {
+            // See unit test for determining eps
+            if (Abs(x) < 6.840859302478615E-09)
+            {
+                return 1;
+            }
+            else
+            {
+                return Math.Sin(Constant.Pi * x) / (Constant.Pi * x);
+            }
         }
 
         /// <summary>

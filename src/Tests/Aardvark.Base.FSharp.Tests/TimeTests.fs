@@ -122,6 +122,47 @@ module ``Time tests`` =
         r.[1] |> should equal t0
         r.[2] |> should equal t2
 
+    [<Test>]
+    let ``[MicroTime] special values tests``() =
+        MicroTime(infinity)     |> should equal MicroTime.PositiveInfinity
+        MicroTime(-infinity)    |> should equal MicroTime.NegativeInfinity
+        MicroTime(nan)          |> should equal MicroTime.NegativeInfinity
+
+        MicroTime.PositiveInfinity * 3 |> should equal      MicroTime.PositiveInfinity
+        MicroTime.PositiveInfinity * 3.0 |> should equal    MicroTime.PositiveInfinity
+        MicroTime.NegativeInfinity * 3 |> should equal      MicroTime.NegativeInfinity
+        MicroTime.NegativeInfinity * 3.0 |> should equal    MicroTime.NegativeInfinity
+
+        MicroTime.PositiveInfinity * -3 |> should equal      MicroTime.NegativeInfinity
+        MicroTime.PositiveInfinity * -3.0 |> should equal    MicroTime.NegativeInfinity
+        MicroTime.NegativeInfinity * -3 |> should equal      MicroTime.PositiveInfinity
+        MicroTime.NegativeInfinity * -3.0 |> should equal    MicroTime.PositiveInfinity
+
+        MicroTime.PositiveInfinity * 0 |> should equal      MicroTime.NegativeInfinity
+        MicroTime.PositiveInfinity * 0.0 |> should equal    MicroTime.NegativeInfinity
+        MicroTime.NegativeInfinity * 0 |> should equal      MicroTime.NegativeInfinity
+        MicroTime.NegativeInfinity * 0.0 |> should equal    MicroTime.NegativeInfinity
+
+        MicroTime(3L) * infinity  |> should equal    MicroTime.PositiveInfinity
+        MicroTime(3L) * -infinity |> should equal    MicroTime.NegativeInfinity
+
+        MicroTime(-3L) * infinity |> should equal    MicroTime.NegativeInfinity
+        MicroTime(-3L) * -infinity |> should equal    MicroTime.PositiveInfinity
+
+        MicroTime.Zero * infinity |> should equal           MicroTime.NegativeInfinity
+        MicroTime.Zero * -infinity |> should equal          MicroTime.NegativeInfinity
+
+        MicroTime.PositiveInfinity / 3 |> should equal      MicroTime.PositiveInfinity
+        MicroTime.PositiveInfinity / 3.0 |> should equal    MicroTime.PositiveInfinity
+        MicroTime.NegativeInfinity / 3 |> should equal      MicroTime.NegativeInfinity
+        MicroTime.NegativeInfinity / 3.0 |> should equal    MicroTime.NegativeInfinity
+
+        MicroTime.PositiveInfinity / -3 |> should equal      MicroTime.NegativeInfinity
+        MicroTime.PositiveInfinity / -3.0 |> should equal    MicroTime.NegativeInfinity
+        MicroTime.NegativeInfinity / -3 |> should equal      MicroTime.PositiveInfinity
+        MicroTime.NegativeInfinity / -3.0 |> should equal    MicroTime.PositiveInfinity
+
+        ()
 
 
 

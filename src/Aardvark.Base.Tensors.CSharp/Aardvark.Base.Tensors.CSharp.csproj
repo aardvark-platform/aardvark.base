@@ -13,17 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="TensorExtensions_template.cs" />
-    <Compile Remove="TensorMathExt_template.cs" />
-    <Compile Remove="Tensors\Accessors_template.cs" />
-    <Compile Remove="Tensor_template.cs" />
+    <Compile Remove="**\*_template.cs" />
+    <Compile Remove="**\*_generator.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="TensorExtensions_template.cs" />
-    <None Include="TensorMathExt_template.cs" />
-    <None Include="Tensors\Accessors_template.cs" />
-    <None Include="Tensor_template.cs" />
+    <None Include="**\*_template.cs" />
   </ItemGroup>
 
   <ItemGroup>

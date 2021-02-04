@@ -610,7 +610,7 @@ namespace Aardvark.Base
         ///
         /// Assumes q1 and q2 are normalized and that t in [0,1].
         ///
-        /// This method does interpolate along the shortest arc between q1 and q2.
+        /// This method interpolates along the shortest arc between q1 and q2.
         /// </summary>
         public static QuaternionF SlerpShortest(this QuaternionF q1, QuaternionF q2, float t)
         {
@@ -1287,7 +1287,7 @@ namespace Aardvark.Base
         ///
         /// Assumes q1 and q2 are normalized and that t in [0,1].
         ///
-        /// This method does interpolate along the shortest arc between q1 and q2.
+        /// This method interpolates along the shortest arc between q1 and q2.
         /// </summary>
         public static QuaternionD SlerpShortest(this QuaternionD q1, QuaternionD q2, double t)
         {

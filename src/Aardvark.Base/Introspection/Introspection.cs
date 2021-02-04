@@ -127,6 +127,85 @@ namespace Aardvark.Base
             ? Path.GetDirectoryName(CurrentEntryAssembly.Location)
             : null
             ;
+
+        private static HashSet<string> s_defaultAssemblyBlacklist =
+            new HashSet<string>(
+                new[]
+                {
+                    "Aardvark.Unmanaged",
+                    "Aardvark.Unmanaged.Diagnostics",
+                    "ASift.CLI",
+                    "CUDA.NET",
+                    "Emgu.CV",
+                    "FreeImageNET",
+                    "levmarCLI",
+                    "LSDCli",
+                    "OpenNI.Net",
+                    "OpenSURFcs",
+                    "PdfSharp",
+                    "PresentationFramework",
+                    "PresentationCore",
+                    "PrimitiveShapesCLI",
+                    "SiftGpu.CLI",
+                    "SlamToroCli",
+                    "System",
+                    "WindowsBase",
+                    "OpenTK"
+                }
+            );
+
+        private static bool DefaultAssemblyFilter(string name)
+        {
+            return !(s_defaultAssemblyBlacklist.Contains(name) ||
+                     name.StartsWith("System.") ||
+                     name.StartsWith("VRLib.CLI") ||
+                     name.StartsWith("Microsoft") ||
+                     name.StartsWith("LidorSystems") ||
+                     name.StartsWith("WeifenLuo.") ||
+                     name.StartsWith("OpenCV") ||
+                     name.StartsWith("nunit.") ||
+                     name.StartsWith("Extreme.Numerics") ||
+                     name.StartsWith("fftwlib") ||
+                     name.StartsWith("GraphCutsCLI") ||
+                     name.StartsWith("Interop.MLApp") ||
+                     name.StartsWith("IPP") ||
+                     name.StartsWith("IronRuby") ||
+                     name.StartsWith("MapTools") ||
+                     name.StartsWith("MetaDataExtractor") ||
+                     name.StartsWith("mscorlib") ||
+                     name.StartsWith("SlimDX") ||
+                     name.StartsWith("TDx.TDxInput") ||
+                     name.StartsWith("WiimoteLib") ||
+                     name.StartsWith("OpenTK") ||
+                     name.StartsWith("Kitware") ||
+                     name.StartsWith("ICSharpCode") ||
+                     name.StartsWith("WindowsFormsIntegration") ||
+                     name.StartsWith("Roslyn") ||
+                     name.StartsWith("SharpDX") ||
+                     name.StartsWith("Aardvark.Jynx.Native") ||
+                     name.StartsWith("SurfaceQueueInteropHelper") ||
+                     name.StartsWith("ScintillaNET") ||
+                     name.StartsWith("IKVM") ||
+                     name.StartsWith("Super") ||
+                     name.StartsWith("Java") ||
+                     name.StartsWith("OpenTK"));
+        }
+
+        /// <summary>
+        /// Determines if the built-in assembly filter is ignored or applied (default: false).
+        /// </summary>
+        public static bool IgnoreDefaultAssemblyFilter { get; set; } = false;
+
+        /// <summary>
+        /// Filter function determining if an assembly with the given name (without extension) should be loaded or ignored.
+        /// <see cref="IgnoreDefaultAssemblyFilter"/> determines if the function is applied on top of the built-in filter rules.
+        /// </summary>
+        public static Func<string, bool> CustomAssemblyFilter { get; set; } = (_) => true;
+
+        internal static bool AssemblyFilter(string name)
+        {
+            return (IgnoreDefaultAssemblyFilter || DefaultAssemblyFilter(name)) && CustomAssemblyFilter(name);
+        }
     }
 
     public static class Introspection
@@ -277,32 +356,7 @@ namespace Aardvark.Base
         
         static Introspection()
         {
-            // (1) initializing s_assembliesThatFailedToLoad
-            new []
-            {
-                "Aardvark.Unmanaged",
-                "Aardvark.Unmanaged.Diagnostics",
-                "ASift.CLI",
-                "CUDA.NET",
-                "Emgu.CV",
-                "FreeImageNET",
-                "levmarCLI",
-                "LSDCli",
-                "OpenNI.Net",
-                "OpenSURFcs",
-                "PdfSharp",
-                "PresentationFramework",
-                "PresentationCore",
-                "PrimitiveShapesCLI",
-                "SiftGpu.CLI",
-                "SlamToroCli",
-                "System",
-                "WindowsBase",
-                "OpenTK"
-            }
-            .ForEach(x => s_assembliesThatFailedToLoad.Add(x));
-
-            // (2) enumerating all assemblies reachable from entry assembly
+            // enumerating all assemblies reachable from entry assembly
             s_assemblies = new Dictionary<string, Assembly>();
             var entryAssembly = Assembly.GetEntryAssembly();
 
@@ -396,42 +450,10 @@ namespace Aardvark.Base
             if (string.IsNullOrEmpty(name)) return;
             if (s_assembliesThatFailedToLoad.Contains(name)) return;
             if (s_assemblies.ContainsKey(name)) return;
-            
-            if (name.StartsWith("System.") ||
-                name.StartsWith("VRLib.CLI") ||
-                name.StartsWith("Microsoft") ||
-                name.StartsWith("LidorSystems") ||
-                name.StartsWith("WeifenLuo.") ||
-                name.StartsWith("OpenCV") ||
-                name.StartsWith("nunit.") ||
-                name.StartsWith("Extreme.Numerics") ||
-                name.StartsWith("fftwlib") ||
-                name.StartsWith("GraphCutsCLI") ||
-                name.StartsWith("Interop.MLApp") ||
-                name.StartsWith("IPP") ||
-                name.StartsWith("IronRuby") ||
-                name.StartsWith("MapTools") ||
-                name.StartsWith("MetaDataExtractor") ||
-                name.StartsWith("mscorlib") ||
-                name.StartsWith("SlimDX") ||
-                name.StartsWith("TDx.TDxInput") ||
-                name.StartsWith("WiimoteLib") ||
-                name.StartsWith("OpenTK") ||
-                name.StartsWith("Kitware") ||
-                name.StartsWith("ICSharpCode") ||
-                name.StartsWith("WindowsFormsIntegration") ||
-                name.StartsWith("Roslyn") ||
-                name.StartsWith("SharpDX") ||
-                name.StartsWith("Aardvark.Jynx.Native") ||
-                name.StartsWith("SurfaceQueueInteropHelper") ||
-                name.StartsWith("ScintillaNET") ||
-                name.StartsWith("IKVM") ||
-                name.StartsWith("Super") ||
-                name.StartsWith("Java") ||
-                name.StartsWith("OpenTK")
-                )
+
+            if (!IntrospectionProperties.AssemblyFilter(name))
             {
-                s_assembliesThatFailedToLoad.Add(name);
+                Report.Line(4, "[Introspection] Ignoring assembly {0} due to filter", name);
                 return;
             }
 
@@ -793,11 +815,18 @@ namespace Aardvark.Base
             var cache = ReadCacheFile();
             var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
 
-            var folder = IntrospectionProperties.CurrentEntryPath; 
-            var assemblies = Directory.EnumerateFiles(folder)
-                                      .Where(p => { var ext = Path.GetExtension(p).ToLowerInvariant(); return ext == ".dll" || ext == ".exe"; })
-                                      .Select(Path.GetFullPath)
-                                      .ToArray();
+            var folder = IntrospectionProperties.CurrentEntryPath;
+            string[] assemblies =
+                    Directory.EnumerateFiles(folder)
+                        .Where(p => { var ext = Path.GetExtension(p).ToLowerInvariant(); return ext == ".dll" || ext == ".exe"; })
+                        .Where(p => {
+                            var name = Path.GetFileNameWithoutExtension(p);
+                            var f = IntrospectionProperties.AssemblyFilter(name);
+                            if (!f) { Report.Line(4, "[GetPluginAssemblyPaths] Ignoring assembly {0} due to filter", name); }
+                            return f;
+                        })
+                        .Select(Path.GetFullPath)
+                        .ToArray();
 
             var paths = new List<string>();
 
