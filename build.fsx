@@ -15,7 +15,7 @@ open Fake
 open Fake.Core
 open Fake.IO.Globbing.Operators
 
-let notes = ReleaseNotes.load "RELEASE_NOTES.md"
+//let notes = ReleaseNotes.load "RELEASE_NOTES.md"
 
 do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
@@ -26,6 +26,8 @@ do System.Diagnostics.Debugger.Launch() |> ignore
 #endif
 
 Target.create "pushGithub" (fun _ -> 
+
+    let tag = getGitTag()
 
     let packages = !!"bin/*.nupkg"
     let packageNameRx = Regex @"^(?<name>[a-zA-Z_0-9\.-]+?)\.(?<version>([0-9]+\.)*[0-9]+)(.*?)\.nupkg$"
@@ -43,15 +45,14 @@ Target.create "pushGithub" (fun _ ->
 
 
     let nupkgs = 
-        myPackages |> Seq.map (fun id -> sprintf "bin/%s.%s.nupkg" id notes.NugetVersion)
+        myPackages |> Seq.map (fun id -> sprintf "bin/%s.%s.nupkg" id tag)
 
 
-    printfn "%A" (nupkgs |> Seq.toArray)
-    //Fake.DotNet.Paket.pushFiles (fun s -> 
-    //    { s with
-    //        PublishUrl = "https://nuget.pkg.github.com/aardvark-platform/index.json"
-    //    }
-    //) nupkgs
+    Fake.DotNet.Paket.pushFiles (fun s -> 
+        { s with
+            PublishUrl = "https://nuget.pkg.github.com/aardvark-platform/index.json"
+        }
+    ) nupkgs
 )
 
 entry()
