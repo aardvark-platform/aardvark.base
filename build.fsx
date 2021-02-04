@@ -47,10 +47,10 @@ Target.create "pushGithub" (fun _ ->
     let nupkgs = 
         myPackages |> Seq.map (fun id -> sprintf "bin/%s.%s.nupkg" id tag)
 
-
     Fake.DotNet.Paket.pushFiles (fun s -> 
         { s with
-            PublishUrl = "https://nuget.pkg.github.com/aardvark-platform/index.json"
+            PublishUrl = "https://nuget.pkg.github.com/aardvark-platform"
+            WorkingDir = "."
         }
     ) nupkgs
 )
