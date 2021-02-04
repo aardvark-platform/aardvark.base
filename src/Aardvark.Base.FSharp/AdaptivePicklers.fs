@@ -122,7 +122,7 @@ type AdaptivePicklers() =
         let clone (cs : CloneState) (m : HashMap<'k, 'v>) =
             m.ToSeqV()
             |> Seq.map (fun struct(k,v) -> struct(pKey.Clone cs k, pValue.Clone cs v))
-            |> HashMap.OfSeqV
+            |> HashMap.ofSeqV
 
         let accept (vs : VisitState) (m : HashMap<'k, 'v>) =
             for (k,v) in m do pKey.Accept vs k; pValue.Accept vs v
@@ -147,7 +147,7 @@ type AdaptivePicklers() =
         let clone (cs : CloneState) (m : HashMapDelta<'k, 'v>) =
             (HashMapDelta.toHashMap m).ToSeqV()
             |> Seq.map (fun struct(k,v) -> struct(pKey.Clone cs k, pValue.Clone cs v))
-            |> HashMap.OfSeqV
+            |> HashMap.ofSeqV
             |> HashMapDelta.ofHashMap
 
         let accept (vs : VisitState) (m : HashMapDelta<'k, 'v>) =
