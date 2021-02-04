@@ -75,34 +75,34 @@ type MicroTime =
             else MicroTime(-l.TotalNanoseconds)
 
         static member (*) (l : MicroTime, r : float) = 
-            if r = 0.0 then MicroTime.Zero
-            else MicroTime(float l.TotalNanoseconds * r |> int64)
+            MicroTime(MicroTime.ToFloat l * r)
 
         static member (*) (l : float, r : MicroTime) = 
-            if l = 0.0 then MicroTime.Zero
-            else MicroTime(l * float r.TotalNanoseconds |> int64)
+            MicroTime(l * MicroTime.ToFloat r)
 
-        static member (*) (l : MicroTime, r : int) = 
-            if r = 0 then MicroTime.Zero
-            else MicroTime(l.TotalNanoseconds * int64 r)
+        static member (*) (l : MicroTime, r : int) =
+            if l.IsInfinite then
+                if r = 0 then MicroTime.NegativeInfinity
+                else if r > 0 then l else -l
+            else
+                MicroTime(l.TotalNanoseconds * int64 r)
 
-        static member (*) (l : int, r : MicroTime) = 
-            if l = 0 then MicroTime.Zero
-            else MicroTime(int64 l * r.TotalNanoseconds)
+        static member (*) (l : int, r : MicroTime) =
+            if r.IsInfinite then
+                if l = 0 then MicroTime.NegativeInfinity
+                else if l > 0 then r else -r
+            else
+                MicroTime(int64 l * r.TotalNanoseconds)
 
-        static member (/) (l : MicroTime, r : int) = 
-            if r = 0 then 
-                if l.TotalNanoseconds >= 0L then MicroTime.PositiveInfinity
-                else MicroTime.NegativeInfinity
-            else 
+        static member (/) (l : MicroTime, r : int) =
+            if l.IsInfinite then
+                if r = 0 then MicroTime.NegativeInfinity
+                else if r > 0 then l else -l
+            else
                 MicroTime(l.TotalNanoseconds / int64 r)
 
         static member (/) (l : MicroTime, r : float) = 
-            if r = 0.0 then
-                if l.TotalNanoseconds >= 0L then MicroTime.PositiveInfinity
-                else MicroTime.NegativeInfinity
-            else
-                MicroTime(float l.TotalNanoseconds / r |> int64)
+            MicroTime(MicroTime.ToFloat l / r)
 
         static member private ToFloat (t : MicroTime) : float =
             if t.IsPositiveInfinity then Double.PositiveInfinity
@@ -114,16 +114,15 @@ type MicroTime =
         static member (/) (l : MicroTime, r : MicroTime) = 
             MicroTime.ToFloat l / MicroTime.ToFloat r
 
-
         static member PositiveInfinity = MicroTime(Int64.MaxValue)
         static member NegativeInfinity = MicroTime(Int64.MinValue)
         static member Zero = MicroTime(0L)
 
         static member FromNanoseconds(ns : int64) = MicroTime(ns)
-        static member FromMicroseconds(us : float) = MicroTime(int64(us * 1000.0))
-        static member FromMilliseconds(ms : float) = MicroTime(int64(ms * 1000000.0))
-        static member FromSeconds(s : float) = MicroTime(int64(s * 1000000000.0))
-        static member FromMinutes(m : float) = MicroTime(int64(m * 60000000000.0))
+        static member FromMicroseconds(us : float) = MicroTime(us * 1000.0)
+        static member FromMilliseconds(ms : float) = MicroTime(ms * 1000000.0)
+        static member FromSeconds(s : float) = MicroTime(s * 1000000000.0)
+        static member FromMinutes(m : float) = MicroTime(m * 60000000000.0)
         static member FromTicks (t : int64) = MicroTime.FromMicroseconds(float t * float TimeSpan.TicksPerSecond / 1000000.0)
 
         static member Nanosecond = MicroTime(1L)
@@ -131,9 +130,16 @@ type MicroTime =
         static member Millisecond = MicroTime(1000000L)
         static member Second = MicroTime(1000000000L)
         static member Minute = MicroTime(60000000000L)
-        
+
         new (ns : int64) = { TotalNanoseconds = ns }
         new (ts : TimeSpan) = { TotalNanoseconds = ts.Ticks * (1000000000L / TimeSpan.TicksPerSecond) }
+        new (ns : float) =
+            { TotalNanoseconds =
+                if isFinite ns then int64 ns
+                elif isPositiveInfinity ns then Int64.MaxValue
+                else Int64.MinValue
+            }
+
     end
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
