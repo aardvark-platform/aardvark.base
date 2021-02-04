@@ -13,7 +13,6 @@
 [Quickstart](https://github.com/aardvarkplatform/aardvark.docs/wiki/Quickstart-Windows) | 
 [Status](https://github.com/aardvarkplatform/aardvark.docs/wiki/Status)
 
-Stable packages can be found on [nuget.org](https://www.nuget.org/packages?q=aardvark.base) using the feed `https://api.nuget.org/v3/index.json`, more recent development packages can be found in the [github feed](https://github.com/orgs/aardvark-platform/packages) available via the feed `https://nuget.pkg.github.com/aardvark-platform/index.json`. 
 
 Aardvark.Base consists of multiple platform-independent packages (netstandard2.0) delivering essential tools for visual computing, such as vectors and matrices, as well as many algorithms and data structures.
 It is the lowest-level foundation of the open-source [Aardvark Platform](https://github.com/aardvark-platform/aardvark.docs/wiki) for visual computing, real-time graphics and visualization:
