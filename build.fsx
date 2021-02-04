@@ -14,8 +14,7 @@ open Aardvark.Fake
 open Fake
 open Fake.Core
 open Fake.IO.Globbing.Operators
-
-//let notes = ReleaseNotes.load "RELEASE_NOTES.md"
+open Fake.Core.TargetOperators
 
 do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
@@ -25,9 +24,9 @@ DefaultSetup.install ["src/Aardvark.sln"]
 do System.Diagnostics.Debugger.Launch() |> ignore
 #endif
 
-Target.create "pushGithub" (fun _ -> 
+Target.create "PushGithub" (fun _ -> 
 
-    let tag = getGitTag()
+    let tag = getVersion()
 
     let packages = !!"bin/*.nupkg"
     let packageNameRx = Regex @"^(?<name>[a-zA-Z_0-9\.-]+?)\.(?<version>([0-9]+\.)*[0-9]+)(.*?)\.nupkg$"
@@ -54,5 +53,7 @@ Target.create "pushGithub" (fun _ ->
         }
     ) nupkgs
 )
+
+"CreatePackage" ==> "PushGithub"
 
 entry()
