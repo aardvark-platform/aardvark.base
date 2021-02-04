@@ -42,11 +42,4 @@ nuget System.Text.Json             >= 4.7.2 lowest_matching: true
 group Build
 framework: netstandard2.0
 source https://api.nuget.org/v3/index.json
-github aardvark-platform/aardvark.fake:v5
-
-nuget Fake.DotNet.Cli
-nuget fake-cli ~> 5.20.4-alpha.1642
-nuget Fake.IO.FileSystem
-nuget Fake.Api.GitHub
-nuget Fake.DotNet.Paket
-nuget Fake.Core.ReleaseNotes
+github aardvark-platform/aardvark.fake:v511
