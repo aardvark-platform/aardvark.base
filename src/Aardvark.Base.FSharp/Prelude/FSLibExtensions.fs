@@ -58,6 +58,11 @@ module Prelude =
             e.Dispose()
             r
 
+        let foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (source : 'T seq) =
+            ((0, state), source) ||> Seq.fold (fun (i, state) x ->
+                (i + 1), folder i state x
+            ) |> snd
+
         open System.Collections
         open System.Collections.Generic
 
@@ -111,6 +116,11 @@ module Prelude =
         let partition (f : 'a -> bool) (source : list<'a>) = 
             partitionAcc f source (System.Collections.Generic.List()) (System.Collections.Generic.List())
 
+        let foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (list : 'T list) =
+            ((0, state), list) ||> List.fold (fun (i, state) x ->
+                (i + 1), folder i state x
+            ) |> snd
+
     module Array =
         let rec private forany' (f : 'a -> bool) (index : int) (a : 'a[]) =
             if index >= a.Length then false
@@ -120,6 +130,11 @@ module Prelude =
 
         let forany (f : 'a -> bool) (a : 'a[]) =
             forany' f 0 a
+
+        let foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (array : 'T[]) =
+            ((0, state), array) ||> Array.fold (fun (i, state) x ->
+                (i + 1), folder i state x
+            ) |> snd
     
     module Disposable =
 
