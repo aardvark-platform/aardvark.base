@@ -15,7 +15,7 @@ namespace Aardvark.Base.Benchmarks
     //#     var type = t.Name;
     //#     var Type = t.Caps;
     //#     var rtype = (type == "float") ? "float" : "double";
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>

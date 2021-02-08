@@ -31,8 +31,8 @@ namespace Aardvark.Base.Benchmarks
     //|       Log2Int_Int_DoubleExp | 1,381.9 us |  3.47 us |  2.71 us |
 
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class Log2Int
     {
         int[] m_numbersInt = new int[1000000];
@@ -234,8 +234,8 @@ namespace Aardvark.Base.Benchmarks
     //|            Log2_Double |  9.018 ms | 0.0563 ms | 0.0527 ms |
 
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class Log2
     {
         int[] m_numbersInt = new int[1000000];

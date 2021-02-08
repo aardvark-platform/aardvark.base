@@ -11,7 +11,7 @@ namespace Aardvark.Base.Benchmarks
         {
             //BenchmarkRunner.Run<V4fLength>();
             //BenchmarkRunner.Run<V3fLeng
-            //BenchmarkRunner.Run<V2fLength>();
+            BenchmarkRunner.Run<V2fLength>();
             //BenchmarkRunner.Run<CodeGenTests>();
             //BenchmarkRunner.Run<AngleBetweenFloat>();
             //BenchmarkRunner.Run<AngleBetweenDouble>();
@@ -76,7 +76,7 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<IntSetCreator>();
             //BenchmarkRunner.Run<ArrayInit>();
             //BenchmarkRunner.Run<ArraySum>();
-            BenchmarkRunner.Run<SomeApp.HashCodeCombine>();
+            //BenchmarkRunner.Run<SomeApp.HashCodeCombine>();
             //BenchmarkRunner.Run<MatrixSampling>();
             //BenchmarkRunner.Run<TelemetryProbesBenchmark>();
 

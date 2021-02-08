@@ -22,7 +22,7 @@ namespace Aardvark.Base.Benchmarks
     
     #region Indexers2
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
          //<DebugType>pdbonly</DebugType>
          //<DebugSymbols>true</DebugSymbols>
@@ -526,7 +526,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region Indexers3
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
          //<DebugType>pdbonly</DebugType>
          //<DebugSymbols>true</DebugSymbols>
@@ -1070,7 +1070,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region Indexers4
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
          //<DebugType>pdbonly</DebugType>
          //<DebugSymbols>true</DebugSymbols>

@@ -37,7 +37,7 @@ namespace Aardvark.Base.Benchmarks
     //# var mgetptr = "&M00";
     #region __type__
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
          //<DebugType>pdbonly</DebugType>
          //<DebugSymbols>true</DebugSymbols>

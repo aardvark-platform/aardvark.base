@@ -18,7 +18,7 @@ namespace Aardvark.Base.Benchmarks
     //#     var eps = (rt == Meta.DoubleType) ? "0.0001" : "0.01f";
     //#     var half = (rt == Meta.DoubleType) ? "0.5" : "0.5f";
     //#     var cast = (rt == Meta.DoubleType) ? "" : "(" + rtype + ")"; 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>

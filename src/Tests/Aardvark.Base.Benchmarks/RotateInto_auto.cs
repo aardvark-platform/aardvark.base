@@ -10,7 +10,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region Rot3f
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>
@@ -223,7 +223,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region Rot3d
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>

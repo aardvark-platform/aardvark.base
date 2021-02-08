@@ -14,7 +14,7 @@ namespace Aardvark.Base.Benchmarks
     //#     var v3rt = Meta.VecTypeOf(3, rt).Name;
     //#     var m44rt = Meta.MatTypeOf(4, 4, rt).Name;
     //#     var eps = (rt == Meta.DoubleType) ? 0.0001f : 0.01f;
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>

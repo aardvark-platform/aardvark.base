@@ -8,8 +8,8 @@ using System.Text;
 
 namespace Aardvark.Base.Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class Rot3dTransform
     {
         V3d[] arr = new V3d[100000];

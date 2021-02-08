@@ -10,7 +10,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region M22f
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>
@@ -273,7 +273,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region M33f
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>
@@ -556,7 +556,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region M44f
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>
@@ -866,7 +866,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region M22d
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>
@@ -1129,7 +1129,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region M33d
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>
@@ -1412,7 +1412,7 @@ namespace Aardvark.Base.Benchmarks
 
     #region M44d
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>

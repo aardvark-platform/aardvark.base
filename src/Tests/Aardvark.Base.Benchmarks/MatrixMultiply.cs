@@ -6,8 +6,8 @@ using System.Text;
 
 namespace Aardvark.Base.Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class MatrixMultiply
     {
         M44d[] arr44 = new M44d[100000];

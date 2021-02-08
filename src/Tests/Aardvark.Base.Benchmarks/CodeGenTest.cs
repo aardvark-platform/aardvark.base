@@ -78,8 +78,8 @@ namespace Aardvark.Base.Benchmarks
         }
     }
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class CodeGenTests
     {
         MyVector4[] arr = new MyVector4[1000000];

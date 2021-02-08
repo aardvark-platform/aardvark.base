@@ -29,7 +29,7 @@ namespace Aardvark.Base.Benchmarks
     //#     var epsgsr = isDouble ? "1e-14" : "1e-6f";
     #region __mnnt__
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     // Uncomment following lines for assembly output, need to add
     //     <DebugType>pdbonly</DebugType>
     //     <DebugSymbols>true</DebugSymbols>

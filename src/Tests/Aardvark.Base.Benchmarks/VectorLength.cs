@@ -6,8 +6,8 @@ using System;
 namespace Aardvark.Base.Benchmarks
 {
     //[SimpleJob(RuntimeMoniker.Net471)]
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class V4fLength
     {
         V4f[] arr = new V4f[1000000];
@@ -45,8 +45,8 @@ namespace Aardvark.Base.Benchmarks
         }
     }
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class V3fLength
     {
         V3f[] arr = new V3f[1000000];
@@ -84,8 +84,8 @@ namespace Aardvark.Base.Benchmarks
         }
     }
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class V2fLength
     {
         V2f[] arr = new V2f[1000000];

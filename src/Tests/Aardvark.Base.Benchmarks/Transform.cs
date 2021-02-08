@@ -22,8 +22,8 @@ namespace Aardvark.Base.Benchmarks
     //| Similarity_Transform | 1,639.8 us | 6.79 us | 6.35 us |
     //|     Affine_Transform |   545.6 us | 3.12 us | 2.92 us |
 
-    [SimpleJob(RuntimeMoniker.NetCoreApp30)]
-    [DisassemblyDiagnoser(printAsm: true)]
+    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
+    [DisassemblyDiagnoser(printSource: true)]
     public class TransformV3d
     {
         V3d[] arr = new V3d[100000];
