@@ -61,5 +61,6 @@ Target.create "PushDev" (fun _ ->
 )
 
 "CreatePackage" ==> "PushGithub"
+"CreatePackage" ==> "PushDev"
 
 entry()
