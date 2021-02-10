@@ -54,6 +54,12 @@ Target.create "PushGithub" (fun _ ->
     ) nupkgs
 )
 
+Target.create "PushDev" (fun _ -> 
+
+    DefaultSetup.push ["https://vrvis.myget.org/F/aardvark_public/api/v2" ,"public.key"]
+    
+)
+
 "CreatePackage" ==> "PushGithub"
 
 entry()
