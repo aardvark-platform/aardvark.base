@@ -13,6 +13,7 @@
 [Quickstart](https://github.com/aardvarkplatform/aardvark.docs/wiki/Quickstart-Windows) | 
 [Status](https://github.com/aardvarkplatform/aardvark.docs/wiki/Status)
 
+
 Aardvark.Base consists of multiple platform-independent packages (netstandard2.0) delivering essential tools for visual computing, such as vectors and matrices, as well as many algorithms and data structures.
 It is the lowest-level foundation of the open-source [Aardvark Platform](https://github.com/aardvark-platform/aardvark.docs/wiki) for visual computing, real-time graphics and visualization:
 

@@ -20,17 +20,23 @@ namespace Aardvark.Base
         [OnAardvarkInit]
         public static void InitDevil()
         {
-            if (s_initialized) return;
-            s_initialized = true;
+            try
+            {
+                if (s_initialized) return;
+                s_initialized = true;
 
-            Bootstrap.Init();
-            I.Init();
-            I.Enable(EnableCap.AbsoluteOrigin);
-            I.OriginFunc(OriginMode.UpperLeft);
-            I.Enable(EnableCap.OverwriteExistingFile);
-            I.Enable(EnableCap.ConvertPalette);
+                Bootstrap.Init();
+                I.Init();
+                I.Enable(EnableCap.AbsoluteOrigin);
+                I.OriginFunc(OriginMode.UpperLeft);
+                I.Enable(EnableCap.OverwriteExistingFile);
+                I.Enable(EnableCap.ConvertPalette);
 
-            AddLoaders();
+                AddLoaders();
+            } catch(Exception e)
+            {
+                Report.Warn("[PixImageDevil] could not InitDevil: {0}", e.Message);
+            }
         }
 
         static PixImageDevil()
