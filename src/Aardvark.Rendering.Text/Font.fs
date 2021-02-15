@@ -590,9 +590,9 @@ type ShapeCache(r : IRuntime) =
 
     do 
         r.OnDispose.Add(fun () ->
-            boundarySurfaceCache.Values |> Seq.iter r.DeleteSurface
-            surfaceCache.Values |> Seq.iter r.DeleteSurface
-            billboardSurfaceCache.Values |> Seq.iter r.DeleteSurface
+            for x in boundarySurfaceCache.Values do r.DeleteSurface x
+            for x in surfaceCache.Values do r.DeleteSurface x
+            for x in billboardSurfaceCache.Values do r.DeleteSurface x
             pool.Dispose()
             ranges.Clear()
             cache.Clear()
