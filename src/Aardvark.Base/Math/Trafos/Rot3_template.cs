@@ -55,7 +55,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __type__
+    public partial struct __type__ : IEquatable<__type__>
     {
         /// <summary>
         /// Scalar (real) part of the quaternion.

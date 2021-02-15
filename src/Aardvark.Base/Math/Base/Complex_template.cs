@@ -23,7 +23,7 @@ namespace Aardvark.Base
     //#   var half = isDouble ? "0.5" : "0.5f";
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct __ct__
+    public struct __ct__ : IEquatable<__ct__>
     {
         [DataMember]
         public __ft__ Real;

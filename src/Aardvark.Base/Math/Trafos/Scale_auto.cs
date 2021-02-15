@@ -18,7 +18,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Scale2f
+    public partial struct Scale2f : IEquatable<Scale2f>
     {
         [DataMember]
         [XmlIgnore]
@@ -656,7 +656,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Scale3f
+    public partial struct Scale3f : IEquatable<Scale3f>
     {
         [DataMember]
         [XmlIgnore]
@@ -1307,7 +1307,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Scale2d
+    public partial struct Scale2d : IEquatable<Scale2d>
     {
         [DataMember]
         [XmlIgnore]
@@ -1945,7 +1945,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Scale3d
+    public partial struct Scale3d : IEquatable<Scale3d>
     {
         [DataMember]
         [XmlIgnore]

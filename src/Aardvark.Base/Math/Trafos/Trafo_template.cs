@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -46,7 +47,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct __type__
+    public struct __type__ : IEquatable<__type__>
     {
         [DataMember]
         public readonly __mmmt__ Forward;

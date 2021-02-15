@@ -11,7 +11,7 @@ namespace Aardvark.Base
 {
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct ComplexF
+    public struct ComplexF : IEquatable<ComplexF>
     {
         [DataMember]
         public float Real;
@@ -1014,7 +1014,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct ComplexD
+    public struct ComplexD : IEquatable<ComplexD>
     {
         [DataMember]
         public double Real;

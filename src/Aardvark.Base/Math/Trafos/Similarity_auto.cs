@@ -16,7 +16,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Similarity2f
+    public struct Similarity2f : IEquatable<Similarity2f>
     {
         [DataMember]
         public float Scale;
@@ -712,7 +712,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Similarity3f
+    public struct Similarity3f : IEquatable<Similarity3f>
     {
         [DataMember]
         public float Scale;
@@ -1562,7 +1562,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Similarity2d
+    public struct Similarity2d : IEquatable<Similarity2d>
     {
         [DataMember]
         public double Scale;
@@ -2258,7 +2258,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Similarity3d
+    public struct Similarity3d : IEquatable<Similarity3d>
     {
         [DataMember]
         public double Scale;

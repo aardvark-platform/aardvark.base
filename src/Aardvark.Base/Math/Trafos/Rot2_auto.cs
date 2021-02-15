@@ -14,7 +14,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Rot2f
+    public struct Rot2f : IEquatable<Rot2f>
     {
         [DataMember]
         public float Angle;
@@ -623,7 +623,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Rot2d
+    public struct Rot2d : IEquatable<Rot2d>
     {
         [DataMember]
         public double Angle;

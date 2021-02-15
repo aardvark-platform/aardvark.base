@@ -48,7 +48,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct __type__ : IValidity
+    public struct __type__ : IEquatable<__type__>, IValidity
     {
         [DataMember]
         public __mnnt__ Linear;

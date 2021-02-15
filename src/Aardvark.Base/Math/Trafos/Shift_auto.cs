@@ -18,7 +18,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Shift2f
+    public partial struct Shift2f : IEquatable<Shift2f>
     {
         [DataMember]
         [XmlIgnore]
@@ -705,7 +705,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Shift3f
+    public partial struct Shift3f : IEquatable<Shift3f>
     {
         [DataMember]
         [XmlIgnore]
@@ -1423,7 +1423,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Shift2d
+    public partial struct Shift2d : IEquatable<Shift2d>
     {
         [DataMember]
         [XmlIgnore]
@@ -2110,7 +2110,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Shift3d
+    public partial struct Shift3d : IEquatable<Shift3d>
     {
         [DataMember]
         [XmlIgnore]
