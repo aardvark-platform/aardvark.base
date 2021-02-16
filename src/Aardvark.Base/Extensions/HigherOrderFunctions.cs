@@ -328,7 +328,7 @@ namespace Aardvark.Base
         #region ForEach on Arrays
 
         /// <summary>
-        /// Perform the supplied action for all items in the IEnumerable.
+        /// Perform the supplied action for all items in the Array.
         /// </summary>
         public static void ForEach<T>(
                 this T[] array, Action<T> item_act)
@@ -338,7 +338,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Perform the supplied action for all items in the IEnumerable.
+        /// Perform the supplied action for all items in the Array.
         /// The action gets the index of the item i out of [0, n) as last
         /// parameter.
         /// </summary>
@@ -401,6 +401,53 @@ namespace Aardvark.Base
             int count = Min(array0.Length, Min(array1.Length, array2.Length));
             for (int i = 0; i < count; i++)
                 item0_item1_item2_i_act(array0[i], array1[i], array2[i], i);
+        }
+
+        #endregion
+
+        #region ForEach on Lists
+
+        /// <summary>
+        /// Perform the supplied action for all items in the List.
+        /// The action gets the index of the item i out of [0, n) as last
+        /// parameter.
+        /// </summary>
+        public static void ForEach<T>(this List<T> list, Action<T, int> fun)
+        {
+            var cnt = list.Count;
+            for (int i = 0; i < cnt; i++)
+                fun(list[i], i);
+        }
+
+        #endregion
+
+        #region ForEach Dictionary
+
+        /// <summary>
+        /// Perform the supplied action for  all items in the ValueCollection.
+        /// </summary>
+        public static void ForEach<K, V>(this Dictionary<K, V>.ValueCollection self, Action<V> fun)
+        {
+            foreach (var v in self)
+                fun(v);
+        }
+
+        /// <summary>
+        /// Perform the supplied action for all items in the KeyCollection.
+        /// </summary>
+        public static void ForEach<K, V>(this Dictionary<K, V>.KeyCollection self, Action<K> fun)
+        {
+            foreach (var k in self)
+                fun(k);
+        }
+
+        /// <summary>
+        /// Perform the supplied action for all KeyValuePairs in the Dictionary.
+        /// </summary>
+        public static void ForEach<K, V>(this Dictionary<K, V> self, Action<KeyValuePair<K, V>> fun)
+        {
+            foreach (var kv in self)
+                fun(kv);
         }
 
         #endregion
