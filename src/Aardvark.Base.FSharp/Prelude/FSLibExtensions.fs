@@ -135,6 +135,20 @@ module Prelude =
             ((0, state), array) ||> Array.fold (fun (i, state) x ->
                 (i + 1), folder i state x
             ) |> snd
+
+        let binarySearch (compare : 'T -> int) (array : 'T[]) =
+            let rec search (a : int) (b : int) =
+                if a <= b then
+                    let i = (a + b) / 2
+                    let cmp = compare array.[i]
+
+                    if cmp = 0 then ValueSome i
+                    elif cmp < 0 then search a (i - 1)
+                    else search (i + 1) b
+                else
+                    ValueNone
+
+            search 0 (array.Length - 1)
     
     module Disposable =
 
