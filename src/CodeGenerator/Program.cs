@@ -22,11 +22,11 @@ namespace CodeGenerator
                     TemplateEnding = "_template.cs",
                     AutoEnding = "_auto.cs",
                 },
-                //new TaskPattern
-                //{
-                //    TemplateEnding = "_templateF.cs",
-                //    AutoEnding = "_autoF.cs"
-                //},
+                new TaskPattern
+                {
+                    TemplateEnding = "_template.fs",
+                    AutoEnding = "_auto.fs",
+                },
                 new TaskPattern
                 {
                     TemplateEnding = "_template.cl",
