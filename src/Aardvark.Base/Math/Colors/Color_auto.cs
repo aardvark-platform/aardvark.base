@@ -6298,7 +6298,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(double gray)
         {
-            var value = Col.FloatFromDoubleClamped(gray);
+            var value = (float)(gray);
             R = value; G = value; B = value;
         }
 
@@ -8293,7 +8293,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(float gray)
         {
-            var value = Col.DoubleFromFloatClamped(gray);
+            var value = (double)(gray);
             R = value; G = value; B = value;
         }
 
@@ -17371,7 +17371,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(double gray)
         {
-            var value = Col.FloatFromDoubleClamped(gray);
+            var value = (float)(gray);
             R = value; G = value; B = value; A = 1.0f;
         }
 
@@ -19551,7 +19551,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(float gray)
         {
-            var value = Col.DoubleFromFloatClamped(gray);
+            var value = (double)(gray);
             R = value; G = value; B = value; A = 1.0;
         }
 

@@ -425,7 +425,7 @@ namespace Aardvark.Base
 
         //# foreach (var ft1 in Meta.RealTypes) { if (ft != ft1) {
         //#     var ftype1 = ft1.Name;
-        //#     var convert = "Col." + ft.Caps + "From" + ft1.Caps + "Clamped";
+        //#     var convert = (ft1 == Meta.DoubleType) ? d_to_ft : f_to_ft;
         /// <summary>
         /// Creates a color from a single <see cref="__ftype1__"/> value.
         //# if (ismapped(ft, ft1)) {
