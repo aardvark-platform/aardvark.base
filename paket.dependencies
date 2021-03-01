@@ -14,8 +14,8 @@ nuget SixLabors.ImageSharp         ~> 1.0.2
 nuget System.Reflection.Metadata   >= 1.8.0 lowest_matching: true
 nuget System.Drawing.Common        ~> 4.7.0
 
-nuget FSharp.Data.Adaptive         ~> 1.1.0
-nuget CSharp.Data.Adaptive         ~> 1.1.0
+nuget FSharp.Data.Adaptive         ~> 1.2.0
+nuget CSharp.Data.Adaptive         ~> 1.2.0
 nuget Unofficial.LibTessDotNet     ~> 2.0.2
 
 nuget NUnit                        ~> 3.12.0
