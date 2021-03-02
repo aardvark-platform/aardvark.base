@@ -122,7 +122,7 @@ namespace Aardvark.Base
         /// Load image from stream via devil.
         /// </summary>
         /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
-        internal static PixImage CreateRawDevil(
+        public static PixImage CreateRawDevil(
                 Stream stream,
                 PixLoadOptions loadFlags = PixLoadOptions.Default)
         {
@@ -146,7 +146,7 @@ namespace Aardvark.Base
         /// Load image from stream via devil.
         /// </summary>
         /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
-        internal static PixImage CreateRawDevil(
+        public static PixImage CreateRawDevil(
                 string fileName,
                 PixLoadOptions loadFlags = PixLoadOptions.Default)
         {
@@ -250,7 +250,7 @@ namespace Aardvark.Base
         /// Save image to stream via devil.
         /// </summary>
         /// <returns>True if the file was successfully saved.</returns>
-        internal static bool SaveAsImageDevil(
+        public static bool SaveAsImageDevil(
                 this PixImage image,
                 Stream stream, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
@@ -264,8 +264,8 @@ namespace Aardvark.Base
                 return image.SaveDevIL(() => I.SaveStream(imageType, stream), qualityLevel);
             }
         }
-        
-        internal static bool SaveAsImageDevil(
+
+        public static bool SaveAsImageDevil(
                 this PixImage image,
                 string file, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)

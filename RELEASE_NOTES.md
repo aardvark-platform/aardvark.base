@@ -1,3 +1,7 @@
+### 5.1.5
+
+- devil loader functions are now public
+
 ### 5.1.4
 
 - updated to FSharp.Data.Adaptive 1.2
