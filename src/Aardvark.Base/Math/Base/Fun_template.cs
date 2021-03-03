@@ -354,11 +354,17 @@ namespace Aardvark.Base
 
         //# fddectypes.ForEach(t => {
         /// <summary>
-        /// Returns fractional part of t. Calculated as t - floor(t).
+        /// Returns the fractional part of t. Calculated as t - floor(t).
+        /// The result is always positive and in [0, 1).
+        /// The fractional part of a negative input will be flipped (e.g. frac(-0.3) -> 0.7).
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __t.Name__ Frac(this __t.Name__ t) => t - Floor(t);
+        public static __t.Name__ Frac(this __t.Name__ t)
+        {
+            var res = t - Floor(t);
+            return res == 1 ? 0 : res;
+        }
 
         //# });
         #endregion
