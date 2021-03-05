@@ -166,6 +166,9 @@ module FSharpMath =
         let inline lerpAux (_ : ^z) (x : ^a) (y : ^a) (t : ^b) =
             ((^z or ^a or ^b) : (static member Lerp : ^b * ^a * ^a -> ^a) (t, x, y))
 
+        let inline invLerpAux (_ : ^z) (a : ^a) (b : ^a) (y : ^a) =
+            ((^z or ^a or ^b) : (static member InvLerp : ^a * ^a * ^a -> ^b) (y, a, b))
+
         let inline smoothstepAux (_ : ^z) (edge0 : ^a) (edge1 : ^a) (x : ^b) =
             ((^z or ^a or ^b) : (static member Smoothstep : ^b * ^a * ^a -> ^b) (x, edge0, edge1))
 
@@ -269,6 +272,10 @@ module FSharpMath =
     /// Linearly interpolates between x and y.
     let inline lerp x y t =
         lerpAux Unchecked.defaultof<Fun> x y t
+
+    /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
+    let inline invLerp a b y =
+        invLerpAux Unchecked.defaultof<Fun> a b y
 
     /// Performs Hermite interpolation between a and b.
     let inline smoothstep (edge0 : ^a) (edge1 : ^a) (x : ^b) =
@@ -631,6 +638,18 @@ module FSharpMath =
             let a : V4i = lerp V4i.Zero V4i.One V4d.Half
             let a : V2i = lerp V2i.Zero V2i.One 0.5f
             let a : V4i = lerp V4i.Zero V4i.One V4f.Half
+            ()
+
+        let invLerpWorking() =
+            let a : float = 1 |> invLerp 1 10
+            let a : float = 1.0 |> invLerp 1.0 10.0
+            let a : float32 = 1.0f |> invLerp 1.0f 10.0f
+            let a : V2d = V2i.Zero |> invLerp V2i.Zero V2i.One
+            let a : V4d = V4i.Zero |> invLerp V4i.Zero V4i.One
+            let a : V2f = V2f.Zero |> invLerp V2f.Zero V2f.One
+            let a : V4f = V4f.Zero |> invLerp V4f.Zero V4f.One
+            let a : V2d = V2d.Zero |> invLerp V2d.Zero V2d.One
+            let a : V4d = V4d.Zero |> invLerp V4d.Zero V4d.One
             ()
 
         let smoothstepWorking() =
