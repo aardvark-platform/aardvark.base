@@ -1,3 +1,8 @@
+### 5.1.6
+
+- fixed Fun.Frac for tiny negative numbers
+- added invLerp to FSharpMath
+
 ### 5.1.5
 
 - devil loader functions are now public
