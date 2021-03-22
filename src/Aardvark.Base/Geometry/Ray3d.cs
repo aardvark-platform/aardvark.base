@@ -425,10 +425,13 @@ namespace Aardvark.Base
             return (ComputeHit(t, tmin, tmax, ref hit));
         }
 
-        public bool HitsCircle(Circle3d circle, double tmin, double tmax, ref RayHit3d hit)
+        public bool Hits(Circle3d circle, double tmin, double tmax, ref RayHit3d hit)
+            => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, ref hit);
+
+        public bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, ref RayHit3d hit)
         {
-            var dc = circle.Normal.Dot(Direction);
-            var dw = circle.Normal.Dot(circle.Center - Origin);
+            var dc = normal.Dot(Direction);
+            var dw = normal.Dot(center - Origin);
 
             // If parallel to plane
             if (dc == 0.0)
@@ -438,7 +441,7 @@ namespace Aardvark.Base
             if (!ComputeHit(t, tmin, tmax, ref hit))
                 return false;
 
-            if (Vec.Distance(hit.Point, circle.Center) > circle.Radius)
+            if (Vec.Distance(hit.Point, center) > radius)
             {
                 hit.Point = V3d.NaN;
                 hit.T = tmax;
