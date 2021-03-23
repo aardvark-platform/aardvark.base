@@ -77,6 +77,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the point on the ray that is t * Direction from Origin.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public V3d GetPointOnRay(double t) => Origin + Direction * t;
 
         /// <summary>
@@ -101,6 +102,33 @@ namespace Aardvark.Base
             var v = p - Origin;
             return v.Dot(Direction) / Direction.LengthSquared;
         }
+
+        /// <summary>
+        /// Returns the ray transformed with the given matrix.
+        /// </summary>
+        public Ray3d Transformed(M44d mat) => new Ray3d(
+            mat.TransformPos(Origin), mat.TransformDir(Direction)
+            );
+
+        /// <summary>
+        /// Returns the angle between this and the given <see cref="Ray3d"/> in radians.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double AngleBetweenFast(Ray3d r)
+            => Direction.AngleBetweenFast(r.Direction);
+
+        /// <summary>
+        /// Returns the angle between this and the given <see cref="Ray3d"/> in radians using a numerically stable algorithm.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public double AngleBetween(Ray3d r)
+            => Direction.AngleBetween(r.Direction);
+
+        #endregion
+
+        #region Ray hit intersections
 
         /// <summary>
         /// Returns true if the ray hits the other ray before the parameter
@@ -160,15 +188,27 @@ namespace Aardvark.Base
             }
         }
 
+        #region Ray-Triangle hit intersection
+
         /// <summary>
         /// Returns true if the ray hits the triangle before the parameter
         /// value contained in the supplied hit. Detailed information about
         /// the hit is returned in the supplied hit.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Triangle3d triangle, ref RayHit3d hit)
             => HitsTrianglePointAndEdges(
                 triangle.P0, triangle.Edge01, triangle.Edge02,
                 double.MinValue, double.MaxValue, ref hit);
+
+        /// <summary>
+        /// Returns true if the ray hits the triangle.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Triangle3d triangle, out double t)
+            => HitsTrianglePointAndEdges(
+                triangle.P0, triangle.Edge01, triangle.Edge02,
+                double.MinValue, double.MaxValue, out t);
 
         /// <summary>
         /// Returns true if the ray hits the triangle within the supplied
@@ -177,6 +217,7 @@ namespace Aardvark.Base
         /// returned in the supplied hit. In order to obtain all potential
         /// hits, the supplied hit can be initialized with RayHit3d.MaxRange.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Triangle3d triangle, double tmin, double tmax, ref RayHit3d hit)
             => HitsTrianglePointAndEdges(
                 triangle.P0, triangle.Edge01, triangle.Edge02,
@@ -188,6 +229,8 @@ namespace Aardvark.Base
         /// in the supplied hit. Detailed information about the hit is
         /// returned in the supplied hit. In order to obtain all potential
         /// hits, the supplied hit can be initialized with RayHit3d.MaxRange.
+        /// Degenerated triangles will not result in an intersection even if 
+        /// any edge is hit exactly.
         /// </summary>
         public bool HitsTriangle(
             V3d p0, V3d p1, V3d p2,
@@ -215,6 +258,35 @@ namespace Aardvark.Base
             hit.Coord.X = u; hit.Coord.Y = v;
             hit.BackSide = (det < 0.0);
             return true;
+        }
+
+        /// <summary>
+        /// Returns true if the ray hits the triangle within the supplied
+        /// parameter interval. Degenerated triangles will not result in an 
+        /// intersection even if any edge is hit exactly.
+        /// </summary>
+        public bool HitsTriangle(
+            V3d p0, V3d p1, V3d p2,
+            double tmin, double tmax,
+            out double t
+            )
+        {
+            V3d edge01 = p1 - p0;
+            V3d edge02 = p2 - p0;
+            V3d plane = Vec.Cross(Direction, edge02);
+            double det = Vec.Dot(edge01, plane);
+            t = double.NaN;
+            if (det > -0.0000001 && det < 0.0000001) return false;
+            // ray ~= paralell / Triangle
+            V3d tv = Origin - p0;
+            det = 1.0 / det;  // det is now inverse det
+            double u = Vec.Dot(tv, plane) * det;
+            if (u < 0.0 || u > 1.0) return false;
+            plane = Vec.Cross(tv, edge01); // plane is now qv
+            double v = Vec.Dot(Direction, plane) * det;
+            if (v < 0.0 || u + v > 1.0) return false;
+            t = Vec.Dot(edge02, plane) * det;
+            return t >= tmin && t <= tmax;
         }
 
         /// <summary>
@@ -251,12 +323,46 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the ray hits the triangle within the supplied
+        /// parameter interval and before the parameter value contained
+        /// in the supplied hit. Detailed information about the hit is
+        /// returned in the supplied hit. In order to obtain all potential
+        /// hits, the supplied hit can be initialized with RayHit3d.MaxRange.
+        /// </summary>
+        public bool HitsTrianglePointAndEdges(
+            V3d p0, V3d edge01, V3d edge02,
+            double tmin, double tmax,
+            out double t
+            )
+        {
+            V3d plane = Vec.Cross(Direction, edge02);
+            double det = Vec.Dot(edge01, plane);
+            t = double.NaN;
+            if (det > -0.0000001 && det < 0.0000001) return false;
+            // ray ~= paralell / Triangle
+            V3d tv = Origin - p0;
+            det = 1.0 / det;  // det is now inverse det
+            double u = Vec.Dot(tv, plane) * det;
+            if (u < 0.0 || u > 1.0) return false;
+            plane = Vec.Cross(tv, edge01); // plane is now qv
+            double v = Vec.Dot(Direction, plane) * det;
+            if (v < 0.0 || u + v > 1.0) return false;
+            t = Vec.Dot(edge02, plane) * det;
+            return t >= tmin && t <= tmax;
+        }
+
+        #endregion
+
+        #region Ray-Quad hit intersection
+
+        /// <summary>
         /// Returns true if the ray hits the quad before the parameter
         /// value contained in the supplied hit. Detailed information about
         /// the hit is returned in the supplied hit. In order to obtain all
         /// potential hits, the supplied hit can be initialized with
         /// RayHit3d.MaxRange.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Quad3d quad, ref RayHit3d hit) => HitsQuad(
             quad.P0, quad.P1, quad.P2, quad.P3,
             double.MinValue, double.MaxValue, ref hit);
@@ -268,6 +374,7 @@ namespace Aardvark.Base
         /// returned in the supplied hit. In order to obtain all potential
         /// hits, the supplied hit can be initialized with RayHit3d.MaxRange.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Quad3d quad, double tmin, double tmax, ref RayHit3d hit) => HitsQuad(
             quad.P0, quad.P1, quad.P2, quad.P3,
             tmin, tmax, ref hit);
@@ -303,6 +410,39 @@ namespace Aardvark.Base
             }
             return result;
         }
+
+        /// <summary>
+        /// Returns true if the ray hits the quad within the supplied parameter interval.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Quad3d quad, double tmin, double tmax, out double t) 
+            => HitsQuad(quad.P0, quad.P1, quad.P2, quad.P3, tmin, tmax, out t);
+
+        /// <summary>
+        /// Returns true if the ray hits the quad within the supplied parameter interval.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Quad3d quad, out double t)
+            => HitsQuad(quad.P0, quad.P1, quad.P2, quad.P3, double.MinValue, double.MaxValue, out t);
+
+        /// <summary>
+        /// Returns true if the ray hits the quad within the supplied parameter interval.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HitsQuad(V3d p0, V3d p1, V3d p2, V3d p3, out double t)
+            => HitsQuad(p0, p1, p2, p3, double.MinValue, double.MaxValue, out t);
+
+        /// <summary>
+        /// Returns true if the ray hits the quad within the supplied parameter interval.
+        /// </summary>
+        public bool HitsQuad(V3d p0, V3d p1, V3d p2, V3d p3, double tmin, double tmax, out double t)
+        {
+            V3d e02 = p2 - p0;
+            return HitsTrianglePointAndEdges(p0, p1 - p0, e02, tmin, tmax, out t)
+                || HitsTrianglePointAndEdges(p0, e02, p3 - p0, tmin, tmax, out t);
+        }
+
+        #endregion
 
         private bool ComputeHit(
               double t,
@@ -366,12 +506,15 @@ namespace Aardvark.Base
             return false;
         }
 
+        #region Ray-Sphere hit intersection
+
         /// <summary>
         /// Returns true if the ray hits the sphere given by center and
         /// radius within the supplied parameter interval and before the
         /// parameter value contained in the supplied hit. Note that a
         /// hit is only registered if the front or the backsurface is
-        /// encountered within the interval.
+        /// encountered within the interval. If there are two valid solutions, the 
+        /// closest will be returned.
         /// </summary>
         public bool HitsSphere(
                 V3d center, double radius,
@@ -386,8 +529,8 @@ namespace Aardvark.Base
             // --------------------- quadric equation : a t^2  + 2b t + c = 0
             double d = b * b - a * c;           // factor 2 was eliminated
 
-            if (d < Constant<double>.PositiveTinyValue) // no root ?
-                return false;                           // then exit
+            if (d < double.Epsilon)             // no root ?
+                return false;                   // then exit
 
             if (b > 0.0)                        // stable way to calculate
                 d = -Fun.Sqrt(d) - b;           // the roots of a quadratic
@@ -397,7 +540,9 @@ namespace Aardvark.Base
             double t1 = d / a;
             double t2 = c / d;  // Vieta : t1 * t2 == c/a
 
-            return t1 < t2
+            // typically two solutions, either both positive, both negative or mixed
+            // -> take closest (if valid) first
+            return t1.Abs() < t2.Abs()
                     ? ProcessHits(t1, t2, tmin, tmax, ref hit)
                     : ProcessHits(t2, t1, tmin, tmax, ref hit);
         }
@@ -407,10 +552,114 @@ namespace Aardvark.Base
         /// supplied parameter interval and before the parameter value
         /// contained in the supplied hit. Note that a hit is only
         /// registered if the front or the backsurface is encountered
-        /// within the interval.
+        /// within the interval. If there are two valid solutions, the 
+        /// closest will be returned.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Sphere3d sphere, double tmin, double tmax, ref RayHit3d hit)
             => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, ref hit);
+
+        /// <summary>
+        /// Returns true if the ray hits the supplied sphere within the
+        /// supplied parameter interval and before the parameter value
+        /// contained in the supplied hit. Note that a hit is only
+        /// registered if the front or the backsurface is encountered
+        /// within the interval. If there are two valid solutions, the 
+        /// closest will be returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Sphere3d sphere, ref RayHit3d hit)
+            => HitsSphere(sphere.Center, sphere.Radius, 0, double.MaxValue, ref hit);
+
+        /// <summary>
+        /// Returns true if the ray hits the supplied sphere within the
+        /// supplied parameter interval. Note that a hit is only
+        /// registered if the front or the backsurface is encountered
+        /// within the interval. If there are two valid solutions, the 
+        /// closest will be returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Sphere3d sphere, double tmin, double tmax, out double t)
+            => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, out t);
+
+        /// <summary>
+        /// Returns true if the ray hits the supplied sphere. Note that a hit is
+        /// registered if the front or the backsurface is encountered. If there 
+        /// are two valid solutions, the closest will be returned.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Sphere3d sphere, out double t)
+            => HitsSphere(sphere.Center, sphere.Radius, double.MinValue, double.MaxValue, out t);
+
+        /// <summary>
+        /// Returns true if the ray hits the supplied sphere within the supplied parameter interval. 
+        /// Note that a hit is registered if the front or the backsurface is encountered within the 
+        /// interval. If there are two valid solutions, the closest will be returned.
+        /// </summary>
+        public bool HitsSphere(V3d center, double radius, out double t)
+            => HitsSphere(center, radius, double.MinValue, double.MaxValue, out t);
+
+        /// <summary>
+        /// Returns true if the ray hits the supplied sphere within the supplied parameter interval. 
+        /// Note that a hit is registered if the front or the backsurface is encountered within the 
+        /// interval. If there are two valid solutions, the closest will be returned.
+        /// </summary>
+        public bool HitsSphere(V3d center, double radius, double tmin, double tmax, out double t)
+        {
+            var originSubCenter = Origin - center;
+            var a = Direction.LengthSquared;
+            var b = Direction.Dot(originSubCenter);
+            var c = originSubCenter.LengthSquared - radius * radius;
+
+            // --------------------- quadric equation : a t^2  + 2b t + c = 0
+            var d = b * b - a * c;              // factor 2 was eliminated
+
+            if (d >= double.Epsilon)            // no root ? -> exit
+            {
+                if (b > 0.0)                    // stable way to calculate
+                    d = -Fun.Sqrt(d) - b;       // the roots of a quadratic
+                else                            // equation
+                    d = Fun.Sqrt(d) - b;
+
+                var t1 = d / a;
+                var t2 = c / d;  // Vieta : t1 * t2 == c/a
+
+                // typically two solutions, either both positive, both negative or mixed
+                // -> take closest (if valid) first
+                if (t2.Abs() < t1.Abs())
+                    Fun.Swap(ref t1, ref t2);
+
+                if (t1 >= tmin)
+                {
+                    if (t1 < tmax)
+                    {
+                        t = t1;
+                        return true;
+                    }
+                    // return false
+                }
+                else if (t2 >= tmin)
+                {
+                    if (t2 < tmax)
+                    {
+                        t = t2;
+                        return true;
+                    }
+                    // return false
+                }
+            }
+
+            t = double.NaN;
+            return false;
+        }
+
+        #endregion
+
+        #region Ray-Plane hit intersection
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HitsPlane(Plane3d plane, ref RayHit3d hit)
+            => HitsPlane(plane, double.MinValue, double.MaxValue, ref hit);
 
         public bool HitsPlane(Plane3d plane, double tmin, double tmax, ref RayHit3d hit)
         {
@@ -422,11 +671,44 @@ namespace Aardvark.Base
                 return false;
             
             var t = dw / dc;
-            return (ComputeHit(t, tmin, tmax, ref hit));
+            return ComputeHit(t, tmin, tmax, ref hit);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HitsPlane(Plane3d plane, out double t)
+            => HitsPlane(plane, double.MinValue, double.MaxValue, out t);
+
+        public bool HitsPlane(Plane3d plane, double tmin, double tmax, out double t)
+        {
+            var dc = plane.Normal.Dot(Direction);
+            var dw = plane.Distance - plane.Normal.Dot(Origin);
+
+            // If parallel to plane
+            if (dc == 0.0)
+            {
+                t = double.NaN;
+                return false;
+            }
+
+            t = dw / dc;
+            return t >= tmin && t <= tmax;
+        }
+
+        #endregion
+
+        #region Ray-Circle hit intersection
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Circle3d circle, double tmin, double tmax, ref RayHit3d hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, ref hit);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Circle3d circle, ref RayHit3d hit)
+            => HitsCircle(circle.Center, circle.Normal, circle.Radius, double.MinValue, double.MaxValue, ref hit);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HitsCircle(V3d center, V3d normal, double radius, ref RayHit3d hit)
+            => HitsCircle(center, normal, radius, double.MinValue, double.MaxValue, ref hit);
 
         public bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, ref RayHit3d hit)
         {
@@ -441,7 +723,7 @@ namespace Aardvark.Base
             if (!ComputeHit(t, tmin, tmax, ref hit))
                 return false;
 
-            if (Vec.Distance(hit.Point, center) > radius)
+            if (Vec.DistanceSquared(hit.Point, center) > radius * radius)
             {
                 hit.Point = V3d.NaN;
                 hit.T = tmax;
@@ -449,10 +731,180 @@ namespace Aardvark.Base
             }
             return true;
         }
-        
-        public bool HitsCylinder(Cylinder3d cylinder,
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Circle3d circle, double tmin, double tmax, out double t)
+            => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, out t);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Hits(Circle3d circle, out double t)
+            => HitsCircle(circle.Center, circle.Normal, circle.Radius, double.MinValue, double.MaxValue, out t);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HitsCircle(V3d center, V3d normal, double radius, out double t)
+            => HitsCircle(center, normal, radius, double.MinValue, double.MaxValue, out t);
+
+        public bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, out double t)
+        {
+            var dc = normal.Dot(Direction);
+            var dw = normal.Dot(center - Origin);
+
+            // If parallel to plane
+            if (dc == 0.0)
+            {
+                t = double.NaN;
+                return false;
+            }
+
+            t = dw / dc;
+            if (t < tmin || t > tmax) 
+                return false;
+
+            var point = GetPointOnRay(t); // add point as out parameter?
+            return Vec.DistanceSquared(point, center) <= radius * radius;
+        }
+
+        #endregion
+
+        #region Ray-Cylinder hit intersection
+
+        public bool HitsCylinder(V3d p0, V3d p1, double radius,
                 double tmin, double tmax,
                 ref RayHit3d hit)
+        {
+            var axis = new Line3d(p0, p1);
+            var axisDir = axis.Direction.Normalized;
+
+            // Vector Cyl.P0 -> Ray.Origin
+            var op = Origin - p0;
+
+            // normal RayDirection - CylinderAxis
+            var normal = Direction.Cross(axisDir);
+            var unitNormal = normal.Normalized;
+
+            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
+            var normal2 = op.Cross(axisDir);
+            var t = -normal2.Dot(unitNormal) / normal.Length;
+
+            // between enitre rays (caps are ignored)
+            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
+            if (shortestDistance <= radius)
+            {
+                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
+
+                var t1 = t - s; // first hit of Cylinder shell
+                var t2 = t + s; // second hit of Cylinder shell
+
+                if (t1 > tmin && t1 < tmax) tmin = t1;
+                if (t2 < tmax && t2 > tmin) tmax = t2;
+
+                hit.T = t1;
+                hit.Point = GetPointOnRay(t1);
+
+                // check if found point is outside of Cylinder Caps
+                var bottomPlane = new Plane3d(-axisDir, p0);
+                var topPlane = new Plane3d(axisDir, p1);
+                var heightBottom = bottomPlane.Height(hit.Point);
+                var heightTop = topPlane.Height(hit.Point);
+                // t1 lies outside of caps => find closest cap hit
+                if (heightBottom > 0 || heightTop > 0)
+                {
+                    hit.T = tmax;
+                    // intersect with bottom Cylinder Cap
+                    var bottomHit = HitsPlane(bottomPlane, tmin, tmax, ref hit);
+                    // intersect with top Cylinder Cap
+                    var topHit = HitsPlane(topPlane, tmin, tmax, ref hit);
+                    
+                    // hit still close enough to cylinder axis?
+                    var distance = axis.Ray3d.GetMinimalDistanceTo(hit.Point);
+
+                    if (distance <= radius && (bottomHit || topHit))
+                        return true;
+                }
+                else
+                    return true;
+            }
+
+            hit.T = tmax;
+            hit.Point = V3d.NaN;
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HitsCylinder(V3d p0, V3d p1, double radius, ref RayHit3d hit)
+            => HitsCylinder(p0, p1, radius, double.MinValue, double.MaxValue, ref hit);
+
+        public bool HitsCylinder(V3d p0, V3d p1, double radius,
+                double tmin, double tmax, out double t)
+        {
+            var axis = new Line3d(p0, p1);
+            var axisDir = axis.Direction.Normalized;
+
+            // Vector Cyl.P0 -> Ray.Origin
+            var op = Origin - p0;
+
+            // normal RayDirection - CylinderAxis
+            var normal = Direction.Cross(axisDir);
+            var unitNormal = normal.Normalized;
+
+            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
+            var normal2 = op.Cross(axisDir);
+            t = -normal2.Dot(unitNormal) / normal.Length;
+
+            // between entire rays (caps are ignored)
+            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
+            if (shortestDistance <= radius)
+            {
+                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
+
+                var t1 = t - s; // first hit of Cylinder shell
+                var t2 = t + s; // second hit of Cylinder shell
+
+                if (t1 > tmin && t1 < tmax) tmin = t1;
+                if (t2 < tmax && t2 > tmin) tmax = t2;
+
+                t = t1;
+                var point = GetPointOnRay(t1);
+
+                // check if found point is outside of Cylinder Caps
+                var bottomPlane = new Plane3d(-axisDir, p0);
+                var topPlane = new Plane3d(axisDir, p1);
+                var heightBottom = bottomPlane.Height(point);
+                var heightTop = topPlane.Height(point);
+                // t1 lies outside of caps => find closest cap hit
+                if (heightBottom > 0 || heightTop > 0)
+                {
+                    // intersect with bottom Cylinder Cap
+                    var bottomHit = HitsCircle(p0, -axisDir, radius, tmin, tmax, out t);
+                    // intersect with top Cylinder Cap
+                    var topHit = HitsCircle(p1, axisDir, radius, tmin, tmax, out double ttop);
+
+                    if (topHit)
+                    {
+                        if (bottomHit)
+                        {
+                            if (ttop.Abs() < t)
+                                t = ttop;
+                        }
+                        else
+                            t = ttop;
+                    }
+
+                    return topHit || bottomHit;
+                }
+                else
+                    return true;
+            }
+
+            t = double.NaN;
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HitsCylinder(V3d p0, V3d p1, double radius, out double t)
+            => HitsCylinder(p0, p1, radius, double.MinValue, double.MaxValue, out t);
+
+        public bool Hits(Cylinder3d cylinder, double tmin, double tmax, ref RayHit3d hit)
         {
             var axisDir = cylinder.Axis.Direction.Normalized;
 
@@ -504,7 +956,7 @@ namespace Aardvark.Base
                     var bottomHit = HitsPlane(bottomPlane, tmin, tmax, ref hit);
                     // intersect with top Cylinder Cap
                     var topHit = HitsPlane(topPlane, tmin, tmax, ref hit);
-                    
+
                     // hit still close enough to cylinder axis?
                     var distance = cylinder.Axis.Ray3d.GetMinimalDistanceTo(hit.Point);
 
@@ -520,37 +972,11 @@ namespace Aardvark.Base
             return false;
         }
 
-        public bool Hits(
-                Cylinder3d cylinder,
-                double tmin, double tmax,
-                ref RayHit3d hit)
-        {
-            var intersects = HitsCylinder(cylinder, tmin, tmax, ref hit);
-            return intersects;
-        }
-
-        /// <summary>
-        /// Returns the ray transformed with the given matrix.
-        /// </summary>
-        public Ray3d Transformed(M44d mat) => new Ray3d(
-            mat.TransformPos(Origin), mat.TransformDir(Direction)
-            );
-
-        /// <summary>
-        /// Returns the angle between this and the given <see cref="Ray3d"/> in radians.
-        /// The direction vectors of the input rays have to be normalized.
-        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double AngleBetweenFast(Ray3d r)
-            => Direction.AngleBetweenFast(r.Direction);
+        public bool Hits(Cylinder3d cylinder, ref RayHit3d hit)
+            => Hits(cylinder, double.MinValue, double.MaxValue, ref hit);
 
-        /// <summary>
-        /// Returns the angle between this and the given <see cref="Ray3d"/> in radians using a numerically stable algorithm.
-        /// The direction vectors of the input rays have to be normalized.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double AngleBetween(Ray3d r)
-            => Direction.AngleBetween(r.Direction);
+        #endregion
 
         #endregion
 

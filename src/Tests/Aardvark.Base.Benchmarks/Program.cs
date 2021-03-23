@@ -82,7 +82,7 @@ namespace Aardvark.Base.Benchmarks
 
             //new Enumerators().Test();
 
-            BenchmarkRunner.Run<FracTest>();
+            BenchmarkRunner.Run<RayHitTest>();
         }
     }
 }
