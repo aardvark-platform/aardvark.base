@@ -82,7 +82,8 @@ namespace Aardvark.Base.Benchmarks
 
             //new Enumerators().Test();
 
-            BenchmarkRunner.Run<RayHitTest>();
+            //BenchmarkRunner.Run<RayHitTest>();
+            BenchmarkRunner.Run<ConstantsBenchmark>();
         }
     }
 }

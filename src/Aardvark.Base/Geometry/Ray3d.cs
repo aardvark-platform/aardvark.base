@@ -133,10 +133,11 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray hits the other ray before the parameter
         /// value contained in the supplied hit. Detailed information about
-        /// the hit is returned in the supplied hit.
+        /// the hit is returned in the supplied hit. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
         /// </summary>
         public bool Hits(Ray3d ray, ref RayHit3d hit)
-            => HitsRay(ray, double.MinValue, double.MaxValue, ref hit);
+            => HitsRay(ray, 0, double.MaxValue, ref hit);
 
         /// <summary>
         /// Returns true if the ray hits the other ray before the parameter
@@ -193,22 +194,24 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray hits the triangle before the parameter
         /// value contained in the supplied hit. Detailed information about
-        /// the hit is returned in the supplied hit.
+        /// the hit is returned in the supplied hit. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Triangle3d triangle, ref RayHit3d hit)
             => HitsTrianglePointAndEdges(
                 triangle.P0, triangle.Edge01, triangle.Edge02,
-                double.MinValue, double.MaxValue, ref hit);
+                0, double.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray hits the triangle.
+        /// Returns true if the ray hits the triangle. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Triangle3d triangle, out double t)
             => HitsTrianglePointAndEdges(
                 triangle.P0, triangle.Edge01, triangle.Edge02,
-                double.MinValue, double.MaxValue, out t);
+                0, double.MaxValue, out t);
 
         /// <summary>
         /// Returns true if the ray hits the triangle within the supplied
@@ -360,12 +363,13 @@ namespace Aardvark.Base
         /// value contained in the supplied hit. Detailed information about
         /// the hit is returned in the supplied hit. In order to obtain all
         /// potential hits, the supplied hit can be initialized with
-        /// RayHit3d.MaxRange.
+        /// RayHit3d.MaxRange. A hit with this  overload is considered 
+        /// for t in [0, double.MaxValue].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Quad3d quad, ref RayHit3d hit) => HitsQuad(
             quad.P0, quad.P1, quad.P2, quad.P3,
-            double.MinValue, double.MaxValue, ref hit);
+            0, double.MaxValue, ref hit);
 
         /// <summary>
         /// Returns true if the ray hits the quad within the supplied
@@ -420,17 +424,19 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the ray hits the quad within the supplied parameter interval.
+        /// A hit with this overload is considered for t in [0, double.MaxValue].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Quad3d quad, out double t)
-            => HitsQuad(quad.P0, quad.P1, quad.P2, quad.P3, double.MinValue, double.MaxValue, out t);
+            => HitsQuad(quad.P0, quad.P1, quad.P2, quad.P3, 0, double.MaxValue, out t);
 
         /// <summary>
         /// Returns true if the ray hits the quad within the supplied parameter interval.
+        /// A hit with this overload is considered for t in [0, double.MaxValue].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HitsQuad(V3d p0, V3d p1, V3d p2, V3d p3, out double t)
-            => HitsQuad(p0, p1, p2, p3, double.MinValue, double.MaxValue, out t);
+            => HitsQuad(p0, p1, p2, p3, 0, double.MaxValue, out t);
 
         /// <summary>
         /// Returns true if the ray hits the quad within the supplied parameter interval.
@@ -565,7 +571,8 @@ namespace Aardvark.Base
         /// contained in the supplied hit. Note that a hit is only
         /// registered if the front or the backsurface is encountered
         /// within the interval. If there are two valid solutions, the 
-        /// closest will be returned.
+        /// closest will be returned. A hit with this overload is 
+        /// considered for t in [0, double.MaxValue].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Sphere3d sphere, ref RayHit3d hit)
@@ -585,19 +592,21 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray hits the supplied sphere. Note that a hit is
         /// registered if the front or the backsurface is encountered. If there 
-        /// are two valid solutions, the closest will be returned.
+        /// are two valid solutions, the closest will be returned. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Sphere3d sphere, out double t)
-            => HitsSphere(sphere.Center, sphere.Radius, double.MinValue, double.MaxValue, out t);
+            => HitsSphere(sphere.Center, sphere.Radius, 0, double.MaxValue, out t);
 
         /// <summary>
         /// Returns true if the ray hits the supplied sphere within the supplied parameter interval. 
         /// Note that a hit is registered if the front or the backsurface is encountered within the 
-        /// interval. If there are two valid solutions, the closest will be returned.
+        /// interval. If there are two valid solutions, the closest will be returned. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
         /// </summary>
         public bool HitsSphere(V3d center, double radius, out double t)
-            => HitsSphere(center, radius, double.MinValue, double.MaxValue, out t);
+            => HitsSphere(center, radius, 0, double.MaxValue, out t);
 
         /// <summary>
         /// Returns true if the ray hits the supplied sphere within the supplied parameter interval. 
@@ -657,9 +666,13 @@ namespace Aardvark.Base
 
         #region Ray-Plane hit intersection
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HitsPlane(Plane3d plane, ref RayHit3d hit)
-            => HitsPlane(plane, double.MinValue, double.MaxValue, ref hit);
+            => HitsPlane(plane, 0, double.MaxValue, ref hit);
 
         public bool HitsPlane(Plane3d plane, double tmin, double tmax, ref RayHit3d hit)
         {
@@ -674,9 +687,13 @@ namespace Aardvark.Base
             return ComputeHit(t, tmin, tmax, ref hit);
         }
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HitsPlane(Plane3d plane, out double t)
-            => HitsPlane(plane, double.MinValue, double.MaxValue, out t);
+            => HitsPlane(plane, 0, double.MaxValue, out t);
 
         public bool HitsPlane(Plane3d plane, double tmin, double tmax, out double t)
         {
@@ -698,18 +715,32 @@ namespace Aardvark.Base
 
         #region Ray-Circle hit intersection
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. 
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Circle3d circle, double tmin, double tmax, ref RayHit3d hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, ref hit);
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Circle3d circle, ref RayHit3d hit)
-            => HitsCircle(circle.Center, circle.Normal, circle.Radius, double.MinValue, double.MaxValue, ref hit);
+            => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, double.MaxValue, ref hit);
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HitsCircle(V3d center, V3d normal, double radius, ref RayHit3d hit)
-            => HitsCircle(center, normal, radius, double.MinValue, double.MaxValue, ref hit);
+            => HitsCircle(center, normal, radius, 0, double.MaxValue, ref hit);
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. 
+        /// </summary>
         public bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, ref RayHit3d hit)
         {
             var dc = normal.Dot(Direction);
@@ -732,18 +763,32 @@ namespace Aardvark.Base
             return true;
         }
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. 
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Circle3d circle, double tmin, double tmax, out double t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, out t);
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Circle3d circle, out double t)
-            => HitsCircle(circle.Center, circle.Normal, circle.Radius, double.MinValue, double.MaxValue, out t);
+            => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, double.MaxValue, out t);
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HitsCircle(V3d center, V3d normal, double radius, out double t)
-            => HitsCircle(center, normal, radius, double.MinValue, double.MaxValue, out t);
+            => HitsCircle(center, normal, radius, 0, double.MaxValue, out t);
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. 
+        /// </summary>
         public bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, out double t)
         {
             var dc = normal.Dot(Direction);
@@ -768,6 +813,9 @@ namespace Aardvark.Base
 
         #region Ray-Cylinder hit intersection
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. 
+        /// </summary>
         public bool HitsCylinder(V3d p0, V3d p1, double radius,
                 double tmin, double tmax,
                 ref RayHit3d hit)
@@ -830,9 +878,13 @@ namespace Aardvark.Base
             return false;
         }
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HitsCylinder(V3d p0, V3d p1, double radius, ref RayHit3d hit)
-            => HitsCylinder(p0, p1, radius, double.MinValue, double.MaxValue, ref hit);
+            => HitsCylinder(p0, p1, radius, 0, double.MaxValue, ref hit);
 
         public bool HitsCylinder(V3d p0, V3d p1, double radius,
                 double tmin, double tmax, out double t)
@@ -900,10 +952,17 @@ namespace Aardvark.Base
             return false;
         }
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool HitsCylinder(V3d p0, V3d p1, double radius, out double t)
-            => HitsCylinder(p0, p1, radius, double.MinValue, double.MaxValue, out t);
+            => HitsCylinder(p0, p1, radius, 0, double.MaxValue, out t);
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. 
+        /// </summary>
         public bool Hits(Cylinder3d cylinder, double tmin, double tmax, ref RayHit3d hit)
         {
             var axisDir = cylinder.Axis.Direction.Normalized;
@@ -972,9 +1031,13 @@ namespace Aardvark.Base
             return false;
         }
 
+        /// <summary>
+        /// Returns true if the ray intersects with the primitive. A hit with this 
+        /// overload is considered for t in [0, double.MaxValue].
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Hits(Cylinder3d cylinder, ref RayHit3d hit)
-            => Hits(cylinder, double.MinValue, double.MaxValue, ref hit);
+            => Hits(cylinder, 0, double.MaxValue, ref hit);
 
         #endregion
 
