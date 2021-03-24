@@ -227,6 +227,17 @@ namespace Aardvark.Base
                 tmin, tmax, ref hit);
 
         /// <summary>
+        /// Returns true if the ray hits the triangle within [0, double.MaxValue] 
+        /// and before the parameter value contained in the supplied hit. Detailed 
+        /// information about the hit is returned in the supplied hit. In order to 
+        /// obtain all potential hits, the supplied hit can be initialized with 
+        /// RayHit3d.MaxRange. Degenerated triangles will not result in an intersection 
+        /// even if any edge is hit exactly.
+        /// </summary>
+        public bool HitsTriangle(V3d p0, V3d p1, V3d p2, ref RayHit3d hit)
+            => HitsTriangle(p0, p1, p2, 0, double.MaxValue, ref hit);
+
+        /// <summary>
         /// Returns true if the ray hits the triangle within the supplied
         /// parameter interval and before the parameter value contained
         /// in the supplied hit. Detailed information about the hit is
@@ -262,6 +273,15 @@ namespace Aardvark.Base
             hit.BackSide = (det < 0.0);
             return true;
         }
+
+        /// <summary>
+        /// Returns true if the ray hits the triangle. Degenerated triangles
+        /// will not result in an intersection even if any edge is hit exactly. 
+        /// A hit with this overload is considered for t in [0, double.MaxValue].
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool HitsTriangle(V3d p0, V3d p1, V3d p2, out double t)
+            => HitsTriangle(p0, p1, p2, 0, double.MaxValue, out t);
 
         /// <summary>
         /// Returns true if the ray hits the triangle within the supplied
@@ -363,7 +383,7 @@ namespace Aardvark.Base
         /// value contained in the supplied hit. Detailed information about
         /// the hit is returned in the supplied hit. In order to obtain all
         /// potential hits, the supplied hit can be initialized with
-        /// RayHit3d.MaxRange. A hit with this  overload is considered 
+        /// RayHit3d.MaxRange. A hit with this overload is considered 
         /// for t in [0, double.MaxValue].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
