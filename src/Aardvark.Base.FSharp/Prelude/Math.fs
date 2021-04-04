@@ -131,10 +131,10 @@ module FSharpMath =
         // Also using the default pow / Pow() doesn't work with code quotations
         // for some reason.
         let inline powAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
-            ((^z or ^y or ^a or ^b or ^c) : (static member Power : ^a * ^b -> ^a) (x, y))
+            ((^z or ^y or ^a or ^b) : (static member Power : ^a * ^b -> ^a) (x, y))
 
         let inline pownAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
-            ((^z or ^y or ^a or ^b or ^c) : (static member Pown : ^a * ^b -> ^a) (x, y))
+            ((^z or ^y or ^a or ^b) : (static member Pown : ^a * ^b -> ^a) (x, y))
 
         let inline log2Aux (_ : ^z) (_ : ^y) (x : ^a) =
             ((^z or ^y or ^a) : (static member Log2 : ^a -> ^a) x)
@@ -153,10 +153,10 @@ module FSharpMath =
 
         // See comment for powAux
         let inline minAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b or ^c) : (static member Min : ^a * ^b -> ^b) (x, y))
+            ((^z or ^a or ^b) : (static member Min : ^a * ^b -> ^b) (x, y))
 
         let inline maxAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b or ^c) : (static member Max : ^a * ^b -> ^b) (x, y))
+            ((^z or ^a or ^b) : (static member Max : ^a * ^b -> ^b) (x, y))
 
         // Simply using min and max directly will resolve to the comparison overload for some reason.
         // Therefore we need to do it the dumb (incomplete) way. E.g. won't work for Version.
@@ -174,7 +174,7 @@ module FSharpMath =
 
         // See comment for powAux
         let inline copysignAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b or ^c) : (static member CopySign : ^a * ^b -> ^a) (x, y))
+            ((^z or ^a or ^b) : (static member CopySign : ^a * ^b -> ^a) (x, y))
 
         let inline degreesAux (_ : ^z) (radians : ^a) =
             ((^z or ^a) : (static member DegreesFromRadians : ^a -> ^a) radians)
