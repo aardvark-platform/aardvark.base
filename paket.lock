@@ -914,7 +914,7 @@ NUGET
       System.Runtime.CompilerServices.Unsafe (>= 4.5.3)
 GITHUB
   remote: aardvark-platform/aardvark.fake
-    FULLPROJECT (f5b23b40ca631dbde552de92b66b961a38ef0a43)
+    FULLPROJECT (8a75f714f5874f4ec29f9ab7f29a5bbd7ca44455)
       Argu (>= 5.5 < 5.6)
       fake-cli (>= 5.20.4-alpha.1642 < 5.21)
       Fake.Core.ReleaseNotes
