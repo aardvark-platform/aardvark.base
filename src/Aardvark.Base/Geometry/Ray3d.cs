@@ -698,12 +698,12 @@ namespace Aardvark.Base
         public bool HitsPlane(Plane3d plane, double tmin, double tmax, ref RayHit3d hit)
         {
             var dc = plane.Normal.Dot(Direction);
-            var dw = plane.Distance - plane.Normal.Dot(Origin);
 
             // If parallel to plane
             if (dc == 0.0)
                 return false;
             
+            var dw = plane.Distance - plane.Normal.Dot(Origin);
             var t = dw / dc;
             return ComputeHit(t, tmin, tmax, ref hit);
         }
@@ -719,7 +719,6 @@ namespace Aardvark.Base
         public bool HitsPlane(Plane3d plane, double tmin, double tmax, out double t)
         {
             var dc = plane.Normal.Dot(Direction);
-            var dw = plane.Distance - plane.Normal.Dot(Origin);
 
             // If parallel to plane
             if (dc == 0.0)
@@ -728,6 +727,7 @@ namespace Aardvark.Base
                 return false;
             }
 
+            var dw = plane.Distance - plane.Normal.Dot(Origin);
             t = dw / dc;
             return t >= tmin && t <= tmax;
         }
