@@ -195,6 +195,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the Line-Segments of line inside the Polygon (CCW ordered).
         /// Works only with Convex-Polygons
+        /// If the line is clipped entirely, the points of the returned Line2d are NaN.
         /// </summary>
         public static Line2d ClipWithConvex(this Line2d line, Polygon2d poly)
         {

@@ -105,6 +105,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the ray transformed with the given matrix.
+        /// This method is only valid for similarity transformations (uniform scale).
         /// </summary>
         public Ray3d Transformed(M44d mat) => new Ray3d(
             mat.TransformPos(Origin), mat.TransformDir(Direction)
