@@ -1,3 +1,9 @@
+### 5.1.7
+
+- consistency and completeness of Ray3d.Hits overloads
+- changed Ray3d.Hits default range to [0, double.MaxValue]
+- FSharpMath robustness
+
 ### 5.1.6
 
 - fixed Fun.Frac for tiny negative numbers
