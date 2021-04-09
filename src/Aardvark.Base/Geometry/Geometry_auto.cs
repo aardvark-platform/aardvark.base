@@ -482,56 +482,105 @@ namespace Aardvark.Base
 
         #region Geometric Transformations
 
-        public static Polygon2d Scaled(
-                this Polygon2d polygon, double scale)
+        public static Polygon2d Scaled(this Polygon2d polygon, double scale)
         {
-            return polygon.Map(p => p * scale);
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
+            return new Polygon2d(npa, pc);
         }
 
-        public static Polygon2d Scaled(
-                this Polygon2d polygon, V2d center, double scale)
+        public static Polygon2d Scaled(this Polygon2d polygon, V2d center, double scale)
         {
-            return polygon.Map(p => center + (p - center) * scale);
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
+            return new Polygon2d(npa, pc);
         }
 
-        public static Polygon2d ScaledAboutVertexCentroid(
-                this Polygon2d polygon, double scale)
-        {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
-        }
-
-        public static Polygon2d Scaled(
-                this Polygon2d polygon, V2d scale)
-        {
-            return polygon.Map(p => p * scale);
-        }
-
-        public static Polygon2d Scaled(
-                this Polygon2d polygon, V2d center, V2d scale)
-        {
-            return polygon.Map(p => center + (p - center) * scale);
-        }
-
-        public static Polygon2d ScaledAboutVertexCentroid(
-                this Polygon2d polygon, V2d scale)
+        public static Polygon2d ScaledAboutVertexCentroid(this Polygon2d polygon, double scale)
         {
             return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
         }
 
-        public static Polygon2d Transformed(
-                this Polygon2d polygon, M22d m)
+        public static Polygon2d Scaled(this Polygon2d polygon, V2d scale)
         {
-            return polygon.Map(p => m.Transform(p));
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
+            return new Polygon2d(npa, pc);
         }
 
-        public static Polygon2d Transformed(
-                this Polygon2d polygon, M33d m)
+        public static Polygon2d Scaled(this Polygon2d polygon, V2d center, V2d scale)
         {
-            return polygon.Map(p => m.TransformPos(p));
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
+            return new Polygon2d(npa, pc);
         }
 
-        public static Polygon2d WithoutMultiplePoints(
-                this Polygon2d polygon, double eps = 1e-8)
+        public static Polygon2d ScaledAboutVertexCentroid(this Polygon2d polygon, V2d scale)
+        {
+            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+        }
+
+        public static Polygon2d Transformed(this Polygon2d polygon, M22d m)
+        {
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = m.Transform(opa[pi]);
+            return new Polygon2d(npa, pc);
+        }
+
+        public static Polygon2d Transformed(this Polygon2d polygon, M33d m)
+        {
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = m.TransformPos(opa[pi]);
+            return new Polygon2d(npa, pc);
+        }
+
+        public static Polygon2d Transformed(this Polygon2d polygon, Euclidean2d t)
+        {
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new Polygon2d(npa, pc);
+        }
+
+        public static Polygon2d Transformed(this Polygon2d polygon, Similarity2d t)
+        {
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new Polygon2d(npa, pc);
+        }
+
+        public static Polygon2d Transformed(this Polygon2d polygon, Affine2d t)
+        {
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new Polygon2d(npa, pc);
+        }
+
+        public static Polygon2d Transformed(this Polygon2d polygon, Shift2d t)
+        {
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
+            return new Polygon2d(npa, pc);
+        }
+
+        public static Polygon2d Transformed(this Polygon2d polygon, Rot2d t)
+        {
+            var pc = polygon.m_pointCount;
+            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
+            return new Polygon2d(npa, pc);
+        }
+
+        public static Polygon2d WithoutMultiplePoints(this Polygon2d polygon, double eps = 1e-8)
         {
             eps *= eps;
             var opc = polygon.PointCount;
@@ -2046,56 +2095,105 @@ namespace Aardvark.Base
 
         #region Geometric Transformations
 
-        public static Polygon3d Scaled(
-                this Polygon3d polygon, double scale)
+        public static Polygon3d Scaled(this Polygon3d polygon, double scale)
         {
-            return polygon.Map(p => p * scale);
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
+            return new Polygon3d(npa, pc);
         }
 
-        public static Polygon3d Scaled(
-                this Polygon3d polygon, V3d center, double scale)
+        public static Polygon3d Scaled(this Polygon3d polygon, V3d center, double scale)
         {
-            return polygon.Map(p => center + (p - center) * scale);
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
+            return new Polygon3d(npa, pc);
         }
 
-        public static Polygon3d ScaledAboutVertexCentroid(
-                this Polygon3d polygon, double scale)
-        {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
-        }
-
-        public static Polygon3d Scaled(
-                this Polygon3d polygon, V3d scale)
-        {
-            return polygon.Map(p => p * scale);
-        }
-
-        public static Polygon3d Scaled(
-                this Polygon3d polygon, V3d center, V3d scale)
-        {
-            return polygon.Map(p => center + (p - center) * scale);
-        }
-
-        public static Polygon3d ScaledAboutVertexCentroid(
-                this Polygon3d polygon, V3d scale)
+        public static Polygon3d ScaledAboutVertexCentroid(this Polygon3d polygon, double scale)
         {
             return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
         }
 
-        public static Polygon3d Transformed(
-                this Polygon3d polygon, M33d m)
+        public static Polygon3d Scaled(this Polygon3d polygon, V3d scale)
         {
-            return polygon.Map(p => m.Transform(p));
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
+            return new Polygon3d(npa, pc);
         }
 
-        public static Polygon3d Transformed(
-                this Polygon3d polygon, M44d m)
+        public static Polygon3d Scaled(this Polygon3d polygon, V3d center, V3d scale)
         {
-            return polygon.Map(p => m.TransformPos(p));
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
+            return new Polygon3d(npa, pc);
         }
 
-        public static Polygon3d WithoutMultiplePoints(
-                this Polygon3d polygon, double eps = 1e-8)
+        public static Polygon3d ScaledAboutVertexCentroid(this Polygon3d polygon, V3d scale)
+        {
+            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+        }
+
+        public static Polygon3d Transformed(this Polygon3d polygon, M33d m)
+        {
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = m.Transform(opa[pi]);
+            return new Polygon3d(npa, pc);
+        }
+
+        public static Polygon3d Transformed(this Polygon3d polygon, M44d m)
+        {
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = m.TransformPos(opa[pi]);
+            return new Polygon3d(npa, pc);
+        }
+
+        public static Polygon3d Transformed(this Polygon3d polygon, Euclidean3d t)
+        {
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new Polygon3d(npa, pc);
+        }
+
+        public static Polygon3d Transformed(this Polygon3d polygon, Similarity3d t)
+        {
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new Polygon3d(npa, pc);
+        }
+
+        public static Polygon3d Transformed(this Polygon3d polygon, Affine3d t)
+        {
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new Polygon3d(npa, pc);
+        }
+
+        public static Polygon3d Transformed(this Polygon3d polygon, Shift3d t)
+        {
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
+            return new Polygon3d(npa, pc);
+        }
+
+        public static Polygon3d Transformed(this Polygon3d polygon, Rot3d t)
+        {
+            var pc = polygon.m_pointCount;
+            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
+            return new Polygon3d(npa, pc);
+        }
+
+        public static Polygon3d WithoutMultiplePoints(this Polygon3d polygon, double eps = 1e-8)
         {
             eps *= eps;
             var opc = polygon.PointCount;

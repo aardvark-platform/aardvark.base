@@ -23,6 +23,11 @@ namespace Aardvark.Base
     //#     var tveci = "V" + di;
     //#     var tmat = "M" + d + dd;
     //#     var tmat1 = "M" + dp1 + dp1 + "d";
+    //#     var teucl = "Euclidean" + dd;
+    //#     var tsimi = "Similarity" + dd;
+    //#     var taffi = "Affine" + dd;
+    //#     var tshif = "Shift" + dd;
+    //#     var trot = "Rot" + dd;
     //#     var plane = planeArray[d];
     //#     var tpolygon = "Polygon" + dd;
     //#     var tplane = "Plane" + dd;
@@ -670,56 +675,105 @@ namespace Aardvark.Base
 
         #region Geometric Transformations
 
-        public static __tpolygon__ Scaled(
-                this __tpolygon__ polygon, double scale)
+        public static __tpolygon__ Scaled(this __tpolygon__ polygon, double scale)
         {
-            return polygon.Map(p => p * scale);
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
+            return new __tpolygon__(npa, pc);
         }
 
-        public static __tpolygon__ Scaled(
-                this __tpolygon__ polygon, __tvec__ center, double scale)
+        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tvec__ center, double scale)
         {
-            return polygon.Map(p => center + (p - center) * scale);
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
+            return new __tpolygon__(npa, pc);
         }
 
-        public static __tpolygon__ ScaledAboutVertexCentroid(
-                this __tpolygon__ polygon, double scale)
-        {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
-        }
-
-        public static __tpolygon__ Scaled(
-                this __tpolygon__ polygon, __tvec__ scale)
-        {
-            return polygon.Map(p => p * scale);
-        }
-
-        public static __tpolygon__ Scaled(
-                this __tpolygon__ polygon, __tvec__ center, __tvec__ scale)
-        {
-            return polygon.Map(p => center + (p - center) * scale);
-        }
-
-        public static __tpolygon__ ScaledAboutVertexCentroid(
-                this __tpolygon__ polygon, __tvec__ scale)
+        public static __tpolygon__ ScaledAboutVertexCentroid(this __tpolygon__ polygon, double scale)
         {
             return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
         }
 
-        public static __tpolygon__ Transformed(
-                this __tpolygon__ polygon, __tmat__ m)
+        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tvec__ scale)
         {
-            return polygon.Map(p => m.Transform(p));
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
+            return new __tpolygon__(npa, pc);
         }
 
-        public static __tpolygon__ Transformed(
-                this __tpolygon__ polygon, __tmat1__ m)
+        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tvec__ center, __tvec__ scale)
         {
-            return polygon.Map(p => m.TransformPos(p));
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
+            return new __tpolygon__(npa, pc);
         }
 
-        public static __tpolygon__ WithoutMultiplePoints(
-                this __tpolygon__ polygon, double eps = 1e-8)
+        public static __tpolygon__ ScaledAboutVertexCentroid(this __tpolygon__ polygon, __tvec__ scale)
+        {
+            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+        }
+
+        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __tmat__ m)
+        {
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = m.Transform(opa[pi]);
+            return new __tpolygon__(npa, pc);
+        }
+
+        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __tmat1__ m)
+        {
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = m.TransformPos(opa[pi]);
+            return new __tpolygon__(npa, pc);
+        }
+
+        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __teucl__ t)
+        {
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new __tpolygon__(npa, pc);
+        }
+
+        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __tsimi__ t)
+        {
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new __tpolygon__(npa, pc);
+        }
+
+        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __taffi__ t)
+        {
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
+            return new __tpolygon__(npa, pc);
+        }
+
+        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __tshif__ t)
+        {
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
+            return new __tpolygon__(npa, pc);
+        }
+
+        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __trot__ t)
+        {
+            var pc = polygon.m_pointCount;
+            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
+            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
+            return new __tpolygon__(npa, pc);
+        }
+
+        public static __tpolygon__ WithoutMultiplePoints(this __tpolygon__ polygon, double eps = 1e-8)
         {
             eps *= eps;
             var opc = polygon.PointCount;
