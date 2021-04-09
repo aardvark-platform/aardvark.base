@@ -102,11 +102,11 @@ namespace Aardvark.Base
             Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool> streamSave = null,
             Func<string, PixImageInfo> imageInfo = null)
         { 
-            if (fileLoad != null) s_fileLoadFunctions.Add(fileLoad);
-            if (streamLoad != null) s_streamLoadFunctions.Add(streamLoad);
-            if (fileSave != null) s_fileSaveFunctions.Add(fileSave);
-            if (streamSave != null) s_streamSaveFunctions.Add(streamSave);
-            if (imageInfo != null) s_infoFunctions.Add(imageInfo);
+            if (fileLoad != null) s_fileLoadFunctions.Insert(0, fileLoad);
+            if (streamLoad != null) s_streamLoadFunctions.Insert(0, streamLoad);
+            if (fileSave != null) s_fileSaveFunctions.Insert(0, fileSave);
+            if (streamSave != null) s_streamSaveFunctions.Insert(0, streamSave);
+            if (imageInfo != null) s_infoFunctions.Insert(0, imageInfo);
         }
 
         #region Constructors

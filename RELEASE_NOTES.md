@@ -1,6 +1,7 @@
 ### 5.1.8
 
 - added polygon transformataions (#57)
+- prioritization of custom images loaders: considering last registered first
 - consistency and completeness of Ray3d.Hits overloads
 - changed Ray3d.Hits default range to [0, double.MaxValue]
 
