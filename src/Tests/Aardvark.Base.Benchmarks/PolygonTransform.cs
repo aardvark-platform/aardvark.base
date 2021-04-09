@@ -12,20 +12,20 @@ namespace Aardvark.Base.Benchmarks
     // [Host]     : .NET Core 3.1.13 (CoreCLR 4.700.21.11102, CoreFX 4.700.21.11602), X64 RyuJIT
     //  DefaultJob : .NET Core 3.1.13 (CoreCLR 4.700.21.11102, CoreFX 4.700.21.11602), X64 RyuJIT
 
-    //|             Method | Count |      Mean |    Error |   StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
-    //|------------------- |------ |----------:|---------:|---------:|-------:|-------:|------:|----------:|
-    //|    TransformMatrix |     5 |  40.59 ns | 0.301 ns | 0.281 ns | 0.0166 |      - |     - |     104 B |
-    //| TransformMatrixNew |     5 |  60.41 ns | 0.307 ns | 0.287 ns | 0.0408 |      - |     - |     256 B |
-    //|  TransformShiftMap |     5 |  31.36 ns | 0.113 ns | 0.094 ns | 0.0318 |      - |     - |     200 B |
-    //|  TransformShiftNew |     5 |  16.92 ns | 0.144 ns | 0.128 ns | 0.0166 |      - |     - |     104 B |
-    //|    TransformMatrix |    20 | 128.61 ns | 0.418 ns | 0.391 ns | 0.0548 |      - |     - |     344 B |
-    //| TransformMatrixNew |    20 | 180.79 ns | 0.921 ns | 0.861 ns | 0.0789 |      - |     - |     496 B |
-    //|  TransformShiftMap |    20 |  71.36 ns | 0.551 ns | 0.515 ns | 0.0701 | 0.0001 |     - |     440 B |
-    //|  TransformShiftNew |    20 |  43.27 ns | 0.820 ns | 0.767 ns | 0.0548 | 0.0001 |     - |     344 B |
-    //|    TransformMatrix |   100 | 531.93 ns | 1.654 ns | 1.466 ns | 0.2584 | 0.0010 |     - |    1624 B |
-    //| TransformMatrixNew |   100 | 834.72 ns | 3.112 ns | 2.911 ns | 0.2823 | 0.0010 |     - |    1776 B |
-    //|  TransformShiftMap |   100 | 370.42 ns | 1.636 ns | 1.530 ns | 0.2737 | 0.0014 |     - |    1720 B |
-    //|  TransformShiftNew |   100 | 198.36 ns | 0.890 ns | 0.833 ns | 0.2587 | 0.0014 |     - |    1624 B |
+    //|              Method | Count |      Mean |    Error |   StdDev |  Gen 0 |  Gen 1 | Gen 2 | Allocated |
+    //|-------------------- |------ |----------:|---------:|---------:|-------:|-------:|------:|----------:|
+    //| TransformMatrix_Map |     5 |  60.41 ns | 0.307 ns | 0.287 ns | 0.0408 |      - |     - |     256 B |
+    //|     TransformMatrix |     5 |  40.59 ns | 0.301 ns | 0.281 ns | 0.0166 |      - |     - |     104 B |
+    //|  TransformShift_Map |     5 |  31.36 ns | 0.113 ns | 0.094 ns | 0.0318 |      - |     - |     200 B |
+    //|      TransformShift |     5 |  16.92 ns | 0.144 ns | 0.128 ns | 0.0166 |      - |     - |     104 B |
+    //| TransformMatrix_Map |    20 | 180.79 ns | 0.921 ns | 0.861 ns | 0.0789 |      - |     - |     496 B |
+    //|     TransformMatrix |    20 | 128.61 ns | 0.418 ns | 0.391 ns | 0.0548 |      - |     - |     344 B |
+    //|  TransformShift_Map |    20 |  71.36 ns | 0.551 ns | 0.515 ns | 0.0701 | 0.0001 |     - |     440 B |
+    //|      TransformShift |    20 |  43.27 ns | 0.820 ns | 0.767 ns | 0.0548 | 0.0001 |     - |     344 B |
+    //| TransformMatrix_Map |   100 | 834.72 ns | 3.112 ns | 2.911 ns | 0.2823 | 0.0010 |     - |    1776 B |
+    //|     TransformMatrix |   100 | 531.93 ns | 1.654 ns | 1.466 ns | 0.2584 | 0.0010 |     - |    1624 B |
+    //|  TransformShift_Map |   100 | 370.42 ns | 1.636 ns | 1.530 ns | 0.2737 | 0.0014 |     - |    1720 B |
+    //|      TransformShift |   100 | 198.36 ns | 0.890 ns | 0.833 ns | 0.2587 | 0.0014 |     - |    1624 B |
 
     [PlainExporter, MemoryDiagnoser]
     public class PolygonTransform
@@ -49,21 +49,21 @@ namespace Aardvark.Base.Benchmarks
         }
 
         [Benchmark]
-        public Polygon2d TransformMatrixNew()
+        public Polygon2d TransformMatrix_Map()
         {
             var m = M33d.Translation(offset);
             return polyArray.Map(v => m.TransformPos(v));
         }
 
         [Benchmark]
-        public Polygon2d TransformShiftMap()
+        public Polygon2d TransformShift_Map()
         {
             var o = offset;
             return polyArray.Map(v => v + o);
         }
 
         [Benchmark]
-        public Polygon2d TransformShiftNew()
+        public Polygon2d TransformShift()
         {
             return polyArray.Transformed(new Shift2d(offset));
         }
