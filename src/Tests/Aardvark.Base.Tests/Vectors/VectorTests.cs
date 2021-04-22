@@ -51,5 +51,23 @@ namespace Aardvark.Tests
         {
             Assert.IsTrue(!new V2d(0.0, 0.0).IsNaN);
         }
+
+        [Test]
+        public void Vector_Bitwise()
+        {
+            var v = new V2l(1, 2);
+            Assert.AreEqual(~v, new V2l(~v.X, ~v.Y));
+            Assert.AreEqual(v << 1, new V2l(2, 4));
+            Assert.AreEqual(v >> 1, new V2l(0, 1));
+            Assert.AreEqual(v | 1, new V2l(v.X | 1,   v.Y | 1));
+            Assert.AreEqual(1 | v, new V2l(1   | v.X, 1   | v.Y));
+            Assert.AreEqual(v | v, new V2l(v.X | v.X, v.Y | v.Y));
+            Assert.AreEqual(v & 1, new V2l(v.X & 1,   v.Y & 1));
+            Assert.AreEqual(1 & v, new V2l(1   & v.X, 1   & v.Y));
+            Assert.AreEqual(v & v, new V2l(v.X & v.X, v.Y & v.Y));
+            Assert.AreEqual(v ^ 1, new V2l(v.X ^ 1,   v.Y ^ 1));
+            Assert.AreEqual(1 ^ v, new V2l(1   ^ v.X, 1   ^ v.Y));
+            Assert.AreEqual(v ^ v, new V2l(v.X ^ v.X, v.Y ^ v.Y));
+        }
     }
 }

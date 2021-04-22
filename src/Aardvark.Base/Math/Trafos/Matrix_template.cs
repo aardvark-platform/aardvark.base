@@ -30,6 +30,7 @@ namespace Aardvark.Base
     //# var fields = new[] {"X", "Y", "Z", "W"};
     //# var ops = new[] {" + ", " - ", " % ", " / ", " * "};
     //# var bops = new[] {"<", ">", "==", "<=", ">="};
+    //# var bwops = new[] { "&", "|", "^" };
     //# for (int n = 2; n <= 4; n++) {
     //# for (int m = n; m <= (n+1) && m < 5; m++) { 
     //# for (int t = 0; t < tcharA.Length; t++) {
@@ -998,6 +999,56 @@ namespace Aardvark.Base
         //# }
         #endregion
 
+        //# if (!isReal) {
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ operator ~(__nmtype__ m)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(s => { */~m.M__r____s__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ operator <<(__nmtype__ a, int s)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(s => { */a.M__r____s__ << s/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ operator >>(__nmtype__ a, int s)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(s => { */a.M__r____s__ >> s/*# }, comma); }, comma); */);
+        }
+
+        //# foreach (var op in bwops) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ operator __op__(__nmtype__ a, __nmtype__ b)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(s => { */a.M__r____s__ __op__ b.M__r____s__/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ operator __op__(__nmtype__ a, __ftype__ s)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(s => { */a.M__r____s__ __op__ s/*# }, comma); }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __nmtype__ operator __op__(__ftype__ s, __nmtype__ a)
+        {
+            return new __nmtype__(/*# n.ForEach(r => { */
+                /*# m.ForEach(s => { */s __op__ a.M__r____s__/*# }, comma); }, comma); */);
+        }
+
+        //# }
+        #endregion
+
+        //# }
         #region Matrix/Vector Multiplication
 
         /// <summary>

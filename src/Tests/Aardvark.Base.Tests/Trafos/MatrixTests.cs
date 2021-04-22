@@ -14,6 +14,24 @@ namespace Aardvark.Tests
         public MatrixTests(TestSuite.Options options) : base(options) { }
 
         [Test]
+        public void BitwiseOperationsTest()
+        {
+            var m = new M22l(1, 2, 3, 4);
+            Assert.AreEqual(~m, new M22l(~m.M00, ~m.M01, ~m.M10, ~m.M11));
+            Assert.AreEqual(m << 1, new M22l(2, 4, 6, 8));
+            Assert.AreEqual(m >> 1, new M22l(0, 1, 1, 2));
+            Assert.AreEqual(m | 1, new M22l(m.M00 | 1, m.M01 | 1, m.M10 | 1, m.M11 | 1));
+            Assert.AreEqual(1 | m, new M22l(1 | m.M00, 1 | m.M01, 1 | m.M10, 1 | m.M11));
+            Assert.AreEqual(m | m, new M22l(m.M00 | m.M00, m.M01 | m.M01, m.M10 | m.M10, m.M11 | m.M11));
+            Assert.AreEqual(m & 1, new M22l(m.M00 & 1, m.M01 & 1, m.M10 & 1, m.M11 & 1));
+            Assert.AreEqual(1 & m, new M22l(1 & m.M00, 1 & m.M01, 1 & m.M10, 1 & m.M11));
+            Assert.AreEqual(m & m, new M22l(m.M00 & m.M00, m.M01 & m.M01, m.M10 & m.M10, m.M11 & m.M11));
+            Assert.AreEqual(m ^ 1, new M22l(m.M00 ^ 1, m.M01 ^ 1, m.M10 ^ 1, m.M11 ^ 1));
+            Assert.AreEqual(1 ^ m, new M22l(1 ^ m.M00, 1 ^ m.M01, 1 ^ m.M10, 1 ^ m.M11));
+            Assert.AreEqual(m ^ m, new M22l(m.M00 ^ m.M00, m.M01 ^ m.M01, m.M10 ^ m.M10, m.M11 ^ m.M11));
+        }
+
+        [Test]
         public void MinMaxElementTest()
         {
             var rnd = new RandomSystem(1);

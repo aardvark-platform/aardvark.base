@@ -1312,10 +1312,17 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ operator -(__vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */-v.__f__/*# }, comma); */);
-        }
+            => new __vtype__(/*# fields.ForEach(f => { */-v.__f__/*# }, comma); */);
 
+        //# if (!ft.IsReal) {
+        /// <summary>
+        /// Returns the component-wise bitwise complement of the specified vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ operator ~(__vtype__ v)
+            => new __vtype__(/*# fields.ForEach(f => { */~v.__f__/*# }, comma); */);
+
+        //# }
         //# if (d == 2) {
         /// <summary>
         /// Returns a vector that is orthogonal to this one (i.e. {x,y} -> {-y,x}).
@@ -1338,6 +1345,7 @@ namespace Aardvark.Base
         }
 
         //# }
+        //# {
         //# var ops = new[] {" + ", " - ", " * ", " / "};
         //# var opactions = new[,]  { { "operator +", "operator -", "operator *", "operator /"},
         //#                           { "Add", "Subtract", "Multiply", "Divide"}};
@@ -1348,33 +1356,71 @@ namespace Aardvark.Base
         //#     for (int action = 0; action < 2; action++) {
         //#         var opaction = opactions[action, o];
         /// <summary>
-        /// Returns component-wise __opname__ of two vectors.
+        /// Returns the component-wise __opname__ of two vectors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ __opaction__(__vtype__ a, __vtype__ b)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */a.__f____op__b.__f__/*# }, comma); */);
-        }
+            => new __vtype__(/*# fields.ForEach(f => { */a.__f____op__b.__f__/*# }, comma); */);
 
         /// <summary>
-        /// Returns component-wise __opname__ of vector and scalar.
+        /// Returns the component-wise __opname__ of a vector and a scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ __opaction__(__vtype__ v, __ftype__ s)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */v.__f____op__s/*#  }, comma); */);
-        }
+            => new __vtype__(/*# fields.ForEach(f => { */v.__f____op__s/*#  }, comma); */);
 
         /// <summary>
-        /// Returns component-wise __opname__ of scalar and vector.
+        /// Returns the component-wise __opname__ of a scalar and a vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ __opaction__(__ftype__ s, __vtype__ v)
-        {
-            return new __vtype__(/*# fields.ForEach(f => { */s__op__v.__f__/*# }, comma); */);
-        }
+            => new __vtype__(/*# fields.ForEach(f => { */s__op__v.__f__/*# }, comma); */);
 
         //#     }
+        //# }
+        //# }
+        //# if (!ft.IsReal) {
+        //# var ops = new[] {"&", "|", "^"};
+        //# var opnames = new[] {"bitwise and", "bitwise or", "bitwise exclusive or" };
+        //# for (int o = 0; o < ops.Length; o++) {
+        //#     var op = ops[o];
+        //#     var opname = opnames[o];
+        /// <summary>
+        /// Returns the component-wise __opname__ of two vectors.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ operator __op__(__vtype__ a, __vtype__ b)
+            => new __vtype__(/*# fields.ForEach(f => { */a.__f__ __op__ b.__f__/*# }, comma); */);
+
+        /// <summary>
+        /// Returns the component-wise __opname__ of a vector and a scalar.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ operator __op__(__vtype__ v, __ftype__ s)
+            => new __vtype__(/*# fields.ForEach(f => { */v.__f__ __op__ s/*#  }, comma); */);
+
+        /// <summary>
+        /// Returns the component-wise __opname__ of a scalar and a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ operator __op__(__ftype__ s, __vtype__ v)
+            => new __vtype__(/*# fields.ForEach(f => { */s __op__ v.__f__/*# }, comma); */);
+
+        //# }
+        /// <summary>
+        /// Returns the component-wise left bitshift of a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ operator <<(__vtype__ v, int s)
+            => new __vtype__(/*# fields.ForEach(f => { */v.__f__ << s/*#  }, comma); */);
+
+        /// <summary>
+        /// Returns the component-wise right bitshift of a vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vtype__ operator >>(__vtype__ v, int s)
+            => new __vtype__(/*# fields.ForEach(f => { */v.__f__ >> s/*#  }, comma); */);
+
         //# }
         /// Attention: NEVER implement operators &lt;, &lt;=, &gt;=, &gt;,
         /// since these are not defined in a Vector space.

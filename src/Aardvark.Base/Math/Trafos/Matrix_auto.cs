@@ -1404,6 +1404,106 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator ~(M22i m)
+        {
+            return new M22i(
+                ~m.M00, ~m.M01, 
+                ~m.M10, ~m.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator <<(M22i a, int s)
+        {
+            return new M22i(
+                a.M00 << s, a.M01 << s, 
+                a.M10 << s, a.M11 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator >>(M22i a, int s)
+        {
+            return new M22i(
+                a.M00 >> s, a.M01 >> s, 
+                a.M10 >> s, a.M11 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator &(M22i a, M22i b)
+        {
+            return new M22i(
+                a.M00 & b.M00, a.M01 & b.M01, 
+                a.M10 & b.M10, a.M11 & b.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator &(M22i a, int s)
+        {
+            return new M22i(
+                a.M00 & s, a.M01 & s, 
+                a.M10 & s, a.M11 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator &(int s, M22i a)
+        {
+            return new M22i(
+                s & a.M00, s & a.M01, 
+                s & a.M10, s & a.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator |(M22i a, M22i b)
+        {
+            return new M22i(
+                a.M00 | b.M00, a.M01 | b.M01, 
+                a.M10 | b.M10, a.M11 | b.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator |(M22i a, int s)
+        {
+            return new M22i(
+                a.M00 | s, a.M01 | s, 
+                a.M10 | s, a.M11 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator |(int s, M22i a)
+        {
+            return new M22i(
+                s | a.M00, s | a.M01, 
+                s | a.M10, s | a.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator ^(M22i a, M22i b)
+        {
+            return new M22i(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator ^(M22i a, int s)
+        {
+            return new M22i(
+                a.M00 ^ s, a.M01 ^ s, 
+                a.M10 ^ s, a.M11 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22i operator ^(int s, M22i a)
+        {
+            return new M22i(
+                s ^ a.M00, s ^ a.M01, 
+                s ^ a.M10, s ^ a.M11);
+        }
+
+        #endregion
+
         #region Matrix/Vector Multiplication
 
         /// <summary>
@@ -3502,6 +3602,106 @@ namespace Aardvark.Base
             return new M22d(
                 s * m.M00, s * m.M01, 
                 s * m.M10, s * m.M11);
+        }
+
+        #endregion
+
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator ~(M22l m)
+        {
+            return new M22l(
+                ~m.M00, ~m.M01, 
+                ~m.M10, ~m.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator <<(M22l a, int s)
+        {
+            return new M22l(
+                a.M00 << s, a.M01 << s, 
+                a.M10 << s, a.M11 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator >>(M22l a, int s)
+        {
+            return new M22l(
+                a.M00 >> s, a.M01 >> s, 
+                a.M10 >> s, a.M11 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator &(M22l a, M22l b)
+        {
+            return new M22l(
+                a.M00 & b.M00, a.M01 & b.M01, 
+                a.M10 & b.M10, a.M11 & b.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator &(M22l a, long s)
+        {
+            return new M22l(
+                a.M00 & s, a.M01 & s, 
+                a.M10 & s, a.M11 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator &(long s, M22l a)
+        {
+            return new M22l(
+                s & a.M00, s & a.M01, 
+                s & a.M10, s & a.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator |(M22l a, M22l b)
+        {
+            return new M22l(
+                a.M00 | b.M00, a.M01 | b.M01, 
+                a.M10 | b.M10, a.M11 | b.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator |(M22l a, long s)
+        {
+            return new M22l(
+                a.M00 | s, a.M01 | s, 
+                a.M10 | s, a.M11 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator |(long s, M22l a)
+        {
+            return new M22l(
+                s | a.M00, s | a.M01, 
+                s | a.M10, s | a.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator ^(M22l a, M22l b)
+        {
+            return new M22l(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator ^(M22l a, long s)
+        {
+            return new M22l(
+                a.M00 ^ s, a.M01 ^ s, 
+                a.M10 ^ s, a.M11 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M22l operator ^(long s, M22l a)
+        {
+            return new M22l(
+                s ^ a.M00, s ^ a.M01, 
+                s ^ a.M10, s ^ a.M11);
         }
 
         #endregion
@@ -10496,6 +10696,106 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator ~(M23i m)
+        {
+            return new M23i(
+                ~m.M00, ~m.M01, ~m.M02, 
+                ~m.M10, ~m.M11, ~m.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator <<(M23i a, int s)
+        {
+            return new M23i(
+                a.M00 << s, a.M01 << s, a.M02 << s, 
+                a.M10 << s, a.M11 << s, a.M12 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator >>(M23i a, int s)
+        {
+            return new M23i(
+                a.M00 >> s, a.M01 >> s, a.M02 >> s, 
+                a.M10 >> s, a.M11 >> s, a.M12 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator &(M23i a, M23i b)
+        {
+            return new M23i(
+                a.M00 & b.M00, a.M01 & b.M01, a.M02 & b.M02, 
+                a.M10 & b.M10, a.M11 & b.M11, a.M12 & b.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator &(M23i a, int s)
+        {
+            return new M23i(
+                a.M00 & s, a.M01 & s, a.M02 & s, 
+                a.M10 & s, a.M11 & s, a.M12 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator &(int s, M23i a)
+        {
+            return new M23i(
+                s & a.M00, s & a.M01, s & a.M02, 
+                s & a.M10, s & a.M11, s & a.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator |(M23i a, M23i b)
+        {
+            return new M23i(
+                a.M00 | b.M00, a.M01 | b.M01, a.M02 | b.M02, 
+                a.M10 | b.M10, a.M11 | b.M11, a.M12 | b.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator |(M23i a, int s)
+        {
+            return new M23i(
+                a.M00 | s, a.M01 | s, a.M02 | s, 
+                a.M10 | s, a.M11 | s, a.M12 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator |(int s, M23i a)
+        {
+            return new M23i(
+                s | a.M00, s | a.M01, s | a.M02, 
+                s | a.M10, s | a.M11, s | a.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator ^(M23i a, M23i b)
+        {
+            return new M23i(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, a.M02 ^ b.M02, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11, a.M12 ^ b.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator ^(M23i a, int s)
+        {
+            return new M23i(
+                a.M00 ^ s, a.M01 ^ s, a.M02 ^ s, 
+                a.M10 ^ s, a.M11 ^ s, a.M12 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23i operator ^(int s, M23i a)
+        {
+            return new M23i(
+                s ^ a.M00, s ^ a.M01, s ^ a.M02, 
+                s ^ a.M10, s ^ a.M11, s ^ a.M12);
+        }
+
+        #endregion
+
         #region Matrix/Vector Multiplication
 
         /// <summary>
@@ -12562,6 +12862,106 @@ namespace Aardvark.Base
             return new M23d(
                 s * m.M00, s * m.M01, s * m.M02, 
                 s * m.M10, s * m.M11, s * m.M12);
+        }
+
+        #endregion
+
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator ~(M23l m)
+        {
+            return new M23l(
+                ~m.M00, ~m.M01, ~m.M02, 
+                ~m.M10, ~m.M11, ~m.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator <<(M23l a, int s)
+        {
+            return new M23l(
+                a.M00 << s, a.M01 << s, a.M02 << s, 
+                a.M10 << s, a.M11 << s, a.M12 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator >>(M23l a, int s)
+        {
+            return new M23l(
+                a.M00 >> s, a.M01 >> s, a.M02 >> s, 
+                a.M10 >> s, a.M11 >> s, a.M12 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator &(M23l a, M23l b)
+        {
+            return new M23l(
+                a.M00 & b.M00, a.M01 & b.M01, a.M02 & b.M02, 
+                a.M10 & b.M10, a.M11 & b.M11, a.M12 & b.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator &(M23l a, long s)
+        {
+            return new M23l(
+                a.M00 & s, a.M01 & s, a.M02 & s, 
+                a.M10 & s, a.M11 & s, a.M12 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator &(long s, M23l a)
+        {
+            return new M23l(
+                s & a.M00, s & a.M01, s & a.M02, 
+                s & a.M10, s & a.M11, s & a.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator |(M23l a, M23l b)
+        {
+            return new M23l(
+                a.M00 | b.M00, a.M01 | b.M01, a.M02 | b.M02, 
+                a.M10 | b.M10, a.M11 | b.M11, a.M12 | b.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator |(M23l a, long s)
+        {
+            return new M23l(
+                a.M00 | s, a.M01 | s, a.M02 | s, 
+                a.M10 | s, a.M11 | s, a.M12 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator |(long s, M23l a)
+        {
+            return new M23l(
+                s | a.M00, s | a.M01, s | a.M02, 
+                s | a.M10, s | a.M11, s | a.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator ^(M23l a, M23l b)
+        {
+            return new M23l(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, a.M02 ^ b.M02, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11, a.M12 ^ b.M12);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator ^(M23l a, long s)
+        {
+            return new M23l(
+                a.M00 ^ s, a.M01 ^ s, a.M02 ^ s, 
+                a.M10 ^ s, a.M11 ^ s, a.M12 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M23l operator ^(long s, M23l a)
+        {
+            return new M23l(
+                s ^ a.M00, s ^ a.M01, s ^ a.M02, 
+                s ^ a.M10, s ^ a.M11, s ^ a.M12);
         }
 
         #endregion
@@ -19434,6 +19834,118 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator ~(M33i m)
+        {
+            return new M33i(
+                ~m.M00, ~m.M01, ~m.M02, 
+                ~m.M10, ~m.M11, ~m.M12, 
+                ~m.M20, ~m.M21, ~m.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator <<(M33i a, int s)
+        {
+            return new M33i(
+                a.M00 << s, a.M01 << s, a.M02 << s, 
+                a.M10 << s, a.M11 << s, a.M12 << s, 
+                a.M20 << s, a.M21 << s, a.M22 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator >>(M33i a, int s)
+        {
+            return new M33i(
+                a.M00 >> s, a.M01 >> s, a.M02 >> s, 
+                a.M10 >> s, a.M11 >> s, a.M12 >> s, 
+                a.M20 >> s, a.M21 >> s, a.M22 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator &(M33i a, M33i b)
+        {
+            return new M33i(
+                a.M00 & b.M00, a.M01 & b.M01, a.M02 & b.M02, 
+                a.M10 & b.M10, a.M11 & b.M11, a.M12 & b.M12, 
+                a.M20 & b.M20, a.M21 & b.M21, a.M22 & b.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator &(M33i a, int s)
+        {
+            return new M33i(
+                a.M00 & s, a.M01 & s, a.M02 & s, 
+                a.M10 & s, a.M11 & s, a.M12 & s, 
+                a.M20 & s, a.M21 & s, a.M22 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator &(int s, M33i a)
+        {
+            return new M33i(
+                s & a.M00, s & a.M01, s & a.M02, 
+                s & a.M10, s & a.M11, s & a.M12, 
+                s & a.M20, s & a.M21, s & a.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator |(M33i a, M33i b)
+        {
+            return new M33i(
+                a.M00 | b.M00, a.M01 | b.M01, a.M02 | b.M02, 
+                a.M10 | b.M10, a.M11 | b.M11, a.M12 | b.M12, 
+                a.M20 | b.M20, a.M21 | b.M21, a.M22 | b.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator |(M33i a, int s)
+        {
+            return new M33i(
+                a.M00 | s, a.M01 | s, a.M02 | s, 
+                a.M10 | s, a.M11 | s, a.M12 | s, 
+                a.M20 | s, a.M21 | s, a.M22 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator |(int s, M33i a)
+        {
+            return new M33i(
+                s | a.M00, s | a.M01, s | a.M02, 
+                s | a.M10, s | a.M11, s | a.M12, 
+                s | a.M20, s | a.M21, s | a.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator ^(M33i a, M33i b)
+        {
+            return new M33i(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, a.M02 ^ b.M02, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11, a.M12 ^ b.M12, 
+                a.M20 ^ b.M20, a.M21 ^ b.M21, a.M22 ^ b.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator ^(M33i a, int s)
+        {
+            return new M33i(
+                a.M00 ^ s, a.M01 ^ s, a.M02 ^ s, 
+                a.M10 ^ s, a.M11 ^ s, a.M12 ^ s, 
+                a.M20 ^ s, a.M21 ^ s, a.M22 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33i operator ^(int s, M33i a)
+        {
+            return new M33i(
+                s ^ a.M00, s ^ a.M01, s ^ a.M02, 
+                s ^ a.M10, s ^ a.M11, s ^ a.M12, 
+                s ^ a.M20, s ^ a.M21, s ^ a.M22);
+        }
+
+        #endregion
+
         #region Matrix/Vector Multiplication
 
         /// <summary>
@@ -22094,6 +22606,118 @@ namespace Aardvark.Base
                 s * m.M00, s * m.M01, s * m.M02, 
                 s * m.M10, s * m.M11, s * m.M12, 
                 s * m.M20, s * m.M21, s * m.M22);
+        }
+
+        #endregion
+
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator ~(M33l m)
+        {
+            return new M33l(
+                ~m.M00, ~m.M01, ~m.M02, 
+                ~m.M10, ~m.M11, ~m.M12, 
+                ~m.M20, ~m.M21, ~m.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator <<(M33l a, int s)
+        {
+            return new M33l(
+                a.M00 << s, a.M01 << s, a.M02 << s, 
+                a.M10 << s, a.M11 << s, a.M12 << s, 
+                a.M20 << s, a.M21 << s, a.M22 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator >>(M33l a, int s)
+        {
+            return new M33l(
+                a.M00 >> s, a.M01 >> s, a.M02 >> s, 
+                a.M10 >> s, a.M11 >> s, a.M12 >> s, 
+                a.M20 >> s, a.M21 >> s, a.M22 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator &(M33l a, M33l b)
+        {
+            return new M33l(
+                a.M00 & b.M00, a.M01 & b.M01, a.M02 & b.M02, 
+                a.M10 & b.M10, a.M11 & b.M11, a.M12 & b.M12, 
+                a.M20 & b.M20, a.M21 & b.M21, a.M22 & b.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator &(M33l a, long s)
+        {
+            return new M33l(
+                a.M00 & s, a.M01 & s, a.M02 & s, 
+                a.M10 & s, a.M11 & s, a.M12 & s, 
+                a.M20 & s, a.M21 & s, a.M22 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator &(long s, M33l a)
+        {
+            return new M33l(
+                s & a.M00, s & a.M01, s & a.M02, 
+                s & a.M10, s & a.M11, s & a.M12, 
+                s & a.M20, s & a.M21, s & a.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator |(M33l a, M33l b)
+        {
+            return new M33l(
+                a.M00 | b.M00, a.M01 | b.M01, a.M02 | b.M02, 
+                a.M10 | b.M10, a.M11 | b.M11, a.M12 | b.M12, 
+                a.M20 | b.M20, a.M21 | b.M21, a.M22 | b.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator |(M33l a, long s)
+        {
+            return new M33l(
+                a.M00 | s, a.M01 | s, a.M02 | s, 
+                a.M10 | s, a.M11 | s, a.M12 | s, 
+                a.M20 | s, a.M21 | s, a.M22 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator |(long s, M33l a)
+        {
+            return new M33l(
+                s | a.M00, s | a.M01, s | a.M02, 
+                s | a.M10, s | a.M11, s | a.M12, 
+                s | a.M20, s | a.M21, s | a.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator ^(M33l a, M33l b)
+        {
+            return new M33l(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, a.M02 ^ b.M02, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11, a.M12 ^ b.M12, 
+                a.M20 ^ b.M20, a.M21 ^ b.M21, a.M22 ^ b.M22);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator ^(M33l a, long s)
+        {
+            return new M33l(
+                a.M00 ^ s, a.M01 ^ s, a.M02 ^ s, 
+                a.M10 ^ s, a.M11 ^ s, a.M12 ^ s, 
+                a.M20 ^ s, a.M21 ^ s, a.M22 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M33l operator ^(long s, M33l a)
+        {
+            return new M33l(
+                s ^ a.M00, s ^ a.M01, s ^ a.M02, 
+                s ^ a.M10, s ^ a.M11, s ^ a.M12, 
+                s ^ a.M20, s ^ a.M21, s ^ a.M22);
         }
 
         #endregion
@@ -31093,6 +31717,118 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator ~(M34i m)
+        {
+            return new M34i(
+                ~m.M00, ~m.M01, ~m.M02, ~m.M03, 
+                ~m.M10, ~m.M11, ~m.M12, ~m.M13, 
+                ~m.M20, ~m.M21, ~m.M22, ~m.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator <<(M34i a, int s)
+        {
+            return new M34i(
+                a.M00 << s, a.M01 << s, a.M02 << s, a.M03 << s, 
+                a.M10 << s, a.M11 << s, a.M12 << s, a.M13 << s, 
+                a.M20 << s, a.M21 << s, a.M22 << s, a.M23 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator >>(M34i a, int s)
+        {
+            return new M34i(
+                a.M00 >> s, a.M01 >> s, a.M02 >> s, a.M03 >> s, 
+                a.M10 >> s, a.M11 >> s, a.M12 >> s, a.M13 >> s, 
+                a.M20 >> s, a.M21 >> s, a.M22 >> s, a.M23 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator &(M34i a, M34i b)
+        {
+            return new M34i(
+                a.M00 & b.M00, a.M01 & b.M01, a.M02 & b.M02, a.M03 & b.M03, 
+                a.M10 & b.M10, a.M11 & b.M11, a.M12 & b.M12, a.M13 & b.M13, 
+                a.M20 & b.M20, a.M21 & b.M21, a.M22 & b.M22, a.M23 & b.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator &(M34i a, int s)
+        {
+            return new M34i(
+                a.M00 & s, a.M01 & s, a.M02 & s, a.M03 & s, 
+                a.M10 & s, a.M11 & s, a.M12 & s, a.M13 & s, 
+                a.M20 & s, a.M21 & s, a.M22 & s, a.M23 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator &(int s, M34i a)
+        {
+            return new M34i(
+                s & a.M00, s & a.M01, s & a.M02, s & a.M03, 
+                s & a.M10, s & a.M11, s & a.M12, s & a.M13, 
+                s & a.M20, s & a.M21, s & a.M22, s & a.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator |(M34i a, M34i b)
+        {
+            return new M34i(
+                a.M00 | b.M00, a.M01 | b.M01, a.M02 | b.M02, a.M03 | b.M03, 
+                a.M10 | b.M10, a.M11 | b.M11, a.M12 | b.M12, a.M13 | b.M13, 
+                a.M20 | b.M20, a.M21 | b.M21, a.M22 | b.M22, a.M23 | b.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator |(M34i a, int s)
+        {
+            return new M34i(
+                a.M00 | s, a.M01 | s, a.M02 | s, a.M03 | s, 
+                a.M10 | s, a.M11 | s, a.M12 | s, a.M13 | s, 
+                a.M20 | s, a.M21 | s, a.M22 | s, a.M23 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator |(int s, M34i a)
+        {
+            return new M34i(
+                s | a.M00, s | a.M01, s | a.M02, s | a.M03, 
+                s | a.M10, s | a.M11, s | a.M12, s | a.M13, 
+                s | a.M20, s | a.M21, s | a.M22, s | a.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator ^(M34i a, M34i b)
+        {
+            return new M34i(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, a.M02 ^ b.M02, a.M03 ^ b.M03, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11, a.M12 ^ b.M12, a.M13 ^ b.M13, 
+                a.M20 ^ b.M20, a.M21 ^ b.M21, a.M22 ^ b.M22, a.M23 ^ b.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator ^(M34i a, int s)
+        {
+            return new M34i(
+                a.M00 ^ s, a.M01 ^ s, a.M02 ^ s, a.M03 ^ s, 
+                a.M10 ^ s, a.M11 ^ s, a.M12 ^ s, a.M13 ^ s, 
+                a.M20 ^ s, a.M21 ^ s, a.M22 ^ s, a.M23 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34i operator ^(int s, M34i a)
+        {
+            return new M34i(
+                s ^ a.M00, s ^ a.M01, s ^ a.M02, s ^ a.M03, 
+                s ^ a.M10, s ^ a.M11, s ^ a.M12, s ^ a.M13, 
+                s ^ a.M20, s ^ a.M21, s ^ a.M22, s ^ a.M23);
+        }
+
+        #endregion
+
         #region Matrix/Vector Multiplication
 
         /// <summary>
@@ -33598,6 +34334,118 @@ namespace Aardvark.Base
                 s * m.M00, s * m.M01, s * m.M02, s * m.M03, 
                 s * m.M10, s * m.M11, s * m.M12, s * m.M13, 
                 s * m.M20, s * m.M21, s * m.M22, s * m.M23);
+        }
+
+        #endregion
+
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator ~(M34l m)
+        {
+            return new M34l(
+                ~m.M00, ~m.M01, ~m.M02, ~m.M03, 
+                ~m.M10, ~m.M11, ~m.M12, ~m.M13, 
+                ~m.M20, ~m.M21, ~m.M22, ~m.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator <<(M34l a, int s)
+        {
+            return new M34l(
+                a.M00 << s, a.M01 << s, a.M02 << s, a.M03 << s, 
+                a.M10 << s, a.M11 << s, a.M12 << s, a.M13 << s, 
+                a.M20 << s, a.M21 << s, a.M22 << s, a.M23 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator >>(M34l a, int s)
+        {
+            return new M34l(
+                a.M00 >> s, a.M01 >> s, a.M02 >> s, a.M03 >> s, 
+                a.M10 >> s, a.M11 >> s, a.M12 >> s, a.M13 >> s, 
+                a.M20 >> s, a.M21 >> s, a.M22 >> s, a.M23 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator &(M34l a, M34l b)
+        {
+            return new M34l(
+                a.M00 & b.M00, a.M01 & b.M01, a.M02 & b.M02, a.M03 & b.M03, 
+                a.M10 & b.M10, a.M11 & b.M11, a.M12 & b.M12, a.M13 & b.M13, 
+                a.M20 & b.M20, a.M21 & b.M21, a.M22 & b.M22, a.M23 & b.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator &(M34l a, long s)
+        {
+            return new M34l(
+                a.M00 & s, a.M01 & s, a.M02 & s, a.M03 & s, 
+                a.M10 & s, a.M11 & s, a.M12 & s, a.M13 & s, 
+                a.M20 & s, a.M21 & s, a.M22 & s, a.M23 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator &(long s, M34l a)
+        {
+            return new M34l(
+                s & a.M00, s & a.M01, s & a.M02, s & a.M03, 
+                s & a.M10, s & a.M11, s & a.M12, s & a.M13, 
+                s & a.M20, s & a.M21, s & a.M22, s & a.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator |(M34l a, M34l b)
+        {
+            return new M34l(
+                a.M00 | b.M00, a.M01 | b.M01, a.M02 | b.M02, a.M03 | b.M03, 
+                a.M10 | b.M10, a.M11 | b.M11, a.M12 | b.M12, a.M13 | b.M13, 
+                a.M20 | b.M20, a.M21 | b.M21, a.M22 | b.M22, a.M23 | b.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator |(M34l a, long s)
+        {
+            return new M34l(
+                a.M00 | s, a.M01 | s, a.M02 | s, a.M03 | s, 
+                a.M10 | s, a.M11 | s, a.M12 | s, a.M13 | s, 
+                a.M20 | s, a.M21 | s, a.M22 | s, a.M23 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator |(long s, M34l a)
+        {
+            return new M34l(
+                s | a.M00, s | a.M01, s | a.M02, s | a.M03, 
+                s | a.M10, s | a.M11, s | a.M12, s | a.M13, 
+                s | a.M20, s | a.M21, s | a.M22, s | a.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator ^(M34l a, M34l b)
+        {
+            return new M34l(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, a.M02 ^ b.M02, a.M03 ^ b.M03, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11, a.M12 ^ b.M12, a.M13 ^ b.M13, 
+                a.M20 ^ b.M20, a.M21 ^ b.M21, a.M22 ^ b.M22, a.M23 ^ b.M23);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator ^(M34l a, long s)
+        {
+            return new M34l(
+                a.M00 ^ s, a.M01 ^ s, a.M02 ^ s, a.M03 ^ s, 
+                a.M10 ^ s, a.M11 ^ s, a.M12 ^ s, a.M13 ^ s, 
+                a.M20 ^ s, a.M21 ^ s, a.M22 ^ s, a.M23 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M34l operator ^(long s, M34l a)
+        {
+            return new M34l(
+                s ^ a.M00, s ^ a.M01, s ^ a.M02, s ^ a.M03, 
+                s ^ a.M10, s ^ a.M11, s ^ a.M12, s ^ a.M13, 
+                s ^ a.M20, s ^ a.M21, s ^ a.M22, s ^ a.M23);
         }
 
         #endregion
@@ -42012,6 +42860,130 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator ~(M44i m)
+        {
+            return new M44i(
+                ~m.M00, ~m.M01, ~m.M02, ~m.M03, 
+                ~m.M10, ~m.M11, ~m.M12, ~m.M13, 
+                ~m.M20, ~m.M21, ~m.M22, ~m.M23, 
+                ~m.M30, ~m.M31, ~m.M32, ~m.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator <<(M44i a, int s)
+        {
+            return new M44i(
+                a.M00 << s, a.M01 << s, a.M02 << s, a.M03 << s, 
+                a.M10 << s, a.M11 << s, a.M12 << s, a.M13 << s, 
+                a.M20 << s, a.M21 << s, a.M22 << s, a.M23 << s, 
+                a.M30 << s, a.M31 << s, a.M32 << s, a.M33 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator >>(M44i a, int s)
+        {
+            return new M44i(
+                a.M00 >> s, a.M01 >> s, a.M02 >> s, a.M03 >> s, 
+                a.M10 >> s, a.M11 >> s, a.M12 >> s, a.M13 >> s, 
+                a.M20 >> s, a.M21 >> s, a.M22 >> s, a.M23 >> s, 
+                a.M30 >> s, a.M31 >> s, a.M32 >> s, a.M33 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator &(M44i a, M44i b)
+        {
+            return new M44i(
+                a.M00 & b.M00, a.M01 & b.M01, a.M02 & b.M02, a.M03 & b.M03, 
+                a.M10 & b.M10, a.M11 & b.M11, a.M12 & b.M12, a.M13 & b.M13, 
+                a.M20 & b.M20, a.M21 & b.M21, a.M22 & b.M22, a.M23 & b.M23, 
+                a.M30 & b.M30, a.M31 & b.M31, a.M32 & b.M32, a.M33 & b.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator &(M44i a, int s)
+        {
+            return new M44i(
+                a.M00 & s, a.M01 & s, a.M02 & s, a.M03 & s, 
+                a.M10 & s, a.M11 & s, a.M12 & s, a.M13 & s, 
+                a.M20 & s, a.M21 & s, a.M22 & s, a.M23 & s, 
+                a.M30 & s, a.M31 & s, a.M32 & s, a.M33 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator &(int s, M44i a)
+        {
+            return new M44i(
+                s & a.M00, s & a.M01, s & a.M02, s & a.M03, 
+                s & a.M10, s & a.M11, s & a.M12, s & a.M13, 
+                s & a.M20, s & a.M21, s & a.M22, s & a.M23, 
+                s & a.M30, s & a.M31, s & a.M32, s & a.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator |(M44i a, M44i b)
+        {
+            return new M44i(
+                a.M00 | b.M00, a.M01 | b.M01, a.M02 | b.M02, a.M03 | b.M03, 
+                a.M10 | b.M10, a.M11 | b.M11, a.M12 | b.M12, a.M13 | b.M13, 
+                a.M20 | b.M20, a.M21 | b.M21, a.M22 | b.M22, a.M23 | b.M23, 
+                a.M30 | b.M30, a.M31 | b.M31, a.M32 | b.M32, a.M33 | b.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator |(M44i a, int s)
+        {
+            return new M44i(
+                a.M00 | s, a.M01 | s, a.M02 | s, a.M03 | s, 
+                a.M10 | s, a.M11 | s, a.M12 | s, a.M13 | s, 
+                a.M20 | s, a.M21 | s, a.M22 | s, a.M23 | s, 
+                a.M30 | s, a.M31 | s, a.M32 | s, a.M33 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator |(int s, M44i a)
+        {
+            return new M44i(
+                s | a.M00, s | a.M01, s | a.M02, s | a.M03, 
+                s | a.M10, s | a.M11, s | a.M12, s | a.M13, 
+                s | a.M20, s | a.M21, s | a.M22, s | a.M23, 
+                s | a.M30, s | a.M31, s | a.M32, s | a.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator ^(M44i a, M44i b)
+        {
+            return new M44i(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, a.M02 ^ b.M02, a.M03 ^ b.M03, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11, a.M12 ^ b.M12, a.M13 ^ b.M13, 
+                a.M20 ^ b.M20, a.M21 ^ b.M21, a.M22 ^ b.M22, a.M23 ^ b.M23, 
+                a.M30 ^ b.M30, a.M31 ^ b.M31, a.M32 ^ b.M32, a.M33 ^ b.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator ^(M44i a, int s)
+        {
+            return new M44i(
+                a.M00 ^ s, a.M01 ^ s, a.M02 ^ s, a.M03 ^ s, 
+                a.M10 ^ s, a.M11 ^ s, a.M12 ^ s, a.M13 ^ s, 
+                a.M20 ^ s, a.M21 ^ s, a.M22 ^ s, a.M23 ^ s, 
+                a.M30 ^ s, a.M31 ^ s, a.M32 ^ s, a.M33 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44i operator ^(int s, M44i a)
+        {
+            return new M44i(
+                s ^ a.M00, s ^ a.M01, s ^ a.M02, s ^ a.M03, 
+                s ^ a.M10, s ^ a.M11, s ^ a.M12, s ^ a.M13, 
+                s ^ a.M20, s ^ a.M21, s ^ a.M22, s ^ a.M23, 
+                s ^ a.M30, s ^ a.M31, s ^ a.M32, s ^ a.M33);
+        }
+
+        #endregion
+
         #region Matrix/Vector Multiplication
 
         /// <summary>
@@ -45077,6 +46049,130 @@ namespace Aardvark.Base
                 s * m.M10, s * m.M11, s * m.M12, s * m.M13, 
                 s * m.M20, s * m.M21, s * m.M22, s * m.M23, 
                 s * m.M30, s * m.M31, s * m.M32, s * m.M33);
+        }
+
+        #endregion
+
+        #region Bitwise Operators
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator ~(M44l m)
+        {
+            return new M44l(
+                ~m.M00, ~m.M01, ~m.M02, ~m.M03, 
+                ~m.M10, ~m.M11, ~m.M12, ~m.M13, 
+                ~m.M20, ~m.M21, ~m.M22, ~m.M23, 
+                ~m.M30, ~m.M31, ~m.M32, ~m.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator <<(M44l a, int s)
+        {
+            return new M44l(
+                a.M00 << s, a.M01 << s, a.M02 << s, a.M03 << s, 
+                a.M10 << s, a.M11 << s, a.M12 << s, a.M13 << s, 
+                a.M20 << s, a.M21 << s, a.M22 << s, a.M23 << s, 
+                a.M30 << s, a.M31 << s, a.M32 << s, a.M33 << s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator >>(M44l a, int s)
+        {
+            return new M44l(
+                a.M00 >> s, a.M01 >> s, a.M02 >> s, a.M03 >> s, 
+                a.M10 >> s, a.M11 >> s, a.M12 >> s, a.M13 >> s, 
+                a.M20 >> s, a.M21 >> s, a.M22 >> s, a.M23 >> s, 
+                a.M30 >> s, a.M31 >> s, a.M32 >> s, a.M33 >> s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator &(M44l a, M44l b)
+        {
+            return new M44l(
+                a.M00 & b.M00, a.M01 & b.M01, a.M02 & b.M02, a.M03 & b.M03, 
+                a.M10 & b.M10, a.M11 & b.M11, a.M12 & b.M12, a.M13 & b.M13, 
+                a.M20 & b.M20, a.M21 & b.M21, a.M22 & b.M22, a.M23 & b.M23, 
+                a.M30 & b.M30, a.M31 & b.M31, a.M32 & b.M32, a.M33 & b.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator &(M44l a, long s)
+        {
+            return new M44l(
+                a.M00 & s, a.M01 & s, a.M02 & s, a.M03 & s, 
+                a.M10 & s, a.M11 & s, a.M12 & s, a.M13 & s, 
+                a.M20 & s, a.M21 & s, a.M22 & s, a.M23 & s, 
+                a.M30 & s, a.M31 & s, a.M32 & s, a.M33 & s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator &(long s, M44l a)
+        {
+            return new M44l(
+                s & a.M00, s & a.M01, s & a.M02, s & a.M03, 
+                s & a.M10, s & a.M11, s & a.M12, s & a.M13, 
+                s & a.M20, s & a.M21, s & a.M22, s & a.M23, 
+                s & a.M30, s & a.M31, s & a.M32, s & a.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator |(M44l a, M44l b)
+        {
+            return new M44l(
+                a.M00 | b.M00, a.M01 | b.M01, a.M02 | b.M02, a.M03 | b.M03, 
+                a.M10 | b.M10, a.M11 | b.M11, a.M12 | b.M12, a.M13 | b.M13, 
+                a.M20 | b.M20, a.M21 | b.M21, a.M22 | b.M22, a.M23 | b.M23, 
+                a.M30 | b.M30, a.M31 | b.M31, a.M32 | b.M32, a.M33 | b.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator |(M44l a, long s)
+        {
+            return new M44l(
+                a.M00 | s, a.M01 | s, a.M02 | s, a.M03 | s, 
+                a.M10 | s, a.M11 | s, a.M12 | s, a.M13 | s, 
+                a.M20 | s, a.M21 | s, a.M22 | s, a.M23 | s, 
+                a.M30 | s, a.M31 | s, a.M32 | s, a.M33 | s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator |(long s, M44l a)
+        {
+            return new M44l(
+                s | a.M00, s | a.M01, s | a.M02, s | a.M03, 
+                s | a.M10, s | a.M11, s | a.M12, s | a.M13, 
+                s | a.M20, s | a.M21, s | a.M22, s | a.M23, 
+                s | a.M30, s | a.M31, s | a.M32, s | a.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator ^(M44l a, M44l b)
+        {
+            return new M44l(
+                a.M00 ^ b.M00, a.M01 ^ b.M01, a.M02 ^ b.M02, a.M03 ^ b.M03, 
+                a.M10 ^ b.M10, a.M11 ^ b.M11, a.M12 ^ b.M12, a.M13 ^ b.M13, 
+                a.M20 ^ b.M20, a.M21 ^ b.M21, a.M22 ^ b.M22, a.M23 ^ b.M23, 
+                a.M30 ^ b.M30, a.M31 ^ b.M31, a.M32 ^ b.M32, a.M33 ^ b.M33);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator ^(M44l a, long s)
+        {
+            return new M44l(
+                a.M00 ^ s, a.M01 ^ s, a.M02 ^ s, a.M03 ^ s, 
+                a.M10 ^ s, a.M11 ^ s, a.M12 ^ s, a.M13 ^ s, 
+                a.M20 ^ s, a.M21 ^ s, a.M22 ^ s, a.M23 ^ s, 
+                a.M30 ^ s, a.M31 ^ s, a.M32 ^ s, a.M33 ^ s);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static M44l operator ^(long s, M44l a)
+        {
+            return new M44l(
+                s ^ a.M00, s ^ a.M01, s ^ a.M02, s ^ a.M03, 
+                s ^ a.M10, s ^ a.M11, s ^ a.M12, s ^ a.M13, 
+                s ^ a.M20, s ^ a.M21, s ^ a.M22, s ^ a.M23, 
+                s ^ a.M30, s ^ a.M31, s ^ a.M32, s ^ a.M33);
         }
 
         #endregion
