@@ -69,5 +69,17 @@ namespace Aardvark.Tests
             Assert.AreEqual(1 ^ v, new V2l(1   ^ v.X, 1   ^ v.Y));
             Assert.AreEqual(v ^ v, new V2l(v.X ^ v.X, v.Y ^ v.Y));
         }
+
+        [Test]
+        public void Vector_SwizzleSetters()
+        {
+            var v = new V4l(1, 2, 3, 4);
+
+            v.WX = new V2l(7, 8);
+            Assert.AreEqual(v, new V4l(8, 2, 3, 7));
+
+            v.WYX = new V3l(3, 5, 2);
+            Assert.AreEqual(v, new V4l(2, 5, 3, 3));
+        }
     }
 }

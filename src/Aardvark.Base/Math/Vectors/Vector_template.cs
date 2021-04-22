@@ -1561,9 +1561,19 @@ namespace Aardvark.Base
         //#             }
         //#         }
         //#         else {
+        //#             if (xi == yi || xi < 3 || yi < 3) { // readonly if the same or constants
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __v2type__ __name__ { get { return new __v2type__(__x__, __y__); } }
+        public __v2type__ __name__ => new __v2type__(__x__, __y__);
+        //#             } else {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public __v2type__ __name__
+        {
+            get => new __v2type__(__x__, __y__);
+            set { __x__ = value.X; __y__ = value.Y; }
+        }
+        //#             }
         //#         }
         //#     }
         //# }
@@ -1580,9 +1590,19 @@ namespace Aardvark.Base
         //#                 }
         //#             }
         //#             else {
+        //#                 if (xi == yi || xi == zi || yi == zi || xi < 3 || yi < 3 || zi < 3) { // readonly if the same or constants
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __v3type__ __name__ { get { return new __v3type__(__x__, __y__, __z__); } }
+        public __v3type__ __name__ => new __v3type__(__x__, __y__, __z__);
+        //#                 } else {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public __v3type__ __name__
+        {
+            get => new __v3type__(__x__, __y__, __z__);
+            set { __x__ = value.X; __y__ = value.Y; __z__ = value.Z; }
+        }
+        //#                 }
         //#             }
         //#         }
         //#     }
@@ -1602,9 +1622,21 @@ namespace Aardvark.Base
         //#                         }
         //#                     }
         //#                     else {
+        //#                         if (xi == yi || xi == zi || xi == wi ||
+        //#                             yi == zi || yi == wi || zi == wi ||
+        //#                             xi < 3 || yi < 3 || zi < 3 || wi < 3) { // readonly if the same or constants
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __v4type__ __name__ { get { return new __v4type__(__x__, __y__, __z__, __w__); } }
+        public __v4type__ __name__ => new __v4type__(__x__, __y__, __z__, __w__);
+        //#                         } else {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public __v4type__ __name__
+        {
+            get => new __v4type__(__x__, __y__, __z__, __w__);
+            set { __x__ = value.X; __y__ = value.Y; __z__ = value.Z; __w__ = value.W; }
+        }
+        //#                         }
         //#                     }
         //#                 }
         //#             }
