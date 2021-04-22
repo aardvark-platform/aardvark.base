@@ -30,14 +30,12 @@ namespace Aardvark.Base
     //#     var trot = "Rot" + dd;
     //#     var tscale = "Scale" + dd;
     //#     var plane = planeArray[d];
-    //#     var tpolygon = "Polygon" + dd;
     //#     var tplane = "Plane" + dd;
     //#     var tline = "Line" + dd;
     //#     var tbox = "Box" + dd;
     //#     var thull = "Hull" + dd;
     //#     var ttriangle = "Triangle" + dd;
     //#     var tquad = "Quad" + dd;
-    //#     var tidxpoly = "IndexPolygon" + dd;
     //#
     //# for (int pc = 1; pc < 5; pc++) {
     //#     var pcsub1 = pc - 1;
@@ -48,11 +46,11 @@ namespace Aardvark.Base
     //#
     //# foreach (var isIndexed in new[] { false, true }) {
     //#     if (isIndexed && !isPoly) continue;
-    //#     var tipolygon = isIndexed ? tidxpoly : tpolygon;
+    //#     var indextype = isIndexed ? "Index" + type : type;
     //#
     //# if (isPoly) {
     //# if (!isIndexed) {
-    #region __tpolygon__
+    #region __type__
 
     /// <summary>
     /// A polygon internally represented by an array of points. Implemented
@@ -61,7 +59,7 @@ namespace Aardvark.Base
     /// points, and bigger than 2 for a polygon to be geometrically valid.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __tpolygon__ : IEquatable<__tpolygon__>, IValidity, IPolygon<__tvec__>, IBounding__tbox__
+    public partial struct __type__ : IEquatable<__type__>, IValidity, IPolygon<__tvec__>, IBounding__tbox__
     {
         internal int m_pointCount;
         internal __tvec__[] m_pointArray;
@@ -71,7 +69,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a polygon from given points.
         /// </summary>
-        public __tpolygon__(__tvec__[] pointArray, int pointCount)
+        public __type__(__tvec__[] pointArray, int pointCount)
         {
             if (pointArray != null)
             {
@@ -94,7 +92,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a polygon from given points.
         /// </summary>
-        public __tpolygon__(params __tvec__[] pointArray)
+        public __type__(params __tvec__[] pointArray)
         {
             m_pointCount = pointArray != null ? pointArray.Length : 0;
             m_pointArray = pointArray;
@@ -103,7 +101,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a polygon from given points.
         /// </summary>
-        public __tpolygon__(__tvec__[] pointArray, int startIndex, int count)
+        public __type__(__tvec__[] pointArray, int startIndex, int count)
         {
             if (startIndex < 0 || startIndex >= pointArray.Length - 1) throw new ArgumentException();
             if (count <= 0 || startIndex + count >= pointArray.Length) throw new ArgumentException();
@@ -115,14 +113,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a polygon from point count and point creator function.
         /// </summary>
-        public __tpolygon__(int pointCount, Func<int, __tvec__> index_pointCreator)
+        public __type__(int pointCount, Func<int, __tvec__> index_pointCreator)
             : this(new __tvec__[pointCount].SetByIndex(index_pointCreator))
         { }
 
         /// <summary>
         /// Creates a polygon from a sequence of points.
         /// </summary>
-        public __tpolygon__(IEnumerable<__tvec__> points)
+        public __type__(IEnumerable<__tvec__> points)
             : this(points.ToArray())
         { }
         
@@ -130,21 +128,21 @@ namespace Aardvark.Base
         /// Creates a polygon from the points of a pointArray that
         /// are selected by an index array.
         /// </summary>
-        public __tpolygon__(int[] indexArray, __tvec__[] pointArray)
+        public __type__(int[] indexArray, __tvec__[] pointArray)
             : this(indexArray.Map(i => pointArray[i]))
         { }
 
         /// <summary>
         /// Creates a polygon from a triangle.
         /// </summary>
-        public __tpolygon__(__ttriangle__ triangle)
+        public __type__(__ttriangle__ triangle)
             : this(triangle.GetPointArray())
         { }
 
         /// <summary>
         /// Creates a polygon from a quad.
         /// </summary>
-        public __tpolygon__(__tquad__ quad)
+        public __type__(__tquad__ quad)
             : this(quad.GetPointArray())
         { }
 
@@ -152,7 +150,7 @@ namespace Aardvark.Base
         /// Copy constructor.
         /// Performs deep copy of original.
         /// </summary>
-        public __tpolygon__(__tpolygon__ original)
+        public __type__(__type__ original)
             : this(original.GetPointArray())
         { }
 
@@ -160,7 +158,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __tpolygon__ Invalid = new __tpolygon__(null, 0);
+        public static readonly __type__ Invalid = new __type__(null, 0);
 
         public bool IsValid => m_pointArray != null;
 
@@ -358,33 +356,33 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns copy of polygon. Same as Map(p => p).
         /// </summary>
-        public __tpolygon__ Copy()
+        public __type__ Copy()
         {
-            return new __tpolygon__(m_pointArray.Copy());
+            return new __type__(m_pointArray.Copy());
         }
 
         /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
-        public __tpolygon__ Map(Func<__tvec__, __tvec__> point_fun)
+        public __type__ Map(Func<__tvec__, __tvec__> point_fun)
         {
             var pc = m_pointCount;
             __tvec__[] opa = m_pointArray, npa = new __tvec__[pc];
             for (int pi = 0; pi < pc; pi++) npa[pi] = point_fun(opa[pi]);
-            return new __tpolygon__(npa, pc);
+            return new __type__(npa, pc);
         }
 
         /// <summary>
         /// Gets copy with reversed order of vertices. 
         /// </summary>
-        public __tpolygon__ Reversed
+        public __type__ Reversed
         {
             get
             {
                 var pc = m_pointCount;
                 __tvec__[] opa = m_pointArray, npa = new __tvec__[pc];
                 for (int pi = 0, pj = pc - 1; pi < pc; pi++, pj--) npa[pi] = opa[pj];
-                return new __tpolygon__(npa, pc);
+                return new __type__(npa, pc);
             }
         }
 
@@ -403,7 +401,7 @@ namespace Aardvark.Base
         #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(__tpolygon__ a, __tpolygon__ b)
+        public static bool operator ==(__type__ a, __type__ b)
         {
             if (a.m_pointCount != b.m_pointCount) return false;
             for (int pi = 0; pi < a.m_pointCount; pi++)
@@ -412,7 +410,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(__tpolygon__ a, __tpolygon__ b)
+        public static bool operator !=(__type__ a, __type__ b)
             => !(a == b);
 
         #endregion
@@ -425,7 +423,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__tpolygon__ other)
+        public bool Equals(__type__ other)
         {
             if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
@@ -434,7 +432,7 @@ namespace Aardvark.Base
         }
 
         public override bool Equals(object other)
-            => (other is __tpolygon__ o) ? Equals(o) : false;
+            => (other is __type__ o) ? Equals(o) : false;
 
         public override string ToString()
         {
@@ -443,10 +441,10 @@ namespace Aardvark.Base
                 );
         }
 
-        public static __tpolygon__ Parse(string s)
+        public static __type__ Parse(string s)
         {
             var va = s.NestedBracketSplitLevelOne().ToArray();
-            return new __tpolygon__(va.Select(x => __tvec__.Parse(x)));
+            return new __type__(va.Select(x => __tvec__.Parse(x)));
         }
 
         #endregion
@@ -467,10 +465,10 @@ namespace Aardvark.Base
     public static partial class Fun
     {
         /// <summary>
-        /// Returns whether the given <see cref="__tpolygon__"/> are equal within the given tolerance.
+        /// Returns whether the given <see cref="__type__"/> are equal within the given tolerance.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ApproximateEquals(this __tpolygon__ a, __tpolygon__ b, double tolerance)
+        public static bool ApproximateEquals(this __type__ a, __type__ b, double tolerance)
         {
             if (a.m_pointCount != b.m_pointCount) return false;
             for (int pi = 0; pi < a.m_pointCount; pi++)
@@ -479,11 +477,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns whether the given <see cref="__tpolygon__"/> are equal within
+        /// Returns whether the given <see cref="__type__"/> are equal within
         /// Constant&lt;double&gt;.PositiveTinyValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool ApproximateEquals(this __tpolygon__ a, __tpolygon__ b)
+        public static bool ApproximateEquals(this __type__ a, __type__ b)
             => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
     }
 
@@ -491,10 +489,10 @@ namespace Aardvark.Base
 
     //# } // !isIndexed
     //# if (isIndexed) {
-    #region __tidxpoly__
+    #region __indextype__
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __tidxpoly__ : IValidity, IPolygon<__tvec__>
+    public partial struct __indextype__ : IValidity, IPolygon<__tvec__>
     {
         private int m_pointCount;
         private int m_firstIndex;
@@ -503,7 +501,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
-        public __tidxpoly__(int[] indexArray, int firstIndex, int pointCount, __tvec__[] pointArray)
+        public __indextype__(int[] indexArray, int firstIndex, int pointCount, __tvec__[] pointArray)
         {
             m_indexArray = indexArray;
             m_firstIndex = firstIndex;
@@ -511,11 +509,11 @@ namespace Aardvark.Base
             m_pointArray = pointArray;
         }
 
-        public __tidxpoly__(__tvec__[] pointArray, int firstIndex, int pointCount)
+        public __indextype__(__tvec__[] pointArray, int firstIndex, int pointCount)
             : this(new int[pointCount].SetByIndex(i => firstIndex + i), 0, pointCount, pointArray)
         { }
 
-        public __tidxpoly__(__tvec__[] pointArray)
+        public __indextype__(__tvec__[] pointArray)
             : this(new int[pointArray.Length].SetByIndex(i => i), 0, pointArray.Length, pointArray)
         { }
 
@@ -523,7 +521,7 @@ namespace Aardvark.Base
 
         #region Constants
 
-        public static readonly __tidxpoly__ Invalid = new __tidxpoly__(null, 0, 0, null);
+        public static readonly __indextype__ Invalid = new __indextype__(null, 0, 0, null);
 
         #endregion
 
@@ -628,16 +626,16 @@ namespace Aardvark.Base
     #endregion
 
     //# } // isIndexed
-    #region __tipolygon__Extensions
+    #region __indextype__Extensions
 
-    public static partial class __tipolygon__Extensions
+    public static partial class __indextype__Extensions
     {
         //# if (isIndexed) {
         #region Conversions
 
-        public static __tpolygon__ To__tpolygon__(this __tipolygon__ polygon)
+        public static __type__ To__type__(this __indextype__ polygon)
         {
-            return new __tpolygon__(polygon.GetPointArray());
+            return new __type__(polygon.GetPointArray());
         }
 
         #endregion
@@ -648,7 +646,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The vertex centroid is the average of the vertex coordinates.
         /// </summary>
-        public static __tvec__ ComputeVertexCentroid(this __tipolygon__ polygon)
+        public static __tvec__ ComputeVertexCentroid(this __indextype__ polygon)
         {
             var sum = __tvec__.Zero;
             int pc = polygon.PointCount;
@@ -657,7 +655,7 @@ namespace Aardvark.Base
             return sum * scale;
         }
 
-        public static double ComputePerimeter(this __tipolygon__ polygon)
+        public static double ComputePerimeter(this __indextype__ polygon)
         {
             var pc = polygon.PointCount;
             var p0 = polygon[pc - 1];
@@ -679,76 +677,76 @@ namespace Aardvark.Base
         //# var scales = new string [] { "double", tvec };
         //# foreach (string tscalefactor in scales) {
         /// <summary>
-        /// Scales the <see cref="__tpolygon__"/> by the given factor.
+        /// Scales the <see cref="__type__"/> by the given factor.
         /// </summary>
-        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this __tpolygon__ polygon, __tscalefactor__ scale)
+        public static void Scale(this __type__ polygon, __tscalefactor__ scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] *= scale;
         }
 
         /// <summary>
-        /// Returns a copy of the <see cref="__tpolygon__"/> scaled by the given factor.
+        /// Returns a copy of the <see cref="__type__"/> scaled by the given factor.
         /// </summary>
-        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tscalefactor__ scale)
+        public static __type__ Scaled(this __type__ polygon, __tscalefactor__ scale)
         {
-            var result = new __tpolygon__(polygon);
+            var result = new __type__(polygon);
             result.Scale(scale);
             return result;
         }
 
         /// <summary>
-        /// Scales the <see cref="__tpolygon__"/> by the given factor about the given center.
+        /// Scales the <see cref="__type__"/> by the given factor about the given center.
         /// </summary>
-        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this __tpolygon__ polygon, __tvec__ center, __tscalefactor__ scale)
+        public static void Scale(this __type__ polygon, __tvec__ center, __tscalefactor__ scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
         }
 
         /// <summary>
-        /// Returns a copy of the <see cref="__tpolygon__"/> scaled by the given factor about the given center.
+        /// Returns a copy of the <see cref="__type__"/> scaled by the given factor about the given center.
         /// </summary>
-        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tvec__ center, __tscalefactor__ scale)
+        public static __type__ Scaled(this __type__ polygon, __tvec__ center, __tscalefactor__ scale)
         {
-            var result = new __tpolygon__(polygon);
+            var result = new __type__(polygon);
             result.Scale(center, scale);
             return result;
         }
 
         /// <summary>
-        /// Scales the <see cref="__tpolygon__"/> by the given factor about the centroid.
+        /// Scales the <see cref="__type__"/> by the given factor about the centroid.
         /// </summary>
-        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutVertexCentroid(this __tpolygon__ polygon, __tscalefactor__ scale)
+        public static void ScaleAboutVertexCentroid(this __type__ polygon, __tscalefactor__ scale)
         {
             var center = polygon.ComputeVertexCentroid();
             polygon.Scale(center, scale);
         }
 
         /// <summary>
-        /// Returns a copy of the <see cref="__tpolygon__"/> scaled by the given factor about the centroid.
+        /// Returns a copy of the <see cref="__type__"/> scaled by the given factor about the centroid.
         /// </summary>
-        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __tpolygon__ ScaledAboutVertexCentroid(this __tpolygon__ polygon, __tscalefactor__ scale)
+        public static __type__ ScaledAboutVertexCentroid(this __type__ polygon, __tscalefactor__ scale)
         {
-            var result = new __tpolygon__(polygon);
+            var result = new __type__(polygon);
             result.ScaleAboutVertexCentroid(scale);
             return result;
         }
@@ -761,57 +759,57 @@ namespace Aardvark.Base
         //#     var transform = (i < 4) ? "TransformPos" : "Transform";
         //#     var hasInv = (i != 0 && i != 3 && i != 7);
         /// <summary>
-        /// Transforms the <see cref="__tpolygon__"/> by the given <see cref="__ttrafo__"/> transformation.
+        /// Transforms the <see cref="__type__"/> by the given <see cref="__ttrafo__"/> transformation.
         /// </summary>
-        /// <param name="polygon">The <see cref="__tpolygon__"/> to transform.</param>
+        /// <param name="polygon">The <see cref="__type__"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this __tpolygon__ polygon, __ttrafo__ t)
+        public static void Transform(this __type__ polygon, __ttrafo__ t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.__transform__(polygon.m_pointArray[pi]);
         }
 
         /// <summary>
-        /// Returns a copy of the <see cref="__tpolygon__"/> transformed by the given <see cref="__ttrafo__"/> transformation.
+        /// Returns a copy of the <see cref="__type__"/> transformed by the given <see cref="__ttrafo__"/> transformation.
         /// </summary>
-        /// <param name="polygon">The __tpolygon__ to transform.</param>
+        /// <param name="polygon">The __type__ to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __ttrafo__ t)
+        public static __type__ Transformed(this __type__ polygon, __ttrafo__ t)
         {
-            var result = new __tpolygon__(polygon);
+            var result = new __type__(polygon);
             result.Transform(t);
             return result;
         }
 
         //# if (hasInv) {
         /// <summary>
-        /// Transforms the <see cref="__tpolygon__"/> by the inverse of the given <see cref="__ttrafo__"/> transformation.
+        /// Transforms the <see cref="__type__"/> by the inverse of the given <see cref="__ttrafo__"/> transformation.
         /// </summary>
-        /// <param name="polygon">The <see cref="__tpolygon__"/> to transform.</param>
+        /// <param name="polygon">The <see cref="__type__"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this __tpolygon__ polygon, __ttrafo__ t)
+        public static void InvTransform(this __type__ polygon, __ttrafo__ t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Inv__transform__(polygon.m_pointArray[pi]);
         }
 
         /// <summary>
-        /// Returns a copy of the <see cref="__tpolygon__"/> transformed by the inverse of the given <see cref="__ttrafo__"/> transformation.
+        /// Returns a copy of the <see cref="__type__"/> transformed by the inverse of the given <see cref="__ttrafo__"/> transformation.
         /// </summary>
-        /// <param name="polygon">The __tpolygon__ to transform.</param>
+        /// <param name="polygon">The __type__ to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __tpolygon__ InvTransformed(this __tpolygon__ polygon, __ttrafo__ t)
+        public static __type__ InvTransformed(this __type__ polygon, __ttrafo__ t)
         {
-            var result = new __tpolygon__(polygon);
+            var result = new __type__(polygon);
             result.InvTransform(t);
             return result;
         }
 
         //# }
         //# }
-        public static __tpolygon__ WithoutMultiplePoints(this __tpolygon__ polygon, double eps = 1e-8)
+        public static __type__ WithoutMultiplePoints(this __type__ polygon, double eps = 1e-8)
         {
             eps *= eps;
             var opc = polygon.PointCount;
@@ -823,7 +821,7 @@ namespace Aardvark.Base
                     pa[++pc] = polygon[pi];
             if (Vec.DistanceSquared(pa[pc], polygon[0]) > eps)
                 ++pc;
-            return new __tpolygon__(pa, pc);
+            return new __type__(pa, pc);
         }
 
         #endregion
@@ -835,8 +833,8 @@ namespace Aardvark.Base
         /// work with all non-selfintersecting polygons. Returns all parts of 
         /// the polygon that are at the positive side of the __plane__.
         /// </summary>
-        public static __tpolygon__ ConvexClipped(
-                this __tpolygon__ polygon, __tplane__ __plane__, double eps = 1e-8)
+        public static __type__ ConvexClipped(
+                this __type__ polygon, __tplane__ __plane__, double eps = 1e-8)
         {
             var opc = polygon.PointCount;
             __tvec__[] pa = new __tvec__[opc + 1];
@@ -854,7 +852,7 @@ namespace Aardvark.Base
                 p0 = p1; h0 = h1; h0p = h1p; h0n = h1n;
             }
             if (h0p && hfn || h0n && hfp) pa[pc++] = p0 + (pf - p0) * (h0 / (h0 - hf));
-            return new __tpolygon__(pa, pc);
+            return new __type__(pa, pc);
         }
 
         /// <summary>
@@ -862,8 +860,8 @@ namespace Aardvark.Base
         /// as __tplane__s), i.e. all parts of the polygon that are at the positive 
         /// side of the __plane__s.
         /// </summary>
-        public static __tpolygon__ ConvexClipped(
-                this __tpolygon__ polygon, __tplane__[] __plane__s, double eps = 1e-8)
+        public static __type__ ConvexClipped(
+                this __type__ polygon, __tplane__[] __plane__s, double eps = 1e-8)
         {
             foreach (var c in __plane__s)
             {
@@ -877,8 +875,8 @@ namespace Aardvark.Base
         /// Returns the polygon clipped by the hull, i.e. all parts of the
         /// polygon that are at the positive side of the hull __plane__s.
         /// </summary>
-        public static __tpolygon__ ConvexClipped(
-                this __tpolygon__ polygon, __thull__ hull, double eps = 1e-8)
+        public static __type__ ConvexClipped(
+                this __type__ polygon, __thull__ hull, double eps = 1e-8)
         {
             return polygon.ConvexClipped(hull.PlaneArray, eps);
         }
@@ -886,8 +884,8 @@ namespace Aardvark.Base
         /// <summary>
         /// TODO summary.
         /// </summary>
-        public static __tpolygon__ ConvexClipped(
-                this __tpolygon__ polygon, __tbox__ box, double eps = 1e-8)
+        public static __type__ ConvexClipped(
+                this __type__ polygon, __tbox__ box, double eps = 1e-8)
         {
             var __plane__s = new[]
             {
