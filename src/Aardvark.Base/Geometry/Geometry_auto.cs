@@ -632,7 +632,6 @@ namespace Aardvark.Base
             return result;
         }
 
-
         /// <summary>
         /// Transforms the <see cref="Polygon2d"/> by the given <see cref="M33d"/> transformation.
         /// </summary>
@@ -1381,6 +1380,489 @@ namespace Aardvark.Base
 
     public static partial class Line2dExtensions
     {
+        #region Geometric Transformations
+
+        /// <summary>
+        /// Scales the <see cref="Line2d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Line2d polygon, double scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Scaled(this Line2d polygon, double scale)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line2d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Line2d polygon, V2d center, double scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Scaled(this Line2d polygon, V2d center, double scale)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line2d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Line2d polygon, double scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d ScaledAboutCentroid(this Line2d polygon, double scale)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line2d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Line2d polygon, V2d scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Scaled(this Line2d polygon, V2d scale)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line2d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Line2d polygon, V2d center, V2d scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Scaled(this Line2d polygon, V2d center, V2d scale)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line2d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Line2d polygon, V2d scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d ScaledAboutCentroid(this Line2d polygon, V2d scale)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line2d polygon, M33d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Transformed(this Line2d polygon, M33d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line2d polygon, Euclidean2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Transformed(this Line2d polygon, Euclidean2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the inverse of the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line2d polygon, Euclidean2d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the inverse of the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d InvTransformed(this Line2d polygon, Euclidean2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line2d polygon, Similarity2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Transformed(this Line2d polygon, Similarity2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the inverse of the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line2d polygon, Similarity2d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the inverse of the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d InvTransformed(this Line2d polygon, Similarity2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the given <see cref="Affine2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line2d polygon, Affine2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the given <see cref="Affine2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Transformed(this Line2d polygon, Affine2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line2d polygon, Shift2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Transformed(this Line2d polygon, Shift2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the inverse of the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line2d polygon, Shift2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the inverse of the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d InvTransformed(this Line2d polygon, Shift2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line2d polygon, Rot2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Transformed(this Line2d polygon, Rot2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the inverse of the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line2d polygon, Rot2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the inverse of the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d InvTransformed(this Line2d polygon, Rot2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line2d polygon, Scale2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Transformed(this Line2d polygon, Scale2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the inverse of the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line2d polygon, Scale2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the inverse of the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d InvTransformed(this Line2d polygon, Scale2d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line2d"/> by the given <see cref="M22d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line2d polygon, M22d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line2d"/> transformed by the given <see cref="M22d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line2d Transformed(this Line2d polygon, M22d t)
+        {
+            var result = new Line2d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        #endregion
+
         public static V2d[] GetPointArray(this Line2d line)
         {
             var pa = new V2d[2];
@@ -1660,6 +2142,506 @@ namespace Aardvark.Base
 
     public static partial class Triangle2dExtensions
     {
+        #region Geometric Transformations
+
+        /// <summary>
+        /// Scales the <see cref="Triangle2d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Triangle2d polygon, double scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+            polygon.P2 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Scaled(this Triangle2d polygon, double scale)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle2d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Triangle2d polygon, V2d center, double scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+            polygon.P2 = center + (polygon.P2 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Scaled(this Triangle2d polygon, V2d center, double scale)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle2d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Triangle2d polygon, double scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d ScaledAboutCentroid(this Triangle2d polygon, double scale)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle2d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Triangle2d polygon, V2d scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+            polygon.P2 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Scaled(this Triangle2d polygon, V2d scale)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle2d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Triangle2d polygon, V2d center, V2d scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+            polygon.P2 = center + (polygon.P2 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Scaled(this Triangle2d polygon, V2d center, V2d scale)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle2d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Triangle2d polygon, V2d scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d ScaledAboutCentroid(this Triangle2d polygon, V2d scale)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle2d polygon, M33d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Transformed(this Triangle2d polygon, M33d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle2d polygon, Euclidean2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Transformed(this Triangle2d polygon, Euclidean2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the inverse of the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle2d polygon, Euclidean2d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+            polygon.P2 = t.InvTransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the inverse of the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d InvTransformed(this Triangle2d polygon, Euclidean2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle2d polygon, Similarity2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Transformed(this Triangle2d polygon, Similarity2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the inverse of the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle2d polygon, Similarity2d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+            polygon.P2 = t.InvTransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the inverse of the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d InvTransformed(this Triangle2d polygon, Similarity2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the given <see cref="Affine2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle2d polygon, Affine2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the given <see cref="Affine2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Transformed(this Triangle2d polygon, Affine2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle2d polygon, Shift2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Transformed(this Triangle2d polygon, Shift2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the inverse of the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle2d polygon, Shift2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the inverse of the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d InvTransformed(this Triangle2d polygon, Shift2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle2d polygon, Rot2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Transformed(this Triangle2d polygon, Rot2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the inverse of the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle2d polygon, Rot2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the inverse of the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d InvTransformed(this Triangle2d polygon, Rot2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle2d polygon, Scale2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Transformed(this Triangle2d polygon, Scale2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the inverse of the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle2d polygon, Scale2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the inverse of the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d InvTransformed(this Triangle2d polygon, Scale2d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle2d"/> by the given <see cref="M22d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle2d polygon, M22d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle2d"/> transformed by the given <see cref="M22d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle2d Transformed(this Triangle2d polygon, M22d t)
+        {
+            var result = new Triangle2d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        #endregion
+
         public static V2d[] GetPointArray(this Triangle2d triangle)
         {
             var pa = new V2d[3];
@@ -1969,6 +2951,523 @@ namespace Aardvark.Base
 
     public static partial class Quad2dExtensions
     {
+        #region Geometric Transformations
+
+        /// <summary>
+        /// Scales the <see cref="Quad2d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Quad2d polygon, double scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+            polygon.P2 *= scale;
+            polygon.P3 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Scaled(this Quad2d polygon, double scale)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad2d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Quad2d polygon, V2d center, double scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+            polygon.P2 = center + (polygon.P2 - center) * scale;
+            polygon.P3 = center + (polygon.P3 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Scaled(this Quad2d polygon, V2d center, double scale)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad2d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Quad2d polygon, double scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d ScaledAboutCentroid(this Quad2d polygon, double scale)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad2d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Quad2d polygon, V2d scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+            polygon.P2 *= scale;
+            polygon.P3 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Scaled(this Quad2d polygon, V2d scale)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad2d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Quad2d polygon, V2d center, V2d scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+            polygon.P2 = center + (polygon.P2 - center) * scale;
+            polygon.P3 = center + (polygon.P3 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Scaled(this Quad2d polygon, V2d center, V2d scale)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad2d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Quad2d polygon, V2d scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d ScaledAboutCentroid(this Quad2d polygon, V2d scale)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad2d polygon, M33d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+            polygon.P3 = t.TransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Transformed(this Quad2d polygon, M33d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad2d polygon, Euclidean2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+            polygon.P3 = t.TransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Transformed(this Quad2d polygon, Euclidean2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the inverse of the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad2d polygon, Euclidean2d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+            polygon.P2 = t.InvTransformPos(polygon.P2);
+            polygon.P3 = t.InvTransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the inverse of the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d InvTransformed(this Quad2d polygon, Euclidean2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad2d polygon, Similarity2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+            polygon.P3 = t.TransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Transformed(this Quad2d polygon, Similarity2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the inverse of the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad2d polygon, Similarity2d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+            polygon.P2 = t.InvTransformPos(polygon.P2);
+            polygon.P3 = t.InvTransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the inverse of the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d InvTransformed(this Quad2d polygon, Similarity2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the given <see cref="Affine2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad2d polygon, Affine2d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+            polygon.P3 = t.TransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the given <see cref="Affine2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Transformed(this Quad2d polygon, Affine2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad2d polygon, Shift2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+            polygon.P3 = t.Transform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Transformed(this Quad2d polygon, Shift2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the inverse of the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad2d polygon, Shift2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+            polygon.P3 = t.InvTransform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the inverse of the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d InvTransformed(this Quad2d polygon, Shift2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad2d polygon, Rot2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+            polygon.P3 = t.Transform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Transformed(this Quad2d polygon, Rot2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the inverse of the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad2d polygon, Rot2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+            polygon.P3 = t.InvTransform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the inverse of the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d InvTransformed(this Quad2d polygon, Rot2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad2d polygon, Scale2d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+            polygon.P3 = t.Transform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Transformed(this Quad2d polygon, Scale2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the inverse of the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad2d polygon, Scale2d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+            polygon.P3 = t.InvTransform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the inverse of the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d InvTransformed(this Quad2d polygon, Scale2d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad2d"/> by the given <see cref="M22d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad2d polygon, M22d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+            polygon.P3 = t.Transform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad2d"/> transformed by the given <see cref="M22d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad2d Transformed(this Quad2d polygon, M22d t)
+        {
+            var result = new Quad2d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        #endregion
+
         public static V2d[] GetPointArray(this Quad2d quad)
         {
             var pa = new V2d[4];
@@ -2609,7 +4108,6 @@ namespace Aardvark.Base
             result.ScaleAboutVertexCentroid(scale);
             return result;
         }
-
 
         /// <summary>
         /// Transforms the <see cref="Polygon3d"/> by the given <see cref="M44d"/> transformation.
@@ -3360,6 +4858,489 @@ namespace Aardvark.Base
 
     public static partial class Line3dExtensions
     {
+        #region Geometric Transformations
+
+        /// <summary>
+        /// Scales the <see cref="Line3d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Line3d polygon, double scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Scaled(this Line3d polygon, double scale)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line3d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Line3d polygon, V3d center, double scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Scaled(this Line3d polygon, V3d center, double scale)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line3d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Line3d polygon, double scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d ScaledAboutCentroid(this Line3d polygon, double scale)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line3d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Line3d polygon, V3d scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Scaled(this Line3d polygon, V3d scale)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line3d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Line3d polygon, V3d center, V3d scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Scaled(this Line3d polygon, V3d center, V3d scale)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Line3d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Line3d polygon, V3d scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d ScaledAboutCentroid(this Line3d polygon, V3d scale)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the given <see cref="M44d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line3d polygon, M44d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the given <see cref="M44d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Transformed(this Line3d polygon, M44d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line3d polygon, Euclidean3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Transformed(this Line3d polygon, Euclidean3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line3d polygon, Euclidean3d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d InvTransformed(this Line3d polygon, Euclidean3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line3d polygon, Similarity3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Transformed(this Line3d polygon, Similarity3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line3d polygon, Similarity3d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d InvTransformed(this Line3d polygon, Similarity3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line3d polygon, Affine3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Transformed(this Line3d polygon, Affine3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line3d polygon, Shift3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Transformed(this Line3d polygon, Shift3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line3d polygon, Shift3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d InvTransformed(this Line3d polygon, Shift3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line3d polygon, Rot3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Transformed(this Line3d polygon, Rot3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line3d polygon, Rot3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d InvTransformed(this Line3d polygon, Rot3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line3d polygon, Scale3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Transformed(this Line3d polygon, Scale3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Line3d polygon, Scale3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d InvTransformed(this Line3d polygon, Scale3d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Line3d"/> by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Line3d polygon, M33d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Line3d"/> transformed by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Line3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Line3d Transformed(this Line3d polygon, M33d t)
+        {
+            var result = new Line3d(polygon.P0, polygon.P1);
+            result.Transform(t);
+            return result;
+        }
+
+        #endregion
+
         public static V3d[] GetPointArray(this Line3d line)
         {
             var pa = new V3d[2];
@@ -3639,6 +5620,506 @@ namespace Aardvark.Base
 
     public static partial class Triangle3dExtensions
     {
+        #region Geometric Transformations
+
+        /// <summary>
+        /// Scales the <see cref="Triangle3d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Triangle3d polygon, double scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+            polygon.P2 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Scaled(this Triangle3d polygon, double scale)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle3d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Triangle3d polygon, V3d center, double scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+            polygon.P2 = center + (polygon.P2 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Scaled(this Triangle3d polygon, V3d center, double scale)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle3d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Triangle3d polygon, double scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d ScaledAboutCentroid(this Triangle3d polygon, double scale)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle3d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Triangle3d polygon, V3d scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+            polygon.P2 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Scaled(this Triangle3d polygon, V3d scale)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle3d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Triangle3d polygon, V3d center, V3d scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+            polygon.P2 = center + (polygon.P2 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Scaled(this Triangle3d polygon, V3d center, V3d scale)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Triangle3d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Triangle3d polygon, V3d scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d ScaledAboutCentroid(this Triangle3d polygon, V3d scale)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the given <see cref="M44d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle3d polygon, M44d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the given <see cref="M44d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Transformed(this Triangle3d polygon, M44d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle3d polygon, Euclidean3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Transformed(this Triangle3d polygon, Euclidean3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle3d polygon, Euclidean3d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+            polygon.P2 = t.InvTransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d InvTransformed(this Triangle3d polygon, Euclidean3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle3d polygon, Similarity3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Transformed(this Triangle3d polygon, Similarity3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle3d polygon, Similarity3d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+            polygon.P2 = t.InvTransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d InvTransformed(this Triangle3d polygon, Similarity3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle3d polygon, Affine3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Transformed(this Triangle3d polygon, Affine3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle3d polygon, Shift3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Transformed(this Triangle3d polygon, Shift3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle3d polygon, Shift3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d InvTransformed(this Triangle3d polygon, Shift3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle3d polygon, Rot3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Transformed(this Triangle3d polygon, Rot3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle3d polygon, Rot3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d InvTransformed(this Triangle3d polygon, Rot3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle3d polygon, Scale3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Transformed(this Triangle3d polygon, Scale3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Triangle3d polygon, Scale3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d InvTransformed(this Triangle3d polygon, Scale3d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Triangle3d"/> by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Triangle3d polygon, M33d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Triangle3d"/> transformed by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Triangle3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Triangle3d Transformed(this Triangle3d polygon, M33d t)
+        {
+            var result = new Triangle3d(polygon.P0, polygon.P1, polygon.P2);
+            result.Transform(t);
+            return result;
+        }
+
+        #endregion
+
         public static V3d[] GetPointArray(this Triangle3d triangle)
         {
             var pa = new V3d[3];
@@ -3948,6 +6429,523 @@ namespace Aardvark.Base
 
     public static partial class Quad3dExtensions
     {
+        #region Geometric Transformations
+
+        /// <summary>
+        /// Scales the <see cref="Quad3d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Quad3d polygon, double scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+            polygon.P2 *= scale;
+            polygon.P3 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Scaled(this Quad3d polygon, double scale)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad3d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Quad3d polygon, V3d center, double scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+            polygon.P2 = center + (polygon.P2 - center) * scale;
+            polygon.P3 = center + (polygon.P3 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Scaled(this Quad3d polygon, V3d center, double scale)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad3d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Quad3d polygon, double scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d ScaledAboutCentroid(this Quad3d polygon, double scale)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad3d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Quad3d polygon, V3d scale)
+        {
+            polygon.P0 *= scale;
+            polygon.P1 *= scale;
+            polygon.P2 *= scale;
+            polygon.P3 *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Scaled(this Quad3d polygon, V3d scale)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad3d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this Quad3d polygon, V3d center, V3d scale)
+        {
+            polygon.P0 = center + (polygon.P0 - center) * scale;
+            polygon.P1 = center + (polygon.P1 - center) * scale;
+            polygon.P2 = center + (polygon.P2 - center) * scale;
+            polygon.P3 = center + (polygon.P3 - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Scaled(this Quad3d polygon, V3d center, V3d scale)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="Quad3d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this Quad3d polygon, V3d scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d ScaledAboutCentroid(this Quad3d polygon, V3d scale)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the given <see cref="M44d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad3d polygon, M44d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+            polygon.P3 = t.TransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the given <see cref="M44d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Transformed(this Quad3d polygon, M44d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad3d polygon, Euclidean3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+            polygon.P3 = t.TransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Transformed(this Quad3d polygon, Euclidean3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad3d polygon, Euclidean3d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+            polygon.P2 = t.InvTransformPos(polygon.P2);
+            polygon.P3 = t.InvTransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d InvTransformed(this Quad3d polygon, Euclidean3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad3d polygon, Similarity3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+            polygon.P3 = t.TransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Transformed(this Quad3d polygon, Similarity3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad3d polygon, Similarity3d t)
+        {
+            polygon.P0 = t.InvTransformPos(polygon.P0);
+            polygon.P1 = t.InvTransformPos(polygon.P1);
+            polygon.P2 = t.InvTransformPos(polygon.P2);
+            polygon.P3 = t.InvTransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d InvTransformed(this Quad3d polygon, Similarity3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad3d polygon, Affine3d t)
+        {
+            polygon.P0 = t.TransformPos(polygon.P0);
+            polygon.P1 = t.TransformPos(polygon.P1);
+            polygon.P2 = t.TransformPos(polygon.P2);
+            polygon.P3 = t.TransformPos(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Transformed(this Quad3d polygon, Affine3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad3d polygon, Shift3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+            polygon.P3 = t.Transform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Transformed(this Quad3d polygon, Shift3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad3d polygon, Shift3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+            polygon.P3 = t.InvTransform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d InvTransformed(this Quad3d polygon, Shift3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad3d polygon, Rot3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+            polygon.P3 = t.Transform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Transformed(this Quad3d polygon, Rot3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad3d polygon, Rot3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+            polygon.P3 = t.InvTransform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d InvTransformed(this Quad3d polygon, Rot3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad3d polygon, Scale3d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+            polygon.P3 = t.Transform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Transformed(this Quad3d polygon, Scale3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this Quad3d polygon, Scale3d t)
+        {
+            polygon.P0 = t.InvTransform(polygon.P0);
+            polygon.P1 = t.InvTransform(polygon.P1);
+            polygon.P2 = t.InvTransform(polygon.P2);
+            polygon.P3 = t.InvTransform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d InvTransformed(this Quad3d polygon, Scale3d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Quad3d"/> by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this Quad3d polygon, M33d t)
+        {
+            polygon.P0 = t.Transform(polygon.P0);
+            polygon.P1 = t.Transform(polygon.P1);
+            polygon.P2 = t.Transform(polygon.P2);
+            polygon.P3 = t.Transform(polygon.P3);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Quad3d"/> transformed by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Quad3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Quad3d Transformed(this Quad3d polygon, M33d t)
+        {
+            var result = new Quad3d(polygon.P0, polygon.P1, polygon.P2, polygon.P3);
+            result.Transform(t);
+            return result;
+        }
+
+        #endregion
+
         public static V3d[] GetPointArray(this Quad3d quad)
         {
             var pa = new V3d[4];

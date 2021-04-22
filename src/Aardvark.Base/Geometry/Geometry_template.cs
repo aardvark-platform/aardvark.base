@@ -10,6 +10,7 @@ namespace Aardvark.Base
     // AUTO GENERATED CODE - DO NOT CHANGE!
 
     //# Func<string, Action> Sep = s => () => Out(s);
+    //# Action comma = () => Out(", ");
     //# { // POLYGONS
     //# var planeArray = new[] { "", "", "line", "plane" };
     //# var typeArray = new[] { "", "Polygon", "Line", "Triangle", "Quad" };
@@ -752,7 +753,6 @@ namespace Aardvark.Base
         }
 
         //# }
-
         //# var transforms = new string [] { tmat1, teucl, tsimi, taffi, tshif, trot, tscale, tmat };
         //# for (int i = 0; i < transforms.Length; i++) {
         //#     var ttrafo = transforms[i];
@@ -1165,6 +1165,152 @@ namespace Aardvark.Base
 
     public static partial class __type__Extensions
     {
+        #region Geometric Transformations
+
+        //# var scales = new string [] { "double", tvec };
+        //# foreach (string tscalefactor in scales) {
+        /// <summary>
+        /// Scales the <see cref="__type__"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this __type__ polygon, __tscalefactor__ scale)
+        {
+            //# pc.ForEach(i => {
+            polygon.P__i__ *= scale;
+            //# });
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="__type__"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Scaled(this __type__ polygon, __tscalefactor__ scale)
+        {
+            var result = new __type__(/*# pc.ForEach(i => {*/polygon.P__i__/*#}, comma);*/);
+            result.Scale(scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="__type__"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Scale(this __type__ polygon, __tvec__ center, __tscalefactor__ scale)
+        {
+            //# pc.ForEach(i => {
+            polygon.P__i__ = center + (polygon.P__i__ - center) * scale;
+            //# });
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="__type__"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Scaled(this __type__ polygon, __tvec__ center, __tscalefactor__ scale)
+        {
+            var result = new __type__(/*# pc.ForEach(i => {*/polygon.P__i__/*#}, comma);*/);
+            result.Scale(center, scale);
+            return result;
+        }
+
+        /// <summary>
+        /// Scales the <see cref="__type__"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutCentroid(this __type__ polygon, __tscalefactor__ scale)
+        {
+            var center = polygon.ComputeCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="__type__"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ ScaledAboutCentroid(this __type__ polygon, __tscalefactor__ scale)
+        {
+            var result = new __type__(/*# pc.ForEach(i => {*/polygon.P__i__/*#}, comma);*/);
+            result.ScaleAboutCentroid(scale);
+            return result;
+        }
+
+        //# }
+        //# var transforms = new string [] { tmat1, teucl, tsimi, taffi, tshif, trot, tscale, tmat };
+        //# for (int j = 0; j < transforms.Length; j++) {
+        //#     var ttrafo = transforms[j];
+        //#     var transform = (j < 4) ? "TransformPos" : "Transform";
+        //#     var hasInv = (j != 0 && j != 3 && j != 7);
+        /// <summary>
+        /// Transforms the <see cref="__type__"/> by the given <see cref="__ttrafo__"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__type__"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Transform(this __type__ polygon, __ttrafo__ t)
+        {
+            //# pc.ForEach(i => {
+            polygon.P__i__ = t.__transform__(polygon.P__i__);
+            //# });
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="__type__"/> transformed by the given <see cref="__ttrafo__"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The __type__ to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Transformed(this __type__ polygon, __ttrafo__ t)
+        {
+            var result = new __type__(/*# pc.ForEach(i => {*/polygon.P__i__/*#}, comma);*/);
+            result.Transform(t);
+            return result;
+        }
+
+        //# if (hasInv) {
+        /// <summary>
+        /// Transforms the <see cref="__type__"/> by the inverse of the given <see cref="__ttrafo__"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__type__"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void InvTransform(this __type__ polygon, __ttrafo__ t)
+        {
+            //# pc.ForEach(i => {
+            polygon.P__i__ = t.Inv__transform__(polygon.P__i__);
+            //# });
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="__type__"/> transformed by the inverse of the given <see cref="__ttrafo__"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The __type__ to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ InvTransformed(this __type__ polygon, __ttrafo__ t)
+        {
+            var result = new __type__(/*# pc.ForEach(i => {*/polygon.P__i__/*#}, comma);*/);
+            result.InvTransform(t);
+            return result;
+        }
+
+        //# }
+        //# }
+        #endregion
+
         public static __tvec__[] GetPointArray(this __type__ __name__)
         {
             var pa = new __tvec__[__pc__];
