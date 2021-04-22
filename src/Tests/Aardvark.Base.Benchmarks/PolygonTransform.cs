@@ -67,5 +67,18 @@ namespace Aardvark.Base.Benchmarks
         {
             return polyArray.Transformed(new Shift2d(offset));
         }
+
+        [Benchmark]
+        public Polygon2d InvTransformShift_Indirect()
+        {
+            var trafo = new Shift2d(offset);
+            return polyArray.Transformed(trafo.Inverse);
+        }
+
+        [Benchmark]
+        public Polygon2d InvTransformShift_Direct()
+        {
+            return polyArray.InvTransformed(new Shift2d(offset));
+        }
     }
 }

@@ -28,6 +28,7 @@ namespace Aardvark.Base
     //#     var taffi = "Affine" + dd;
     //#     var tshif = "Shift" + dd;
     //#     var trot = "Rot" + dd;
+    //#     var tscale = "Scale" + dd;
     //#     var plane = planeArray[d];
     //#     var tpolygon = "Polygon" + dd;
     //#     var tplane = "Plane" + dd;
@@ -675,104 +676,141 @@ namespace Aardvark.Base
 
         #region Geometric Transformations
 
-        public static __tpolygon__ Scaled(this __tpolygon__ polygon, double scale)
+        //# var scales = new string [] { "double", tvec };
+        //# foreach (string tscalefactor in scales) {
+        /// <summary>
+        /// Scales the <see cref="__tpolygon__"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this __tpolygon__ polygon, __tscalefactor__ scale)
         {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
-            return new __tpolygon__(npa, pc);
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] *= scale;
         }
 
-        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tvec__ center, double scale)
+        /// <summary>
+        /// Returns a copy of the <see cref="__tpolygon__"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tscalefactor__ scale)
         {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
-            return new __tpolygon__(npa, pc);
+            var result = new __tpolygon__(polygon);
+            result.Scale(scale);
+            return result;
         }
 
-        public static __tpolygon__ ScaledAboutVertexCentroid(this __tpolygon__ polygon, double scale)
+        /// <summary>
+        /// Scales the <see cref="__tpolygon__"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this __tpolygon__ polygon, __tvec__ center, __tscalefactor__ scale)
         {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
         }
 
-        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tvec__ scale)
+        /// <summary>
+        /// Returns a copy of the <see cref="__tpolygon__"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tvec__ center, __tscalefactor__ scale)
         {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
-            return new __tpolygon__(npa, pc);
+            var result = new __tpolygon__(polygon);
+            result.Scale(center, scale);
+            return result;
         }
 
-        public static __tpolygon__ Scaled(this __tpolygon__ polygon, __tvec__ center, __tvec__ scale)
+        /// <summary>
+        /// Scales the <see cref="__tpolygon__"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutVertexCentroid(this __tpolygon__ polygon, __tscalefactor__ scale)
         {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
-            return new __tpolygon__(npa, pc);
+            var center = polygon.ComputeVertexCentroid();
+            polygon.Scale(center, scale);
         }
 
-        public static __tpolygon__ ScaledAboutVertexCentroid(this __tpolygon__ polygon, __tvec__ scale)
+        /// <summary>
+        /// Returns a copy of the <see cref="__tpolygon__"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__tpolygon__"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __tpolygon__ ScaledAboutVertexCentroid(this __tpolygon__ polygon, __tscalefactor__ scale)
         {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+            var result = new __tpolygon__(polygon);
+            result.ScaleAboutVertexCentroid(scale);
+            return result;
         }
 
-        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __tmat__ m)
+        //# }
+
+        //# var transforms = new string [] { tmat1, teucl, tsimi, taffi, tshif, trot, tscale, tmat };
+        //# for (int i = 0; i < transforms.Length; i++) {
+        //#     var ttrafo = transforms[i];
+        //#     var transform = (i < 4) ? "TransformPos" : "Transform";
+        //#     var hasInv = (i != 0 && i != 3 && i != 7);
+        /// <summary>
+        /// Transforms the <see cref="__tpolygon__"/> by the given <see cref="__ttrafo__"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__tpolygon__"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this __tpolygon__ polygon, __ttrafo__ t)
         {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = m.Transform(opa[pi]);
-            return new __tpolygon__(npa, pc);
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.__transform__(polygon.m_pointArray[pi]);
         }
 
-        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __tmat1__ m)
+        /// <summary>
+        /// Returns a copy of the <see cref="__tpolygon__"/> transformed by the given <see cref="__ttrafo__"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The __tpolygon__ to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __ttrafo__ t)
         {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = m.TransformPos(opa[pi]);
-            return new __tpolygon__(npa, pc);
+            var result = new __tpolygon__(polygon);
+            result.Transform(t);
+            return result;
         }
 
-        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __teucl__ t)
+        //# if (hasInv) {
+        /// <summary>
+        /// Transforms the <see cref="__tpolygon__"/> by the inverse of the given <see cref="__ttrafo__"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="__tpolygon__"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this __tpolygon__ polygon, __ttrafo__ t)
         {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new __tpolygon__(npa, pc);
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Inv__transform__(polygon.m_pointArray[pi]);
         }
 
-        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __tsimi__ t)
+        /// <summary>
+        /// Returns a copy of the <see cref="__tpolygon__"/> transformed by the inverse of the given <see cref="__ttrafo__"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The __tpolygon__ to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __tpolygon__ InvTransformed(this __tpolygon__ polygon, __ttrafo__ t)
         {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new __tpolygon__(npa, pc);
+            var result = new __tpolygon__(polygon);
+            result.InvTransform(t);
+            return result;
         }
 
-        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __taffi__ t)
-        {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new __tpolygon__(npa, pc);
-        }
-
-        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __tshif__ t)
-        {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
-            return new __tpolygon__(npa, pc);
-        }
-
-        public static __tpolygon__ Transformed(this __tpolygon__ polygon, __trot__ t)
-        {
-            var pc = polygon.m_pointCount;
-            __tvec__[] opa = polygon.m_pointArray, npa = new __tvec__[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
-            return new __tpolygon__(npa, pc);
-        }
-
+        //# }
+        //# }
         public static __tpolygon__ WithoutMultiplePoints(this __tpolygon__ polygon, double eps = 1e-8)
         {
             eps *= eps;

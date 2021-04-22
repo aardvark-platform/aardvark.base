@@ -482,102 +482,467 @@ namespace Aardvark.Base
 
         #region Geometric Transformations
 
+        /// <summary>
+        /// Scales the <see cref="Polygon2d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this Polygon2d polygon, double scale)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Scaled(this Polygon2d polygon, double scale)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Scale(scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon2d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this Polygon2d polygon, V2d center, double scale)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Scaled(this Polygon2d polygon, V2d center, double scale)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Scale(center, scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon2d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutVertexCentroid(this Polygon2d polygon, double scale)
+        {
+            var center = polygon.ComputeVertexCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d ScaledAboutVertexCentroid(this Polygon2d polygon, double scale)
         {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+            var result = new Polygon2d(polygon);
+            result.ScaleAboutVertexCentroid(scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon2d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this Polygon2d polygon, V2d scale)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Scaled(this Polygon2d polygon, V2d scale)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Scale(scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon2d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this Polygon2d polygon, V2d center, V2d scale)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Scaled(this Polygon2d polygon, V2d center, V2d scale)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Scale(center, scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon2d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutVertexCentroid(this Polygon2d polygon, V2d scale)
+        {
+            var center = polygon.ComputeVertexCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d ScaledAboutVertexCentroid(this Polygon2d polygon, V2d scale)
         {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+            var result = new Polygon2d(polygon);
+            result.ScaleAboutVertexCentroid(scale);
+            return result;
         }
 
-        public static Polygon2d Transformed(this Polygon2d polygon, M22d m)
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon2d polygon, M33d t)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = m.Transform(opa[pi]);
-            return new Polygon2d(npa, pc);
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
         }
 
-        public static Polygon2d Transformed(this Polygon2d polygon, M33d m)
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon2d Transformed(this Polygon2d polygon, M33d t)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = m.TransformPos(opa[pi]);
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon2d polygon, Euclidean2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Transformed(this Polygon2d polygon, Euclidean2d t)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the inverse of the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon2d polygon, Euclidean2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the inverse of the given <see cref="Euclidean2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon2d InvTransformed(this Polygon2d polygon, Euclidean2d t)
+        {
+            var result = new Polygon2d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon2d polygon, Similarity2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Transformed(this Polygon2d polygon, Similarity2d t)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the inverse of the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon2d polygon, Similarity2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the inverse of the given <see cref="Similarity2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon2d InvTransformed(this Polygon2d polygon, Similarity2d t)
+        {
+            var result = new Polygon2d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the given <see cref="Affine2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon2d polygon, Affine2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the given <see cref="Affine2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Transformed(this Polygon2d polygon, Affine2d t)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon2d polygon, Shift2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Transformed(this Polygon2d polygon, Shift2d t)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the inverse of the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon2d polygon, Shift2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the inverse of the given <see cref="Shift2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon2d InvTransformed(this Polygon2d polygon, Shift2d t)
+        {
+            var result = new Polygon2d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon2d polygon, Rot2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon2d Transformed(this Polygon2d polygon, Rot2d t)
         {
-            var pc = polygon.m_pointCount;
-            V2d[] opa = polygon.m_pointArray, npa = new V2d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
-            return new Polygon2d(npa, pc);
+            var result = new Polygon2d(polygon);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the inverse of the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon2d polygon, Rot2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the inverse of the given <see cref="Rot2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon2d InvTransformed(this Polygon2d polygon, Rot2d t)
+        {
+            var result = new Polygon2d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon2d polygon, Scale2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon2d Transformed(this Polygon2d polygon, Scale2d t)
+        {
+            var result = new Polygon2d(polygon);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the inverse of the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon2d polygon, Scale2d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the inverse of the given <see cref="Scale2d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon2d InvTransformed(this Polygon2d polygon, Scale2d t)
+        {
+            var result = new Polygon2d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon2d"/> by the given <see cref="M22d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon2d polygon, M22d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon2d"/> transformed by the given <see cref="M22d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon2d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon2d Transformed(this Polygon2d polygon, M22d t)
+        {
+            var result = new Polygon2d(polygon);
+            result.Transform(t);
+            return result;
         }
 
         public static Polygon2d WithoutMultiplePoints(this Polygon2d polygon, double eps = 1e-8)
@@ -2095,102 +2460,467 @@ namespace Aardvark.Base
 
         #region Geometric Transformations
 
+        /// <summary>
+        /// Scales the <see cref="Polygon3d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this Polygon3d polygon, double scale)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Scaled(this Polygon3d polygon, double scale)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Scale(scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon3d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this Polygon3d polygon, V3d center, double scale)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Scaled(this Polygon3d polygon, V3d center, double scale)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Scale(center, scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon3d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutVertexCentroid(this Polygon3d polygon, double scale)
+        {
+            var center = polygon.ComputeVertexCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d ScaledAboutVertexCentroid(this Polygon3d polygon, double scale)
         {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+            var result = new Polygon3d(polygon);
+            result.ScaleAboutVertexCentroid(scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon3d"/> by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this Polygon3d polygon, V3d scale)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] *= scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> scaled by the given factor.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Scaled(this Polygon3d polygon, V3d scale)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = opa[pi] * scale;
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Scale(scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon3d"/> by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        public static void Scale(this Polygon3d polygon, V3d center, V3d scale)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> scaled by the given factor about the given center.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="center">The scaling center.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Scaled(this Polygon3d polygon, V3d center, V3d scale)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = center + (opa[pi] - center) * scale;
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Scale(center, scale);
+            return result;
         }
 
+        /// <summary>
+        /// Scales the <see cref="Polygon3d"/> by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ScaleAboutVertexCentroid(this Polygon3d polygon, V3d scale)
+        {
+            var center = polygon.ComputeVertexCentroid();
+            polygon.Scale(center, scale);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> scaled by the given factor about the centroid.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
+        /// <param name="scale">The scale factor.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d ScaledAboutVertexCentroid(this Polygon3d polygon, V3d scale)
         {
-            return polygon.Scaled(polygon.ComputeVertexCentroid(), scale);
+            var result = new Polygon3d(polygon);
+            result.ScaleAboutVertexCentroid(scale);
+            return result;
         }
 
-        public static Polygon3d Transformed(this Polygon3d polygon, M33d m)
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the given <see cref="M44d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon3d polygon, M44d t)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = m.Transform(opa[pi]);
-            return new Polygon3d(npa, pc);
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
         }
 
-        public static Polygon3d Transformed(this Polygon3d polygon, M44d m)
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the given <see cref="M44d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon3d Transformed(this Polygon3d polygon, M44d t)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = m.TransformPos(opa[pi]);
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon3d polygon, Euclidean3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Transformed(this Polygon3d polygon, Euclidean3d t)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon3d polygon, Euclidean3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon3d InvTransformed(this Polygon3d polygon, Euclidean3d t)
+        {
+            var result = new Polygon3d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon3d polygon, Similarity3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Transformed(this Polygon3d polygon, Similarity3d t)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon3d polygon, Similarity3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon3d InvTransformed(this Polygon3d polygon, Similarity3d t)
+        {
+            var result = new Polygon3d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon3d polygon, Affine3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Transformed(this Polygon3d polygon, Affine3d t)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.TransformPos(opa[pi]);
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon3d polygon, Shift3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Transformed(this Polygon3d polygon, Shift3d t)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Transform(t);
+            return result;
         }
 
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon3d polygon, Shift3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon3d InvTransformed(this Polygon3d polygon, Shift3d t)
+        {
+            var result = new Polygon3d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon3d polygon, Rot3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Polygon3d Transformed(this Polygon3d polygon, Rot3d t)
         {
-            var pc = polygon.m_pointCount;
-            V3d[] opa = polygon.m_pointArray, npa = new V3d[pc];
-            for (int pi = 0; pi < pc; pi++) npa[pi] = t.Transform(opa[pi]);
-            return new Polygon3d(npa, pc);
+            var result = new Polygon3d(polygon);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon3d polygon, Rot3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon3d InvTransformed(this Polygon3d polygon, Rot3d t)
+        {
+            var result = new Polygon3d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon3d polygon, Scale3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon3d Transformed(this Polygon3d polygon, Scale3d t)
+        {
+            var result = new Polygon3d(polygon);
+            result.Transform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void InvTransform(this Polygon3d polygon, Scale3d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon3d InvTransformed(this Polygon3d polygon, Scale3d t)
+        {
+            var result = new Polygon3d(polygon);
+            result.InvTransform(t);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the <see cref="Polygon3d"/> by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        public static void Transform(this Polygon3d polygon, M33d t)
+        {
+            for (int pi = 0; pi < polygon.m_pointCount; pi++)
+                polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
+        }
+
+        /// <summary>
+        /// Returns a copy of the <see cref="Polygon3d"/> transformed by the given <see cref="M33d"/> transformation.
+        /// </summary>
+        /// <param name="polygon">The Polygon3d to transform.</param>
+        /// <param name="t">The transformation to apply.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Polygon3d Transformed(this Polygon3d polygon, M33d t)
+        {
+            var result = new Polygon3d(polygon);
+            result.Transform(t);
+            return result;
         }
 
         public static Polygon3d WithoutMultiplePoints(this Polygon3d polygon, double eps = 1e-8)
