@@ -6,7 +6,6 @@ Expecto.VisualStudio.TestAdapter
 FSharp.Core
 FsUnit
 NUnit
-System.Reactive
 FsPickler
 Aardvark.Base.TypeProviders
 NUnit3TestAdapter

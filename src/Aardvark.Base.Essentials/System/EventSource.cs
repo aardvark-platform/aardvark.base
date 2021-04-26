@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 
 namespace Aardvark.Base
@@ -153,7 +150,7 @@ namespace Aardvark.Base
         public EventSource(IObservable<T> fromObservable)
         {
             EventSourceTelemetry.CountConstructorFromObservable.Increment();
-            fromObservable.Subscribe(x => Emit(x));
+            fromObservable.Subscribe(new LambdaObserver<T>(x => Emit(x)));
         }
 
         /// <summary>
@@ -164,7 +161,7 @@ namespace Aardvark.Base
             m_latest = initialValue;
             EventSourceTelemetry.CountConstructorInitialValue.Increment();
             EventSourceTelemetry.CountConstructorFromObservable.Increment();
-            fromObservable.Subscribe(x => Emit(x));
+            fromObservable.Subscribe(new LambdaObserver<T>(x => Emit(x)));
         }
 
         /// <summary>
@@ -278,7 +275,7 @@ namespace Aardvark.Base
         /// </summary>
         IObservable<Unit> IEvent.Values
         {
-            get { return Values.Select(_ => Unit.Default); }
+            get { return new MapObservable<T, Unit>(Values, _ => Unit.Default); }
         }
 
         IAwaitable IEvent.Next

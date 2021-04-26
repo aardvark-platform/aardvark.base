@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Reactive;
-using System.Reactive.Linq;
 
 namespace Aardvark.Base
 {
@@ -83,7 +81,7 @@ namespace Aardvark.Base
         /// </summary>
         public IObservable<T> Values
         {
-            get { return Observable.Never<T>(); }
+            get { return new NeverObservable<T>(); }
         }
 
         IAwaitable IEvent.Next
@@ -93,7 +91,7 @@ namespace Aardvark.Base
 
         IObservable<Unit> IEvent.Values
         {
-            get { return Observable.Never<Unit>(); }
+            get { return new NeverObservable<Unit>(); }
         }
     }
 }

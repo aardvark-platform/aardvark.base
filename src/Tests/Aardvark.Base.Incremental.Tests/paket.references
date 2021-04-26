@@ -3,7 +3,6 @@ FsCheck
 FsCheck.NUnit
 FSharp.Core
 NUnit
-System.Reactive
 FsPickler
 Aardvark.Base.TypeProviders
 NUnit3TestAdapter

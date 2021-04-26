@@ -1,6 +1,6 @@
 FSharp.Core
-System.Reactive
 FsPickler
 Aardvark.Base.TypeProviders
 FSharp.Data.Adaptive
 CSharp.Data.Adaptive
+System.Reactive

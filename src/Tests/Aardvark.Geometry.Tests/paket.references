@@ -5,7 +5,6 @@ DevILSharp
 Unofficial.LibTessDotNet
 FsUnit
 NUnit
-System.Reactive
 FsPickler
 NUnit3TestAdapter
 Microsoft.NET.Test.Sdk

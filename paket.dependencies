@@ -7,7 +7,6 @@ nuget Microsoft.NETFramework.ReferenceAssemblies >= 1.0.0 lowest_matching: true
 nuget Aardvark.Base.TypeProviders  ~> 4.5.15
 nuget System.Collections.Immutable >= 1.7.0 lowest_matching: true
 
-nuget System.Reactive              >= 4.3.1 lowest_matching: true
 nuget System.Dynamic.Runtime       ~> 4.3.0
 nuget DevILSharp                   ~> 0.2.9
 nuget SixLabors.ImageSharp         ~> 1.0.2
@@ -18,6 +17,7 @@ nuget FSharp.Data.Adaptive         ~> 1.2.0
 nuget CSharp.Data.Adaptive         ~> 1.2.0
 nuget Unofficial.LibTessDotNet     ~> 2.0.2
 
+nuget System.Reactive        
 nuget NUnit                        ~> 3.12.0
 nuget FsUnit                       
 nuget FsCheck                      
