@@ -111,7 +111,7 @@ module internal BvhNode3d =
                     right.[ri] <- arr.[bestPerm.[i]]
                     i <- i + 1
 
-                Some (bestCost, bestlBox, HashMap.OfArrayV left, bestrBox, HashMap.OfArrayV right)
+                Some (bestCost, bestlBox, HashMap.ofArrayV left, bestrBox, HashMap.ofArrayV right)
             else    
                 None
 
@@ -206,7 +206,7 @@ module internal BvhNode3d =
                 // add left
                 if lCost > 2.0 * bestCost then
                     toSeq node 
-                    |> HashMap.OfSeqV 
+                    |> HashMap.ofSeqV 
                     |> HashMap.add key (struct(bounds, value))
                     |> build limit nb
                 else
@@ -219,7 +219,7 @@ module internal BvhNode3d =
             else
                 if rCost > 2.0 * bestCost then  
                     toSeq node 
-                    |> HashMap.OfSeqV 
+                    |> HashMap.ofSeqV 
                     |> HashMap.add key (struct(bounds, value))
                     |> build limit nb
                 else
@@ -261,7 +261,7 @@ module internal BvhNode3d =
                         let o = Box.Union(lb, rb)
                         let cnt = lc + rc
                         if cnt <= limit then
-                            let values = Seq.append (toSeq l) (toSeq r) |> HashMap.OfSeqV
+                            let values = Seq.append (toSeq l) (toSeq r) |> HashMap.ofSeqV
                             Some (v, Some (Leaf(0, o, values)))
                         else
                             let cost = cost (1.0 / o.Volume) lb lc rb rc
@@ -280,7 +280,7 @@ module internal BvhNode3d =
                             let o = Box.Union(lb, rb)
                             let cnt = lc + rc
                             if cnt <= limit then
-                                let values = Seq.append (toSeq l) (toSeq r) |> HashMap.OfSeqV
+                                let values = Seq.append (toSeq l) (toSeq r) |> HashMap.ofSeqV
                                 Some (v, Some (Leaf(0, o, values)))
                             else
                                 let cost = cost (1.0 / o.Volume) lb lc rb rc
@@ -526,7 +526,7 @@ module internal BvhNode2d =
                     right.[ri] <- arr.[bestPerm.[i]]
                     i <- i + 1
 
-                Some (bestCost, bestlBox, HashMap.OfArrayV left, bestrBox, HashMap.OfArrayV right)
+                Some (bestCost, bestlBox, HashMap.ofArrayV left, bestrBox, HashMap.ofArrayV right)
             else    
                 None
 
@@ -624,7 +624,7 @@ module internal BvhNode2d =
                 // add left
                 if lCost > 2.0 * bestCost then
                     toSeq node 
-                    |> HashMap.OfSeqV 
+                    |> HashMap.ofSeqV 
                     |> HashMap.add key (struct(bounds, value))
                     |> build limit nb
                 else
@@ -637,7 +637,7 @@ module internal BvhNode2d =
             else
                 if rCost > 2.0 * bestCost then  
                     toSeq node 
-                    |> HashMap.OfSeqV 
+                    |> HashMap.ofSeqV 
                     |> HashMap.add key (struct(bounds, value))
                     |> build limit nb
                 else
@@ -679,7 +679,7 @@ module internal BvhNode2d =
                         let o = Box.Union(lb, rb)
                         let cnt = lc + rc
                         if cnt <= limit then
-                            let values = Seq.append (toSeq l) (toSeq r) |> HashMap.OfSeqV
+                            let values = Seq.append (toSeq l) (toSeq r) |> HashMap.ofSeqV
                             Some (v, Some (Leaf(0, o, values)))
                         else
                             let cost = cost (1.0 / o.Area) lb lc rb rc
@@ -698,7 +698,7 @@ module internal BvhNode2d =
                             let o = Box.Union(lb, rb)
                             let cnt = lc + rc
                             if cnt <= limit then
-                                let values = Seq.append (toSeq l) (toSeq r) |> HashMap.OfSeqV
+                                let values = Seq.append (toSeq l) (toSeq r) |> HashMap.ofSeqV
                                 Some (v, Some (Leaf(0, o, values)))
                             else
                                 let cost = cost (1.0 / o.Area) lb lc rb rc
