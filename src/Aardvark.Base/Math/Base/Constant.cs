@@ -82,7 +82,7 @@ namespace Aardvark.Base
             {
                 ParseableMinValue = (T)(object)sbyte.MinValue;
                 ParseableMaxValue = (T)(object)sbyte.MaxValue;
-                MachineEpsilon = (T)(object)1;
+                MachineEpsilon = (T)(object)(sbyte)1;
                 PositiveTinyValue = (T)(object)(sbyte)4;
                 NegativeTinyValue = (T)(object)(sbyte)-4;
             }
@@ -90,7 +90,7 @@ namespace Aardvark.Base
             {
                 ParseableMinValue = (T)(object)short.MinValue;
                 ParseableMaxValue = (T)(object)short.MaxValue;
-                MachineEpsilon = (T)(object)1;
+                MachineEpsilon = (T)(object)(short)1;
                 PositiveTinyValue = (T)(object)(short)4;
                 NegativeTinyValue = (T)(object)(short)-4;
             }
