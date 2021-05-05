@@ -123,6 +123,13 @@ namespace Aardvark.Base
 
         public static Assembly CurrentEntryAssembly => CustomEntryAssembly ?? Assembly.GetEntryAssembly();
 
+
+        /// <summary>
+        /// Whether plugin loading should be enabled
+        /// </summary>
+        public static bool PluginsEnabled = true;
+
+
         public static string CurrentEntryPath => (CurrentEntryAssembly != null)
             ? Path.GetDirectoryName(CurrentEntryAssembly.Location)
             : null
@@ -154,7 +161,10 @@ namespace Aardvark.Base
                 }
             );
 
-        private static bool DefaultAssemblyFilter(string name)
+        /// <summary>
+        /// Given an assembly name, should it be considered as plugin/native resource etc. This one by default excludes portions of clr base library
+        /// </summary>
+        public static bool DefaultAssemblyFilter(string name)
         {
             return !(s_defaultAssemblyBlacklist.Contains(name) ||
                      name.StartsWith("System.") ||
@@ -202,10 +212,24 @@ namespace Aardvark.Base
         /// </summary>
         public static Func<string, bool> CustomAssemblyFilter { get; set; } = (_) => true;
 
-        internal static bool AssemblyFilter(string name)
+        /// <summary>
+        /// Filters assemblies according to DefaultAssemblyFilter
+        /// </summary>
+        public static bool AssemblyFilter(string name)
         {
             return (IgnoreDefaultAssemblyFilter || DefaultAssemblyFilter(name)) && CustomAssemblyFilter(name);
         }
+
+        /// <summary>
+        /// can be set from application code to disable native unpacking for specific assemblies. Per default, we use the same filter as for EnumerateAssemblies.
+        /// It is absolute crucial to prevent exceptions within this code because of mscorlib resource bug detection
+        /// </summary>
+        public static Func<Assembly, bool> UnpackNativeLibrariesFilter =
+                a =>
+                {
+                    if (a.FullName == null) return false;
+                    else return AssemblyFilter(a.FullName);
+                };
     }
 
     public static class Introspection
@@ -1758,22 +1782,47 @@ namespace Aardvark.Base
                 Kernel32.SetErrorMode(1); // set error mode to SEM_FAILCRITICALERRORS 0x0001: do not display cirital error message boxes
 #endif
 
+            Action<Assembly> loadNativeDependencies = e =>
+                {
+                    try
+                    {
+                        // https://github.com/aardvark-platform/aardvark.base/issues/61
+                        var shouldLoad = IntrospectionProperties.UnpackNativeLibrariesFilter(e);
+                        if (shouldLoad)
+                        {
+                            Report.Begin(4, "trying to load native dependencies for {0}", e.FullName);
+                            LoadNativeDependencies(e);
+                            Report.End(4);
+                        }
+                        else
+                        {
+                            Report.Line(4, "skipped LoadNativeDependencies for {0}", e.FullName);
+                        }
+                    } catch(Exception ex) // actually catching exns here might not even be possible due to mscorlib recursive resource bug detection
+                    {
+                        Report.Warn("Could not load native dependencies for {0}:{1}", e.FullName, ex.StackTrace.ToString());
+                    }
+                };
+
             AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
             {
-                LoadNativeDependencies(e.LoadedAssembly);
+                loadNativeDependencies(e.LoadedAssembly);
             };
 
             foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
             {
-                LoadNativeDependencies(a);
+                loadNativeDependencies(a);
             }
 
-            Report.BeginTimed("Loading plugins");
-            var pluginsList = LoadPlugins();
+            if (IntrospectionProperties.PluginsEnabled)
+            {
+                Report.BeginTimed("Loading plugins");
+                var pluginsList = LoadPlugins();
 
-            Report.End();
-            LoadAll(pluginsList);
-            Report.End();
+                Report.End();
+                LoadAll(pluginsList);
+                Report.End();
+            }
         }
 
         private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
