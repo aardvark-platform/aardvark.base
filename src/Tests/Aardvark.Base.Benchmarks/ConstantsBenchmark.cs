@@ -17,6 +17,7 @@ namespace Aardvark.Base.Benchmarks
 
         public ConstantsBenchmark()
         {
+            Aardvark.Init();
             var rnd = new RandomSystem(1);
             rays = new Ray3d[100000].SetByIndex(i => new Ray3d(rnd.UniformV3d() * 2 - 1, rnd.UniformV3dDirection()));
         }

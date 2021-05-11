@@ -143,6 +143,24 @@ namespace Aardvark.Base
         }
     }
 
+    static class Constants
+    {
+        [OnAardvarkInit]
+        public static void Init()
+        {
+            var ignore1 = Constant<double>.MachineEpsilon;
+            var ignore2 = Constant<float>.MachineEpsilon;
+            var ignore3 = Constant<byte>.MachineEpsilon;
+            var ignore4 = Constant<sbyte>.MachineEpsilon;
+            var ignore5 = Constant<short>.MachineEpsilon;
+            var ignore6 = Constant<ushort>.MachineEpsilon;
+            var ignore7 = Constant<uint>.MachineEpsilon;
+            var ignore8 = Constant<int>.MachineEpsilon;
+            var ignore9 = Constant<long>.MachineEpsilon;
+            var ignore0 = Constant<ulong>.MachineEpsilon;
+        }
+    }
+
     /// <summary>
     /// Mathematical constants.
     /// </summary>
