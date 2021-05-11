@@ -83,7 +83,7 @@ namespace Aardvark.Base.Benchmarks
             //new Enumerators().Test();
 
             //BenchmarkRunner.Run<RayHitTest>();
-            BenchmarkRunner.Run<PolygonTransform>();
+            BenchmarkRunner.Run<ConstantsBenchmark>();
         }
     }
 }
