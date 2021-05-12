@@ -1,3 +1,7 @@
+### 5.1.10
+ - fixed mscorlib recursive resource lookup (#61)
+ - added Constant<T> initialization (#59)
+
 ### 5.1.9
 - removed System.Reactive depdendency
 - raised FSharp.Core version to >= 4.7.0
