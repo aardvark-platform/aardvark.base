@@ -66,11 +66,18 @@ type IAssemblerStream =
     abstract member Load : target : Register * source : Register * wide : bool -> unit
     abstract member Store : target : Register * source : Register * wide : bool -> unit
 
+    abstract member Set : target : Register * value : nativeint -> unit
+    abstract member Set : target : Register * value : int -> unit
+    abstract member Set : target : Register * value : float32 -> unit
+
     abstract member NewLabel : unit -> AssemblerLabel
     abstract member Mark : AssemblerLabel -> unit
     abstract member Cmp : location : nativeint * value : int32 -> unit
     abstract member Jump : JumpCondition * AssemblerLabel -> unit
     abstract member Jump : AssemblerLabel -> unit
+
+    abstract member AddInt : target : Register * source : Register * wide : bool -> unit
+    abstract member MulInt : target : Register * source : Register * wide : bool -> unit
 
     abstract member Copy : srcPtr : nativeint * dstPtr : nativeint * wide : bool -> unit
 

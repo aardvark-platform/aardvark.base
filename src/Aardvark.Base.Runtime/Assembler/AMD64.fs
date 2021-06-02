@@ -223,6 +223,19 @@ module AMD64 =
                 writer.Write(0xF8uy + l)
                 writer.Write(v)
 
+        member x.Mul(dst : Register, src : Register, wide : bool) =
+            if dst >= Register.XMM0 || src >= Register.XMM0 then
+                failwith "[AMD64] cannot multiply media register"
+            else
+                let mutable rex = 0uy
+                let mutable modRM = 0uy
+                rexAndModRM wide (byte dst) (byte src) &rex &modRM
+                if rex <> 0x40uy then writer.Write(rex)
+                writer.Write(0x0Fuy)
+                writer.Write(0xAFuy)
+                writer.Write(modRM)
+                
+
         member x.Cmp(l : Register, r : Register, wide : bool) =
             if l >= Register.XMM0 || r >= Register.XMM0 then
                 failwith "[AMD64] cannot compare media register"
@@ -826,6 +839,12 @@ module AMD64 =
                 x.Load(Register.Rax, location, false)
                 x.Cmp(Register.Rax, uint32 value)
 
+            member x.AddInt(dst, src, wide) =
+                x.Add(unbox dst.Tag, unbox src.Tag, wide)
+                
+            member x.MulInt(dst, src, wide) =
+                x.Mul(unbox dst.Tag, unbox src.Tag, wide)
+
 
             member x.BeginFunction() = x.Begin()
             member x.EndFunction() = x.End()
@@ -848,6 +867,11 @@ module AMD64 =
             member x.WriteOutput(v : nativeint) = x.Mov(Register.Rax, v)
             member x.WriteOutput(v : int) = x.Mov(Register.Rax, v)
             member x.WriteOutput(v : float32) = x.Mov(Register.XMM0, v)
+
+            member x.Set(target : Runtime.Register, value : nativeint) = x.Mov(unbox target.Tag, value)
+            member x.Set(target : Runtime.Register, value : int) = x.Mov(unbox target.Tag, value)
+            member x.Set(target : Runtime.Register, value : float32) = x.Mov(unbox target.Tag, value)
+
             member x.Jump(offset : int) = x.Jmp(offset)
 
         new(stream : Stream) = new AssemblerStream(stream, false)

@@ -1,3 +1,6 @@
+### 5.1.11
+ - added some IAssemblerStream methods (AddInt, MulInt, etc.)
+ 
 ### 5.1.10
  - fixed mscorlib recursive resource lookup (#61)
  - added Constant<T> initialization (#59)
