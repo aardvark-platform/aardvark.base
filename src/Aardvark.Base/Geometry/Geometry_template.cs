@@ -682,7 +682,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this __type__ polygon, __tscalefactor__ scale)
+        public static void Scale(this ref __type__ polygon, __tscalefactor__ scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] *= scale;
@@ -707,7 +707,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this __type__ polygon, __tvec__ center, __tscalefactor__ scale)
+        public static void Scale(this ref __type__ polygon, __tvec__ center, __tscalefactor__ scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
@@ -733,7 +733,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutVertexCentroid(this __type__ polygon, __tscalefactor__ scale)
+        public static void ScaleAboutVertexCentroid(this ref __type__ polygon, __tscalefactor__ scale)
         {
             var center = polygon.ComputeVertexCentroid();
             polygon.Scale(center, scale);
@@ -763,7 +763,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="__type__"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this __type__ polygon, __ttrafo__ t)
+        public static void Transform(this ref __type__ polygon, __ttrafo__ t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.__transform__(polygon.m_pointArray[pi]);
@@ -788,7 +788,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="__type__"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this __type__ polygon, __ttrafo__ t)
+        public static void InvTransform(this ref __type__ polygon, __ttrafo__ t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Inv__transform__(polygon.m_pointArray[pi]);
@@ -1175,7 +1175,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this __type__ polygon, __tscalefactor__ scale)
+        public static void Scale(this ref __type__ polygon, __tscalefactor__ scale)
         {
             //# pc.ForEach(i => {
             polygon.P__i__ *= scale;
@@ -1202,7 +1202,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this __type__ polygon, __tvec__ center, __tscalefactor__ scale)
+        public static void Scale(this ref __type__ polygon, __tvec__ center, __tscalefactor__ scale)
         {
             //# pc.ForEach(i => {
             polygon.P__i__ = center + (polygon.P__i__ - center) * scale;
@@ -1229,7 +1229,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="__type__"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this __type__ polygon, __tscalefactor__ scale)
+        public static void ScaleAboutCentroid(this ref __type__ polygon, __tscalefactor__ scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -1260,7 +1260,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="__type__"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this __type__ polygon, __ttrafo__ t)
+        public static void Transform(this ref __type__ polygon, __ttrafo__ t)
         {
             //# pc.ForEach(i => {
             polygon.P__i__ = t.__transform__(polygon.P__i__);
@@ -1287,7 +1287,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="__type__"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this __type__ polygon, __ttrafo__ t)
+        public static void InvTransform(this ref __type__ polygon, __ttrafo__ t)
         {
             //# pc.ForEach(i => {
             polygon.P__i__ = t.Inv__transform__(polygon.P__i__);

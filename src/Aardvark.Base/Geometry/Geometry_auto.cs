@@ -487,7 +487,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this Polygon2d polygon, double scale)
+        public static void Scale(this ref Polygon2d polygon, double scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] *= scale;
@@ -512,7 +512,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this Polygon2d polygon, V2d center, double scale)
+        public static void Scale(this ref Polygon2d polygon, V2d center, double scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
@@ -538,7 +538,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutVertexCentroid(this Polygon2d polygon, double scale)
+        public static void ScaleAboutVertexCentroid(this ref Polygon2d polygon, double scale)
         {
             var center = polygon.ComputeVertexCentroid();
             polygon.Scale(center, scale);
@@ -562,7 +562,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this Polygon2d polygon, V2d scale)
+        public static void Scale(this ref Polygon2d polygon, V2d scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] *= scale;
@@ -587,7 +587,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this Polygon2d polygon, V2d center, V2d scale)
+        public static void Scale(this ref Polygon2d polygon, V2d center, V2d scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
@@ -613,7 +613,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Polygon2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutVertexCentroid(this Polygon2d polygon, V2d scale)
+        public static void ScaleAboutVertexCentroid(this ref Polygon2d polygon, V2d scale)
         {
             var center = polygon.ComputeVertexCentroid();
             polygon.Scale(center, scale);
@@ -637,7 +637,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon2d polygon, M33d t)
+        public static void Transform(this ref Polygon2d polygon, M33d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
@@ -661,7 +661,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon2d polygon, Euclidean2d t)
+        public static void Transform(this ref Polygon2d polygon, Euclidean2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
@@ -685,7 +685,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon2d polygon, Euclidean2d t)
+        public static void InvTransform(this ref Polygon2d polygon, Euclidean2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransformPos(polygon.m_pointArray[pi]);
@@ -709,7 +709,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon2d polygon, Similarity2d t)
+        public static void Transform(this ref Polygon2d polygon, Similarity2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
@@ -733,7 +733,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon2d polygon, Similarity2d t)
+        public static void InvTransform(this ref Polygon2d polygon, Similarity2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransformPos(polygon.m_pointArray[pi]);
@@ -757,7 +757,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon2d polygon, Affine2d t)
+        public static void Transform(this ref Polygon2d polygon, Affine2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
@@ -781,7 +781,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon2d polygon, Shift2d t)
+        public static void Transform(this ref Polygon2d polygon, Shift2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
@@ -805,7 +805,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon2d polygon, Shift2d t)
+        public static void InvTransform(this ref Polygon2d polygon, Shift2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
@@ -829,7 +829,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon2d polygon, Rot2d t)
+        public static void Transform(this ref Polygon2d polygon, Rot2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
@@ -853,7 +853,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon2d polygon, Rot2d t)
+        public static void InvTransform(this ref Polygon2d polygon, Rot2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
@@ -877,7 +877,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon2d polygon, Scale2d t)
+        public static void Transform(this ref Polygon2d polygon, Scale2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
@@ -901,7 +901,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon2d polygon, Scale2d t)
+        public static void InvTransform(this ref Polygon2d polygon, Scale2d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
@@ -925,7 +925,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon2d polygon, M22d t)
+        public static void Transform(this ref Polygon2d polygon, M22d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
@@ -1388,7 +1388,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Line2d polygon, double scale)
+        public static void Scale(this ref Line2d polygon, double scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -1414,7 +1414,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Line2d polygon, V2d center, double scale)
+        public static void Scale(this ref Line2d polygon, V2d center, double scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -1440,7 +1440,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Line2d polygon, double scale)
+        public static void ScaleAboutCentroid(this ref Line2d polygon, double scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -1465,7 +1465,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Line2d polygon, V2d scale)
+        public static void Scale(this ref Line2d polygon, V2d scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -1491,7 +1491,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Line2d polygon, V2d center, V2d scale)
+        public static void Scale(this ref Line2d polygon, V2d center, V2d scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -1517,7 +1517,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Line2d polygon, V2d scale)
+        public static void ScaleAboutCentroid(this ref Line2d polygon, V2d scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -1542,7 +1542,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line2d polygon, M33d t)
+        public static void Transform(this ref Line2d polygon, M33d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -1567,7 +1567,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line2d polygon, Euclidean2d t)
+        public static void Transform(this ref Line2d polygon, Euclidean2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -1592,7 +1592,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line2d polygon, Euclidean2d t)
+        public static void InvTransform(this ref Line2d polygon, Euclidean2d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -1617,7 +1617,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line2d polygon, Similarity2d t)
+        public static void Transform(this ref Line2d polygon, Similarity2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -1642,7 +1642,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line2d polygon, Similarity2d t)
+        public static void InvTransform(this ref Line2d polygon, Similarity2d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -1667,7 +1667,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line2d polygon, Affine2d t)
+        public static void Transform(this ref Line2d polygon, Affine2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -1692,7 +1692,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line2d polygon, Shift2d t)
+        public static void Transform(this ref Line2d polygon, Shift2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -1717,7 +1717,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line2d polygon, Shift2d t)
+        public static void InvTransform(this ref Line2d polygon, Shift2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -1742,7 +1742,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line2d polygon, Rot2d t)
+        public static void Transform(this ref Line2d polygon, Rot2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -1767,7 +1767,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line2d polygon, Rot2d t)
+        public static void InvTransform(this ref Line2d polygon, Rot2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -1792,7 +1792,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line2d polygon, Scale2d t)
+        public static void Transform(this ref Line2d polygon, Scale2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -1817,7 +1817,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line2d polygon, Scale2d t)
+        public static void InvTransform(this ref Line2d polygon, Scale2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -1842,7 +1842,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line2d polygon, M22d t)
+        public static void Transform(this ref Line2d polygon, M22d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -2150,7 +2150,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Triangle2d polygon, double scale)
+        public static void Scale(this ref Triangle2d polygon, double scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -2177,7 +2177,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Triangle2d polygon, V2d center, double scale)
+        public static void Scale(this ref Triangle2d polygon, V2d center, double scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -2204,7 +2204,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Triangle2d polygon, double scale)
+        public static void ScaleAboutCentroid(this ref Triangle2d polygon, double scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -2229,7 +2229,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Triangle2d polygon, V2d scale)
+        public static void Scale(this ref Triangle2d polygon, V2d scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -2256,7 +2256,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Triangle2d polygon, V2d center, V2d scale)
+        public static void Scale(this ref Triangle2d polygon, V2d center, V2d scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -2283,7 +2283,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Triangle2d polygon, V2d scale)
+        public static void ScaleAboutCentroid(this ref Triangle2d polygon, V2d scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -2308,7 +2308,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle2d polygon, M33d t)
+        public static void Transform(this ref Triangle2d polygon, M33d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -2334,7 +2334,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle2d polygon, Euclidean2d t)
+        public static void Transform(this ref Triangle2d polygon, Euclidean2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -2360,7 +2360,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle2d polygon, Euclidean2d t)
+        public static void InvTransform(this ref Triangle2d polygon, Euclidean2d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -2386,7 +2386,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle2d polygon, Similarity2d t)
+        public static void Transform(this ref Triangle2d polygon, Similarity2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -2412,7 +2412,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle2d polygon, Similarity2d t)
+        public static void InvTransform(this ref Triangle2d polygon, Similarity2d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -2438,7 +2438,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle2d polygon, Affine2d t)
+        public static void Transform(this ref Triangle2d polygon, Affine2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -2464,7 +2464,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle2d polygon, Shift2d t)
+        public static void Transform(this ref Triangle2d polygon, Shift2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -2490,7 +2490,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle2d polygon, Shift2d t)
+        public static void InvTransform(this ref Triangle2d polygon, Shift2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -2516,7 +2516,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle2d polygon, Rot2d t)
+        public static void Transform(this ref Triangle2d polygon, Rot2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -2542,7 +2542,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle2d polygon, Rot2d t)
+        public static void InvTransform(this ref Triangle2d polygon, Rot2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -2568,7 +2568,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle2d polygon, Scale2d t)
+        public static void Transform(this ref Triangle2d polygon, Scale2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -2594,7 +2594,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle2d polygon, Scale2d t)
+        public static void InvTransform(this ref Triangle2d polygon, Scale2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -2620,7 +2620,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle2d polygon, M22d t)
+        public static void Transform(this ref Triangle2d polygon, M22d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -2959,7 +2959,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Quad2d polygon, double scale)
+        public static void Scale(this ref Quad2d polygon, double scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -2987,7 +2987,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Quad2d polygon, V2d center, double scale)
+        public static void Scale(this ref Quad2d polygon, V2d center, double scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -3015,7 +3015,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Quad2d polygon, double scale)
+        public static void ScaleAboutCentroid(this ref Quad2d polygon, double scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -3040,7 +3040,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Quad2d polygon, V2d scale)
+        public static void Scale(this ref Quad2d polygon, V2d scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -3068,7 +3068,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Quad2d polygon, V2d center, V2d scale)
+        public static void Scale(this ref Quad2d polygon, V2d center, V2d scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -3096,7 +3096,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Quad2d polygon, V2d scale)
+        public static void ScaleAboutCentroid(this ref Quad2d polygon, V2d scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -3121,7 +3121,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad2d polygon, M33d t)
+        public static void Transform(this ref Quad2d polygon, M33d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -3148,7 +3148,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad2d polygon, Euclidean2d t)
+        public static void Transform(this ref Quad2d polygon, Euclidean2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -3175,7 +3175,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad2d polygon, Euclidean2d t)
+        public static void InvTransform(this ref Quad2d polygon, Euclidean2d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -3202,7 +3202,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad2d polygon, Similarity2d t)
+        public static void Transform(this ref Quad2d polygon, Similarity2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -3229,7 +3229,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad2d polygon, Similarity2d t)
+        public static void InvTransform(this ref Quad2d polygon, Similarity2d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -3256,7 +3256,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad2d polygon, Affine2d t)
+        public static void Transform(this ref Quad2d polygon, Affine2d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -3283,7 +3283,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad2d polygon, Shift2d t)
+        public static void Transform(this ref Quad2d polygon, Shift2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -3310,7 +3310,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad2d polygon, Shift2d t)
+        public static void InvTransform(this ref Quad2d polygon, Shift2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -3337,7 +3337,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad2d polygon, Rot2d t)
+        public static void Transform(this ref Quad2d polygon, Rot2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -3364,7 +3364,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad2d polygon, Rot2d t)
+        public static void InvTransform(this ref Quad2d polygon, Rot2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -3391,7 +3391,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad2d polygon, Scale2d t)
+        public static void Transform(this ref Quad2d polygon, Scale2d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -3418,7 +3418,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad2d polygon, Scale2d t)
+        public static void InvTransform(this ref Quad2d polygon, Scale2d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -3445,7 +3445,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad2d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad2d polygon, M22d t)
+        public static void Transform(this ref Quad2d polygon, M22d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -3964,7 +3964,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this Polygon3d polygon, double scale)
+        public static void Scale(this ref Polygon3d polygon, double scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] *= scale;
@@ -3989,7 +3989,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this Polygon3d polygon, V3d center, double scale)
+        public static void Scale(this ref Polygon3d polygon, V3d center, double scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
@@ -4015,7 +4015,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutVertexCentroid(this Polygon3d polygon, double scale)
+        public static void ScaleAboutVertexCentroid(this ref Polygon3d polygon, double scale)
         {
             var center = polygon.ComputeVertexCentroid();
             polygon.Scale(center, scale);
@@ -4039,7 +4039,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this Polygon3d polygon, V3d scale)
+        public static void Scale(this ref Polygon3d polygon, V3d scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] *= scale;
@@ -4064,7 +4064,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
-        public static void Scale(this Polygon3d polygon, V3d center, V3d scale)
+        public static void Scale(this ref Polygon3d polygon, V3d center, V3d scale)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = center + (polygon.m_pointArray[pi] - center) * scale;
@@ -4090,7 +4090,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Polygon3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutVertexCentroid(this Polygon3d polygon, V3d scale)
+        public static void ScaleAboutVertexCentroid(this ref Polygon3d polygon, V3d scale)
         {
             var center = polygon.ComputeVertexCentroid();
             polygon.Scale(center, scale);
@@ -4114,7 +4114,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon3d polygon, M44d t)
+        public static void Transform(this ref Polygon3d polygon, M44d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
@@ -4138,7 +4138,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon3d polygon, Euclidean3d t)
+        public static void Transform(this ref Polygon3d polygon, Euclidean3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
@@ -4162,7 +4162,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon3d polygon, Euclidean3d t)
+        public static void InvTransform(this ref Polygon3d polygon, Euclidean3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransformPos(polygon.m_pointArray[pi]);
@@ -4186,7 +4186,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon3d polygon, Similarity3d t)
+        public static void Transform(this ref Polygon3d polygon, Similarity3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
@@ -4210,7 +4210,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon3d polygon, Similarity3d t)
+        public static void InvTransform(this ref Polygon3d polygon, Similarity3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransformPos(polygon.m_pointArray[pi]);
@@ -4234,7 +4234,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon3d polygon, Affine3d t)
+        public static void Transform(this ref Polygon3d polygon, Affine3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.TransformPos(polygon.m_pointArray[pi]);
@@ -4258,7 +4258,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon3d polygon, Shift3d t)
+        public static void Transform(this ref Polygon3d polygon, Shift3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
@@ -4282,7 +4282,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon3d polygon, Shift3d t)
+        public static void InvTransform(this ref Polygon3d polygon, Shift3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
@@ -4306,7 +4306,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon3d polygon, Rot3d t)
+        public static void Transform(this ref Polygon3d polygon, Rot3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
@@ -4330,7 +4330,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon3d polygon, Rot3d t)
+        public static void InvTransform(this ref Polygon3d polygon, Rot3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
@@ -4354,7 +4354,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon3d polygon, Scale3d t)
+        public static void Transform(this ref Polygon3d polygon, Scale3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
@@ -4378,7 +4378,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void InvTransform(this Polygon3d polygon, Scale3d t)
+        public static void InvTransform(this ref Polygon3d polygon, Scale3d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.InvTransform(polygon.m_pointArray[pi]);
@@ -4402,7 +4402,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="polygon">The <see cref="Polygon3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
-        public static void Transform(this Polygon3d polygon, M33d t)
+        public static void Transform(this ref Polygon3d polygon, M33d t)
         {
             for (int pi = 0; pi < polygon.m_pointCount; pi++)
                 polygon.m_pointArray[pi] = t.Transform(polygon.m_pointArray[pi]);
@@ -4866,7 +4866,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Line3d polygon, double scale)
+        public static void Scale(this ref Line3d polygon, double scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -4892,7 +4892,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Line3d polygon, V3d center, double scale)
+        public static void Scale(this ref Line3d polygon, V3d center, double scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -4918,7 +4918,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Line3d polygon, double scale)
+        public static void ScaleAboutCentroid(this ref Line3d polygon, double scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -4943,7 +4943,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Line3d polygon, V3d scale)
+        public static void Scale(this ref Line3d polygon, V3d scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -4969,7 +4969,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Line3d polygon, V3d center, V3d scale)
+        public static void Scale(this ref Line3d polygon, V3d center, V3d scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -4995,7 +4995,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Line3d polygon, V3d scale)
+        public static void ScaleAboutCentroid(this ref Line3d polygon, V3d scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -5020,7 +5020,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line3d polygon, M44d t)
+        public static void Transform(this ref Line3d polygon, M44d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -5045,7 +5045,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line3d polygon, Euclidean3d t)
+        public static void Transform(this ref Line3d polygon, Euclidean3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -5070,7 +5070,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line3d polygon, Euclidean3d t)
+        public static void InvTransform(this ref Line3d polygon, Euclidean3d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -5095,7 +5095,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line3d polygon, Similarity3d t)
+        public static void Transform(this ref Line3d polygon, Similarity3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -5120,7 +5120,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line3d polygon, Similarity3d t)
+        public static void InvTransform(this ref Line3d polygon, Similarity3d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -5145,7 +5145,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line3d polygon, Affine3d t)
+        public static void Transform(this ref Line3d polygon, Affine3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -5170,7 +5170,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line3d polygon, Shift3d t)
+        public static void Transform(this ref Line3d polygon, Shift3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -5195,7 +5195,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line3d polygon, Shift3d t)
+        public static void InvTransform(this ref Line3d polygon, Shift3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -5220,7 +5220,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line3d polygon, Rot3d t)
+        public static void Transform(this ref Line3d polygon, Rot3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -5245,7 +5245,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line3d polygon, Rot3d t)
+        public static void InvTransform(this ref Line3d polygon, Rot3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -5270,7 +5270,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line3d polygon, Scale3d t)
+        public static void Transform(this ref Line3d polygon, Scale3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -5295,7 +5295,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Line3d polygon, Scale3d t)
+        public static void InvTransform(this ref Line3d polygon, Scale3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -5320,7 +5320,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Line3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Line3d polygon, M33d t)
+        public static void Transform(this ref Line3d polygon, M33d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -5628,7 +5628,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Triangle3d polygon, double scale)
+        public static void Scale(this ref Triangle3d polygon, double scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -5655,7 +5655,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Triangle3d polygon, V3d center, double scale)
+        public static void Scale(this ref Triangle3d polygon, V3d center, double scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -5682,7 +5682,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Triangle3d polygon, double scale)
+        public static void ScaleAboutCentroid(this ref Triangle3d polygon, double scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -5707,7 +5707,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Triangle3d polygon, V3d scale)
+        public static void Scale(this ref Triangle3d polygon, V3d scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -5734,7 +5734,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Triangle3d polygon, V3d center, V3d scale)
+        public static void Scale(this ref Triangle3d polygon, V3d center, V3d scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -5761,7 +5761,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Triangle3d polygon, V3d scale)
+        public static void ScaleAboutCentroid(this ref Triangle3d polygon, V3d scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -5786,7 +5786,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle3d polygon, M44d t)
+        public static void Transform(this ref Triangle3d polygon, M44d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -5812,7 +5812,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle3d polygon, Euclidean3d t)
+        public static void Transform(this ref Triangle3d polygon, Euclidean3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -5838,7 +5838,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle3d polygon, Euclidean3d t)
+        public static void InvTransform(this ref Triangle3d polygon, Euclidean3d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -5864,7 +5864,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle3d polygon, Similarity3d t)
+        public static void Transform(this ref Triangle3d polygon, Similarity3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -5890,7 +5890,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle3d polygon, Similarity3d t)
+        public static void InvTransform(this ref Triangle3d polygon, Similarity3d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -5916,7 +5916,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle3d polygon, Affine3d t)
+        public static void Transform(this ref Triangle3d polygon, Affine3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -5942,7 +5942,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle3d polygon, Shift3d t)
+        public static void Transform(this ref Triangle3d polygon, Shift3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -5968,7 +5968,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle3d polygon, Shift3d t)
+        public static void InvTransform(this ref Triangle3d polygon, Shift3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -5994,7 +5994,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle3d polygon, Rot3d t)
+        public static void Transform(this ref Triangle3d polygon, Rot3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -6020,7 +6020,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle3d polygon, Rot3d t)
+        public static void InvTransform(this ref Triangle3d polygon, Rot3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -6046,7 +6046,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle3d polygon, Scale3d t)
+        public static void Transform(this ref Triangle3d polygon, Scale3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -6072,7 +6072,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Triangle3d polygon, Scale3d t)
+        public static void InvTransform(this ref Triangle3d polygon, Scale3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -6098,7 +6098,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Triangle3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Triangle3d polygon, M33d t)
+        public static void Transform(this ref Triangle3d polygon, M33d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -6437,7 +6437,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Quad3d polygon, double scale)
+        public static void Scale(this ref Quad3d polygon, double scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -6465,7 +6465,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Quad3d polygon, V3d center, double scale)
+        public static void Scale(this ref Quad3d polygon, V3d center, double scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -6493,7 +6493,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Quad3d polygon, double scale)
+        public static void ScaleAboutCentroid(this ref Quad3d polygon, double scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -6518,7 +6518,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Quad3d polygon, V3d scale)
+        public static void Scale(this ref Quad3d polygon, V3d scale)
         {
             polygon.P0 *= scale;
             polygon.P1 *= scale;
@@ -6546,7 +6546,7 @@ namespace Aardvark.Base
         /// <param name="center">The scaling center.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Scale(this Quad3d polygon, V3d center, V3d scale)
+        public static void Scale(this ref Quad3d polygon, V3d center, V3d scale)
         {
             polygon.P0 = center + (polygon.P0 - center) * scale;
             polygon.P1 = center + (polygon.P1 - center) * scale;
@@ -6574,7 +6574,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to scale.</param>
         /// <param name="scale">The scale factor.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void ScaleAboutCentroid(this Quad3d polygon, V3d scale)
+        public static void ScaleAboutCentroid(this ref Quad3d polygon, V3d scale)
         {
             var center = polygon.ComputeCentroid();
             polygon.Scale(center, scale);
@@ -6599,7 +6599,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad3d polygon, M44d t)
+        public static void Transform(this ref Quad3d polygon, M44d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -6626,7 +6626,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad3d polygon, Euclidean3d t)
+        public static void Transform(this ref Quad3d polygon, Euclidean3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -6653,7 +6653,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad3d polygon, Euclidean3d t)
+        public static void InvTransform(this ref Quad3d polygon, Euclidean3d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -6680,7 +6680,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad3d polygon, Similarity3d t)
+        public static void Transform(this ref Quad3d polygon, Similarity3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -6707,7 +6707,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad3d polygon, Similarity3d t)
+        public static void InvTransform(this ref Quad3d polygon, Similarity3d t)
         {
             polygon.P0 = t.InvTransformPos(polygon.P0);
             polygon.P1 = t.InvTransformPos(polygon.P1);
@@ -6734,7 +6734,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad3d polygon, Affine3d t)
+        public static void Transform(this ref Quad3d polygon, Affine3d t)
         {
             polygon.P0 = t.TransformPos(polygon.P0);
             polygon.P1 = t.TransformPos(polygon.P1);
@@ -6761,7 +6761,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad3d polygon, Shift3d t)
+        public static void Transform(this ref Quad3d polygon, Shift3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -6788,7 +6788,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad3d polygon, Shift3d t)
+        public static void InvTransform(this ref Quad3d polygon, Shift3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -6815,7 +6815,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad3d polygon, Rot3d t)
+        public static void Transform(this ref Quad3d polygon, Rot3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -6842,7 +6842,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad3d polygon, Rot3d t)
+        public static void InvTransform(this ref Quad3d polygon, Rot3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -6869,7 +6869,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad3d polygon, Scale3d t)
+        public static void Transform(this ref Quad3d polygon, Scale3d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
@@ -6896,7 +6896,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void InvTransform(this Quad3d polygon, Scale3d t)
+        public static void InvTransform(this ref Quad3d polygon, Scale3d t)
         {
             polygon.P0 = t.InvTransform(polygon.P0);
             polygon.P1 = t.InvTransform(polygon.P1);
@@ -6923,7 +6923,7 @@ namespace Aardvark.Base
         /// <param name="polygon">The <see cref="Quad3d"/> to transform.</param>
         /// <param name="t">The transformation to apply.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Transform(this Quad3d polygon, M33d t)
+        public static void Transform(this ref Quad3d polygon, M33d t)
         {
             polygon.P0 = t.Transform(polygon.P0);
             polygon.P1 = t.Transform(polygon.P1);
