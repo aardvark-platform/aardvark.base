@@ -10,7 +10,7 @@ module FSharpMath =
 
     module Helpers =
         type Comparison() =
-            static member inline Min< ^a when ^a : comparison>(a : ^a, b : ^a) = Operators.min a b
+            static member inline Min< ^T when ^T : comparison>(a : ^T, b : ^T) = Operators.min a b
 
             static member inline Min(a : float, b : V2d) = V2d.Min(b, a)
             static member inline Min(a : float, b : V3d) = V3d.Min(b, a)
@@ -25,7 +25,7 @@ module FSharpMath =
             static member inline Min(a : int64, b : V3l) = V3l.Min(b, a)
             static member inline Min(a : int64, b : V4l) = V4l.Min(b, a)
 
-            static member inline Max< ^a when ^a : comparison>(a : ^a, b : ^a) = Operators.max a b
+            static member inline Max< ^T when ^T : comparison>(a : ^T, b : ^T) = Operators.max a b
 
             static member inline Max(a : float, b : V2d) = V2d.Max(b, a)
             static member inline Max(a : float, b : V3d) = V3d.Max(b, a)
@@ -56,146 +56,111 @@ module FSharpMath =
             static member inline Saturate(x : float32) = x |> max 0.0f |> min 1.0f
             static member inline Saturate(x : decimal) = x |> max 0m |> min 1m
 
-        type Signs =
-            static member inline Signum (a : ^a) =
-                if a < LanguagePrimitives.GenericZero< ^a> then -LanguagePrimitives.GenericOne
-                elif a > LanguagePrimitives.GenericZero< ^a> then LanguagePrimitives.GenericOne
-                else LanguagePrimitives.GenericZero< ^a >
-
-            static member inline Signumi (a : ^a) =
-                if a < LanguagePrimitives.GenericZero< ^a> then -1
-                elif a > LanguagePrimitives.GenericZero< ^a> then 1
-                else 0
-
-        type Power() =
-            static member inline Power(a : ^a, b : ^b) = Operators.( ** ) a b
-
-            static member inline Pown(a : ^a, b : int) = Operators.pown a b
-
-        type Log2() =
-            static member inline Log2(a : ^a) =
-                log a / log (LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne)
-
-        type Trigonometry() =
-            static member inline Asinh(a : ^a) =
-                log (a + sqrt (a * a + LanguagePrimitives.GenericOne< ^a>))
-
-            static member inline Acosh(a : ^a) =
-                log (a + sqrt (a * a - LanguagePrimitives.GenericOne< ^a>))
-
-            static member inline Atanh(a : ^a) =
-                let one = LanguagePrimitives.GenericOne< ^a>
-                let two = one + one
-                (log ((one + a) / (one - a))) / two
-
-        type MultiplyAdd() =
-            static member inline MultiplyAdd(x : ^a, y : ^b, z : ^a) = (x * y) + z
-
         type Infinity() =
-            static member inline IsNaN< ^a when ^a : (member IsNaN : bool)> (x : ^a) : bool =
-                (^a : (member IsNaN : bool) x)
+            static member inline IsNaN< ^T when ^T : (member IsNaN : bool)> (x : ^T) : bool =
+                (^T : (member IsNaN : bool) x)
 
-            static member inline IsInfinity< ^a when ^a : (member IsInfinity : bool)> (x : ^a) : bool =
-                (^a : (member IsInfinity : bool) x)
+            static member inline IsInfinity< ^T when ^T : (member IsInfinity : bool)> (x : ^T) : bool =
+                (^T : (member IsInfinity : bool) x)
 
-            static member inline IsPositiveInfinity< ^a when ^a : (member IsPositiveInfinity : bool)> (x : ^a) : bool =
-                (^a : (member IsPositiveInfinity : bool) x)
+            static member inline IsPositiveInfinity< ^T when ^T : (member IsPositiveInfinity : bool)> (x : ^T) : bool =
+                (^T : (member IsPositiveInfinity : bool) x)
 
-            static member inline IsNegativeInfinity< ^a when ^a : (member IsNegativeInfinity : bool)> (x : ^a) : bool =
-                (^a : (member IsNegativeInfinity : bool) x)
+            static member inline IsNegativeInfinity< ^T when ^T : (member IsNegativeInfinity : bool)> (x : ^T) : bool =
+                (^T : (member IsNegativeInfinity : bool) x)
 
         type InfinityS() =
-            static member inline IsNaN< ^a when ^a : (static member IsNaN : ^a -> bool)> (x : ^a) : bool =
-                (^a : (static member IsNaN : ^a -> bool) x)
+            static member inline IsNaN< ^T when ^T : (static member IsNaN : ^T -> bool)> (x : ^T) : bool =
+                (^T : (static member IsNaN : ^T -> bool) x)
 
-            static member inline IsInfinity< ^a when ^a : (static member IsInfinity : ^a -> bool)> (x : ^a) : bool =
-                (^a : (static member IsInfinity : ^a -> bool) x)
+            static member inline IsInfinity< ^T when ^T : (static member IsInfinity : ^T -> bool)> (x : ^T) : bool =
+                (^T : (static member IsInfinity : ^T -> bool) x)
 
-            static member inline IsPositiveInfinity< ^a when ^a : (static member IsPositiveInfinity : ^a -> bool)> (x : ^a) : bool =
-                (^a : (static member IsPositiveInfinity : ^a -> bool) x)
+            static member inline IsPositiveInfinity< ^T when ^T : (static member IsPositiveInfinity : ^T -> bool)> (x : ^T) : bool =
+                (^T : (static member IsPositiveInfinity : ^T -> bool) x)
 
-            static member inline IsNegativeInfinity< ^a when ^a : (static member IsNegativeInfinity : ^a -> bool)> (x : ^a) : bool =
-                (^a : (static member IsNegativeInfinity : ^a -> bool) x)
+            static member inline IsNegativeInfinity< ^T when ^T : (static member IsNegativeInfinity : ^T -> bool)> (x : ^T) : bool =
+                (^T : (static member IsNegativeInfinity : ^T -> bool) x)
 
     [<AutoOpen>]
     module private Aux =
-        let inline signumAux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Signum : ^a -> ^a) x)
+        let inline signumAux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Signum : ^T -> ^T) x)
 
-        let inline signumiAux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Signumi : ^a -> ^b) x)
+        let inline signumiAux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Signumi : ^T -> ^U) x)
 
-        // Making the power functions more general with ^a -> ^b -> ^c
+        // Making the power functions more general with ^T -> ^U -> ^V
         // generally works but requires manual type annotations in some cases
-        // It's not worth the hassle so we restrict them to ^a -> ^b -> ^a
+        // It's not worth the hassle so we restrict them to ^T -> ^U -> ^T
         // Also using the default pow / Pow() doesn't work with code quotations
         // for some reason.
-        let inline powAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
-            ((^z or ^y or ^a or ^b) : (static member Power : ^a * ^b -> ^a) (x, y))
+        let inline powAux (_ : ^Z) (x : ^T) (y : ^U) =
+            ((^Z or ^T or ^U) : (static member Power : ^T * ^U -> ^T) (x, y))
 
-        let inline pownAux (_ : ^z) (_ : ^y) (x : ^a) (y : ^b) =
-            ((^z or ^y or ^a or ^b) : (static member Pown : ^a * ^b -> ^a) (x, y))
+        let inline pownAux (_ : ^Z) (x : ^T) (y : ^U) =
+            ((^Z or ^T or ^U) : (static member Pown : ^T * ^U -> ^T) (x, y))
 
-        let inline log2Aux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Log2 : ^a -> ^a) x)
+        let inline log2Aux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Log2 : ^T -> ^T) x)
 
-        let inline asinhAux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Asinh : ^a -> ^a) x)
+        let inline asinhAux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Asinh : ^T -> ^T) x)
 
-        let inline acoshAux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Acosh : ^a -> ^a) x)
+        let inline acoshAux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Acosh : ^T -> ^T) x)
 
-        let inline atanhAux (_ : ^z) (_ : ^y) (x : ^a) =
-            ((^z or ^y or ^a) : (static member Atanh : ^a -> ^a) x)
+        let inline atanhAux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Atanh : ^T -> ^T) x)
 
-        let inline cbrtAux (_ : ^z) (x : ^a) =
-            ((^z or ^a) : (static member Cbrt : ^a -> ^a) x)
+        let inline cbrtAux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Cbrt : ^T -> ^T) x)
 
         // See comment for powAux
-        let inline minAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b) : (static member Min : ^a * ^b -> ^b) (x, y))
+        let inline minAux (_ : ^Z) (x : ^T) (y : ^U) =
+            ((^Z or ^T or ^U) : (static member Min : ^T * ^U -> ^U) (x, y))
 
-        let inline maxAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b) : (static member Max : ^a * ^b -> ^b) (x, y))
+        let inline maxAux (_ : ^Z) (x : ^T) (y : ^U) =
+            ((^Z or ^T or ^U) : (static member Max : ^T * ^U -> ^U) (x, y))
 
         // Simply using min and max directly will resolve to the comparison overload for some reason.
         // Therefore we need to do it the dumb (incomplete) way. E.g. won't work for Version.
-        let inline saturateAux (_ : ^z) (x : ^a) =
-            ((^z or ^a) : (static member Saturate : ^a -> ^a) (x))
+        let inline saturateAux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Saturate : ^T -> ^T) (x))
 
-        let inline lerpAux (_ : ^z) (x : ^a) (y : ^a) (t : ^b) =
-            ((^z or ^a or ^b) : (static member Lerp : ^b * ^a * ^a -> ^a) (t, x, y))
+        let inline lerpAux (_ : ^Z) (x : ^T) (y : ^T) (t : ^U) =
+            ((^Z or ^T or ^U) : (static member Lerp : ^U * ^T * ^T -> ^T) (t, x, y))
 
-        let inline invLerpAux (_ : ^z) (a : ^a) (b : ^a) (y : ^a) =
-            ((^z or ^a or ^b) : (static member InvLerp : ^a * ^a * ^a -> ^b) (y, a, b))
+        let inline invLerpAux (_ : ^Z) (a : ^T) (b : ^T) (y : ^T) =
+            ((^Z or ^T or ^U) : (static member InvLerp : ^T * ^T * ^T -> ^U) (y, a, b))
 
-        let inline smoothstepAux (_ : ^z) (edge0 : ^a) (edge1 : ^a) (x : ^b) =
-            ((^z or ^a or ^b) : (static member Smoothstep : ^b * ^a * ^a -> ^b) (x, edge0, edge1))
+        let inline smoothstepAux (_ : ^Z) (edge0 : ^T) (edge1 : ^T) (x : ^U) =
+            ((^Z or ^T or ^U) : (static member Smoothstep : ^U * ^T * ^T -> ^U) (x, edge0, edge1))
 
         // See comment for powAux
-        let inline copysignAux (_ : ^z) (x : ^a) (y : ^b) =
-            ((^z or ^a or ^b) : (static member CopySign : ^a * ^b -> ^a) (x, y))
+        let inline copysignAux (_ : ^Z) (x : ^T) (y : ^U) =
+            ((^Z or ^T or ^U) : (static member CopySign : ^T * ^U -> ^T) (x, y))
 
-        let inline degreesAux (_ : ^z) (radians : ^a) =
-            ((^z or ^a) : (static member DegreesFromRadians : ^a -> ^a) radians)
+        let inline degreesAux (_ : ^Z) (radians : ^T) =
+            ((^Z or ^T) : (static member DegreesFromRadians : ^T -> ^T) radians)
 
-        let inline radiansAux (_ : ^z) (degrees : ^a) =
-            ((^z or ^a) : (static member RadiansFromDegrees : ^a -> ^a) degrees)
+        let inline radiansAux (_ : ^Z) (degrees : ^T) =
+            ((^Z or ^T) : (static member RadiansFromDegrees : ^T -> ^T) degrees)
 
-        let inline maddAux (_ : ^z) (_ : ^w) (x : ^a) (y : ^b) (z : ^a) =
-            ((^z or ^w or ^a or ^b) : (static member MultiplyAdd : ^a * ^b * ^a -> ^a) (x, y, z))
+        let inline maddAux (_ : ^Z) (x : ^T) (y : ^U) (z : ^T) =
+            ((^Z or ^T or ^U) : (static member MultiplyAdd : ^T * ^U * ^T -> ^T) (x, y, z))
 
-        let inline isNanAux (_ : ^z) (_ : ^w) (x : ^a) =
-            ((^z or ^w or ^a) : (static member IsNaN : ^a -> bool) x)
+        let inline isNanAux (_ : ^Z) (_ : ^Y) (x : ^T) =
+            ((^Z or ^Y or ^T) : (static member IsNaN : ^T -> bool) x)
 
-        let inline isInfAux (_ : ^z) (_ : ^w) (x : ^a) =
-            ((^z or ^w or ^a) : (static member IsInfinity : ^a -> bool) x)
+        let inline isInfAux (_ : ^Z) (_ : ^Y) (x : ^T) =
+            ((^Z or ^Y or ^T) : (static member IsInfinity : ^T -> bool) x)
 
-        let inline isPosInfAux (_ : ^z) (_ : ^w) (x : ^a) =
-            ((^z or ^w or ^a) : (static member IsPositiveInfinity : ^a -> bool) x)
+        let inline isPosInfAux (_ : ^Z) (_ : ^Y) (x : ^T) =
+            ((^Z or ^Y or ^T) : (static member IsPositiveInfinity : ^T -> bool) x)
 
-        let inline isNegInfAux (_ : ^z) (_ : ^w) (x : ^a) =
-            ((^z or ^w or ^a) : (static member IsNegativeInfinity : ^a -> bool) x)
+        let inline isNegInfAux (_ : ^Z) (_ : ^Y) (x : ^T) =
+            ((^Z or ^Y or ^T) : (static member IsNegativeInfinity : ^T -> bool) x)
 
     /// Resolves to the zero value for any scalar or vector type.
     [<GeneralizableValue>]
@@ -210,17 +175,17 @@ module FSharpMath =
     /// Returns -1 if x is less than zero, 0 if x is equal to zero, and 1 if
     /// x is greater than zero. The result has the same type as the input.
     let inline signum x =
-        signumAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Signs> x
+        signumAux Unchecked.defaultof<Fun> x
 
     /// Returns -1 if x is less than zero, 0 if x is equal to zero, and 1 if
     /// x is greater than zero.
     let inline signumi x =
-        signumiAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Signs> x
+        signumiAux Unchecked.defaultof<Fun> x
 
     /// Returns x raised by the power of y (must be float or double).
     // F# variant does not support integers!
     let inline pow x y =
-        powAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
+        powAux Unchecked.defaultof<Fun> x y
 
     /// Returns x raised by the power of y.
     // F# variant does not support integers!
@@ -230,23 +195,23 @@ module FSharpMath =
     /// Returns x raised by the integer power of y (must not be negative).
     // F# variant has signature a' -> int -> 'a, which does not permit for example V2f -> V2i -> V2f
     let inline pown x y =
-        pownAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Power> x y
+        pownAux Unchecked.defaultof<Fun> x y
 
     /// Returns the base 2 logarithm of x.
     let inline log2 x =
-        log2Aux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Log2> x
+        log2Aux Unchecked.defaultof<Fun> x
 
     /// Returns the inverse hyperbolic sine of x.
     let inline asinh x =
-        asinhAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Trigonometry> x
+        asinhAux Unchecked.defaultof<Fun> x
 
     /// Returns the inverse hyperbolic cosine of x.
     let inline acosh x =
-        acoshAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Trigonometry> x
+        acoshAux Unchecked.defaultof<Fun> x
 
     /// Returns the inverse hyperbolic tangent of x.
     let inline atanh x =
-        atanhAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.Trigonometry> x
+        atanhAux Unchecked.defaultof<Fun> x
 
     /// Returns x^2
     let inline sqr x = x * x
@@ -266,7 +231,7 @@ module FSharpMath =
         x |> max a |> min b
 
     /// Clamps x to the interval [0, 1].
-    let inline saturate (x : ^a) =
+    let inline saturate (x : ^T) =
         saturateAux Unchecked.defaultof<Helpers.Saturate> x
 
     /// Linearly interpolates between x and y.
@@ -278,55 +243,57 @@ module FSharpMath =
         invLerpAux Unchecked.defaultof<Fun> a b y
 
     /// Performs Hermite interpolation between a and b.
-    let inline smoothstep (edge0 : ^a) (edge1 : ^a) (x : ^b) =
+    let inline smoothstep (edge0 : ^T) (edge1 : ^T) (x : ^U) =
         smoothstepAux Unchecked.defaultof<Fun> edge0 edge1 x
 
     /// Returns a value with the magnitude of x and the sign of y.
-    let inline copysign (x : ^a) (y : ^b) =
+    let inline copysign (x : ^T) (y : ^U) =
         copysignAux Unchecked.defaultof<Fun> x y
 
     /// Converts an angle given in radians to degrees.
-    let inline degrees (radians : ^a) =
+    let inline degrees (radians : ^T) =
         degreesAux Unchecked.defaultof<Conversion> radians
 
     /// Converts an angle given in degrees to radians.
-    let inline radians (degrees : ^a) =
+    let inline radians (degrees : ^T) =
         radiansAux Unchecked.defaultof<Conversion> degrees
 
     /// Returns (x * y) + z
-    let inline madd (x : ^a) (y : ^b) (z : ^a) =
-        maddAux Unchecked.defaultof<Fun> Unchecked.defaultof<Helpers.MultiplyAdd> x y z
+    let inline madd (x : ^T) (y : ^U) (z : ^T) =
+        maddAux Unchecked.defaultof<Fun> x y z
 
     /// Returns whether x is NaN.
-    let inline isNaN (x : ^a) =
+    let inline isNaN (x : ^T) =
         isNanAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
 
     /// Returns whether x is infinity (positive or negative).
-    let inline isInfinity (x : ^a) =
+    let inline isInfinity (x : ^T) =
         isInfAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
 
     /// Returns whether x is positive infinity.
-    let inline isPositiveInfinity (x : ^a) =
+    let inline isPositiveInfinity (x : ^T) =
         isPosInfAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
 
     /// Returns whether x is negative infinity.
-    let inline isNegativeInfinity (x : ^a) =
+    let inline isNegativeInfinity (x : ^T) =
         isNegInfAux Unchecked.defaultof<Helpers.Infinity> Unchecked.defaultof<Helpers.InfinityS> x
 
     /// Returns whether x is finite (i.e. not NaN and not infinity).
-    let inline isFinite (x : ^a) =
+    let inline isFinite (x : ^T) =
         (x |> isInfinity |> not) && (x |> isNaN |> not)
 
     [<CompilerMessage("testing purposes", 1337, IsHidden = true)>]
     module ``Math compiler tests 😀😁`` =
         type MyCustomNumericTypeExtensionTestTypeForInternalTesting() =
-            static member Pow(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : float) = h
+            static member IsNaN(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = false
+            static member Power(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : float) = h
+            static member Pown(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : int) = h
             static member (*)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member (*)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : int) = h
+            static member (+)(h : int, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = e
             static member (+)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member (-)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member (/)(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting, e : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
-            static member One = MyCustomNumericTypeExtensionTestTypeForInternalTesting()
 
             static member Signum(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member Signumi(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = 0
@@ -335,7 +302,13 @@ module FSharpMath =
             static member Log(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member Log2(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
+            static member Acosh(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member Asinh(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member Atanh(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+
             static member Sqrt(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+
+            static member inline MultiplyAdd(a : MyCustomNumericTypeExtensionTestTypeForInternalTesting, b : int, c : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = a
 
             static member DegreesFromRadians(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member RadiansFromDegrees(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
@@ -473,12 +446,16 @@ module FSharpMath =
             let a : ComplexD = one
             ()
 
+        let inline indirectSignum (x : ^T) =
+            signum x
+
         let signumWorking() =
             let a : float = signum 1.0
             let b : int = signum 1
             let s : V2d = signum V2d.II
             let a : decimal = signum 1.0m
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = signum (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = indirectSignum (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
 
         let signumIntWorking() =
@@ -488,8 +465,12 @@ module FSharpMath =
             let a : int = signumi (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
 
+        let inline indirectPown (x : ^T) (y : int) =
+            pown x y
+
         let pownWorking() =
             let a = pown (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 6
+            let a = indirectPown (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 6
             let a : float = pown 1.0 2
             let a : int = pown 1 2
             let a : uint16 = pown 1us 2
@@ -498,6 +479,7 @@ module FSharpMath =
             let a : int64 = pown 1L 2L
 
             let a = 2.0 * (pown V3d.III V3i.III)
+            let a = 2.0 * (indirectPown V3d.III 6)
 
             let a : V2f = pown V2f.One 1
             let a : V2f = pown V2f.One V2i.One
@@ -512,16 +494,23 @@ module FSharpMath =
 
             ()
 
+        let inline indirectPow (x : ^T) (y : ^U) =
+            pow x y
+
         let powWorking() =
             let a : float = pow 1.0 2.0
+            let a : float = indirectPow 1.0 2.0
             let a : float32 = pow 1.0f 2.0f
+            let a : float32 = indirectPow 1.0f 2.0f
             let a = log (2.0 + 8.0 * (pow V3d.III V3d.III))
+            let a = log (2.0 + 8.0 * (indirectPow V3d.III V3d.III))
 
             let a = pow (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 12.
 
             // This doesn't work if we just extend the built-in pow function
             // by adding Pow() members to the vector types...
             let a : V2d -> float -> V2d = pow
+            let a : V2d -> float -> V2d = indirectPow
             let a : V2d -> float -> V2d = ( ** )
 
             let a : V2d = pow V2d.II V2d.II
@@ -544,11 +533,15 @@ module FSharpMath =
             let a : ComplexD = ComplexD.One ** 1.0
             ()
 
+        let inline indirectLog2 (x : ^T) : ^T =
+            log2 x
+
         let log2Working() =
             let a : float = log2 10.0
             let a : V2d =  log2 V2d.II
             let a : ComplexD = log2 ComplexD.One
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = log2 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = indirectLog2 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
 
         let acoshWorking() =
@@ -601,10 +594,14 @@ module FSharpMath =
             let a = exp ((V3f.Zero |> clamp 0.5f V3f.One) * 0.5f)
             ()
 
+        let inline indirectMin x y =
+            min x y
+
         let minWorking() =
             let a : V2d = min V2d.II V2d.OO
             let a : V2d = min 0.0 V2d.II
             let a = (V2d.II |> min 1.0) * 2.0 - 0.5
+            let a = (V2d.II |> indirectMin 1.0) * 2.0 - 0.5
             let a : float = min 1.0 2.0
             let a : uint32 = min 1u 2u
             let a : nativeint = min 1n 2n
@@ -620,12 +617,17 @@ module FSharpMath =
             let a : Version = max (Version(1,2,3)) (Version(3,2,3))
             ()
 
+        let inline indirectSaturate (x : ^T) =
+            saturate x
+
         let saturateWorking() =
             let a : int = saturate 3
+            let a : int = indirectSaturate 3
             let a : float = saturate 3.0
             let a : uint32 = saturate 3u
             let a : nativeint = saturate 3n
             let a : V2d = saturate V2d.One
+            let a : V2d = indirectSaturate V2d.One
             let a : V4i = saturate V4i.One
             ()
 
@@ -676,21 +678,32 @@ module FSharpMath =
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = degrees (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
 
+        let inline indirectMultiplyAdd (x : ^T) (y : ^U) (z : ^T) =
+            madd x y z
+
         let multiplyAddWorking() =
             let a : float = madd 0.0 1.0 2.0
             let a : float32 = madd 0.0f 1.0f 2.0f
             let a : V3d = madd V3d.Zero 1.0 V3d.Zero
+            let a : V3d = indirectMultiplyAdd V3d.Zero 1.0 V3d.Zero
             let a : V3d = madd V3d.Zero V3d.Zero V3d.Zero
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = madd (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 1 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = indirectMultiplyAdd (MyCustomNumericTypeExtensionTestTypeForInternalTesting()) 1 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
+
+        let inline indirectIsNaN (x : ^T) =
+            isNaN x
 
         let specialFloatingPointValuesWorking() =
             let a : bool = isNaN 0.0
+            let a : bool = indirectIsNaN 0.0
             let a : bool = isNaN 0.0f
             let a : bool = isNaN ComplexD.Zero
             let a : bool = isNaN V3d.Zero
             let a : bool = isNaN C3d.Black
             let a : bool = isNaN M44d.Identity
+            let a : bool = isNaN (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            let a : bool = indirectIsNaN (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             let a : bool = isFinite 0.0
             let a : bool = isFinite 0.0f
             let a : bool = isFinite ComplexD.Zero
