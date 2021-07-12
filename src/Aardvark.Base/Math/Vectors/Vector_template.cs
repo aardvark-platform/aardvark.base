@@ -1347,14 +1347,12 @@ namespace Aardvark.Base
         //# }
         //# {
         //# var ops = new[] {" + ", " - ", " * ", " / "};
-        //# var opactions = new[,]  { { "operator +", "operator -", "operator *", "operator /"},
-        //#                           { "Add", "Subtract", "Multiply", "Divide"}};
+        //# var opactions = new[]  { "operator +", "operator -", "operator *", "operator /"};
         //# var opnames = new[] {"sum", "difference", "product", "fraction"};
         //# for (int o = 0; o < ops.Length; o++) {
         //#     var op = ops[o];
         //#     var opname = opnames[o];
-        //#     for (int action = 0; action < 2; action++) {
-        //#         var opaction = opactions[action, o];
+        //#     var opaction = opactions[o];
         /// <summary>
         /// Returns the component-wise __opname__ of two vectors.
         /// </summary>
@@ -1376,7 +1374,6 @@ namespace Aardvark.Base
         public static __vtype__ __opaction__(__ftype__ s, __vtype__ v)
             => new __vtype__(/*# fields.ForEach(f => { */s__op__v.__f__/*# }, comma); */);
 
-        //#     }
         //# }
         //# }
         //# if (!ft.IsReal) {
