@@ -607,9 +607,10 @@ namespace Aardvark.Base
 
         #region Multiply-Add
 
-        //# fdtypes.ForEach(t => {
+        //# numdectypes.ForEach(t => {
         //# var type = t.Name;
         //# var isDouble = (t == Meta.DoubleType);
+        //# if (fdtypes.Contains(t)) {
         #if NETCOREAPP3_1
         /// <summary>
         /// Returns (x * y) + z.
@@ -635,6 +636,17 @@ namespace Aardvark.Base
             #endif
         }
 
+        //# } else {
+        //# var cast = smalltypes.Contains(t) ? "(" + type + ")" : "";
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ MultiplyAdd(__type__ x, __type__ y, __type__ z)
+            => __cast__((x * y) + z);
+
+        //# }
         //# });
         #endregion
 

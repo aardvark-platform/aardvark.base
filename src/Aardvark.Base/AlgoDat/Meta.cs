@@ -1096,9 +1096,9 @@ namespace Aardvark.Base
 
             #region Multiply-Add
             Add("Multiply-Add",
-                Method("MultiplyAdd", false, RealTypes, Tensor("x"), Tensor("y"), Tensor("z")),
-                Method("MultiplyAdd", false, RealTypes, Tensor("x"), Scalar("y"), Tensor("z")),
-                Method("MultiplyAdd", false, RealTypes, Scalar("x"), Tensor("y"), Tensor("z"))
+                Method("MultiplyAdd", false, AllExcept(), Tensor("x"), Tensor("y"), Tensor("z")),
+                Method("MultiplyAdd", false, AllExcept(), Tensor("x"), Scalar("y"), Tensor("z")),
+                Method("MultiplyAdd", false, AllExcept(), Scalar("x"), Tensor("y"), Tensor("z"))
             );
             #endregion
 

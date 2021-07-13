@@ -2356,6 +2356,70 @@ namespace Aardvark.Base
 
         #region Multiply-Add
 
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte MultiplyAdd(byte x, byte y, byte z)
+            => (byte)((x * y) + z);
+
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte MultiplyAdd(sbyte x, sbyte y, sbyte z)
+            => (sbyte)((x * y) + z);
+
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short MultiplyAdd(short x, short y, short z)
+            => (short)((x * y) + z);
+
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort MultiplyAdd(ushort x, ushort y, ushort z)
+            => (ushort)((x * y) + z);
+
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MultiplyAdd(int x, int y, int z)
+            => ((x * y) + z);
+
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint MultiplyAdd(uint x, uint y, uint z)
+            => ((x * y) + z);
+
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long MultiplyAdd(long x, long y, long z)
+            => ((x * y) + z);
+
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong MultiplyAdd(ulong x, ulong y, ulong z)
+            => ((x * y) + z);
+
         #if NETCOREAPP3_1
         /// <summary>
         /// Returns (x * y) + z.
@@ -2397,6 +2461,14 @@ namespace Aardvark.Base
                 return (x * y) + z;
             #endif
         }
+
+        /// <summary>
+        /// Returns (x * y) + z.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal MultiplyAdd(decimal x, decimal y, decimal z)
+            => ((x * y) + z);
 
         #endregion
 
