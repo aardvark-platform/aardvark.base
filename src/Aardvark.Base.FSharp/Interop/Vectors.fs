@@ -23,6 +23,12 @@ module Vec =
         let inline refractAux (_ : ^z) (eta : ^b) (n : ^a) (v : ^a) =
             ((^z or ^a) : (static member Refract : ^a * ^a * ^b -> ^a) (v, n, eta))
 
+        let inline anyEqualAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AnyEqual : ^a * ^b -> bool) (a, b))
+
+        let inline anyDifferentAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AnyDifferent : ^a * ^b -> bool) (a, b))
+
         let inline anySmallerAux (_ : ^z) (a : ^a) (b : ^b) =
             ((^z or ^a or ^b) : (static member AnySmaller : ^a * ^b -> bool) (a, b))
 
@@ -34,6 +40,12 @@ module Vec =
 
         let inline anyGreaterOrEqualAux (_ : ^z) (a : ^a) (b : ^b) =
             ((^z or ^a or ^b) : (static member AnyGreaterOrEqual : ^a * ^b -> bool) (a, b))
+
+        let inline allEqualAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AllEqual : ^a * ^b -> bool) (a, b))
+
+        let inline allDifferentAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AllDifferent : ^a * ^b -> bool) (a, b))
 
         let inline allSmallerAux (_ : ^z) (a : ^a) (b : ^b) =
             ((^z or ^a or ^b) : (static member AllSmaller : ^a * ^b -> bool) (a, b))
@@ -115,6 +127,22 @@ module Vec =
     /// Returns the yzw-components of the vector v.
     let inline yzw< ^a, ^b when ^a : (member YZW : ^b)> (v : ^a) =
         (^a : (member YZW : ^b) v)
+
+    /// Returns if a = b for any component. One or both of a and b have to be a vector.
+    let inline anyEqual a b =
+        anyEqualAux Unchecked.defaultof<Vec> a b
+
+    /// Returns if a <> b for any component. One or both of a and b have to be a vector.
+    let inline anyDifferent a b =
+        anyDifferentAux Unchecked.defaultof<Vec> a b
+
+    /// Returns if a = b for all components. One or both of a and b have to be a vector.
+    let inline allEqual a b =
+        allEqualAux Unchecked.defaultof<Vec> a b
+
+    /// Returns if a <> b for all components. One or both of a and b have to be a vector.
+    let inline allDifferent a b =
+        allDifferentAux Unchecked.defaultof<Vec> a b
 
     /// Returns if a < b for any component. One or both of a and b have to be a vector.
     let inline anySmaller a b =
@@ -212,6 +240,12 @@ module Vec =
             ()
 
         let comparisonsWorking () =
+            let a : bool = anyEqual V3i.One V3i.Zero
+            let a : bool = anyEqual V3i.One 0
+            let a : bool = anyEqual 1 V3i.Zero
+            let a : bool = anyDifferent V3i.One V3i.Zero
+            let a : bool = anyDifferent V3i.One 0
+            let a : bool = anyDifferent 1 V3i.Zero
             let a : bool = anySmaller V3i.One V3i.Zero
             let a : bool = anySmaller V3i.One 0
             let a : bool = anySmaller 1 V3i.Zero
@@ -224,6 +258,12 @@ module Vec =
             let a : bool = anyGreaterOrEqual V3i.One V3i.Zero
             let a : bool = anyGreaterOrEqual V3i.One 0
             let a : bool = anyGreaterOrEqual 1 V3i.Zero
+            let a : bool = allEqual V3i.One V3i.Zero
+            let a : bool = allEqual V3i.One 0
+            let a : bool = allEqual 1 V3i.Zero
+            let a : bool = allDifferent V3i.One V3i.Zero
+            let a : bool = allDifferent V3i.One 0
+            let a : bool = allDifferent 1 V3i.Zero
             let a : bool = allSmaller V3i.One V3i.Zero
             let a : bool = allSmaller V3i.One 0
             let a : bool = allSmaller 1 V3i.Zero

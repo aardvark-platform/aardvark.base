@@ -1530,67 +1530,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M22i a, M22i b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M22i a, int s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M10 < s && 
-                a.M11 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(int s, M22i a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M10  && 
-                s < a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M22i a, M22i b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M22i a, int s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M10 > s && 
-                a.M11 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(int s, M22i a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M10  && 
-                s > a.M11 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22i a, M22i b)
@@ -1620,66 +1560,6 @@ namespace Aardvark.Base
                 s == a.M01  && 
                 s == a.M10  && 
                 s == a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M22i a, M22i b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M22i a, int s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(int s, M22i a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M10  && 
-                s <= a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M22i a, M22i b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M22i a, int s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(int s, M22i a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M10  && 
-                s >= a.M11 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2206,6 +2086,533 @@ namespace Aardvark.Base
         public static void Transpose(this ref M22i m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M22i a, M22i b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M22i m, int s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M10 < s && 
+                m.M11 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(int s, M22i m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M10 && 
+                s < m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M22i a, M22i b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M22i m, int s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M10 < s || 
+                m.M11 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(int s, M22i m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M10 || 
+                s < m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M22i a, M22i b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M22i m, int s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M10 > s && 
+                m.M11 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(int s, M22i m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M10 && 
+                s > m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M22i a, M22i b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M22i m, int s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M10 > s || 
+                m.M11 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(int s, M22i m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M10 || 
+                s > m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M22i a, M22i b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M22i m, int s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(int s, M22i m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M10 && 
+                s <= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M22i a, M22i b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M22i m, int s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(int s, M22i m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M10 || 
+                s <= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M22i a, M22i b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M22i m, int s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(int s, M22i m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M10 && 
+                s >= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M22i a, M22i b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M22i m, int s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(int s, M22i m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M10 || 
+                s >= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M22i a, M22i b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M22i m, int s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M10 == s && 
+                m.M11 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(int s, M22i m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M10 && 
+                s == m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M22i a, M22i b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M22i m, int s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M10 == s || 
+                m.M11 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(int s, M22i m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M10 || 
+                s == m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M22i a, M22i b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M22i m, int s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M10 != s && 
+                m.M11 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(int s, M22i m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M10 && 
+                s != m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M22i a, M22i b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M22i m, int s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M10 != s || 
+                m.M11 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(int s, M22i m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M10 || 
+                s != m.M11;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M22i m0, M22i m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            return 0;
         }
 
         #endregion
@@ -3732,67 +4139,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M22l a, M22l b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M22l a, long s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M10 < s && 
-                a.M11 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(long s, M22l a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M10  && 
-                s < a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M22l a, M22l b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M22l a, long s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M10 > s && 
-                a.M11 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(long s, M22l a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M10  && 
-                s > a.M11 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22l a, M22l b)
@@ -3822,66 +4169,6 @@ namespace Aardvark.Base
                 s == a.M01  && 
                 s == a.M10  && 
                 s == a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M22l a, M22l b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M22l a, long s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(long s, M22l a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M10  && 
-                s <= a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M22l a, M22l b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M22l a, long s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(long s, M22l a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M10  && 
-                s >= a.M11 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4408,6 +4695,533 @@ namespace Aardvark.Base
         public static void Transpose(this ref M22l m)
         {
             Fun.Swap(ref m.M10, ref m.M01);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M22l a, M22l b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M22l m, long s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M10 < s && 
+                m.M11 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(long s, M22l m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M10 && 
+                s < m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M22l a, M22l b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M22l m, long s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M10 < s || 
+                m.M11 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(long s, M22l m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M10 || 
+                s < m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M22l a, M22l b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M22l m, long s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M10 > s && 
+                m.M11 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(long s, M22l m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M10 && 
+                s > m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M22l a, M22l b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M22l m, long s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M10 > s || 
+                m.M11 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(long s, M22l m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M10 || 
+                s > m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M22l a, M22l b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M22l m, long s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(long s, M22l m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M10 && 
+                s <= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M22l a, M22l b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M22l m, long s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(long s, M22l m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M10 || 
+                s <= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M22l a, M22l b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M22l m, long s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(long s, M22l m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M10 && 
+                s >= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M22l a, M22l b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M22l m, long s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(long s, M22l m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M10 || 
+                s >= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M22l a, M22l b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M22l m, long s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M10 == s && 
+                m.M11 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(long s, M22l m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M10 && 
+                s == m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M22l a, M22l b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M22l m, long s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M10 == s || 
+                m.M11 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(long s, M22l m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M10 || 
+                s == m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M22l a, M22l b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M22l m, long s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M10 != s && 
+                m.M11 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(long s, M22l m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M10 && 
+                s != m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M22l a, M22l b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M22l m, long s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M10 != s || 
+                m.M11 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(long s, M22l m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M10 || 
+                s != m.M11;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M22l m0, M22l m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            return 0;
         }
 
         #endregion
@@ -5911,67 +6725,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M22f a, M22f b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M22f a, float s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M10 < s && 
-                a.M11 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(float s, M22f a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M10  && 
-                s < a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M22f a, M22f b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M22f a, float s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M10 > s && 
-                a.M11 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(float s, M22f a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M10  && 
-                s > a.M11 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22f a, M22f b)
@@ -6001,66 +6755,6 @@ namespace Aardvark.Base
                 s == a.M01  && 
                 s == a.M10  && 
                 s == a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M22f a, M22f b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M22f a, float s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(float s, M22f a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M10  && 
-                s <= a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M22f a, M22f b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M22f a, float s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(float s, M22f a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M10  && 
-                s >= a.M11 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6699,6 +7393,533 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOrthogonal(this M22f m)
             => IsOrthogonal(m, Constant<float>.PositiveTinyValue);
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M22f a, M22f b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M22f m, float s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M10 < s && 
+                m.M11 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(float s, M22f m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M10 && 
+                s < m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M22f a, M22f b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M22f m, float s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M10 < s || 
+                m.M11 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(float s, M22f m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M10 || 
+                s < m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M22f a, M22f b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M22f m, float s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M10 > s && 
+                m.M11 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(float s, M22f m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M10 && 
+                s > m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M22f a, M22f b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M22f m, float s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M10 > s || 
+                m.M11 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(float s, M22f m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M10 || 
+                s > m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M22f a, M22f b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M22f m, float s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(float s, M22f m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M10 && 
+                s <= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M22f a, M22f b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M22f m, float s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(float s, M22f m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M10 || 
+                s <= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M22f a, M22f b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M22f m, float s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(float s, M22f m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M10 && 
+                s >= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M22f a, M22f b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M22f m, float s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(float s, M22f m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M10 || 
+                s >= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M22f a, M22f b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M22f m, float s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M10 == s && 
+                m.M11 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(float s, M22f m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M10 && 
+                s == m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M22f a, M22f b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M22f m, float s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M10 == s || 
+                m.M11 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(float s, M22f m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M10 || 
+                s == m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M22f a, M22f b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M22f m, float s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M10 != s && 
+                m.M11 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(float s, M22f m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M10 && 
+                s != m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M22f a, M22f b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M22f m, float s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M10 != s || 
+                m.M11 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(float s, M22f m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M10 || 
+                s != m.M11;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M22f m0, M22f m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            return 0;
+        }
 
         #endregion
 
@@ -8211,67 +9432,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M22d a, M22d b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M22d a, double s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M10 < s && 
-                a.M11 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(double s, M22d a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M10  && 
-                s < a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M22d a, M22d b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M22d a, double s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M10 > s && 
-                a.M11 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(double s, M22d a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M10  && 
-                s > a.M11 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M22d a, M22d b)
@@ -8301,66 +9462,6 @@ namespace Aardvark.Base
                 s == a.M01  && 
                 s == a.M10  && 
                 s == a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M22d a, M22d b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M22d a, double s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(double s, M22d a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M10  && 
-                s <= a.M11 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M22d a, M22d b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M22d a, double s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(double s, M22d a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M10  && 
-                s >= a.M11 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9011,6 +10112,533 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOrthogonal(this M22d m)
             => IsOrthogonal(m, Constant<double>.PositiveTinyValue);
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M22d a, M22d b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M22d m, double s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M10 < s && 
+                m.M11 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(double s, M22d m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M10 && 
+                s < m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M22d a, M22d b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M22d m, double s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M10 < s || 
+                m.M11 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(double s, M22d m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M10 || 
+                s < m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M22d a, M22d b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M22d m, double s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M10 > s && 
+                m.M11 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(double s, M22d m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M10 && 
+                s > m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M22d a, M22d b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M22d m, double s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M10 > s || 
+                m.M11 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(double s, M22d m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M10 || 
+                s > m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M22d a, M22d b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M22d m, double s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(double s, M22d m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M10 && 
+                s <= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M22d a, M22d b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M22d m, double s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(double s, M22d m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M10 || 
+                s <= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M22d a, M22d b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M22d m, double s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(double s, M22d m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M10 && 
+                s >= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M22d a, M22d b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M22d m, double s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(double s, M22d m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M10 || 
+                s >= m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M22d a, M22d b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M22d m, double s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M10 == s && 
+                m.M11 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(double s, M22d m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M10 && 
+                s == m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M22d a, M22d b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M22d m, double s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M10 == s || 
+                m.M11 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(double s, M22d m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M10 || 
+                s == m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M22d a, M22d b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M22d m, double s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M10 != s && 
+                m.M11 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(double s, M22d m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M10 && 
+                s != m.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M22d a, M22d b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M22d m, double s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M10 != s || 
+                m.M11 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(double s, M22d m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M10 || 
+                s != m.M11;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M22d m0, M22d m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            return 0;
+        }
 
         #endregion
 
@@ -10823,79 +12451,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M23i a, M23i b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M23i a, int s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(int s, M23i a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M23i a, M23i b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M23i a, int s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(int s, M23i a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23i a, M23i b)
@@ -10931,78 +12487,6 @@ namespace Aardvark.Base
                 s == a.M10  && 
                 s == a.M11  && 
                 s == a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M23i a, M23i b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M23i a, int s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(int s, M23i a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M23i a, M23i b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M23i a, int s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(int s, M23i a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11447,6 +12931,609 @@ namespace Aardvark.Base
         {
             int* ptr = &m.M00;
             return new V2i(ptr[index], ptr[index + 3]);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M23i a, M23i b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M23i m, int s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(int s, M23i m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M23i a, M23i b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M23i m, int s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(int s, M23i m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M23i a, M23i b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M23i m, int s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(int s, M23i m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M23i a, M23i b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M23i m, int s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(int s, M23i m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M23i a, M23i b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M23i m, int s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(int s, M23i m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M23i a, M23i b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M23i m, int s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(int s, M23i m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M23i a, M23i b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M23i m, int s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(int s, M23i m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M23i a, M23i b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M23i m, int s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(int s, M23i m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M23i a, M23i b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M23i m, int s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(int s, M23i m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M23i a, M23i b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M23i m, int s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(int s, M23i m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M23i a, M23i b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M23i m, int s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(int s, M23i m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M23i a, M23i b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M23i m, int s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(int s, M23i m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M23i m0, M23i m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            return 0;
         }
 
         #endregion
@@ -12993,79 +15080,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M23l a, M23l b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M23l a, long s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(long s, M23l a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M23l a, M23l b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M23l a, long s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(long s, M23l a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23l a, M23l b)
@@ -13101,78 +15116,6 @@ namespace Aardvark.Base
                 s == a.M10  && 
                 s == a.M11  && 
                 s == a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M23l a, M23l b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M23l a, long s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(long s, M23l a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M23l a, M23l b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M23l a, long s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(long s, M23l a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13617,6 +15560,609 @@ namespace Aardvark.Base
         {
             long* ptr = &m.M00;
             return new V2l(ptr[index], ptr[index + 3]);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M23l a, M23l b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M23l m, long s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(long s, M23l m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M23l a, M23l b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M23l m, long s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(long s, M23l m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M23l a, M23l b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M23l m, long s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(long s, M23l m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M23l a, M23l b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M23l m, long s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(long s, M23l m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M23l a, M23l b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M23l m, long s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(long s, M23l m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M23l a, M23l b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M23l m, long s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(long s, M23l m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M23l a, M23l b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M23l m, long s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(long s, M23l m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M23l a, M23l b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M23l m, long s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(long s, M23l m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M23l a, M23l b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M23l m, long s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(long s, M23l m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M23l a, M23l b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M23l m, long s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(long s, M23l m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M23l a, M23l b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M23l m, long s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(long s, M23l m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M23l a, M23l b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M23l m, long s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(long s, M23l m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M23l m0, M23l m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            return 0;
         }
 
         #endregion
@@ -15140,79 +17686,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M23f a, M23f b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M23f a, float s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(float s, M23f a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M23f a, M23f b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M23f a, float s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(float s, M23f a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23f a, M23f b)
@@ -15248,78 +17722,6 @@ namespace Aardvark.Base
                 s == a.M10  && 
                 s == a.M11  && 
                 s == a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M23f a, M23f b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M23f a, float s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(float s, M23f a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M23f a, M23f b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M23f a, float s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(float s, M23f a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15771,6 +18173,609 @@ namespace Aardvark.Base
         {
             float* ptr = &m.M00;
             return new V2f(ptr[index], ptr[index + 3]);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M23f a, M23f b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M23f m, float s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(float s, M23f m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M23f a, M23f b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M23f m, float s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(float s, M23f m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M23f a, M23f b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M23f m, float s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(float s, M23f m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M23f a, M23f b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M23f m, float s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(float s, M23f m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M23f a, M23f b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M23f m, float s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(float s, M23f m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M23f a, M23f b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M23f m, float s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(float s, M23f m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M23f a, M23f b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M23f m, float s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(float s, M23f m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M23f a, M23f b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M23f m, float s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(float s, M23f m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M23f a, M23f b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M23f m, float s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(float s, M23f m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M23f a, M23f b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M23f m, float s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(float s, M23f m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M23f a, M23f b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M23f m, float s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(float s, M23f m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M23f a, M23f b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M23f m, float s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(float s, M23f m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M23f m0, M23f m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            return 0;
         }
 
         #endregion
@@ -17254,79 +20259,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M23d a, M23d b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M23d a, double s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(double s, M23d a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M23d a, M23d b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M23d a, double s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(double s, M23d a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M23d a, M23d b)
@@ -17362,78 +20295,6 @@ namespace Aardvark.Base
                 s == a.M10  && 
                 s == a.M11  && 
                 s == a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M23d a, M23d b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M23d a, double s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(double s, M23d a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M23d a, M23d b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M23d a, double s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(double s, M23d a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17885,6 +20746,609 @@ namespace Aardvark.Base
         {
             double* ptr = &m.M00;
             return new V2d(ptr[index], ptr[index + 3]);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M23d a, M23d b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M23d m, double s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(double s, M23d m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M23d a, M23d b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M23d m, double s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(double s, M23d m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M23d a, M23d b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M23d m, double s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(double s, M23d m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M23d a, M23d b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M23d m, double s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(double s, M23d m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M23d a, M23d b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M23d m, double s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(double s, M23d m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M23d a, M23d b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M23d m, double s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(double s, M23d m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M23d a, M23d b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M23d m, double s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(double s, M23d m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M23d a, M23d b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M23d m, double s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(double s, M23d m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M23d a, M23d b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M23d m, double s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(double s, M23d m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M23d a, M23d b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M23d m, double s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(double s, M23d m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M23d a, M23d b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M23d m, double s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(double s, M23d m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M23d a, M23d b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M23d m, double s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(double s, M23d m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M23d m0, M23d m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            return 0;
         }
 
         #endregion
@@ -19974,97 +23438,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M33i a, M33i b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M33i a, int s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(int s, M33i a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M33i a, M33i b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M33i a, int s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(int s, M33i a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33i a, M33i b)
@@ -20109,96 +23483,6 @@ namespace Aardvark.Base
                 s == a.M20  && 
                 s == a.M21  && 
                 s == a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M33i a, M33i b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M33i a, int s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(int s, M33i a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M33i a, M33i b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M33i a, int s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(int s, M33i a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20888,6 +24172,723 @@ namespace Aardvark.Base
             Fun.Swap(ref m.M10, ref m.M01);
             Fun.Swap(ref m.M20, ref m.M02);
             Fun.Swap(ref m.M21, ref m.M12);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M33i a, M33i b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M33i m, int s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(int s, M33i m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M33i a, M33i b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M33i m, int s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(int s, M33i m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M33i a, M33i b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M33i m, int s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(int s, M33i m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M33i a, M33i b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M33i m, int s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(int s, M33i m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M33i a, M33i b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M33i m, int s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(int s, M33i m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M33i a, M33i b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M33i m, int s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(int s, M33i m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M33i a, M33i b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M33i m, int s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(int s, M33i m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M33i a, M33i b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M33i m, int s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(int s, M33i m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M33i a, M33i b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M33i m, int s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(int s, M33i m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M33i a, M33i b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M33i m, int s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(int s, M33i m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M33i a, M33i b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M33i m, int s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(int s, M33i m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M33i a, M33i b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M33i m, int s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(int s, M33i m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M33i m0, M33i m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            return 0;
         }
 
         #endregion
@@ -22750,97 +26751,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M33l a, M33l b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M33l a, long s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(long s, M33l a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M33l a, M33l b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M33l a, long s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(long s, M33l a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33l a, M33l b)
@@ -22885,96 +26796,6 @@ namespace Aardvark.Base
                 s == a.M20  && 
                 s == a.M21  && 
                 s == a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M33l a, M33l b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M33l a, long s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(long s, M33l a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M33l a, M33l b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M33l a, long s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(long s, M33l a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23664,6 +27485,723 @@ namespace Aardvark.Base
             Fun.Swap(ref m.M10, ref m.M01);
             Fun.Swap(ref m.M20, ref m.M02);
             Fun.Swap(ref m.M21, ref m.M12);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M33l a, M33l b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M33l m, long s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(long s, M33l m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M33l a, M33l b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M33l m, long s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(long s, M33l m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M33l a, M33l b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M33l m, long s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(long s, M33l m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M33l a, M33l b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M33l m, long s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(long s, M33l m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M33l a, M33l b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M33l m, long s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(long s, M33l m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M33l a, M33l b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M33l m, long s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(long s, M33l m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M33l a, M33l b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M33l m, long s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(long s, M33l m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M33l a, M33l b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M33l m, long s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(long s, M33l m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M33l a, M33l b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M33l m, long s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(long s, M33l m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M33l a, M33l b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M33l m, long s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(long s, M33l m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M33l a, M33l b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M33l m, long s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(long s, M33l m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M33l a, M33l b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M33l m, long s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(long s, M33l m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M33l m0, M33l m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            return 0;
         }
 
         #endregion
@@ -25660,97 +30198,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M33f a, M33f b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M33f a, float s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(float s, M33f a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M33f a, M33f b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M33f a, float s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(float s, M33f a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33f a, M33f b)
@@ -25795,96 +30243,6 @@ namespace Aardvark.Base
                 s == a.M20  && 
                 s == a.M21  && 
                 s == a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M33f a, M33f b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M33f a, float s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(float s, M33f a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M33f a, M33f b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M33f a, float s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(float s, M33f a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26679,6 +31037,723 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOrthogonal(this M33f m)
             => IsOrthogonal(m, Constant<float>.PositiveTinyValue);
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M33f a, M33f b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M33f m, float s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(float s, M33f m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M33f a, M33f b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M33f m, float s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(float s, M33f m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M33f a, M33f b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M33f m, float s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(float s, M33f m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M33f a, M33f b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M33f m, float s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(float s, M33f m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M33f a, M33f b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M33f m, float s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(float s, M33f m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M33f a, M33f b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M33f m, float s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(float s, M33f m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M33f a, M33f b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M33f m, float s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(float s, M33f m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M33f a, M33f b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M33f m, float s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(float s, M33f m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M33f a, M33f b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M33f m, float s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(float s, M33f m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M33f a, M33f b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M33f m, float s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(float s, M33f m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M33f a, M33f b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M33f m, float s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(float s, M33f m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M33f a, M33f b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M33f m, float s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(float s, M33f m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M33f m0, M33f m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            return 0;
+        }
 
         #endregion
 
@@ -28678,97 +33753,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M33d a, M33d b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M33d a, double s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(double s, M33d a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M33d a, M33d b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M33d a, double s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(double s, M33d a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M33d a, M33d b)
@@ -28813,96 +33798,6 @@ namespace Aardvark.Base
                 s == a.M20  && 
                 s == a.M21  && 
                 s == a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M33d a, M33d b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M33d a, double s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(double s, M33d a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M33d a, M33d b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M33d a, double s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(double s, M33d a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29709,6 +34604,723 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOrthogonal(this M33d m)
             => IsOrthogonal(m, Constant<double>.PositiveTinyValue);
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M33d a, M33d b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M33d m, double s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(double s, M33d m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M33d a, M33d b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M33d m, double s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(double s, M33d m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M33d a, M33d b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M33d m, double s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(double s, M33d m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M33d a, M33d b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M33d m, double s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(double s, M33d m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M33d a, M33d b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M33d m, double s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(double s, M33d m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M33d a, M33d b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M33d m, double s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(double s, M33d m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M33d a, M33d b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M33d m, double s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(double s, M33d m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M33d a, M33d b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M33d m, double s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(double s, M33d m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M33d a, M33d b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M33d m, double s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(double s, M33d m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M33d a, M33d b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M33d m, double s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(double s, M33d m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M33d a, M33d b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M33d m, double s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(double s, M33d m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M33d a, M33d b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M33d m, double s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(double s, M33d m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M33d m0, M33d m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            return 0;
+        }
 
         #endregion
 
@@ -31858,115 +37470,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M34i a, M34i b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M03 < b.M03 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M13 < b.M13 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22 && 
-                a.M23 < b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M34i a, int s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M03 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M13 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s && 
-                a.M23 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(int s, M34i a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M03  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M13  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22  && 
-                s < a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M34i a, M34i b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M03 > b.M03 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M13 > b.M13 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22 && 
-                a.M23 > b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M34i a, int s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M03 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M13 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s && 
-                a.M23 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(int s, M34i a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M03  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M13  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22  && 
-                s > a.M23 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34i a, M34i b)
@@ -32020,114 +37524,6 @@ namespace Aardvark.Base
                 s == a.M21  && 
                 s == a.M22  && 
                 s == a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M34i a, M34i b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M03 <= b.M03 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M13 <= b.M13 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22 && 
-                a.M23 <= b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M34i a, int s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M03 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M13 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s && 
-                a.M23 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(int s, M34i a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M03  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M13  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22  && 
-                s <= a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M34i a, M34i b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M03 >= b.M03 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M13 >= b.M13 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22 && 
-                a.M23 >= b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M34i a, int s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M03 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M13 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s && 
-                a.M23 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(int s, M34i a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M03  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M13  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22  && 
-                s >= a.M23 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32621,6 +38017,837 @@ namespace Aardvark.Base
         {
             int* ptr = &m.M00;
             return new V3i(ptr[index], ptr[index + 4], ptr[index + 8]);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M34i a, M34i b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M03 < b.M03 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M13 < b.M13 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22 && 
+                a.M23 < b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M34i m, int s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M03 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M13 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s && 
+                m.M23 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(int s, M34i m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M03 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M13 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22 && 
+                s < m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M34i a, M34i b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M03 < b.M03 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M13 < b.M13 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22 || 
+                a.M23 < b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M34i m, int s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M03 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M13 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s || 
+                m.M23 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(int s, M34i m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M03 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M13 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22 || 
+                s < m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M34i a, M34i b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M03 > b.M03 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M13 > b.M13 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22 && 
+                a.M23 > b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M34i m, int s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M03 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M13 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s && 
+                m.M23 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(int s, M34i m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M03 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M13 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22 && 
+                s > m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M34i a, M34i b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M03 > b.M03 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M13 > b.M13 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22 || 
+                a.M23 > b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M34i m, int s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M03 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M13 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s || 
+                m.M23 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(int s, M34i m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M03 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M13 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22 || 
+                s > m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M34i a, M34i b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M03 <= b.M03 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M13 <= b.M13 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22 && 
+                a.M23 <= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M34i m, int s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M03 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M13 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s && 
+                m.M23 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(int s, M34i m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M03 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M13 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22 && 
+                s <= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M34i a, M34i b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M03 <= b.M03 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M13 <= b.M13 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22 || 
+                a.M23 <= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M34i m, int s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M03 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M13 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s || 
+                m.M23 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(int s, M34i m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M03 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M13 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22 || 
+                s <= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M34i a, M34i b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M03 >= b.M03 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M13 >= b.M13 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22 && 
+                a.M23 >= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M34i m, int s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M03 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M13 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s && 
+                m.M23 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(int s, M34i m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M03 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M13 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22 && 
+                s >= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M34i a, M34i b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M03 >= b.M03 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M13 >= b.M13 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22 || 
+                a.M23 >= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M34i m, int s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M03 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M13 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s || 
+                m.M23 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(int s, M34i m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M03 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M13 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22 || 
+                s >= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M34i a, M34i b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M03 == b.M03 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M13 == b.M13 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22 && 
+                a.M23 == b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M34i m, int s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M03 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M13 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s && 
+                m.M23 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(int s, M34i m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M03 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M13 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22 && 
+                s == m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M34i a, M34i b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M03 == b.M03 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M13 == b.M13 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22 || 
+                a.M23 == b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M34i m, int s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M03 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M13 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s || 
+                m.M23 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(int s, M34i m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M03 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M13 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22 || 
+                s == m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M34i a, M34i b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M03 != b.M03 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M13 != b.M13 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22 && 
+                a.M23 != b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M34i m, int s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M03 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M13 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s && 
+                m.M23 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(int s, M34i m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M03 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M13 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22 && 
+                s != m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M34i a, M34i b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M03 != b.M03 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M13 != b.M13 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22 || 
+                a.M23 != b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M34i m, int s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M03 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M13 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s || 
+                m.M23 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(int s, M34i m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M03 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M13 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22 || 
+                s != m.M23;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M34i m0, M34i m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M03 < m1.M03) return -1;
+            if (m0.M03 > m1.M03) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M13 < m1.M13) return -1;
+            if (m0.M13 > m1.M13) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            if (m0.M23 < m1.M23) return -1;
+            if (m0.M23 > m1.M23) return +1;
+            return 0;
         }
 
         #endregion
@@ -34479,115 +40706,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M34l a, M34l b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M03 < b.M03 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M13 < b.M13 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22 && 
-                a.M23 < b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M34l a, long s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M03 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M13 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s && 
-                a.M23 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(long s, M34l a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M03  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M13  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22  && 
-                s < a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M34l a, M34l b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M03 > b.M03 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M13 > b.M13 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22 && 
-                a.M23 > b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M34l a, long s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M03 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M13 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s && 
-                a.M23 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(long s, M34l a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M03  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M13  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22  && 
-                s > a.M23 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34l a, M34l b)
@@ -34641,114 +40760,6 @@ namespace Aardvark.Base
                 s == a.M21  && 
                 s == a.M22  && 
                 s == a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M34l a, M34l b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M03 <= b.M03 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M13 <= b.M13 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22 && 
-                a.M23 <= b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M34l a, long s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M03 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M13 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s && 
-                a.M23 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(long s, M34l a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M03  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M13  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22  && 
-                s <= a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M34l a, M34l b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M03 >= b.M03 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M13 >= b.M13 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22 && 
-                a.M23 >= b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M34l a, long s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M03 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M13 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s && 
-                a.M23 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(long s, M34l a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M03  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M13  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22  && 
-                s >= a.M23 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -35242,6 +41253,837 @@ namespace Aardvark.Base
         {
             long* ptr = &m.M00;
             return new V3l(ptr[index], ptr[index + 4], ptr[index + 8]);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M34l a, M34l b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M03 < b.M03 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M13 < b.M13 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22 && 
+                a.M23 < b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M34l m, long s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M03 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M13 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s && 
+                m.M23 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(long s, M34l m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M03 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M13 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22 && 
+                s < m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M34l a, M34l b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M03 < b.M03 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M13 < b.M13 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22 || 
+                a.M23 < b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M34l m, long s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M03 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M13 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s || 
+                m.M23 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(long s, M34l m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M03 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M13 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22 || 
+                s < m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M34l a, M34l b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M03 > b.M03 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M13 > b.M13 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22 && 
+                a.M23 > b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M34l m, long s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M03 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M13 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s && 
+                m.M23 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(long s, M34l m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M03 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M13 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22 && 
+                s > m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M34l a, M34l b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M03 > b.M03 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M13 > b.M13 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22 || 
+                a.M23 > b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M34l m, long s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M03 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M13 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s || 
+                m.M23 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(long s, M34l m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M03 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M13 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22 || 
+                s > m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M34l a, M34l b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M03 <= b.M03 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M13 <= b.M13 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22 && 
+                a.M23 <= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M34l m, long s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M03 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M13 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s && 
+                m.M23 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(long s, M34l m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M03 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M13 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22 && 
+                s <= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M34l a, M34l b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M03 <= b.M03 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M13 <= b.M13 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22 || 
+                a.M23 <= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M34l m, long s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M03 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M13 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s || 
+                m.M23 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(long s, M34l m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M03 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M13 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22 || 
+                s <= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M34l a, M34l b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M03 >= b.M03 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M13 >= b.M13 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22 && 
+                a.M23 >= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M34l m, long s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M03 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M13 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s && 
+                m.M23 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(long s, M34l m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M03 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M13 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22 && 
+                s >= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M34l a, M34l b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M03 >= b.M03 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M13 >= b.M13 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22 || 
+                a.M23 >= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M34l m, long s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M03 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M13 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s || 
+                m.M23 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(long s, M34l m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M03 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M13 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22 || 
+                s >= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M34l a, M34l b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M03 == b.M03 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M13 == b.M13 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22 && 
+                a.M23 == b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M34l m, long s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M03 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M13 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s && 
+                m.M23 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(long s, M34l m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M03 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M13 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22 && 
+                s == m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M34l a, M34l b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M03 == b.M03 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M13 == b.M13 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22 || 
+                a.M23 == b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M34l m, long s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M03 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M13 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s || 
+                m.M23 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(long s, M34l m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M03 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M13 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22 || 
+                s == m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M34l a, M34l b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M03 != b.M03 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M13 != b.M13 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22 && 
+                a.M23 != b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M34l m, long s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M03 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M13 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s && 
+                m.M23 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(long s, M34l m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M03 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M13 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22 && 
+                s != m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M34l a, M34l b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M03 != b.M03 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M13 != b.M13 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22 || 
+                a.M23 != b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M34l m, long s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M03 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M13 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s || 
+                m.M23 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(long s, M34l m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M03 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M13 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22 || 
+                s != m.M23;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M34l m0, M34l m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M03 < m1.M03) return -1;
+            if (m0.M03 > m1.M03) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M13 < m1.M13) return -1;
+            if (m0.M13 > m1.M13) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            if (m0.M23 < m1.M23) return -1;
+            if (m0.M23 > m1.M23) return +1;
+            return 0;
         }
 
         #endregion
@@ -37186,115 +44028,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M34f a, M34f b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M03 < b.M03 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M13 < b.M13 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22 && 
-                a.M23 < b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M34f a, float s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M03 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M13 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s && 
-                a.M23 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(float s, M34f a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M03  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M13  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22  && 
-                s < a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M34f a, M34f b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M03 > b.M03 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M13 > b.M13 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22 && 
-                a.M23 > b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M34f a, float s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M03 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M13 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s && 
-                a.M23 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(float s, M34f a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M03  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M13  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22  && 
-                s > a.M23 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34f a, M34f b)
@@ -37348,114 +44082,6 @@ namespace Aardvark.Base
                 s == a.M21  && 
                 s == a.M22  && 
                 s == a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M34f a, M34f b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M03 <= b.M03 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M13 <= b.M13 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22 && 
-                a.M23 <= b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M34f a, float s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M03 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M13 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s && 
-                a.M23 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(float s, M34f a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M03  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M13  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22  && 
-                s <= a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M34f a, M34f b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M03 >= b.M03 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M13 >= b.M13 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22 && 
-                a.M23 >= b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M34f a, float s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M03 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M13 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s && 
-                a.M23 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(float s, M34f a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M03  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M13  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22  && 
-                s >= a.M23 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -37975,6 +44601,837 @@ namespace Aardvark.Base
         {
             float* ptr = &m.M00;
             return new V3f(ptr[index], ptr[index + 4], ptr[index + 8]);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M34f a, M34f b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M03 < b.M03 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M13 < b.M13 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22 && 
+                a.M23 < b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M34f m, float s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M03 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M13 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s && 
+                m.M23 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(float s, M34f m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M03 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M13 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22 && 
+                s < m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M34f a, M34f b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M03 < b.M03 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M13 < b.M13 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22 || 
+                a.M23 < b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M34f m, float s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M03 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M13 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s || 
+                m.M23 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(float s, M34f m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M03 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M13 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22 || 
+                s < m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M34f a, M34f b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M03 > b.M03 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M13 > b.M13 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22 && 
+                a.M23 > b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M34f m, float s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M03 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M13 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s && 
+                m.M23 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(float s, M34f m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M03 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M13 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22 && 
+                s > m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M34f a, M34f b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M03 > b.M03 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M13 > b.M13 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22 || 
+                a.M23 > b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M34f m, float s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M03 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M13 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s || 
+                m.M23 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(float s, M34f m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M03 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M13 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22 || 
+                s > m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M34f a, M34f b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M03 <= b.M03 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M13 <= b.M13 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22 && 
+                a.M23 <= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M34f m, float s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M03 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M13 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s && 
+                m.M23 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(float s, M34f m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M03 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M13 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22 && 
+                s <= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M34f a, M34f b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M03 <= b.M03 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M13 <= b.M13 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22 || 
+                a.M23 <= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M34f m, float s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M03 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M13 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s || 
+                m.M23 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(float s, M34f m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M03 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M13 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22 || 
+                s <= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M34f a, M34f b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M03 >= b.M03 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M13 >= b.M13 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22 && 
+                a.M23 >= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M34f m, float s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M03 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M13 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s && 
+                m.M23 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(float s, M34f m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M03 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M13 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22 && 
+                s >= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M34f a, M34f b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M03 >= b.M03 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M13 >= b.M13 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22 || 
+                a.M23 >= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M34f m, float s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M03 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M13 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s || 
+                m.M23 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(float s, M34f m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M03 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M13 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22 || 
+                s >= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M34f a, M34f b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M03 == b.M03 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M13 == b.M13 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22 && 
+                a.M23 == b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M34f m, float s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M03 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M13 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s && 
+                m.M23 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(float s, M34f m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M03 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M13 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22 && 
+                s == m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M34f a, M34f b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M03 == b.M03 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M13 == b.M13 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22 || 
+                a.M23 == b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M34f m, float s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M03 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M13 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s || 
+                m.M23 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(float s, M34f m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M03 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M13 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22 || 
+                s == m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M34f a, M34f b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M03 != b.M03 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M13 != b.M13 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22 && 
+                a.M23 != b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M34f m, float s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M03 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M13 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s && 
+                m.M23 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(float s, M34f m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M03 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M13 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22 && 
+                s != m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M34f a, M34f b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M03 != b.M03 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M13 != b.M13 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22 || 
+                a.M23 != b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M34f m, float s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M03 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M13 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s || 
+                m.M23 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(float s, M34f m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M03 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M13 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22 || 
+                s != m.M23;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M34f m0, M34f m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M03 < m1.M03) return -1;
+            if (m0.M03 > m1.M03) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M13 < m1.M13) return -1;
+            if (m0.M13 > m1.M13) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            if (m0.M23 < m1.M23) return -1;
+            if (m0.M23 > m1.M23) return +1;
+            return 0;
         }
 
         #endregion
@@ -39864,115 +47321,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M34d a, M34d b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M03 < b.M03 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M13 < b.M13 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22 && 
-                a.M23 < b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M34d a, double s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M03 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M13 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s && 
-                a.M23 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(double s, M34d a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M03  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M13  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22  && 
-                s < a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M34d a, M34d b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M03 > b.M03 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M13 > b.M13 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22 && 
-                a.M23 > b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M34d a, double s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M03 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M13 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s && 
-                a.M23 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(double s, M34d a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M03  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M13  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22  && 
-                s > a.M23 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M34d a, M34d b)
@@ -40026,114 +47375,6 @@ namespace Aardvark.Base
                 s == a.M21  && 
                 s == a.M22  && 
                 s == a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M34d a, M34d b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M03 <= b.M03 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M13 <= b.M13 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22 && 
-                a.M23 <= b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M34d a, double s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M03 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M13 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s && 
-                a.M23 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(double s, M34d a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M03  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M13  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22  && 
-                s <= a.M23 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M34d a, M34d b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M03 >= b.M03 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M13 >= b.M13 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22 && 
-                a.M23 >= b.M23;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M34d a, double s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M03 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M13 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s && 
-                a.M23 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(double s, M34d a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M03  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M13  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22  && 
-                s >= a.M23 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40653,6 +47894,837 @@ namespace Aardvark.Base
         {
             double* ptr = &m.M00;
             return new V3d(ptr[index], ptr[index + 4], ptr[index + 8]);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M34d a, M34d b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M03 < b.M03 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M13 < b.M13 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22 && 
+                a.M23 < b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M34d m, double s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M03 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M13 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s && 
+                m.M23 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(double s, M34d m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M03 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M13 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22 && 
+                s < m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M34d a, M34d b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M03 < b.M03 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M13 < b.M13 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22 || 
+                a.M23 < b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M34d m, double s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M03 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M13 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s || 
+                m.M23 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(double s, M34d m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M03 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M13 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22 || 
+                s < m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M34d a, M34d b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M03 > b.M03 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M13 > b.M13 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22 && 
+                a.M23 > b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M34d m, double s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M03 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M13 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s && 
+                m.M23 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(double s, M34d m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M03 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M13 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22 && 
+                s > m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M34d a, M34d b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M03 > b.M03 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M13 > b.M13 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22 || 
+                a.M23 > b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M34d m, double s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M03 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M13 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s || 
+                m.M23 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(double s, M34d m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M03 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M13 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22 || 
+                s > m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M34d a, M34d b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M03 <= b.M03 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M13 <= b.M13 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22 && 
+                a.M23 <= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M34d m, double s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M03 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M13 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s && 
+                m.M23 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(double s, M34d m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M03 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M13 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22 && 
+                s <= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M34d a, M34d b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M03 <= b.M03 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M13 <= b.M13 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22 || 
+                a.M23 <= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M34d m, double s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M03 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M13 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s || 
+                m.M23 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(double s, M34d m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M03 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M13 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22 || 
+                s <= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M34d a, M34d b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M03 >= b.M03 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M13 >= b.M13 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22 && 
+                a.M23 >= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M34d m, double s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M03 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M13 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s && 
+                m.M23 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(double s, M34d m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M03 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M13 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22 && 
+                s >= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M34d a, M34d b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M03 >= b.M03 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M13 >= b.M13 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22 || 
+                a.M23 >= b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M34d m, double s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M03 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M13 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s || 
+                m.M23 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(double s, M34d m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M03 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M13 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22 || 
+                s >= m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M34d a, M34d b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M03 == b.M03 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M13 == b.M13 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22 && 
+                a.M23 == b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M34d m, double s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M03 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M13 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s && 
+                m.M23 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(double s, M34d m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M03 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M13 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22 && 
+                s == m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M34d a, M34d b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M03 == b.M03 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M13 == b.M13 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22 || 
+                a.M23 == b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M34d m, double s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M03 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M13 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s || 
+                m.M23 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(double s, M34d m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M03 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M13 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22 || 
+                s == m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M34d a, M34d b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M03 != b.M03 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M13 != b.M13 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22 && 
+                a.M23 != b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M34d m, double s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M03 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M13 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s && 
+                m.M23 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(double s, M34d m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M03 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M13 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22 && 
+                s != m.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M34d a, M34d b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M03 != b.M03 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M13 != b.M13 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22 || 
+                a.M23 != b.M23;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M34d m, double s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M03 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M13 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s || 
+                m.M23 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(double s, M34d m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M03 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M13 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22 || 
+                s != m.M23;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M34d m0, M34d m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M03 < m1.M03) return -1;
+            if (m0.M03 > m1.M03) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M13 < m1.M13) return -1;
+            if (m0.M13 > m1.M13) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            if (m0.M23 < m1.M23) return -1;
+            if (m0.M23 > m1.M23) return +1;
+            return 0;
         }
 
         #endregion
@@ -43014,139 +51086,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M44i a, M44i b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M03 < b.M03 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M13 < b.M13 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22 && 
-                a.M23 < b.M23 && 
-                a.M30 < b.M30 && 
-                a.M31 < b.M31 && 
-                a.M32 < b.M32 && 
-                a.M33 < b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M44i a, int s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M03 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M13 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s && 
-                a.M23 < s && 
-                a.M30 < s && 
-                a.M31 < s && 
-                a.M32 < s && 
-                a.M33 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(int s, M44i a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M03  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M13  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22  && 
-                s < a.M23  && 
-                s < a.M30  && 
-                s < a.M31  && 
-                s < a.M32  && 
-                s < a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M44i a, M44i b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M03 > b.M03 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M13 > b.M13 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22 && 
-                a.M23 > b.M23 && 
-                a.M30 > b.M30 && 
-                a.M31 > b.M31 && 
-                a.M32 > b.M32 && 
-                a.M33 > b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M44i a, int s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M03 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M13 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s && 
-                a.M23 > s && 
-                a.M30 > s && 
-                a.M31 > s && 
-                a.M32 > s && 
-                a.M33 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(int s, M44i a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M03  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M13  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22  && 
-                s > a.M23  && 
-                s > a.M30  && 
-                s > a.M31  && 
-                s > a.M32  && 
-                s > a.M33 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44i a, M44i b)
@@ -43212,138 +51152,6 @@ namespace Aardvark.Base
                 s == a.M31  && 
                 s == a.M32  && 
                 s == a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M44i a, M44i b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M03 <= b.M03 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M13 <= b.M13 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22 && 
-                a.M23 <= b.M23 && 
-                a.M30 <= b.M30 && 
-                a.M31 <= b.M31 && 
-                a.M32 <= b.M32 && 
-                a.M33 <= b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M44i a, int s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M03 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M13 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s && 
-                a.M23 <= s && 
-                a.M30 <= s && 
-                a.M31 <= s && 
-                a.M32 <= s && 
-                a.M33 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(int s, M44i a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M03  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M13  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22  && 
-                s <= a.M23  && 
-                s <= a.M30  && 
-                s <= a.M31  && 
-                s <= a.M32  && 
-                s <= a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M44i a, M44i b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M03 >= b.M03 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M13 >= b.M13 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22 && 
-                a.M23 >= b.M23 && 
-                a.M30 >= b.M30 && 
-                a.M31 >= b.M31 && 
-                a.M32 >= b.M32 && 
-                a.M33 >= b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M44i a, int s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M03 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M13 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s && 
-                a.M23 >= s && 
-                a.M30 >= s && 
-                a.M31 >= s && 
-                a.M32 >= s && 
-                a.M33 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(int s, M44i a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M03  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M13  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22  && 
-                s >= a.M23  && 
-                s >= a.M30  && 
-                s >= a.M31  && 
-                s >= a.M32  && 
-                s >= a.M33 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44089,6 +51897,989 @@ namespace Aardvark.Base
             Fun.Swap(ref m.M30, ref m.M03);
             Fun.Swap(ref m.M31, ref m.M13);
             Fun.Swap(ref m.M32, ref m.M23);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M44i a, M44i b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M03 < b.M03 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M13 < b.M13 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22 && 
+                a.M23 < b.M23 && 
+                a.M30 < b.M30 && 
+                a.M31 < b.M31 && 
+                a.M32 < b.M32 && 
+                a.M33 < b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M44i m, int s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M03 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M13 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s && 
+                m.M23 < s && 
+                m.M30 < s && 
+                m.M31 < s && 
+                m.M32 < s && 
+                m.M33 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(int s, M44i m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M03 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M13 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22 && 
+                s < m.M23 && 
+                s < m.M30 && 
+                s < m.M31 && 
+                s < m.M32 && 
+                s < m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M44i a, M44i b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M03 < b.M03 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M13 < b.M13 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22 || 
+                a.M23 < b.M23 || 
+                a.M30 < b.M30 || 
+                a.M31 < b.M31 || 
+                a.M32 < b.M32 || 
+                a.M33 < b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M44i m, int s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M03 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M13 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s || 
+                m.M23 < s || 
+                m.M30 < s || 
+                m.M31 < s || 
+                m.M32 < s || 
+                m.M33 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(int s, M44i m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M03 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M13 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22 || 
+                s < m.M23 || 
+                s < m.M30 || 
+                s < m.M31 || 
+                s < m.M32 || 
+                s < m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M44i a, M44i b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M03 > b.M03 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M13 > b.M13 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22 && 
+                a.M23 > b.M23 && 
+                a.M30 > b.M30 && 
+                a.M31 > b.M31 && 
+                a.M32 > b.M32 && 
+                a.M33 > b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M44i m, int s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M03 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M13 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s && 
+                m.M23 > s && 
+                m.M30 > s && 
+                m.M31 > s && 
+                m.M32 > s && 
+                m.M33 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(int s, M44i m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M03 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M13 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22 && 
+                s > m.M23 && 
+                s > m.M30 && 
+                s > m.M31 && 
+                s > m.M32 && 
+                s > m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M44i a, M44i b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M03 > b.M03 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M13 > b.M13 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22 || 
+                a.M23 > b.M23 || 
+                a.M30 > b.M30 || 
+                a.M31 > b.M31 || 
+                a.M32 > b.M32 || 
+                a.M33 > b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M44i m, int s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M03 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M13 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s || 
+                m.M23 > s || 
+                m.M30 > s || 
+                m.M31 > s || 
+                m.M32 > s || 
+                m.M33 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(int s, M44i m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M03 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M13 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22 || 
+                s > m.M23 || 
+                s > m.M30 || 
+                s > m.M31 || 
+                s > m.M32 || 
+                s > m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M44i a, M44i b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M03 <= b.M03 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M13 <= b.M13 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22 && 
+                a.M23 <= b.M23 && 
+                a.M30 <= b.M30 && 
+                a.M31 <= b.M31 && 
+                a.M32 <= b.M32 && 
+                a.M33 <= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M44i m, int s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M03 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M13 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s && 
+                m.M23 <= s && 
+                m.M30 <= s && 
+                m.M31 <= s && 
+                m.M32 <= s && 
+                m.M33 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(int s, M44i m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M03 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M13 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22 && 
+                s <= m.M23 && 
+                s <= m.M30 && 
+                s <= m.M31 && 
+                s <= m.M32 && 
+                s <= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M44i a, M44i b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M03 <= b.M03 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M13 <= b.M13 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22 || 
+                a.M23 <= b.M23 || 
+                a.M30 <= b.M30 || 
+                a.M31 <= b.M31 || 
+                a.M32 <= b.M32 || 
+                a.M33 <= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M44i m, int s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M03 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M13 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s || 
+                m.M23 <= s || 
+                m.M30 <= s || 
+                m.M31 <= s || 
+                m.M32 <= s || 
+                m.M33 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(int s, M44i m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M03 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M13 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22 || 
+                s <= m.M23 || 
+                s <= m.M30 || 
+                s <= m.M31 || 
+                s <= m.M32 || 
+                s <= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M44i a, M44i b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M03 >= b.M03 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M13 >= b.M13 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22 && 
+                a.M23 >= b.M23 && 
+                a.M30 >= b.M30 && 
+                a.M31 >= b.M31 && 
+                a.M32 >= b.M32 && 
+                a.M33 >= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M44i m, int s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M03 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M13 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s && 
+                m.M23 >= s && 
+                m.M30 >= s && 
+                m.M31 >= s && 
+                m.M32 >= s && 
+                m.M33 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(int s, M44i m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M03 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M13 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22 && 
+                s >= m.M23 && 
+                s >= m.M30 && 
+                s >= m.M31 && 
+                s >= m.M32 && 
+                s >= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M44i a, M44i b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M03 >= b.M03 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M13 >= b.M13 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22 || 
+                a.M23 >= b.M23 || 
+                a.M30 >= b.M30 || 
+                a.M31 >= b.M31 || 
+                a.M32 >= b.M32 || 
+                a.M33 >= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M44i m, int s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M03 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M13 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s || 
+                m.M23 >= s || 
+                m.M30 >= s || 
+                m.M31 >= s || 
+                m.M32 >= s || 
+                m.M33 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(int s, M44i m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M03 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M13 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22 || 
+                s >= m.M23 || 
+                s >= m.M30 || 
+                s >= m.M31 || 
+                s >= m.M32 || 
+                s >= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M44i a, M44i b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M03 == b.M03 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M13 == b.M13 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22 && 
+                a.M23 == b.M23 && 
+                a.M30 == b.M30 && 
+                a.M31 == b.M31 && 
+                a.M32 == b.M32 && 
+                a.M33 == b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M44i m, int s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M03 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M13 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s && 
+                m.M23 == s && 
+                m.M30 == s && 
+                m.M31 == s && 
+                m.M32 == s && 
+                m.M33 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(int s, M44i m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M03 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M13 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22 && 
+                s == m.M23 && 
+                s == m.M30 && 
+                s == m.M31 && 
+                s == m.M32 && 
+                s == m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M44i a, M44i b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M03 == b.M03 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M13 == b.M13 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22 || 
+                a.M23 == b.M23 || 
+                a.M30 == b.M30 || 
+                a.M31 == b.M31 || 
+                a.M32 == b.M32 || 
+                a.M33 == b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M44i m, int s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M03 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M13 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s || 
+                m.M23 == s || 
+                m.M30 == s || 
+                m.M31 == s || 
+                m.M32 == s || 
+                m.M33 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(int s, M44i m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M03 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M13 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22 || 
+                s == m.M23 || 
+                s == m.M30 || 
+                s == m.M31 || 
+                s == m.M32 || 
+                s == m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M44i a, M44i b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M03 != b.M03 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M13 != b.M13 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22 && 
+                a.M23 != b.M23 && 
+                a.M30 != b.M30 && 
+                a.M31 != b.M31 && 
+                a.M32 != b.M32 && 
+                a.M33 != b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M44i m, int s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M03 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M13 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s && 
+                m.M23 != s && 
+                m.M30 != s && 
+                m.M31 != s && 
+                m.M32 != s && 
+                m.M33 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(int s, M44i m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M03 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M13 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22 && 
+                s != m.M23 && 
+                s != m.M30 && 
+                s != m.M31 && 
+                s != m.M32 && 
+                s != m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M44i a, M44i b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M03 != b.M03 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M13 != b.M13 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22 || 
+                a.M23 != b.M23 || 
+                a.M30 != b.M30 || 
+                a.M31 != b.M31 || 
+                a.M32 != b.M32 || 
+                a.M33 != b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M44i m, int s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M03 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M13 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s || 
+                m.M23 != s || 
+                m.M30 != s || 
+                m.M31 != s || 
+                m.M32 != s || 
+                m.M33 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(int s, M44i m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M03 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M13 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22 || 
+                s != m.M23 || 
+                s != m.M30 || 
+                s != m.M31 || 
+                s != m.M32 || 
+                s != m.M33;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M44i m0, M44i m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M03 < m1.M03) return -1;
+            if (m0.M03 > m1.M03) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M13 < m1.M13) return -1;
+            if (m0.M13 > m1.M13) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            if (m0.M23 < m1.M23) return -1;
+            if (m0.M23 > m1.M23) return +1;
+            if (m0.M30 < m1.M30) return -1;
+            if (m0.M30 > m1.M30) return +1;
+            if (m0.M31 < m1.M31) return -1;
+            if (m0.M31 > m1.M31) return +1;
+            if (m0.M32 < m1.M32) return -1;
+            if (m0.M32 > m1.M32) return +1;
+            if (m0.M33 < m1.M33) return -1;
+            if (m0.M33 > m1.M33) return +1;
+            return 0;
         }
 
         #endregion
@@ -46207,139 +54998,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M44l a, M44l b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M03 < b.M03 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M13 < b.M13 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22 && 
-                a.M23 < b.M23 && 
-                a.M30 < b.M30 && 
-                a.M31 < b.M31 && 
-                a.M32 < b.M32 && 
-                a.M33 < b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M44l a, long s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M03 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M13 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s && 
-                a.M23 < s && 
-                a.M30 < s && 
-                a.M31 < s && 
-                a.M32 < s && 
-                a.M33 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(long s, M44l a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M03  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M13  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22  && 
-                s < a.M23  && 
-                s < a.M30  && 
-                s < a.M31  && 
-                s < a.M32  && 
-                s < a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M44l a, M44l b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M03 > b.M03 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M13 > b.M13 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22 && 
-                a.M23 > b.M23 && 
-                a.M30 > b.M30 && 
-                a.M31 > b.M31 && 
-                a.M32 > b.M32 && 
-                a.M33 > b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M44l a, long s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M03 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M13 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s && 
-                a.M23 > s && 
-                a.M30 > s && 
-                a.M31 > s && 
-                a.M32 > s && 
-                a.M33 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(long s, M44l a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M03  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M13  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22  && 
-                s > a.M23  && 
-                s > a.M30  && 
-                s > a.M31  && 
-                s > a.M32  && 
-                s > a.M33 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44l a, M44l b)
@@ -46405,138 +55064,6 @@ namespace Aardvark.Base
                 s == a.M31  && 
                 s == a.M32  && 
                 s == a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M44l a, M44l b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M03 <= b.M03 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M13 <= b.M13 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22 && 
-                a.M23 <= b.M23 && 
-                a.M30 <= b.M30 && 
-                a.M31 <= b.M31 && 
-                a.M32 <= b.M32 && 
-                a.M33 <= b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M44l a, long s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M03 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M13 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s && 
-                a.M23 <= s && 
-                a.M30 <= s && 
-                a.M31 <= s && 
-                a.M32 <= s && 
-                a.M33 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(long s, M44l a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M03  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M13  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22  && 
-                s <= a.M23  && 
-                s <= a.M30  && 
-                s <= a.M31  && 
-                s <= a.M32  && 
-                s <= a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M44l a, M44l b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M03 >= b.M03 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M13 >= b.M13 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22 && 
-                a.M23 >= b.M23 && 
-                a.M30 >= b.M30 && 
-                a.M31 >= b.M31 && 
-                a.M32 >= b.M32 && 
-                a.M33 >= b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M44l a, long s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M03 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M13 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s && 
-                a.M23 >= s && 
-                a.M30 >= s && 
-                a.M31 >= s && 
-                a.M32 >= s && 
-                a.M33 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(long s, M44l a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M03  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M13  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22  && 
-                s >= a.M23  && 
-                s >= a.M30  && 
-                s >= a.M31  && 
-                s >= a.M32  && 
-                s >= a.M33 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -47282,6 +55809,989 @@ namespace Aardvark.Base
             Fun.Swap(ref m.M30, ref m.M03);
             Fun.Swap(ref m.M31, ref m.M13);
             Fun.Swap(ref m.M32, ref m.M23);
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M44l a, M44l b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M03 < b.M03 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M13 < b.M13 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22 && 
+                a.M23 < b.M23 && 
+                a.M30 < b.M30 && 
+                a.M31 < b.M31 && 
+                a.M32 < b.M32 && 
+                a.M33 < b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M44l m, long s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M03 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M13 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s && 
+                m.M23 < s && 
+                m.M30 < s && 
+                m.M31 < s && 
+                m.M32 < s && 
+                m.M33 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(long s, M44l m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M03 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M13 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22 && 
+                s < m.M23 && 
+                s < m.M30 && 
+                s < m.M31 && 
+                s < m.M32 && 
+                s < m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M44l a, M44l b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M03 < b.M03 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M13 < b.M13 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22 || 
+                a.M23 < b.M23 || 
+                a.M30 < b.M30 || 
+                a.M31 < b.M31 || 
+                a.M32 < b.M32 || 
+                a.M33 < b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M44l m, long s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M03 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M13 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s || 
+                m.M23 < s || 
+                m.M30 < s || 
+                m.M31 < s || 
+                m.M32 < s || 
+                m.M33 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(long s, M44l m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M03 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M13 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22 || 
+                s < m.M23 || 
+                s < m.M30 || 
+                s < m.M31 || 
+                s < m.M32 || 
+                s < m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M44l a, M44l b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M03 > b.M03 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M13 > b.M13 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22 && 
+                a.M23 > b.M23 && 
+                a.M30 > b.M30 && 
+                a.M31 > b.M31 && 
+                a.M32 > b.M32 && 
+                a.M33 > b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M44l m, long s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M03 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M13 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s && 
+                m.M23 > s && 
+                m.M30 > s && 
+                m.M31 > s && 
+                m.M32 > s && 
+                m.M33 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(long s, M44l m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M03 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M13 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22 && 
+                s > m.M23 && 
+                s > m.M30 && 
+                s > m.M31 && 
+                s > m.M32 && 
+                s > m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M44l a, M44l b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M03 > b.M03 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M13 > b.M13 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22 || 
+                a.M23 > b.M23 || 
+                a.M30 > b.M30 || 
+                a.M31 > b.M31 || 
+                a.M32 > b.M32 || 
+                a.M33 > b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M44l m, long s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M03 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M13 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s || 
+                m.M23 > s || 
+                m.M30 > s || 
+                m.M31 > s || 
+                m.M32 > s || 
+                m.M33 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(long s, M44l m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M03 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M13 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22 || 
+                s > m.M23 || 
+                s > m.M30 || 
+                s > m.M31 || 
+                s > m.M32 || 
+                s > m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M44l a, M44l b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M03 <= b.M03 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M13 <= b.M13 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22 && 
+                a.M23 <= b.M23 && 
+                a.M30 <= b.M30 && 
+                a.M31 <= b.M31 && 
+                a.M32 <= b.M32 && 
+                a.M33 <= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M44l m, long s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M03 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M13 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s && 
+                m.M23 <= s && 
+                m.M30 <= s && 
+                m.M31 <= s && 
+                m.M32 <= s && 
+                m.M33 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(long s, M44l m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M03 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M13 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22 && 
+                s <= m.M23 && 
+                s <= m.M30 && 
+                s <= m.M31 && 
+                s <= m.M32 && 
+                s <= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M44l a, M44l b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M03 <= b.M03 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M13 <= b.M13 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22 || 
+                a.M23 <= b.M23 || 
+                a.M30 <= b.M30 || 
+                a.M31 <= b.M31 || 
+                a.M32 <= b.M32 || 
+                a.M33 <= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M44l m, long s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M03 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M13 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s || 
+                m.M23 <= s || 
+                m.M30 <= s || 
+                m.M31 <= s || 
+                m.M32 <= s || 
+                m.M33 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(long s, M44l m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M03 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M13 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22 || 
+                s <= m.M23 || 
+                s <= m.M30 || 
+                s <= m.M31 || 
+                s <= m.M32 || 
+                s <= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M44l a, M44l b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M03 >= b.M03 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M13 >= b.M13 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22 && 
+                a.M23 >= b.M23 && 
+                a.M30 >= b.M30 && 
+                a.M31 >= b.M31 && 
+                a.M32 >= b.M32 && 
+                a.M33 >= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M44l m, long s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M03 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M13 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s && 
+                m.M23 >= s && 
+                m.M30 >= s && 
+                m.M31 >= s && 
+                m.M32 >= s && 
+                m.M33 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(long s, M44l m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M03 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M13 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22 && 
+                s >= m.M23 && 
+                s >= m.M30 && 
+                s >= m.M31 && 
+                s >= m.M32 && 
+                s >= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M44l a, M44l b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M03 >= b.M03 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M13 >= b.M13 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22 || 
+                a.M23 >= b.M23 || 
+                a.M30 >= b.M30 || 
+                a.M31 >= b.M31 || 
+                a.M32 >= b.M32 || 
+                a.M33 >= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M44l m, long s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M03 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M13 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s || 
+                m.M23 >= s || 
+                m.M30 >= s || 
+                m.M31 >= s || 
+                m.M32 >= s || 
+                m.M33 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(long s, M44l m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M03 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M13 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22 || 
+                s >= m.M23 || 
+                s >= m.M30 || 
+                s >= m.M31 || 
+                s >= m.M32 || 
+                s >= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M44l a, M44l b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M03 == b.M03 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M13 == b.M13 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22 && 
+                a.M23 == b.M23 && 
+                a.M30 == b.M30 && 
+                a.M31 == b.M31 && 
+                a.M32 == b.M32 && 
+                a.M33 == b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M44l m, long s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M03 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M13 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s && 
+                m.M23 == s && 
+                m.M30 == s && 
+                m.M31 == s && 
+                m.M32 == s && 
+                m.M33 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(long s, M44l m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M03 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M13 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22 && 
+                s == m.M23 && 
+                s == m.M30 && 
+                s == m.M31 && 
+                s == m.M32 && 
+                s == m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M44l a, M44l b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M03 == b.M03 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M13 == b.M13 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22 || 
+                a.M23 == b.M23 || 
+                a.M30 == b.M30 || 
+                a.M31 == b.M31 || 
+                a.M32 == b.M32 || 
+                a.M33 == b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M44l m, long s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M03 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M13 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s || 
+                m.M23 == s || 
+                m.M30 == s || 
+                m.M31 == s || 
+                m.M32 == s || 
+                m.M33 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(long s, M44l m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M03 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M13 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22 || 
+                s == m.M23 || 
+                s == m.M30 || 
+                s == m.M31 || 
+                s == m.M32 || 
+                s == m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M44l a, M44l b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M03 != b.M03 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M13 != b.M13 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22 && 
+                a.M23 != b.M23 && 
+                a.M30 != b.M30 && 
+                a.M31 != b.M31 && 
+                a.M32 != b.M32 && 
+                a.M33 != b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M44l m, long s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M03 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M13 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s && 
+                m.M23 != s && 
+                m.M30 != s && 
+                m.M31 != s && 
+                m.M32 != s && 
+                m.M33 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(long s, M44l m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M03 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M13 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22 && 
+                s != m.M23 && 
+                s != m.M30 && 
+                s != m.M31 && 
+                s != m.M32 && 
+                s != m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M44l a, M44l b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M03 != b.M03 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M13 != b.M13 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22 || 
+                a.M23 != b.M23 || 
+                a.M30 != b.M30 || 
+                a.M31 != b.M31 || 
+                a.M32 != b.M32 || 
+                a.M33 != b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M44l m, long s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M03 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M13 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s || 
+                m.M23 != s || 
+                m.M30 != s || 
+                m.M31 != s || 
+                m.M32 != s || 
+                m.M33 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(long s, M44l m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M03 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M13 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22 || 
+                s != m.M23 || 
+                s != m.M30 || 
+                s != m.M31 || 
+                s != m.M32 || 
+                s != m.M33;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M44l m0, M44l m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M03 < m1.M03) return -1;
+            if (m0.M03 > m1.M03) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M13 < m1.M13) return -1;
+            if (m0.M13 > m1.M13) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            if (m0.M23 < m1.M23) return -1;
+            if (m0.M23 > m1.M23) return +1;
+            if (m0.M30 < m1.M30) return -1;
+            if (m0.M30 > m1.M30) return +1;
+            if (m0.M31 < m1.M31) return -1;
+            if (m0.M31 > m1.M31) return +1;
+            if (m0.M32 < m1.M32) return -1;
+            if (m0.M32 > m1.M32) return +1;
+            if (m0.M33 < m1.M33) return -1;
+            if (m0.M33 > m1.M33) return +1;
+            return 0;
         }
 
         #endregion
@@ -49482,139 +58992,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M44f a, M44f b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M03 < b.M03 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M13 < b.M13 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22 && 
-                a.M23 < b.M23 && 
-                a.M30 < b.M30 && 
-                a.M31 < b.M31 && 
-                a.M32 < b.M32 && 
-                a.M33 < b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M44f a, float s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M03 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M13 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s && 
-                a.M23 < s && 
-                a.M30 < s && 
-                a.M31 < s && 
-                a.M32 < s && 
-                a.M33 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(float s, M44f a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M03  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M13  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22  && 
-                s < a.M23  && 
-                s < a.M30  && 
-                s < a.M31  && 
-                s < a.M32  && 
-                s < a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M44f a, M44f b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M03 > b.M03 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M13 > b.M13 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22 && 
-                a.M23 > b.M23 && 
-                a.M30 > b.M30 && 
-                a.M31 > b.M31 && 
-                a.M32 > b.M32 && 
-                a.M33 > b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M44f a, float s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M03 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M13 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s && 
-                a.M23 > s && 
-                a.M30 > s && 
-                a.M31 > s && 
-                a.M32 > s && 
-                a.M33 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(float s, M44f a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M03  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M13  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22  && 
-                s > a.M23  && 
-                s > a.M30  && 
-                s > a.M31  && 
-                s > a.M32  && 
-                s > a.M33 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44f a, M44f b)
@@ -49680,138 +59058,6 @@ namespace Aardvark.Base
                 s == a.M31  && 
                 s == a.M32  && 
                 s == a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M44f a, M44f b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M03 <= b.M03 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M13 <= b.M13 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22 && 
-                a.M23 <= b.M23 && 
-                a.M30 <= b.M30 && 
-                a.M31 <= b.M31 && 
-                a.M32 <= b.M32 && 
-                a.M33 <= b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M44f a, float s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M03 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M13 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s && 
-                a.M23 <= s && 
-                a.M30 <= s && 
-                a.M31 <= s && 
-                a.M32 <= s && 
-                a.M33 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(float s, M44f a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M03  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M13  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22  && 
-                s <= a.M23  && 
-                s <= a.M30  && 
-                s <= a.M31  && 
-                s <= a.M32  && 
-                s <= a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M44f a, M44f b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M03 >= b.M03 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M13 >= b.M13 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22 && 
-                a.M23 >= b.M23 && 
-                a.M30 >= b.M30 && 
-                a.M31 >= b.M31 && 
-                a.M32 >= b.M32 && 
-                a.M33 >= b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M44f a, float s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M03 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M13 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s && 
-                a.M23 >= s && 
-                a.M30 >= s && 
-                a.M31 >= s && 
-                a.M32 >= s && 
-                a.M33 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(float s, M44f a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M03  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M13  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22  && 
-                s >= a.M23  && 
-                s >= a.M30  && 
-                s >= a.M31  && 
-                s >= a.M32  && 
-                s >= a.M33 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50688,6 +59934,989 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOrthogonal(this M44f m)
             => IsOrthogonal(m, Constant<float>.PositiveTinyValue);
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M44f a, M44f b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M03 < b.M03 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M13 < b.M13 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22 && 
+                a.M23 < b.M23 && 
+                a.M30 < b.M30 && 
+                a.M31 < b.M31 && 
+                a.M32 < b.M32 && 
+                a.M33 < b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M44f m, float s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M03 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M13 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s && 
+                m.M23 < s && 
+                m.M30 < s && 
+                m.M31 < s && 
+                m.M32 < s && 
+                m.M33 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(float s, M44f m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M03 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M13 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22 && 
+                s < m.M23 && 
+                s < m.M30 && 
+                s < m.M31 && 
+                s < m.M32 && 
+                s < m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M44f a, M44f b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M03 < b.M03 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M13 < b.M13 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22 || 
+                a.M23 < b.M23 || 
+                a.M30 < b.M30 || 
+                a.M31 < b.M31 || 
+                a.M32 < b.M32 || 
+                a.M33 < b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M44f m, float s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M03 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M13 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s || 
+                m.M23 < s || 
+                m.M30 < s || 
+                m.M31 < s || 
+                m.M32 < s || 
+                m.M33 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(float s, M44f m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M03 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M13 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22 || 
+                s < m.M23 || 
+                s < m.M30 || 
+                s < m.M31 || 
+                s < m.M32 || 
+                s < m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M44f a, M44f b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M03 > b.M03 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M13 > b.M13 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22 && 
+                a.M23 > b.M23 && 
+                a.M30 > b.M30 && 
+                a.M31 > b.M31 && 
+                a.M32 > b.M32 && 
+                a.M33 > b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M44f m, float s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M03 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M13 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s && 
+                m.M23 > s && 
+                m.M30 > s && 
+                m.M31 > s && 
+                m.M32 > s && 
+                m.M33 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(float s, M44f m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M03 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M13 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22 && 
+                s > m.M23 && 
+                s > m.M30 && 
+                s > m.M31 && 
+                s > m.M32 && 
+                s > m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M44f a, M44f b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M03 > b.M03 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M13 > b.M13 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22 || 
+                a.M23 > b.M23 || 
+                a.M30 > b.M30 || 
+                a.M31 > b.M31 || 
+                a.M32 > b.M32 || 
+                a.M33 > b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M44f m, float s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M03 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M13 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s || 
+                m.M23 > s || 
+                m.M30 > s || 
+                m.M31 > s || 
+                m.M32 > s || 
+                m.M33 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(float s, M44f m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M03 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M13 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22 || 
+                s > m.M23 || 
+                s > m.M30 || 
+                s > m.M31 || 
+                s > m.M32 || 
+                s > m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M44f a, M44f b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M03 <= b.M03 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M13 <= b.M13 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22 && 
+                a.M23 <= b.M23 && 
+                a.M30 <= b.M30 && 
+                a.M31 <= b.M31 && 
+                a.M32 <= b.M32 && 
+                a.M33 <= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M44f m, float s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M03 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M13 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s && 
+                m.M23 <= s && 
+                m.M30 <= s && 
+                m.M31 <= s && 
+                m.M32 <= s && 
+                m.M33 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(float s, M44f m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M03 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M13 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22 && 
+                s <= m.M23 && 
+                s <= m.M30 && 
+                s <= m.M31 && 
+                s <= m.M32 && 
+                s <= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M44f a, M44f b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M03 <= b.M03 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M13 <= b.M13 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22 || 
+                a.M23 <= b.M23 || 
+                a.M30 <= b.M30 || 
+                a.M31 <= b.M31 || 
+                a.M32 <= b.M32 || 
+                a.M33 <= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M44f m, float s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M03 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M13 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s || 
+                m.M23 <= s || 
+                m.M30 <= s || 
+                m.M31 <= s || 
+                m.M32 <= s || 
+                m.M33 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(float s, M44f m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M03 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M13 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22 || 
+                s <= m.M23 || 
+                s <= m.M30 || 
+                s <= m.M31 || 
+                s <= m.M32 || 
+                s <= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M44f a, M44f b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M03 >= b.M03 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M13 >= b.M13 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22 && 
+                a.M23 >= b.M23 && 
+                a.M30 >= b.M30 && 
+                a.M31 >= b.M31 && 
+                a.M32 >= b.M32 && 
+                a.M33 >= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M44f m, float s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M03 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M13 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s && 
+                m.M23 >= s && 
+                m.M30 >= s && 
+                m.M31 >= s && 
+                m.M32 >= s && 
+                m.M33 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(float s, M44f m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M03 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M13 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22 && 
+                s >= m.M23 && 
+                s >= m.M30 && 
+                s >= m.M31 && 
+                s >= m.M32 && 
+                s >= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M44f a, M44f b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M03 >= b.M03 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M13 >= b.M13 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22 || 
+                a.M23 >= b.M23 || 
+                a.M30 >= b.M30 || 
+                a.M31 >= b.M31 || 
+                a.M32 >= b.M32 || 
+                a.M33 >= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M44f m, float s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M03 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M13 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s || 
+                m.M23 >= s || 
+                m.M30 >= s || 
+                m.M31 >= s || 
+                m.M32 >= s || 
+                m.M33 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(float s, M44f m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M03 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M13 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22 || 
+                s >= m.M23 || 
+                s >= m.M30 || 
+                s >= m.M31 || 
+                s >= m.M32 || 
+                s >= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M44f a, M44f b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M03 == b.M03 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M13 == b.M13 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22 && 
+                a.M23 == b.M23 && 
+                a.M30 == b.M30 && 
+                a.M31 == b.M31 && 
+                a.M32 == b.M32 && 
+                a.M33 == b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M44f m, float s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M03 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M13 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s && 
+                m.M23 == s && 
+                m.M30 == s && 
+                m.M31 == s && 
+                m.M32 == s && 
+                m.M33 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(float s, M44f m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M03 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M13 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22 && 
+                s == m.M23 && 
+                s == m.M30 && 
+                s == m.M31 && 
+                s == m.M32 && 
+                s == m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M44f a, M44f b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M03 == b.M03 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M13 == b.M13 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22 || 
+                a.M23 == b.M23 || 
+                a.M30 == b.M30 || 
+                a.M31 == b.M31 || 
+                a.M32 == b.M32 || 
+                a.M33 == b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M44f m, float s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M03 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M13 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s || 
+                m.M23 == s || 
+                m.M30 == s || 
+                m.M31 == s || 
+                m.M32 == s || 
+                m.M33 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(float s, M44f m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M03 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M13 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22 || 
+                s == m.M23 || 
+                s == m.M30 || 
+                s == m.M31 || 
+                s == m.M32 || 
+                s == m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M44f a, M44f b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M03 != b.M03 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M13 != b.M13 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22 && 
+                a.M23 != b.M23 && 
+                a.M30 != b.M30 && 
+                a.M31 != b.M31 && 
+                a.M32 != b.M32 && 
+                a.M33 != b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M44f m, float s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M03 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M13 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s && 
+                m.M23 != s && 
+                m.M30 != s && 
+                m.M31 != s && 
+                m.M32 != s && 
+                m.M33 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(float s, M44f m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M03 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M13 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22 && 
+                s != m.M23 && 
+                s != m.M30 && 
+                s != m.M31 && 
+                s != m.M32 && 
+                s != m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M44f a, M44f b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M03 != b.M03 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M13 != b.M13 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22 || 
+                a.M23 != b.M23 || 
+                a.M30 != b.M30 || 
+                a.M31 != b.M31 || 
+                a.M32 != b.M32 || 
+                a.M33 != b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M44f m, float s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M03 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M13 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s || 
+                m.M23 != s || 
+                m.M30 != s || 
+                m.M31 != s || 
+                m.M32 != s || 
+                m.M33 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(float s, M44f m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M03 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M13 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22 || 
+                s != m.M23 || 
+                s != m.M30 || 
+                s != m.M31 || 
+                s != m.M32 || 
+                s != m.M33;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M44f m0, M44f m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M03 < m1.M03) return -1;
+            if (m0.M03 > m1.M03) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M13 < m1.M13) return -1;
+            if (m0.M13 > m1.M13) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            if (m0.M23 < m1.M23) return -1;
+            if (m0.M23 > m1.M23) return +1;
+            if (m0.M30 < m1.M30) return -1;
+            if (m0.M30 > m1.M30) return +1;
+            if (m0.M31 < m1.M31) return -1;
+            if (m0.M31 > m1.M31) return +1;
+            if (m0.M32 < m1.M32) return -1;
+            if (m0.M32 > m1.M32) return +1;
+            if (m0.M33 < m1.M33) return -1;
+            if (m0.M33 > m1.M33) return +1;
+            return 0;
+        }
 
         #endregion
 
@@ -52889,139 +63118,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M44d a, M44d b)
-        {
-            return
-                a.M00 < b.M00 && 
-                a.M01 < b.M01 && 
-                a.M02 < b.M02 && 
-                a.M03 < b.M03 && 
-                a.M10 < b.M10 && 
-                a.M11 < b.M11 && 
-                a.M12 < b.M12 && 
-                a.M13 < b.M13 && 
-                a.M20 < b.M20 && 
-                a.M21 < b.M21 && 
-                a.M22 < b.M22 && 
-                a.M23 < b.M23 && 
-                a.M30 < b.M30 && 
-                a.M31 < b.M31 && 
-                a.M32 < b.M32 && 
-                a.M33 < b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(M44d a, double s)
-        {
-            return
-                a.M00 < s && 
-                a.M01 < s && 
-                a.M02 < s && 
-                a.M03 < s && 
-                a.M10 < s && 
-                a.M11 < s && 
-                a.M12 < s && 
-                a.M13 < s && 
-                a.M20 < s && 
-                a.M21 < s && 
-                a.M22 < s && 
-                a.M23 < s && 
-                a.M30 < s && 
-                a.M31 < s && 
-                a.M32 < s && 
-                a.M33 < s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(double s, M44d a)
-        {
-            return
-                s < a.M00  && 
-                s < a.M01  && 
-                s < a.M02  && 
-                s < a.M03  && 
-                s < a.M10  && 
-                s < a.M11  && 
-                s < a.M12  && 
-                s < a.M13  && 
-                s < a.M20  && 
-                s < a.M21  && 
-                s < a.M22  && 
-                s < a.M23  && 
-                s < a.M30  && 
-                s < a.M31  && 
-                s < a.M32  && 
-                s < a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M44d a, M44d b)
-        {
-            return
-                a.M00 > b.M00 && 
-                a.M01 > b.M01 && 
-                a.M02 > b.M02 && 
-                a.M03 > b.M03 && 
-                a.M10 > b.M10 && 
-                a.M11 > b.M11 && 
-                a.M12 > b.M12 && 
-                a.M13 > b.M13 && 
-                a.M20 > b.M20 && 
-                a.M21 > b.M21 && 
-                a.M22 > b.M22 && 
-                a.M23 > b.M23 && 
-                a.M30 > b.M30 && 
-                a.M31 > b.M31 && 
-                a.M32 > b.M32 && 
-                a.M33 > b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(M44d a, double s)
-        {
-            return
-                a.M00 > s && 
-                a.M01 > s && 
-                a.M02 > s && 
-                a.M03 > s && 
-                a.M10 > s && 
-                a.M11 > s && 
-                a.M12 > s && 
-                a.M13 > s && 
-                a.M20 > s && 
-                a.M21 > s && 
-                a.M22 > s && 
-                a.M23 > s && 
-                a.M30 > s && 
-                a.M31 > s && 
-                a.M32 > s && 
-                a.M33 > s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(double s, M44d a)
-        {
-            return
-                s > a.M00  && 
-                s > a.M01  && 
-                s > a.M02  && 
-                s > a.M03  && 
-                s > a.M10  && 
-                s > a.M11  && 
-                s > a.M12  && 
-                s > a.M13  && 
-                s > a.M20  && 
-                s > a.M21  && 
-                s > a.M22  && 
-                s > a.M23  && 
-                s > a.M30  && 
-                s > a.M31  && 
-                s > a.M32  && 
-                s > a.M33 ;
-        }
+        #region Comparisons
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(M44d a, M44d b)
@@ -53087,138 +63184,6 @@ namespace Aardvark.Base
                 s == a.M31  && 
                 s == a.M32  && 
                 s == a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M44d a, M44d b)
-        {
-            return
-                a.M00 <= b.M00 && 
-                a.M01 <= b.M01 && 
-                a.M02 <= b.M02 && 
-                a.M03 <= b.M03 && 
-                a.M10 <= b.M10 && 
-                a.M11 <= b.M11 && 
-                a.M12 <= b.M12 && 
-                a.M13 <= b.M13 && 
-                a.M20 <= b.M20 && 
-                a.M21 <= b.M21 && 
-                a.M22 <= b.M22 && 
-                a.M23 <= b.M23 && 
-                a.M30 <= b.M30 && 
-                a.M31 <= b.M31 && 
-                a.M32 <= b.M32 && 
-                a.M33 <= b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(M44d a, double s)
-        {
-            return
-                a.M00 <= s && 
-                a.M01 <= s && 
-                a.M02 <= s && 
-                a.M03 <= s && 
-                a.M10 <= s && 
-                a.M11 <= s && 
-                a.M12 <= s && 
-                a.M13 <= s && 
-                a.M20 <= s && 
-                a.M21 <= s && 
-                a.M22 <= s && 
-                a.M23 <= s && 
-                a.M30 <= s && 
-                a.M31 <= s && 
-                a.M32 <= s && 
-                a.M33 <= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(double s, M44d a)
-        {
-            return
-                s <= a.M00  && 
-                s <= a.M01  && 
-                s <= a.M02  && 
-                s <= a.M03  && 
-                s <= a.M10  && 
-                s <= a.M11  && 
-                s <= a.M12  && 
-                s <= a.M13  && 
-                s <= a.M20  && 
-                s <= a.M21  && 
-                s <= a.M22  && 
-                s <= a.M23  && 
-                s <= a.M30  && 
-                s <= a.M31  && 
-                s <= a.M32  && 
-                s <= a.M33 ;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M44d a, M44d b)
-        {
-            return
-                a.M00 >= b.M00 && 
-                a.M01 >= b.M01 && 
-                a.M02 >= b.M02 && 
-                a.M03 >= b.M03 && 
-                a.M10 >= b.M10 && 
-                a.M11 >= b.M11 && 
-                a.M12 >= b.M12 && 
-                a.M13 >= b.M13 && 
-                a.M20 >= b.M20 && 
-                a.M21 >= b.M21 && 
-                a.M22 >= b.M22 && 
-                a.M23 >= b.M23 && 
-                a.M30 >= b.M30 && 
-                a.M31 >= b.M31 && 
-                a.M32 >= b.M32 && 
-                a.M33 >= b.M33;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(M44d a, double s)
-        {
-            return
-                a.M00 >= s && 
-                a.M01 >= s && 
-                a.M02 >= s && 
-                a.M03 >= s && 
-                a.M10 >= s && 
-                a.M11 >= s && 
-                a.M12 >= s && 
-                a.M13 >= s && 
-                a.M20 >= s && 
-                a.M21 >= s && 
-                a.M22 >= s && 
-                a.M23 >= s && 
-                a.M30 >= s && 
-                a.M31 >= s && 
-                a.M32 >= s && 
-                a.M33 >= s;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(double s, M44d a)
-        {
-            return
-                s >= a.M00  && 
-                s >= a.M01  && 
-                s >= a.M02  && 
-                s >= a.M03  && 
-                s >= a.M10  && 
-                s >= a.M11  && 
-                s >= a.M12  && 
-                s >= a.M13  && 
-                s >= a.M20  && 
-                s >= a.M21  && 
-                s >= a.M22  && 
-                s >= a.M23  && 
-                s >= a.M30  && 
-                s >= a.M31  && 
-                s >= a.M32  && 
-                s >= a.M33 ;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -54132,6 +64097,989 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsOrthogonal(this M44d m)
             => IsOrthogonal(m, Constant<double>.PositiveTinyValue);
+
+        #endregion
+
+        #region Comparisons
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M44d a, M44d b)
+        {
+            return
+                a.M00 < b.M00 && 
+                a.M01 < b.M01 && 
+                a.M02 < b.M02 && 
+                a.M03 < b.M03 && 
+                a.M10 < b.M10 && 
+                a.M11 < b.M11 && 
+                a.M12 < b.M12 && 
+                a.M13 < b.M13 && 
+                a.M20 < b.M20 && 
+                a.M21 < b.M21 && 
+                a.M22 < b.M22 && 
+                a.M23 < b.M23 && 
+                a.M30 < b.M30 && 
+                a.M31 < b.M31 && 
+                a.M32 < b.M32 && 
+                a.M33 < b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(this M44d m, double s)
+        {
+            return
+                m.M00 < s && 
+                m.M01 < s && 
+                m.M02 < s && 
+                m.M03 < s && 
+                m.M10 < s && 
+                m.M11 < s && 
+                m.M12 < s && 
+                m.M13 < s && 
+                m.M20 < s && 
+                m.M21 < s && 
+                m.M22 < s && 
+                m.M23 < s && 
+                m.M30 < s && 
+                m.M31 < s && 
+                m.M32 < s && 
+                m.M33 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmaller(double s, M44d m)
+        {
+            return
+                s < m.M00 && 
+                s < m.M01 && 
+                s < m.M02 && 
+                s < m.M03 && 
+                s < m.M10 && 
+                s < m.M11 && 
+                s < m.M12 && 
+                s < m.M13 && 
+                s < m.M20 && 
+                s < m.M21 && 
+                s < m.M22 && 
+                s < m.M23 && 
+                s < m.M30 && 
+                s < m.M31 && 
+                s < m.M32 && 
+                s < m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Smaller the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M44d a, M44d b)
+        {
+            return
+                a.M00 < b.M00 || 
+                a.M01 < b.M01 || 
+                a.M02 < b.M02 || 
+                a.M03 < b.M03 || 
+                a.M10 < b.M10 || 
+                a.M11 < b.M11 || 
+                a.M12 < b.M12 || 
+                a.M13 < b.M13 || 
+                a.M20 < b.M20 || 
+                a.M21 < b.M21 || 
+                a.M22 < b.M22 || 
+                a.M23 < b.M23 || 
+                a.M30 < b.M30 || 
+                a.M31 < b.M31 || 
+                a.M32 < b.M32 || 
+                a.M33 < b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Smaller s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(this M44d m, double s)
+        {
+            return
+                m.M00 < s || 
+                m.M01 < s || 
+                m.M02 < s || 
+                m.M03 < s || 
+                m.M10 < s || 
+                m.M11 < s || 
+                m.M12 < s || 
+                m.M13 < s || 
+                m.M20 < s || 
+                m.M21 < s || 
+                m.M22 < s || 
+                m.M23 < s || 
+                m.M30 < s || 
+                m.M31 < s || 
+                m.M32 < s || 
+                m.M33 < s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Smaller AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmaller(double s, M44d m)
+        {
+            return
+                s < m.M00 || 
+                s < m.M01 || 
+                s < m.M02 || 
+                s < m.M03 || 
+                s < m.M10 || 
+                s < m.M11 || 
+                s < m.M12 || 
+                s < m.M13 || 
+                s < m.M20 || 
+                s < m.M21 || 
+                s < m.M22 || 
+                s < m.M23 || 
+                s < m.M30 || 
+                s < m.M31 || 
+                s < m.M32 || 
+                s < m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M44d a, M44d b)
+        {
+            return
+                a.M00 > b.M00 && 
+                a.M01 > b.M01 && 
+                a.M02 > b.M02 && 
+                a.M03 > b.M03 && 
+                a.M10 > b.M10 && 
+                a.M11 > b.M11 && 
+                a.M12 > b.M12 && 
+                a.M13 > b.M13 && 
+                a.M20 > b.M20 && 
+                a.M21 > b.M21 && 
+                a.M22 > b.M22 && 
+                a.M23 > b.M23 && 
+                a.M30 > b.M30 && 
+                a.M31 > b.M31 && 
+                a.M32 > b.M32 && 
+                a.M33 > b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(this M44d m, double s)
+        {
+            return
+                m.M00 > s && 
+                m.M01 > s && 
+                m.M02 > s && 
+                m.M03 > s && 
+                m.M10 > s && 
+                m.M11 > s && 
+                m.M12 > s && 
+                m.M13 > s && 
+                m.M20 > s && 
+                m.M21 > s && 
+                m.M22 > s && 
+                m.M23 > s && 
+                m.M30 > s && 
+                m.M31 > s && 
+                m.M32 > s && 
+                m.M33 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreater(double s, M44d m)
+        {
+            return
+                s > m.M00 && 
+                s > m.M01 && 
+                s > m.M02 && 
+                s > m.M03 && 
+                s > m.M10 && 
+                s > m.M11 && 
+                s > m.M12 && 
+                s > m.M13 && 
+                s > m.M20 && 
+                s > m.M21 && 
+                s > m.M22 && 
+                s > m.M23 && 
+                s > m.M30 && 
+                s > m.M31 && 
+                s > m.M32 && 
+                s > m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Greater the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M44d a, M44d b)
+        {
+            return
+                a.M00 > b.M00 || 
+                a.M01 > b.M01 || 
+                a.M02 > b.M02 || 
+                a.M03 > b.M03 || 
+                a.M10 > b.M10 || 
+                a.M11 > b.M11 || 
+                a.M12 > b.M12 || 
+                a.M13 > b.M13 || 
+                a.M20 > b.M20 || 
+                a.M21 > b.M21 || 
+                a.M22 > b.M22 || 
+                a.M23 > b.M23 || 
+                a.M30 > b.M30 || 
+                a.M31 > b.M31 || 
+                a.M32 > b.M32 || 
+                a.M33 > b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Greater s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(this M44d m, double s)
+        {
+            return
+                m.M00 > s || 
+                m.M01 > s || 
+                m.M02 > s || 
+                m.M03 > s || 
+                m.M10 > s || 
+                m.M11 > s || 
+                m.M12 > s || 
+                m.M13 > s || 
+                m.M20 > s || 
+                m.M21 > s || 
+                m.M22 > s || 
+                m.M23 > s || 
+                m.M30 > s || 
+                m.M31 > s || 
+                m.M32 > s || 
+                m.M33 > s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Greater AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreater(double s, M44d m)
+        {
+            return
+                s > m.M00 || 
+                s > m.M01 || 
+                s > m.M02 || 
+                s > m.M03 || 
+                s > m.M10 || 
+                s > m.M11 || 
+                s > m.M12 || 
+                s > m.M13 || 
+                s > m.M20 || 
+                s > m.M21 || 
+                s > m.M22 || 
+                s > m.M23 || 
+                s > m.M30 || 
+                s > m.M31 || 
+                s > m.M32 || 
+                s > m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M44d a, M44d b)
+        {
+            return
+                a.M00 <= b.M00 && 
+                a.M01 <= b.M01 && 
+                a.M02 <= b.M02 && 
+                a.M03 <= b.M03 && 
+                a.M10 <= b.M10 && 
+                a.M11 <= b.M11 && 
+                a.M12 <= b.M12 && 
+                a.M13 <= b.M13 && 
+                a.M20 <= b.M20 && 
+                a.M21 <= b.M21 && 
+                a.M22 <= b.M22 && 
+                a.M23 <= b.M23 && 
+                a.M30 <= b.M30 && 
+                a.M31 <= b.M31 && 
+                a.M32 <= b.M32 && 
+                a.M33 <= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(this M44d m, double s)
+        {
+            return
+                m.M00 <= s && 
+                m.M01 <= s && 
+                m.M02 <= s && 
+                m.M03 <= s && 
+                m.M10 <= s && 
+                m.M11 <= s && 
+                m.M12 <= s && 
+                m.M13 <= s && 
+                m.M20 <= s && 
+                m.M21 <= s && 
+                m.M22 <= s && 
+                m.M23 <= s && 
+                m.M30 <= s && 
+                m.M31 <= s && 
+                m.M32 <= s && 
+                m.M33 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllSmallerOrEqual(double s, M44d m)
+        {
+            return
+                s <= m.M00 && 
+                s <= m.M01 && 
+                s <= m.M02 && 
+                s <= m.M03 && 
+                s <= m.M10 && 
+                s <= m.M11 && 
+                s <= m.M12 && 
+                s <= m.M13 && 
+                s <= m.M20 && 
+                s <= m.M21 && 
+                s <= m.M22 && 
+                s <= m.M23 && 
+                s <= m.M30 && 
+                s <= m.M31 && 
+                s <= m.M32 && 
+                s <= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is SmallerOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M44d a, M44d b)
+        {
+            return
+                a.M00 <= b.M00 || 
+                a.M01 <= b.M01 || 
+                a.M02 <= b.M02 || 
+                a.M03 <= b.M03 || 
+                a.M10 <= b.M10 || 
+                a.M11 <= b.M11 || 
+                a.M12 <= b.M12 || 
+                a.M13 <= b.M13 || 
+                a.M20 <= b.M20 || 
+                a.M21 <= b.M21 || 
+                a.M22 <= b.M22 || 
+                a.M23 <= b.M23 || 
+                a.M30 <= b.M30 || 
+                a.M31 <= b.M31 || 
+                a.M32 <= b.M32 || 
+                a.M33 <= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is SmallerOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(this M44d m, double s)
+        {
+            return
+                m.M00 <= s || 
+                m.M01 <= s || 
+                m.M02 <= s || 
+                m.M03 <= s || 
+                m.M10 <= s || 
+                m.M11 <= s || 
+                m.M12 <= s || 
+                m.M13 <= s || 
+                m.M20 <= s || 
+                m.M21 <= s || 
+                m.M22 <= s || 
+                m.M23 <= s || 
+                m.M30 <= s || 
+                m.M31 <= s || 
+                m.M32 <= s || 
+                m.M33 <= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is SmallerOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnySmallerOrEqual(double s, M44d m)
+        {
+            return
+                s <= m.M00 || 
+                s <= m.M01 || 
+                s <= m.M02 || 
+                s <= m.M03 || 
+                s <= m.M10 || 
+                s <= m.M11 || 
+                s <= m.M12 || 
+                s <= m.M13 || 
+                s <= m.M20 || 
+                s <= m.M21 || 
+                s <= m.M22 || 
+                s <= m.M23 || 
+                s <= m.M30 || 
+                s <= m.M31 || 
+                s <= m.M32 || 
+                s <= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M44d a, M44d b)
+        {
+            return
+                a.M00 >= b.M00 && 
+                a.M01 >= b.M01 && 
+                a.M02 >= b.M02 && 
+                a.M03 >= b.M03 && 
+                a.M10 >= b.M10 && 
+                a.M11 >= b.M11 && 
+                a.M12 >= b.M12 && 
+                a.M13 >= b.M13 && 
+                a.M20 >= b.M20 && 
+                a.M21 >= b.M21 && 
+                a.M22 >= b.M22 && 
+                a.M23 >= b.M23 && 
+                a.M30 >= b.M30 && 
+                a.M31 >= b.M31 && 
+                a.M32 >= b.M32 && 
+                a.M33 >= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(this M44d m, double s)
+        {
+            return
+                m.M00 >= s && 
+                m.M01 >= s && 
+                m.M02 >= s && 
+                m.M03 >= s && 
+                m.M10 >= s && 
+                m.M11 >= s && 
+                m.M12 >= s && 
+                m.M13 >= s && 
+                m.M20 >= s && 
+                m.M21 >= s && 
+                m.M22 >= s && 
+                m.M23 >= s && 
+                m.M30 >= s && 
+                m.M31 >= s && 
+                m.M32 >= s && 
+                m.M33 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllGreaterOrEqual(double s, M44d m)
+        {
+            return
+                s >= m.M00 && 
+                s >= m.M01 && 
+                s >= m.M02 && 
+                s >= m.M03 && 
+                s >= m.M10 && 
+                s >= m.M11 && 
+                s >= m.M12 && 
+                s >= m.M13 && 
+                s >= m.M20 && 
+                s >= m.M21 && 
+                s >= m.M22 && 
+                s >= m.M23 && 
+                s >= m.M30 && 
+                s >= m.M31 && 
+                s >= m.M32 && 
+                s >= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is GreaterOrEqual the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M44d a, M44d b)
+        {
+            return
+                a.M00 >= b.M00 || 
+                a.M01 >= b.M01 || 
+                a.M02 >= b.M02 || 
+                a.M03 >= b.M03 || 
+                a.M10 >= b.M10 || 
+                a.M11 >= b.M11 || 
+                a.M12 >= b.M12 || 
+                a.M13 >= b.M13 || 
+                a.M20 >= b.M20 || 
+                a.M21 >= b.M21 || 
+                a.M22 >= b.M22 || 
+                a.M23 >= b.M23 || 
+                a.M30 >= b.M30 || 
+                a.M31 >= b.M31 || 
+                a.M32 >= b.M32 || 
+                a.M33 >= b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is GreaterOrEqual s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(this M44d m, double s)
+        {
+            return
+                m.M00 >= s || 
+                m.M01 >= s || 
+                m.M02 >= s || 
+                m.M03 >= s || 
+                m.M10 >= s || 
+                m.M11 >= s || 
+                m.M12 >= s || 
+                m.M13 >= s || 
+                m.M20 >= s || 
+                m.M21 >= s || 
+                m.M22 >= s || 
+                m.M23 >= s || 
+                m.M30 >= s || 
+                m.M31 >= s || 
+                m.M32 >= s || 
+                m.M33 >= s;
+        }
+
+        /// <summary>
+        /// Returns whether a is GreaterOrEqual AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyGreaterOrEqual(double s, M44d m)
+        {
+            return
+                s >= m.M00 || 
+                s >= m.M01 || 
+                s >= m.M02 || 
+                s >= m.M03 || 
+                s >= m.M10 || 
+                s >= m.M11 || 
+                s >= m.M12 || 
+                s >= m.M13 || 
+                s >= m.M20 || 
+                s >= m.M21 || 
+                s >= m.M22 || 
+                s >= m.M23 || 
+                s >= m.M30 || 
+                s >= m.M31 || 
+                s >= m.M32 || 
+                s >= m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M44d a, M44d b)
+        {
+            return
+                a.M00 == b.M00 && 
+                a.M01 == b.M01 && 
+                a.M02 == b.M02 && 
+                a.M03 == b.M03 && 
+                a.M10 == b.M10 && 
+                a.M11 == b.M11 && 
+                a.M12 == b.M12 && 
+                a.M13 == b.M13 && 
+                a.M20 == b.M20 && 
+                a.M21 == b.M21 && 
+                a.M22 == b.M22 && 
+                a.M23 == b.M23 && 
+                a.M30 == b.M30 && 
+                a.M31 == b.M31 && 
+                a.M32 == b.M32 && 
+                a.M33 == b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(this M44d m, double s)
+        {
+            return
+                m.M00 == s && 
+                m.M01 == s && 
+                m.M02 == s && 
+                m.M03 == s && 
+                m.M10 == s && 
+                m.M11 == s && 
+                m.M12 == s && 
+                m.M13 == s && 
+                m.M20 == s && 
+                m.M21 == s && 
+                m.M22 == s && 
+                m.M23 == s && 
+                m.M30 == s && 
+                m.M31 == s && 
+                m.M32 == s && 
+                m.M33 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllEqual(double s, M44d m)
+        {
+            return
+                s == m.M00 && 
+                s == m.M01 && 
+                s == m.M02 && 
+                s == m.M03 && 
+                s == m.M10 && 
+                s == m.M11 && 
+                s == m.M12 && 
+                s == m.M13 && 
+                s == m.M20 && 
+                s == m.M21 && 
+                s == m.M22 && 
+                s == m.M23 && 
+                s == m.M30 && 
+                s == m.M31 && 
+                s == m.M32 && 
+                s == m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Equal the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M44d a, M44d b)
+        {
+            return
+                a.M00 == b.M00 || 
+                a.M01 == b.M01 || 
+                a.M02 == b.M02 || 
+                a.M03 == b.M03 || 
+                a.M10 == b.M10 || 
+                a.M11 == b.M11 || 
+                a.M12 == b.M12 || 
+                a.M13 == b.M13 || 
+                a.M20 == b.M20 || 
+                a.M21 == b.M21 || 
+                a.M22 == b.M22 || 
+                a.M23 == b.M23 || 
+                a.M30 == b.M30 || 
+                a.M31 == b.M31 || 
+                a.M32 == b.M32 || 
+                a.M33 == b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Equal s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(this M44d m, double s)
+        {
+            return
+                m.M00 == s || 
+                m.M01 == s || 
+                m.M02 == s || 
+                m.M03 == s || 
+                m.M10 == s || 
+                m.M11 == s || 
+                m.M12 == s || 
+                m.M13 == s || 
+                m.M20 == s || 
+                m.M21 == s || 
+                m.M22 == s || 
+                m.M23 == s || 
+                m.M30 == s || 
+                m.M31 == s || 
+                m.M32 == s || 
+                m.M33 == s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Equal AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyEqual(double s, M44d m)
+        {
+            return
+                s == m.M00 || 
+                s == m.M01 || 
+                s == m.M02 || 
+                s == m.M03 || 
+                s == m.M10 || 
+                s == m.M11 || 
+                s == m.M12 || 
+                s == m.M13 || 
+                s == m.M20 || 
+                s == m.M21 || 
+                s == m.M22 || 
+                s == m.M23 || 
+                s == m.M30 || 
+                s == m.M31 || 
+                s == m.M32 || 
+                s == m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of a are Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M44d a, M44d b)
+        {
+            return
+                a.M00 != b.M00 && 
+                a.M01 != b.M01 && 
+                a.M02 != b.M02 && 
+                a.M03 != b.M03 && 
+                a.M10 != b.M10 && 
+                a.M11 != b.M11 && 
+                a.M12 != b.M12 && 
+                a.M13 != b.M13 && 
+                a.M20 != b.M20 && 
+                a.M21 != b.M21 && 
+                a.M22 != b.M22 && 
+                a.M23 != b.M23 && 
+                a.M30 != b.M30 && 
+                a.M31 != b.M31 && 
+                a.M32 != b.M32 && 
+                a.M33 != b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(this M44d m, double s)
+        {
+            return
+                m.M00 != s && 
+                m.M01 != s && 
+                m.M02 != s && 
+                m.M03 != s && 
+                m.M10 != s && 
+                m.M11 != s && 
+                m.M12 != s && 
+                m.M13 != s && 
+                m.M20 != s && 
+                m.M21 != s && 
+                m.M22 != s && 
+                m.M23 != s && 
+                m.M30 != s && 
+                m.M31 != s && 
+                m.M32 != s && 
+                m.M33 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different ALL elements of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllDifferent(double s, M44d m)
+        {
+            return
+                s != m.M00 && 
+                s != m.M01 && 
+                s != m.M02 && 
+                s != m.M03 && 
+                s != m.M10 && 
+                s != m.M11 && 
+                s != m.M12 && 
+                s != m.M13 && 
+                s != m.M20 && 
+                s != m.M21 && 
+                s != m.M22 && 
+                s != m.M23 && 
+                s != m.M30 && 
+                s != m.M31 && 
+                s != m.M32 && 
+                s != m.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is Different the corresponding element of b.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M44d a, M44d b)
+        {
+            return
+                a.M00 != b.M00 || 
+                a.M01 != b.M01 || 
+                a.M02 != b.M02 || 
+                a.M03 != b.M03 || 
+                a.M10 != b.M10 || 
+                a.M11 != b.M11 || 
+                a.M12 != b.M12 || 
+                a.M13 != b.M13 || 
+                a.M20 != b.M20 || 
+                a.M21 != b.M21 || 
+                a.M22 != b.M22 || 
+                a.M23 != b.M23 || 
+                a.M30 != b.M30 || 
+                a.M31 != b.M31 || 
+                a.M32 != b.M32 || 
+                a.M33 != b.M33;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is Different s.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(this M44d m, double s)
+        {
+            return
+                m.M00 != s || 
+                m.M01 != s || 
+                m.M02 != s || 
+                m.M03 != s || 
+                m.M10 != s || 
+                m.M11 != s || 
+                m.M12 != s || 
+                m.M13 != s || 
+                m.M20 != s || 
+                m.M21 != s || 
+                m.M22 != s || 
+                m.M23 != s || 
+                m.M30 != s || 
+                m.M31 != s || 
+                m.M32 != s || 
+                m.M33 != s;
+        }
+
+        /// <summary>
+        /// Returns whether a is Different AT LEAST ONE element of m.
+        /// ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyDifferent(double s, M44d m)
+        {
+            return
+                s != m.M00 || 
+                s != m.M01 || 
+                s != m.M02 || 
+                s != m.M03 || 
+                s != m.M10 || 
+                s != m.M11 || 
+                s != m.M12 || 
+                s != m.M13 || 
+                s != m.M20 || 
+                s != m.M21 || 
+                s != m.M22 || 
+                s != m.M23 || 
+                s != m.M30 || 
+                s != m.M31 || 
+                s != m.M32 || 
+                s != m.M33;
+        }
+
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this M44d m0, M44d m1)
+        {
+            
+            if (m0.M00 < m1.M00) return -1;
+            if (m0.M00 > m1.M00) return +1;
+            if (m0.M01 < m1.M01) return -1;
+            if (m0.M01 > m1.M01) return +1;
+            if (m0.M02 < m1.M02) return -1;
+            if (m0.M02 > m1.M02) return +1;
+            if (m0.M03 < m1.M03) return -1;
+            if (m0.M03 > m1.M03) return +1;
+            if (m0.M10 < m1.M10) return -1;
+            if (m0.M10 > m1.M10) return +1;
+            if (m0.M11 < m1.M11) return -1;
+            if (m0.M11 > m1.M11) return +1;
+            if (m0.M12 < m1.M12) return -1;
+            if (m0.M12 > m1.M12) return +1;
+            if (m0.M13 < m1.M13) return -1;
+            if (m0.M13 > m1.M13) return +1;
+            if (m0.M20 < m1.M20) return -1;
+            if (m0.M20 > m1.M20) return +1;
+            if (m0.M21 < m1.M21) return -1;
+            if (m0.M21 > m1.M21) return +1;
+            if (m0.M22 < m1.M22) return -1;
+            if (m0.M22 > m1.M22) return +1;
+            if (m0.M23 < m1.M23) return -1;
+            if (m0.M23 > m1.M23) return +1;
+            if (m0.M30 < m1.M30) return -1;
+            if (m0.M30 > m1.M30) return +1;
+            if (m0.M31 < m1.M31) return -1;
+            if (m0.M31 > m1.M31) return +1;
+            if (m0.M32 < m1.M32) return -1;
+            if (m0.M32 > m1.M32) return +1;
+            if (m0.M33 < m1.M33) return -1;
+            if (m0.M33 > m1.M33) return +1;
+            return 0;
+        }
 
         #endregion
 

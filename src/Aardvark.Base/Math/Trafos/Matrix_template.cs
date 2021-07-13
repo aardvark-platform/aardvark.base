@@ -29,7 +29,6 @@ namespace Aardvark.Base
     //# var ctypeA = new[] { "double", "double", "float", "double" }; // computation types
     //# var fields = new[] {"X", "Y", "Z", "W"};
     //# var ops = new[] {" + ", " - ", " % ", " / ", " * "};
-    //# var bops = new[] {"<", ">", "==", "<=", ">="};
     //# var bwops = new[] { "&", "|", "^" };
     //# for (int n = 2; n <= 4; n++) {
     //# for (int m = n; m <= (n+1) && m < 5; m++) { 
@@ -1073,32 +1072,29 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Bool Operators
+        #region Comparisons
 
-        //# for(int o = 0; o < bops.Length; o++) {
-        //#     string bop = " " + bops[o] + " ", bopname = "operator " + bops[o];
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool __bopname__(__nmtype__ a, __nmtype__ b)
+        public static bool operator ==(__nmtype__ a, __nmtype__ b)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
-                a.M__i____j____bop__b.M__i____j__/*#}, andand);}, andand);*/;
+                a.M__i____j__ == b.M__i____j__/*#}, andand);}, andand);*/;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool __bopname__(__nmtype__ a, __ftype__ s)
+        public static bool operator ==(__nmtype__ a, __ftype__ s)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
-                a.M__i____j____bop__s/*# }, andand); }, andand); */;
+                a.M__i____j__ == s/*# }, andand); }, andand); */;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool __bopname__(__ftype__ s, __nmtype__ a)
+        public static bool operator ==(__ftype__ s, __nmtype__ a)
         {
             return/*# n.ForEach(i => { m.ForEach(j => { */
-                s__bop__a.M__i____j__ /*# }, andand); }, andand); */;
+                s == a.M__i____j__ /*# }, andand); }, andand); */;
         }
 
-        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(__nmtype__ a, __nmtype__ b)
         {
@@ -1999,6 +1995,96 @@ namespace Aardvark.Base
 
         //# }
         //# }
+        #endregion
+
+        #region Comparisons
+
+        //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
+        //#                     { "<=", "SmallerOrEqual" }, { ">=", "GreaterOrEqual"},
+        //#                     { "==", "Equal" },          { "!=", "Different" } };
+        //# var attention = "ATTENTION: For example (AllSmaller(a,b)) is not the same as !(AllGreaterOrEqual(a,b)) but !(AnyGreaterOrEqual(a,b)).";
+        //# for(int o = 0; o < bops.GetLength(0); o++) {
+        //#     string bop = " " + bops[o,0] + " ", opName = bops[o,1];
+        /// <summary>
+        /// Returns whether ALL elements of a are __opName__ the corresponding element of b.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(this __nmtype__ a, __nmtype__ b)
+        {
+            return/*# n.ForEach(i => { m.ForEach(j => { */
+                a.M__i____j____bop__b.M__i____j__/*#}, andand);}, andand);*/;
+        }
+
+        /// <summary>
+        /// Returns whether ALL elements of m are __opName__ s.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(this __nmtype__ m, __ftype__ s)
+        {
+            return/*# n.ForEach(i => { m.ForEach(j => { */
+                m.M__i____j____bop__s/*#}, andand);}, andand);*/;
+        }
+
+        /// <summary>
+        /// Returns whether a is __opName__ ALL elements of m.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool All__opName__(__ftype__ s, __nmtype__ m)
+        {
+            return/*# n.ForEach(i => { m.ForEach(j => { */
+                s__bop__m.M__i____j__/*#}, andand);}, andand);*/;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of a is __opName__ the corresponding element of b.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(this __nmtype__ a, __nmtype__ b)
+        {
+            return/*# n.ForEach(i => { m.ForEach(j => { */
+                a.M__i____j____bop__b.M__i____j__/*#}, oror);}, oror);*/;
+        }
+
+        /// <summary>
+        /// Returns whether AT LEAST ONE element of m is __opName__ s.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(this __nmtype__ m, __ftype__ s)
+        {
+            return/*# n.ForEach(i => { m.ForEach(j => { */
+                m.M__i____j____bop__s/*#}, oror);}, oror);*/;
+        }
+
+        /// <summary>
+        /// Returns whether a is __opName__ AT LEAST ONE element of m.
+        /// __attention__
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Any__opName__(__ftype__ s, __nmtype__ m)
+        {
+            return/*# n.ForEach(i => { m.ForEach(j => { */
+                s__bop__m.M__i____j__/*#}, oror);}, oror);*/;
+        }
+
+        //# }
+
+        /// <summary>
+        /// Compare first element of first row before second element of first row, aso.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LexicalCompare(this __nmtype__ m0, __nmtype__ m1)
+        {
+            /*# n.ForEach(i => { m.ForEach(j => { */
+            if (m0.M__i____j__ < m1.M__i____j__) return -1;
+            if (m0.M__i____j__ > m1.M__i____j__) return +1;/*#});});*/
+            return 0;
+        }
+
         #endregion
 
         #region Min- / MaxElement

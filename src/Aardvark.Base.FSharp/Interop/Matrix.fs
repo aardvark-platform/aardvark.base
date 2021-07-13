@@ -3,26 +3,64 @@
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Mat =
 
-    let inline private transposeAux (_ : ^z) (m : ^Matrix)  =
-        ((^z or ^Matrix) : (static member Transposed : ^Matrix -> ^Matrix') m)
+    [<AutoOpen>]
+    module private Aux =
+        let inline transposeAux (_ : ^z) (m : ^Matrix)  =
+            ((^z or ^Matrix) : (static member Transposed : ^Matrix -> ^Matrix') m)
 
-    let inline private determinantAux (_ : ^z) (m : ^Matrix)  =
-        ((^z or ^Matrix) : (static member Determinant : ^Matrix -> ^Scalar) m)
+        let inline determinantAux (_ : ^z) (m : ^Matrix)  =
+            ((^z or ^Matrix) : (static member Determinant : ^Matrix -> ^Scalar) m)
 
-    let inline private inverseAux (_ : ^z) (m : ^Matrix)  =
-        ((^z or ^Matrix) : (static member Inverse : ^Matrix -> ^Matrix) m)
+        let inline inverseAux (_ : ^z) (m : ^Matrix)  =
+            ((^z or ^Matrix) : (static member Inverse : ^Matrix -> ^Matrix) m)
 
-    let inline private transformAux (_ : ^z) (m : ^Matrix) (v : ^Vector) =
-        ((^z or ^Matrix or ^Vector) : (static member Transform : ^Matrix * ^Vector -> ^Vector') (m, v))
+        let inline transformAux (_ : ^z) (m : ^Matrix) (v : ^Vector) =
+            ((^z or ^Matrix or ^Vector) : (static member Transform : ^Matrix * ^Vector -> ^Vector') (m, v))
 
-    let inline private transformDirAux (_ : ^z) (m : ^Matrix) (v : ^Vector) =
-        ((^z or ^Matrix or ^Vector) : (static member TransformDir : ^Matrix * ^Vector -> ^Vector) (m, v))
+        let inline transformDirAux (_ : ^z) (m : ^Matrix) (v : ^Vector) =
+            ((^z or ^Matrix or ^Vector) : (static member TransformDir : ^Matrix * ^Vector -> ^Vector) (m, v))
 
-    let inline private transformPosAux (_ : ^z) (m : ^Matrix) (v : ^Vector) =
-        ((^z or ^Matrix or ^Vector) : (static member TransformPos : ^Matrix * ^Vector -> ^Vector) (m, v))
+        let inline transformPosAux (_ : ^z) (m : ^Matrix) (v : ^Vector) =
+            ((^z or ^Matrix or ^Vector) : (static member TransformPos : ^Matrix * ^Vector -> ^Vector) (m, v))
 
-    let inline private transformPosProjAux (_ : ^z) (m : ^Matrix) (v : ^Vector) =
-        ((^z or ^Matrix or ^Vector) : (static member TransformPosProj : ^Matrix * ^Vector -> ^Vector) (m, v))
+        let inline transformPosProjAux (_ : ^z) (m : ^Matrix) (v : ^Vector) =
+            ((^z or ^Matrix or ^Vector) : (static member TransformPosProj : ^Matrix * ^Vector -> ^Vector) (m, v))
+
+        let inline anyEqualAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AnyEqual : ^a * ^b -> bool) (a, b))
+
+        let inline anyDifferentAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AnyDifferent : ^a * ^b -> bool) (a, b))
+
+        let inline anySmallerAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AnySmaller : ^a * ^b -> bool) (a, b))
+
+        let inline anyGreaterAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AnyGreater : ^a * ^b -> bool) (a, b))
+
+        let inline anySmallerOrEqualAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AnySmallerOrEqual : ^a * ^b -> bool) (a, b))
+
+        let inline anyGreaterOrEqualAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AnyGreaterOrEqual : ^a * ^b -> bool) (a, b))
+
+        let inline allEqualAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AllEqual : ^a * ^b -> bool) (a, b))
+
+        let inline allDifferentAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AllDifferent : ^a * ^b -> bool) (a, b))
+
+        let inline allSmallerAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AllSmaller : ^a * ^b -> bool) (a, b))
+
+        let inline allGreaterAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AllGreater : ^a * ^b -> bool) (a, b))
+
+        let inline allSmallerOrEqualAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AllSmallerOrEqual : ^a * ^b -> bool) (a, b))
+
+        let inline allGreaterOrEqualAux (_ : ^z) (a : ^a) (b : ^b) =
+            ((^z or ^a or ^b) : (static member AllGreaterOrEqual : ^a * ^b -> bool) (a, b))
 
     /// Returns the transpose of a matrix.
     let inline transpose (m : ^Matrix) : ^Matrix' =
@@ -53,6 +91,54 @@ module Mat =
     let inline transformPosProj (m : ^Matrix) (v : ^Vector) : ^Vector =
         transformPosProjAux Unchecked.defaultof<Mat> m v
 
+    /// Returns if a = b for any component. One or both of a and b have to be a matrix.
+    let inline anyEqual a b =
+        anyEqualAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a <> b for any component. One or both of a and b have to be a matrix.
+    let inline anyDifferent a b =
+        anyDifferentAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a = b for all components. One or both of a and b have to be a matrix.
+    let inline allEqual a b =
+        allEqualAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a <> b for all components. One or both of a and b have to be a matrix.
+    let inline allDifferent a b =
+        allDifferentAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a < b for any component. One or both of a and b have to be a matrix.
+    let inline anySmaller a b =
+        anySmallerAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a > b for any component. One or both of a and b have to be a matrix.
+    let inline anyGreater a b =
+        anyGreaterAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a < b for all components. One or both of a and b have to be a matrix.
+    let inline allSmaller a b =
+        allSmallerAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a > b for all components. One or both of a and b have to be a matrix.
+    let inline allGreater a b =
+        allGreaterAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a <= b for any component. One or both of a and b have to be a matrix.
+    let inline anySmallerOrEqual a b =
+        anySmallerOrEqualAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a >= b for any component. One or both of a and b have to be a matrix.
+    let inline anyGreaterOrEqual a b =
+        anyGreaterOrEqualAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a <= b for all components. One or both of a and b have to be a matrix.
+    let inline allSmallerOrEqual a b =
+        allSmallerOrEqualAux Unchecked.defaultof<Mat> a b
+
+    /// Returns if a >= b for all components. One or both of a and b have to be a matrix.
+    let inline allGreaterOrEqual a b =
+        allGreaterOrEqualAux Unchecked.defaultof<Mat> a b
+
     module private CompilerTests =
 
         let working () =
@@ -78,6 +164,45 @@ module Mat =
             let a : V3d = transformPosProj M44d.Identity V3d.Zero
             let a = log (0.5 * (transformPosProj M33d.Identity V2d.Zero))
 
+            ()
+
+        let comparisonsWorking () =
+            let a : bool = anyEqual M34i.Zero M34i.Zero
+            let a : bool = anyEqual M34i.Zero 0
+            let a : bool = anyEqual 1 M34i.Zero
+            let a : bool = anyDifferent M34i.Zero M34i.Zero
+            let a : bool = anyDifferent M34i.Zero 0
+            let a : bool = anyDifferent 1 M34i.Zero
+            let a : bool = anySmaller M34i.Zero M34i.Zero
+            let a : bool = anySmaller M34i.Zero 0
+            let a : bool = anySmaller 1 M34i.Zero
+            let a : bool = anyGreater M34i.Zero M34i.Zero
+            let a : bool = anyGreater M34i.Zero 0
+            let a : bool = anyGreater 1 M34i.Zero
+            let a : bool = anySmallerOrEqual M34i.Zero M34i.Zero
+            let a : bool = anySmallerOrEqual M34i.Zero 0
+            let a : bool = anySmallerOrEqual 1 M34i.Zero
+            let a : bool = anyGreaterOrEqual M34i.Zero M34i.Zero
+            let a : bool = anyGreaterOrEqual M34i.Zero 0
+            let a : bool = anyGreaterOrEqual 1 M34i.Zero
+            let a : bool = allEqual M34i.Zero M34i.Zero
+            let a : bool = allEqual M34i.Zero 0
+            let a : bool = allEqual 1 M34i.Zero
+            let a : bool = allDifferent M34i.Zero M34i.Zero
+            let a : bool = allDifferent M34i.Zero 0
+            let a : bool = allDifferent 1 M34i.Zero
+            let a : bool = allSmaller M34i.Zero M34i.Zero
+            let a : bool = allSmaller M34i.Zero 0
+            let a : bool = allSmaller 1 M34i.Zero
+            let a : bool = allGreater M34i.Zero M34i.Zero
+            let a : bool = allGreater M34i.Zero 0
+            let a : bool = allGreater 1 M34i.Zero
+            let a : bool = allSmallerOrEqual M34i.Zero M34i.Zero
+            let a : bool = allSmallerOrEqual M34i.Zero 0
+            let a : bool = allSmallerOrEqual 1 M34i.Zero
+            let a : bool = allGreaterOrEqual M34i.Zero M34i.Zero
+            let a : bool = allGreaterOrEqual M34i.Zero 0
+            let a : bool = allGreaterOrEqual 1 M34i.Zero
             ()
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
