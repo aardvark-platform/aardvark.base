@@ -1566,7 +1566,7 @@ namespace Aardvark.Base
         #region Interpolation
 
         //# numdectypes.ForEach(t => {
-        //# if (fdtypes.Contains(t)) {
+        //# if (fddectypes.Contains(t)) {
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
@@ -1596,14 +1596,13 @@ namespace Aardvark.Base
         //# } else {
         //# fdtypes.ForEach(rt => {
         //# var one = (rt != Meta.DoubleType) ? "1.0f" : "1.0";
-        //# var cast = (t == Meta.DecimalType) ? "(" + rt.Name + ")" : "";
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Lerp(this __rt.Name__ t, __t.Name__ a, __t.Name__ b)
-            => (__t.Name__)Round(__cast__a * (1 - t) + __cast__b * t);
+            => (__t.Name__)Round(a * (1 - t) + b * t);
 
         //# });
         /// <summary>

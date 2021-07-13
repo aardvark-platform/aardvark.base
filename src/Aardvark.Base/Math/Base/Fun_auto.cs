@@ -5788,24 +5788,26 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static decimal Lerp(this float t, decimal a, decimal b)
-            => (decimal)Round((float)a * (1 - t) + (float)b * t);
+        public static decimal Lerp(this decimal t, decimal a, decimal b)
+            => a * (1 - t) + b * t;
 
         /// <summary>
-        /// Linearly interpolates between a and b according to t.
+        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
         /// </summary>
         [Pure]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static decimal Lerp(this double t, decimal a, decimal b)
-            => (decimal)Round((double)a * (1 - t) + (double)b * t);
+        public static decimal Smoothstep(this decimal x, decimal edge0, decimal edge1)
+        {
+            var t = Saturate((x - edge0) / (edge1 - edge0));
+            return t * t * (3 - 2 * t);
+        }
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double InvLerp(this decimal y, decimal a, decimal b)
-            => ((double)a - (double)y) / ((double)a - (double)b);
+        public static decimal InvLerp(this decimal y, decimal a, decimal b)
+            => (a - y) / (a - b);
 
 
         #endregion
