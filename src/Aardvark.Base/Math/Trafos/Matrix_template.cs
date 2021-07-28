@@ -816,8 +816,8 @@ namespace Aardvark.Base
         }
 
         //# if (isReal) {
-        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
-        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var condArray = new[] { "Finite", "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { "Fun", ftype, ftype, ftype, ftype, "Fun" };
         //# var quantArray = new[] { "Any", "All" };
         //# var actArray = new[] { oror, andand };
         //# condArray.ForEach(scopeArray, (cond, scope) => {
@@ -2102,12 +2102,10 @@ namespace Aardvark.Base
 
         #region Special Floating Point Value Checks
 
-        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
-        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var condArray = new[] { "Finite", "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
         //# var quantArray = new[] { "Any", "All" };
-        //# var actArray = new[] { oror, andand };
-        //# condArray.ForEach(scopeArray, (cond, scope) => {
-        //# quantArray.ForEach(actArray, (qant, act) => {
+        //# condArray.ForEach(cond => {
+        //# quantArray.ForEach(qant => {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __qant____cond__(__nmtype__ m)
             => m.__qant____cond__;

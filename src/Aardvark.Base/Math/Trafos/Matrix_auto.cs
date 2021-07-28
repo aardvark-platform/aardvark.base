@@ -5407,6 +5407,28 @@ namespace Aardvark.Base
             }
         }
 
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11);
+            }
+        }
+
         public bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6791,6 +6813,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M22f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M22f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M22f m)
             => m.AnyNaN;
 
@@ -7816,6 +7846,28 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 2 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11);
             }
         }
 
@@ -9101,6 +9153,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M22d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M22d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M22d m)
@@ -14637,6 +14697,28 @@ namespace Aardvark.Base
             }
         }
 
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12);
+            }
+        }
+
         public bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15814,6 +15896,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M23f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M23f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M23f m)
             => m.AnyNaN;
 
@@ -16860,6 +16950,28 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 3 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12);
             }
         }
 
@@ -17926,6 +18038,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M23d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M23d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M23d m)
@@ -25101,6 +25221,30 @@ namespace Aardvark.Base
             }
         }
 
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22);
+            }
+        }
+
         public bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26780,6 +26924,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M33f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M33f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M33f m)
             => m.AnyNaN;
 
@@ -28242,6 +28394,30 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 3 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22);
             }
         }
 
@@ -29808,6 +29984,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M33d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M33d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M33d m)
@@ -36626,6 +36810,30 @@ namespace Aardvark.Base
             }
         }
 
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || Fun.IsFinite(M03) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || Fun.IsFinite(M13) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22) || Fun.IsFinite(M23);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && Fun.IsFinite(M03) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && Fun.IsFinite(M13) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22) && Fun.IsFinite(M23);
+            }
+        }
+
         public bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -38016,6 +38224,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M34f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M34f m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M34f m)
@@ -39430,6 +39646,30 @@ namespace Aardvark.Base
             }
         }
 
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || Fun.IsFinite(M03) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || Fun.IsFinite(M13) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22) || Fun.IsFinite(M23);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && Fun.IsFinite(M03) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && Fun.IsFinite(M13) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22) && Fun.IsFinite(M23);
+            }
+        }
+
         public bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -40694,6 +40934,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M34d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M34d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M34d m)
@@ -48864,6 +49112,32 @@ namespace Aardvark.Base
             }
         }
 
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || Fun.IsFinite(M03) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || Fun.IsFinite(M13) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22) || Fun.IsFinite(M23) || 
+                    Fun.IsFinite(M30) || Fun.IsFinite(M31) || Fun.IsFinite(M32) || Fun.IsFinite(M33);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && Fun.IsFinite(M03) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && Fun.IsFinite(M13) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22) && Fun.IsFinite(M23) && 
+                    Fun.IsFinite(M30) && Fun.IsFinite(M31) && Fun.IsFinite(M32) && Fun.IsFinite(M33);
+            }
+        }
+
         public bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50802,6 +51076,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M44f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M44f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M44f m)
             => m.AnyNaN;
 
@@ -52408,6 +52690,32 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 4 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || Fun.IsFinite(M03) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || Fun.IsFinite(M13) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22) || Fun.IsFinite(M23) || 
+                    Fun.IsFinite(M30) || Fun.IsFinite(M31) || Fun.IsFinite(M32) || Fun.IsFinite(M33);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && Fun.IsFinite(M03) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && Fun.IsFinite(M13) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22) && Fun.IsFinite(M23) && 
+                    Fun.IsFinite(M30) && Fun.IsFinite(M31) && Fun.IsFinite(M32) && Fun.IsFinite(M33);
             }
         }
 
@@ -54244,6 +54552,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M44d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M44d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M44d m)
