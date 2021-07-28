@@ -947,50 +947,54 @@ namespace Aardvark.Base
         #region Plane2d intersects Ray2d
 
         /// <summary>
-        /// Returns true if the Plane2d and the Ray2d intersect
+        /// Returns true if the Plane2d and the Ray2d intersect.
         /// </summary>
-        public static bool Intersects(
-            this Plane2d plane, 
-            Ray2d ray
-            )
-        {
-            return !plane.Normal.IsOrthogonalTo(ray.Direction);
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Intersects(this Plane2d plane, Ray2d ray)
+            => !plane.Normal.IsOrthogonalTo(ray.Direction);
 
         /// <summary>
-        /// Returns true if the Plane2d and the Ray2d intersect
-        /// point holds the Intersection-Point if an intersection is found (else V2d.NaN)
+        /// Returns true if the Plane2d and the Ray2d intersect.
+        /// t holds the ray paramater of the intersection point if the intersection is found (else Double.PositiveInfinity).
         /// ATTENTION: Works only with Normalized Plane2ds
         /// </summary>
-        public static bool Intersects(
-            this Plane2d plane, 
-            Ray2d ray, 
-            out V2d point
-            )
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Intersects(this Plane2d plane, Ray2d ray, out double t)
         {
-            Plane2d second = ray.Plane2d;
-            if (!plane.Normal.IsOrthogonalTo(ray.Direction))
+            double dot = Vec.Dot(plane.Normal, ray.Direction);
+            if (Fun.IsTiny(dot))
             {
-                double[,] data = new double[2, 2]
-                    { {plane.Normal.X,plane.Normal.Y},
-                      {second.Normal.X,second.Normal.Y} };
-
-                double[] res = new double[2] { plane.Distance, second.Distance};
-
-                int[] perm = data.LuFactorize();
-                double[] result = data.LuSolve(perm, res);
-                point = new V2d(result);
-
-                return true;
-            }
-            else
-            {
-                point = V2d.NaN;
+                t = double.PositiveInfinity;
                 return false;
             }
+            t = -plane.Height(ray.Origin) / dot;
+            return true;
         }
 
+        /// <summary>
+        /// Returns true if the Plane2d and the Ray2d intersect.
+        /// t and p hold the ray paramater and point of the intersection if one is found (else Double.PositiveInfinity and V2d.PositiveInfinity).
+        /// ATTENTION: Works only with Normalized Plane2ds
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Intersects(this Plane2d plane, Ray2d ray, out double t, out V2d p)
+        {
+            bool result = Intersects(plane, ray, out t);
+            p = ray.Origin + t * ray.Direction;
+            return result;
+        }
+
+        /// <summary>
+        /// Returns the intersection point of the given Plane2d and Ray2d, or V2d.PositiveInfinity if ray is parallel to plane.
+        /// ATTENTION: Works only with Normalized Plane2ds
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d Intersect(this Plane2d plane, Ray2d ray)
+        {
+            double dot = Vec.Dot(ray.Direction, plane.Normal);
+            if (Fun.IsTiny(dot)) return V2d.PositiveInfinity;
+            return ray.GetPointOnRay(-plane.Height(ray.Origin) / dot);
+        }
 
         #endregion
 
@@ -2805,8 +2809,16 @@ namespace Aardvark.Base
         #region Plane3d intersects Ray3d
 
         /// <summary>
+        /// Returns true if the Ray3d and the Plane3d intersect.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Intersects(this Ray3d ray, Plane3d plane)
+            => !plane.Normal.IsOrthogonalTo(ray.Direction);
+
+        /// <summary>
         /// Returns true if the ray and the plane intersect.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
              this Ray3d ray, Plane3d plane, out double t
              )
@@ -2824,6 +2836,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the intersection point with the given plane, or V3d.PositiveInfinity if ray is parallel to plane.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d Intersect(
              this Ray3d ray, Plane3d plane
              )
@@ -2836,6 +2849,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the ray and the plane intersect.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
              this Ray3d ray, Plane3d plane, out double t, out V3d p
              )
