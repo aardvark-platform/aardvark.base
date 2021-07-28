@@ -1174,8 +1174,9 @@ namespace Aardvark.Base
         /// </summary>
         public static bool Intersects(this Box2d box, Line2d line)
         {
-            return box.Intersects(line, box.OutsideFlags(line.P0),
-                                        box.OutsideFlags(line.P1));
+            var out0 = box.OutsideFlags(line.P0); if (out0 == 0) return true;
+            var out1 = box.OutsideFlags(line.P1); if (out1 == 0) return true;
+            return box.IntersectsLine(line.P0, line.P1, out0, out1);
         }
 
         /// <summary>
@@ -1197,9 +1198,8 @@ namespace Aardvark.Base
         private static bool IntersectsLine(
                 this Box2d box, V2d p0, V2d p1)
         {
-            Box.Flags out0 = box.OutsideFlags(p0);
-            Box.Flags out1 = box.OutsideFlags(p1);
-
+            var out0 = box.OutsideFlags(p0); if (out0 == 0) return true;
+            var out1 = box.OutsideFlags(p1); if (out1 == 0) return true;
             return box.IntersectsLine(p0, p1, out0, out1);
         }
 
