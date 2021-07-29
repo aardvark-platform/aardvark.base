@@ -127,6 +127,8 @@ namespace Aardvark.Base
     //#     var bname = dim > 1 ? "box" : "range";
     //#     var bnamecaps = dim > 1 ? "Box" : "Range";
     //#     var type = t.Name;
+    //#     var iboundingbox = "IBoundingBox" + dim + ch;
+    //#     var isize = "ISize" + dim + ch;
     //#     var minvalue = dim > 1 ? ltype + ".MinValue"
     //#                            : lt.IsReal ? "Constant<" + ltype + ">.ParseableMinValue" : ltype + ".MinValue";
     //#     var maxvalue = dim > 1 ? ltype + ".MaxValue"
@@ -137,7 +139,7 @@ namespace Aardvark.Base
     [StructLayout(LayoutKind.Sequential)]
     public partial struct __type__
         : IEquatable<__type__>, IRange<__ltype__, __type__>, /*# if (dim > 1) {
-                */IBoundingBox__dim__d, ISize__dim__d,/*# } */ IFormattable
+                */__iboundingbox__, __isize__,/*# } */ IFormattable
     {
         [DataMember]
         public __ltype__ Min;
@@ -1557,29 +1559,29 @@ namespace Aardvark.Base
         /// Returns new box [0, iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ FromSize(ISize__dim__d iSize)
+        public static __type__ FromSize(ISize__dim____ch__ iSize)
         {
             return new __type__(
-                __ltype__.Zero, /*# if (ft != Meta.DoubleType) { */(__ltype__)/*# } */iSize.Size__dim__d);
+                __ltype__.Zero, iSize.Size__dim____ch__);
         }
 
         /// <summary>
         /// Returns new box [min, min + iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ FromMinAndSize(__ltype__ min, ISize__dim__d iSize)
+        public static __type__ FromMinAndSize(__ltype__ min, ISize__dim____ch__ iSize)
         {
             return new __type__(
-                min, min + /*# if (ft != Meta.DoubleType) { */(__ltype__)/*# } */iSize.Size__dim__d);
+                min, min + iSize.Size__dim____ch__);
         }
 
         /// <summary>
         /// Returns new box [center - iSize / 2, center + iSize / 2].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ FromCenterAndSize(__ltype__ center, ISize__dim__d iSize)
+        public static __type__ FromCenterAndSize(__ltype__ center, ISize__dim____ch__ iSize)
         {
-            var size = /*# if (ft != Meta.DoubleType) { */(__ltype__)/*# } */iSize.Size__dim__d;
+            var size = iSize.Size__dim____ch__;
             return new __type__(center - size / 2, center + size / 2);
         }
 
@@ -1788,22 +1790,22 @@ namespace Aardvark.Base
         //# }
         #endregion
 
-        #region IBoundingBox__dim__d Members
+        #region IBoundingBox__dim____ch__ Members
 
-        public Box__dim__d BoundingBox__dim__d
+        public Box__dim____ch__ BoundingBox__dim____ch__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box__dim__d(/*# if (ft != Meta.DoubleType) { */(V__dim__d)/*# } */Min, /*# if (ft != Meta.DoubleType) { */(V__dim__d)/*# } */Max); }
+            get { return this; }
         }
 
         #endregion
 
-        #region ISize__dim__d Members
+        #region ISize__dim____ch__ Members
 
-        public V__dim__d Size__dim__d
+        public V__dim____ch__ Size__dim____ch__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return /*# if (ft != Meta.DoubleType) { */(V__dim__d)/*# } */Size; }
+            get { return Size; }
         }
 
         #endregion

@@ -91,7 +91,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __vtype__ : IVector<double>, ISize__d__d, IFormattable, IEquatable<__vtype__>
+    public partial struct __vtype__ : IVector<double>, ISize__d____fchar__, IFormattable, IEquatable<__vtype__>
     {
         //# fields.ForEach(f => {
         [DataMember]
@@ -1660,9 +1660,9 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region ISize__d__d Members
+        #region ISize__d____fchar__ Members
 
-        public V__d__d Size__d__d { get { return (V__d__d)this; } }
+        public __vtype__ Size__d____fchar__ { get { return this; } }
 
         #endregion
 
