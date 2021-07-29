@@ -1655,12 +1655,15 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box__dim__d Transformed(M__dplus1____dplus1__d trafo)
+        //# {
+        //# var tc = (ft == Meta.FloatType) ? "f" : "d";
+        //# var tftype = (ft == Meta.FloatType) ? "float" : "double";
+        public Box__dim____tc__ Transformed(M__dplus1____dplus1____tc__ trafo)
         {
-            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim__d.Invalid; 
-            var t = new V__dim__d(/*# fields.ForEach((f, i) => {*/trafo.M__i____dim__/*#}, comma);*/);
-            var res = new Box__dim__d(t, t);
-            double av, bv;
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid; 
+            var t = new V__dim____tc__(/*# fields.ForEach((f, i) => {*/trafo.M__i____dim__/*#}, comma);*/);
+            var res = new Box__dim____tc__(t, t);
+            __tftype__ av, bv;
             //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
             //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
             av = trafo.M__i____j__ * Min.__fj__;
@@ -1673,10 +1676,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box__dim__d Transformed(Trafo__dim__d trafo)
+        public Box__dim____tc__ Transformed(Trafo__dim____tc__ trafo)
         {
             return Transformed(trafo.Forward);
         }
+        //# }
 
         #endregion
 

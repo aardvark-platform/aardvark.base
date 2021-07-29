@@ -14394,12 +14394,12 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box2d Transformed(M33d trafo)
+        public Box2f Transformed(M33f trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
-            var t = new V2d(trafo.M02, trafo.M12);
-            var res = new Box2d(t, t);
-            double av, bv;
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid; 
+            var t = new V2f(trafo.M02, trafo.M12);
+            var res = new Box2f(t, t);
+            float av, bv;
             av = trafo.M00 * Min.X;
             bv = trafo.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
@@ -14420,7 +14420,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d Transformed(Trafo2d trafo)
+        public Box2f Transformed(Trafo2f trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -21296,12 +21296,12 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box3d Transformed(M44d trafo)
+        public Box3f Transformed(M44f trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
-            var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
-            var res = new Box3d(t, t);
-            double av, bv;
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid; 
+            var t = new V3f(trafo.M03, trafo.M13, trafo.M23);
+            var res = new Box3f(t, t);
+            float av, bv;
             av = trafo.M00 * Min.X;
             bv = trafo.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
@@ -21342,7 +21342,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d Transformed(Trafo3d trafo)
+        public Box3f Transformed(Trafo3f trafo)
         {
             return Transformed(trafo.Forward);
         }
