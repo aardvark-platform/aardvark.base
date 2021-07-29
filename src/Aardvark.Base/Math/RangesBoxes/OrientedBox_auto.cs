@@ -5,6 +5,8 @@ namespace Aardvark.Base
 {
     // AUTO GENERATED CODE - DO NOT CHANGE!
 
+    #region OrientedBox2f
+
     [DataContract]
     public struct OrientedBox2f
     {
@@ -12,6 +14,15 @@ namespace Aardvark.Base
         public Box2f Box;
         [DataMember]
         public Euclidean2f Trafo;
+
+        #region Constructors
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public OrientedBox2f(OrientedBox2d box)
+        {
+            Box = (Box2f)box.Box;
+            Trafo = (Euclidean2f)box.Trafo;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public OrientedBox2f(Box2f box)
@@ -48,6 +59,18 @@ namespace Aardvark.Base
             Trafo = trafo;
         }
 
+        #endregion
+
+        #region Conversions
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator OrientedBox2f(OrientedBox2d b)
+            => new OrientedBox2f(b);
+
+        #endregion
+
+        #region Properties
+
         public Box2f AxisAlignedBox => Box.Transformed((M33f)Trafo);
 
         public V2f[] Corners
@@ -67,7 +90,13 @@ namespace Aardvark.Base
                 return Box.ComputeCornersCCW().Map(p => m.TransformPos(p));
             }
         }
+
+        #endregion
     }
+
+    #endregion
+
+    #region OrientedBox3f
 
     [DataContract]
     public struct OrientedBox3f
@@ -76,6 +105,15 @@ namespace Aardvark.Base
         public Box3f Box;
         [DataMember]
         public Euclidean3f Trafo;
+
+        #region Constructors
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public OrientedBox3f(OrientedBox3d box)
+        {
+            Box = (Box3f)box.Box;
+            Trafo = (Euclidean3f)box.Trafo;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public OrientedBox3f(Box3f box)
@@ -112,6 +150,18 @@ namespace Aardvark.Base
             Trafo = trafo;
         }
 
+        #endregion
+
+        #region Conversions
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator OrientedBox3f(OrientedBox3d b)
+            => new OrientedBox3f(b);
+
+        #endregion
+
+        #region Properties
+
         public Box3f AxisAlignedBox => Box.Transformed((M44f)Trafo);
 
         public V3f[] Corners
@@ -122,7 +172,13 @@ namespace Aardvark.Base
                 return Box.ComputeCorners().Map(p => m.TransformPos(p));
             }
         }
+
+        #endregion
     }
+
+    #endregion
+
+    #region OrientedBox2d
 
     [DataContract]
     public struct OrientedBox2d
@@ -131,6 +187,15 @@ namespace Aardvark.Base
         public Box2d Box;
         [DataMember]
         public Euclidean2d Trafo;
+
+        #region Constructors
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public OrientedBox2d(OrientedBox2f box)
+        {
+            Box = (Box2d)box.Box;
+            Trafo = (Euclidean2d)box.Trafo;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public OrientedBox2d(Box2d box)
@@ -167,6 +232,18 @@ namespace Aardvark.Base
             Trafo = trafo;
         }
 
+        #endregion
+
+        #region Conversions
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator OrientedBox2d(OrientedBox2f b)
+            => new OrientedBox2d(b);
+
+        #endregion
+
+        #region Properties
+
         public Box2d AxisAlignedBox => Box.Transformed((M33d)Trafo);
 
         public V2d[] Corners
@@ -186,7 +263,13 @@ namespace Aardvark.Base
                 return Box.ComputeCornersCCW().Map(p => m.TransformPos(p));
             }
         }
+
+        #endregion
     }
+
+    #endregion
+
+    #region OrientedBox3d
 
     [DataContract]
     public struct OrientedBox3d
@@ -195,6 +278,15 @@ namespace Aardvark.Base
         public Box3d Box;
         [DataMember]
         public Euclidean3d Trafo;
+
+        #region Constructors
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public OrientedBox3d(OrientedBox3f box)
+        {
+            Box = (Box3d)box.Box;
+            Trafo = (Euclidean3d)box.Trafo;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public OrientedBox3d(Box3d box)
@@ -231,6 +323,18 @@ namespace Aardvark.Base
             Trafo = trafo;
         }
 
+        #endregion
+
+        #region Conversions
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator OrientedBox3d(OrientedBox3f b)
+            => new OrientedBox3d(b);
+
+        #endregion
+
+        #region Properties
+
         public Box3d AxisAlignedBox => Box.Transformed((M44d)Trafo);
 
         public V3d[] Corners
@@ -241,6 +345,10 @@ namespace Aardvark.Base
                 return Box.ComputeCorners().Map(p => m.TransformPos(p));
             }
         }
+
+        #endregion
     }
+
+    #endregion
 
 }

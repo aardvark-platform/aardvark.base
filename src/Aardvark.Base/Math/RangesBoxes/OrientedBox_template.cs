@@ -19,6 +19,8 @@ namespace Aardvark.Base
     //#   var rotnt = "Rot" + n + tc;
     //#   var euclideannt = "Euclidean" + n + tc;
     //#   var mmmt = "M" + m + m + tc;
+    #region __type__
+
     [DataContract]
     public struct __type__
     {
@@ -26,6 +28,15 @@ namespace Aardvark.Base
         public __boxnt__ Box;
         [DataMember]
         public __euclideannt__ Trafo;
+
+        #region Constructors
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__type2__ box)
+        {
+            Box = (__boxnt__)box.Box;
+            Trafo = (__euclideannt__)box.Trafo;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__boxnt__ box)
@@ -62,6 +73,18 @@ namespace Aardvark.Base
             Trafo = trafo;
         }
 
+        #endregion
+
+        #region Conversions
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type__(__type2__ b)
+            => new __type__(b);
+
+        #endregion
+
+        #region Properties
+
         public __boxnt__ AxisAlignedBox => Box.Transformed((__mmmt__)Trafo);
 
         public __vnt__[] Corners
@@ -83,7 +106,11 @@ namespace Aardvark.Base
             }
         }
         //# }
+
+        #endregion
     }
+
+    #endregion
 
     //# } }
 }
