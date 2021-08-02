@@ -1920,5 +1920,72 @@ namespace Aardvark.Base
 
         //# });
         #endregion
+
+        #region Signs
+
+        //# fdtypes.ForEach(t => {
+        //# var type = t.Name;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Signs GetSigns(this __type__ value, __type__ epsilon)
+        {
+            if (value < -epsilon) return Signs.Negative;
+            if (value > +epsilon) return Signs.Positive;
+            return Signs.Zero;
+        }
+
+        public static void AggregateSigns(
+                this IEnumerable<__type__> values, __type__ epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+        {
+            int nc = 0, zc = 0, pc = 0;
+            foreach (var v in values)
+            {
+                if (v < -epsilon) { ++nc; continue; }
+                if (v > +epsilon) { ++pc; continue; }
+                ++zc;
+            }
+            negativeCount = nc;
+            zeroCount = zc;
+            positiveCount = pc;
+        }
+
+        public static void AggregateSigns(
+                this (__type__, __type__) values, __type__ epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static void AggregateSigns(
+                this (__type__, __type__, __type__) values, __type__ epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static void AggregateSigns(
+                this (__type__, __type__, __type__, __type__) values, __type__ epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static Signs AggregateSigns(this IEnumerable<__type__> values, __type__ epsilon)
+        {
+            var signs = Signs.None;
+            foreach (var v in values)
+            {
+                if (v < -epsilon) { signs |= Signs.Negative; continue; }
+                if (v > +epsilon) { signs |= Signs.Positive; continue; }
+                signs |= Signs.Zero;
+            }
+            return signs;
+        }
+
+        public static Signs AggregateSigns(this (__type__, __type__) values, __type__ epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon);
+
+        public static Signs AggregateSigns(this (__type__, __type__, __type__) values, __type__ epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon);
+
+        public static Signs AggregateSigns(this (__type__, __type__, __type__, __type__) values, __type__ epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon);
+
+        //# });
+        #endregion
     }
 }

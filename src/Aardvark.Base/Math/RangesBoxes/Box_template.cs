@@ -2413,5 +2413,38 @@ namespace Aardvark.Base
 
     #endregion
 
+    //# if (dim == 3) {
+    #region __type__AndFlags
+
+    [DataContract]
+    public struct __type__AndFlags
+    {
+        [DataMember]
+        public Box.Flags BFlags;
+        [DataMember]
+        public __type__ BBox;
+
+        public __type__AndFlags(__type__ union, __type__ box0, __type__ box1)
+        {
+            BFlags = 0;
+            BBox = union;
+            if (box0.Min.X > union.Min.X) { BBox.Min.X = box0.Min.X; BFlags |= Box.Flags.MinX0; }
+            if (box0.Min.Y > union.Min.Y) { BBox.Min.Y = box0.Min.Y; BFlags |= Box.Flags.MinY0; }
+            if (box0.Min.Z > union.Min.Z) { BBox.Min.Z = box0.Min.Z; BFlags |= Box.Flags.MinZ0; }
+            if (box0.Max.X < union.Max.X) { BBox.Max.X = box0.Max.X; BFlags |= Box.Flags.MaxX0; }
+            if (box0.Max.Y < union.Max.Y) { BBox.Max.Y = box0.Max.Y; BFlags |= Box.Flags.MaxY0; }
+            if (box0.Max.Z < union.Max.Z) { BBox.Max.Z = box0.Max.Z; BFlags |= Box.Flags.MaxZ0; }
+            if (box1.Min.X > union.Min.X) { BBox.Min.X = box1.Min.X; BFlags |= Box.Flags.MinX1; }
+            if (box1.Min.Y > union.Min.Y) { BBox.Min.Y = box1.Min.Y; BFlags |= Box.Flags.MinY1; }
+            if (box1.Min.Z > union.Min.Z) { BBox.Min.Z = box1.Min.Z; BFlags |= Box.Flags.MinZ1; }
+            if (box1.Max.X < union.Max.X) { BBox.Max.X = box1.Max.X; BFlags |= Box.Flags.MaxX1; }
+            if (box1.Max.Y < union.Max.Y) { BBox.Max.Y = box1.Max.Y; BFlags |= Box.Flags.MaxY1; }
+            if (box1.Max.Z < union.Max.Z) { BBox.Max.Z = box1.Max.Z; BFlags |= Box.Flags.MaxZ1; }
+        }
+    }
+
+    #endregion
+
+    //# }
     //# }
 }

@@ -6503,5 +6503,129 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Signs
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Signs GetSigns(this float value, float epsilon)
+        {
+            if (value < -epsilon) return Signs.Negative;
+            if (value > +epsilon) return Signs.Positive;
+            return Signs.Zero;
+        }
+
+        public static void AggregateSigns(
+                this IEnumerable<float> values, float epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+        {
+            int nc = 0, zc = 0, pc = 0;
+            foreach (var v in values)
+            {
+                if (v < -epsilon) { ++nc; continue; }
+                if (v > +epsilon) { ++pc; continue; }
+                ++zc;
+            }
+            negativeCount = nc;
+            zeroCount = zc;
+            positiveCount = pc;
+        }
+
+        public static void AggregateSigns(
+                this (float, float) values, float epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static void AggregateSigns(
+                this (float, float, float) values, float epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static void AggregateSigns(
+                this (float, float, float, float) values, float epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static Signs AggregateSigns(this IEnumerable<float> values, float epsilon)
+        {
+            var signs = Signs.None;
+            foreach (var v in values)
+            {
+                if (v < -epsilon) { signs |= Signs.Negative; continue; }
+                if (v > +epsilon) { signs |= Signs.Positive; continue; }
+                signs |= Signs.Zero;
+            }
+            return signs;
+        }
+
+        public static Signs AggregateSigns(this (float, float) values, float epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon);
+
+        public static Signs AggregateSigns(this (float, float, float) values, float epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon);
+
+        public static Signs AggregateSigns(this (float, float, float, float) values, float epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Signs GetSigns(this double value, double epsilon)
+        {
+            if (value < -epsilon) return Signs.Negative;
+            if (value > +epsilon) return Signs.Positive;
+            return Signs.Zero;
+        }
+
+        public static void AggregateSigns(
+                this IEnumerable<double> values, double epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+        {
+            int nc = 0, zc = 0, pc = 0;
+            foreach (var v in values)
+            {
+                if (v < -epsilon) { ++nc; continue; }
+                if (v > +epsilon) { ++pc; continue; }
+                ++zc;
+            }
+            negativeCount = nc;
+            zeroCount = zc;
+            positiveCount = pc;
+        }
+
+        public static void AggregateSigns(
+                this (double, double) values, double epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static void AggregateSigns(
+                this (double, double, double) values, double epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static void AggregateSigns(
+                this (double, double, double, double) values, double epsilon,
+                out int negativeCount, out int zeroCount, out int positiveCount)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+
+        public static Signs AggregateSigns(this IEnumerable<double> values, double epsilon)
+        {
+            var signs = Signs.None;
+            foreach (var v in values)
+            {
+                if (v < -epsilon) { signs |= Signs.Negative; continue; }
+                if (v > +epsilon) { signs |= Signs.Positive; continue; }
+                signs |= Signs.Zero;
+            }
+            return signs;
+        }
+
+        public static Signs AggregateSigns(this (double, double) values, double epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon);
+
+        public static Signs AggregateSigns(this (double, double, double) values, double epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon);
+
+        public static Signs AggregateSigns(this (double, double, double, double) values, double epsilon)
+            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon);
+
+        #endregion
     }
 }
