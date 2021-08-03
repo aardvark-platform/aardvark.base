@@ -256,12 +256,6 @@ namespace Aardvark.Base
             => ApproximateEquals(a, b, Constant<__ftype__>.PositiveTinyValue);
     }
 
-    public static class __box3t__SphereExtensions
-    {
-        public static __type__ GetBoundingSphere(this __box3t__ box)
-            => box.IsInvalid ? __type__.Invalid : new __type__(box.Center, __half__ * box.Size.Length);
-    }
-
     #endregion
 
     //# }

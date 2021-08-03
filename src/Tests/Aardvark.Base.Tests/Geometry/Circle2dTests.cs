@@ -228,19 +228,19 @@ namespace Aardvark.Tests.Geometry
         }
 
         [Test]
-        public void Circle2d_GetBoundingCircle2d()
+        public void Circle2d_BoundingCircle2d()
         {
             var a = Box2d.Unit;
-            var b = a.GetBoundingCircle2d();
+            var b = a.BoundingCircle2d;
             var c = new Circle2d(new V2d(0.5, 0.5), Constant.Sqrt2Half);
             Assert.IsTrue(b.Equals(c));
         }
 
         [Test]
-        public void Circle2d_GetBoundingCircle2d_Invalid()
+        public void Circle2d_BoundingCircle2d_Invalid()
         {
             var a = Box2d.Invalid;
-            var b = a.GetBoundingCircle2d();
+            var b = a.BoundingCircle2d;
             Assert.IsTrue(b.IsInvalid);
         }
     }

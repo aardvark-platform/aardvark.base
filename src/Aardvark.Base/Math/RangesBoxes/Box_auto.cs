@@ -113,7 +113,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1b
-        : IEquatable<Range1b>, IRange<byte, Range1b>,  IFormattable
+        : IEquatable<Range1b>, IRange<byte, Range1b>, IFormattable
     {
         [DataMember]
         public byte Min;
@@ -1105,7 +1105,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1sb
-        : IEquatable<Range1sb>, IRange<sbyte, Range1sb>,  IFormattable
+        : IEquatable<Range1sb>, IRange<sbyte, Range1sb>, IFormattable
     {
         [DataMember]
         public sbyte Min;
@@ -2097,7 +2097,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1s
-        : IEquatable<Range1s>, IRange<short, Range1s>,  IFormattable
+        : IEquatable<Range1s>, IRange<short, Range1s>, IFormattable
     {
         [DataMember]
         public short Min;
@@ -3089,7 +3089,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1us
-        : IEquatable<Range1us>, IRange<ushort, Range1us>,  IFormattable
+        : IEquatable<Range1us>, IRange<ushort, Range1us>, IFormattable
     {
         [DataMember]
         public ushort Min;
@@ -4081,7 +4081,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1i
-        : IEquatable<Range1i>, IRange<int, Range1i>,  IFormattable
+        : IEquatable<Range1i>, IRange<int, Range1i>, IFormattable
     {
         [DataMember]
         public int Min;
@@ -5073,7 +5073,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1ui
-        : IEquatable<Range1ui>, IRange<uint, Range1ui>,  IFormattable
+        : IEquatable<Range1ui>, IRange<uint, Range1ui>, IFormattable
     {
         [DataMember]
         public uint Min;
@@ -6065,7 +6065,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1l
-        : IEquatable<Range1l>, IRange<long, Range1l>,  IFormattable
+        : IEquatable<Range1l>, IRange<long, Range1l>, IFormattable
     {
         [DataMember]
         public long Min;
@@ -7057,7 +7057,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1ul
-        : IEquatable<Range1ul>, IRange<ulong, Range1ul>,  IFormattable
+        : IEquatable<Range1ul>, IRange<ulong, Range1ul>, IFormattable
     {
         [DataMember]
         public ulong Min;
@@ -8049,7 +8049,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1f
-        : IEquatable<Range1f>, IRange<float, Range1f>,  IFormattable
+        : IEquatable<Range1f>, IRange<float, Range1f>, IFormattable
     {
         [DataMember]
         public float Min;
@@ -9060,7 +9060,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1d
-        : IEquatable<Range1d>, IRange<double, Range1d>,  IFormattable
+        : IEquatable<Range1d>, IRange<double, Range1d>, IFormattable
     {
         [DataMember]
         public double Min;
@@ -10071,7 +10071,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2i
-        : IEquatable<Box2i>, IRange<V2i, Box2i>, IBoundingBox2i, ISize2i, IFormattable
+        : IEquatable<Box2i>, IRange<V2i, Box2i>, IBoundingBox2i, ISize2i, IBoundingCircle2d, IFormattable
     {
         [DataMember]
         public V2i Min;
@@ -11360,6 +11360,16 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region IBoundingCircle2d Members
+
+        public Circle2d BoundingCircle2d
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Circle2d.Invalid : new Circle2d((V2d)Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
         #region ISize2i Members
 
         public V2i Size2i
@@ -11592,7 +11602,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2l
-        : IEquatable<Box2l>, IRange<V2l, Box2l>, IBoundingBox2l, ISize2l, IFormattable
+        : IEquatable<Box2l>, IRange<V2l, Box2l>, IBoundingBox2l, ISize2l, IBoundingCircle2d, IFormattable
     {
         [DataMember]
         public V2l Min;
@@ -12881,6 +12891,16 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region IBoundingCircle2d Members
+
+        public Circle2d BoundingCircle2d
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Circle2d.Invalid : new Circle2d((V2d)Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
         #region ISize2l Members
 
         public V2l Size2l
@@ -13113,7 +13133,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2f
-        : IEquatable<Box2f>, IRange<V2f, Box2f>, IBoundingBox2f, ISize2f, IFormattable
+        : IEquatable<Box2f>, IRange<V2f, Box2f>, IBoundingBox2f, ISize2f, IBoundingCircle2f, IFormattable
     {
         [DataMember]
         public V2f Min;
@@ -14508,6 +14528,16 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region IBoundingCircle2f Members
+
+        public Circle2f BoundingCircle2f
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Circle2f.Invalid : new Circle2f(Center, 0.5f * Size.Length);
+        }
+
+        #endregion
+
         #region ISize2f Members
 
         public V2f Size2f
@@ -14740,7 +14770,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2d
-        : IEquatable<Box2d>, IRange<V2d, Box2d>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2d>, IRange<V2d, Box2d>, IBoundingBox2d, ISize2d, IBoundingCircle2d, IFormattable
     {
         [DataMember]
         public V2d Min;
@@ -16135,6 +16165,16 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region IBoundingCircle2d Members
+
+        public Circle2d BoundingCircle2d
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Circle2d.Invalid : new Circle2d(Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
         #region ISize2d Members
 
         public V2d Size2d
@@ -16367,7 +16407,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3i
-        : IEquatable<Box3i>, IRange<V3i, Box3i>, IBoundingBox3i, ISize3i, IFormattable
+        : IEquatable<Box3i>, IRange<V3i, Box3i>, IBoundingBox3i, ISize3i, IBoundingSphere3d, IFormattable
     {
         [DataMember]
         public V3i Min;
@@ -17633,6 +17673,16 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region IBoundingSphere3d Members
+
+        public Sphere3d BoundingSphere3d
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Sphere3d.Invalid : new Sphere3d((V3d)Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
         #region ISize3i Members
 
         public V3i Size3i
@@ -18245,7 +18295,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3l
-        : IEquatable<Box3l>, IRange<V3l, Box3l>, IBoundingBox3l, ISize3l, IFormattable
+        : IEquatable<Box3l>, IRange<V3l, Box3l>, IBoundingBox3l, ISize3l, IBoundingSphere3d, IFormattable
     {
         [DataMember]
         public V3l Min;
@@ -19511,6 +19561,16 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region IBoundingSphere3d Members
+
+        public Sphere3d BoundingSphere3d
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Sphere3d.Invalid : new Sphere3d((V3d)Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
         #region ISize3l Members
 
         public V3l Size3l
@@ -20123,7 +20183,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3f
-        : IEquatable<Box3f>, IRange<V3f, Box3f>, IBoundingBox3f, ISize3f, IFormattable
+        : IEquatable<Box3f>, IRange<V3f, Box3f>, IBoundingBox3f, ISize3f, IBoundingSphere3f, IFormattable
     {
         [DataMember]
         public V3f Min;
@@ -21500,6 +21560,16 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region IBoundingSphere3f Members
+
+        public Sphere3f BoundingSphere3f
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Sphere3f.Invalid : new Sphere3f(Center, 0.5f * Size.Length);
+        }
+
+        #endregion
+
         #region ISize3f Members
 
         public V3f Size3f
@@ -22112,7 +22182,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3d
-        : IEquatable<Box3d>, IRange<V3d, Box3d>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3d>, IRange<V3d, Box3d>, IBoundingBox3d, ISize3d, IBoundingSphere3d, IFormattable
     {
         [DataMember]
         public V3d Min;
@@ -23485,6 +23555,16 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
+        }
+
+        #endregion
+
+        #region IBoundingSphere3d Members
+
+        public Sphere3d BoundingSphere3d
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Sphere3d.Invalid : new Sphere3d(Center, 0.5 * Size.Length);
         }
 
         #endregion

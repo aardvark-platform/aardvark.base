@@ -243,12 +243,6 @@ namespace Aardvark.Base
             => ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
     }
 
-    public static class Box3fSphereExtensions
-    {
-        public static Sphere3f GetBoundingSphere(this Box3f box)
-            => box.IsInvalid ? Sphere3f.Invalid : new Sphere3f(box.Center, 0.5f * box.Size.Length);
-    }
-
     #endregion
 
     #region Sphere3d
@@ -482,12 +476,6 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Sphere3d a, Sphere3d b)
             => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
-    }
-
-    public static class Box3dSphereExtensions
-    {
-        public static Sphere3d GetBoundingSphere(this Box3d box)
-            => box.IsInvalid ? Sphere3d.Invalid : new Sphere3d(box.Center, 0.5 * box.Size.Length);
     }
 
     #endregion

@@ -2200,7 +2200,7 @@ namespace Aardvark.Base
             var edge02 = p2 - p0;
             var plane = Vec.Cross(ray.Direction, edge02);
             var det = Vec.Dot(edge01, plane);
-            if (det > -____epsdot____ && det < ____epsdot____) { t = __rtype__.NaN; return false; }
+            if (det > -__epsdot__ && det < __epsdot__) { t = __rtype__.NaN; return false; }
             //ray ~= parallel / Triangle
             var tv = ray.Origin - p0;
             det = 1 / det;  // det is now inverse det
@@ -2236,7 +2236,7 @@ namespace Aardvark.Base
         {
             var plane = Vec.Cross(ray.Direction, edge02);
             var det = Vec.Dot(edge01, plane);
-            if (det > -____epsdot____ && det < ____epsdot____) { t = __rtype__.NaN; return false; }
+            if (det > -__epsdot__ && det < __epsdot__) { t = __rtype__.NaN; return false; }
             //ray ~= parallel / Triangle
             var tv = ray.Origin - p0;
             det = 1 / det;  // det is now inverse det
@@ -2467,7 +2467,7 @@ namespace Aardvark.Base
 
             __v3t__ plane = Vec.Cross(dir, edge02);
             __rtype__ det = Vec.Dot(edge01, plane);
-            if (det > -____epsdot____ && det < ____epsdot____)return false;
+            if (det > -__epsdot__ && det < __epsdot__)return false;
             //ray ~= parallel / Triangle
             __v3t__ tv = p0 - tri.P0;
             det = 1 / det;  // det is now inverse det
@@ -2507,7 +2507,7 @@ namespace Aardvark.Base
 
             __v3t__ plane = Vec.Cross(dir, edge02);
             __rtype__ det = Vec.Dot(edge01, plane);
-            if (det > -____epsdot____ && det < ____epsdot____) { point = __v3t__.NaN; return false; }
+            if (det > -__epsdot__ && det < __epsdot__) { point = __v3t__.NaN; return false; }
             //ray ~= parallel / Triangle
             __v3t__ tv = p0 - tri.P0;
             det = 1 / det;  // det is now inverse det

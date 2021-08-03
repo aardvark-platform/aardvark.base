@@ -251,16 +251,6 @@ namespace Aardvark.Base
             => ApproximateEquals(a, b, Constant<float>.PositiveTinyValue);
     }
 
-    public static class Box2fCircleExtensions
-    {
-        /// <summary>
-        /// Computes bounding circle of box.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Circle2f GetBoundingCircle(this Box2f box)
-            => box.IsInvalid ? Circle2f.Invalid : new Circle2f(box.Center, 0.5f * box.Size.Length);
-    }
-
     #endregion
 
     #region Circle2d
@@ -486,16 +476,6 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this Circle2d a, Circle2d b)
             => ApproximateEquals(a, b, Constant<double>.PositiveTinyValue);
-    }
-
-    public static class Box2dCircleExtensions
-    {
-        /// <summary>
-        /// Computes bounding circle of box.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Circle2d GetBoundingCircle(this Box2d box)
-            => box.IsInvalid ? Circle2d.Invalid : new Circle2d(box.Center, 0.5 * box.Size.Length);
     }
 
     #endregion

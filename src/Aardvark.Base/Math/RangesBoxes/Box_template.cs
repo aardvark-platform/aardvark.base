@@ -127,19 +127,27 @@ namespace Aardvark.Base
     //#     var bname = dim > 1 ? "box" : "range";
     //#     var bnamecaps = dim > 1 ? "Box" : "Range";
     //#     var type = t.Name;
+    //#     var ct = (ft == Meta.FloatType || ft == Meta.DoubleType) ? ft : Meta.ComputationTypeOf(ft);
+    //#     var ctype = ct.Name;
+    //#     var cch = ct.Char;
     //#     var iboundingbox = "IBoundingBox" + dim + ch;
+    //#     var iboundingcircle = "IBoundingCircle" + dim + cch;
+    //#     var iboundingsphere = "IBoundingSphere" + dim + cch;
     //#     var isize = "ISize" + dim + ch;
     //#     var minvalue = dim > 1 ? ltype + ".MinValue"
     //#                            : lt.IsReal ? "Constant<" + ltype + ">.ParseableMinValue" : ltype + ".MinValue";
     //#     var maxvalue = dim > 1 ? ltype + ".MaxValue"
     //#                            : lt.IsReal ? "Constant<" + ltype + ">.ParseableMaxValue" : ltype + ".MaxValue";
+    //#     var half = (ct == Meta.DoubleType) ? "0.5" : "0.5f";
     #region __type__
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct __type__
         : IEquatable<__type__>, IRange<__ltype__, __type__>, /*# if (dim > 1) {
-                */__iboundingbox__, __isize__,/*# } */ IFormattable
+                */__iboundingbox__, __isize__, /*# } if (dim == 2) {
+                */__iboundingcircle__, /*# } if (dim == 3) {
+                */__iboundingsphere__, /*# }*/IFormattable
     {
         [DataMember]
         public __ltype__ Min;
@@ -1799,6 +1807,30 @@ namespace Aardvark.Base
         }
 
         #endregion
+        //# if (dim == 2) {
+
+        #region IBoundingCircle__dim____cch__ Members
+
+        public Circle__dim____cch__ BoundingCircle__dim____cch__
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Circle__dim____cch__.Invalid : new Circle__dim____cch__(/*# if (ft != ct) {*/(V__dim____cch__)/*# }*/Center, __half__ * Size.Length);
+        }
+
+        #endregion
+        //# }
+        //# if (dim == 3) {
+
+        #region IBoundingSphere__dim____cch__ Members
+
+        public Sphere__dim____cch__ BoundingSphere__dim____cch__
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Sphere__dim____cch__.Invalid : new Sphere__dim____cch__(/*# if (ft != ct) {*/(V__dim____cch__)/*# }*/Center, __half__ * Size.Length);
+        }
+
+        #endregion
+        //# }
 
         #region ISize__dim____ch__ Members
 

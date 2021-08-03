@@ -264,16 +264,6 @@ namespace Aardvark.Base
             => ApproximateEquals(a, b, Constant<__ftype__>.PositiveTinyValue);
     }
 
-    public static class Box2__tc__CircleExtensions
-    {
-        /// <summary>
-        /// Computes bounding circle of box.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ GetBoundingCircle(this __box2t__ box)
-            => box.IsInvalid ? __type__.Invalid : new __type__(box.Center, __half__ * box.Size.Length);
-    }
-
     #endregion
 
     //# }
