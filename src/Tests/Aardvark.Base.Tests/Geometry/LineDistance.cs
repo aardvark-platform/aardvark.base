@@ -10,6 +10,18 @@ namespace Aardvark.Tests.Geometry
         const int SubDiv = 100;
 
         [Test]
+        public void DistanceToLineAndGetMinimalDistanceToConsistency()
+        {
+            var line = new Line3d(new V3d(1, 2, 3), new V3d(1, 2, 3));
+            var p = V3d.OOO;
+
+            var x = p.DistanceToLine(line.P0, line.P1);
+            var md = p.GetMinimalDistanceTo(line);
+
+            Assert.AreEqual(x, md);
+        }
+
+        [Test]
         public void LineToPointDistance2d()
         {
             var rnd = new RandomSystem(1);

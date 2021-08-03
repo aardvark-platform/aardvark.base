@@ -830,23 +830,14 @@ namespace Aardvark.Base
         #endregion
 
         #region __v2t__ - __line2t__
+
         /// <summary>
         /// returns the minimal distance between the point and the Line
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype__ GetMinimalDistanceTo(this __v2t__ point, __line2t__ line)
-        {
-            var a = point - line.P0;
-            var u = line.P1 - line.P0;
-            var lu2 = u.LengthSquared;
+            => point.DistanceToLine(line.P0, line.P1);
 
-            // check if line is degenerated
-            if (lu2.IsTiny()) return a.Length;
-
-            // calculate T of point projected to line.__ray2t__ and clamp to [0, 1]
-            var t = Fun.Clamp(Vec.Dot(a, u) / lu2, 0, 1);
-            // calculate distance between query point and clamped projected point
-            return Vec.Distance(point, line.P0 + u * t);
-        }
         #endregion
 
         #region __line2t__ - __line2t__
@@ -874,44 +865,12 @@ namespace Aardvark.Base
 
         #region __v3t__ - __line3t__
 
-        /*  Performance Test .........................................................................
-                Faster Method:                                      __v3t__.MinimalDistanceTo(__line3t__)
-                __v3t__.MinimalDistanceTo(__line3t__):                      2,418s
-                (__v3t__ - __v3t__.GetClosestPointOn(__line3t__)).Length:       4,789s
-                Total Executions:                                   10000000
-                Errors outside tolerance(1E-7):                     0
-                Average Squared-Distance of Results:                1,13089959414307E-31
-                Speedup-factor:                                     1,98
-         */
-
         /// <summary>
         /// returns the minimal distance between the point and the Line
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype__ GetMinimalDistanceTo(this __v3t__ point, __line3t__ line)
-        {
-            var a = point - line.P0;
-            var u = line.P1 - line.P0;
-
-            var lu2 = u.LengthSquared;
-            var adu = Vec.Dot(a, u);
-
-            if (adu > lu2)
-            {
-                var acu2 = Vec.Cross(a, u).LengthSquared;
-                var s1 = (adu * adu - 2 * adu * lu2 + lu2 * lu2);
-
-                return Fun.Sqrt((acu2 + s1) / lu2);
-            }
-            else if (adu >= 0)
-            {
-                var acu2 = Vec.Cross(a, u).LengthSquared;
-                return Fun.Sqrt(acu2 / lu2);
-            }
-            else
-            {
-                return a.Length;
-            }
-        }
+            => point.DistanceToLine(line.P0, line.P1);
 
         /// <summary>
         /// Returns the minimal distance between the point and the Line.

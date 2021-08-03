@@ -1423,23 +1423,14 @@ namespace Aardvark.Base
         #endregion
 
         #region V2f - Line2f
+
         /// <summary>
         /// returns the minimal distance between the point and the Line
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetMinimalDistanceTo(this V2f point, Line2f line)
-        {
-            var a = point - line.P0;
-            var u = line.P1 - line.P0;
-            var lu2 = u.LengthSquared;
+            => point.DistanceToLine(line.P0, line.P1);
 
-            // check if line is degenerated
-            if (lu2.IsTiny()) return a.Length;
-
-            // calculate T of point projected to line.Ray2f and clamp to [0, 1]
-            var t = Fun.Clamp(Vec.Dot(a, u) / lu2, 0, 1);
-            // calculate distance between query point and clamped projected point
-            return Vec.Distance(point, line.P0 + u * t);
-        }
         #endregion
 
         #region Line2f - Line2f
@@ -1467,44 +1458,12 @@ namespace Aardvark.Base
 
         #region V3f - Line3f
 
-        /*  Performance Test .........................................................................
-                Faster Method:                                      V3f.MinimalDistanceTo(Line3f)
-                V3f.MinimalDistanceTo(Line3f):                      2,418s
-                (V3f - V3f.GetClosestPointOn(Line3f)).Length:       4,789s
-                Total Executions:                                   10000000
-                Errors outside tolerance(1E-7):                     0
-                Average Squared-Distance of Results:                1,13089959414307E-31
-                Speedup-factor:                                     1,98
-         */
-
         /// <summary>
         /// returns the minimal distance between the point and the Line
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetMinimalDistanceTo(this V3f point, Line3f line)
-        {
-            var a = point - line.P0;
-            var u = line.P1 - line.P0;
-
-            var lu2 = u.LengthSquared;
-            var adu = Vec.Dot(a, u);
-
-            if (adu > lu2)
-            {
-                var acu2 = Vec.Cross(a, u).LengthSquared;
-                var s1 = (adu * adu - 2 * adu * lu2 + lu2 * lu2);
-
-                return Fun.Sqrt((acu2 + s1) / lu2);
-            }
-            else if (adu >= 0)
-            {
-                var acu2 = Vec.Cross(a, u).LengthSquared;
-                return Fun.Sqrt(acu2 / lu2);
-            }
-            else
-            {
-                return a.Length;
-            }
-        }
+            => point.DistanceToLine(line.P0, line.P1);
 
         /// <summary>
         /// Returns the minimal distance between the point and the Line.
@@ -1914,23 +1873,14 @@ namespace Aardvark.Base
         #endregion
 
         #region V2d - Line2d
+
         /// <summary>
         /// returns the minimal distance between the point and the Line
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetMinimalDistanceTo(this V2d point, Line2d line)
-        {
-            var a = point - line.P0;
-            var u = line.P1 - line.P0;
-            var lu2 = u.LengthSquared;
+            => point.DistanceToLine(line.P0, line.P1);
 
-            // check if line is degenerated
-            if (lu2.IsTiny()) return a.Length;
-
-            // calculate T of point projected to line.Ray2d and clamp to [0, 1]
-            var t = Fun.Clamp(Vec.Dot(a, u) / lu2, 0, 1);
-            // calculate distance between query point and clamped projected point
-            return Vec.Distance(point, line.P0 + u * t);
-        }
         #endregion
 
         #region Line2d - Line2d
@@ -1958,44 +1908,12 @@ namespace Aardvark.Base
 
         #region V3d - Line3d
 
-        /*  Performance Test .........................................................................
-                Faster Method:                                      V3d.MinimalDistanceTo(Line3d)
-                V3d.MinimalDistanceTo(Line3d):                      2,418s
-                (V3d - V3d.GetClosestPointOn(Line3d)).Length:       4,789s
-                Total Executions:                                   10000000
-                Errors outside tolerance(1E-7):                     0
-                Average Squared-Distance of Results:                1,13089959414307E-31
-                Speedup-factor:                                     1,98
-         */
-
         /// <summary>
         /// returns the minimal distance between the point and the Line
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetMinimalDistanceTo(this V3d point, Line3d line)
-        {
-            var a = point - line.P0;
-            var u = line.P1 - line.P0;
-
-            var lu2 = u.LengthSquared;
-            var adu = Vec.Dot(a, u);
-
-            if (adu > lu2)
-            {
-                var acu2 = Vec.Cross(a, u).LengthSquared;
-                var s1 = (adu * adu - 2 * adu * lu2 + lu2 * lu2);
-
-                return Fun.Sqrt((acu2 + s1) / lu2);
-            }
-            else if (adu >= 0)
-            {
-                var acu2 = Vec.Cross(a, u).LengthSquared;
-                return Fun.Sqrt(acu2 / lu2);
-            }
-            else
-            {
-                return a.Length;
-            }
-        }
+            => point.DistanceToLine(line.P0, line.P1);
 
         /// <summary>
         /// Returns the minimal distance between the point and the Line.
