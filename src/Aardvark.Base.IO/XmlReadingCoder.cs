@@ -667,20 +667,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Symbol_(ref List<Symbol> v) { throw new NotImplementedException(); }
         public void CodeList_of_Fraction_(ref List<Fraction> v) { throw new NotImplementedException(); }
 
-        public void CodeCircle2d(ref Circle2d v) { throw new NotImplementedException(); }
-        public void CodeLine2d(ref Line2d v) { throw new NotImplementedException(); }
-        public void CodeLine3d(ref Line3d v) { throw new NotImplementedException(); }
-        public void CodePlane2d(ref Plane2d v) { throw new NotImplementedException(); }
-        public void CodePlane3d(ref Plane3d v) { throw new NotImplementedException(); }
-        public void CodePlaneWithPoint3d(ref PlaneWithPoint3d v) { throw new NotImplementedException(); }
-        public void CodeQuad2d(ref Quad2d v) { throw new NotImplementedException(); }
-        public void CodeQuad3d(ref Quad3d v) { throw new NotImplementedException(); }
-        public void CodeRay2d(ref Ray2d v) { throw new NotImplementedException(); }
-        public void CodeRay3d(ref Ray3d v) { throw new NotImplementedException(); }
-        public void CodeSphere3d(ref Sphere3d v) { throw new NotImplementedException(); }
-        public void CodeTriangle2d(ref Triangle2d v) { throw new NotImplementedException(); }
-        public void CodeTriangle3d(ref Triangle3d v) { throw new NotImplementedException(); }
-
         public void CodeCameraExtrinsics(ref CameraExtrinsics v)
         {
             throw new NotSupportedException("cannot serialize single camera");
@@ -1704,20 +1690,6 @@ namespace Aardvark.Base.Coder
         }        
         
         public void CodeList_of_Fraction_(ref List<Fraction> v) { CodeList(ref v, s => Fraction.Parse(s)); }
-
-        public void CodeCircle2d(ref Circle2d v) { v = Circle2d.Parse(CurrentValue()); }
-        public void CodeLine2d(ref Line2d v) { v = Line2d.Parse(CurrentValue()); }
-        public void CodeLine3d(ref Line3d v) { v = Line3d.Parse(CurrentValue()); }
-        public void CodePlane2d(ref Plane2d v) { v = Plane2d.Parse(CurrentValue()); }
-        public void CodePlane3d(ref Plane3d v) { v = Plane3d.Parse(CurrentValue()); }
-        public void CodePlaneWithPoint3d(ref PlaneWithPoint3d v) { v = PlaneWithPoint3d.Parse(CurrentValue()); }
-        public void CodeQuad2d(ref Quad2d v) { v = Quad2d.Parse(CurrentValue()); }
-        public void CodeQuad3d(ref Quad3d v) { v = Quad3d.Parse(CurrentValue()); }
-        public void CodeRay2d(ref Ray2d v) { v = Ray2d.Parse(CurrentValue()); }
-        public void CodeRay3d(ref Ray3d v) { v = Ray3d.Parse(CurrentValue()); }
-        public void CodeSphere3d(ref Sphere3d v) { v = Sphere3d.Parse(CurrentValue()); }
-        public void CodeTriangle2d(ref Triangle2d v) { v = Triangle2d.Parse(CurrentValue()); }
-        public void CodeTriangle3d(ref Triangle3d v) { v = Triangle3d.Parse(CurrentValue()); }
 
         public void CodeCameraExtrinsics(ref CameraExtrinsics v)
         {

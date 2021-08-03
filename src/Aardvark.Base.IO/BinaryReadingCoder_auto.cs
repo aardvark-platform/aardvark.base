@@ -233,6 +233,140 @@ namespace Aardvark.Base.Coder
 
         #endregion
 
+        #region Geometry Types
+
+        public void CodeCircle2f(ref Circle2f v)
+        {
+            CodeV2f(ref v.Center); CodeFloat(ref v.Radius);
+        }
+
+        public void CodeLine2f(ref Line2f v)
+        {
+            CodeV2f(ref v.P0); CodeV2f(ref v.P1);
+        }
+
+        public void CodeLine3f(ref Line3f v)
+        {
+            CodeV3f(ref v.P0); CodeV3f(ref v.P1);
+        }
+
+        public void CodePlane2f(ref Plane2f v)
+        {
+            CodeV2f(ref v.Normal); CodeFloat(ref v.Distance);
+        }
+
+        public void CodePlane3f(ref Plane3f v)
+        {
+            CodeV3f(ref v.Normal); CodeFloat(ref v.Distance);
+        }
+
+        public void CodePlaneWithPoint3f(ref PlaneWithPoint3f v)
+        {
+            CodeV3f(ref v.Normal); CodeV3f(ref v.Point);
+        }
+
+        public void CodeQuad2f(ref Quad2f v)
+        {
+            CodeV2f(ref v.P0); CodeV2f(ref v.P1); CodeV2f(ref v.P2); CodeV2f(ref v.P3);
+        }
+
+        public void CodeQuad3f(ref Quad3f v)
+        {
+            CodeV3f(ref v.P0); CodeV3f(ref v.P1); CodeV3f(ref v.P2); CodeV3f(ref v.P3);
+        }
+
+        public void CodeRay2f(ref Ray2f v)
+        {
+            CodeV2f(ref v.Origin); CodeV2f(ref v.Direction);
+        }
+
+        public void CodeRay3f(ref Ray3f v)
+        {
+            CodeV3f(ref v.Origin); CodeV3f(ref v.Direction);
+        }
+
+        public void CodeSphere3f(ref Sphere3f v)
+        {
+            CodeV3f(ref v.Center); CodeFloat(ref v.Radius);
+        }
+
+        public void CodeTriangle2f(ref Triangle2f v)
+        {
+            CodeV2f(ref v.P0); CodeV2f(ref v.P1); CodeV2f(ref v.P2);
+        }
+
+        public void CodeTriangle3f(ref Triangle3f v)
+        {
+            CodeV3f(ref v.P0); CodeV3f(ref v.P1); CodeV3f(ref v.P2);
+        }
+
+        public void CodeCircle2d(ref Circle2d v)
+        {
+            CodeV2d(ref v.Center); CodeDouble(ref v.Radius);
+        }
+
+        public void CodeLine2d(ref Line2d v)
+        {
+            CodeV2d(ref v.P0); CodeV2d(ref v.P1);
+        }
+
+        public void CodeLine3d(ref Line3d v)
+        {
+            CodeV3d(ref v.P0); CodeV3d(ref v.P1);
+        }
+
+        public void CodePlane2d(ref Plane2d v)
+        {
+            CodeV2d(ref v.Normal); CodeDouble(ref v.Distance);
+        }
+
+        public void CodePlane3d(ref Plane3d v)
+        {
+            CodeV3d(ref v.Normal); CodeDouble(ref v.Distance);
+        }
+
+        public void CodePlaneWithPoint3d(ref PlaneWithPoint3d v)
+        {
+            CodeV3d(ref v.Normal); CodeV3d(ref v.Point);
+        }
+
+        public void CodeQuad2d(ref Quad2d v)
+        {
+            CodeV2d(ref v.P0); CodeV2d(ref v.P1); CodeV2d(ref v.P2); CodeV2d(ref v.P3);
+        }
+
+        public void CodeQuad3d(ref Quad3d v)
+        {
+            CodeV3d(ref v.P0); CodeV3d(ref v.P1); CodeV3d(ref v.P2); CodeV3d(ref v.P3);
+        }
+
+        public void CodeRay2d(ref Ray2d v)
+        {
+            CodeV2d(ref v.Origin); CodeV2d(ref v.Direction);
+        }
+
+        public void CodeRay3d(ref Ray3d v)
+        {
+            CodeV3d(ref v.Origin); CodeV3d(ref v.Direction);
+        }
+
+        public void CodeSphere3d(ref Sphere3d v)
+        {
+            CodeV3d(ref v.Center); CodeDouble(ref v.Radius);
+        }
+
+        public void CodeTriangle2d(ref Triangle2d v)
+        {
+            CodeV2d(ref v.P0); CodeV2d(ref v.P1); CodeV2d(ref v.P2);
+        }
+
+        public void CodeTriangle3d(ref Triangle3d v)
+        {
+            CodeV3d(ref v.P0); CodeV3d(ref v.P1); CodeV3d(ref v.P2);
+        }
+
+        #endregion
+
         #region Colors
 
         public void CodeC3b(ref C3b value)
@@ -1269,6 +1403,123 @@ namespace Aardvark.Base.Coder
             value = new Vector<Triangle3d>(data, origin, size, delta);
         }
 
+        public void CodeVector_of_Circle2f_(ref Vector<Circle2f> value)
+        {
+            Circle2f[] data = null; CodeCircle2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Circle2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Line2f_(ref Vector<Line2f> value)
+        {
+            Line2f[] data = null; CodeLine2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Line2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Line3f_(ref Vector<Line3f> value)
+        {
+            Line3f[] data = null; CodeLine3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Line3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Plane2f_(ref Vector<Plane2f> value)
+        {
+            Plane2f[] data = null; CodePlane2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Plane2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Plane3f_(ref Vector<Plane3f> value)
+        {
+            Plane3f[] data = null; CodePlane3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Plane3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_PlaneWithPoint3f_(ref Vector<PlaneWithPoint3f> value)
+        {
+            PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<PlaneWithPoint3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Quad2f_(ref Vector<Quad2f> value)
+        {
+            Quad2f[] data = null; CodeQuad2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Quad2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Quad3f_(ref Vector<Quad3f> value)
+        {
+            Quad3f[] data = null; CodeQuad3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Quad3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Ray2f_(ref Vector<Ray2f> value)
+        {
+            Ray2f[] data = null; CodeRay2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Ray2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Ray3f_(ref Vector<Ray3f> value)
+        {
+            Ray3f[] data = null; CodeRay3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Ray3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Sphere3f_(ref Vector<Sphere3f> value)
+        {
+            Sphere3f[] data = null; CodeSphere3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Sphere3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Triangle2f_(ref Vector<Triangle2f> value)
+        {
+            Triangle2f[] data = null; CodeTriangle2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Triangle2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Triangle3f_(ref Vector<Triangle3f> value)
+        {
+            Triangle3f[] data = null; CodeTriangle3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long size = default(long); CodeLong(ref size);
+            long delta = default(long); CodeLong(ref delta);
+            value = new Vector<Triangle3f>(data, origin, size, delta);
+        }
+
         public void CodeMatrix_of_Byte_(ref Matrix<byte> value)
         {
             byte[] data = null; CodeByteArray(ref data);
@@ -2203,6 +2454,123 @@ namespace Aardvark.Base.Coder
             V2l size = default(V2l); CodeV2l(ref size);
             V2l delta = default(V2l); CodeV2l(ref delta);
             value = new Matrix<Triangle3d>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Circle2f_(ref Matrix<Circle2f> value)
+        {
+            Circle2f[] data = null; CodeCircle2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Circle2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Line2f_(ref Matrix<Line2f> value)
+        {
+            Line2f[] data = null; CodeLine2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Line2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Line3f_(ref Matrix<Line3f> value)
+        {
+            Line3f[] data = null; CodeLine3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Line3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Plane2f_(ref Matrix<Plane2f> value)
+        {
+            Plane2f[] data = null; CodePlane2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Plane2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Plane3f_(ref Matrix<Plane3f> value)
+        {
+            Plane3f[] data = null; CodePlane3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Plane3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_PlaneWithPoint3f_(ref Matrix<PlaneWithPoint3f> value)
+        {
+            PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<PlaneWithPoint3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Quad2f_(ref Matrix<Quad2f> value)
+        {
+            Quad2f[] data = null; CodeQuad2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Quad2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Quad3f_(ref Matrix<Quad3f> value)
+        {
+            Quad3f[] data = null; CodeQuad3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Quad3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Ray2f_(ref Matrix<Ray2f> value)
+        {
+            Ray2f[] data = null; CodeRay2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Ray2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Ray3f_(ref Matrix<Ray3f> value)
+        {
+            Ray3f[] data = null; CodeRay3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Ray3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Sphere3f_(ref Matrix<Sphere3f> value)
+        {
+            Sphere3f[] data = null; CodeSphere3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Sphere3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Triangle2f_(ref Matrix<Triangle2f> value)
+        {
+            Triangle2f[] data = null; CodeTriangle2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Triangle2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Triangle3f_(ref Matrix<Triangle3f> value)
+        {
+            Triangle3f[] data = null; CodeTriangle3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V2l size = default(V2l); CodeV2l(ref size);
+            V2l delta = default(V2l); CodeV2l(ref delta);
+            value = new Matrix<Triangle3f>(data, origin, size, delta);
         }
 
         public void CodeVolume_of_Byte_(ref Volume<byte> value)
@@ -3141,6 +3509,123 @@ namespace Aardvark.Base.Coder
             value = new Volume<Triangle3d>(data, origin, size, delta);
         }
 
+        public void CodeVolume_of_Circle2f_(ref Volume<Circle2f> value)
+        {
+            Circle2f[] data = null; CodeCircle2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Circle2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Line2f_(ref Volume<Line2f> value)
+        {
+            Line2f[] data = null; CodeLine2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Line2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Line3f_(ref Volume<Line3f> value)
+        {
+            Line3f[] data = null; CodeLine3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Line3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Plane2f_(ref Volume<Plane2f> value)
+        {
+            Plane2f[] data = null; CodePlane2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Plane2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Plane3f_(ref Volume<Plane3f> value)
+        {
+            Plane3f[] data = null; CodePlane3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Plane3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_PlaneWithPoint3f_(ref Volume<PlaneWithPoint3f> value)
+        {
+            PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<PlaneWithPoint3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Quad2f_(ref Volume<Quad2f> value)
+        {
+            Quad2f[] data = null; CodeQuad2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Quad2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Quad3f_(ref Volume<Quad3f> value)
+        {
+            Quad3f[] data = null; CodeQuad3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Quad3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Ray2f_(ref Volume<Ray2f> value)
+        {
+            Ray2f[] data = null; CodeRay2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Ray2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Ray3f_(ref Volume<Ray3f> value)
+        {
+            Ray3f[] data = null; CodeRay3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Ray3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Sphere3f_(ref Volume<Sphere3f> value)
+        {
+            Sphere3f[] data = null; CodeSphere3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Sphere3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Triangle2f_(ref Volume<Triangle2f> value)
+        {
+            Triangle2f[] data = null; CodeTriangle2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Triangle2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Triangle3f_(ref Volume<Triangle3f> value)
+        {
+            Triangle3f[] data = null; CodeTriangle3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            V3l size = default(V3l); CodeV3l(ref size);
+            V3l delta = default(V3l); CodeV3l(ref delta);
+            value = new Volume<Triangle3f>(data, origin, size, delta);
+        }
+
         public void CodeTensor_of_Byte_(ref Tensor<byte> value)
         {
             byte[] data = null; CodeByteArray(ref data);
@@ -4077,6 +4562,123 @@ namespace Aardvark.Base.Coder
             value = new Tensor<Triangle3d>(data, origin, size, delta);
         }
 
+        public void CodeTensor_of_Circle2f_(ref Tensor<Circle2f> value)
+        {
+            Circle2f[] data = null; CodeCircle2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Circle2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Line2f_(ref Tensor<Line2f> value)
+        {
+            Line2f[] data = null; CodeLine2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Line2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Line3f_(ref Tensor<Line3f> value)
+        {
+            Line3f[] data = null; CodeLine3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Line3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Plane2f_(ref Tensor<Plane2f> value)
+        {
+            Plane2f[] data = null; CodePlane2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Plane2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Plane3f_(ref Tensor<Plane3f> value)
+        {
+            Plane3f[] data = null; CodePlane3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Plane3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_PlaneWithPoint3f_(ref Tensor<PlaneWithPoint3f> value)
+        {
+            PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<PlaneWithPoint3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Quad2f_(ref Tensor<Quad2f> value)
+        {
+            Quad2f[] data = null; CodeQuad2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Quad2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Quad3f_(ref Tensor<Quad3f> value)
+        {
+            Quad3f[] data = null; CodeQuad3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Quad3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Ray2f_(ref Tensor<Ray2f> value)
+        {
+            Ray2f[] data = null; CodeRay2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Ray2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Ray3f_(ref Tensor<Ray3f> value)
+        {
+            Ray3f[] data = null; CodeRay3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Ray3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Sphere3f_(ref Tensor<Sphere3f> value)
+        {
+            Sphere3f[] data = null; CodeSphere3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Sphere3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Triangle2f_(ref Tensor<Triangle2f> value)
+        {
+            Triangle2f[] data = null; CodeTriangle2fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Triangle2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Triangle3f_(ref Tensor<Triangle3f> value)
+        {
+            Triangle3f[] data = null; CodeTriangle3fArray(ref data);
+            long origin = 0L; CodeLong(ref origin);
+            long[] size = default(long[]); CodeLongArray(ref size);
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+            value = new Tensor<Triangle3f>(data, origin, size, delta);
+        }
+
         #endregion
 
         #region Arrays
@@ -4688,6 +5290,97 @@ namespace Aardvark.Base.Coder
             long count = CodeCountLong(ref value);
             if (count < 1) return;
             for (long i = 0; i < count; i++) CodeTriangle3d(ref value[i]);
+        }
+
+        public void CodeCircle2fArray(ref Circle2f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeCircle2f(ref value[i]);
+        }
+
+        public void CodeLine2fArray(ref Line2f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeLine2f(ref value[i]);
+        }
+
+        public void CodeLine3fArray(ref Line3f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeLine3f(ref value[i]);
+        }
+
+        public void CodePlane2fArray(ref Plane2f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodePlane2f(ref value[i]);
+        }
+
+        public void CodePlane3fArray(ref Plane3f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodePlane3f(ref value[i]);
+        }
+
+        public void CodePlaneWithPoint3fArray(ref PlaneWithPoint3f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodePlaneWithPoint3f(ref value[i]);
+        }
+
+        public void CodeQuad2fArray(ref Quad2f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeQuad2f(ref value[i]);
+        }
+
+        public void CodeQuad3fArray(ref Quad3f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeQuad3f(ref value[i]);
+        }
+
+        public void CodeRay2fArray(ref Ray2f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeRay2f(ref value[i]);
+        }
+
+        public void CodeRay3fArray(ref Ray3f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeRay3f(ref value[i]);
+        }
+
+        public void CodeSphere3fArray(ref Sphere3f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeSphere3f(ref value[i]);
+        }
+
+        public void CodeTriangle2fArray(ref Triangle2f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTriangle2f(ref value[i]);
+        }
+
+        public void CodeTriangle3fArray(ref Triangle3f[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTriangle3f(ref value[i]);
         }
 
         public void CodeVector_of_Byte_Array(ref Vector<byte>[] value)
@@ -5418,6 +6111,97 @@ namespace Aardvark.Base.Coder
             for (long i = 0; i < count; i++) CodeVector_of_Triangle3d_(ref value[i]);
         }
 
+        public void CodeVector_of_Circle2f_Array(ref Vector<Circle2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Circle2f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Line2f_Array(ref Vector<Line2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Line2f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Line3f_Array(ref Vector<Line3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Line3f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Plane2f_Array(ref Vector<Plane2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Plane2f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Plane3f_Array(ref Vector<Plane3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Plane3f_(ref value[i]);
+        }
+
+        public void CodeVector_of_PlaneWithPoint3f_Array(ref Vector<PlaneWithPoint3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_PlaneWithPoint3f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Quad2f_Array(ref Vector<Quad2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Quad2f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Quad3f_Array(ref Vector<Quad3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Quad3f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Ray2f_Array(ref Vector<Ray2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Ray2f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Ray3f_Array(ref Vector<Ray3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Ray3f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Sphere3f_Array(ref Vector<Sphere3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Sphere3f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Triangle2f_Array(ref Vector<Triangle2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Triangle2f_(ref value[i]);
+        }
+
+        public void CodeVector_of_Triangle3f_Array(ref Vector<Triangle3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVector_of_Triangle3f_(ref value[i]);
+        }
+
         public void CodeMatrix_of_Byte_Array(ref Matrix<byte>[] value)
         {
             long count = CodeCountLong(ref value);
@@ -6144,6 +6928,97 @@ namespace Aardvark.Base.Coder
             long count = CodeCountLong(ref value);
             if (count < 1) return;
             for (long i = 0; i < count; i++) CodeMatrix_of_Triangle3d_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Circle2f_Array(ref Matrix<Circle2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Circle2f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Line2f_Array(ref Matrix<Line2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Line2f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Line3f_Array(ref Matrix<Line3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Line3f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Plane2f_Array(ref Matrix<Plane2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Plane2f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Plane3f_Array(ref Matrix<Plane3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Plane3f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_PlaneWithPoint3f_Array(ref Matrix<PlaneWithPoint3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_PlaneWithPoint3f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Quad2f_Array(ref Matrix<Quad2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Quad2f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Quad3f_Array(ref Matrix<Quad3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Quad3f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Ray2f_Array(ref Matrix<Ray2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Ray2f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Ray3f_Array(ref Matrix<Ray3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Ray3f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Sphere3f_Array(ref Matrix<Sphere3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Sphere3f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Triangle2f_Array(ref Matrix<Triangle2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Triangle2f_(ref value[i]);
+        }
+
+        public void CodeMatrix_of_Triangle3f_Array(ref Matrix<Triangle3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeMatrix_of_Triangle3f_(ref value[i]);
         }
 
         public void CodeVolume_of_Byte_Array(ref Volume<byte>[] value)
@@ -6874,6 +7749,97 @@ namespace Aardvark.Base.Coder
             for (long i = 0; i < count; i++) CodeVolume_of_Triangle3d_(ref value[i]);
         }
 
+        public void CodeVolume_of_Circle2f_Array(ref Volume<Circle2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Circle2f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Line2f_Array(ref Volume<Line2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Line2f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Line3f_Array(ref Volume<Line3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Line3f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Plane2f_Array(ref Volume<Plane2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Plane2f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Plane3f_Array(ref Volume<Plane3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Plane3f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_PlaneWithPoint3f_Array(ref Volume<PlaneWithPoint3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_PlaneWithPoint3f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Quad2f_Array(ref Volume<Quad2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Quad2f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Quad3f_Array(ref Volume<Quad3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Quad3f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Ray2f_Array(ref Volume<Ray2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Ray2f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Ray3f_Array(ref Volume<Ray3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Ray3f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Sphere3f_Array(ref Volume<Sphere3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Sphere3f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Triangle2f_Array(ref Volume<Triangle2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Triangle2f_(ref value[i]);
+        }
+
+        public void CodeVolume_of_Triangle3f_Array(ref Volume<Triangle3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeVolume_of_Triangle3f_(ref value[i]);
+        }
+
         public void CodeTensor_of_Byte_Array(ref Tensor<byte>[] value)
         {
             long count = CodeCountLong(ref value);
@@ -7600,6 +8566,97 @@ namespace Aardvark.Base.Coder
             long count = CodeCountLong(ref value);
             if (count < 1) return;
             for (long i = 0; i < count; i++) CodeTensor_of_Triangle3d_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Circle2f_Array(ref Tensor<Circle2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Circle2f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Line2f_Array(ref Tensor<Line2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Line2f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Line3f_Array(ref Tensor<Line3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Line3f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Plane2f_Array(ref Tensor<Plane2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Plane2f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Plane3f_Array(ref Tensor<Plane3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Plane3f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_PlaneWithPoint3f_Array(ref Tensor<PlaneWithPoint3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_PlaneWithPoint3f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Quad2f_Array(ref Tensor<Quad2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Quad2f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Quad3f_Array(ref Tensor<Quad3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Quad3f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Ray2f_Array(ref Tensor<Ray2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Ray2f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Ray3f_Array(ref Tensor<Ray3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Ray3f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Sphere3f_Array(ref Tensor<Sphere3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Sphere3f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Triangle2f_Array(ref Tensor<Triangle2f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Triangle2f_(ref value[i]);
+        }
+
+        public void CodeTensor_of_Triangle3f_Array(ref Tensor<Triangle3f>[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            for (long i = 0; i < count; i++) CodeTensor_of_Triangle3f_(ref value[i]);
         }
 
         #endregion
@@ -10939,6 +11996,136 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Circle2f_(ref List<Circle2f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Circle2f); CodeCircle2f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Line2f_(ref List<Line2f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Line2f); CodeLine2f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Line3f_(ref List<Line3f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Line3f); CodeLine3f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Plane2f_(ref List<Plane2f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Plane2f); CodePlane2f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Plane3f_(ref List<Plane3f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Plane3f); CodePlane3f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_PlaneWithPoint3f_(ref List<PlaneWithPoint3f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(PlaneWithPoint3f); CodePlaneWithPoint3f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Quad2f_(ref List<Quad2f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Quad2f); CodeQuad2f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Quad3f_(ref List<Quad3f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Quad3f); CodeQuad3f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Ray2f_(ref List<Ray2f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Ray2f); CodeRay2f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Ray3f_(ref List<Ray3f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Ray3f); CodeRay3f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Sphere3f_(ref List<Sphere3f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Sphere3f); CodeSphere3f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Triangle2f_(ref List<Triangle2f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Triangle2f); CodeTriangle2f(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Triangle3f_(ref List<Triangle3f> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Triangle3f); CodeTriangle3f(ref m); value.Add(m);
+            }
+        }
+
         public void CodeList_of_Vector_of_Byte__(ref List<Vector<byte>> value)
         {
             int count = CodeCount(ref value);
@@ -11976,6 +13163,136 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 var m = default(Vector<Triangle3d>); CodeVector_of_Triangle3d_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Circle2f__(ref List<Vector<Circle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Circle2f>); CodeVector_of_Circle2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Line2f__(ref List<Vector<Line2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Line2f>); CodeVector_of_Line2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Line3f__(ref List<Vector<Line3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Line3f>); CodeVector_of_Line3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Plane2f__(ref List<Vector<Plane2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Plane2f>); CodeVector_of_Plane2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Plane3f__(ref List<Vector<Plane3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Plane3f>); CodeVector_of_Plane3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_PlaneWithPoint3f__(ref List<Vector<PlaneWithPoint3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<PlaneWithPoint3f>); CodeVector_of_PlaneWithPoint3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Quad2f__(ref List<Vector<Quad2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Quad2f>); CodeVector_of_Quad2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Quad3f__(ref List<Vector<Quad3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Quad3f>); CodeVector_of_Quad3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Ray2f__(ref List<Vector<Ray2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Ray2f>); CodeVector_of_Ray2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Ray3f__(ref List<Vector<Ray3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Ray3f>); CodeVector_of_Ray3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Sphere3f__(ref List<Vector<Sphere3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Sphere3f>); CodeVector_of_Sphere3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Triangle2f__(ref List<Vector<Triangle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Triangle2f>); CodeVector_of_Triangle2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Vector_of_Triangle3f__(ref List<Vector<Triangle3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Vector<Triangle3f>); CodeVector_of_Triangle3f_(ref m); value.Add(m);
             }
         }
 
@@ -13019,6 +14336,136 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Matrix_of_Circle2f__(ref List<Matrix<Circle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Circle2f>); CodeMatrix_of_Circle2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Line2f__(ref List<Matrix<Line2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Line2f>); CodeMatrix_of_Line2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Line3f__(ref List<Matrix<Line3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Line3f>); CodeMatrix_of_Line3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Plane2f__(ref List<Matrix<Plane2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Plane2f>); CodeMatrix_of_Plane2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Plane3f__(ref List<Matrix<Plane3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Plane3f>); CodeMatrix_of_Plane3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_PlaneWithPoint3f__(ref List<Matrix<PlaneWithPoint3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<PlaneWithPoint3f>); CodeMatrix_of_PlaneWithPoint3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Quad2f__(ref List<Matrix<Quad2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Quad2f>); CodeMatrix_of_Quad2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Quad3f__(ref List<Matrix<Quad3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Quad3f>); CodeMatrix_of_Quad3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Ray2f__(ref List<Matrix<Ray2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Ray2f>); CodeMatrix_of_Ray2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Ray3f__(ref List<Matrix<Ray3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Ray3f>); CodeMatrix_of_Ray3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Sphere3f__(ref List<Matrix<Sphere3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Sphere3f>); CodeMatrix_of_Sphere3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Triangle2f__(ref List<Matrix<Triangle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Triangle2f>); CodeMatrix_of_Triangle2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Triangle3f__(ref List<Matrix<Triangle3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Matrix<Triangle3f>); CodeMatrix_of_Triangle3f_(ref m); value.Add(m);
+            }
+        }
+
         public void CodeList_of_Volume_of_Byte__(ref List<Volume<byte>> value)
         {
             int count = CodeCount(ref value);
@@ -14059,6 +15506,136 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Volume_of_Circle2f__(ref List<Volume<Circle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Circle2f>); CodeVolume_of_Circle2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Line2f__(ref List<Volume<Line2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Line2f>); CodeVolume_of_Line2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Line3f__(ref List<Volume<Line3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Line3f>); CodeVolume_of_Line3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Plane2f__(ref List<Volume<Plane2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Plane2f>); CodeVolume_of_Plane2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Plane3f__(ref List<Volume<Plane3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Plane3f>); CodeVolume_of_Plane3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_PlaneWithPoint3f__(ref List<Volume<PlaneWithPoint3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<PlaneWithPoint3f>); CodeVolume_of_PlaneWithPoint3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Quad2f__(ref List<Volume<Quad2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Quad2f>); CodeVolume_of_Quad2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Quad3f__(ref List<Volume<Quad3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Quad3f>); CodeVolume_of_Quad3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Ray2f__(ref List<Volume<Ray2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Ray2f>); CodeVolume_of_Ray2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Ray3f__(ref List<Volume<Ray3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Ray3f>); CodeVolume_of_Ray3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Sphere3f__(ref List<Volume<Sphere3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Sphere3f>); CodeVolume_of_Sphere3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Triangle2f__(ref List<Volume<Triangle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Triangle2f>); CodeVolume_of_Triangle2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Volume_of_Triangle3f__(ref List<Volume<Triangle3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Volume<Triangle3f>); CodeVolume_of_Triangle3f_(ref m); value.Add(m);
+            }
+        }
+
         public void CodeList_of_Tensor_of_Byte__(ref List<Tensor<byte>> value)
         {
             int count = CodeCount(ref value);
@@ -15096,6 +16673,136 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 var m = default(Tensor<Triangle3d>); CodeTensor_of_Triangle3d_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Circle2f__(ref List<Tensor<Circle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Circle2f>); CodeTensor_of_Circle2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Line2f__(ref List<Tensor<Line2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Line2f>); CodeTensor_of_Line2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Line3f__(ref List<Tensor<Line3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Line3f>); CodeTensor_of_Line3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Plane2f__(ref List<Tensor<Plane2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Plane2f>); CodeTensor_of_Plane2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Plane3f__(ref List<Tensor<Plane3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Plane3f>); CodeTensor_of_Plane3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_PlaneWithPoint3f__(ref List<Tensor<PlaneWithPoint3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<PlaneWithPoint3f>); CodeTensor_of_PlaneWithPoint3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Quad2f__(ref List<Tensor<Quad2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Quad2f>); CodeTensor_of_Quad2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Quad3f__(ref List<Tensor<Quad3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Quad3f>); CodeTensor_of_Quad3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Ray2f__(ref List<Tensor<Ray2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Ray2f>); CodeTensor_of_Ray2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Ray3f__(ref List<Tensor<Ray3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Ray3f>); CodeTensor_of_Ray3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Sphere3f__(ref List<Tensor<Sphere3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Sphere3f>); CodeTensor_of_Sphere3f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Triangle2f__(ref List<Tensor<Triangle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Triangle2f>); CodeTensor_of_Triangle2f_(ref m); value.Add(m);
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Triangle3f__(ref List<Tensor<Triangle3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                var m = default(Tensor<Triangle3f>); CodeTensor_of_Triangle3f_(ref m); value.Add(m);
             }
         }
 

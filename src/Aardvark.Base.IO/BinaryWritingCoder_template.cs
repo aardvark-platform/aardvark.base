@@ -48,6 +48,79 @@ namespace Aardvark.Base.Coder
         //# }
         #endregion
 
+        #region Geometry types
+
+        //# foreach (var isDouble in new[] { false, true }) {
+        //#   var ftype = isDouble ? "Double" : "Float";
+        //#   var tc = isDouble ? "d" : "f";
+        public void CodeCircle2__tc__(ref Circle2__tc__ v)
+        {
+            CodeV2__tc__(ref v.Center); Code__ftype__(ref v.Radius);
+        }
+
+        public void CodeLine2__tc__(ref Line2__tc__ v)
+        {
+            CodeV2__tc__(ref v.P0); CodeV2__tc__(ref v.P1);
+        }
+
+        public void CodeLine3__tc__(ref Line3__tc__ v)
+        {
+            CodeV3__tc__(ref v.P0); CodeV3__tc__(ref v.P1);
+        }
+
+        public void CodePlane2__tc__(ref Plane2__tc__ v)
+        {
+            CodeV2__tc__(ref v.Normal); Code__ftype__(ref v.Distance);
+        }
+
+        public void CodePlane3__tc__(ref Plane3__tc__ v)
+        {
+            CodeV3__tc__(ref v.Normal); Code__ftype__(ref v.Distance);
+        }
+
+        public void CodePlaneWithPoint3__tc__(ref PlaneWithPoint3__tc__ v)
+        {
+            CodeV3__tc__(ref v.Normal); CodeV3__tc__(ref v.Point);
+        }
+
+        public void CodeQuad2__tc__(ref Quad2__tc__ v)
+        {
+            CodeV2__tc__(ref v.P0); CodeV2__tc__(ref v.P1); CodeV2__tc__(ref v.P2); CodeV2__tc__(ref v.P3);
+        }
+
+        public void CodeQuad3__tc__(ref Quad3__tc__ v)
+        {
+            CodeV3__tc__(ref v.P0); CodeV3__tc__(ref v.P1); CodeV3__tc__(ref v.P2); CodeV3__tc__(ref v.P3);
+        }
+
+        public void CodeRay2__tc__(ref Ray2__tc__ v)
+        {
+            CodeV2__tc__(ref v.Origin); CodeV2__tc__(ref v.Direction);
+        }
+
+        public void CodeRay3__tc__(ref Ray3__tc__ v)
+        {
+            CodeV3__tc__(ref v.Origin); CodeV3__tc__(ref v.Direction);
+        }
+
+        public void CodeSphere3__tc__(ref Sphere3__tc__ v)
+        {
+            CodeV3__tc__(ref v.Center); Code__ftype__(ref v.Radius);
+        }
+
+        public void CodeTriangle2__tc__(ref Triangle2__tc__ v)
+        {
+            CodeV2__tc__(ref v.P0); CodeV2__tc__(ref v.P1); CodeV2__tc__(ref v.P2);
+        }
+
+        public void CodeTriangle3__tc__(ref Triangle3__tc__ v)
+        {
+            CodeV3__tc__(ref v.P0); CodeV3__tc__(ref v.P1); CodeV3__tc__(ref v.P2);
+        }
+
+        //# }
+        #endregion
+
         #region Colors
 
         //# foreach (var t in Meta.ColorTypes) { fastStructTypes.Add(t.Name);

@@ -73,6 +73,38 @@ namespace Aardvark.Base.Coder
 
         #endregion
 
+        #region Geometry Types
+
+        public void CodeCircle2f(ref Circle2f v) { throw new NotImplementedException(); }
+        public void CodeLine2f(ref Line2f v) { throw new NotImplementedException(); }
+        public void CodeLine3f(ref Line3f v) { throw new NotImplementedException(); }
+        public void CodePlane2f(ref Plane2f v) { throw new NotImplementedException(); }
+        public void CodePlane3f(ref Plane3f v) { throw new NotImplementedException(); }
+        public void CodePlaneWithPoint3f(ref PlaneWithPoint3f v) { throw new NotImplementedException(); }
+        public void CodeQuad2f(ref Quad2f v) { throw new NotImplementedException(); }
+        public void CodeQuad3f(ref Quad3f v) { throw new NotImplementedException(); }
+        public void CodeRay2f(ref Ray2f v) { throw new NotImplementedException(); }
+        public void CodeRay3f(ref Ray3f v) { throw new NotImplementedException(); }
+        public void CodeSphere3f(ref Sphere3f v) { throw new NotImplementedException(); }
+        public void CodeTriangle2f(ref Triangle2f v) { throw new NotImplementedException(); }
+        public void CodeTriangle3f(ref Triangle3f v) { throw new NotImplementedException(); }
+
+        public void CodeCircle2d(ref Circle2d v) { throw new NotImplementedException(); }
+        public void CodeLine2d(ref Line2d v) { throw new NotImplementedException(); }
+        public void CodeLine3d(ref Line3d v) { throw new NotImplementedException(); }
+        public void CodePlane2d(ref Plane2d v) { throw new NotImplementedException(); }
+        public void CodePlane3d(ref Plane3d v) { throw new NotImplementedException(); }
+        public void CodePlaneWithPoint3d(ref PlaneWithPoint3d v) { throw new NotImplementedException(); }
+        public void CodeQuad2d(ref Quad2d v) { throw new NotImplementedException(); }
+        public void CodeQuad3d(ref Quad3d v) { throw new NotImplementedException(); }
+        public void CodeRay2d(ref Ray2d v) { throw new NotImplementedException(); }
+        public void CodeRay3d(ref Ray3d v) { throw new NotImplementedException(); }
+        public void CodeSphere3d(ref Sphere3d v) { throw new NotImplementedException(); }
+        public void CodeTriangle2d(ref Triangle2d v) { throw new NotImplementedException(); }
+        public void CodeTriangle3d(ref Triangle3d v) { throw new NotImplementedException(); }
+
+        #endregion
+
         #region Colors
 
         public void CodeC3b(ref C3b v) { throw new NotImplementedException(); }
@@ -629,6 +661,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVector_of_Circle2f_(ref Vector<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Line2f_(ref Vector<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Line3f_(ref Vector<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Plane2f_(ref Vector<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Plane3f_(ref Vector<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_PlaneWithPoint3f_(ref Vector<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Quad2f_(ref Vector<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Quad3f_(ref Vector<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Ray2f_(ref Vector<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Ray3f_(ref Vector<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Sphere3f_(ref Vector<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Triangle2f_(ref Vector<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Triangle3f_(ref Vector<Triangle3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeMatrix_of_Byte_(ref Matrix<byte> value)
         {
             throw new NotImplementedException();
@@ -1145,6 +1242,71 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeMatrix_of_Triangle3d_(ref Matrix<Triangle3d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Circle2f_(ref Matrix<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Line2f_(ref Matrix<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Line3f_(ref Matrix<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Plane2f_(ref Matrix<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Plane3f_(ref Matrix<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_PlaneWithPoint3f_(ref Matrix<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Quad2f_(ref Matrix<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Quad3f_(ref Matrix<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Ray2f_(ref Matrix<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Ray3f_(ref Matrix<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Sphere3f_(ref Matrix<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Triangle2f_(ref Matrix<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Triangle3f_(ref Matrix<Triangle3f> value)
         {
             throw new NotImplementedException();
         }
@@ -1669,6 +1831,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVolume_of_Circle2f_(ref Volume<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Line2f_(ref Volume<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Line3f_(ref Volume<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Plane2f_(ref Volume<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Plane3f_(ref Volume<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_PlaneWithPoint3f_(ref Volume<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Quad2f_(ref Volume<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Quad3f_(ref Volume<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Ray2f_(ref Volume<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Ray3f_(ref Volume<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Sphere3f_(ref Volume<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Triangle2f_(ref Volume<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Triangle3f_(ref Volume<Triangle3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeTensor_of_Byte_(ref Tensor<byte> value)
         {
             throw new NotImplementedException();
@@ -2189,6 +2416,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeTensor_of_Circle2f_(ref Tensor<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Line2f_(ref Tensor<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Line3f_(ref Tensor<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Plane2f_(ref Tensor<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Plane3f_(ref Tensor<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_PlaneWithPoint3f_(ref Tensor<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Quad2f_(ref Tensor<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Quad3f_(ref Tensor<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Ray2f_(ref Tensor<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Ray3f_(ref Tensor<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Sphere3f_(ref Tensor<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Triangle2f_(ref Tensor<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Triangle3f_(ref Tensor<Triangle3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Arrays
@@ -2624,6 +2916,71 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeTriangle3dArray(ref Triangle3d[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeCircle2fArray(ref Circle2f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeLine2fArray(ref Line2f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeLine3fArray(ref Line3f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodePlane2fArray(ref Plane2f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodePlane3fArray(ref Plane3f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodePlaneWithPoint3fArray(ref PlaneWithPoint3f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeQuad2fArray(ref Quad2f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeQuad3fArray(ref Quad3f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeRay2fArray(ref Ray2f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeRay3fArray(ref Ray3f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeSphere3fArray(ref Sphere3f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTriangle2fArray(ref Triangle2f[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTriangle3fArray(ref Triangle3f[] value)
         {
             throw new NotImplementedException();
         }
@@ -3585,6 +3942,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Circle2f_(ref List<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Line2f_(ref List<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Line3f_(ref List<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Plane2f_(ref List<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Plane3f_(ref List<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_PlaneWithPoint3f_(ref List<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Quad2f_(ref List<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Quad3f_(ref List<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Ray2f_(ref List<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Ray3f_(ref List<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Sphere3f_(ref List<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Triangle2f_(ref List<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Triangle3f_(ref List<Triangle3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Arrays of Tensors
@@ -4109,6 +4531,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVector_of_Circle2f_Array(ref Vector<Circle2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Line2f_Array(ref Vector<Line2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Line3f_Array(ref Vector<Line3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Plane2f_Array(ref Vector<Plane2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Plane3f_Array(ref Vector<Plane3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_PlaneWithPoint3f_Array(ref Vector<PlaneWithPoint3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Quad2f_Array(ref Vector<Quad2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Quad3f_Array(ref Vector<Quad3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Ray2f_Array(ref Vector<Ray2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Ray3f_Array(ref Vector<Ray3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Sphere3f_Array(ref Vector<Sphere3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Triangle2f_Array(ref Vector<Triangle2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Triangle3f_Array(ref Vector<Triangle3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeMatrix_of_Byte_Array(ref Matrix<byte>[] value)
         {
             throw new NotImplementedException();
@@ -4625,6 +5112,71 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeMatrix_of_Triangle3d_Array(ref Matrix<Triangle3d>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Circle2f_Array(ref Matrix<Circle2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Line2f_Array(ref Matrix<Line2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Line3f_Array(ref Matrix<Line3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Plane2f_Array(ref Matrix<Plane2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Plane3f_Array(ref Matrix<Plane3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_PlaneWithPoint3f_Array(ref Matrix<PlaneWithPoint3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Quad2f_Array(ref Matrix<Quad2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Quad3f_Array(ref Matrix<Quad3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Ray2f_Array(ref Matrix<Ray2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Ray3f_Array(ref Matrix<Ray3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Sphere3f_Array(ref Matrix<Sphere3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Triangle2f_Array(ref Matrix<Triangle2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Triangle3f_Array(ref Matrix<Triangle3f>[] value)
         {
             throw new NotImplementedException();
         }
@@ -5149,6 +5701,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVolume_of_Circle2f_Array(ref Volume<Circle2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Line2f_Array(ref Volume<Line2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Line3f_Array(ref Volume<Line3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Plane2f_Array(ref Volume<Plane2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Plane3f_Array(ref Volume<Plane3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_PlaneWithPoint3f_Array(ref Volume<PlaneWithPoint3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Quad2f_Array(ref Volume<Quad2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Quad3f_Array(ref Volume<Quad3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Ray2f_Array(ref Volume<Ray2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Ray3f_Array(ref Volume<Ray3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Sphere3f_Array(ref Volume<Sphere3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Triangle2f_Array(ref Volume<Triangle2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Triangle3f_Array(ref Volume<Triangle3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeTensor_of_Byte_Array(ref Tensor<byte>[] value)
         {
             throw new NotImplementedException();
@@ -5665,6 +6282,71 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeTensor_of_Triangle3d_Array(ref Tensor<Triangle3d>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Circle2f_Array(ref Tensor<Circle2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Line2f_Array(ref Tensor<Line2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Line3f_Array(ref Tensor<Line3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Plane2f_Array(ref Tensor<Plane2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Plane3f_Array(ref Tensor<Plane3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_PlaneWithPoint3f_Array(ref Tensor<PlaneWithPoint3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Quad2f_Array(ref Tensor<Quad2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Quad3f_Array(ref Tensor<Quad3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Ray2f_Array(ref Tensor<Ray2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Ray3f_Array(ref Tensor<Ray3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Sphere3f_Array(ref Tensor<Sphere3f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Triangle2f_Array(ref Tensor<Triangle2f>[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Triangle3f_Array(ref Tensor<Triangle3f>[] value)
         {
             throw new NotImplementedException();
         }
@@ -6193,6 +6875,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Vector_of_Circle2f__(ref List<Vector<Circle2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Line2f__(ref List<Vector<Line2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Line3f__(ref List<Vector<Line3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Plane2f__(ref List<Vector<Plane2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Plane3f__(ref List<Vector<Plane3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_PlaneWithPoint3f__(ref List<Vector<PlaneWithPoint3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Quad2f__(ref List<Vector<Quad2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Quad3f__(ref List<Vector<Quad3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Ray2f__(ref List<Vector<Ray2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Ray3f__(ref List<Vector<Ray3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Sphere3f__(ref List<Vector<Sphere3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Triangle2f__(ref List<Vector<Triangle2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Vector_of_Triangle3f__(ref List<Vector<Triangle3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_Matrix_of_Byte__(ref List<Matrix<byte>> value)
         {
             throw new NotImplementedException();
@@ -6709,6 +7456,71 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeList_of_Matrix_of_Triangle3d__(ref List<Matrix<Triangle3d>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Circle2f__(ref List<Matrix<Circle2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Line2f__(ref List<Matrix<Line2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Line3f__(ref List<Matrix<Line3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Plane2f__(ref List<Matrix<Plane2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Plane3f__(ref List<Matrix<Plane3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_PlaneWithPoint3f__(ref List<Matrix<PlaneWithPoint3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Quad2f__(ref List<Matrix<Quad2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Quad3f__(ref List<Matrix<Quad3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Ray2f__(ref List<Matrix<Ray2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Ray3f__(ref List<Matrix<Ray3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Sphere3f__(ref List<Matrix<Sphere3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Triangle2f__(ref List<Matrix<Triangle2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Matrix_of_Triangle3f__(ref List<Matrix<Triangle3f>> value)
         {
             throw new NotImplementedException();
         }
@@ -7233,6 +8045,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Volume_of_Circle2f__(ref List<Volume<Circle2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Line2f__(ref List<Volume<Line2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Line3f__(ref List<Volume<Line3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Plane2f__(ref List<Volume<Plane2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Plane3f__(ref List<Volume<Plane3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_PlaneWithPoint3f__(ref List<Volume<PlaneWithPoint3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Quad2f__(ref List<Volume<Quad2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Quad3f__(ref List<Volume<Quad3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Ray2f__(ref List<Volume<Ray2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Ray3f__(ref List<Volume<Ray3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Sphere3f__(ref List<Volume<Sphere3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Triangle2f__(ref List<Volume<Triangle2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Volume_of_Triangle3f__(ref List<Volume<Triangle3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_Tensor_of_Byte__(ref List<Tensor<byte>> value)
         {
             throw new NotImplementedException();
@@ -7753,6 +8630,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_Tensor_of_Circle2f__(ref List<Tensor<Circle2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Line2f__(ref List<Tensor<Line2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Line3f__(ref List<Tensor<Line3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Plane2f__(ref List<Tensor<Plane2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Plane3f__(ref List<Tensor<Plane3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_PlaneWithPoint3f__(ref List<Tensor<PlaneWithPoint3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Quad2f__(ref List<Tensor<Quad2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Quad3f__(ref List<Tensor<Quad3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Ray2f__(ref List<Tensor<Ray2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Ray3f__(ref List<Tensor<Ray3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Sphere3f__(ref List<Tensor<Sphere3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Triangle2f__(ref List<Tensor<Triangle2f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_Tensor_of_Triangle3f__(ref List<Tensor<Triangle3f>> value)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 
@@ -7820,6 +8762,38 @@ namespace Aardvark.Base.Coder
         public void CodeBox3l(ref Box3l v) { v = Box3l.Parse(CurrentValue()); }
         public void CodeBox3f(ref Box3f v) { v = Box3f.Parse(CurrentValue()); }
         public void CodeBox3d(ref Box3d v) { v = Box3d.Parse(CurrentValue()); }
+
+        #endregion
+
+        #region Geometry Types
+
+        public void CodeCircle2f(ref Circle2f v) { v = Circle2f.Parse(CurrentValue()); }
+        public void CodeLine2f(ref Line2f v) { v = Line2f.Parse(CurrentValue()); }
+        public void CodeLine3f(ref Line3f v) { v = Line3f.Parse(CurrentValue()); }
+        public void CodePlane2f(ref Plane2f v) { v = Plane2f.Parse(CurrentValue()); }
+        public void CodePlane3f(ref Plane3f v) { v = Plane3f.Parse(CurrentValue()); }
+        public void CodePlaneWithPoint3f(ref PlaneWithPoint3f v) { v = PlaneWithPoint3f.Parse(CurrentValue()); }
+        public void CodeQuad2f(ref Quad2f v) { v = Quad2f.Parse(CurrentValue()); }
+        public void CodeQuad3f(ref Quad3f v) { v = Quad3f.Parse(CurrentValue()); }
+        public void CodeRay2f(ref Ray2f v) { v = Ray2f.Parse(CurrentValue()); }
+        public void CodeRay3f(ref Ray3f v) { v = Ray3f.Parse(CurrentValue()); }
+        public void CodeSphere3f(ref Sphere3f v) { v = Sphere3f.Parse(CurrentValue()); }
+        public void CodeTriangle2f(ref Triangle2f v) { v = Triangle2f.Parse(CurrentValue()); }
+        public void CodeTriangle3f(ref Triangle3f v) { v = Triangle3f.Parse(CurrentValue()); }
+
+        public void CodeCircle2d(ref Circle2d v) { v = Circle2d.Parse(CurrentValue()); }
+        public void CodeLine2d(ref Line2d v) { v = Line2d.Parse(CurrentValue()); }
+        public void CodeLine3d(ref Line3d v) { v = Line3d.Parse(CurrentValue()); }
+        public void CodePlane2d(ref Plane2d v) { v = Plane2d.Parse(CurrentValue()); }
+        public void CodePlane3d(ref Plane3d v) { v = Plane3d.Parse(CurrentValue()); }
+        public void CodePlaneWithPoint3d(ref PlaneWithPoint3d v) { v = PlaneWithPoint3d.Parse(CurrentValue()); }
+        public void CodeQuad2d(ref Quad2d v) { v = Quad2d.Parse(CurrentValue()); }
+        public void CodeQuad3d(ref Quad3d v) { v = Quad3d.Parse(CurrentValue()); }
+        public void CodeRay2d(ref Ray2d v) { v = Ray2d.Parse(CurrentValue()); }
+        public void CodeRay3d(ref Ray3d v) { v = Ray3d.Parse(CurrentValue()); }
+        public void CodeSphere3d(ref Sphere3d v) { v = Sphere3d.Parse(CurrentValue()); }
+        public void CodeTriangle2d(ref Triangle2d v) { v = Triangle2d.Parse(CurrentValue()); }
+        public void CodeTriangle3d(ref Triangle3d v) { v = Triangle3d.Parse(CurrentValue()); }
 
         #endregion
 
@@ -12123,6 +13097,539 @@ namespace Aardvark.Base.Coder
             value = new Vector<Triangle3d>(data, origin, size, delta);
         }
 
+        public void CodeVector_of_Circle2f_(ref Vector<Circle2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Circle2f[] data = null; CodeCircle2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Circle2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Line2f_(ref Vector<Line2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Line2f[] data = null; CodeLine2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Line2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Line3f_(ref Vector<Line3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Line3f[] data = null; CodeLine3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Line3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Plane2f_(ref Vector<Plane2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Plane2f[] data = null; CodePlane2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Plane2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Plane3f_(ref Vector<Plane3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Plane3f[] data = null; CodePlane3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Plane3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_PlaneWithPoint3f_(ref Vector<PlaneWithPoint3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<PlaneWithPoint3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Quad2f_(ref Vector<Quad2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Quad2f[] data = null; CodeQuad2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Quad2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Quad3f_(ref Vector<Quad3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Quad3f[] data = null; CodeQuad3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Quad3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Ray2f_(ref Vector<Ray2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Ray2f[] data = null; CodeRay2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Ray2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Ray3f_(ref Vector<Ray3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Ray3f[] data = null; CodeRay3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Ray3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Sphere3f_(ref Vector<Sphere3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Sphere3f[] data = null; CodeSphere3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Sphere3f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Triangle2f_(ref Vector<Triangle2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Triangle2f[] data = null; CodeTriangle2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Triangle2f>(data, origin, size, delta);
+        }
+
+        public void CodeVector_of_Triangle3f_(ref Vector<Triangle3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Triangle3f[] data = null; CodeTriangle3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long size = default(long); CodeLong(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long delta = default(long); CodeLong(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Vector<Triangle3f>(data, origin, size, delta);
+        }
+
         public void CodeMatrix_of_Byte_(ref Matrix<byte> value)
         {
             m_stateStack.Push(m_state);
@@ -16385,6 +17892,539 @@ namespace Aardvark.Base.Coder
             m_state = m_stateStack.Pop();
 
             value = new Matrix<Triangle3d>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Circle2f_(ref Matrix<Circle2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Circle2f[] data = null; CodeCircle2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Circle2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Line2f_(ref Matrix<Line2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Line2f[] data = null; CodeLine2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Line2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Line3f_(ref Matrix<Line3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Line3f[] data = null; CodeLine3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Line3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Plane2f_(ref Matrix<Plane2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Plane2f[] data = null; CodePlane2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Plane2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Plane3f_(ref Matrix<Plane3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Plane3f[] data = null; CodePlane3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Plane3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_PlaneWithPoint3f_(ref Matrix<PlaneWithPoint3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<PlaneWithPoint3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Quad2f_(ref Matrix<Quad2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Quad2f[] data = null; CodeQuad2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Quad2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Quad3f_(ref Matrix<Quad3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Quad3f[] data = null; CodeQuad3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Quad3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Ray2f_(ref Matrix<Ray2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Ray2f[] data = null; CodeRay2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Ray2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Ray3f_(ref Matrix<Ray3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Ray3f[] data = null; CodeRay3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Ray3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Sphere3f_(ref Matrix<Sphere3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Sphere3f[] data = null; CodeSphere3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Sphere3f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Triangle2f_(ref Matrix<Triangle2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Triangle2f[] data = null; CodeTriangle2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Triangle2f>(data, origin, size, delta);
+        }
+
+        public void CodeMatrix_of_Triangle3f_(ref Matrix<Triangle3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Triangle3f[] data = null; CodeTriangle3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l size = default(V2l); CodeV2l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V2l delta = default(V2l); CodeV2l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Matrix<Triangle3f>(data, origin, size, delta);
         }
 
         public void CodeVolume_of_Byte_(ref Volume<byte> value)
@@ -20651,6 +22691,539 @@ namespace Aardvark.Base.Coder
             value = new Volume<Triangle3d>(data, origin, size, delta);
         }
 
+        public void CodeVolume_of_Circle2f_(ref Volume<Circle2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Circle2f[] data = null; CodeCircle2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Circle2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Line2f_(ref Volume<Line2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Line2f[] data = null; CodeLine2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Line2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Line3f_(ref Volume<Line3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Line3f[] data = null; CodeLine3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Line3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Plane2f_(ref Volume<Plane2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Plane2f[] data = null; CodePlane2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Plane2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Plane3f_(ref Volume<Plane3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Plane3f[] data = null; CodePlane3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Plane3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_PlaneWithPoint3f_(ref Volume<PlaneWithPoint3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<PlaneWithPoint3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Quad2f_(ref Volume<Quad2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Quad2f[] data = null; CodeQuad2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Quad2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Quad3f_(ref Volume<Quad3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Quad3f[] data = null; CodeQuad3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Quad3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Ray2f_(ref Volume<Ray2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Ray2f[] data = null; CodeRay2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Ray2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Ray3f_(ref Volume<Ray3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Ray3f[] data = null; CodeRay3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Ray3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Sphere3f_(ref Volume<Sphere3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Sphere3f[] data = null; CodeSphere3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Sphere3f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Triangle2f_(ref Volume<Triangle2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Triangle2f[] data = null; CodeTriangle2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Triangle2f>(data, origin, size, delta);
+        }
+
+        public void CodeVolume_of_Triangle3f_(ref Volume<Triangle3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Triangle3f[] data = null; CodeTriangle3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l size = default(V3l); CodeV3l(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            V3l delta = default(V3l); CodeV3l(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Volume<Triangle3f>(data, origin, size, delta);
+        }
+
         public void CodeTensor_of_Byte_(ref Tensor<byte> value)
         {
             m_stateStack.Push(m_state);
@@ -24915,6 +27488,539 @@ namespace Aardvark.Base.Coder
             value = new Tensor<Triangle3d>(data, origin, size, delta);
         }
 
+        public void CodeTensor_of_Circle2f_(ref Tensor<Circle2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Circle2f[] data = null; CodeCircle2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Circle2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Line2f_(ref Tensor<Line2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Line2f[] data = null; CodeLine2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Line2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Line3f_(ref Tensor<Line3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Line3f[] data = null; CodeLine3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Line3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Plane2f_(ref Tensor<Plane2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Plane2f[] data = null; CodePlane2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Plane2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Plane3f_(ref Tensor<Plane3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Plane3f[] data = null; CodePlane3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Plane3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_PlaneWithPoint3f_(ref Tensor<PlaneWithPoint3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<PlaneWithPoint3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Quad2f_(ref Tensor<Quad2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Quad2f[] data = null; CodeQuad2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Quad2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Quad3f_(ref Tensor<Quad3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Quad3f[] data = null; CodeQuad3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Quad3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Ray2f_(ref Tensor<Ray2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Ray2f[] data = null; CodeRay2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Ray2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Ray3f_(ref Tensor<Ray3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Ray3f[] data = null; CodeRay3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Ray3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Sphere3f_(ref Tensor<Sphere3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Sphere3f[] data = null; CodeSphere3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Sphere3f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Triangle2f_(ref Tensor<Triangle2f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Triangle2f[] data = null; CodeTriangle2fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Triangle2f>(data, origin, size, delta);
+        }
+
+        public void CodeTensor_of_Triangle3f_(ref Tensor<Triangle3f> value)
+        {
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            Triangle3f[] data = null; CodeTriangle3fArray(ref data);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long origin = 0L; CodeLong(ref origin);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] size = default(long[]); CodeLongArray(ref size);
+
+            m_state = m_stateStack.Pop();
+            m_state.Advance();
+            m_stateStack.Push(m_state);
+            m_state.Enumerator = m_state.Element.Elements().GetEnumerator();
+            m_state.Element = m_state.Enumerator.Current;
+
+            long[] delta = default(long[]); CodeLongArray(ref delta);
+
+            m_state = m_stateStack.Pop();
+            m_state = m_stateStack.Pop();
+
+            value = new Tensor<Triangle3f>(data, origin, size, delta);
+        }
+
         #endregion
 
         #region Arrays
@@ -25352,6 +28458,71 @@ namespace Aardvark.Base.Coder
         public void CodeTriangle3dArray(ref Triangle3d[] value)
         {
             CodeArray(ref value, s_nestedBracketSplitter, s => Triangle3d.Parse(s));
+        }
+
+        public void CodeCircle2fArray(ref Circle2f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Circle2f.Parse(s));
+        }
+
+        public void CodeLine2fArray(ref Line2f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Line2f.Parse(s));
+        }
+
+        public void CodeLine3fArray(ref Line3f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Line3f.Parse(s));
+        }
+
+        public void CodePlane2fArray(ref Plane2f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Plane2f.Parse(s));
+        }
+
+        public void CodePlane3fArray(ref Plane3f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Plane3f.Parse(s));
+        }
+
+        public void CodePlaneWithPoint3fArray(ref PlaneWithPoint3f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => PlaneWithPoint3f.Parse(s));
+        }
+
+        public void CodeQuad2fArray(ref Quad2f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Quad2f.Parse(s));
+        }
+
+        public void CodeQuad3fArray(ref Quad3f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Quad3f.Parse(s));
+        }
+
+        public void CodeRay2fArray(ref Ray2f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Ray2f.Parse(s));
+        }
+
+        public void CodeRay3fArray(ref Ray3f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Ray3f.Parse(s));
+        }
+
+        public void CodeSphere3fArray(ref Sphere3f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Sphere3f.Parse(s));
+        }
+
+        public void CodeTriangle2fArray(ref Triangle2f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Triangle2f.Parse(s));
+        }
+
+        public void CodeTriangle3fArray(ref Triangle3f[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => Triangle3f.Parse(s));
         }
 
         #endregion
@@ -26309,6 +29480,71 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Triangle3d_(ref List<Triangle3d> value)
         {
             CodeList(ref value, s_nestedBracketSplitter, s => Triangle3d.Parse(s));
+        }
+
+        public void CodeList_of_Circle2f_(ref List<Circle2f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Circle2f.Parse(s));
+        }
+
+        public void CodeList_of_Line2f_(ref List<Line2f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Line2f.Parse(s));
+        }
+
+        public void CodeList_of_Line3f_(ref List<Line3f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Line3f.Parse(s));
+        }
+
+        public void CodeList_of_Plane2f_(ref List<Plane2f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Plane2f.Parse(s));
+        }
+
+        public void CodeList_of_Plane3f_(ref List<Plane3f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Plane3f.Parse(s));
+        }
+
+        public void CodeList_of_PlaneWithPoint3f_(ref List<PlaneWithPoint3f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => PlaneWithPoint3f.Parse(s));
+        }
+
+        public void CodeList_of_Quad2f_(ref List<Quad2f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Quad2f.Parse(s));
+        }
+
+        public void CodeList_of_Quad3f_(ref List<Quad3f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Quad3f.Parse(s));
+        }
+
+        public void CodeList_of_Ray2f_(ref List<Ray2f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Ray2f.Parse(s));
+        }
+
+        public void CodeList_of_Ray3f_(ref List<Ray3f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Ray3f.Parse(s));
+        }
+
+        public void CodeList_of_Sphere3f_(ref List<Sphere3f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Sphere3f.Parse(s));
+        }
+
+        public void CodeList_of_Triangle2f_(ref List<Triangle2f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Triangle2f.Parse(s));
+        }
+
+        public void CodeList_of_Triangle3f_(ref List<Triangle3f> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => Triangle3f.Parse(s));
         }
 
         #endregion
@@ -27459,6 +30695,149 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeVector_of_Circle2f_Array(ref Vector<Circle2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Circle2f> item = default(Vector<Circle2f>); CodeVector_of_Circle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Line2f_Array(ref Vector<Line2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Line2f> item = default(Vector<Line2f>); CodeVector_of_Line2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Line3f_Array(ref Vector<Line3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Line3f> item = default(Vector<Line3f>); CodeVector_of_Line3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Plane2f_Array(ref Vector<Plane2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Plane2f> item = default(Vector<Plane2f>); CodeVector_of_Plane2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Plane3f_Array(ref Vector<Plane3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Plane3f> item = default(Vector<Plane3f>); CodeVector_of_Plane3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_PlaneWithPoint3f_Array(ref Vector<PlaneWithPoint3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<PlaneWithPoint3f> item = default(Vector<PlaneWithPoint3f>); CodeVector_of_PlaneWithPoint3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Quad2f_Array(ref Vector<Quad2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Quad2f> item = default(Vector<Quad2f>); CodeVector_of_Quad2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Quad3f_Array(ref Vector<Quad3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Quad3f> item = default(Vector<Quad3f>); CodeVector_of_Quad3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Ray2f_Array(ref Vector<Ray2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Ray2f> item = default(Vector<Ray2f>); CodeVector_of_Ray2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Ray3f_Array(ref Vector<Ray3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Ray3f> item = default(Vector<Ray3f>); CodeVector_of_Ray3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Sphere3f_Array(ref Vector<Sphere3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Sphere3f> item = default(Vector<Sphere3f>); CodeVector_of_Sphere3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Triangle2f_Array(ref Vector<Triangle2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Triangle2f> item = default(Vector<Triangle2f>); CodeVector_of_Triangle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVector_of_Triangle3f_Array(ref Vector<Triangle3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Triangle3f> item = default(Vector<Triangle3f>); CodeVector_of_Triangle3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeMatrix_of_Byte_Array(ref Matrix<byte>[] value)
         {
             int count = CodeCount(ref value);
@@ -28599,6 +31978,149 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Matrix<Triangle3d> item = default(Matrix<Triangle3d>); CodeMatrix_of_Triangle3d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Circle2f_Array(ref Matrix<Circle2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Circle2f> item = default(Matrix<Circle2f>); CodeMatrix_of_Circle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Line2f_Array(ref Matrix<Line2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Line2f> item = default(Matrix<Line2f>); CodeMatrix_of_Line2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Line3f_Array(ref Matrix<Line3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Line3f> item = default(Matrix<Line3f>); CodeMatrix_of_Line3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Plane2f_Array(ref Matrix<Plane2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Plane2f> item = default(Matrix<Plane2f>); CodeMatrix_of_Plane2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Plane3f_Array(ref Matrix<Plane3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Plane3f> item = default(Matrix<Plane3f>); CodeMatrix_of_Plane3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_PlaneWithPoint3f_Array(ref Matrix<PlaneWithPoint3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<PlaneWithPoint3f> item = default(Matrix<PlaneWithPoint3f>); CodeMatrix_of_PlaneWithPoint3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Quad2f_Array(ref Matrix<Quad2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Quad2f> item = default(Matrix<Quad2f>); CodeMatrix_of_Quad2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Quad3f_Array(ref Matrix<Quad3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Quad3f> item = default(Matrix<Quad3f>); CodeMatrix_of_Quad3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Ray2f_Array(ref Matrix<Ray2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Ray2f> item = default(Matrix<Ray2f>); CodeMatrix_of_Ray2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Ray3f_Array(ref Matrix<Ray3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Ray3f> item = default(Matrix<Ray3f>); CodeMatrix_of_Ray3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Sphere3f_Array(ref Matrix<Sphere3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Sphere3f> item = default(Matrix<Sphere3f>); CodeMatrix_of_Sphere3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Triangle2f_Array(ref Matrix<Triangle2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Triangle2f> item = default(Matrix<Triangle2f>); CodeMatrix_of_Triangle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeMatrix_of_Triangle3f_Array(ref Matrix<Triangle3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Triangle3f> item = default(Matrix<Triangle3f>); CodeMatrix_of_Triangle3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -29747,6 +33269,149 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeVolume_of_Circle2f_Array(ref Volume<Circle2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Circle2f> item = default(Volume<Circle2f>); CodeVolume_of_Circle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Line2f_Array(ref Volume<Line2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Line2f> item = default(Volume<Line2f>); CodeVolume_of_Line2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Line3f_Array(ref Volume<Line3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Line3f> item = default(Volume<Line3f>); CodeVolume_of_Line3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Plane2f_Array(ref Volume<Plane2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Plane2f> item = default(Volume<Plane2f>); CodeVolume_of_Plane2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Plane3f_Array(ref Volume<Plane3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Plane3f> item = default(Volume<Plane3f>); CodeVolume_of_Plane3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_PlaneWithPoint3f_Array(ref Volume<PlaneWithPoint3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<PlaneWithPoint3f> item = default(Volume<PlaneWithPoint3f>); CodeVolume_of_PlaneWithPoint3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Quad2f_Array(ref Volume<Quad2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Quad2f> item = default(Volume<Quad2f>); CodeVolume_of_Quad2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Quad3f_Array(ref Volume<Quad3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Quad3f> item = default(Volume<Quad3f>); CodeVolume_of_Quad3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Ray2f_Array(ref Volume<Ray2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Ray2f> item = default(Volume<Ray2f>); CodeVolume_of_Ray2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Ray3f_Array(ref Volume<Ray3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Ray3f> item = default(Volume<Ray3f>); CodeVolume_of_Ray3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Sphere3f_Array(ref Volume<Sphere3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Sphere3f> item = default(Volume<Sphere3f>); CodeVolume_of_Sphere3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Triangle2f_Array(ref Volume<Triangle2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Triangle2f> item = default(Volume<Triangle2f>); CodeVolume_of_Triangle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeVolume_of_Triangle3f_Array(ref Volume<Triangle3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Triangle3f> item = default(Volume<Triangle3f>); CodeVolume_of_Triangle3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeTensor_of_Byte_Array(ref Tensor<byte>[] value)
         {
             int count = CodeCount(ref value);
@@ -30887,6 +34552,149 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Tensor<Triangle3d> item = default(Tensor<Triangle3d>); CodeTensor_of_Triangle3d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Circle2f_Array(ref Tensor<Circle2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Circle2f> item = default(Tensor<Circle2f>); CodeTensor_of_Circle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Line2f_Array(ref Tensor<Line2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Line2f> item = default(Tensor<Line2f>); CodeTensor_of_Line2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Line3f_Array(ref Tensor<Line3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Line3f> item = default(Tensor<Line3f>); CodeTensor_of_Line3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Plane2f_Array(ref Tensor<Plane2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Plane2f> item = default(Tensor<Plane2f>); CodeTensor_of_Plane2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Plane3f_Array(ref Tensor<Plane3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Plane3f> item = default(Tensor<Plane3f>); CodeTensor_of_Plane3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_PlaneWithPoint3f_Array(ref Tensor<PlaneWithPoint3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<PlaneWithPoint3f> item = default(Tensor<PlaneWithPoint3f>); CodeTensor_of_PlaneWithPoint3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Quad2f_Array(ref Tensor<Quad2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Quad2f> item = default(Tensor<Quad2f>); CodeTensor_of_Quad2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Quad3f_Array(ref Tensor<Quad3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Quad3f> item = default(Tensor<Quad3f>); CodeTensor_of_Quad3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Ray2f_Array(ref Tensor<Ray2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Ray2f> item = default(Tensor<Ray2f>); CodeTensor_of_Ray2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Ray3f_Array(ref Tensor<Ray3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Ray3f> item = default(Tensor<Ray3f>); CodeTensor_of_Ray3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Sphere3f_Array(ref Tensor<Sphere3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Sphere3f> item = default(Tensor<Sphere3f>); CodeTensor_of_Sphere3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Triangle2f_Array(ref Tensor<Triangle2f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Triangle2f> item = default(Tensor<Triangle2f>); CodeTensor_of_Triangle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeTensor_of_Triangle3f_Array(ref Tensor<Triangle3f>[] value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Triangle3f> item = default(Tensor<Triangle3f>); CodeTensor_of_Triangle3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -32039,6 +35847,149 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Vector_of_Circle2f__(ref List<Vector<Circle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Circle2f> item = default(Vector<Circle2f>); CodeVector_of_Circle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Line2f__(ref List<Vector<Line2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Line2f> item = default(Vector<Line2f>); CodeVector_of_Line2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Line3f__(ref List<Vector<Line3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Line3f> item = default(Vector<Line3f>); CodeVector_of_Line3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Plane2f__(ref List<Vector<Plane2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Plane2f> item = default(Vector<Plane2f>); CodeVector_of_Plane2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Plane3f__(ref List<Vector<Plane3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Plane3f> item = default(Vector<Plane3f>); CodeVector_of_Plane3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_PlaneWithPoint3f__(ref List<Vector<PlaneWithPoint3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<PlaneWithPoint3f> item = default(Vector<PlaneWithPoint3f>); CodeVector_of_PlaneWithPoint3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Quad2f__(ref List<Vector<Quad2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Quad2f> item = default(Vector<Quad2f>); CodeVector_of_Quad2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Quad3f__(ref List<Vector<Quad3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Quad3f> item = default(Vector<Quad3f>); CodeVector_of_Quad3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Ray2f__(ref List<Vector<Ray2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Ray2f> item = default(Vector<Ray2f>); CodeVector_of_Ray2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Ray3f__(ref List<Vector<Ray3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Ray3f> item = default(Vector<Ray3f>); CodeVector_of_Ray3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Sphere3f__(ref List<Vector<Sphere3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Sphere3f> item = default(Vector<Sphere3f>); CodeVector_of_Sphere3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Triangle2f__(ref List<Vector<Triangle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Triangle2f> item = default(Vector<Triangle2f>); CodeVector_of_Triangle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Vector_of_Triangle3f__(ref List<Vector<Triangle3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Vector<Triangle3f> item = default(Vector<Triangle3f>); CodeVector_of_Triangle3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeList_of_Matrix_of_Byte__(ref List<Matrix<byte>> value)
         {
             int count = CodeCount(ref value);
@@ -33179,6 +37130,149 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Matrix<Triangle3d> item = default(Matrix<Triangle3d>); CodeMatrix_of_Triangle3d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Circle2f__(ref List<Matrix<Circle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Circle2f> item = default(Matrix<Circle2f>); CodeMatrix_of_Circle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Line2f__(ref List<Matrix<Line2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Line2f> item = default(Matrix<Line2f>); CodeMatrix_of_Line2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Line3f__(ref List<Matrix<Line3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Line3f> item = default(Matrix<Line3f>); CodeMatrix_of_Line3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Plane2f__(ref List<Matrix<Plane2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Plane2f> item = default(Matrix<Plane2f>); CodeMatrix_of_Plane2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Plane3f__(ref List<Matrix<Plane3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Plane3f> item = default(Matrix<Plane3f>); CodeMatrix_of_Plane3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_PlaneWithPoint3f__(ref List<Matrix<PlaneWithPoint3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<PlaneWithPoint3f> item = default(Matrix<PlaneWithPoint3f>); CodeMatrix_of_PlaneWithPoint3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Quad2f__(ref List<Matrix<Quad2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Quad2f> item = default(Matrix<Quad2f>); CodeMatrix_of_Quad2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Quad3f__(ref List<Matrix<Quad3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Quad3f> item = default(Matrix<Quad3f>); CodeMatrix_of_Quad3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Ray2f__(ref List<Matrix<Ray2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Ray2f> item = default(Matrix<Ray2f>); CodeMatrix_of_Ray2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Ray3f__(ref List<Matrix<Ray3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Ray3f> item = default(Matrix<Ray3f>); CodeMatrix_of_Ray3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Sphere3f__(ref List<Matrix<Sphere3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Sphere3f> item = default(Matrix<Sphere3f>); CodeMatrix_of_Sphere3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Triangle2f__(ref List<Matrix<Triangle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Triangle2f> item = default(Matrix<Triangle2f>); CodeMatrix_of_Triangle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Matrix_of_Triangle3f__(ref List<Matrix<Triangle3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Matrix<Triangle3f> item = default(Matrix<Triangle3f>); CodeMatrix_of_Triangle3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }
@@ -34327,6 +38421,149 @@ namespace Aardvark.Base.Coder
             }
         }
 
+        public void CodeList_of_Volume_of_Circle2f__(ref List<Volume<Circle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Circle2f> item = default(Volume<Circle2f>); CodeVolume_of_Circle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Line2f__(ref List<Volume<Line2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Line2f> item = default(Volume<Line2f>); CodeVolume_of_Line2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Line3f__(ref List<Volume<Line3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Line3f> item = default(Volume<Line3f>); CodeVolume_of_Line3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Plane2f__(ref List<Volume<Plane2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Plane2f> item = default(Volume<Plane2f>); CodeVolume_of_Plane2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Plane3f__(ref List<Volume<Plane3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Plane3f> item = default(Volume<Plane3f>); CodeVolume_of_Plane3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_PlaneWithPoint3f__(ref List<Volume<PlaneWithPoint3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<PlaneWithPoint3f> item = default(Volume<PlaneWithPoint3f>); CodeVolume_of_PlaneWithPoint3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Quad2f__(ref List<Volume<Quad2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Quad2f> item = default(Volume<Quad2f>); CodeVolume_of_Quad2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Quad3f__(ref List<Volume<Quad3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Quad3f> item = default(Volume<Quad3f>); CodeVolume_of_Quad3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Ray2f__(ref List<Volume<Ray2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Ray2f> item = default(Volume<Ray2f>); CodeVolume_of_Ray2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Ray3f__(ref List<Volume<Ray3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Ray3f> item = default(Volume<Ray3f>); CodeVolume_of_Ray3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Sphere3f__(ref List<Volume<Sphere3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Sphere3f> item = default(Volume<Sphere3f>); CodeVolume_of_Sphere3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Triangle2f__(ref List<Volume<Triangle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Triangle2f> item = default(Volume<Triangle2f>); CodeVolume_of_Triangle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Volume_of_Triangle3f__(ref List<Volume<Triangle3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Volume<Triangle3f> item = default(Volume<Triangle3f>); CodeVolume_of_Triangle3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
         public void CodeList_of_Tensor_of_Byte__(ref List<Tensor<byte>> value)
         {
             int count = CodeCount(ref value);
@@ -35467,6 +39704,149 @@ namespace Aardvark.Base.Coder
             for (int i = 0; i < count; i++)
             {
                 Tensor<Triangle3d> item = default(Tensor<Triangle3d>); CodeTensor_of_Triangle3d_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Circle2f__(ref List<Tensor<Circle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Circle2f> item = default(Tensor<Circle2f>); CodeTensor_of_Circle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Line2f__(ref List<Tensor<Line2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Line2f> item = default(Tensor<Line2f>); CodeTensor_of_Line2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Line3f__(ref List<Tensor<Line3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Line3f> item = default(Tensor<Line3f>); CodeTensor_of_Line3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Plane2f__(ref List<Tensor<Plane2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Plane2f> item = default(Tensor<Plane2f>); CodeTensor_of_Plane2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Plane3f__(ref List<Tensor<Plane3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Plane3f> item = default(Tensor<Plane3f>); CodeTensor_of_Plane3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_PlaneWithPoint3f__(ref List<Tensor<PlaneWithPoint3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<PlaneWithPoint3f> item = default(Tensor<PlaneWithPoint3f>); CodeTensor_of_PlaneWithPoint3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Quad2f__(ref List<Tensor<Quad2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Quad2f> item = default(Tensor<Quad2f>); CodeTensor_of_Quad2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Quad3f__(ref List<Tensor<Quad3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Quad3f> item = default(Tensor<Quad3f>); CodeTensor_of_Quad3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Ray2f__(ref List<Tensor<Ray2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Ray2f> item = default(Tensor<Ray2f>); CodeTensor_of_Ray2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Ray3f__(ref List<Tensor<Ray3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Ray3f> item = default(Tensor<Ray3f>); CodeTensor_of_Ray3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Sphere3f__(ref List<Tensor<Sphere3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Sphere3f> item = default(Tensor<Sphere3f>); CodeTensor_of_Sphere3f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Triangle2f__(ref List<Tensor<Triangle2f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Triangle2f> item = default(Tensor<Triangle2f>); CodeTensor_of_Triangle2f_(ref item); value[i] = item;
+                m_state.Advance();
+            }
+        }
+
+        public void CodeList_of_Tensor_of_Triangle3f__(ref List<Tensor<Triangle3f>> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            for (int i = 0; i < count; i++)
+            {
+                Tensor<Triangle3f> item = default(Tensor<Triangle3f>); CodeTensor_of_Triangle3f_(ref item); value[i] = item;
                 m_state.Advance();
             }
         }

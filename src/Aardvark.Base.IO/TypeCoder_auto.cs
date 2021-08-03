@@ -2511,6 +2511,318 @@ namespace Aardvark.Base.Coder
 
             #endregion
 
+            #region Circle2f
+
+            { typeof(Circle2f), (c,o) => { var v = (Circle2f)o; c.CodeCircle2f(ref v); } },
+            { typeof(Circle2f[]), (c,o) => { var v = (Circle2f[])o; c.CodeCircle2fArray(ref v); } },
+            { typeof(List<Circle2f>), (c,o) => { var v = (List<Circle2f>)o; c.CodeList_of_Circle2f_(ref v); } },
+
+            { typeof(Vector<Circle2f>), (c,o) => { var v = (Vector<Circle2f>)o; c.CodeVector_of_Circle2f_(ref v); } },
+            { typeof(Vector<Circle2f>[]), (c,o) => { var v = (Vector<Circle2f>[])o; c.CodeVector_of_Circle2f_Array(ref v); } },
+            { typeof(List<Vector<Circle2f>>), (c,o) => { var v = (List<Vector<Circle2f>>)o; c.CodeList_of_Vector_of_Circle2f__(ref v); } },
+
+            { typeof(Matrix<Circle2f>), (c,o) => { var v = (Matrix<Circle2f>)o; c.CodeMatrix_of_Circle2f_(ref v); } },
+            { typeof(Matrix<Circle2f>[]), (c,o) => { var v = (Matrix<Circle2f>[])o; c.CodeMatrix_of_Circle2f_Array(ref v); } },
+            { typeof(List<Matrix<Circle2f>>), (c,o) => { var v = (List<Matrix<Circle2f>>)o; c.CodeList_of_Matrix_of_Circle2f__(ref v); } },
+
+            { typeof(Volume<Circle2f>), (c,o) => { var v = (Volume<Circle2f>)o; c.CodeVolume_of_Circle2f_(ref v); } },
+            { typeof(Volume<Circle2f>[]), (c,o) => { var v = (Volume<Circle2f>[])o; c.CodeVolume_of_Circle2f_Array(ref v); } },
+            { typeof(List<Volume<Circle2f>>), (c,o) => { var v = (List<Volume<Circle2f>>)o; c.CodeList_of_Volume_of_Circle2f__(ref v); } },
+
+            { typeof(Tensor<Circle2f>), (c,o) => { var v = (Tensor<Circle2f>)o; c.CodeTensor_of_Circle2f_(ref v); } },
+            { typeof(Tensor<Circle2f>[]), (c,o) => { var v = (Tensor<Circle2f>[])o; c.CodeTensor_of_Circle2f_Array(ref v); } },
+            { typeof(List<Tensor<Circle2f>>), (c,o) => { var v = (List<Tensor<Circle2f>>)o; c.CodeList_of_Tensor_of_Circle2f__(ref v); } },
+
+            #endregion
+
+            #region Line2f
+
+            { typeof(Line2f), (c,o) => { var v = (Line2f)o; c.CodeLine2f(ref v); } },
+            { typeof(Line2f[]), (c,o) => { var v = (Line2f[])o; c.CodeLine2fArray(ref v); } },
+            { typeof(List<Line2f>), (c,o) => { var v = (List<Line2f>)o; c.CodeList_of_Line2f_(ref v); } },
+
+            { typeof(Vector<Line2f>), (c,o) => { var v = (Vector<Line2f>)o; c.CodeVector_of_Line2f_(ref v); } },
+            { typeof(Vector<Line2f>[]), (c,o) => { var v = (Vector<Line2f>[])o; c.CodeVector_of_Line2f_Array(ref v); } },
+            { typeof(List<Vector<Line2f>>), (c,o) => { var v = (List<Vector<Line2f>>)o; c.CodeList_of_Vector_of_Line2f__(ref v); } },
+
+            { typeof(Matrix<Line2f>), (c,o) => { var v = (Matrix<Line2f>)o; c.CodeMatrix_of_Line2f_(ref v); } },
+            { typeof(Matrix<Line2f>[]), (c,o) => { var v = (Matrix<Line2f>[])o; c.CodeMatrix_of_Line2f_Array(ref v); } },
+            { typeof(List<Matrix<Line2f>>), (c,o) => { var v = (List<Matrix<Line2f>>)o; c.CodeList_of_Matrix_of_Line2f__(ref v); } },
+
+            { typeof(Volume<Line2f>), (c,o) => { var v = (Volume<Line2f>)o; c.CodeVolume_of_Line2f_(ref v); } },
+            { typeof(Volume<Line2f>[]), (c,o) => { var v = (Volume<Line2f>[])o; c.CodeVolume_of_Line2f_Array(ref v); } },
+            { typeof(List<Volume<Line2f>>), (c,o) => { var v = (List<Volume<Line2f>>)o; c.CodeList_of_Volume_of_Line2f__(ref v); } },
+
+            { typeof(Tensor<Line2f>), (c,o) => { var v = (Tensor<Line2f>)o; c.CodeTensor_of_Line2f_(ref v); } },
+            { typeof(Tensor<Line2f>[]), (c,o) => { var v = (Tensor<Line2f>[])o; c.CodeTensor_of_Line2f_Array(ref v); } },
+            { typeof(List<Tensor<Line2f>>), (c,o) => { var v = (List<Tensor<Line2f>>)o; c.CodeList_of_Tensor_of_Line2f__(ref v); } },
+
+            #endregion
+
+            #region Line3f
+
+            { typeof(Line3f), (c,o) => { var v = (Line3f)o; c.CodeLine3f(ref v); } },
+            { typeof(Line3f[]), (c,o) => { var v = (Line3f[])o; c.CodeLine3fArray(ref v); } },
+            { typeof(List<Line3f>), (c,o) => { var v = (List<Line3f>)o; c.CodeList_of_Line3f_(ref v); } },
+
+            { typeof(Vector<Line3f>), (c,o) => { var v = (Vector<Line3f>)o; c.CodeVector_of_Line3f_(ref v); } },
+            { typeof(Vector<Line3f>[]), (c,o) => { var v = (Vector<Line3f>[])o; c.CodeVector_of_Line3f_Array(ref v); } },
+            { typeof(List<Vector<Line3f>>), (c,o) => { var v = (List<Vector<Line3f>>)o; c.CodeList_of_Vector_of_Line3f__(ref v); } },
+
+            { typeof(Matrix<Line3f>), (c,o) => { var v = (Matrix<Line3f>)o; c.CodeMatrix_of_Line3f_(ref v); } },
+            { typeof(Matrix<Line3f>[]), (c,o) => { var v = (Matrix<Line3f>[])o; c.CodeMatrix_of_Line3f_Array(ref v); } },
+            { typeof(List<Matrix<Line3f>>), (c,o) => { var v = (List<Matrix<Line3f>>)o; c.CodeList_of_Matrix_of_Line3f__(ref v); } },
+
+            { typeof(Volume<Line3f>), (c,o) => { var v = (Volume<Line3f>)o; c.CodeVolume_of_Line3f_(ref v); } },
+            { typeof(Volume<Line3f>[]), (c,o) => { var v = (Volume<Line3f>[])o; c.CodeVolume_of_Line3f_Array(ref v); } },
+            { typeof(List<Volume<Line3f>>), (c,o) => { var v = (List<Volume<Line3f>>)o; c.CodeList_of_Volume_of_Line3f__(ref v); } },
+
+            { typeof(Tensor<Line3f>), (c,o) => { var v = (Tensor<Line3f>)o; c.CodeTensor_of_Line3f_(ref v); } },
+            { typeof(Tensor<Line3f>[]), (c,o) => { var v = (Tensor<Line3f>[])o; c.CodeTensor_of_Line3f_Array(ref v); } },
+            { typeof(List<Tensor<Line3f>>), (c,o) => { var v = (List<Tensor<Line3f>>)o; c.CodeList_of_Tensor_of_Line3f__(ref v); } },
+
+            #endregion
+
+            #region Plane2f
+
+            { typeof(Plane2f), (c,o) => { var v = (Plane2f)o; c.CodePlane2f(ref v); } },
+            { typeof(Plane2f[]), (c,o) => { var v = (Plane2f[])o; c.CodePlane2fArray(ref v); } },
+            { typeof(List<Plane2f>), (c,o) => { var v = (List<Plane2f>)o; c.CodeList_of_Plane2f_(ref v); } },
+
+            { typeof(Vector<Plane2f>), (c,o) => { var v = (Vector<Plane2f>)o; c.CodeVector_of_Plane2f_(ref v); } },
+            { typeof(Vector<Plane2f>[]), (c,o) => { var v = (Vector<Plane2f>[])o; c.CodeVector_of_Plane2f_Array(ref v); } },
+            { typeof(List<Vector<Plane2f>>), (c,o) => { var v = (List<Vector<Plane2f>>)o; c.CodeList_of_Vector_of_Plane2f__(ref v); } },
+
+            { typeof(Matrix<Plane2f>), (c,o) => { var v = (Matrix<Plane2f>)o; c.CodeMatrix_of_Plane2f_(ref v); } },
+            { typeof(Matrix<Plane2f>[]), (c,o) => { var v = (Matrix<Plane2f>[])o; c.CodeMatrix_of_Plane2f_Array(ref v); } },
+            { typeof(List<Matrix<Plane2f>>), (c,o) => { var v = (List<Matrix<Plane2f>>)o; c.CodeList_of_Matrix_of_Plane2f__(ref v); } },
+
+            { typeof(Volume<Plane2f>), (c,o) => { var v = (Volume<Plane2f>)o; c.CodeVolume_of_Plane2f_(ref v); } },
+            { typeof(Volume<Plane2f>[]), (c,o) => { var v = (Volume<Plane2f>[])o; c.CodeVolume_of_Plane2f_Array(ref v); } },
+            { typeof(List<Volume<Plane2f>>), (c,o) => { var v = (List<Volume<Plane2f>>)o; c.CodeList_of_Volume_of_Plane2f__(ref v); } },
+
+            { typeof(Tensor<Plane2f>), (c,o) => { var v = (Tensor<Plane2f>)o; c.CodeTensor_of_Plane2f_(ref v); } },
+            { typeof(Tensor<Plane2f>[]), (c,o) => { var v = (Tensor<Plane2f>[])o; c.CodeTensor_of_Plane2f_Array(ref v); } },
+            { typeof(List<Tensor<Plane2f>>), (c,o) => { var v = (List<Tensor<Plane2f>>)o; c.CodeList_of_Tensor_of_Plane2f__(ref v); } },
+
+            #endregion
+
+            #region Plane3f
+
+            { typeof(Plane3f), (c,o) => { var v = (Plane3f)o; c.CodePlane3f(ref v); } },
+            { typeof(Plane3f[]), (c,o) => { var v = (Plane3f[])o; c.CodePlane3fArray(ref v); } },
+            { typeof(List<Plane3f>), (c,o) => { var v = (List<Plane3f>)o; c.CodeList_of_Plane3f_(ref v); } },
+
+            { typeof(Vector<Plane3f>), (c,o) => { var v = (Vector<Plane3f>)o; c.CodeVector_of_Plane3f_(ref v); } },
+            { typeof(Vector<Plane3f>[]), (c,o) => { var v = (Vector<Plane3f>[])o; c.CodeVector_of_Plane3f_Array(ref v); } },
+            { typeof(List<Vector<Plane3f>>), (c,o) => { var v = (List<Vector<Plane3f>>)o; c.CodeList_of_Vector_of_Plane3f__(ref v); } },
+
+            { typeof(Matrix<Plane3f>), (c,o) => { var v = (Matrix<Plane3f>)o; c.CodeMatrix_of_Plane3f_(ref v); } },
+            { typeof(Matrix<Plane3f>[]), (c,o) => { var v = (Matrix<Plane3f>[])o; c.CodeMatrix_of_Plane3f_Array(ref v); } },
+            { typeof(List<Matrix<Plane3f>>), (c,o) => { var v = (List<Matrix<Plane3f>>)o; c.CodeList_of_Matrix_of_Plane3f__(ref v); } },
+
+            { typeof(Volume<Plane3f>), (c,o) => { var v = (Volume<Plane3f>)o; c.CodeVolume_of_Plane3f_(ref v); } },
+            { typeof(Volume<Plane3f>[]), (c,o) => { var v = (Volume<Plane3f>[])o; c.CodeVolume_of_Plane3f_Array(ref v); } },
+            { typeof(List<Volume<Plane3f>>), (c,o) => { var v = (List<Volume<Plane3f>>)o; c.CodeList_of_Volume_of_Plane3f__(ref v); } },
+
+            { typeof(Tensor<Plane3f>), (c,o) => { var v = (Tensor<Plane3f>)o; c.CodeTensor_of_Plane3f_(ref v); } },
+            { typeof(Tensor<Plane3f>[]), (c,o) => { var v = (Tensor<Plane3f>[])o; c.CodeTensor_of_Plane3f_Array(ref v); } },
+            { typeof(List<Tensor<Plane3f>>), (c,o) => { var v = (List<Tensor<Plane3f>>)o; c.CodeList_of_Tensor_of_Plane3f__(ref v); } },
+
+            #endregion
+
+            #region PlaneWithPoint3f
+
+            { typeof(PlaneWithPoint3f), (c,o) => { var v = (PlaneWithPoint3f)o; c.CodePlaneWithPoint3f(ref v); } },
+            { typeof(PlaneWithPoint3f[]), (c,o) => { var v = (PlaneWithPoint3f[])o; c.CodePlaneWithPoint3fArray(ref v); } },
+            { typeof(List<PlaneWithPoint3f>), (c,o) => { var v = (List<PlaneWithPoint3f>)o; c.CodeList_of_PlaneWithPoint3f_(ref v); } },
+
+            { typeof(Vector<PlaneWithPoint3f>), (c,o) => { var v = (Vector<PlaneWithPoint3f>)o; c.CodeVector_of_PlaneWithPoint3f_(ref v); } },
+            { typeof(Vector<PlaneWithPoint3f>[]), (c,o) => { var v = (Vector<PlaneWithPoint3f>[])o; c.CodeVector_of_PlaneWithPoint3f_Array(ref v); } },
+            { typeof(List<Vector<PlaneWithPoint3f>>), (c,o) => { var v = (List<Vector<PlaneWithPoint3f>>)o; c.CodeList_of_Vector_of_PlaneWithPoint3f__(ref v); } },
+
+            { typeof(Matrix<PlaneWithPoint3f>), (c,o) => { var v = (Matrix<PlaneWithPoint3f>)o; c.CodeMatrix_of_PlaneWithPoint3f_(ref v); } },
+            { typeof(Matrix<PlaneWithPoint3f>[]), (c,o) => { var v = (Matrix<PlaneWithPoint3f>[])o; c.CodeMatrix_of_PlaneWithPoint3f_Array(ref v); } },
+            { typeof(List<Matrix<PlaneWithPoint3f>>), (c,o) => { var v = (List<Matrix<PlaneWithPoint3f>>)o; c.CodeList_of_Matrix_of_PlaneWithPoint3f__(ref v); } },
+
+            { typeof(Volume<PlaneWithPoint3f>), (c,o) => { var v = (Volume<PlaneWithPoint3f>)o; c.CodeVolume_of_PlaneWithPoint3f_(ref v); } },
+            { typeof(Volume<PlaneWithPoint3f>[]), (c,o) => { var v = (Volume<PlaneWithPoint3f>[])o; c.CodeVolume_of_PlaneWithPoint3f_Array(ref v); } },
+            { typeof(List<Volume<PlaneWithPoint3f>>), (c,o) => { var v = (List<Volume<PlaneWithPoint3f>>)o; c.CodeList_of_Volume_of_PlaneWithPoint3f__(ref v); } },
+
+            { typeof(Tensor<PlaneWithPoint3f>), (c,o) => { var v = (Tensor<PlaneWithPoint3f>)o; c.CodeTensor_of_PlaneWithPoint3f_(ref v); } },
+            { typeof(Tensor<PlaneWithPoint3f>[]), (c,o) => { var v = (Tensor<PlaneWithPoint3f>[])o; c.CodeTensor_of_PlaneWithPoint3f_Array(ref v); } },
+            { typeof(List<Tensor<PlaneWithPoint3f>>), (c,o) => { var v = (List<Tensor<PlaneWithPoint3f>>)o; c.CodeList_of_Tensor_of_PlaneWithPoint3f__(ref v); } },
+
+            #endregion
+
+            #region Quad2f
+
+            { typeof(Quad2f), (c,o) => { var v = (Quad2f)o; c.CodeQuad2f(ref v); } },
+            { typeof(Quad2f[]), (c,o) => { var v = (Quad2f[])o; c.CodeQuad2fArray(ref v); } },
+            { typeof(List<Quad2f>), (c,o) => { var v = (List<Quad2f>)o; c.CodeList_of_Quad2f_(ref v); } },
+
+            { typeof(Vector<Quad2f>), (c,o) => { var v = (Vector<Quad2f>)o; c.CodeVector_of_Quad2f_(ref v); } },
+            { typeof(Vector<Quad2f>[]), (c,o) => { var v = (Vector<Quad2f>[])o; c.CodeVector_of_Quad2f_Array(ref v); } },
+            { typeof(List<Vector<Quad2f>>), (c,o) => { var v = (List<Vector<Quad2f>>)o; c.CodeList_of_Vector_of_Quad2f__(ref v); } },
+
+            { typeof(Matrix<Quad2f>), (c,o) => { var v = (Matrix<Quad2f>)o; c.CodeMatrix_of_Quad2f_(ref v); } },
+            { typeof(Matrix<Quad2f>[]), (c,o) => { var v = (Matrix<Quad2f>[])o; c.CodeMatrix_of_Quad2f_Array(ref v); } },
+            { typeof(List<Matrix<Quad2f>>), (c,o) => { var v = (List<Matrix<Quad2f>>)o; c.CodeList_of_Matrix_of_Quad2f__(ref v); } },
+
+            { typeof(Volume<Quad2f>), (c,o) => { var v = (Volume<Quad2f>)o; c.CodeVolume_of_Quad2f_(ref v); } },
+            { typeof(Volume<Quad2f>[]), (c,o) => { var v = (Volume<Quad2f>[])o; c.CodeVolume_of_Quad2f_Array(ref v); } },
+            { typeof(List<Volume<Quad2f>>), (c,o) => { var v = (List<Volume<Quad2f>>)o; c.CodeList_of_Volume_of_Quad2f__(ref v); } },
+
+            { typeof(Tensor<Quad2f>), (c,o) => { var v = (Tensor<Quad2f>)o; c.CodeTensor_of_Quad2f_(ref v); } },
+            { typeof(Tensor<Quad2f>[]), (c,o) => { var v = (Tensor<Quad2f>[])o; c.CodeTensor_of_Quad2f_Array(ref v); } },
+            { typeof(List<Tensor<Quad2f>>), (c,o) => { var v = (List<Tensor<Quad2f>>)o; c.CodeList_of_Tensor_of_Quad2f__(ref v); } },
+
+            #endregion
+
+            #region Quad3f
+
+            { typeof(Quad3f), (c,o) => { var v = (Quad3f)o; c.CodeQuad3f(ref v); } },
+            { typeof(Quad3f[]), (c,o) => { var v = (Quad3f[])o; c.CodeQuad3fArray(ref v); } },
+            { typeof(List<Quad3f>), (c,o) => { var v = (List<Quad3f>)o; c.CodeList_of_Quad3f_(ref v); } },
+
+            { typeof(Vector<Quad3f>), (c,o) => { var v = (Vector<Quad3f>)o; c.CodeVector_of_Quad3f_(ref v); } },
+            { typeof(Vector<Quad3f>[]), (c,o) => { var v = (Vector<Quad3f>[])o; c.CodeVector_of_Quad3f_Array(ref v); } },
+            { typeof(List<Vector<Quad3f>>), (c,o) => { var v = (List<Vector<Quad3f>>)o; c.CodeList_of_Vector_of_Quad3f__(ref v); } },
+
+            { typeof(Matrix<Quad3f>), (c,o) => { var v = (Matrix<Quad3f>)o; c.CodeMatrix_of_Quad3f_(ref v); } },
+            { typeof(Matrix<Quad3f>[]), (c,o) => { var v = (Matrix<Quad3f>[])o; c.CodeMatrix_of_Quad3f_Array(ref v); } },
+            { typeof(List<Matrix<Quad3f>>), (c,o) => { var v = (List<Matrix<Quad3f>>)o; c.CodeList_of_Matrix_of_Quad3f__(ref v); } },
+
+            { typeof(Volume<Quad3f>), (c,o) => { var v = (Volume<Quad3f>)o; c.CodeVolume_of_Quad3f_(ref v); } },
+            { typeof(Volume<Quad3f>[]), (c,o) => { var v = (Volume<Quad3f>[])o; c.CodeVolume_of_Quad3f_Array(ref v); } },
+            { typeof(List<Volume<Quad3f>>), (c,o) => { var v = (List<Volume<Quad3f>>)o; c.CodeList_of_Volume_of_Quad3f__(ref v); } },
+
+            { typeof(Tensor<Quad3f>), (c,o) => { var v = (Tensor<Quad3f>)o; c.CodeTensor_of_Quad3f_(ref v); } },
+            { typeof(Tensor<Quad3f>[]), (c,o) => { var v = (Tensor<Quad3f>[])o; c.CodeTensor_of_Quad3f_Array(ref v); } },
+            { typeof(List<Tensor<Quad3f>>), (c,o) => { var v = (List<Tensor<Quad3f>>)o; c.CodeList_of_Tensor_of_Quad3f__(ref v); } },
+
+            #endregion
+
+            #region Ray2f
+
+            { typeof(Ray2f), (c,o) => { var v = (Ray2f)o; c.CodeRay2f(ref v); } },
+            { typeof(Ray2f[]), (c,o) => { var v = (Ray2f[])o; c.CodeRay2fArray(ref v); } },
+            { typeof(List<Ray2f>), (c,o) => { var v = (List<Ray2f>)o; c.CodeList_of_Ray2f_(ref v); } },
+
+            { typeof(Vector<Ray2f>), (c,o) => { var v = (Vector<Ray2f>)o; c.CodeVector_of_Ray2f_(ref v); } },
+            { typeof(Vector<Ray2f>[]), (c,o) => { var v = (Vector<Ray2f>[])o; c.CodeVector_of_Ray2f_Array(ref v); } },
+            { typeof(List<Vector<Ray2f>>), (c,o) => { var v = (List<Vector<Ray2f>>)o; c.CodeList_of_Vector_of_Ray2f__(ref v); } },
+
+            { typeof(Matrix<Ray2f>), (c,o) => { var v = (Matrix<Ray2f>)o; c.CodeMatrix_of_Ray2f_(ref v); } },
+            { typeof(Matrix<Ray2f>[]), (c,o) => { var v = (Matrix<Ray2f>[])o; c.CodeMatrix_of_Ray2f_Array(ref v); } },
+            { typeof(List<Matrix<Ray2f>>), (c,o) => { var v = (List<Matrix<Ray2f>>)o; c.CodeList_of_Matrix_of_Ray2f__(ref v); } },
+
+            { typeof(Volume<Ray2f>), (c,o) => { var v = (Volume<Ray2f>)o; c.CodeVolume_of_Ray2f_(ref v); } },
+            { typeof(Volume<Ray2f>[]), (c,o) => { var v = (Volume<Ray2f>[])o; c.CodeVolume_of_Ray2f_Array(ref v); } },
+            { typeof(List<Volume<Ray2f>>), (c,o) => { var v = (List<Volume<Ray2f>>)o; c.CodeList_of_Volume_of_Ray2f__(ref v); } },
+
+            { typeof(Tensor<Ray2f>), (c,o) => { var v = (Tensor<Ray2f>)o; c.CodeTensor_of_Ray2f_(ref v); } },
+            { typeof(Tensor<Ray2f>[]), (c,o) => { var v = (Tensor<Ray2f>[])o; c.CodeTensor_of_Ray2f_Array(ref v); } },
+            { typeof(List<Tensor<Ray2f>>), (c,o) => { var v = (List<Tensor<Ray2f>>)o; c.CodeList_of_Tensor_of_Ray2f__(ref v); } },
+
+            #endregion
+
+            #region Ray3f
+
+            { typeof(Ray3f), (c,o) => { var v = (Ray3f)o; c.CodeRay3f(ref v); } },
+            { typeof(Ray3f[]), (c,o) => { var v = (Ray3f[])o; c.CodeRay3fArray(ref v); } },
+            { typeof(List<Ray3f>), (c,o) => { var v = (List<Ray3f>)o; c.CodeList_of_Ray3f_(ref v); } },
+
+            { typeof(Vector<Ray3f>), (c,o) => { var v = (Vector<Ray3f>)o; c.CodeVector_of_Ray3f_(ref v); } },
+            { typeof(Vector<Ray3f>[]), (c,o) => { var v = (Vector<Ray3f>[])o; c.CodeVector_of_Ray3f_Array(ref v); } },
+            { typeof(List<Vector<Ray3f>>), (c,o) => { var v = (List<Vector<Ray3f>>)o; c.CodeList_of_Vector_of_Ray3f__(ref v); } },
+
+            { typeof(Matrix<Ray3f>), (c,o) => { var v = (Matrix<Ray3f>)o; c.CodeMatrix_of_Ray3f_(ref v); } },
+            { typeof(Matrix<Ray3f>[]), (c,o) => { var v = (Matrix<Ray3f>[])o; c.CodeMatrix_of_Ray3f_Array(ref v); } },
+            { typeof(List<Matrix<Ray3f>>), (c,o) => { var v = (List<Matrix<Ray3f>>)o; c.CodeList_of_Matrix_of_Ray3f__(ref v); } },
+
+            { typeof(Volume<Ray3f>), (c,o) => { var v = (Volume<Ray3f>)o; c.CodeVolume_of_Ray3f_(ref v); } },
+            { typeof(Volume<Ray3f>[]), (c,o) => { var v = (Volume<Ray3f>[])o; c.CodeVolume_of_Ray3f_Array(ref v); } },
+            { typeof(List<Volume<Ray3f>>), (c,o) => { var v = (List<Volume<Ray3f>>)o; c.CodeList_of_Volume_of_Ray3f__(ref v); } },
+
+            { typeof(Tensor<Ray3f>), (c,o) => { var v = (Tensor<Ray3f>)o; c.CodeTensor_of_Ray3f_(ref v); } },
+            { typeof(Tensor<Ray3f>[]), (c,o) => { var v = (Tensor<Ray3f>[])o; c.CodeTensor_of_Ray3f_Array(ref v); } },
+            { typeof(List<Tensor<Ray3f>>), (c,o) => { var v = (List<Tensor<Ray3f>>)o; c.CodeList_of_Tensor_of_Ray3f__(ref v); } },
+
+            #endregion
+
+            #region Sphere3f
+
+            { typeof(Sphere3f), (c,o) => { var v = (Sphere3f)o; c.CodeSphere3f(ref v); } },
+            { typeof(Sphere3f[]), (c,o) => { var v = (Sphere3f[])o; c.CodeSphere3fArray(ref v); } },
+            { typeof(List<Sphere3f>), (c,o) => { var v = (List<Sphere3f>)o; c.CodeList_of_Sphere3f_(ref v); } },
+
+            { typeof(Vector<Sphere3f>), (c,o) => { var v = (Vector<Sphere3f>)o; c.CodeVector_of_Sphere3f_(ref v); } },
+            { typeof(Vector<Sphere3f>[]), (c,o) => { var v = (Vector<Sphere3f>[])o; c.CodeVector_of_Sphere3f_Array(ref v); } },
+            { typeof(List<Vector<Sphere3f>>), (c,o) => { var v = (List<Vector<Sphere3f>>)o; c.CodeList_of_Vector_of_Sphere3f__(ref v); } },
+
+            { typeof(Matrix<Sphere3f>), (c,o) => { var v = (Matrix<Sphere3f>)o; c.CodeMatrix_of_Sphere3f_(ref v); } },
+            { typeof(Matrix<Sphere3f>[]), (c,o) => { var v = (Matrix<Sphere3f>[])o; c.CodeMatrix_of_Sphere3f_Array(ref v); } },
+            { typeof(List<Matrix<Sphere3f>>), (c,o) => { var v = (List<Matrix<Sphere3f>>)o; c.CodeList_of_Matrix_of_Sphere3f__(ref v); } },
+
+            { typeof(Volume<Sphere3f>), (c,o) => { var v = (Volume<Sphere3f>)o; c.CodeVolume_of_Sphere3f_(ref v); } },
+            { typeof(Volume<Sphere3f>[]), (c,o) => { var v = (Volume<Sphere3f>[])o; c.CodeVolume_of_Sphere3f_Array(ref v); } },
+            { typeof(List<Volume<Sphere3f>>), (c,o) => { var v = (List<Volume<Sphere3f>>)o; c.CodeList_of_Volume_of_Sphere3f__(ref v); } },
+
+            { typeof(Tensor<Sphere3f>), (c,o) => { var v = (Tensor<Sphere3f>)o; c.CodeTensor_of_Sphere3f_(ref v); } },
+            { typeof(Tensor<Sphere3f>[]), (c,o) => { var v = (Tensor<Sphere3f>[])o; c.CodeTensor_of_Sphere3f_Array(ref v); } },
+            { typeof(List<Tensor<Sphere3f>>), (c,o) => { var v = (List<Tensor<Sphere3f>>)o; c.CodeList_of_Tensor_of_Sphere3f__(ref v); } },
+
+            #endregion
+
+            #region Triangle2f
+
+            { typeof(Triangle2f), (c,o) => { var v = (Triangle2f)o; c.CodeTriangle2f(ref v); } },
+            { typeof(Triangle2f[]), (c,o) => { var v = (Triangle2f[])o; c.CodeTriangle2fArray(ref v); } },
+            { typeof(List<Triangle2f>), (c,o) => { var v = (List<Triangle2f>)o; c.CodeList_of_Triangle2f_(ref v); } },
+
+            { typeof(Vector<Triangle2f>), (c,o) => { var v = (Vector<Triangle2f>)o; c.CodeVector_of_Triangle2f_(ref v); } },
+            { typeof(Vector<Triangle2f>[]), (c,o) => { var v = (Vector<Triangle2f>[])o; c.CodeVector_of_Triangle2f_Array(ref v); } },
+            { typeof(List<Vector<Triangle2f>>), (c,o) => { var v = (List<Vector<Triangle2f>>)o; c.CodeList_of_Vector_of_Triangle2f__(ref v); } },
+
+            { typeof(Matrix<Triangle2f>), (c,o) => { var v = (Matrix<Triangle2f>)o; c.CodeMatrix_of_Triangle2f_(ref v); } },
+            { typeof(Matrix<Triangle2f>[]), (c,o) => { var v = (Matrix<Triangle2f>[])o; c.CodeMatrix_of_Triangle2f_Array(ref v); } },
+            { typeof(List<Matrix<Triangle2f>>), (c,o) => { var v = (List<Matrix<Triangle2f>>)o; c.CodeList_of_Matrix_of_Triangle2f__(ref v); } },
+
+            { typeof(Volume<Triangle2f>), (c,o) => { var v = (Volume<Triangle2f>)o; c.CodeVolume_of_Triangle2f_(ref v); } },
+            { typeof(Volume<Triangle2f>[]), (c,o) => { var v = (Volume<Triangle2f>[])o; c.CodeVolume_of_Triangle2f_Array(ref v); } },
+            { typeof(List<Volume<Triangle2f>>), (c,o) => { var v = (List<Volume<Triangle2f>>)o; c.CodeList_of_Volume_of_Triangle2f__(ref v); } },
+
+            { typeof(Tensor<Triangle2f>), (c,o) => { var v = (Tensor<Triangle2f>)o; c.CodeTensor_of_Triangle2f_(ref v); } },
+            { typeof(Tensor<Triangle2f>[]), (c,o) => { var v = (Tensor<Triangle2f>[])o; c.CodeTensor_of_Triangle2f_Array(ref v); } },
+            { typeof(List<Tensor<Triangle2f>>), (c,o) => { var v = (List<Tensor<Triangle2f>>)o; c.CodeList_of_Tensor_of_Triangle2f__(ref v); } },
+
+            #endregion
+
+            #region Triangle3f
+
+            { typeof(Triangle3f), (c,o) => { var v = (Triangle3f)o; c.CodeTriangle3f(ref v); } },
+            { typeof(Triangle3f[]), (c,o) => { var v = (Triangle3f[])o; c.CodeTriangle3fArray(ref v); } },
+            { typeof(List<Triangle3f>), (c,o) => { var v = (List<Triangle3f>)o; c.CodeList_of_Triangle3f_(ref v); } },
+
+            { typeof(Vector<Triangle3f>), (c,o) => { var v = (Vector<Triangle3f>)o; c.CodeVector_of_Triangle3f_(ref v); } },
+            { typeof(Vector<Triangle3f>[]), (c,o) => { var v = (Vector<Triangle3f>[])o; c.CodeVector_of_Triangle3f_Array(ref v); } },
+            { typeof(List<Vector<Triangle3f>>), (c,o) => { var v = (List<Vector<Triangle3f>>)o; c.CodeList_of_Vector_of_Triangle3f__(ref v); } },
+
+            { typeof(Matrix<Triangle3f>), (c,o) => { var v = (Matrix<Triangle3f>)o; c.CodeMatrix_of_Triangle3f_(ref v); } },
+            { typeof(Matrix<Triangle3f>[]), (c,o) => { var v = (Matrix<Triangle3f>[])o; c.CodeMatrix_of_Triangle3f_Array(ref v); } },
+            { typeof(List<Matrix<Triangle3f>>), (c,o) => { var v = (List<Matrix<Triangle3f>>)o; c.CodeList_of_Matrix_of_Triangle3f__(ref v); } },
+
+            { typeof(Volume<Triangle3f>), (c,o) => { var v = (Volume<Triangle3f>)o; c.CodeVolume_of_Triangle3f_(ref v); } },
+            { typeof(Volume<Triangle3f>[]), (c,o) => { var v = (Volume<Triangle3f>[])o; c.CodeVolume_of_Triangle3f_Array(ref v); } },
+            { typeof(List<Volume<Triangle3f>>), (c,o) => { var v = (List<Volume<Triangle3f>>)o; c.CodeList_of_Volume_of_Triangle3f__(ref v); } },
+
+            { typeof(Tensor<Triangle3f>), (c,o) => { var v = (Tensor<Triangle3f>)o; c.CodeTensor_of_Triangle3f_(ref v); } },
+            { typeof(Tensor<Triangle3f>[]), (c,o) => { var v = (Tensor<Triangle3f>[])o; c.CodeTensor_of_Triangle3f_Array(ref v); } },
+            { typeof(List<Tensor<Triangle3f>>), (c,o) => { var v = (List<Tensor<Triangle3f>>)o; c.CodeList_of_Tensor_of_Triangle3f__(ref v); } },
+
+            #endregion
+
             #region Multi-Dimensional Arrays
 
             { typeof(byte[,]), (c,o) => { var v = (byte[,])o; c.CodeByteArray2d(ref v); } },
@@ -5368,6 +5680,318 @@ namespace Aardvark.Base.Coder
             { typeof(Tensor<Triangle3d>), c => { var v = default(Tensor<Triangle3d>); c.CodeTensor_of_Triangle3d_(ref v); return v; } },
             { typeof(Tensor<Triangle3d>[]), c => { var v = default(Tensor<Triangle3d>[]); c.CodeTensor_of_Triangle3d_Array(ref v); return v; } },
             { typeof(List<Tensor<Triangle3d>>), c => { var v = default(List<Tensor<Triangle3d>>); c.CodeList_of_Tensor_of_Triangle3d__(ref v); return v; } },
+
+            #endregion
+
+            #region Circle2f
+
+            { typeof(Circle2f), c => { var v = default(Circle2f); c.CodeCircle2f(ref v); return v; } },
+            { typeof(Circle2f[]), c => { var v = default(Circle2f[]); c.CodeCircle2fArray(ref v); return v; } },
+            { typeof(List<Circle2f>), c => { var v = default(List<Circle2f>); c.CodeList_of_Circle2f_(ref v); return v; } },
+
+            { typeof(Vector<Circle2f>), c => { var v = default(Vector<Circle2f>); c.CodeVector_of_Circle2f_(ref v); return v; } },
+            { typeof(Vector<Circle2f>[]), c => { var v = default(Vector<Circle2f>[]); c.CodeVector_of_Circle2f_Array(ref v); return v; } },
+            { typeof(List<Vector<Circle2f>>), c => { var v = default(List<Vector<Circle2f>>); c.CodeList_of_Vector_of_Circle2f__(ref v); return v; } },
+
+            { typeof(Matrix<Circle2f>), c => { var v = default(Matrix<Circle2f>); c.CodeMatrix_of_Circle2f_(ref v); return v; } },
+            { typeof(Matrix<Circle2f>[]), c => { var v = default(Matrix<Circle2f>[]); c.CodeMatrix_of_Circle2f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Circle2f>>), c => { var v = default(List<Matrix<Circle2f>>); c.CodeList_of_Matrix_of_Circle2f__(ref v); return v; } },
+
+            { typeof(Volume<Circle2f>), c => { var v = default(Volume<Circle2f>); c.CodeVolume_of_Circle2f_(ref v); return v; } },
+            { typeof(Volume<Circle2f>[]), c => { var v = default(Volume<Circle2f>[]); c.CodeVolume_of_Circle2f_Array(ref v); return v; } },
+            { typeof(List<Volume<Circle2f>>), c => { var v = default(List<Volume<Circle2f>>); c.CodeList_of_Volume_of_Circle2f__(ref v); return v; } },
+
+            { typeof(Tensor<Circle2f>), c => { var v = default(Tensor<Circle2f>); c.CodeTensor_of_Circle2f_(ref v); return v; } },
+            { typeof(Tensor<Circle2f>[]), c => { var v = default(Tensor<Circle2f>[]); c.CodeTensor_of_Circle2f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Circle2f>>), c => { var v = default(List<Tensor<Circle2f>>); c.CodeList_of_Tensor_of_Circle2f__(ref v); return v; } },
+
+            #endregion
+
+            #region Line2f
+
+            { typeof(Line2f), c => { var v = default(Line2f); c.CodeLine2f(ref v); return v; } },
+            { typeof(Line2f[]), c => { var v = default(Line2f[]); c.CodeLine2fArray(ref v); return v; } },
+            { typeof(List<Line2f>), c => { var v = default(List<Line2f>); c.CodeList_of_Line2f_(ref v); return v; } },
+
+            { typeof(Vector<Line2f>), c => { var v = default(Vector<Line2f>); c.CodeVector_of_Line2f_(ref v); return v; } },
+            { typeof(Vector<Line2f>[]), c => { var v = default(Vector<Line2f>[]); c.CodeVector_of_Line2f_Array(ref v); return v; } },
+            { typeof(List<Vector<Line2f>>), c => { var v = default(List<Vector<Line2f>>); c.CodeList_of_Vector_of_Line2f__(ref v); return v; } },
+
+            { typeof(Matrix<Line2f>), c => { var v = default(Matrix<Line2f>); c.CodeMatrix_of_Line2f_(ref v); return v; } },
+            { typeof(Matrix<Line2f>[]), c => { var v = default(Matrix<Line2f>[]); c.CodeMatrix_of_Line2f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Line2f>>), c => { var v = default(List<Matrix<Line2f>>); c.CodeList_of_Matrix_of_Line2f__(ref v); return v; } },
+
+            { typeof(Volume<Line2f>), c => { var v = default(Volume<Line2f>); c.CodeVolume_of_Line2f_(ref v); return v; } },
+            { typeof(Volume<Line2f>[]), c => { var v = default(Volume<Line2f>[]); c.CodeVolume_of_Line2f_Array(ref v); return v; } },
+            { typeof(List<Volume<Line2f>>), c => { var v = default(List<Volume<Line2f>>); c.CodeList_of_Volume_of_Line2f__(ref v); return v; } },
+
+            { typeof(Tensor<Line2f>), c => { var v = default(Tensor<Line2f>); c.CodeTensor_of_Line2f_(ref v); return v; } },
+            { typeof(Tensor<Line2f>[]), c => { var v = default(Tensor<Line2f>[]); c.CodeTensor_of_Line2f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Line2f>>), c => { var v = default(List<Tensor<Line2f>>); c.CodeList_of_Tensor_of_Line2f__(ref v); return v; } },
+
+            #endregion
+
+            #region Line3f
+
+            { typeof(Line3f), c => { var v = default(Line3f); c.CodeLine3f(ref v); return v; } },
+            { typeof(Line3f[]), c => { var v = default(Line3f[]); c.CodeLine3fArray(ref v); return v; } },
+            { typeof(List<Line3f>), c => { var v = default(List<Line3f>); c.CodeList_of_Line3f_(ref v); return v; } },
+
+            { typeof(Vector<Line3f>), c => { var v = default(Vector<Line3f>); c.CodeVector_of_Line3f_(ref v); return v; } },
+            { typeof(Vector<Line3f>[]), c => { var v = default(Vector<Line3f>[]); c.CodeVector_of_Line3f_Array(ref v); return v; } },
+            { typeof(List<Vector<Line3f>>), c => { var v = default(List<Vector<Line3f>>); c.CodeList_of_Vector_of_Line3f__(ref v); return v; } },
+
+            { typeof(Matrix<Line3f>), c => { var v = default(Matrix<Line3f>); c.CodeMatrix_of_Line3f_(ref v); return v; } },
+            { typeof(Matrix<Line3f>[]), c => { var v = default(Matrix<Line3f>[]); c.CodeMatrix_of_Line3f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Line3f>>), c => { var v = default(List<Matrix<Line3f>>); c.CodeList_of_Matrix_of_Line3f__(ref v); return v; } },
+
+            { typeof(Volume<Line3f>), c => { var v = default(Volume<Line3f>); c.CodeVolume_of_Line3f_(ref v); return v; } },
+            { typeof(Volume<Line3f>[]), c => { var v = default(Volume<Line3f>[]); c.CodeVolume_of_Line3f_Array(ref v); return v; } },
+            { typeof(List<Volume<Line3f>>), c => { var v = default(List<Volume<Line3f>>); c.CodeList_of_Volume_of_Line3f__(ref v); return v; } },
+
+            { typeof(Tensor<Line3f>), c => { var v = default(Tensor<Line3f>); c.CodeTensor_of_Line3f_(ref v); return v; } },
+            { typeof(Tensor<Line3f>[]), c => { var v = default(Tensor<Line3f>[]); c.CodeTensor_of_Line3f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Line3f>>), c => { var v = default(List<Tensor<Line3f>>); c.CodeList_of_Tensor_of_Line3f__(ref v); return v; } },
+
+            #endregion
+
+            #region Plane2f
+
+            { typeof(Plane2f), c => { var v = default(Plane2f); c.CodePlane2f(ref v); return v; } },
+            { typeof(Plane2f[]), c => { var v = default(Plane2f[]); c.CodePlane2fArray(ref v); return v; } },
+            { typeof(List<Plane2f>), c => { var v = default(List<Plane2f>); c.CodeList_of_Plane2f_(ref v); return v; } },
+
+            { typeof(Vector<Plane2f>), c => { var v = default(Vector<Plane2f>); c.CodeVector_of_Plane2f_(ref v); return v; } },
+            { typeof(Vector<Plane2f>[]), c => { var v = default(Vector<Plane2f>[]); c.CodeVector_of_Plane2f_Array(ref v); return v; } },
+            { typeof(List<Vector<Plane2f>>), c => { var v = default(List<Vector<Plane2f>>); c.CodeList_of_Vector_of_Plane2f__(ref v); return v; } },
+
+            { typeof(Matrix<Plane2f>), c => { var v = default(Matrix<Plane2f>); c.CodeMatrix_of_Plane2f_(ref v); return v; } },
+            { typeof(Matrix<Plane2f>[]), c => { var v = default(Matrix<Plane2f>[]); c.CodeMatrix_of_Plane2f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Plane2f>>), c => { var v = default(List<Matrix<Plane2f>>); c.CodeList_of_Matrix_of_Plane2f__(ref v); return v; } },
+
+            { typeof(Volume<Plane2f>), c => { var v = default(Volume<Plane2f>); c.CodeVolume_of_Plane2f_(ref v); return v; } },
+            { typeof(Volume<Plane2f>[]), c => { var v = default(Volume<Plane2f>[]); c.CodeVolume_of_Plane2f_Array(ref v); return v; } },
+            { typeof(List<Volume<Plane2f>>), c => { var v = default(List<Volume<Plane2f>>); c.CodeList_of_Volume_of_Plane2f__(ref v); return v; } },
+
+            { typeof(Tensor<Plane2f>), c => { var v = default(Tensor<Plane2f>); c.CodeTensor_of_Plane2f_(ref v); return v; } },
+            { typeof(Tensor<Plane2f>[]), c => { var v = default(Tensor<Plane2f>[]); c.CodeTensor_of_Plane2f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Plane2f>>), c => { var v = default(List<Tensor<Plane2f>>); c.CodeList_of_Tensor_of_Plane2f__(ref v); return v; } },
+
+            #endregion
+
+            #region Plane3f
+
+            { typeof(Plane3f), c => { var v = default(Plane3f); c.CodePlane3f(ref v); return v; } },
+            { typeof(Plane3f[]), c => { var v = default(Plane3f[]); c.CodePlane3fArray(ref v); return v; } },
+            { typeof(List<Plane3f>), c => { var v = default(List<Plane3f>); c.CodeList_of_Plane3f_(ref v); return v; } },
+
+            { typeof(Vector<Plane3f>), c => { var v = default(Vector<Plane3f>); c.CodeVector_of_Plane3f_(ref v); return v; } },
+            { typeof(Vector<Plane3f>[]), c => { var v = default(Vector<Plane3f>[]); c.CodeVector_of_Plane3f_Array(ref v); return v; } },
+            { typeof(List<Vector<Plane3f>>), c => { var v = default(List<Vector<Plane3f>>); c.CodeList_of_Vector_of_Plane3f__(ref v); return v; } },
+
+            { typeof(Matrix<Plane3f>), c => { var v = default(Matrix<Plane3f>); c.CodeMatrix_of_Plane3f_(ref v); return v; } },
+            { typeof(Matrix<Plane3f>[]), c => { var v = default(Matrix<Plane3f>[]); c.CodeMatrix_of_Plane3f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Plane3f>>), c => { var v = default(List<Matrix<Plane3f>>); c.CodeList_of_Matrix_of_Plane3f__(ref v); return v; } },
+
+            { typeof(Volume<Plane3f>), c => { var v = default(Volume<Plane3f>); c.CodeVolume_of_Plane3f_(ref v); return v; } },
+            { typeof(Volume<Plane3f>[]), c => { var v = default(Volume<Plane3f>[]); c.CodeVolume_of_Plane3f_Array(ref v); return v; } },
+            { typeof(List<Volume<Plane3f>>), c => { var v = default(List<Volume<Plane3f>>); c.CodeList_of_Volume_of_Plane3f__(ref v); return v; } },
+
+            { typeof(Tensor<Plane3f>), c => { var v = default(Tensor<Plane3f>); c.CodeTensor_of_Plane3f_(ref v); return v; } },
+            { typeof(Tensor<Plane3f>[]), c => { var v = default(Tensor<Plane3f>[]); c.CodeTensor_of_Plane3f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Plane3f>>), c => { var v = default(List<Tensor<Plane3f>>); c.CodeList_of_Tensor_of_Plane3f__(ref v); return v; } },
+
+            #endregion
+
+            #region PlaneWithPoint3f
+
+            { typeof(PlaneWithPoint3f), c => { var v = default(PlaneWithPoint3f); c.CodePlaneWithPoint3f(ref v); return v; } },
+            { typeof(PlaneWithPoint3f[]), c => { var v = default(PlaneWithPoint3f[]); c.CodePlaneWithPoint3fArray(ref v); return v; } },
+            { typeof(List<PlaneWithPoint3f>), c => { var v = default(List<PlaneWithPoint3f>); c.CodeList_of_PlaneWithPoint3f_(ref v); return v; } },
+
+            { typeof(Vector<PlaneWithPoint3f>), c => { var v = default(Vector<PlaneWithPoint3f>); c.CodeVector_of_PlaneWithPoint3f_(ref v); return v; } },
+            { typeof(Vector<PlaneWithPoint3f>[]), c => { var v = default(Vector<PlaneWithPoint3f>[]); c.CodeVector_of_PlaneWithPoint3f_Array(ref v); return v; } },
+            { typeof(List<Vector<PlaneWithPoint3f>>), c => { var v = default(List<Vector<PlaneWithPoint3f>>); c.CodeList_of_Vector_of_PlaneWithPoint3f__(ref v); return v; } },
+
+            { typeof(Matrix<PlaneWithPoint3f>), c => { var v = default(Matrix<PlaneWithPoint3f>); c.CodeMatrix_of_PlaneWithPoint3f_(ref v); return v; } },
+            { typeof(Matrix<PlaneWithPoint3f>[]), c => { var v = default(Matrix<PlaneWithPoint3f>[]); c.CodeMatrix_of_PlaneWithPoint3f_Array(ref v); return v; } },
+            { typeof(List<Matrix<PlaneWithPoint3f>>), c => { var v = default(List<Matrix<PlaneWithPoint3f>>); c.CodeList_of_Matrix_of_PlaneWithPoint3f__(ref v); return v; } },
+
+            { typeof(Volume<PlaneWithPoint3f>), c => { var v = default(Volume<PlaneWithPoint3f>); c.CodeVolume_of_PlaneWithPoint3f_(ref v); return v; } },
+            { typeof(Volume<PlaneWithPoint3f>[]), c => { var v = default(Volume<PlaneWithPoint3f>[]); c.CodeVolume_of_PlaneWithPoint3f_Array(ref v); return v; } },
+            { typeof(List<Volume<PlaneWithPoint3f>>), c => { var v = default(List<Volume<PlaneWithPoint3f>>); c.CodeList_of_Volume_of_PlaneWithPoint3f__(ref v); return v; } },
+
+            { typeof(Tensor<PlaneWithPoint3f>), c => { var v = default(Tensor<PlaneWithPoint3f>); c.CodeTensor_of_PlaneWithPoint3f_(ref v); return v; } },
+            { typeof(Tensor<PlaneWithPoint3f>[]), c => { var v = default(Tensor<PlaneWithPoint3f>[]); c.CodeTensor_of_PlaneWithPoint3f_Array(ref v); return v; } },
+            { typeof(List<Tensor<PlaneWithPoint3f>>), c => { var v = default(List<Tensor<PlaneWithPoint3f>>); c.CodeList_of_Tensor_of_PlaneWithPoint3f__(ref v); return v; } },
+
+            #endregion
+
+            #region Quad2f
+
+            { typeof(Quad2f), c => { var v = default(Quad2f); c.CodeQuad2f(ref v); return v; } },
+            { typeof(Quad2f[]), c => { var v = default(Quad2f[]); c.CodeQuad2fArray(ref v); return v; } },
+            { typeof(List<Quad2f>), c => { var v = default(List<Quad2f>); c.CodeList_of_Quad2f_(ref v); return v; } },
+
+            { typeof(Vector<Quad2f>), c => { var v = default(Vector<Quad2f>); c.CodeVector_of_Quad2f_(ref v); return v; } },
+            { typeof(Vector<Quad2f>[]), c => { var v = default(Vector<Quad2f>[]); c.CodeVector_of_Quad2f_Array(ref v); return v; } },
+            { typeof(List<Vector<Quad2f>>), c => { var v = default(List<Vector<Quad2f>>); c.CodeList_of_Vector_of_Quad2f__(ref v); return v; } },
+
+            { typeof(Matrix<Quad2f>), c => { var v = default(Matrix<Quad2f>); c.CodeMatrix_of_Quad2f_(ref v); return v; } },
+            { typeof(Matrix<Quad2f>[]), c => { var v = default(Matrix<Quad2f>[]); c.CodeMatrix_of_Quad2f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Quad2f>>), c => { var v = default(List<Matrix<Quad2f>>); c.CodeList_of_Matrix_of_Quad2f__(ref v); return v; } },
+
+            { typeof(Volume<Quad2f>), c => { var v = default(Volume<Quad2f>); c.CodeVolume_of_Quad2f_(ref v); return v; } },
+            { typeof(Volume<Quad2f>[]), c => { var v = default(Volume<Quad2f>[]); c.CodeVolume_of_Quad2f_Array(ref v); return v; } },
+            { typeof(List<Volume<Quad2f>>), c => { var v = default(List<Volume<Quad2f>>); c.CodeList_of_Volume_of_Quad2f__(ref v); return v; } },
+
+            { typeof(Tensor<Quad2f>), c => { var v = default(Tensor<Quad2f>); c.CodeTensor_of_Quad2f_(ref v); return v; } },
+            { typeof(Tensor<Quad2f>[]), c => { var v = default(Tensor<Quad2f>[]); c.CodeTensor_of_Quad2f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Quad2f>>), c => { var v = default(List<Tensor<Quad2f>>); c.CodeList_of_Tensor_of_Quad2f__(ref v); return v; } },
+
+            #endregion
+
+            #region Quad3f
+
+            { typeof(Quad3f), c => { var v = default(Quad3f); c.CodeQuad3f(ref v); return v; } },
+            { typeof(Quad3f[]), c => { var v = default(Quad3f[]); c.CodeQuad3fArray(ref v); return v; } },
+            { typeof(List<Quad3f>), c => { var v = default(List<Quad3f>); c.CodeList_of_Quad3f_(ref v); return v; } },
+
+            { typeof(Vector<Quad3f>), c => { var v = default(Vector<Quad3f>); c.CodeVector_of_Quad3f_(ref v); return v; } },
+            { typeof(Vector<Quad3f>[]), c => { var v = default(Vector<Quad3f>[]); c.CodeVector_of_Quad3f_Array(ref v); return v; } },
+            { typeof(List<Vector<Quad3f>>), c => { var v = default(List<Vector<Quad3f>>); c.CodeList_of_Vector_of_Quad3f__(ref v); return v; } },
+
+            { typeof(Matrix<Quad3f>), c => { var v = default(Matrix<Quad3f>); c.CodeMatrix_of_Quad3f_(ref v); return v; } },
+            { typeof(Matrix<Quad3f>[]), c => { var v = default(Matrix<Quad3f>[]); c.CodeMatrix_of_Quad3f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Quad3f>>), c => { var v = default(List<Matrix<Quad3f>>); c.CodeList_of_Matrix_of_Quad3f__(ref v); return v; } },
+
+            { typeof(Volume<Quad3f>), c => { var v = default(Volume<Quad3f>); c.CodeVolume_of_Quad3f_(ref v); return v; } },
+            { typeof(Volume<Quad3f>[]), c => { var v = default(Volume<Quad3f>[]); c.CodeVolume_of_Quad3f_Array(ref v); return v; } },
+            { typeof(List<Volume<Quad3f>>), c => { var v = default(List<Volume<Quad3f>>); c.CodeList_of_Volume_of_Quad3f__(ref v); return v; } },
+
+            { typeof(Tensor<Quad3f>), c => { var v = default(Tensor<Quad3f>); c.CodeTensor_of_Quad3f_(ref v); return v; } },
+            { typeof(Tensor<Quad3f>[]), c => { var v = default(Tensor<Quad3f>[]); c.CodeTensor_of_Quad3f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Quad3f>>), c => { var v = default(List<Tensor<Quad3f>>); c.CodeList_of_Tensor_of_Quad3f__(ref v); return v; } },
+
+            #endregion
+
+            #region Ray2f
+
+            { typeof(Ray2f), c => { var v = default(Ray2f); c.CodeRay2f(ref v); return v; } },
+            { typeof(Ray2f[]), c => { var v = default(Ray2f[]); c.CodeRay2fArray(ref v); return v; } },
+            { typeof(List<Ray2f>), c => { var v = default(List<Ray2f>); c.CodeList_of_Ray2f_(ref v); return v; } },
+
+            { typeof(Vector<Ray2f>), c => { var v = default(Vector<Ray2f>); c.CodeVector_of_Ray2f_(ref v); return v; } },
+            { typeof(Vector<Ray2f>[]), c => { var v = default(Vector<Ray2f>[]); c.CodeVector_of_Ray2f_Array(ref v); return v; } },
+            { typeof(List<Vector<Ray2f>>), c => { var v = default(List<Vector<Ray2f>>); c.CodeList_of_Vector_of_Ray2f__(ref v); return v; } },
+
+            { typeof(Matrix<Ray2f>), c => { var v = default(Matrix<Ray2f>); c.CodeMatrix_of_Ray2f_(ref v); return v; } },
+            { typeof(Matrix<Ray2f>[]), c => { var v = default(Matrix<Ray2f>[]); c.CodeMatrix_of_Ray2f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Ray2f>>), c => { var v = default(List<Matrix<Ray2f>>); c.CodeList_of_Matrix_of_Ray2f__(ref v); return v; } },
+
+            { typeof(Volume<Ray2f>), c => { var v = default(Volume<Ray2f>); c.CodeVolume_of_Ray2f_(ref v); return v; } },
+            { typeof(Volume<Ray2f>[]), c => { var v = default(Volume<Ray2f>[]); c.CodeVolume_of_Ray2f_Array(ref v); return v; } },
+            { typeof(List<Volume<Ray2f>>), c => { var v = default(List<Volume<Ray2f>>); c.CodeList_of_Volume_of_Ray2f__(ref v); return v; } },
+
+            { typeof(Tensor<Ray2f>), c => { var v = default(Tensor<Ray2f>); c.CodeTensor_of_Ray2f_(ref v); return v; } },
+            { typeof(Tensor<Ray2f>[]), c => { var v = default(Tensor<Ray2f>[]); c.CodeTensor_of_Ray2f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Ray2f>>), c => { var v = default(List<Tensor<Ray2f>>); c.CodeList_of_Tensor_of_Ray2f__(ref v); return v; } },
+
+            #endregion
+
+            #region Ray3f
+
+            { typeof(Ray3f), c => { var v = default(Ray3f); c.CodeRay3f(ref v); return v; } },
+            { typeof(Ray3f[]), c => { var v = default(Ray3f[]); c.CodeRay3fArray(ref v); return v; } },
+            { typeof(List<Ray3f>), c => { var v = default(List<Ray3f>); c.CodeList_of_Ray3f_(ref v); return v; } },
+
+            { typeof(Vector<Ray3f>), c => { var v = default(Vector<Ray3f>); c.CodeVector_of_Ray3f_(ref v); return v; } },
+            { typeof(Vector<Ray3f>[]), c => { var v = default(Vector<Ray3f>[]); c.CodeVector_of_Ray3f_Array(ref v); return v; } },
+            { typeof(List<Vector<Ray3f>>), c => { var v = default(List<Vector<Ray3f>>); c.CodeList_of_Vector_of_Ray3f__(ref v); return v; } },
+
+            { typeof(Matrix<Ray3f>), c => { var v = default(Matrix<Ray3f>); c.CodeMatrix_of_Ray3f_(ref v); return v; } },
+            { typeof(Matrix<Ray3f>[]), c => { var v = default(Matrix<Ray3f>[]); c.CodeMatrix_of_Ray3f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Ray3f>>), c => { var v = default(List<Matrix<Ray3f>>); c.CodeList_of_Matrix_of_Ray3f__(ref v); return v; } },
+
+            { typeof(Volume<Ray3f>), c => { var v = default(Volume<Ray3f>); c.CodeVolume_of_Ray3f_(ref v); return v; } },
+            { typeof(Volume<Ray3f>[]), c => { var v = default(Volume<Ray3f>[]); c.CodeVolume_of_Ray3f_Array(ref v); return v; } },
+            { typeof(List<Volume<Ray3f>>), c => { var v = default(List<Volume<Ray3f>>); c.CodeList_of_Volume_of_Ray3f__(ref v); return v; } },
+
+            { typeof(Tensor<Ray3f>), c => { var v = default(Tensor<Ray3f>); c.CodeTensor_of_Ray3f_(ref v); return v; } },
+            { typeof(Tensor<Ray3f>[]), c => { var v = default(Tensor<Ray3f>[]); c.CodeTensor_of_Ray3f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Ray3f>>), c => { var v = default(List<Tensor<Ray3f>>); c.CodeList_of_Tensor_of_Ray3f__(ref v); return v; } },
+
+            #endregion
+
+            #region Sphere3f
+
+            { typeof(Sphere3f), c => { var v = default(Sphere3f); c.CodeSphere3f(ref v); return v; } },
+            { typeof(Sphere3f[]), c => { var v = default(Sphere3f[]); c.CodeSphere3fArray(ref v); return v; } },
+            { typeof(List<Sphere3f>), c => { var v = default(List<Sphere3f>); c.CodeList_of_Sphere3f_(ref v); return v; } },
+
+            { typeof(Vector<Sphere3f>), c => { var v = default(Vector<Sphere3f>); c.CodeVector_of_Sphere3f_(ref v); return v; } },
+            { typeof(Vector<Sphere3f>[]), c => { var v = default(Vector<Sphere3f>[]); c.CodeVector_of_Sphere3f_Array(ref v); return v; } },
+            { typeof(List<Vector<Sphere3f>>), c => { var v = default(List<Vector<Sphere3f>>); c.CodeList_of_Vector_of_Sphere3f__(ref v); return v; } },
+
+            { typeof(Matrix<Sphere3f>), c => { var v = default(Matrix<Sphere3f>); c.CodeMatrix_of_Sphere3f_(ref v); return v; } },
+            { typeof(Matrix<Sphere3f>[]), c => { var v = default(Matrix<Sphere3f>[]); c.CodeMatrix_of_Sphere3f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Sphere3f>>), c => { var v = default(List<Matrix<Sphere3f>>); c.CodeList_of_Matrix_of_Sphere3f__(ref v); return v; } },
+
+            { typeof(Volume<Sphere3f>), c => { var v = default(Volume<Sphere3f>); c.CodeVolume_of_Sphere3f_(ref v); return v; } },
+            { typeof(Volume<Sphere3f>[]), c => { var v = default(Volume<Sphere3f>[]); c.CodeVolume_of_Sphere3f_Array(ref v); return v; } },
+            { typeof(List<Volume<Sphere3f>>), c => { var v = default(List<Volume<Sphere3f>>); c.CodeList_of_Volume_of_Sphere3f__(ref v); return v; } },
+
+            { typeof(Tensor<Sphere3f>), c => { var v = default(Tensor<Sphere3f>); c.CodeTensor_of_Sphere3f_(ref v); return v; } },
+            { typeof(Tensor<Sphere3f>[]), c => { var v = default(Tensor<Sphere3f>[]); c.CodeTensor_of_Sphere3f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Sphere3f>>), c => { var v = default(List<Tensor<Sphere3f>>); c.CodeList_of_Tensor_of_Sphere3f__(ref v); return v; } },
+
+            #endregion
+
+            #region Triangle2f
+
+            { typeof(Triangle2f), c => { var v = default(Triangle2f); c.CodeTriangle2f(ref v); return v; } },
+            { typeof(Triangle2f[]), c => { var v = default(Triangle2f[]); c.CodeTriangle2fArray(ref v); return v; } },
+            { typeof(List<Triangle2f>), c => { var v = default(List<Triangle2f>); c.CodeList_of_Triangle2f_(ref v); return v; } },
+
+            { typeof(Vector<Triangle2f>), c => { var v = default(Vector<Triangle2f>); c.CodeVector_of_Triangle2f_(ref v); return v; } },
+            { typeof(Vector<Triangle2f>[]), c => { var v = default(Vector<Triangle2f>[]); c.CodeVector_of_Triangle2f_Array(ref v); return v; } },
+            { typeof(List<Vector<Triangle2f>>), c => { var v = default(List<Vector<Triangle2f>>); c.CodeList_of_Vector_of_Triangle2f__(ref v); return v; } },
+
+            { typeof(Matrix<Triangle2f>), c => { var v = default(Matrix<Triangle2f>); c.CodeMatrix_of_Triangle2f_(ref v); return v; } },
+            { typeof(Matrix<Triangle2f>[]), c => { var v = default(Matrix<Triangle2f>[]); c.CodeMatrix_of_Triangle2f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Triangle2f>>), c => { var v = default(List<Matrix<Triangle2f>>); c.CodeList_of_Matrix_of_Triangle2f__(ref v); return v; } },
+
+            { typeof(Volume<Triangle2f>), c => { var v = default(Volume<Triangle2f>); c.CodeVolume_of_Triangle2f_(ref v); return v; } },
+            { typeof(Volume<Triangle2f>[]), c => { var v = default(Volume<Triangle2f>[]); c.CodeVolume_of_Triangle2f_Array(ref v); return v; } },
+            { typeof(List<Volume<Triangle2f>>), c => { var v = default(List<Volume<Triangle2f>>); c.CodeList_of_Volume_of_Triangle2f__(ref v); return v; } },
+
+            { typeof(Tensor<Triangle2f>), c => { var v = default(Tensor<Triangle2f>); c.CodeTensor_of_Triangle2f_(ref v); return v; } },
+            { typeof(Tensor<Triangle2f>[]), c => { var v = default(Tensor<Triangle2f>[]); c.CodeTensor_of_Triangle2f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Triangle2f>>), c => { var v = default(List<Tensor<Triangle2f>>); c.CodeList_of_Tensor_of_Triangle2f__(ref v); return v; } },
+
+            #endregion
+
+            #region Triangle3f
+
+            { typeof(Triangle3f), c => { var v = default(Triangle3f); c.CodeTriangle3f(ref v); return v; } },
+            { typeof(Triangle3f[]), c => { var v = default(Triangle3f[]); c.CodeTriangle3fArray(ref v); return v; } },
+            { typeof(List<Triangle3f>), c => { var v = default(List<Triangle3f>); c.CodeList_of_Triangle3f_(ref v); return v; } },
+
+            { typeof(Vector<Triangle3f>), c => { var v = default(Vector<Triangle3f>); c.CodeVector_of_Triangle3f_(ref v); return v; } },
+            { typeof(Vector<Triangle3f>[]), c => { var v = default(Vector<Triangle3f>[]); c.CodeVector_of_Triangle3f_Array(ref v); return v; } },
+            { typeof(List<Vector<Triangle3f>>), c => { var v = default(List<Vector<Triangle3f>>); c.CodeList_of_Vector_of_Triangle3f__(ref v); return v; } },
+
+            { typeof(Matrix<Triangle3f>), c => { var v = default(Matrix<Triangle3f>); c.CodeMatrix_of_Triangle3f_(ref v); return v; } },
+            { typeof(Matrix<Triangle3f>[]), c => { var v = default(Matrix<Triangle3f>[]); c.CodeMatrix_of_Triangle3f_Array(ref v); return v; } },
+            { typeof(List<Matrix<Triangle3f>>), c => { var v = default(List<Matrix<Triangle3f>>); c.CodeList_of_Matrix_of_Triangle3f__(ref v); return v; } },
+
+            { typeof(Volume<Triangle3f>), c => { var v = default(Volume<Triangle3f>); c.CodeVolume_of_Triangle3f_(ref v); return v; } },
+            { typeof(Volume<Triangle3f>[]), c => { var v = default(Volume<Triangle3f>[]); c.CodeVolume_of_Triangle3f_Array(ref v); return v; } },
+            { typeof(List<Volume<Triangle3f>>), c => { var v = default(List<Volume<Triangle3f>>); c.CodeList_of_Volume_of_Triangle3f__(ref v); return v; } },
+
+            { typeof(Tensor<Triangle3f>), c => { var v = default(Tensor<Triangle3f>); c.CodeTensor_of_Triangle3f_(ref v); return v; } },
+            { typeof(Tensor<Triangle3f>[]), c => { var v = default(Tensor<Triangle3f>[]); c.CodeTensor_of_Triangle3f_Array(ref v); return v; } },
+            { typeof(List<Tensor<Triangle3f>>), c => { var v = default(List<Tensor<Triangle3f>>); c.CodeList_of_Tensor_of_Triangle3f__(ref v); return v; } },
 
             #endregion
 
@@ -8231,6 +8855,318 @@ namespace Aardvark.Base.Coder
                 new TypeInfo("Tensor<Triangle3d>", "Tensor_of_" + "Triangle3d", typeof(Tensor<Triangle3d>), TypeInfo.Option.None),
                 new TypeInfo("Tensor<Triangle3d>[]", "Array_of_Tensor_of_" + "Triangle3d", typeof(Tensor<Triangle3d>[]), TypeInfo.Option.None),
                 new TypeInfo("List<Tensor<Triangle3d>>", "List_of_Tensor_of_" + "Triangle3d", typeof(List<Tensor<Triangle3d>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Circle2f
+
+                new TypeInfo("Circle2f", typeof(Circle2f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Circle2f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Circle2f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Circle2f>", "Vector_of_" + "Circle2f", typeof(Vector<Circle2f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Circle2f>[]", "Array_of_Vector_of_" + "Circle2f", typeof(Vector<Circle2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Circle2f>>", "List_of_Vector_of_" + "Circle2f", typeof(List<Vector<Circle2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Circle2f>", "Matrix_of_" + "Circle2f", typeof(Matrix<Circle2f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Circle2f>[]", "Array_of_Matrix_of_" + "Circle2f", typeof(Matrix<Circle2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Circle2f>>", "List_of_Matrix_of_" + "Circle2f", typeof(List<Matrix<Circle2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Circle2f>", "Volume_of_" + "Circle2f", typeof(Volume<Circle2f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Circle2f>[]", "Array_of_Volume_of_" + "Circle2f", typeof(Volume<Circle2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Circle2f>>", "List_of_Volume_of_" + "Circle2f", typeof(List<Volume<Circle2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Circle2f>", "Tensor_of_" + "Circle2f", typeof(Tensor<Circle2f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Circle2f>[]", "Array_of_Tensor_of_" + "Circle2f", typeof(Tensor<Circle2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Circle2f>>", "List_of_Tensor_of_" + "Circle2f", typeof(List<Tensor<Circle2f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Line2f
+
+                new TypeInfo("Line2f", typeof(Line2f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Line2f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Line2f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Line2f>", "Vector_of_" + "Line2f", typeof(Vector<Line2f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Line2f>[]", "Array_of_Vector_of_" + "Line2f", typeof(Vector<Line2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Line2f>>", "List_of_Vector_of_" + "Line2f", typeof(List<Vector<Line2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Line2f>", "Matrix_of_" + "Line2f", typeof(Matrix<Line2f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Line2f>[]", "Array_of_Matrix_of_" + "Line2f", typeof(Matrix<Line2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Line2f>>", "List_of_Matrix_of_" + "Line2f", typeof(List<Matrix<Line2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Line2f>", "Volume_of_" + "Line2f", typeof(Volume<Line2f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Line2f>[]", "Array_of_Volume_of_" + "Line2f", typeof(Volume<Line2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Line2f>>", "List_of_Volume_of_" + "Line2f", typeof(List<Volume<Line2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Line2f>", "Tensor_of_" + "Line2f", typeof(Tensor<Line2f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Line2f>[]", "Array_of_Tensor_of_" + "Line2f", typeof(Tensor<Line2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Line2f>>", "List_of_Tensor_of_" + "Line2f", typeof(List<Tensor<Line2f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Line3f
+
+                new TypeInfo("Line3f", typeof(Line3f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Line3f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Line3f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Line3f>", "Vector_of_" + "Line3f", typeof(Vector<Line3f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Line3f>[]", "Array_of_Vector_of_" + "Line3f", typeof(Vector<Line3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Line3f>>", "List_of_Vector_of_" + "Line3f", typeof(List<Vector<Line3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Line3f>", "Matrix_of_" + "Line3f", typeof(Matrix<Line3f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Line3f>[]", "Array_of_Matrix_of_" + "Line3f", typeof(Matrix<Line3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Line3f>>", "List_of_Matrix_of_" + "Line3f", typeof(List<Matrix<Line3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Line3f>", "Volume_of_" + "Line3f", typeof(Volume<Line3f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Line3f>[]", "Array_of_Volume_of_" + "Line3f", typeof(Volume<Line3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Line3f>>", "List_of_Volume_of_" + "Line3f", typeof(List<Volume<Line3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Line3f>", "Tensor_of_" + "Line3f", typeof(Tensor<Line3f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Line3f>[]", "Array_of_Tensor_of_" + "Line3f", typeof(Tensor<Line3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Line3f>>", "List_of_Tensor_of_" + "Line3f", typeof(List<Tensor<Line3f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Plane2f
+
+                new TypeInfo("Plane2f", typeof(Plane2f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Plane2f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Plane2f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Plane2f>", "Vector_of_" + "Plane2f", typeof(Vector<Plane2f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Plane2f>[]", "Array_of_Vector_of_" + "Plane2f", typeof(Vector<Plane2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Plane2f>>", "List_of_Vector_of_" + "Plane2f", typeof(List<Vector<Plane2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Plane2f>", "Matrix_of_" + "Plane2f", typeof(Matrix<Plane2f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Plane2f>[]", "Array_of_Matrix_of_" + "Plane2f", typeof(Matrix<Plane2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Plane2f>>", "List_of_Matrix_of_" + "Plane2f", typeof(List<Matrix<Plane2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Plane2f>", "Volume_of_" + "Plane2f", typeof(Volume<Plane2f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Plane2f>[]", "Array_of_Volume_of_" + "Plane2f", typeof(Volume<Plane2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Plane2f>>", "List_of_Volume_of_" + "Plane2f", typeof(List<Volume<Plane2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Plane2f>", "Tensor_of_" + "Plane2f", typeof(Tensor<Plane2f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Plane2f>[]", "Array_of_Tensor_of_" + "Plane2f", typeof(Tensor<Plane2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Plane2f>>", "List_of_Tensor_of_" + "Plane2f", typeof(List<Tensor<Plane2f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Plane3f
+
+                new TypeInfo("Plane3f", typeof(Plane3f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Plane3f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Plane3f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Plane3f>", "Vector_of_" + "Plane3f", typeof(Vector<Plane3f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Plane3f>[]", "Array_of_Vector_of_" + "Plane3f", typeof(Vector<Plane3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Plane3f>>", "List_of_Vector_of_" + "Plane3f", typeof(List<Vector<Plane3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Plane3f>", "Matrix_of_" + "Plane3f", typeof(Matrix<Plane3f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Plane3f>[]", "Array_of_Matrix_of_" + "Plane3f", typeof(Matrix<Plane3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Plane3f>>", "List_of_Matrix_of_" + "Plane3f", typeof(List<Matrix<Plane3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Plane3f>", "Volume_of_" + "Plane3f", typeof(Volume<Plane3f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Plane3f>[]", "Array_of_Volume_of_" + "Plane3f", typeof(Volume<Plane3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Plane3f>>", "List_of_Volume_of_" + "Plane3f", typeof(List<Volume<Plane3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Plane3f>", "Tensor_of_" + "Plane3f", typeof(Tensor<Plane3f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Plane3f>[]", "Array_of_Tensor_of_" + "Plane3f", typeof(Tensor<Plane3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Plane3f>>", "List_of_Tensor_of_" + "Plane3f", typeof(List<Tensor<Plane3f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region PlaneWithPoint3f
+
+                new TypeInfo("PlaneWithPoint3f", typeof(PlaneWithPoint3f), TypeInfo.Option.None),
+                new TypeInfo(typeof(PlaneWithPoint3f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<PlaneWithPoint3f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<PlaneWithPoint3f>", "Vector_of_" + "PlaneWithPoint3f", typeof(Vector<PlaneWithPoint3f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<PlaneWithPoint3f>[]", "Array_of_Vector_of_" + "PlaneWithPoint3f", typeof(Vector<PlaneWithPoint3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<PlaneWithPoint3f>>", "List_of_Vector_of_" + "PlaneWithPoint3f", typeof(List<Vector<PlaneWithPoint3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<PlaneWithPoint3f>", "Matrix_of_" + "PlaneWithPoint3f", typeof(Matrix<PlaneWithPoint3f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<PlaneWithPoint3f>[]", "Array_of_Matrix_of_" + "PlaneWithPoint3f", typeof(Matrix<PlaneWithPoint3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<PlaneWithPoint3f>>", "List_of_Matrix_of_" + "PlaneWithPoint3f", typeof(List<Matrix<PlaneWithPoint3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<PlaneWithPoint3f>", "Volume_of_" + "PlaneWithPoint3f", typeof(Volume<PlaneWithPoint3f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<PlaneWithPoint3f>[]", "Array_of_Volume_of_" + "PlaneWithPoint3f", typeof(Volume<PlaneWithPoint3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<PlaneWithPoint3f>>", "List_of_Volume_of_" + "PlaneWithPoint3f", typeof(List<Volume<PlaneWithPoint3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<PlaneWithPoint3f>", "Tensor_of_" + "PlaneWithPoint3f", typeof(Tensor<PlaneWithPoint3f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<PlaneWithPoint3f>[]", "Array_of_Tensor_of_" + "PlaneWithPoint3f", typeof(Tensor<PlaneWithPoint3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<PlaneWithPoint3f>>", "List_of_Tensor_of_" + "PlaneWithPoint3f", typeof(List<Tensor<PlaneWithPoint3f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Quad2f
+
+                new TypeInfo("Quad2f", typeof(Quad2f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Quad2f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Quad2f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Quad2f>", "Vector_of_" + "Quad2f", typeof(Vector<Quad2f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Quad2f>[]", "Array_of_Vector_of_" + "Quad2f", typeof(Vector<Quad2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Quad2f>>", "List_of_Vector_of_" + "Quad2f", typeof(List<Vector<Quad2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Quad2f>", "Matrix_of_" + "Quad2f", typeof(Matrix<Quad2f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Quad2f>[]", "Array_of_Matrix_of_" + "Quad2f", typeof(Matrix<Quad2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Quad2f>>", "List_of_Matrix_of_" + "Quad2f", typeof(List<Matrix<Quad2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Quad2f>", "Volume_of_" + "Quad2f", typeof(Volume<Quad2f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Quad2f>[]", "Array_of_Volume_of_" + "Quad2f", typeof(Volume<Quad2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Quad2f>>", "List_of_Volume_of_" + "Quad2f", typeof(List<Volume<Quad2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Quad2f>", "Tensor_of_" + "Quad2f", typeof(Tensor<Quad2f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Quad2f>[]", "Array_of_Tensor_of_" + "Quad2f", typeof(Tensor<Quad2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Quad2f>>", "List_of_Tensor_of_" + "Quad2f", typeof(List<Tensor<Quad2f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Quad3f
+
+                new TypeInfo("Quad3f", typeof(Quad3f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Quad3f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Quad3f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Quad3f>", "Vector_of_" + "Quad3f", typeof(Vector<Quad3f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Quad3f>[]", "Array_of_Vector_of_" + "Quad3f", typeof(Vector<Quad3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Quad3f>>", "List_of_Vector_of_" + "Quad3f", typeof(List<Vector<Quad3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Quad3f>", "Matrix_of_" + "Quad3f", typeof(Matrix<Quad3f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Quad3f>[]", "Array_of_Matrix_of_" + "Quad3f", typeof(Matrix<Quad3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Quad3f>>", "List_of_Matrix_of_" + "Quad3f", typeof(List<Matrix<Quad3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Quad3f>", "Volume_of_" + "Quad3f", typeof(Volume<Quad3f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Quad3f>[]", "Array_of_Volume_of_" + "Quad3f", typeof(Volume<Quad3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Quad3f>>", "List_of_Volume_of_" + "Quad3f", typeof(List<Volume<Quad3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Quad3f>", "Tensor_of_" + "Quad3f", typeof(Tensor<Quad3f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Quad3f>[]", "Array_of_Tensor_of_" + "Quad3f", typeof(Tensor<Quad3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Quad3f>>", "List_of_Tensor_of_" + "Quad3f", typeof(List<Tensor<Quad3f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Ray2f
+
+                new TypeInfo("Ray2f", typeof(Ray2f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Ray2f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Ray2f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Ray2f>", "Vector_of_" + "Ray2f", typeof(Vector<Ray2f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Ray2f>[]", "Array_of_Vector_of_" + "Ray2f", typeof(Vector<Ray2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Ray2f>>", "List_of_Vector_of_" + "Ray2f", typeof(List<Vector<Ray2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Ray2f>", "Matrix_of_" + "Ray2f", typeof(Matrix<Ray2f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Ray2f>[]", "Array_of_Matrix_of_" + "Ray2f", typeof(Matrix<Ray2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Ray2f>>", "List_of_Matrix_of_" + "Ray2f", typeof(List<Matrix<Ray2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Ray2f>", "Volume_of_" + "Ray2f", typeof(Volume<Ray2f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Ray2f>[]", "Array_of_Volume_of_" + "Ray2f", typeof(Volume<Ray2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Ray2f>>", "List_of_Volume_of_" + "Ray2f", typeof(List<Volume<Ray2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Ray2f>", "Tensor_of_" + "Ray2f", typeof(Tensor<Ray2f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Ray2f>[]", "Array_of_Tensor_of_" + "Ray2f", typeof(Tensor<Ray2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Ray2f>>", "List_of_Tensor_of_" + "Ray2f", typeof(List<Tensor<Ray2f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Ray3f
+
+                new TypeInfo("Ray3f", typeof(Ray3f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Ray3f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Ray3f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Ray3f>", "Vector_of_" + "Ray3f", typeof(Vector<Ray3f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Ray3f>[]", "Array_of_Vector_of_" + "Ray3f", typeof(Vector<Ray3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Ray3f>>", "List_of_Vector_of_" + "Ray3f", typeof(List<Vector<Ray3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Ray3f>", "Matrix_of_" + "Ray3f", typeof(Matrix<Ray3f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Ray3f>[]", "Array_of_Matrix_of_" + "Ray3f", typeof(Matrix<Ray3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Ray3f>>", "List_of_Matrix_of_" + "Ray3f", typeof(List<Matrix<Ray3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Ray3f>", "Volume_of_" + "Ray3f", typeof(Volume<Ray3f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Ray3f>[]", "Array_of_Volume_of_" + "Ray3f", typeof(Volume<Ray3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Ray3f>>", "List_of_Volume_of_" + "Ray3f", typeof(List<Volume<Ray3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Ray3f>", "Tensor_of_" + "Ray3f", typeof(Tensor<Ray3f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Ray3f>[]", "Array_of_Tensor_of_" + "Ray3f", typeof(Tensor<Ray3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Ray3f>>", "List_of_Tensor_of_" + "Ray3f", typeof(List<Tensor<Ray3f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Sphere3f
+
+                new TypeInfo("Sphere3f", typeof(Sphere3f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Sphere3f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Sphere3f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Sphere3f>", "Vector_of_" + "Sphere3f", typeof(Vector<Sphere3f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Sphere3f>[]", "Array_of_Vector_of_" + "Sphere3f", typeof(Vector<Sphere3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Sphere3f>>", "List_of_Vector_of_" + "Sphere3f", typeof(List<Vector<Sphere3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Sphere3f>", "Matrix_of_" + "Sphere3f", typeof(Matrix<Sphere3f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Sphere3f>[]", "Array_of_Matrix_of_" + "Sphere3f", typeof(Matrix<Sphere3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Sphere3f>>", "List_of_Matrix_of_" + "Sphere3f", typeof(List<Matrix<Sphere3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Sphere3f>", "Volume_of_" + "Sphere3f", typeof(Volume<Sphere3f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Sphere3f>[]", "Array_of_Volume_of_" + "Sphere3f", typeof(Volume<Sphere3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Sphere3f>>", "List_of_Volume_of_" + "Sphere3f", typeof(List<Volume<Sphere3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Sphere3f>", "Tensor_of_" + "Sphere3f", typeof(Tensor<Sphere3f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Sphere3f>[]", "Array_of_Tensor_of_" + "Sphere3f", typeof(Tensor<Sphere3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Sphere3f>>", "List_of_Tensor_of_" + "Sphere3f", typeof(List<Tensor<Sphere3f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Triangle2f
+
+                new TypeInfo("Triangle2f", typeof(Triangle2f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Triangle2f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Triangle2f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Triangle2f>", "Vector_of_" + "Triangle2f", typeof(Vector<Triangle2f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Triangle2f>[]", "Array_of_Vector_of_" + "Triangle2f", typeof(Vector<Triangle2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Triangle2f>>", "List_of_Vector_of_" + "Triangle2f", typeof(List<Vector<Triangle2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Triangle2f>", "Matrix_of_" + "Triangle2f", typeof(Matrix<Triangle2f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Triangle2f>[]", "Array_of_Matrix_of_" + "Triangle2f", typeof(Matrix<Triangle2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Triangle2f>>", "List_of_Matrix_of_" + "Triangle2f", typeof(List<Matrix<Triangle2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Triangle2f>", "Volume_of_" + "Triangle2f", typeof(Volume<Triangle2f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Triangle2f>[]", "Array_of_Volume_of_" + "Triangle2f", typeof(Volume<Triangle2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Triangle2f>>", "List_of_Volume_of_" + "Triangle2f", typeof(List<Volume<Triangle2f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Triangle2f>", "Tensor_of_" + "Triangle2f", typeof(Tensor<Triangle2f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Triangle2f>[]", "Array_of_Tensor_of_" + "Triangle2f", typeof(Tensor<Triangle2f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Triangle2f>>", "List_of_Tensor_of_" + "Triangle2f", typeof(List<Tensor<Triangle2f>>), TypeInfo.Option.None),
+
+                #endregion
+
+                #region Triangle3f
+
+                new TypeInfo("Triangle3f", typeof(Triangle3f), TypeInfo.Option.None),
+                new TypeInfo(typeof(Triangle3f[]), TypeInfo.Option.None),
+                new TypeInfo(typeof(List<Triangle3f>), TypeInfo.Option.None),
+
+                new TypeInfo("Vector<Triangle3f>", "Vector_of_" + "Triangle3f", typeof(Vector<Triangle3f>), TypeInfo.Option.None),
+                new TypeInfo("Vector<Triangle3f>[]", "Array_of_Vector_of_" + "Triangle3f", typeof(Vector<Triangle3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Vector<Triangle3f>>", "List_of_Vector_of_" + "Triangle3f", typeof(List<Vector<Triangle3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Matrix<Triangle3f>", "Matrix_of_" + "Triangle3f", typeof(Matrix<Triangle3f>), TypeInfo.Option.None),
+                new TypeInfo("Matrix<Triangle3f>[]", "Array_of_Matrix_of_" + "Triangle3f", typeof(Matrix<Triangle3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Matrix<Triangle3f>>", "List_of_Matrix_of_" + "Triangle3f", typeof(List<Matrix<Triangle3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Volume<Triangle3f>", "Volume_of_" + "Triangle3f", typeof(Volume<Triangle3f>), TypeInfo.Option.None),
+                new TypeInfo("Volume<Triangle3f>[]", "Array_of_Volume_of_" + "Triangle3f", typeof(Volume<Triangle3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Volume<Triangle3f>>", "List_of_Volume_of_" + "Triangle3f", typeof(List<Volume<Triangle3f>>), TypeInfo.Option.None),
+
+                new TypeInfo("Tensor<Triangle3f>", "Tensor_of_" + "Triangle3f", typeof(Tensor<Triangle3f>), TypeInfo.Option.None),
+                new TypeInfo("Tensor<Triangle3f>[]", "Array_of_Tensor_of_" + "Triangle3f", typeof(Tensor<Triangle3f>[]), TypeInfo.Option.None),
+                new TypeInfo("List<Tensor<Triangle3f>>", "List_of_Tensor_of_" + "Triangle3f", typeof(List<Tensor<Triangle3f>>), TypeInfo.Option.None),
 
                 #endregion
 

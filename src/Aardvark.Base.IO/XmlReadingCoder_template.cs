@@ -41,6 +41,28 @@ namespace Aardvark.Base.Coder
 
         #endregion
 
+        #region Geometry Types
+
+        //# foreach (var isDouble in new[] { false, true }) {
+        //#   var ftype = isDouble ? "Double" : "Float";
+        //#   var tc = isDouble ? "d" : "f";
+        public void CodeCircle2__tc__(ref Circle2__tc__ v) { throw new NotImplementedException(); }
+        public void CodeLine2__tc__(ref Line2__tc__ v) { throw new NotImplementedException(); }
+        public void CodeLine3__tc__(ref Line3__tc__ v) { throw new NotImplementedException(); }
+        public void CodePlane2__tc__(ref Plane2__tc__ v) { throw new NotImplementedException(); }
+        public void CodePlane3__tc__(ref Plane3__tc__ v) { throw new NotImplementedException(); }
+        public void CodePlaneWithPoint3__tc__(ref PlaneWithPoint3__tc__ v) { throw new NotImplementedException(); }
+        public void CodeQuad2__tc__(ref Quad2__tc__ v) { throw new NotImplementedException(); }
+        public void CodeQuad3__tc__(ref Quad3__tc__ v) { throw new NotImplementedException(); }
+        public void CodeRay2__tc__(ref Ray2__tc__ v) { throw new NotImplementedException(); }
+        public void CodeRay3__tc__(ref Ray3__tc__ v) { throw new NotImplementedException(); }
+        public void CodeSphere3__tc__(ref Sphere3__tc__ v) { throw new NotImplementedException(); }
+        public void CodeTriangle2__tc__(ref Triangle2__tc__ v) { throw new NotImplementedException(); }
+        public void CodeTriangle3__tc__(ref Triangle3__tc__ v) { throw new NotImplementedException(); }
+
+        //# }
+        #endregion
+
         #region Colors
 
         //# foreach (var t in Meta.ColorTypes) { structTypes.Add(t.Name);
@@ -181,6 +203,28 @@ namespace Aardvark.Base.Coder
         public void Code__name__(ref __t.Name__ v) { v = __t.Name__.Parse(CurrentValue()); }
         //# }
 
+        #endregion
+
+        #region Geometry Types
+
+        //# foreach (var isDouble in new[] { false, true }) {
+        //#   var ftype = isDouble ? "Double" : "Float";
+        //#   var tc = isDouble ? "d" : "f";
+        public void CodeCircle2__tc__(ref Circle2__tc__ v) { v = Circle2__tc__.Parse(CurrentValue()); }
+        public void CodeLine2__tc__(ref Line2__tc__ v) { v = Line2__tc__.Parse(CurrentValue()); }
+        public void CodeLine3__tc__(ref Line3__tc__ v) { v = Line3__tc__.Parse(CurrentValue()); }
+        public void CodePlane2__tc__(ref Plane2__tc__ v) { v = Plane2__tc__.Parse(CurrentValue()); }
+        public void CodePlane3__tc__(ref Plane3__tc__ v) { v = Plane3__tc__.Parse(CurrentValue()); }
+        public void CodePlaneWithPoint3__tc__(ref PlaneWithPoint3__tc__ v) { v = PlaneWithPoint3__tc__.Parse(CurrentValue()); }
+        public void CodeQuad2__tc__(ref Quad2__tc__ v) { v = Quad2__tc__.Parse(CurrentValue()); }
+        public void CodeQuad3__tc__(ref Quad3__tc__ v) { v = Quad3__tc__.Parse(CurrentValue()); }
+        public void CodeRay2__tc__(ref Ray2__tc__ v) { v = Ray2__tc__.Parse(CurrentValue()); }
+        public void CodeRay3__tc__(ref Ray3__tc__ v) { v = Ray3__tc__.Parse(CurrentValue()); }
+        public void CodeSphere3__tc__(ref Sphere3__tc__ v) { v = Sphere3__tc__.Parse(CurrentValue()); }
+        public void CodeTriangle2__tc__(ref Triangle2__tc__ v) { v = Triangle2__tc__.Parse(CurrentValue()); }
+        public void CodeTriangle3__tc__(ref Triangle3__tc__ v) { v = Triangle3__tc__.Parse(CurrentValue()); }
+
+        //# }
         #endregion
 
         #region Colors
