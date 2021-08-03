@@ -2000,9 +2000,9 @@ namespace Aardvark.Base
             //# if (ft.IsReal) {
             var p0p1 = p1 - p0;
             var p0q = query - p0;
-            /*# if (!hasT) { */
-            var /*# } */t = Dot(p0q, p0p1);
-            if (t <= 0) { /*# if (hasT) { */t = 0; /*# } */return Distance(query, p0); }
+            /*# if (!hasT) {
+            */var /*# } */t = Dot(p0q, p0p1);
+            if (t <= 0) { /*# if (hasT) { */t = 0; /*# } */return p0q.Length; }
             var denom = p0p1.LengthSquared;
             if (t >= denom) { /*# if (hasT) { */t = 1; /*# } */return Distance(query, p1); }
             t /= denom;
@@ -2023,8 +2023,8 @@ namespace Aardvark.Base
             //# if (ft.IsReal) {
             var p0p1 = p1 - p0;
             var p0q = query - p0;
-            /*# if (!hasT) { */
-            var /*# } */t = Dot(p0q, p0p1);
+            /*# if (!hasT) {
+            */var /*# } */t = Dot(p0q, p0p1);
             var denom = p0p1.LengthSquared;
             t /= denom;
             return Distance(query, p0 + t * p0p1);
