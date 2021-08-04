@@ -1880,8 +1880,9 @@ namespace Aardvark.Base
         {
             var s = v.Length; if (s == 0) return;
             s = 1 / s;
-            /*# fields.ForEach(f => { */
-            v.__f__ *= s; /*# }); */
+            //# fields.ForEach(f => {
+            v.__f__ *= s;
+            //# });
         }
 
         //# } // ft.IsReal
@@ -2006,7 +2007,7 @@ namespace Aardvark.Base
             var denom = p0p1.LengthSquared;
             if (t >= denom) { /*# if (hasT) { */t = 1; /*# } */return Distance(query, p1); }
             t /= denom;
-            return Distance(query, p0 + t * p0p1);
+            return (p0q - t * p0p1).Length;
             //# } else {
             return DistanceToLine(__cast__query, __cast__p0, __cast__p1/*# if (hasT) { */, out t/*# } */);
             //# }
@@ -2027,7 +2028,7 @@ namespace Aardvark.Base
             */var /*# } */t = Dot(p0q, p0p1);
             var denom = p0p1.LengthSquared;
             t /= denom;
-            return Distance(query, p0 + t * p0p1);
+            return (p0q - t * p0p1).Length;
             //# } else {
             return DistanceToInfiniteLine(__cast__query, __cast__p0, __cast__p1/*# if (hasT) { */, out t/*# } */);
             //# }
