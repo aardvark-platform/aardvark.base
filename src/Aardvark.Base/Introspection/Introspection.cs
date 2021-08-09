@@ -1353,6 +1353,7 @@ namespace Aardvark.Base
         /// 
         /// Setting NativeLibraryPath to the application path and SeparateLibraryDirectories to false will result in the "old" style of 
         /// loading native libs, that is not compatible if the application does not have write permission to the directory (e.g. ProgramFiles).
+        [Obsolete("using explicit native library path is no longer possble https://github.com/aardvark-platform/aardvark.base/issues/64")]
         public static string NativeLibraryPath = Path.Combine(Path.GetTempPath(), "aardvark-native");
 
         /// Specify if native libraries should be extracted each to its own sub folder or directory to the NativeLibraryPath
