@@ -129,6 +129,11 @@ namespace Aardvark.Base
         /// </summary>
         public static bool PluginsEnabled = true;
 
+        /// <summary>
+        /// Whether Aardvark.Init should unpack native libraries
+        /// </summary>
+        public static bool NativeLibraryUnpackingAllowed = true;
+
 
         public static string CurrentEntryPath => (CurrentEntryAssembly != null)
             ? Path.GetDirectoryName(CurrentEntryAssembly.Location)
@@ -541,19 +546,32 @@ namespace Aardvark.Base
             Func<T[], IEnumerable<string>> encode
             )
         {
-            var cacheFileName = GetQueryCacheFilename(a, discriminator.ToGuid());
-            var assemblyTimeStamp = File.GetLastWriteTimeUtc(a.Location);
-            if (File.Exists(cacheFileName))
+            var cacheFileName = "";
+            var assemblyTimeStamp = DateTime.MinValue;
+
+            // whatever happens, don't halt just because of caching... this actually happens for self-contained deployments https://github.com/aardvark-platform/aardvark.base/issues/65
+            try
             {
-                /* var cacheFileTimeStamp = */ File.GetLastWriteTimeUtc(cacheFileName);
-                var lines = File.ReadAllLines(cacheFileName);
-                var header = lines.Length > 0 ? CacheFileHeader.Parse(lines[0]) : null;
-                if (header != null && header.TimeStampOfCachedFile == assemblyTimeStamp)
+                cacheFileName = GetQueryCacheFilename(a, discriminator.ToGuid());
+                assemblyTimeStamp = String.IsNullOrEmpty(a.Location) ? DateTime.MinValue : File.GetLastWriteTimeUtc(a.Location);
+
+                // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
+                if (!String.IsNullOrEmpty(cacheFileName) && File.Exists(cacheFileName))
                 {
-                    // return cached types
-                    Report.Line(4, "[cache hit ] {0}", a);
-                    return decode(lines.Skip(1)).ToArray();
-                }
+                    /* var cacheFileTimeStamp = */
+                    File.GetLastWriteTimeUtc(cacheFileName);
+                    var lines = File.ReadAllLines(cacheFileName);
+                    var header = lines.Length > 0 ? CacheFileHeader.Parse(lines[0]) : null;
+                    if (header != null && header.TimeStampOfCachedFile == assemblyTimeStamp)
+                    {
+                        // return cached types
+                        Report.Line(4, "[cache hit ] {0}", a);
+                        return decode(lines.Skip(1)).ToArray();
+                    }
+                } 
+            } catch(Exception e)
+            {
+                Report.Warn("Could not get cache for {1}: {0}", e.Message, a.FullName);
             }
 
             Report.Line(4, "[cache miss] {0}", a);
@@ -585,13 +603,27 @@ namespace Aardvark.Base
             
             var result = createResult(ts).ToArray();
 
-            // write cache file
-            var headerLine =
-                new CacheFileHeader { Version = 1, TimeStampOfCachedFile = assemblyTimeStamp }
-                .ToString()
-                .IntoIEnumerable()
-                ;
-            File.WriteAllLines(cacheFileName, headerLine.Concat(encode(result)).ToArray());
+
+            // whatever happens, dont halt everything just because caching fails
+            try
+            {
+                // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
+                if (!string.IsNullOrEmpty(cacheFileName))
+                {
+
+                    // write cache file
+                    var headerLine =
+                        new CacheFileHeader { Version = 1, TimeStampOfCachedFile = assemblyTimeStamp }
+                        .ToString()
+                        .IntoIEnumerable()
+                        ;
+
+                    File.WriteAllLines(cacheFileName, headerLine.Concat(encode(result)).ToArray());
+                }
+            } catch(Exception e)
+            {
+                Report.Warn("Could not write cache for {1}: {0}", e.Message, a.FullName);
+            }
 
             return result;
         }
@@ -1785,23 +1817,27 @@ namespace Aardvark.Base
 
             Action<Assembly> loadNativeDependencies = e =>
                 {
-                    try
+                    if (IntrospectionProperties.NativeLibraryUnpackingAllowed)
                     {
-                        // https://github.com/aardvark-platform/aardvark.base/issues/61
-                        var shouldLoad = IntrospectionProperties.UnpackNativeLibrariesFilter(e);
-                        if (shouldLoad)
+                        try
                         {
-                            Report.Begin(4, "trying to load native dependencies for {0}", e.FullName);
-                            LoadNativeDependencies(e);
-                            Report.End(4);
+                            // https://github.com/aardvark-platform/aardvark.base/issues/61
+                            var shouldLoad = IntrospectionProperties.UnpackNativeLibrariesFilter(e);
+                            if (shouldLoad)
+                            {
+                                Report.Begin(4, "trying to load native dependencies for {0}", e.FullName);
+                                LoadNativeDependencies(e);
+                                Report.End(4);
+                            }
+                            else
+                            {
+                                Report.Line(4, "skipped LoadNativeDependencies for {0}", e.FullName);
+                            }
                         }
-                        else
+                        catch (Exception ex) // actually catching exns here might not even be possible due to mscorlib recursive resource bug detection
                         {
-                            Report.Line(4, "skipped LoadNativeDependencies for {0}", e.FullName);
+                            Report.Warn("Could not load native dependencies for {0}:{1}", e.FullName, ex.StackTrace.ToString());
                         }
-                    } catch(Exception ex) // actually catching exns here might not even be possible due to mscorlib recursive resource bug detection
-                    {
-                        Report.Warn("Could not load native dependencies for {0}:{1}", e.FullName, ex.StackTrace.ToString());
                     }
                 };
 
@@ -1810,9 +1846,16 @@ namespace Aardvark.Base
                 loadNativeDependencies(e.LoadedAssembly);
             };
 
-            foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
+            if (IntrospectionProperties.NativeLibraryUnpackingAllowed)
             {
-                loadNativeDependencies(a);
+                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    loadNativeDependencies(a);
+                }
+            }
+            else
+            {
+                Report.Warn("Skipping native dependency loading since NativeLibraryUnpackingAllowed = false");
             }
 
             if (IntrospectionProperties.PluginsEnabled)
@@ -1837,7 +1880,9 @@ namespace Aardvark.Base
 
             foreach (var ass in assemblies)
             {
+                Report.BeginTimed(10, "GetAllMethodsWithAttribute: {0}", String.IsNullOrEmpty(ass.FullName) ? "assembly with no name" : ass.FullName);
                 var initMethods = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(ass).Select(t => t.Item1).Distinct().ToArray();
+                Report.EndTimed(10);
 
                 foreach (var mi in initMethods)
                 {
