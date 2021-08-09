@@ -101,7 +101,7 @@ namespace Aardvark.Base
             return scheme switch
             {
                 NamingScheme.Version =>   asm.GetName().Version.ToString(),
-                NamingScheme.Timestamp => File.GetLastWriteTimeUtc(asm.Location).ToBinary().ToString(),
+                NamingScheme.Timestamp => IntrospectionProperties.GetLastWriteTimeUtc(asm).ToBinary().ToString(),
                 _ => ""
             };
         }
@@ -235,6 +235,29 @@ namespace Aardvark.Base
                     if (a.FullName == null) return false;
                     else return AssemblyFilter(a.FullName);
                 };
+
+        public static string BundleEntryPoint = "";
+
+        /// <summary>
+        /// Robustly tries to get DateTime also for bundled deployments. Use BundleEntryPoint to register dummy entry as a first fallback. returns DateTime.Now if all fallbacks fail.
+        /// </summary>
+        public static Func<Assembly, DateTime> GetLastWriteTimeUtc = (Assembly assembly) =>
+        {
+            if (!String.IsNullOrEmpty(assembly.Location) && File.Exists(assembly.Location)) // first choise - won't work for bundled deplyoments?
+            {
+                return File.GetLastAccessTimeUtc(assembly.Location);
+
+            }
+            else if (File.Exists(BundleEntryPoint)) // fallback 1 - use bundle entrypoint
+            {
+                return File.GetLastAccessTimeUtc(BundleEntryPoint);
+            }
+            else
+            {
+                // no option left.... 
+                return DateTime.Now;
+            }
+        };
     }
 
     public static class Introspection
@@ -553,13 +576,11 @@ namespace Aardvark.Base
             try
             {
                 cacheFileName = GetQueryCacheFilename(a, discriminator.ToGuid());
-                assemblyTimeStamp = String.IsNullOrEmpty(a.Location) ? DateTime.MinValue : File.GetLastWriteTimeUtc(a.Location);
+                assemblyTimeStamp = IntrospectionProperties.GetLastWriteTimeUtc(a);
 
                 // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
                 if (!String.IsNullOrEmpty(cacheFileName) && File.Exists(cacheFileName))
                 {
-                    /* var cacheFileTimeStamp = */
-                    File.GetLastWriteTimeUtc(cacheFileName);
                     var lines = File.ReadAllLines(cacheFileName);
                     var header = lines.Length > 0 ? CacheFileHeader.Parse(lines[0]) : null;
                     if (header != null && header.TimeStampOfCachedFile == assemblyTimeStamp)
@@ -871,9 +892,16 @@ namespace Aardvark.Base
             var cache = ReadCacheFile();
             var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
 
-            var folder = IntrospectionProperties.CurrentEntryPath;
+            var folder = new string[0];
+
+            // attach folder contents if possilbe (e.g. not possible in bundle deployments if no bundle entry is specified)
+            if (IntrospectionProperties.CurrentEntryPath != null)
+                folder = Directory.EnumerateFiles(IntrospectionProperties.CurrentEntryPath).ToArray();
+            else if (IntrospectionProperties.BundleEntryPoint != null)
+                folder = Directory.EnumerateFiles(Path.GetDirectoryName(IntrospectionProperties.BundleEntryPoint)).ToArray();
+
             string[] assemblies =
-                    Directory.EnumerateFiles(folder)
+                    folder
                         .Where(p => { var ext = Path.GetExtension(p).ToLowerInvariant(); return ext == ".dll" || ext == ".exe"; })
                         .Where(p => {
                             var name = Path.GetFileNameWithoutExtension(p);
@@ -963,6 +991,7 @@ namespace Aardvark.Base
 
                 foreach (var p in paths)
                 {
+
                     try
                     {
                         var ass = Assembly.LoadFile(p);
