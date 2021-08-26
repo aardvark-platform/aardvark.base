@@ -1,3 +1,12 @@
+### 5.1.12
+ - added ValuesWithKeyEnumerator to Dicts
+ - preparations for .net 5 single file deployment
+ - added missing finite checks to vectors and matrices
+ - added vector variants for Fun.FloatToBits and Fun.FloatFromBits
+ - fixed Box2d - Line2d intersection test
+ - fixed Plane2d - Ray2d intersection test
+ - fixed polygon extensions
+
 ### 5.1.11
  - added some IAssemblerStream methods (AddInt, MulInt, etc.)
  
