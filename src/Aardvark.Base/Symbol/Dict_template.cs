@@ -1271,6 +1271,80 @@ namespace Aardvark.Base
             //# }
         }
 
+        //# if (!concurrent) {
+        /// <summary>
+        /// Gets an enumerator for values with key. It is only useful
+        /// if multiple item with the same key are allowed.
+        /// Should be preferred over ValuesWithKey enumeration in 
+        /// performance critical code.
+        /// </summary>
+        public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(__tkey__ key)
+        {
+            return new ValuesWithKeyEnumerator(this, key);
+        }
+
+        public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
+        {
+            __type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ m_dict;/*# if (hasKey) { */
+            TKey m_key;/*# } */
+            __itype__ m_hash;
+            __itype__ m_extraIndex;
+            TValue m_current;
+
+            public ValuesWithKeyEnumerator(__type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ dict, __tkey__ key)
+            {
+                m_dict = dict;/*# if (hasKey) { */
+                m_key = key;/*# } */
+                m_hash = /*# if (fun) {*/dict./*# } */__HashFun__key__GetHash__;
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+
+            public TValue Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex == int.MaxValue)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var fi = ((uint)m_hash) % m_dict.m_capacity;
+                    m_extraIndex = fa[fi].Next;
+                    if (m_extraIndex == 0) return false;
+                    if (fa[fi].Item__Hash__ == m_hash/*# if (hasKey) { */
+                        && m_key.Equals(fa[fi].Item__Key__)/*# } */)
+                    {
+                        m_current = fa[fi].Item.Value;
+                        return true;
+                    }
+                }
+                if (m_extraIndex > 0)
+                {
+                    var ea = m_dict.m_extraArray;
+                    do
+                    {
+                        var valid = ea[m_extraIndex].Item__Hash__ == m_hash/*# if (hasKey) { */
+                                    && m_key.Equals(ea[m_extraIndex].Item__Key__)/*# } */;
+                        if (valid) m_current = ea[m_extraIndex].Item.Value;
+                        m_extraIndex = ea[m_extraIndex].Next;
+                        if (valid) return true;
+                    } while (m_extraIndex > 0);
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+        }
+        //# } // !concurrent
+
         //# } // !wrapped
         /// <summary>
         /// Return the value with the given key, but skip a supplied number
