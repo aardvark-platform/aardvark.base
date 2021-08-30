@@ -1,3 +1,6 @@
+### 5.1.13
+- added missing XmlIgnore attribute to vector swizzles 
+
 ### 5.1.12
  - added ValuesWithKeyEnumerator to Dicts
  - preparations for .net 5 single file deployment
