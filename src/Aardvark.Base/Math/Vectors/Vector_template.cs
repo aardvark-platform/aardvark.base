@@ -1566,6 +1566,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v2type__ __name__ => new __v2type__(__x__, __y__);
         //#             } else {
+        [XmlIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v2type__ __name__
@@ -1595,6 +1596,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v3type__ __name__ => new __v3type__(__x__, __y__, __z__);
         //#                 } else {
+        [XmlIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v3type__ __name__
@@ -1629,6 +1631,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v4type__ __name__ => new __v4type__(__x__, __y__, __z__, __w__);
         //#                         } else {
+        [XmlIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v4type__ __name__
