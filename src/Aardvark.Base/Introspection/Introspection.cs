@@ -245,12 +245,12 @@ namespace Aardvark.Base
         {
             if (!String.IsNullOrEmpty(assembly.Location) && File.Exists(assembly.Location)) // first choise - won't work for bundled deplyoments?
             {
-                return File.GetLastAccessTimeUtc(assembly.Location);
+                return File.GetLastWriteTimeUtc(assembly.Location);
 
             }
             else if (File.Exists(BundleEntryPoint)) // fallback 1 - use bundle entrypoint
             {
-                return File.GetLastAccessTimeUtc(BundleEntryPoint);
+                return File.GetLastWriteTimeUtc(BundleEntryPoint);
             }
             else
             {
