@@ -1891,11 +1891,12 @@ namespace Aardvark.Base
             {
                 Report.BeginTimed("Loading plugins");
                 var pluginsList = LoadPlugins();
+                Report.End();
 
-                Report.End();
                 LoadAll(pluginsList);
-                Report.End();
             }
+
+            Report.End();
         }
 
         private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
