@@ -1884,7 +1884,7 @@ namespace Aardvark.Base
             }
             else
             {
-                Report.Warn("Skipping native dependency loading since NativeLibraryUnpackingAllowed = false");
+                Report.Line(4, "Skipping native dependency loading since NativeLibraryUnpackingAllowed = false");
             }
 
             if (IntrospectionProperties.PluginsEnabled)
