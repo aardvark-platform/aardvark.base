@@ -1,5 +1,9 @@
+### 5.1.14
+ - fixed Introspection caching
+
 ### 5.1.13
  - added Plane2d.Intersects overload that was removed accidentally
+ 
 ### 5.1.12
  - added missing XmlIgnore attribute to vector swizzles 
  - added ValuesWithKeyEnumerator to Dicts
