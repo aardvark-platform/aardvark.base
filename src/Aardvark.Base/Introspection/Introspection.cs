@@ -37,10 +37,10 @@ namespace Aardvark.Base
             var path = CustomCacheDirectory;
             if (string.IsNullOrWhiteSpace(path))
             {
-                path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 if (string.IsNullOrWhiteSpace(path))
                 {
-                    Report.Warn("Environment.SpecialFolder.ApplicationData does not exist!");
+                    Report.Warn("Environment.SpecialFolder.LocalApplicationData does not exist!");
                     path = "Cache"; // using ./Cache
                 }
                 else
