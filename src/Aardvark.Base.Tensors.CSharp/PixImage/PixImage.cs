@@ -210,7 +210,6 @@ namespace Aardvark.Base
             new Dictionary<PixFormat, Func<long, long, long, PixImage>>()
             {
                 { PixFormat.ByteBW, (x, y, c) => new PixImage<byte>(Col.Format.BW, x, y, c) },
-
                 { PixFormat.ByteGray, (x, y, c) => new PixImage<byte>(Col.Format.Gray, x, y, c) },
                 { PixFormat.ByteBGR, (x, y, c) => new PixImage<byte>(Col.Format.BGR, x, y, c) },
                 { PixFormat.ByteBGRA, (x, y, c) => new PixImage<byte>(Col.Format.BGRA, x, y, c) },
@@ -218,15 +217,33 @@ namespace Aardvark.Base
                 { PixFormat.ByteRGB, (x, y, c) => new PixImage<byte>(Col.Format.RGB, x, y, c) },
                 { PixFormat.ByteBGRP, (x, y, c) => new PixImage<byte>(Col.Format.BGRP, x, y, c) },
 
+                { PixFormat.SByteBW, (x, y, c) => new PixImage<sbyte>(Col.Format.BW, x, y, c) },
+                { PixFormat.SByteGray, (x, y, c) => new PixImage<sbyte>(Col.Format.Gray, x, y, c) },
+                { PixFormat.SByteBGR, (x, y, c) => new PixImage<sbyte>(Col.Format.BGR, x, y, c) },
+                { PixFormat.SByteBGRA, (x, y, c) => new PixImage<sbyte>(Col.Format.BGRA, x, y, c) },
+                { PixFormat.SByteRGBA, (x, y, c) => new PixImage<sbyte>(Col.Format.RGBA, x, y, c) },
+                { PixFormat.SByteRGB, (x, y, c) => new PixImage<sbyte>(Col.Format.RGB, x, y, c) },
+                { PixFormat.SByteBGRP, (x, y, c) => new PixImage<sbyte>(Col.Format.BGRP, x, y, c) },
+
                 { PixFormat.UShortGray, (x, y, c) => new PixImage<ushort>(Col.Format.Gray, x, y, c) },
                 { PixFormat.UShortRGB, (x, y, c) => new PixImage<ushort>(Col.Format.RGB, x, y, c) },
                 { PixFormat.UShortRGBA, (x, y, c) => new PixImage<ushort>(Col.Format.RGBA, x, y, c) },
                 { PixFormat.UShortRGBP, (x, y, c) => new PixImage<ushort>(Col.Format.RGBP, x, y, c) },
 
+                { PixFormat.ShortGray, (x, y, c) => new PixImage<short>(Col.Format.Gray, x, y, c) },
+                { PixFormat.ShortRGB, (x, y, c) => new PixImage<short>(Col.Format.RGB, x, y, c) },
+                { PixFormat.ShortRGBA, (x, y, c) => new PixImage<short>(Col.Format.RGBA, x, y, c) },
+                { PixFormat.ShortRGBP, (x, y, c) => new PixImage<short>(Col.Format.RGBP, x, y, c) },
+
                 { PixFormat.UIntGray, (x, y, c) => new PixImage<uint>(Col.Format.Gray, x, y, c) },
                 { PixFormat.UIntRGB, (x, y, c) => new PixImage<uint>(Col.Format.RGB, x, y, c) },
                 { PixFormat.UIntRGBA, (x, y, c) => new PixImage<uint>(Col.Format.RGBA, x, y, c) },
                 { PixFormat.UIntRGBP, (x, y, c) => new PixImage<uint>(Col.Format.RGBP, x, y, c) },
+
+                { PixFormat.IntGray, (x, y, c) => new PixImage<int>(Col.Format.Gray, x, y, c) },
+                { PixFormat.IntRGB, (x, y, c) => new PixImage<int>(Col.Format.RGB, x, y, c) },
+                { PixFormat.IntRGBA, (x, y, c) => new PixImage<int>(Col.Format.RGBA, x, y, c) },
+                { PixFormat.IntRGBP, (x, y, c) => new PixImage<int>(Col.Format.RGBP, x, y, c) },
 
                 { PixFormat.FloatGray, (x, y, c) => new PixImage<float>(Col.Format.Gray, x, y, c) },
                 { PixFormat.FloatRGB, (x, y, c) => new PixImage<float>(Col.Format.RGB, x, y, c) },
@@ -244,10 +261,16 @@ namespace Aardvark.Base
             {
                 { typeof(byte[]), (a, f, x, y, c) =>
                                     new PixImage<byte>(f, ((byte[])a).CreateImageVolume(new V3l(x, y, c))) },
+                { typeof(sbyte[]), (a, f, x, y, c) =>
+                                    new PixImage<sbyte>(f, ((sbyte[])a).CreateImageVolume(new V3l(x, y, c))) },
                 { typeof(ushort[]), (a, f, x, y, c) =>
                                     new PixImage<ushort>(f, ((ushort[])a).CreateImageVolume(new V3l(x, y, c))) },
+                { typeof(short[]), (a, f, x, y, c) =>
+                                    new PixImage<short>(f, ((short[])a).CreateImageVolume(new V3l(x, y, c))) },
                 { typeof(uint[]), (a, f, x, y, c) =>
                                     new PixImage<uint>(f, ((uint[])a).CreateImageVolume(new V3l(x, y, c))) },
+                { typeof(int[]), (a, f, x, y, c) =>
+                                    new PixImage<int>(f, ((int[])a).CreateImageVolume(new V3l(x, y, c))) },
                 { typeof(float[]), (a, f, x, y, c) =>
                                     new PixImage<float>(f, ((float[])a).CreateImageVolume(new V3l(x, y, c))) },
                 { typeof(double[]), (a, f, x, y, c) =>
