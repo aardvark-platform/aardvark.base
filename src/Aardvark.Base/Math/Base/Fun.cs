@@ -661,12 +661,12 @@ namespace Aardvark.Base
         /// <summary>
         /// the bitmask used for the float exponent
         /// </summary>
-        public const uint FloatExponentMask = 0x7F000000;
+        public const uint FloatExponentMask = 0x7F800000;
 
         /// <summary>
         /// the bitmask used for the float mantissa
         /// </summary>
-        public const uint FloatMantissaMask = 0x00FFFFFF;
+        public const uint FloatMantissaMask = 0x007FFFFF;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe int Log2IntRef(ref double v)
@@ -674,12 +674,7 @@ namespace Aardvark.Base
             fixed (double* ptr = &v)
             {
                 var a = (ulong*)ptr;
-                var shift = 1022;
-
-                if ((*a & DoubleMantissaMask) == 0)
-                    shift = 1023;
-
-                return (int)(((*a & DoubleExponentMask) >> DoubleMantissaBits)) - shift;
+                return (int)(((*a & DoubleExponentMask) >> DoubleMantissaBits)) - 1023;
             }
         }
 
@@ -689,18 +684,14 @@ namespace Aardvark.Base
             fixed (float* ptr = &v)
             {
                 var a = (uint*)ptr;
-                var shift = 126;
-
-                if ((*a & FloatMantissaMask) == 0)
-                    shift = 127;
-
-                return (int)(((*a & FloatExponentMask) >> FloatMantissaBits)) - shift;
+                return (int)(((*a & FloatExponentMask) >> FloatMantissaBits)) - 127;
             }
         }
 
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this double v)
         {
             return Log2IntRef(ref v);
@@ -709,6 +700,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this float v)
         {
             return Log2IntRef(ref v);
@@ -717,6 +709,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this int v)
         {
             #if NETCOREAPP3_1
@@ -729,6 +722,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this uint v)
         {
             #if NETCOREAPP3_1
@@ -741,6 +735,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this long v)
         {
             #if NETCOREAPP3_1
@@ -753,6 +748,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this ulong v)
         {
             #if NETCOREAPP3_1

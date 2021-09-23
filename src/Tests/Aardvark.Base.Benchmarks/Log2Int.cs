@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -210,6 +211,95 @@ namespace Aardvark.Base.Benchmarks
             for (int i = 0; i < local.Length; i++)
                 sum += Fun.Log2Int((double)local[i]);
             return sum;
+        }
+
+        [Benchmark]
+        public int Log2Int_Baseline()
+        {
+            var sum = 0;
+            var local = m_numbersInt;
+            for (int i = 0; i < local.Length; i++)
+                sum += (int)Fun.Log2(local[i]).Floor();
+            return sum;
+        }
+
+        [Test]
+        public void Log2Int_AardvarkFloatExp_Floor()
+        {
+            for(int i = 1; i < 1000; i++)
+            {
+                var a = Fun.Log2Int((float)i); // aardvark bithack
+                var b = (int)Fun.Log2(i).Floor();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2Int_AardvarkFloatExp_Floor_Frac()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var v = i / 1000f;
+                var a = Fun.Log2Int(v); // aardvark bithack
+                var b = (int)Fun.Log2(v).Floor();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2Int_AardvarkDoubleExp_Floor()
+        {
+            for(int i = 1; i < 1000; i++)
+            {
+                var a = Fun.Log2Int((double)i); // aardvark bithack
+                var b = (int)Fun.Log2(i).Floor();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2Int_AardvarkDoubleExp_Floor_Frac()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var v = i / 1000.0;
+                var a = Fun.Log2Int(v); // aardvark bithack
+                var b = (int)Fun.Log2(v).Floor();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2Int_NetCore()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var a = System.Numerics.BitOperations.Log2((uint)i);
+                var b = (int)Fun.Log2(i).Floor();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2Int_SoftwareConvert()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var a = Log2Int_Bithack_Unsafe(i);
+                var b = (int)Fun.Log2(i).Floor();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2Int_SoftwareCompare()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var a = Log2Int_Bithack_Cmp(i);
+                var b = (int)Fun.Log2(i).Floor();
+                Assert.AreEqual(a, b);
+            }
         }
     }
 

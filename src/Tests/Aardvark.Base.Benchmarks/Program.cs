@@ -70,7 +70,7 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<Indexers4>();
             //BenchmarkRunner.Run<MatrixMinor>();
             //BenchmarkRunner.Run<TransformV3d>();
-            //BenchmarkRunner.Run<Log2Int>();
+            BenchmarkRunner.Run<Log2Int>();
             //BenchmarkRunner.Run<Log2>();
             //BenchmarkRunner.Run<Enumerators>();
             //BenchmarkRunner.Run<IntSetCreator>();
@@ -83,7 +83,7 @@ namespace Aardvark.Base.Benchmarks
             //new Enumerators().Test();
 
             //BenchmarkRunner.Run<RayHitTest>();
-            BenchmarkRunner.Run<ConstantsBenchmark>();
+            //BenchmarkRunner.Run<ConstantsBenchmark>();
         }
     }
 }
