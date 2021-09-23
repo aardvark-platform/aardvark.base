@@ -764,6 +764,64 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Mipmap levels
+
+        /// <summary>
+        /// Computes the number of 3D images in a mipmap chain with the given base size.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <returns>The total number of levels.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MipmapLevels(V3i baseSize)
+            => 1 + Log2Int(baseSize.MaxElement);
+
+        /// <summary>
+        /// Computes the number of 2D images in a mipmap chain with the given base size.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <returns>The total number of levels.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MipmapLevels(V2i baseSize)
+            => 1 + Log2Int(baseSize.MaxElement);
+
+        /// <summary>
+        /// Computes the number of 1D images in a mipmap chain with the given base size.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <returns>The total number of levels.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MipmapLevels(int baseSize)
+            => 1 + Log2Int(baseSize);
+
+        /// <summary>
+        /// Computes the size of a 3D image in a mipmap chain.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <param name="level">The level of the queried image (base level = 0).</param>
+        /// <returns>The size of the image at the given level.</returns>
+        public static V3i MipmapLevelSize(V3i baseSize, int level)
+            => Max(baseSize >> level, 1);
+
+        /// <summary>
+        /// Computes the size of a 2D image in a mipmap chain.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <param name="level">The level of the queried image (base level = 0).</param>
+        /// <returns>The size of the image at the given level.</returns>
+        public static V2i MipmapLevelSize(V2i baseSize, int level)
+            => Max(baseSize >> level, 1);
+
+        /// <summary>
+        /// Computes the size of a 1D image in a mipmap chain.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <param name="level">The level of the queried image (base level = 0).</param>
+        /// <returns>The size of the image at the given level.</returns>
+        public static int MipmapLevelSize(int baseSize, int level)
+            => Max(baseSize >> level, 1);
+
+        #endregion
+
         #region Gaussian
 
         /// <summary>
