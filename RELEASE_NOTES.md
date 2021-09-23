@@ -1,3 +1,10 @@
+### 5.1.15
+ - added functions for computing mipmap level count and size
+ - added support for signed integer PixImages
+ - changed default introspection cache location to LocalApplicationData
+ - fixed Log2Int
+ - fixed missing FileStream Dispose in Vrml97 parser
+
 ### 5.1.14
  - fixed Introspection caching
 
