@@ -799,6 +799,7 @@ namespace Aardvark.Base
         /// <param name="baseSize">The size of the image in the base level.</param>
         /// <param name="level">The level of the queried image (base level = 0).</param>
         /// <returns>The size of the image at the given level.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3i MipmapLevelSize(V3i baseSize, int level)
             => Max(baseSize >> level, 1);
 
@@ -808,6 +809,7 @@ namespace Aardvark.Base
         /// <param name="baseSize">The size of the image in the base level.</param>
         /// <param name="level">The level of the queried image (base level = 0).</param>
         /// <returns>The size of the image at the given level.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2i MipmapLevelSize(V2i baseSize, int level)
             => Max(baseSize >> level, 1);
 
@@ -817,6 +819,7 @@ namespace Aardvark.Base
         /// <param name="baseSize">The size of the image in the base level.</param>
         /// <param name="level">The level of the queried image (base level = 0).</param>
         /// <returns>The size of the image at the given level.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MipmapLevelSize(int baseSize, int level)
             => Max(baseSize >> level, 1);
 
