@@ -1,6 +1,3 @@
-//#define USE_DEVIL
-//#define USE_BITMAP
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -389,6 +386,7 @@ namespace Aardvark.Base
         {
             Exception exception = null;
 
+            var initialPos = stream.Position;
             foreach (var loader in s_streamLoadFunctions)
             {
                 try
@@ -396,28 +394,15 @@ namespace Aardvark.Base
                     var res = loader(stream, options);
                     if (res != null) return res;
                 }
-                catch (Exception ex) { if (exception == null) exception = ex; }
-            }
-
-            #if USE_DEVIL
-            if ((options & PixLoadOptions.UseDevil) != 0)
-            {
-                try
+                catch (Exception ex) 
                 {
-                    var img = PixImageDevil.CreateRawDevil(stream, options);
-                    if (img != null) return img;
+                    if (exception == null) 
+                        exception = ex; 
                 }
-                catch (Exception ex) { if (exception == null) exception = ex; }
-            }
-            #endif
 
-            #if USE_BITMAP
-            if ((options & PixLoadOptions.UseBitmap) != 0)
-            {
-                var img = CreateRawBitmap(stream, options);
-                if (img != null) return img;
+                // reset stream position before trying next loader
+                stream.Position = initialPos;
             }
-            #endif
             
             throw new ImageLoadException("could not load image", exception);
         }
