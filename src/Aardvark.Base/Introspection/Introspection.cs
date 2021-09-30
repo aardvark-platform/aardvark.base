@@ -144,12 +144,9 @@ namespace Aardvark.Base
             new HashSet<string>(
                 new[]
                 {
-                    "Aardvark.Unmanaged",
-                    "Aardvark.Unmanaged.Diagnostics",
                     "ASift.CLI",
                     "CUDA.NET",
                     "Emgu.CV",
-                    "FreeImageNET",
                     "levmarCLI",
                     "LSDCli",
                     "OpenNI.Net",
@@ -162,7 +159,22 @@ namespace Aardvark.Base
                     "SlamToroCli",
                     "System",
                     "WindowsBase",
-                    "OpenTK"
+                    "OpenTK",
+                    "Suave",
+                    "Newtonsoft.Json",
+                    "Aether",
+                    "Ceres",
+                    "CommonMark",
+                    "CSharp.Data.Adaptive",
+                    "FSharp.Data.Adaptive",
+                    "GLSLangSharp",
+                    "ICSharpCode.SharpZipLib",
+                    "LibTessDotNet",
+                    "SixLabors.ImageSharp",
+                    "netstandard",
+                    "FsPickler",
+                    "WindowsFormsIntegration",
+                    "Unofficial.Typography",
                 }
             );
 
@@ -177,13 +189,13 @@ namespace Aardvark.Base
                      name.StartsWith("Microsoft") ||
                      name.StartsWith("LidorSystems") ||
                      name.StartsWith("WeifenLuo.") ||
-                     name.StartsWith("OpenCV") ||
+                     name.StartsWith("OpenCV") && name != "OpenCVSharp" || // OpenCVSharp.dll contains native assemblies that need to be unpacked
                      name.StartsWith("nunit.") ||
                      name.StartsWith("Extreme.Numerics") ||
                      name.StartsWith("fftwlib") ||
                      name.StartsWith("GraphCutsCLI") ||
                      name.StartsWith("Interop.MLApp") ||
-                     name.StartsWith("IPP") ||
+                     name.StartsWith("IPP") && name != "IPP" || // IPP.dll contains native assemblies that need to be unpacked
                      name.StartsWith("IronRuby") ||
                      name.StartsWith("MapTools") ||
                      name.StartsWith("MetaDataExtractor") ||
@@ -194,7 +206,6 @@ namespace Aardvark.Base
                      name.StartsWith("OpenTK") ||
                      name.StartsWith("Kitware") ||
                      name.StartsWith("ICSharpCode") ||
-                     name.StartsWith("WindowsFormsIntegration") ||
                      name.StartsWith("Roslyn") ||
                      name.StartsWith("SharpDX") ||
                      name.StartsWith("Aardvark.Jynx.Native") ||
@@ -203,7 +214,12 @@ namespace Aardvark.Base
                      name.StartsWith("IKVM") ||
                      name.StartsWith("Super") ||
                      name.StartsWith("Java") ||
-                     name.StartsWith("OpenTK"));
+                     name.StartsWith("PresentationFramework") ||
+                     name.StartsWith("FShade") ||
+                     name.StartsWith("Xceed") ||
+                     name.StartsWith("UIAutomation") ||
+                     name.StartsWith("Uncodium")
+                     );
         }
 
         /// <summary>
@@ -233,7 +249,7 @@ namespace Aardvark.Base
                 a =>
                 {
                     if (a.FullName == null) return false;
-                    else return AssemblyFilter(a.FullName);
+                    else return AssemblyFilter(a.GetName().Name);
                 };
 
         public static string BundleEntryPoint = "";
