@@ -167,7 +167,6 @@ namespace Aardvark.Base
                     "CommonMark",
                     "CSharp.Data.Adaptive",
                     "FSharp.Data.Adaptive",
-                    "GLSLangSharp",
                     "ICSharpCode.SharpZipLib",
                     "LibTessDotNet",
                     "SixLabors.ImageSharp",
