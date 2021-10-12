@@ -301,6 +301,52 @@ namespace Aardvark.Base.Benchmarks
                 Assert.AreEqual(a, b);
             }
         }
+
+        [Test]
+        public void Log2CeilingInt_AardvarkFloatExp_Ceiling()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var a = Fun.Log2CeilingInt((float)i); // aardvark bithack
+                var b = (int)Fun.Log2(i).Ceiling();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2CeilingInt_AardvarkFloatExp_Ceiling_Frac()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var v = i / 1000f;
+                var a = Fun.Log2CeilingInt(v); // aardvark bithack
+                var b = (int)Fun.Log2(v).Ceiling();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2CeilingInt_AardvarkDoubleExp_Ceiling()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var a = Fun.Log2CeilingInt((double)i); // aardvark bithack
+                var b = (int)Fun.Log2(i).Ceiling();
+                Assert.AreEqual(a, b);
+            }
+        }
+
+        [Test]
+        public void Log2CeilingInt_AardvarkDoubleExp_Ceiling_Frac()
+        {
+            for (int i = 1; i < 1000; i++)
+            {
+                var v = i / 1000.0;
+                var a = Fun.Log2CeilingInt(v); // aardvark bithack
+                var b = (int)Fun.Log2(v).Ceiling();
+                Assert.AreEqual(a, b);
+            }
+        }
     }
 
     //BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18362
