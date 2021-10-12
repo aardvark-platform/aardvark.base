@@ -62,10 +62,40 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void CanCreateCell_FromBox_Centered_Unit()
+        {
+            var a = new Cell(new Box3d(new V3d(-1, -1, -1), new V3d(1, 1, 1)));
+            Assert.IsTrue(a == new Cell(1));
+        }
+
+        [Test]
         public void CanCreateCell_FromBox()
         {
             var a = new Cell(new Box3d(new V3d(0.1, 0, 0), new V3d(1.3, 1, 1)));
             Assert.IsTrue(a == new Cell(0, 0, 0, 1));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_PowerOfTwo()
+        {
+            var a = new Cell(new Box3d(new V3d(0, 0, 0), new V3d(2, 2, 2)));
+            Assert.IsTrue(a == new Cell(0, 0, 0, 1));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Point()
+        {
+            var bb = new Box3d(new V3d(1.3), new V3d(1.3));
+            var a = new Cell(bb);
+            Assert.IsTrue(a.BoundingBox.ApproximateEquals(bb));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Point_PowerOfTwo()
+        {
+            var bb = new Box3d(new V3d(long.MaxValue >> 1), new V3d(long.MaxValue >> 1));
+            var a = new Cell(bb);
+            Assert.IsTrue(a.BoundingBox.ApproximateEquals(bb));
         }
 
         [Test]
