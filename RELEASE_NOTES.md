@@ -1,3 +1,10 @@
+### 5.1.16
+- updated build script
+- fixed PixImage.CreateRaw loader fallback
+- fixed default AssemblyFilter
+- fixed Introspection ignoring GLSLangSharp
+- unbreak Cell to work with fixed Log2Int (same for Cell2d)
+
 ### 5.1.15
  - added functions for computing mipmap level count and size
  - added support for signed integer PixImages

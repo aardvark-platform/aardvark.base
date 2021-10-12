@@ -55,10 +55,17 @@ namespace Aardvark.Tests
         }
 
         [Test]
-        public void CanCreateCell_FromBox()
+        public void CanCreateCell_FromBox_Centered()
         {
             var a = new Cell(new Box3d(new V3d(-1.3, 0, 0), new V3d(0.1, 1, 1)));
             Assert.IsTrue(a == new Cell(2));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox()
+        {
+            var a = new Cell(new Box3d(new V3d(0.1, 0, 0), new V3d(1.3, 1, 1)));
+            Assert.IsTrue(a == new Cell(0, 0, 0, 1));
         }
 
         [Test]

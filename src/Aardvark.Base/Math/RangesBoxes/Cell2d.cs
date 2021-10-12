@@ -110,23 +110,18 @@ namespace Aardvark.Base
                 box.Min.Y < 0.0 && box.Max.Y > 0.0)
             {
                 X = Y = long.MaxValue;
-                Exponent = Math.Max(box.Min.NormMax, box.Max.NormMax).Log2Int() + 1;
+                Exponent = Math.Max(box.Min.NormMax, box.Max.NormMax).Log2Int() + 2;
             }
             else // case 2: doesn't contain origin
             {
                 Exponent = (box.Min == box.Max)
-                        ? (box.Min.NormMax / (long.MaxValue >> 1)).Log2Int()
-                        : box.Size.NormMax.Log2Int()
+                        ? (box.Min.NormMax / (long.MaxValue >> 1)).Log2Int() + 1
+                        : box.Size.NormMax.Log2Int() + 1
                         ;
-                var s = Math.Pow(2.0, Exponent);
-                var a = (box.Min / s).Floor() * s;
-                while (a.X + s < box.Max.X || a.Y + s < box.Max.Y)
-                {
-                    s *= 2.0; Exponent++;
-                    a = (box.Min / s).Floor() * s;
-                }
-                X = (long)Math.Floor(a.X / s);
-                Y = (long)Math.Floor(a.Y / s);
+                var s = 1.0 / Math.Pow(2.0, Exponent);
+                var a = (box.Min * s).Floor();
+                X = (long)a.X;
+                Y = (long)a.Y;
             }
         }
 
