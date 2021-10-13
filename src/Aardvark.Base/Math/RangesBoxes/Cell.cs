@@ -91,7 +91,9 @@ namespace Aardvark.Base
         public Cell(V3d p) : this(new Box3d(p)) { }
 
         /// <summary>
-        /// Smallest cell that contains given box.
+        /// Smallest cell that contains given box, 
+        /// where box.Min and box.Max are both interpreted as inclusive
+        /// (whereas a cell's maximum is defined as exclusive).
         /// </summary>
         public Cell(Box3d box)
         {
@@ -111,11 +113,18 @@ namespace Aardvark.Base
                         ? (box.Min.NormMax / (long.MaxValue >> 1)).Log2CeilingInt()
                         : box.Size.NormMax.Log2CeilingInt()
                         ;
-                var s = 1.0 / Math.Pow(2.0, Exponent);
-                var a = (box.Min * s).Floor();
+                var s = Math.Pow(2.0, Exponent);
+                var a = (box.Min * (1.0 / s)).Floor();
+
                 X = (long)a.X;
                 Y = (long)a.Y;
                 Z = (long)a.Z;
+
+                while (box.Max.X >= X * s + s || box.Max.Y >= Y * s + s || box.Max.Z >= Z * s + s)
+                {
+                    X >>= 1; Y >>= 1; Z >>= 1; ++Exponent;
+                    s *= 2.0;
+                }
             }
         }
 
