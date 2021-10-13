@@ -1,7 +1,6 @@
-﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
-using System;
-using Aardvark.Base;
+﻿using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 
 namespace Aardvark.Base.Benchmarks
 {
@@ -9,6 +8,10 @@ namespace Aardvark.Base.Benchmarks
     {
         public static void Main(string[] args)
         {
+            var job = Job.ShortRun.WithToolchain(BenchmarkDotNet.Toolchains.InProcess.Emit.InProcessEmitToolchain.Instance);
+            var cfg = ManualConfig.Create(DefaultConfig.Instance).AddJob(job);
+            BenchmarkSwitcher.FromAssembly(typeof(IntegerPowerFloat).Assembly).Run(args, cfg);
+
             //BenchmarkRunner.Run<V4fLength>();
             //BenchmarkRunner.Run<V3fLeng
             //BenchmarkRunner.Run<V2fLength>();
@@ -70,7 +73,7 @@ namespace Aardvark.Base.Benchmarks
             //BenchmarkRunner.Run<Indexers4>();
             //BenchmarkRunner.Run<MatrixMinor>();
             //BenchmarkRunner.Run<TransformV3d>();
-            BenchmarkRunner.Run<Log2Int>();
+            //BenchmarkRunner.Run<Log2Int>();
             //BenchmarkRunner.Run<Log2>();
             //BenchmarkRunner.Run<Enumerators>();
             //BenchmarkRunner.Run<IntSetCreator>();
