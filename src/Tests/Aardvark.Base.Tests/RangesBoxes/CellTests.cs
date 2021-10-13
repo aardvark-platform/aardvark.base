@@ -76,6 +76,15 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void CellBoundingBoxContainsBoxTheCellWasCreatedFrom()
+        {
+            var bb = new Box3d(new V3d(-7163.84, 256990.58, 702.67), new V3d(-7146.66, 257016.8, 717.04));
+            var cell = new Cell(bb);
+            var cellBoundingBox = cell.BoundingBox;
+            Assert.IsTrue(cellBoundingBox.Contains(bb));
+        }
+
+        [Test]
         public void CanCreateCell_FromBox_PowerOfTwo()
         {
             var a = new Cell(new Box3d(new V3d(0, 0, 0), new V3d(2, 2, 2)));
