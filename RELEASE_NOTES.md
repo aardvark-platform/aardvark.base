@@ -1,6 +1,10 @@
+### 5.1.18
+- cleaned up and fixed cell construction from boxes
+
 ### 5.1.17
 - Add Fun.Log2CeilingInt
 - Fix power of two edge cases in Cell and Cell2d
+
 ### 5.1.16
 - updated build script
 - fixed PixImage.CreateRaw loader fallback
