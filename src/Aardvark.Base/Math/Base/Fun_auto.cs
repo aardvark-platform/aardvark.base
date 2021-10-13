@@ -4972,13 +4972,13 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns 2 raised to the power of the value.
-        /// The exponent <paramref name="x"/> must not be negative.
+        /// The exponent <paramref name="x"/> must be in the range [0,62].
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long PowerOfTwo(this long x)
         {
-            Debug.Assert(x >= 0);
+            Debug.Assert(x >= 0 && x <= 62);
             return 1L << (int)x;
         }
 
