@@ -1471,6 +1471,7 @@ namespace Aardvark.Base
                     {
                         using (var s = assembly.GetManifestResourceStream("native.zip"))
                         {
+#pragma warning disable CS0618 // Type or member is obsolete
                             string dstFolder = NativeLibraryPath;
                             if (SeparateLibraryDirectories)
                             {
@@ -1481,7 +1482,7 @@ namespace Aardvark.Base
                                 var folderName = string.Format("{0}-{1}-{2}", assembly.GetName().Name, hash.ToString(), bits);
                                 dstFolder = Path.Combine(NativeLibraryPath, folderName);
                             }
-
+#pragma warning restore CS0618 // Type or member is obsolete
                             s_nativePaths[assembly] = dstFolder;
                             s_allPaths = null;
                             path = dstFolder;
