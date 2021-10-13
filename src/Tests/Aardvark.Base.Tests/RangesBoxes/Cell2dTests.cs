@@ -88,7 +88,7 @@ namespace Aardvark.Tests
         public void CanCreateCell_FromBox_PowerOfTwo()
         {
             var a = new Cell2d(new Box2d(new V2d(0, 0), new V2d(2, 2)));
-            Assert.IsTrue(a == new Cell2d(0, 0, 1));
+            Assert.IsTrue(a == new Cell2d(0, 0, 2));
         }
 
         [Test]
@@ -104,7 +104,10 @@ namespace Aardvark.Tests
         {
             var bb = new Box2d(new V2d(long.MaxValue >> 1), new V2d(long.MaxValue >> 1));
             var a = new Cell2d(bb);
-            Assert.IsTrue(a.BoundingBox.ApproximateEquals(bb));
+            // for cells far far away, floating point precision DOES matter,
+            // so we can't use the default tolerance of PositiveTinyValue.
+            var tolerance = Math.Pow(2.0, a.Exponent);
+            Assert.IsTrue(a.BoundingBox.ApproximateEquals(bb, tolerance));
         }
 
         [Test]

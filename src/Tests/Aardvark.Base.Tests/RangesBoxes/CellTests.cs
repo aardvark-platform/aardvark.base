@@ -88,7 +88,10 @@ namespace Aardvark.Tests
         public void CanCreateCell_FromBox_PowerOfTwo()
         {
             var a = new Cell(new Box3d(new V3d(0, 0, 0), new V3d(2, 2, 2)));
-            Assert.IsTrue(a == new Cell(0, 0, 0, 1));
+            // box.Max is interpreted as inclusive, but Cell.Max is exclusive,
+            // therefore (2,2,2) is not contained in Box(0,0,0,1) and we
+            // have to use next bigger cell
+            Assert.IsTrue(a == new Cell(0, 0, 0, 2));
         }
 
         [Test]
@@ -104,7 +107,10 @@ namespace Aardvark.Tests
         {
             var bb = new Box3d(new V3d(long.MaxValue >> 1), new V3d(long.MaxValue >> 1));
             var a = new Cell(bb);
-            Assert.IsTrue(a.BoundingBox.ApproximateEquals(bb));
+            // for cells far far away, floating point precision DOES matter,
+            // so we can't use the default tolerance of PositiveTinyValue.
+            var tolerance = Math.Pow(2.0, a.Exponent);
+            Assert.IsTrue(a.BoundingBox.ApproximateEquals(bb, tolerance));
         }
 
         [Test]
