@@ -24837,7 +24837,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Rotation(V3f normalizedAxis, float angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M33f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -24899,8 +24899,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotateInto(V3f from, V3f into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-5f));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M33f)(Rot3f.RotateInto(from, into));
         }
 
@@ -28013,7 +28013,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Rotation(V3d normalizedAxis, double angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M33d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -28075,8 +28075,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotateInto(V3d from, V3d into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-10));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M33d)(Rot3d.RotateInto(from, into));
         }
 
@@ -36411,7 +36411,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f Rotation(V3f normalizedAxis, float angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M34f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -36473,8 +36473,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotateInto(V3f from, V3f into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-5f));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M34f)(Rot3f.RotateInto(from, into));
         }
 
@@ -39247,7 +39247,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d Rotation(V3d normalizedAxis, double angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M34d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -39309,8 +39309,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotateInto(V3d from, V3d into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-10));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M34d)(Rot3d.RotateInto(from, into));
         }
 
@@ -48677,7 +48677,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Rotation(V3f normalizedAxis, float angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M44f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -48739,8 +48739,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotateInto(V3f from, V3f into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-5f));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M44f)(Rot3f.RotateInto(from, into));
         }
 
@@ -52258,7 +52258,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Rotation(V3d normalizedAxis, double angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M44d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -52320,8 +52320,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotateInto(V3d from, V3d into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-10));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M44d)(Rot3d.RotateInto(from, into));
         }
 

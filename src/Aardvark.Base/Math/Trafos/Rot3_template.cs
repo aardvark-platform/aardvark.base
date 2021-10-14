@@ -41,7 +41,7 @@ namespace Aardvark.Base
     //#   var m33t = "M33" + tc;
     //#   var m34t = "M34" + tc;
     //#   var m44t = "M44" + tc;
-    //#   var assertEps = isDouble ? "1e-10" : "1e-6f";
+    //#   var assertEps = isDouble ? "1e-10" : "1e-5f";
     //#   var half = isDouble ? "0.5" : "0.5f";
     //#   var pi = isDouble ? "Constant.Pi" : "ConstantF.Pi";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "ConstantF.PiHalf";
