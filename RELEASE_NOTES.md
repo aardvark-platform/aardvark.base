@@ -1,3 +1,6 @@
+### 5.1.19
+- fixed cell-from-box constructor for boxes with Max including 0.0
+- Relax asserts in matrix and rot methods and constructors
 ### 5.1.18
 - cleaned up and fixed cell construction from boxes
 
