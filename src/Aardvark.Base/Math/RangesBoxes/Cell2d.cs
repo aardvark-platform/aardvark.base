@@ -108,8 +108,8 @@ namespace Aardvark.Base
             if (!box.IsValid) throw new InvalidOperationException();
 
             // case 1: contains origin
-            if (box.Min.X < 0.0 && box.Max.X > 0.0 ||
-                box.Min.Y < 0.0 && box.Max.Y > 0.0)
+            if (box.Min.X < 0.0 && box.Max.X >= 0.0 ||
+                box.Min.Y < 0.0 && box.Max.Y >= 0.0)
             {
                 X = Y = long.MaxValue;
                 Exponent = Math.Max(box.Min.NormMax, box.Max.NormMax).Log2CeilingInt() + 1;

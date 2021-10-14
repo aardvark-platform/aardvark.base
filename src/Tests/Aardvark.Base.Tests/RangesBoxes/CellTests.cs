@@ -76,6 +76,14 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void CanCreateCell_FromBoxWithMaxIncludingOrigin()
+        {
+            var box = new Box3d(new V3d(4, -0.5, 539.5), new V3d(4.5, 0, 540));
+            var cell = new Cell(box);
+            Assert.IsTrue(cell.BoundingBox.Contains(box));
+        }
+
+        [Test]
         public void CellBoundingBoxContainsBoxTheCellWasCreatedFrom()
         {
             var bb = new Box3d(new V3d(-7163.84, 256990.58, 702.67), new V3d(-7146.66, 257016.8, 717.04));
