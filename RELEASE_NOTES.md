@@ -1,3 +1,6 @@
+### 5.1.20
+- add Cell.GetCommonRoot(...) and corresponding constructor overloads; same for Cell2d
+
 ### 5.1.19
 - fixed cell-from-box constructor for boxes with Max including 0.0
 - Relax asserts in matrix and rot methods and constructors
