@@ -51,6 +51,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates copy of cell.
+        /// </summary>
+        public Cell(Cell cell)
+        {
+            X = cell.X; Y = cell.Y; Z = cell.Z; Exponent = cell.Exponent;
+        }
+
+        /// <summary>
         /// Cell with min corner at index*2^exponent and dimension 2^exponent.
         /// </summary>
         public Cell(V3l index, int exponent) : this(index.X, index.Y, index.Z, exponent) { }
@@ -127,6 +135,16 @@ namespace Aardvark.Base
                 }
             }
         }
+
+        /// <summary>
+        /// Common root of a and b.
+        /// </summary>
+        public Cell(Cell a, Cell b) : this(GetCommonRoot(a, b)) { }
+
+        /// <summary>
+        /// Common root of cells.
+        /// </summary>
+        public Cell(params Cell[] cells) : this(GetCommonRoot(cells)) { }
 
         #endregion
 
@@ -357,6 +375,57 @@ namespace Aardvark.Base
                 if (other.Z == z + 1) o |= 4; else if (other.Z != z) return null;
                 return o;
             }
+        }
+
+        /// <summary>
+        /// Returns smallest common root of a and b.
+        /// </summary>
+        public static Cell GetCommonRoot(Cell a, Cell b)
+        {
+            if (a == b) return a;
+
+            if (a.IsCenteredAtOrigin)
+            {
+                if (b.IsCenteredAtOrigin)
+                {
+                    // if both are centered, then the larger cell is the result
+                    return a.Exponent > b.Exponent ? a : b;
+                }
+                else
+                {
+                    // if A is centered and B is not centered,
+                    // then enlarge A until it contains B
+                    while (!a.Contains(b)) a = a.Parent;
+                    return a;
+                }
+            }
+            else
+            {
+                if (b.IsCenteredAtOrigin)
+                {
+                    // if A is not centered and B is centered,
+                    // then enlarge B until it contains A
+                    while (!b.Contains(a)) b = b.Parent;
+                    return b;
+                }
+                else
+                {
+                    // if no cell is centered, then recursively grow smaller cell (take parent)
+                    // until a and b meet at their common root
+                    return a.Exponent > b.Exponent ? GetCommonRoot(a, b.Parent) : GetCommonRoot(a.Parent, b);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns smallest common root of cells.
+        /// </summary>
+        public static Cell GetCommonRoot(params Cell[] cells)
+        {
+            if (cells == null || cells.Length == 0) throw new ArgumentException("No cells.");
+            var r = cells[0];
+            for (var i = 1; i < cells.Length; i++) r = new Cell(r, cells[i]);
+            return r;
         }
 
         #region operators

@@ -422,6 +422,67 @@ namespace Aardvark.Tests
 
         #endregion
 
+        #region common root cell
+
+        [Test]
+        public void Cell_CommonRootCell_1()
+        {
+            var r = Cell2d.GetCommonRoot(new Cell2d(1, 2, 3), new Cell2d(1, 2, 3));
+            Assert.IsTrue(r == new Cell2d(1, 2, 3));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_2()
+        {
+            var r = Cell2d.GetCommonRoot(new Cell2d(-5), new Cell2d(-5));
+            Assert.IsTrue(r == new Cell2d(-5));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_3()
+        {
+            var r = Cell2d.GetCommonRoot(new Cell2d(3), new Cell2d(2));
+            Assert.IsTrue(r == new Cell2d(3));
+            r = Cell2d.GetCommonRoot(new Cell2d(2), new Cell2d(3));
+            Assert.IsTrue(r == new Cell2d(3));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_4a()
+        {
+            var r = Cell2d.GetCommonRoot(new Cell2d(1), new Cell2d(0, 0, 0));
+            Assert.IsTrue(r == new Cell2d(1));
+            r = Cell2d.GetCommonRoot(new Cell2d(0, 0, 0), new Cell2d(1));
+            Assert.IsTrue(r == new Cell2d(1));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_4b()
+        {
+            var r = Cell2d.GetCommonRoot(new Cell2d(1), new Cell2d(-1, 0, 0));
+            Assert.IsTrue(r == new Cell2d(1));
+            r = Cell2d.GetCommonRoot(new Cell2d(0, -1, 0), new Cell2d(1));
+            Assert.IsTrue(r == new Cell2d(1));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_5()
+        {
+            var r = Cell2d.GetCommonRoot(new Cell2d(0, 0, 0), new Cell2d(1, 0, -1));
+            Assert.IsTrue(r == new Cell2d(0, 0, 0));
+            r = Cell2d.GetCommonRoot(new Cell2d(0, 0, 0), new Cell2d(1, -3, -5));
+            Assert.IsTrue(r == new Cell2d(0, 0, 0));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_6()
+        {
+            var r = Cell2d.GetCommonRoot(new Cell2d(0, 0, 0), new Cell2d(1, 0, 0), new Cell2d(0));
+            Assert.IsTrue(r == new Cell2d(2));
+        }
+
+        #endregion
+
         #region touches origin
 
         [Test]

@@ -54,6 +54,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates copy of cell.
+        /// </summary>
+        public Cell2d(Cell2d cell)
+        {
+            X = cell.X; Y = cell.Y; Exponent = cell.Exponent;
+        }
+
+        /// <summary>
         /// Cell with min corner at index*2^exponent and dimension 2^exponent.
         /// </summary>
         public Cell2d(V2l index, int exponent) : this(index.X, index.Y, exponent) { }
@@ -133,6 +141,16 @@ namespace Aardvark.Base
                 }
             }
         }
+
+        /// <summary>
+        /// Common root of a and b.
+        /// </summary>
+        public Cell2d(Cell2d a, Cell2d b) : this(GetCommonRoot(a, b)) { }
+
+        /// <summary>
+        /// Common root of cells.
+        /// </summary>
+        public Cell2d(params Cell2d[] cells) : this(GetCommonRoot(cells)) { }
 
         #endregion
 
@@ -352,6 +370,57 @@ namespace Aardvark.Base
                 if (other.Y == y + 1) o |= 2; else if (other.Y != y) return null;
                 return o;
             }
+        }
+
+        /// <summary>
+        /// Returns smallest common root of a and b.
+        /// </summary>
+        public static Cell2d GetCommonRoot(Cell2d a, Cell2d b)
+        {
+            if (a == b) return a;
+
+            if (a.IsCenteredAtOrigin)
+            {
+                if (b.IsCenteredAtOrigin)
+                {
+                    // if both are centered, then the larger cell is the result
+                    return a.Exponent > b.Exponent ? a : b;
+                }
+                else
+                {
+                    // if A is centered and B is not centered,
+                    // then enlarge A until it contains B
+                    while (!a.Contains(b)) a = a.Parent;
+                    return a;
+                }
+            }
+            else
+            {
+                if (b.IsCenteredAtOrigin)
+                {
+                    // if A is not centered and B is centered,
+                    // then enlarge B until it contains A
+                    while (!b.Contains(a)) b = b.Parent;
+                    return b;
+                }
+                else
+                {
+                    // if no cell is centered, then recursively grow smaller cell (take parent)
+                    // until a and b meet at their common root
+                    return a.Exponent > b.Exponent ? GetCommonRoot(a, b.Parent) : GetCommonRoot(a.Parent, b);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns smallest common root of cells.
+        /// </summary>
+        public static Cell2d GetCommonRoot(params Cell2d[] cells)
+        {
+            if (cells == null || cells.Length == 0) throw new ArgumentException("No cells.");
+            var r = cells[0];
+            for (var i = 1; i < cells.Length; i++) r = new Cell2d(r, cells[i]);
+            return r;
         }
 
         #region operators

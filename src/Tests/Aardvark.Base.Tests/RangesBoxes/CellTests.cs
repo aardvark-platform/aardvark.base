@@ -442,6 +442,67 @@ namespace Aardvark.Tests
 
         #endregion
 
+        #region common root cell
+
+        [Test]
+        public void Cell_CommonRootCell_1()
+        {
+            var r = Cell.GetCommonRoot(new Cell(1, 2, 3, 4), new Cell(1, 2, 3, 4));
+            Assert.IsTrue(r == new Cell(1, 2, 3, 4));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_2()
+        {
+            var r = Cell.GetCommonRoot(new Cell(-5), new Cell(-5));
+            Assert.IsTrue(r == new Cell(-5));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_3()
+        {
+            var r = Cell.GetCommonRoot(new Cell(3), new Cell(2));
+            Assert.IsTrue(r == new Cell(3));
+            r = Cell.GetCommonRoot(new Cell(2), new Cell(3));
+            Assert.IsTrue(r == new Cell(3));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_4a()
+        {
+            var r = Cell.GetCommonRoot(new Cell(1), new Cell(0,0,0,0));
+            Assert.IsTrue(r == new Cell(1));
+            r = Cell.GetCommonRoot(new Cell(0, 0, 0, 0), new Cell(1));
+            Assert.IsTrue(r == new Cell(1));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_4b()
+        {
+            var r = Cell.GetCommonRoot(new Cell(1), new Cell(-1, 0, 0, 0));
+            Assert.IsTrue(r == new Cell(1));
+            r = Cell.GetCommonRoot(new Cell(0, -1, 0, 0), new Cell(1));
+            Assert.IsTrue(r == new Cell(1));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_5()
+        {
+            var r = Cell.GetCommonRoot(new Cell(0,0,0,0), new Cell(1,0,0,-1));
+            Assert.IsTrue(r == new Cell(0,0,0,0));
+            r = Cell.GetCommonRoot(new Cell(0, 0, 0, 0), new Cell(1, -3, 0, -5));
+            Assert.IsTrue(r == new Cell(0, 0, 0, 0));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_6()
+        {
+            var r = Cell.GetCommonRoot(new Cell(0, 0, 0, 0), new Cell(1, 0, 0, 0), new Cell(0));
+            Assert.IsTrue(r == new Cell(2));
+        }
+
+        #endregion
+
         #region touches origin
 
         [Test]
