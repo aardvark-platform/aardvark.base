@@ -1350,7 +1350,6 @@ namespace Aardvark.Base
         #region Predefined PixFormats
 
         public static readonly PixFormat ByteBW = new PixFormat(typeof(byte), Col.Format.BW);
-
         public static readonly PixFormat ByteGray = new PixFormat(typeof(byte), Col.Format.Gray);
         public static readonly PixFormat ByteBGR = new PixFormat(typeof(byte), Col.Format.BGR);
         public static readonly PixFormat ByteRGB = new PixFormat(typeof(byte), Col.Format.RGB);
@@ -1358,6 +1357,15 @@ namespace Aardvark.Base
         public static readonly PixFormat ByteRGBA = new PixFormat(typeof(byte), Col.Format.RGBA);
         public static readonly PixFormat ByteBGRP = new PixFormat(typeof(byte), Col.Format.BGRP);
         public static readonly PixFormat ByteRGBP = new PixFormat(typeof(byte), Col.Format.RGBP);
+
+        public static readonly PixFormat SByteBW = new PixFormat(typeof(sbyte), Col.Format.BW);
+        public static readonly PixFormat SByteGray = new PixFormat(typeof(sbyte), Col.Format.Gray);
+        public static readonly PixFormat SByteBGR = new PixFormat(typeof(sbyte), Col.Format.BGR);
+        public static readonly PixFormat SByteRGB = new PixFormat(typeof(sbyte), Col.Format.RGB);
+        public static readonly PixFormat SByteBGRA = new PixFormat(typeof(sbyte), Col.Format.BGRA);
+        public static readonly PixFormat SByteRGBA = new PixFormat(typeof(sbyte), Col.Format.RGBA);
+        public static readonly PixFormat SByteBGRP = new PixFormat(typeof(sbyte), Col.Format.BGRP);
+        public static readonly PixFormat SByteRGBP = new PixFormat(typeof(sbyte), Col.Format.RGBP);
 
         public static readonly PixFormat UShortGray = new PixFormat(typeof(ushort), Col.Format.Gray);
         public static readonly PixFormat UShortBGR = new PixFormat(typeof(ushort), Col.Format.BGR);
@@ -1367,6 +1375,14 @@ namespace Aardvark.Base
         public static readonly PixFormat UShortBGRP = new PixFormat(typeof(ushort), Col.Format.BGRP);
         public static readonly PixFormat UShortRGBP = new PixFormat(typeof(ushort), Col.Format.RGBP);
 
+        public static readonly PixFormat ShortGray = new PixFormat(typeof(short), Col.Format.Gray);
+        public static readonly PixFormat ShortBGR = new PixFormat(typeof(short), Col.Format.BGR);
+        public static readonly PixFormat ShortRGB = new PixFormat(typeof(short), Col.Format.RGB);
+        public static readonly PixFormat ShortBGRA = new PixFormat(typeof(short), Col.Format.BGRA);
+        public static readonly PixFormat ShortRGBA = new PixFormat(typeof(short), Col.Format.RGBA);
+        public static readonly PixFormat ShortBGRP = new PixFormat(typeof(short), Col.Format.BGRP);
+        public static readonly PixFormat ShortRGBP = new PixFormat(typeof(short), Col.Format.RGBP);
+
         public static readonly PixFormat UIntGray = new PixFormat(typeof(uint), Col.Format.Gray);
         public static readonly PixFormat UIntBGR = new PixFormat(typeof(uint), Col.Format.BGR);
         public static readonly PixFormat UIntRGB = new PixFormat(typeof(uint), Col.Format.RGB);
@@ -1374,6 +1390,14 @@ namespace Aardvark.Base
         public static readonly PixFormat UIntRGBA = new PixFormat(typeof(uint), Col.Format.RGBA);
         public static readonly PixFormat UIntBGRP = new PixFormat(typeof(uint), Col.Format.BGRP);
         public static readonly PixFormat UIntRGBP = new PixFormat(typeof(uint), Col.Format.RGBP);
+
+        public static readonly PixFormat IntGray = new PixFormat(typeof(int), Col.Format.Gray);
+        public static readonly PixFormat IntBGR = new PixFormat(typeof(int), Col.Format.BGR);
+        public static readonly PixFormat IntRGB = new PixFormat(typeof(int), Col.Format.RGB);
+        public static readonly PixFormat IntBGRA = new PixFormat(typeof(int), Col.Format.BGRA);
+        public static readonly PixFormat IntRGBA = new PixFormat(typeof(int), Col.Format.RGBA);
+        public static readonly PixFormat IntBGRP = new PixFormat(typeof(int), Col.Format.BGRP);
+        public static readonly PixFormat IntRGBP = new PixFormat(typeof(int), Col.Format.RGBP);
 
         public static readonly PixFormat FloatGray = new PixFormat(typeof(float), Col.Format.Gray);
         public static readonly PixFormat FloatBGR = new PixFormat(typeof(float), Col.Format.BGR);

@@ -24,21 +24,23 @@ namespace Aardvark.Data.Vrml97
         /// <param name="resolveDefUse"></param>
         /// <param name="annotate"></param>
         /// <param name="duplicateDefUseMaps"></param>
-        /// <returns></returns>
+        /// <returns>Parsed Vrml97 scene</returns>
         public static Vrml97Scene FromFile(string fileName, bool resolveDefUse, bool annotate, bool duplicateDefUseMaps = true)
         {
             if (fileName == null) return null;
 
-            var result = Parse(new Parser(fileName), resolveDefUse, annotate, duplicateDefUseMaps);
+            var parser = new Parser(fileName);
+            var result = Parse(parser, resolveDefUse, annotate, duplicateDefUseMaps);
+            parser.Dispose();
             return result;
         }
 
         /// <summary>
         /// Creates a Vrml97Scene from given stream.
         /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
+        /// <param name="stream">Stream of a vrml97 file</param>
+        /// <param name="fileName">Optional filename used to build absolute texture file paths</param>
+        /// <returns>Parsed Vrml97 scene</returns>
         public static Vrml97Scene FromStream(Stream stream, string fileName)
             => Parse(new Parser(stream, fileName), true, true);
 

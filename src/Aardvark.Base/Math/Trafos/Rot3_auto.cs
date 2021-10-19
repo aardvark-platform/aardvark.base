@@ -53,7 +53,7 @@ namespace Aardvark.Base
         {
             W = w;
             X = x; Y = y; Z = z;
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Aardvark.Base
         {
             W = w;
             X = v.X; Y = v.Y; Z = v.Z;
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Aardvark.Base
         public Rot3f(QuaternionF q)
         {
             W = q.W; X = q.X; Y = q.Y; Z = q.Z; 
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Aardvark.Base
         public Rot3f(QuaternionD q)
         {
             W = (float)q.W; X = (float)q.X; Y = (float)q.Y; Z = (float)q.Z; 
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Aardvark.Base
         public Rot3f(Rot3f r)
         {
             W = r.W; X = r.X; Y = r.Y; Z = r.Z; 
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Aardvark.Base
         public Rot3f(Rot3d r)
         {
             W = (float)r.W; X = (float)r.X; Y = (float)r.Y; Z = (float)r.Z; 
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Aardvark.Base
         {
             W = a[0];
             X = a[1]; Y = a[2]; Z = a[3];
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace Aardvark.Base
         {
             W = a[start];
             X = a[start + 1]; Y = a[start + 2]; Z = a[start + 3];
-            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+            Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
         }
 
         #endregion
@@ -192,7 +192,7 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-6f));
+                Debug.Assert(Fun.ApproximateEquals(NormSquared, 1, 1e-5f));
                 return new Rot3f(W, -X, -Y, -Z);
             }
         }

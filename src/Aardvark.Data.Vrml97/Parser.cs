@@ -46,15 +46,11 @@ namespace Aardvark.Data.Vrml97
     /// SymMapBase parseTree = parser.Perform();
     /// 
     /// </summary>
-    internal class Parser
+    internal class Parser : IDisposable
     {
+        Stream m_inputStream;
+
         #region Public interface.
-
-        public static Vrml97Scene FromFile(string fileName)
-            => new Parser(fileName).Perform();
-
-        public static Vrml97Scene FromStream(Stream stream, string fileName)
-            => new Parser(stream, fileName).Perform();
 
         /// <summary>
         /// Constructs a Parser for the given input stream.
@@ -68,6 +64,7 @@ namespace Aardvark.Data.Vrml97
         {
             m_result.TypeName = Vrml97Sym.Vrml97;
             m_result[Vrml97Sym.filename] = fileName;
+            m_inputStream = input;
             m_tokenizer = new Tokenizer(input);
         }
 
@@ -75,7 +72,9 @@ namespace Aardvark.Data.Vrml97
         /// Constructs a Parser for the given file.
         /// In order to actually parse the data, call the
         /// Perform method, which returns a SymMapBase
-       ///  containing the parse tree.
+        /// containing the parse tree.
+        /// This constructor creates an internal file stream and Dispose
+        /// needs to be called when the Parser is no longer needed.
         /// </summary>
         /// <param name="fileName">Input filename.</param>
         public Parser(string fileName)
@@ -83,13 +82,13 @@ namespace Aardvark.Data.Vrml97
             m_result.TypeName = Vrml97Sym.Vrml97;
             m_result[Vrml97Sym.filename] = fileName;
 
-            var fs = new FileStream(
-                fileName,
-                FileMode.Open, FileAccess.Read, FileShare.Read,
-                4096, false
-                );
+            m_inputStream = new FileStream(
+                                    fileName,
+                                    FileMode.Open, FileAccess.Read, FileShare.Read,
+                                    4096, false
+                                    );
 
-            m_tokenizer = new Tokenizer(fs);
+            m_tokenizer = new Tokenizer(m_inputStream);
         }
 
         /// <summary>
@@ -1211,6 +1210,15 @@ namespace Aardvark.Data.Vrml97
             result["unknownNode"] = true;
             result["content"] = sb.ToString();
             return result;
+        }
+
+        /// <summary>
+        /// Disposed the input stream: Either the FileStream created by
+        /// FromFile or the Stream passed when creating.
+        /// </summary>
+        public void Dispose()
+        {
+            m_inputStream.Dispose();
         }
 
         private delegate SymMapBase NodeParser(Tokenizer t);

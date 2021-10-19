@@ -55,10 +55,70 @@ namespace Aardvark.Tests
         }
 
         [Test]
-        public void CanCreateCell_FromBox()
+        public void CanCreateCell_FromBox_Centered()
         {
             var a = new Cell(new Box3d(new V3d(-1.3, 0, 0), new V3d(0.1, 1, 1)));
             Assert.IsTrue(a == new Cell(2));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Centered_Unit()
+        {
+            var a = new Cell(new Box3d(new V3d(-1, -1, -1), new V3d(1, 1, 1)));
+            Assert.IsTrue(a == new Cell(1));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox()
+        {
+            var a = new Cell(new Box3d(new V3d(0.1, 0, 0), new V3d(1.3, 1, 1)));
+            Assert.IsTrue(a == new Cell(0, 0, 0, 1));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBoxWithMaxIncludingOrigin()
+        {
+            var box = new Box3d(new V3d(4, -0.5, 539.5), new V3d(4.5, 0, 540));
+            var cell = new Cell(box);
+            Assert.IsTrue(cell.BoundingBox.Contains(box));
+        }
+
+        [Test]
+        public void CellBoundingBoxContainsBoxTheCellWasCreatedFrom()
+        {
+            var bb = new Box3d(new V3d(-7163.84, 256990.58, 702.67), new V3d(-7146.66, 257016.8, 717.04));
+            var cell = new Cell(bb);
+            var cellBoundingBox = cell.BoundingBox;
+            Assert.IsTrue(cellBoundingBox.Contains(bb));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_PowerOfTwo()
+        {
+            var a = new Cell(new Box3d(new V3d(0, 0, 0), new V3d(2, 2, 2)));
+            // box.Max is interpreted as inclusive, but Cell.Max is exclusive,
+            // therefore (2,2,2) is not contained in Box(0,0,0,1) and we
+            // have to use next bigger cell
+            Assert.IsTrue(a == new Cell(0, 0, 0, 2));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Point()
+        {
+            var bb = new Box3d(new V3d(1.3), new V3d(1.3));
+            var a = new Cell(bb);
+            Assert.IsTrue(a.BoundingBox.ApproximateEquals(bb));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Point_PowerOfTwo()
+        {
+            var bb = new Box3d(new V3d(long.MaxValue >> 1), new V3d(long.MaxValue >> 1));
+            var a = new Cell(bb);
+            // for cells far far away, floating point precision DOES matter,
+            // so we can't use the default tolerance of PositiveTinyValue.
+            var tolerance = Math.Pow(2.0, a.Exponent);
+            Assert.IsTrue(a.BoundingBox.ApproximateEquals(bb, tolerance));
         }
 
         [Test]
@@ -378,6 +438,67 @@ namespace Aardvark.Tests
             Assert.IsTrue(new Cell(-2, 0, 0, 0).Parent == new Cell(-1, 0, 0, 1));
             Assert.IsTrue(new Cell(-3, 0, 0, 0).Parent == new Cell(-2, 0, 0, 1));
             Assert.IsTrue(new Cell(-4, 0, 0, 0).Parent == new Cell(-2, 0, 0, 1));
+        }
+
+        #endregion
+
+        #region common root cell
+
+        [Test]
+        public void Cell_CommonRootCell_1()
+        {
+            var r = Cell.GetCommonRoot(new Cell(1, 2, 3, 4), new Cell(1, 2, 3, 4));
+            Assert.IsTrue(r == new Cell(1, 2, 3, 4));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_2()
+        {
+            var r = Cell.GetCommonRoot(new Cell(-5), new Cell(-5));
+            Assert.IsTrue(r == new Cell(-5));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_3()
+        {
+            var r = Cell.GetCommonRoot(new Cell(3), new Cell(2));
+            Assert.IsTrue(r == new Cell(3));
+            r = Cell.GetCommonRoot(new Cell(2), new Cell(3));
+            Assert.IsTrue(r == new Cell(3));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_4a()
+        {
+            var r = Cell.GetCommonRoot(new Cell(1), new Cell(0,0,0,0));
+            Assert.IsTrue(r == new Cell(1));
+            r = Cell.GetCommonRoot(new Cell(0, 0, 0, 0), new Cell(1));
+            Assert.IsTrue(r == new Cell(1));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_4b()
+        {
+            var r = Cell.GetCommonRoot(new Cell(1), new Cell(-1, 0, 0, 0));
+            Assert.IsTrue(r == new Cell(1));
+            r = Cell.GetCommonRoot(new Cell(0, -1, 0, 0), new Cell(1));
+            Assert.IsTrue(r == new Cell(1));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_5()
+        {
+            var r = Cell.GetCommonRoot(new Cell(0,0,0,0), new Cell(1,0,0,-1));
+            Assert.IsTrue(r == new Cell(0,0,0,0));
+            r = Cell.GetCommonRoot(new Cell(0, 0, 0, 0), new Cell(1, -3, 0, -5));
+            Assert.IsTrue(r == new Cell(0, 0, 0, 0));
+        }
+
+        [Test]
+        public void Cell_CommonRootCell_6()
+        {
+            var r = Cell.GetCommonRoot(new Cell(0, 0, 0, 0), new Cell(1, 0, 0, 0), new Cell(0));
+            Assert.IsTrue(r == new Cell(2));
         }
 
         #endregion

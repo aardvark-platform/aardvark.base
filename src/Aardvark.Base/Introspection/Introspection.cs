@@ -37,10 +37,10 @@ namespace Aardvark.Base
             var path = CustomCacheDirectory;
             if (string.IsNullOrWhiteSpace(path))
             {
-                path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 if (string.IsNullOrWhiteSpace(path))
                 {
-                    Report.Warn("Environment.SpecialFolder.ApplicationData does not exist!");
+                    Report.Warn("Environment.SpecialFolder.LocalApplicationData does not exist!");
                     path = "Cache"; // using ./Cache
                 }
                 else
@@ -101,7 +101,7 @@ namespace Aardvark.Base
             return scheme switch
             {
                 NamingScheme.Version =>   asm.GetName().Version.ToString(),
-                NamingScheme.Timestamp => File.GetLastWriteTimeUtc(asm.Location).ToBinary().ToString(),
+                NamingScheme.Timestamp => IntrospectionProperties.GetLastWriteTimeUtc(asm).ToBinary().ToString(),
                 _ => ""
             };
         }
@@ -129,6 +129,11 @@ namespace Aardvark.Base
         /// </summary>
         public static bool PluginsEnabled = true;
 
+        /// <summary>
+        /// Whether Aardvark.Init should unpack native libraries
+        /// </summary>
+        public static bool NativeLibraryUnpackingAllowed = true;
+
 
         public static string CurrentEntryPath => (CurrentEntryAssembly != null)
             ? Path.GetDirectoryName(CurrentEntryAssembly.Location)
@@ -139,12 +144,9 @@ namespace Aardvark.Base
             new HashSet<string>(
                 new[]
                 {
-                    "Aardvark.Unmanaged",
-                    "Aardvark.Unmanaged.Diagnostics",
                     "ASift.CLI",
                     "CUDA.NET",
                     "Emgu.CV",
-                    "FreeImageNET",
                     "levmarCLI",
                     "LSDCli",
                     "OpenNI.Net",
@@ -157,7 +159,21 @@ namespace Aardvark.Base
                     "SlamToroCli",
                     "System",
                     "WindowsBase",
-                    "OpenTK"
+                    "OpenTK",
+                    "Suave",
+                    "Newtonsoft.Json",
+                    "Aether",
+                    "Ceres",
+                    "CommonMark",
+                    "CSharp.Data.Adaptive",
+                    "FSharp.Data.Adaptive",
+                    "ICSharpCode.SharpZipLib",
+                    "LibTessDotNet",
+                    "SixLabors.ImageSharp",
+                    "netstandard",
+                    "FsPickler",
+                    "WindowsFormsIntegration",
+                    "Unofficial.Typography",
                 }
             );
 
@@ -172,13 +188,13 @@ namespace Aardvark.Base
                      name.StartsWith("Microsoft") ||
                      name.StartsWith("LidorSystems") ||
                      name.StartsWith("WeifenLuo.") ||
-                     name.StartsWith("OpenCV") ||
+                     name.StartsWith("OpenCV") && name != "OpenCVSharp" || // OpenCVSharp.dll contains native assemblies that need to be unpacked
                      name.StartsWith("nunit.") ||
                      name.StartsWith("Extreme.Numerics") ||
                      name.StartsWith("fftwlib") ||
                      name.StartsWith("GraphCutsCLI") ||
                      name.StartsWith("Interop.MLApp") ||
-                     name.StartsWith("IPP") ||
+                     name.StartsWith("IPP") && name != "IPP" || // IPP.dll contains native assemblies that need to be unpacked
                      name.StartsWith("IronRuby") ||
                      name.StartsWith("MapTools") ||
                      name.StartsWith("MetaDataExtractor") ||
@@ -189,7 +205,6 @@ namespace Aardvark.Base
                      name.StartsWith("OpenTK") ||
                      name.StartsWith("Kitware") ||
                      name.StartsWith("ICSharpCode") ||
-                     name.StartsWith("WindowsFormsIntegration") ||
                      name.StartsWith("Roslyn") ||
                      name.StartsWith("SharpDX") ||
                      name.StartsWith("Aardvark.Jynx.Native") ||
@@ -198,7 +213,12 @@ namespace Aardvark.Base
                      name.StartsWith("IKVM") ||
                      name.StartsWith("Super") ||
                      name.StartsWith("Java") ||
-                     name.StartsWith("OpenTK"));
+                     name.StartsWith("PresentationFramework") ||
+                     name.StartsWith("FShade") ||
+                     name.StartsWith("Xceed") ||
+                     name.StartsWith("UIAutomation") ||
+                     name.StartsWith("Uncodium")
+                     );
         }
 
         /// <summary>
@@ -228,8 +248,31 @@ namespace Aardvark.Base
                 a =>
                 {
                     if (a.FullName == null) return false;
-                    else return AssemblyFilter(a.FullName);
+                    else return AssemblyFilter(a.GetName().Name);
                 };
+
+        public static string BundleEntryPoint = "";
+
+        /// <summary>
+        /// Robustly tries to get DateTime also for bundled deployments. Use BundleEntryPoint to register dummy entry as a first fallback. returns DateTime.Now if all fallbacks fail.
+        /// </summary>
+        public static Func<Assembly, DateTime> GetLastWriteTimeUtc = (Assembly assembly) =>
+        {
+            if (!String.IsNullOrEmpty(assembly.Location) && File.Exists(assembly.Location)) // first choise - won't work for bundled deplyoments?
+            {
+                return File.GetLastWriteTimeUtc(assembly.Location);
+
+            }
+            else if (File.Exists(BundleEntryPoint)) // fallback 1 - use bundle entrypoint
+            {
+                return File.GetLastWriteTimeUtc(BundleEntryPoint);
+            }
+            else
+            {
+                // no option left.... 
+                return DateTime.Now;
+            }
+        };
     }
 
     public static class Introspection
@@ -541,19 +584,30 @@ namespace Aardvark.Base
             Func<T[], IEnumerable<string>> encode
             )
         {
-            var cacheFileName = GetQueryCacheFilename(a, discriminator.ToGuid());
-            var assemblyTimeStamp = File.GetLastWriteTimeUtc(a.Location);
-            if (File.Exists(cacheFileName))
+            var cacheFileName = "";
+            var assemblyTimeStamp = DateTime.MinValue;
+
+            // whatever happens, don't halt just because of caching... this actually happens for self-contained deployments https://github.com/aardvark-platform/aardvark.base/issues/65
+            try
             {
-                /* var cacheFileTimeStamp = */ File.GetLastWriteTimeUtc(cacheFileName);
-                var lines = File.ReadAllLines(cacheFileName);
-                var header = lines.Length > 0 ? CacheFileHeader.Parse(lines[0]) : null;
-                if (header != null && header.TimeStampOfCachedFile == assemblyTimeStamp)
+                cacheFileName = GetQueryCacheFilename(a, discriminator.ToGuid());
+                assemblyTimeStamp = IntrospectionProperties.GetLastWriteTimeUtc(a);
+
+                // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
+                if (!String.IsNullOrEmpty(cacheFileName) && File.Exists(cacheFileName))
                 {
-                    // return cached types
-                    Report.Line(4, "[cache hit ] {0}", a);
-                    return decode(lines.Skip(1)).ToArray();
-                }
+                    var lines = File.ReadAllLines(cacheFileName);
+                    var header = lines.Length > 0 ? CacheFileHeader.Parse(lines[0]) : null;
+                    if (header != null && header.TimeStampOfCachedFile == assemblyTimeStamp)
+                    {
+                        // return cached types
+                        Report.Line(4, "[cache hit ] {0}", a);
+                        return decode(lines.Skip(1)).ToArray();
+                    }
+                } 
+            } catch(Exception e)
+            {
+                Report.Warn("Could not get cache for {1}: {0}", e.Message, a.FullName);
             }
 
             Report.Line(4, "[cache miss] {0}", a);
@@ -585,13 +639,27 @@ namespace Aardvark.Base
             
             var result = createResult(ts).ToArray();
 
-            // write cache file
-            var headerLine =
-                new CacheFileHeader { Version = 1, TimeStampOfCachedFile = assemblyTimeStamp }
-                .ToString()
-                .IntoIEnumerable()
-                ;
-            File.WriteAllLines(cacheFileName, headerLine.Concat(encode(result)).ToArray());
+
+            // whatever happens, dont halt everything just because caching fails
+            try
+            {
+                // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
+                if (!string.IsNullOrEmpty(cacheFileName))
+                {
+
+                    // write cache file
+                    var headerLine =
+                        new CacheFileHeader { Version = 1, TimeStampOfCachedFile = assemblyTimeStamp }
+                        .ToString()
+                        .IntoIEnumerable()
+                        ;
+
+                    File.WriteAllLines(cacheFileName, headerLine.Concat(encode(result)).ToArray());
+                }
+            } catch(Exception e)
+            {
+                Report.Warn("Could not write cache for {1}: {0}", e.Message, a.FullName);
+            }
 
             return result;
         }
@@ -839,9 +907,16 @@ namespace Aardvark.Base
             var cache = ReadCacheFile();
             var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
 
-            var folder = IntrospectionProperties.CurrentEntryPath;
+            var folder = new string[0];
+
+            // attach folder contents if possilbe (e.g. not possible in bundle deployments if no bundle entry is specified)
+            if (IntrospectionProperties.CurrentEntryPath != null)
+                folder = Directory.EnumerateFiles(IntrospectionProperties.CurrentEntryPath).ToArray();
+            else if (IntrospectionProperties.BundleEntryPoint != null)
+                folder = Directory.EnumerateFiles(Path.GetDirectoryName(IntrospectionProperties.BundleEntryPoint)).ToArray();
+
             string[] assemblies =
-                    Directory.EnumerateFiles(folder)
+                    folder
                         .Where(p => { var ext = Path.GetExtension(p).ToLowerInvariant(); return ext == ".dll" || ext == ".exe"; })
                         .Where(p => {
                             var name = Path.GetFileNameWithoutExtension(p);
@@ -931,6 +1006,7 @@ namespace Aardvark.Base
 
                 foreach (var p in paths)
                 {
+
                     try
                     {
                         var ass = Assembly.LoadFile(p);
@@ -1353,6 +1429,7 @@ namespace Aardvark.Base
         /// 
         /// Setting NativeLibraryPath to the application path and SeparateLibraryDirectories to false will result in the "old" style of 
         /// loading native libs, that is not compatible if the application does not have write permission to the directory (e.g. ProgramFiles).
+        [Obsolete("using explicit native library path is no longer possble https://github.com/aardvark-platform/aardvark.base/issues/64")]
         public static string NativeLibraryPath = Path.Combine(Path.GetTempPath(), "aardvark-native");
 
         /// Specify if native libraries should be extracted each to its own sub folder or directory to the NativeLibraryPath
@@ -1394,6 +1471,7 @@ namespace Aardvark.Base
                     {
                         using (var s = assembly.GetManifestResourceStream("native.zip"))
                         {
+#pragma warning disable CS0618 // Type or member is obsolete
                             string dstFolder = NativeLibraryPath;
                             if (SeparateLibraryDirectories)
                             {
@@ -1404,7 +1482,7 @@ namespace Aardvark.Base
                                 var folderName = string.Format("{0}-{1}-{2}", assembly.GetName().Name, hash.ToString(), bits);
                                 dstFolder = Path.Combine(NativeLibraryPath, folderName);
                             }
-
+#pragma warning restore CS0618 // Type or member is obsolete
                             s_nativePaths[assembly] = dstFolder;
                             s_allPaths = null;
                             path = dstFolder;
@@ -1784,23 +1862,27 @@ namespace Aardvark.Base
 
             Action<Assembly> loadNativeDependencies = e =>
                 {
-                    try
+                    if (IntrospectionProperties.NativeLibraryUnpackingAllowed)
                     {
-                        // https://github.com/aardvark-platform/aardvark.base/issues/61
-                        var shouldLoad = IntrospectionProperties.UnpackNativeLibrariesFilter(e);
-                        if (shouldLoad)
+                        try
                         {
-                            Report.Begin(4, "trying to load native dependencies for {0}", e.FullName);
-                            LoadNativeDependencies(e);
-                            Report.End(4);
+                            // https://github.com/aardvark-platform/aardvark.base/issues/61
+                            var shouldLoad = IntrospectionProperties.UnpackNativeLibrariesFilter(e);
+                            if (shouldLoad)
+                            {
+                                Report.Begin(4, "trying to load native dependencies for {0}", e.FullName);
+                                LoadNativeDependencies(e);
+                                Report.End(4);
+                            }
+                            else
+                            {
+                                Report.Line(4, "skipped LoadNativeDependencies for {0}", e.FullName);
+                            }
                         }
-                        else
+                        catch (Exception ex) // actually catching exns here might not even be possible due to mscorlib recursive resource bug detection
                         {
-                            Report.Line(4, "skipped LoadNativeDependencies for {0}", e.FullName);
+                            Report.Warn("Could not load native dependencies for {0}:{1}", e.FullName, ex.StackTrace.ToString());
                         }
-                    } catch(Exception ex) // actually catching exns here might not even be possible due to mscorlib recursive resource bug detection
-                    {
-                        Report.Warn("Could not load native dependencies for {0}:{1}", e.FullName, ex.StackTrace.ToString());
                     }
                 };
 
@@ -1809,20 +1891,28 @@ namespace Aardvark.Base
                 loadNativeDependencies(e.LoadedAssembly);
             };
 
-            foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
+            if (IntrospectionProperties.NativeLibraryUnpackingAllowed)
             {
-                loadNativeDependencies(a);
+                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    loadNativeDependencies(a);
+                }
+            }
+            else
+            {
+                Report.Line(4, "Skipping native dependency loading since NativeLibraryUnpackingAllowed = false");
             }
 
             if (IntrospectionProperties.PluginsEnabled)
             {
                 Report.BeginTimed("Loading plugins");
                 var pluginsList = LoadPlugins();
+                Report.End();
 
-                Report.End();
                 LoadAll(pluginsList);
-                Report.End();
             }
+
+            Report.End();
         }
 
         private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
@@ -1836,7 +1926,9 @@ namespace Aardvark.Base
 
             foreach (var ass in assemblies)
             {
+                Report.BeginTimed(10, "GetAllMethodsWithAttribute: {0}", String.IsNullOrEmpty(ass.FullName) ? "assembly with no name" : ass.FullName);
                 var initMethods = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(ass).Select(t => t.Item1).Distinct().ToArray();
+                Report.EndTimed(10);
 
                 foreach (var mi in initMethods)
                 {
