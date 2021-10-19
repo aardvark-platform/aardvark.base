@@ -1,3 +1,47 @@
+### 5.1.20
+- add Cell.GetCommonRoot(...) and corresponding constructor overloads; same for Cell2d
+
+### 5.1.19
+- fixed cell-from-box constructor for boxes with Max including 0.0
+- Relax asserts in matrix and rot methods and constructors
+
+### 5.1.18
+- cleaned up and fixed cell construction from boxes
+
+### 5.1.17
+- Add Fun.Log2CeilingInt
+- Fix power of two edge cases in Cell and Cell2d
+
+### 5.1.16
+- updated build script
+- fixed PixImage.CreateRaw loader fallback
+- fixed default AssemblyFilter
+- fixed Introspection ignoring GLSLangSharp
+- unbreak Cell to work with fixed Log2Int (same for Cell2d)
+
+### 5.1.15
+ - added functions for computing mipmap level count and size
+ - added support for signed integer PixImages
+ - changed default introspection cache location to LocalApplicationData
+ - fixed Log2Int
+ - fixed missing FileStream Dispose in Vrml97 parser
+
+### 5.1.14
+ - fixed Introspection caching
+
+### 5.1.13
+ - added Plane2d.Intersects overload that was removed accidentally
+ 
+### 5.1.12
+ - added missing XmlIgnore attribute to vector swizzles 
+ - added ValuesWithKeyEnumerator to Dicts
+ - preparations for .net 5 single file deployment
+ - added missing finite checks to vectors and matrices
+ - added vector variants for Fun.FloatToBits and Fun.FloatFromBits
+ - fixed Box2d - Line2d intersection test
+ - fixed Plane2d - Ray2d intersection test
+ - fixed polygon extensions
+
 ### 5.1.11
  - added some IAssemblerStream methods (AddInt, MulInt, etc.)
  

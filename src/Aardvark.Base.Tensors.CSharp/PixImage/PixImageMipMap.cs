@@ -195,7 +195,7 @@ namespace Aardvark.Base
             }
 
             var count = options.Count == 0
-                ? 1 + (int)Fun.Log2(Fun.Max(size.X, size.Y)).Floor()
+                ? Fun.MipmapLevels(size)
                 : options.Count;
 
             var mipMaps = new PixImage<T>[count];
@@ -203,8 +203,7 @@ namespace Aardvark.Base
 
             for (int i = 1; i < count; i++)
             {
-                //size = (V2i)((V2d)size * 0.5);   // hardware mipmaps implemented in dx/gl also use round down.
-                size = new V2i(Fun.Max(1, size.X >> 1), Fun.Max(1, size.Y >> 1)); // half size + floor
+                size = Fun.MipmapLevelSize(size, 1);
                 mipMaps[i] = mipMaps[i - 1].Resized(size, options.Interpolation);
             }
 

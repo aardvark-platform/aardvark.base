@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
@@ -3511,6 +3512,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Pown(this int x, int y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -3562,6 +3564,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Pown(this uint x, uint y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -3582,6 +3585,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint Pown(this uint x, int y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -3635,6 +3639,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Pown(this long x, long y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -3655,6 +3660,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Pown(this long x, int y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -3707,6 +3713,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Pown(this ulong x, ulong y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -3727,6 +3734,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong Pown(this ulong x, int y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -3767,6 +3775,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pown(this float x, int y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -3803,6 +3812,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Pown(this double x, int y)
         {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -5034,10 +5044,15 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must be in the range [0,62].
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long PowerOfTwo(this long x) => 1L << (int)x;
+        public static long PowerOfTwo(this long x)
+        {
+            Debug.Assert(x >= 0 && x <= 62);
+            return 1L << (int)x;
+        }
 
         /// <summary>
         /// Returns 2 raised to the power of the value.

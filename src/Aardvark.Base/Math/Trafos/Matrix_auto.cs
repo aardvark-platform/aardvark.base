@@ -6221,6 +6221,28 @@ namespace Aardvark.Base
             }
         }
 
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11);
+            }
+        }
+
         public bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -8012,6 +8034,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M22f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M22f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M22f m)
             => m.AnyNaN;
 
@@ -9037,6 +9067,28 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 2 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11);
             }
         }
 
@@ -10729,6 +10781,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M22d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M22d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M22d m)
@@ -17183,6 +17243,28 @@ namespace Aardvark.Base
             }
         }
 
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12);
+            }
+        }
+
         public bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -18819,6 +18901,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M23f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M23f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M23f m)
             => m.AnyNaN;
 
@@ -19865,6 +19955,28 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 3 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12);
             }
         }
 
@@ -21390,6 +21502,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M23d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M23d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M23d m)
@@ -29255,7 +29375,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f Rotation(V3f normalizedAxis, float angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M33f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -29317,8 +29437,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotateInto(V3f from, V3f into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-5f));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M33f)(Rot3f.RotateInto(from, into));
         }
 
@@ -29636,6 +29756,30 @@ namespace Aardvark.Base
             set
             {
                 fixed (float* ptr = &M00) { ptr[row * 3 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22);
             }
         }
 
@@ -31855,6 +31999,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M33f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M33f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M33f m)
             => m.AnyNaN;
 
@@ -32936,7 +33088,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d Rotation(V3d normalizedAxis, double angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M33d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -32998,8 +33150,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotateInto(V3d from, V3d into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-10));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M33d)(Rot3d.RotateInto(from, into));
         }
 
@@ -33317,6 +33469,30 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 3 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22);
             }
         }
 
@@ -35420,6 +35596,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M33d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M33d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M33d m)
@@ -43069,7 +43253,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f Rotation(V3f normalizedAxis, float angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M34f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -43131,8 +43315,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotateInto(V3f from, V3f into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-5f));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M34f)(Rot3f.RotateInto(from, into));
         }
 
@@ -43465,6 +43649,30 @@ namespace Aardvark.Base
             set
             {
                 fixed (float* ptr = &M00) { ptr[row * 4 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || Fun.IsFinite(M03) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || Fun.IsFinite(M13) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22) || Fun.IsFinite(M23);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && Fun.IsFinite(M03) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && Fun.IsFinite(M13) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22) && Fun.IsFinite(M23);
             }
         }
 
@@ -45475,6 +45683,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M34f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M34f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M34f m)
             => m.AnyNaN;
 
@@ -46488,7 +46704,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d Rotation(V3d normalizedAxis, double angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M34d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -46550,8 +46766,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotateInto(V3d from, V3d into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-10));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M34d)(Rot3d.RotateInto(from, into));
         }
 
@@ -46884,6 +47100,30 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 4 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || Fun.IsFinite(M03) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || Fun.IsFinite(M13) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22) || Fun.IsFinite(M23);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && Fun.IsFinite(M03) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && Fun.IsFinite(M13) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22) && Fun.IsFinite(M23);
             }
         }
 
@@ -48766,6 +49006,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M34d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M34d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M34d m)
@@ -57939,7 +58187,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f Rotation(V3f normalizedAxis, float angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M44f)(Rot3f.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -58001,8 +58249,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotateInto(V3f from, V3f into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-5f));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-5f));
             return (M44f)(Rot3f.RotateInto(from, into));
         }
 
@@ -58371,6 +58619,32 @@ namespace Aardvark.Base
             set
             {
                 fixed (float* ptr = &M00) { ptr[row * 4 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || Fun.IsFinite(M03) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || Fun.IsFinite(M13) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22) || Fun.IsFinite(M23) || 
+                    Fun.IsFinite(M30) || Fun.IsFinite(M31) || Fun.IsFinite(M32) || Fun.IsFinite(M33);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && Fun.IsFinite(M03) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && Fun.IsFinite(M13) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22) && Fun.IsFinite(M23) && 
+                    Fun.IsFinite(M30) && Fun.IsFinite(M31) && Fun.IsFinite(M32) && Fun.IsFinite(M33);
             }
         }
 
@@ -61031,6 +61305,14 @@ namespace Aardvark.Base
         #region Special Floating Point Value Checks
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M44f m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M44f m)
+            => m.AllFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M44f m)
             => m.AnyNaN;
 
@@ -62205,7 +62487,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d Rotation(V3d normalizedAxis, double angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M44d)(Rot3d.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -62267,8 +62549,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotateInto(V3d from, V3d into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, 1e-10));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, 1e-10));
             return (M44d)(Rot3d.RotateInto(from, into));
         }
 
@@ -62637,6 +62919,32 @@ namespace Aardvark.Base
             set
             {
                 fixed (double* ptr = &M00) { ptr[row * 4 + column] = value; }
+            }
+        }
+
+        public bool AnyFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) || Fun.IsFinite(M01) || Fun.IsFinite(M02) || Fun.IsFinite(M03) || 
+                    Fun.IsFinite(M10) || Fun.IsFinite(M11) || Fun.IsFinite(M12) || Fun.IsFinite(M13) || 
+                    Fun.IsFinite(M20) || Fun.IsFinite(M21) || Fun.IsFinite(M22) || Fun.IsFinite(M23) || 
+                    Fun.IsFinite(M30) || Fun.IsFinite(M31) || Fun.IsFinite(M32) || Fun.IsFinite(M33);
+            }
+        }
+
+        public bool AllFinite
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return 
+                    Fun.IsFinite(M00) && Fun.IsFinite(M01) && Fun.IsFinite(M02) && Fun.IsFinite(M03) && 
+                    Fun.IsFinite(M10) && Fun.IsFinite(M11) && Fun.IsFinite(M12) && Fun.IsFinite(M13) && 
+                    Fun.IsFinite(M20) && Fun.IsFinite(M21) && Fun.IsFinite(M22) && Fun.IsFinite(M23) && 
+                    Fun.IsFinite(M30) && Fun.IsFinite(M31) && Fun.IsFinite(M32) && Fun.IsFinite(M33);
             }
         }
 
@@ -65192,6 +65500,14 @@ namespace Aardvark.Base
         #endregion
 
         #region Special Floating Point Value Checks
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AnyFinite(M44d m)
+            => m.AnyFinite;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool AllFinite(M44d m)
+            => m.AllFinite;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AnyNaN(M44d m)

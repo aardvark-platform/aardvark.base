@@ -661,12 +661,12 @@ namespace Aardvark.Base
         /// <summary>
         /// the bitmask used for the float exponent
         /// </summary>
-        public const uint FloatExponentMask = 0x7F000000;
+        public const uint FloatExponentMask = 0x7F800000;
 
         /// <summary>
         /// the bitmask used for the float mantissa
         /// </summary>
-        public const uint FloatMantissaMask = 0x00FFFFFF;
+        public const uint FloatMantissaMask = 0x007FFFFF;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe int Log2IntRef(ref double v)
@@ -674,12 +674,7 @@ namespace Aardvark.Base
             fixed (double* ptr = &v)
             {
                 var a = (ulong*)ptr;
-                var shift = 1022;
-
-                if ((*a & DoubleMantissaMask) == 0)
-                    shift = 1023;
-
-                return (int)(((*a & DoubleExponentMask) >> DoubleMantissaBits)) - shift;
+                return (int)(((*a & DoubleExponentMask) >> DoubleMantissaBits)) - 1023;
             }
         }
 
@@ -689,34 +684,50 @@ namespace Aardvark.Base
             fixed (float* ptr = &v)
             {
                 var a = (uint*)ptr;
-                var shift = 126;
+                return (int)(((*a & FloatExponentMask) >> FloatMantissaBits)) - 127;
+            }
+        }
 
-                if ((*a & FloatMantissaMask) == 0)
-                    shift = 127;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe int Log2CeilingIntRef(ref double v)
+        {
+            fixed (double* ptr = &v)
+            {
+                var a = (ulong*)ptr;
+                var shift = (*a & DoubleMantissaMask) > 0 ? 1022 : 1023;
+                return (int)(((*a & DoubleExponentMask) >> DoubleMantissaBits)) - shift;
+            }
+        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static unsafe int Log2CeilingIntRef(ref float v)
+        {
+            fixed (float* ptr = &v)
+            {
+                var a = (uint*)ptr;
+                var shift = (*a & FloatMantissaMask) > 0 ? 126 : 127;
                 return (int)(((*a & FloatExponentMask) >> FloatMantissaBits)) - shift;
             }
         }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this double v)
-        {
-            return Log2IntRef(ref v);
-        }
+            => Log2IntRef(ref v);
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this float v)
-        {
-            return Log2IntRef(ref v);
-        }
+            => Log2IntRef(ref v);
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this int v)
         {
             #if NETCOREAPP3_1
@@ -727,8 +738,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this uint v)
         {
             #if NETCOREAPP3_1
@@ -739,8 +751,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this long v)
         {
             #if NETCOREAPP3_1
@@ -751,8 +764,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards -inf
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this ulong v)
         {
             #if NETCOREAPP3_1
@@ -761,6 +775,109 @@ namespace Aardvark.Base
                 return Log2Int((double)v);
             #endif
         }
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2CeilingInt(this double v)
+            => Log2CeilingIntRef(ref v);
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2CeilingInt(this float v)
+            => Log2CeilingIntRef(ref v);
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2CeilingInt(this int v)
+            => Log2CeilingInt((float)v);
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2CeilingInt(this uint v)
+            => Log2CeilingInt((float)v);
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2CeilingInt(this long v)
+            => Log2CeilingInt((double)v);
+
+        /// <summary>
+        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Log2CeilingInt(this ulong v)
+            => Log2CeilingInt((double)v);
+
+        #endregion
+
+        #region Mipmap levels
+
+        /// <summary>
+        /// Computes the number of 3D images in a mipmap chain with the given base size.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <returns>The total number of levels.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MipmapLevels(V3i baseSize)
+            => 1 + Log2Int(baseSize.MaxElement);
+
+        /// <summary>
+        /// Computes the number of 2D images in a mipmap chain with the given base size.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <returns>The total number of levels.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MipmapLevels(V2i baseSize)
+            => 1 + Log2Int(baseSize.MaxElement);
+
+        /// <summary>
+        /// Computes the number of 1D images in a mipmap chain with the given base size.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <returns>The total number of levels.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MipmapLevels(int baseSize)
+            => 1 + Log2Int(baseSize);
+
+        /// <summary>
+        /// Computes the size of a 3D image in a mipmap chain.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <param name="level">The level of the queried image (base level = 0).</param>
+        /// <returns>The size of the image at the given level.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3i MipmapLevelSize(V3i baseSize, int level)
+            => Max(baseSize >> level, 1);
+
+        /// <summary>
+        /// Computes the size of a 2D image in a mipmap chain.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <param name="level">The level of the queried image (base level = 0).</param>
+        /// <returns>The size of the image at the given level.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2i MipmapLevelSize(V2i baseSize, int level)
+            => Max(baseSize >> level, 1);
+
+        /// <summary>
+        /// Computes the size of a 1D image in a mipmap chain.
+        /// </summary>
+        /// <param name="baseSize">The size of the image in the base level.</param>
+        /// <param name="level">The level of the queried image (base level = 0).</param>
+        /// <returns>The size of the image at the given level.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int MipmapLevelSize(int baseSize, int level)
+            => Max(baseSize >> level, 1);
 
         #endregion
 

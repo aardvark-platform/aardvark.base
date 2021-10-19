@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 
@@ -925,6 +926,7 @@ namespace Aardvark.Base
             //# var cast = Meta.UnsignedTypes.Contains(t) ? "(uint)" : "(int)";
             return (__t.Name__)Pown(__cast__x, y);
             //# } else {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -951,6 +953,7 @@ namespace Aardvark.Base
             //# var cast = Meta.UnsignedTypes.Contains(t) ? "(uint)" : "(int)";
             return (__t.Name__)Pown(__cast__x, y);
             //# } else {
+            Debug.Assert(y >= 0);
             if (y == 0) return 1;
             if (y == 1) return x;
             if (y == 2) return x * x;
@@ -1154,10 +1157,15 @@ namespace Aardvark.Base
         //# });
         /// <summary>
         /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must not be negative.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long PowerOfTwo(this long x) => 1L << (int)x;
+        public static long PowerOfTwo(this long x)
+        {
+            Debug.Assert(x >= 0);
+            return 1L << (int)x;
+        }
 
         //# fdtypes.ForEach(t => {
         /// <summary>

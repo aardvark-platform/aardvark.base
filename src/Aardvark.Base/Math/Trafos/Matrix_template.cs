@@ -67,6 +67,8 @@ namespace Aardvark.Base
     //#     var xyznsub1 = "XYZW".Substring(0, nsub1);
     //#     var xyzmsub1 = "XYZW".Substring(0, msub1);
     //#     var getptr = "&M00";
+    //#     var isDouble = (ftype == "double");
+    //#     var assertEps = isDouble ? "1e-10" : "1e-5f";
     #region __nmtype__
 
     [DataContract]
@@ -476,7 +478,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ Rotation(V__x3t__ normalizedAxis, __ftype__ angleInRadians)
         {
-            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(normalizedAxis.LengthSquared.ApproximateEquals(1, __assertEps__));
             return (__nmtype__)(Rot__x3t__.Rotation(normalizedAxis, angleInRadians));
         }
 
@@ -538,8 +540,8 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotateInto(V__x3t__ from, V__x3t__ into)
         {
-            Debug.Assert(from.LengthSquared.ApproximateEquals(1));
-            Debug.Assert(into.LengthSquared.ApproximateEquals(1));
+            Debug.Assert(from.LengthSquared.ApproximateEquals(1, __assertEps__));
+            Debug.Assert(into.LengthSquared.ApproximateEquals(1, __assertEps__));
             return (__nmtype__)(Rot__x3t__.RotateInto(from, into));
         }
 
@@ -815,8 +817,8 @@ namespace Aardvark.Base
         }
 
         //# if (isReal) {
-        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
-        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var condArray = new[] { "Finite", "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { "Fun", ftype, ftype, ftype, ftype, "Fun" };
         //# var quantArray = new[] { "Any", "All" };
         //# var actArray = new[] { oror, andand };
         //# condArray.ForEach(scopeArray, (cond, scope) => {
@@ -2188,12 +2190,10 @@ namespace Aardvark.Base
 
         #region Special Floating Point Value Checks
 
-        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
-        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var condArray = new[] { "Finite", "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
         //# var quantArray = new[] { "Any", "All" };
-        //# var actArray = new[] { oror, andand };
-        //# condArray.ForEach(scopeArray, (cond, scope) => {
-        //# quantArray.ForEach(actArray, (qant, act) => {
+        //# condArray.ForEach(cond => {
+        //# quantArray.ForEach(qant => {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __qant____cond__(__nmtype__ m)
             => m.__qant____cond__;

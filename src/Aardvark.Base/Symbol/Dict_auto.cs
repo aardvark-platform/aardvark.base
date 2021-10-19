@@ -1138,6 +1138,78 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Gets an enumerator for values with key. It is only useful
+        /// if multiple item with the same key are allowed.
+        /// Should be preferred over ValuesWithKey enumeration in 
+        /// performance critical code.
+        /// </summary>
+        public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(TKey key)
+        {
+            return new ValuesWithKeyEnumerator(this, key);
+        }
+
+        public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
+        {
+            Dict<TKey, TValue> m_dict;
+            TKey m_key;
+            int m_hash;
+            int m_extraIndex;
+            TValue m_current;
+
+            public ValuesWithKeyEnumerator(Dict<TKey, TValue> dict, TKey key)
+            {
+                m_dict = dict;
+                m_key = key;
+                m_hash = key.GetHashCode();
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+
+            public TValue Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex == int.MaxValue)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var fi = ((uint)m_hash) % m_dict.m_capacity;
+                    m_extraIndex = fa[fi].Next;
+                    if (m_extraIndex == 0) return false;
+                    if (fa[fi].Item.Hash == m_hash
+                        && m_key.Equals(fa[fi].Item.Key))
+                    {
+                        m_current = fa[fi].Item.Value;
+                        return true;
+                    }
+                }
+                if (m_extraIndex > 0)
+                {
+                    var ea = m_dict.m_extraArray;
+                    do
+                    {
+                        var valid = ea[m_extraIndex].Item.Hash == m_hash
+                                    && m_key.Equals(ea[m_extraIndex].Item.Key);
+                        if (valid) m_current = ea[m_extraIndex].Item.Value;
+                        m_extraIndex = ea[m_extraIndex].Next;
+                        if (valid) return true;
+                    } while (m_extraIndex > 0);
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+        }
+
+        /// <summary>
         /// Return the value with the given key, but skip a supplied number
         /// of entries with this key. This method is only useful if multiple
         /// item with the same key are allowed.
@@ -3633,6 +3705,74 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Gets an enumerator for values with key. It is only useful
+        /// if multiple item with the same key are allowed.
+        /// Should be preferred over ValuesWithKey enumeration in 
+        /// performance critical code.
+        /// </summary>
+        public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(int key)
+        {
+            return new ValuesWithKeyEnumerator(this, key);
+        }
+
+        public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
+        {
+            IntDict<TValue> m_dict;
+            int m_hash;
+            int m_extraIndex;
+            TValue m_current;
+
+            public ValuesWithKeyEnumerator(IntDict<TValue> dict, int key)
+            {
+                m_dict = dict;
+                m_hash = key;
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+
+            public TValue Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex == int.MaxValue)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var fi = ((uint)m_hash) % m_dict.m_capacity;
+                    m_extraIndex = fa[fi].Next;
+                    if (m_extraIndex == 0) return false;
+                    if (fa[fi].Item.Key == m_hash)
+                    {
+                        m_current = fa[fi].Item.Value;
+                        return true;
+                    }
+                }
+                if (m_extraIndex > 0)
+                {
+                    var ea = m_dict.m_extraArray;
+                    do
+                    {
+                        var valid = ea[m_extraIndex].Item.Key == m_hash;
+                        if (valid) m_current = ea[m_extraIndex].Item.Value;
+                        m_extraIndex = ea[m_extraIndex].Next;
+                        if (valid) return true;
+                    } while (m_extraIndex > 0);
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+        }
+
+        /// <summary>
         /// Return the value with the given key, but skip a supplied number
         /// of entries with this key. This method is only useful if multiple
         /// item with the same key are allowed.
@@ -5778,6 +5918,74 @@ namespace Aardvark.Base
                 if (m_extraArray[ei].Item.Key.Id == hash)
                     yield return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumerator for values with key. It is only useful
+        /// if multiple item with the same key are allowed.
+        /// Should be preferred over ValuesWithKey enumeration in 
+        /// performance critical code.
+        /// </summary>
+        public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(Symbol key)
+        {
+            return new ValuesWithKeyEnumerator(this, key);
+        }
+
+        public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
+        {
+            SymbolDict<TValue> m_dict;
+            int m_hash;
+            int m_extraIndex;
+            TValue m_current;
+
+            public ValuesWithKeyEnumerator(SymbolDict<TValue> dict, Symbol key)
+            {
+                m_dict = dict;
+                m_hash = key.Id;
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+
+            public TValue Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex == int.MaxValue)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var fi = ((uint)m_hash) % m_dict.m_capacity;
+                    m_extraIndex = fa[fi].Next;
+                    if (m_extraIndex == 0) return false;
+                    if (fa[fi].Item.Key.Id == m_hash)
+                    {
+                        m_current = fa[fi].Item.Value;
+                        return true;
+                    }
+                }
+                if (m_extraIndex > 0)
+                {
+                    var ea = m_dict.m_extraArray;
+                    do
+                    {
+                        var valid = ea[m_extraIndex].Item.Key.Id == m_hash;
+                        if (valid) m_current = ea[m_extraIndex].Item.Value;
+                        m_extraIndex = ea[m_extraIndex].Next;
+                        if (valid) return true;
+                    } while (m_extraIndex > 0);
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
             }
         }
 
@@ -8343,6 +8551,78 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Gets an enumerator for values with key. It is only useful
+        /// if multiple item with the same key are allowed.
+        /// Should be preferred over ValuesWithKey enumeration in 
+        /// performance critical code.
+        /// </summary>
+        public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(TKey key)
+        {
+            return new ValuesWithKeyEnumerator(this, key);
+        }
+
+        public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
+        {
+            BigDict<TKey, TValue> m_dict;
+            TKey m_key;
+            long m_hash;
+            long m_extraIndex;
+            TValue m_current;
+
+            public ValuesWithKeyEnumerator(BigDict<TKey, TValue> dict, TKey key)
+            {
+                m_dict = dict;
+                m_key = key;
+                m_hash = dict.m_hfun(key);
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+
+            public TValue Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex == int.MaxValue)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var fi = ((uint)m_hash) % m_dict.m_capacity;
+                    m_extraIndex = fa[fi].Next;
+                    if (m_extraIndex == 0) return false;
+                    if (fa[fi].Item.Hash == m_hash
+                        && m_key.Equals(fa[fi].Item.Key))
+                    {
+                        m_current = fa[fi].Item.Value;
+                        return true;
+                    }
+                }
+                if (m_extraIndex > 0)
+                {
+                    var ea = m_dict.m_extraArray;
+                    do
+                    {
+                        var valid = ea[m_extraIndex].Item.Hash == m_hash
+                                    && m_key.Equals(ea[m_extraIndex].Item.Key);
+                        if (valid) m_current = ea[m_extraIndex].Item.Value;
+                        m_extraIndex = ea[m_extraIndex].Next;
+                        if (valid) return true;
+                    } while (m_extraIndex > 0);
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+        }
+
+        /// <summary>
         /// Return the value with the given key, but skip a supplied number
         /// of entries with this key. This method is only useful if multiple
         /// item with the same key are allowed.
@@ -10807,6 +11087,74 @@ namespace Aardvark.Base
                 if (m_extraArray[ei].Item.Key == hash)
                     yield return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumerator for values with key. It is only useful
+        /// if multiple item with the same key are allowed.
+        /// Should be preferred over ValuesWithKey enumeration in 
+        /// performance critical code.
+        /// </summary>
+        public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(long key)
+        {
+            return new ValuesWithKeyEnumerator(this, key);
+        }
+
+        public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
+        {
+            LongDict<TValue> m_dict;
+            long m_hash;
+            long m_extraIndex;
+            TValue m_current;
+
+            public ValuesWithKeyEnumerator(LongDict<TValue> dict, long key)
+            {
+                m_dict = dict;
+                m_hash = key;
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+
+            public TValue Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex == int.MaxValue)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var fi = ((uint)m_hash) % m_dict.m_capacity;
+                    m_extraIndex = fa[fi].Next;
+                    if (m_extraIndex == 0) return false;
+                    if (fa[fi].Item.Key == m_hash)
+                    {
+                        m_current = fa[fi].Item.Value;
+                        return true;
+                    }
+                }
+                if (m_extraIndex > 0)
+                {
+                    var ea = m_dict.m_extraArray;
+                    do
+                    {
+                        var valid = ea[m_extraIndex].Item.Key == m_hash;
+                        if (valid) m_current = ea[m_extraIndex].Item.Value;
+                        m_extraIndex = ea[m_extraIndex].Next;
+                        if (valid) return true;
+                    } while (m_extraIndex > 0);
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
             }
         }
 
@@ -17089,6 +17437,7 @@ namespace Aardvark.Base
             } finally { Monitor.Exit(this); }
         }
 
+
         /// <summary>
         /// Return the value with the given key, but skip a supplied number
         /// of entries with this key. This method is only useful if multiple
@@ -19575,6 +19924,7 @@ namespace Aardvark.Base
             } finally { Monitor.Exit(this); }
         }
 
+
         /// <summary>
         /// Return the value with the given key, but skip a supplied number
         /// of entries with this key. This method is only useful if multiple
@@ -21689,6 +22039,7 @@ namespace Aardvark.Base
             }
             } finally { Monitor.Exit(this); }
         }
+
 
         /// <summary>
         /// Return the value with the given key, but skip a supplied number
@@ -24242,6 +24593,7 @@ namespace Aardvark.Base
             } finally { Monitor.Exit(this); }
         }
 
+
         /// <summary>
         /// Return the value with the given key, but skip a supplied number
         /// of entries with this key. This method is only useful if multiple
@@ -26708,6 +27060,7 @@ namespace Aardvark.Base
             } finally { Monitor.Exit(this); }
         }
 
+
         /// <summary>
         /// Return the value with the given key, but skip a supplied number
         /// of entries with this key. This method is only useful if multiple
@@ -29050,6 +29403,78 @@ namespace Aardvark.Base
                     && key.Equals(m_extraArray[ei].Item.Key))
                     yield return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumerator for values with key. It is only useful
+        /// if multiple item with the same key are allowed.
+        /// Should be preferred over ValuesWithKey enumeration in 
+        /// performance critical code.
+        /// </summary>
+        public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(TKey key)
+        {
+            return new ValuesWithKeyEnumerator(this, key);
+        }
+
+        public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
+        {
+            DictIEq<TKey, TValue> m_dict;
+            TKey m_key;
+            int m_hash;
+            int m_extraIndex;
+            TValue m_current;
+
+            public ValuesWithKeyEnumerator(DictIEq<TKey, TValue> dict, TKey key)
+            {
+                m_dict = dict;
+                m_key = key;
+                m_hash = key.GetHashCode();
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+
+            public TValue Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex == int.MaxValue)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var fi = ((uint)m_hash) % m_dict.m_capacity;
+                    m_extraIndex = fa[fi].Next;
+                    if (m_extraIndex == 0) return false;
+                    if (fa[fi].Item.Hash == m_hash
+                        && m_key.Equals(fa[fi].Item.Key))
+                    {
+                        m_current = fa[fi].Item.Value;
+                        return true;
+                    }
+                }
+                if (m_extraIndex > 0)
+                {
+                    var ea = m_dict.m_extraArray;
+                    do
+                    {
+                        var valid = ea[m_extraIndex].Item.Hash == m_hash
+                                    && m_key.Equals(ea[m_extraIndex].Item.Key);
+                        if (valid) m_current = ea[m_extraIndex].Item.Value;
+                        m_extraIndex = ea[m_extraIndex].Next;
+                        if (valid) return true;
+                    } while (m_extraIndex > 0);
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
             }
         }
 
@@ -31889,6 +32314,78 @@ namespace Aardvark.Base
                     && key.Equals(m_extraArray[ei].Item.Key))
                     yield return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
+            }
+        }
+
+        /// <summary>
+        /// Gets an enumerator for values with key. It is only useful
+        /// if multiple item with the same key are allowed.
+        /// Should be preferred over ValuesWithKey enumeration in 
+        /// performance critical code.
+        /// </summary>
+        public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(TKey key)
+        {
+            return new ValuesWithKeyEnumerator(this, key);
+        }
+
+        public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
+        {
+            BigDictIEq<TKey, TValue> m_dict;
+            TKey m_key;
+            long m_hash;
+            long m_extraIndex;
+            TValue m_current;
+
+            public ValuesWithKeyEnumerator(BigDictIEq<TKey, TValue> dict, TKey key)
+            {
+                m_dict = dict;
+                m_key = key;
+                m_hash = dict.m_hfun(key);
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
+            }
+
+            public TValue Current => m_current;
+
+            object IEnumerator.Current => m_current;
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (m_extraIndex == int.MaxValue)
+                {
+                    var fa = m_dict.m_firstArray;
+                    var fi = ((uint)m_hash) % m_dict.m_capacity;
+                    m_extraIndex = fa[fi].Next;
+                    if (m_extraIndex == 0) return false;
+                    if (fa[fi].Item.Hash == m_hash
+                        && m_key.Equals(fa[fi].Item.Key))
+                    {
+                        m_current = fa[fi].Item.Value;
+                        return true;
+                    }
+                }
+                if (m_extraIndex > 0)
+                {
+                    var ea = m_dict.m_extraArray;
+                    do
+                    {
+                        var valid = ea[m_extraIndex].Item.Hash == m_hash
+                                    && m_key.Equals(ea[m_extraIndex].Item.Key);
+                        if (valid) m_current = ea[m_extraIndex].Item.Value;
+                        m_extraIndex = ea[m_extraIndex].Next;
+                        if (valid) return true;
+                    } while (m_extraIndex > 0);
+                }
+
+                return false;
+            }
+
+            public void Reset()
+            {
+                m_extraIndex = int.MaxValue;
+                m_current = default(TValue);
             }
         }
 
@@ -36541,6 +37038,7 @@ namespace Aardvark.Base
             } finally { Monitor.Exit(this); }
         }
 
+
         /// <summary>
         /// Return the value with the given key, but skip a supplied number
         /// of entries with this key. This method is only useful if multiple
@@ -39395,6 +39893,7 @@ namespace Aardvark.Base
             }
             } finally { Monitor.Exit(this); }
         }
+
 
         /// <summary>
         /// Return the value with the given key, but skip a supplied number

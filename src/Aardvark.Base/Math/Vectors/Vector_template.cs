@@ -561,8 +561,8 @@ namespace Aardvark.Base
         }
 
         //# if (ft.IsReal) {
-        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
-        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var condArray = new[] { "Finite", "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
+        //# var scopeArray = new[] { "Fun", ftype, ftype, ftype, ftype, "Fun" };
         //# var quantArray = new[] { "Any", "All" };
         //# var actArray = new[] { oror, andand };
         //# condArray.ForEach(scopeArray, (cond, scope) => {
@@ -1563,6 +1563,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v2type__ __name__ => new __v2type__(__x__, __y__);
         //#             } else {
+        [XmlIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v2type__ __name__
@@ -1592,6 +1593,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v3type__ __name__ => new __v3type__(__x__, __y__, __z__);
         //#                 } else {
+        [XmlIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v3type__ __name__
@@ -1626,6 +1628,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v4type__ __name__ => new __v4type__(__x__, __y__, __z__, __w__);
         //#                         } else {
+        [XmlIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v4type__ __name__
@@ -2356,12 +2359,10 @@ namespace Aardvark.Base
         //# if (ft.IsReal) {
         #region Special Floating Point Value Checks
 
-        //# var condArray = new[] { "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
-        //# var scopeArray = new[] { ftype, ftype, ftype, ftype, "Fun" };
+        //# var condArray = new[] { "Finite", "NaN", "Infinity", "PositiveInfinity", "NegativeInfinity", "Tiny" };
         //# var quantArray = new[] { "Any", "All" };
-        //# var actArray = new[] { oror, andand };
-        //# condArray.ForEach(scopeArray, (cond, scope) => {
-        //# quantArray.ForEach(actArray, (qant, act) => {
+        //# condArray.ForEach(cond => {
+        //# quantArray.ForEach(qant => {
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool __qant____cond__(__vtype__ v)

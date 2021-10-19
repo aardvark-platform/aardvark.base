@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aardvark.Base;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,7 +15,7 @@ namespace Aardvark.Tests
             //new Aardvark.Tests.TrafoTests().TrafoDecomposeTest();
             //Aardvark.Tests.Rot3dTests.FromM33d();
             //Aardvark.Tests.Rot3dTests.FromEuler();
-            Aardvark.Tests.Rot3dTests.FromInto();
+            //Aardvark.Tests.Rot3dTests.FromInto();
             //new Aardvark.Tests.Images.PixImageTests().MipMapCreate1x1();
         }
     }
