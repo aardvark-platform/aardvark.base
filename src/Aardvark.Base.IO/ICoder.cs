@@ -82,19 +82,6 @@ namespace Aardvark.Base.Coder
         void CodeIntSet(ref IntSet v);
         void CodeSymbolSet(ref SymbolSet v);
 
-        void CodeCircle2d(ref Circle2d v);
-        void CodeLine2d(ref Line2d v);
-        void CodeLine3d(ref Line3d v);
-        void CodePlane2d(ref Plane2d v);
-        void CodePlane3d(ref Plane3d v);
-        void CodePlaneWithPoint3d(ref PlaneWithPoint3d v);
-        void CodeQuad2d(ref Quad2d v);
-        void CodeQuad3d(ref Quad3d v);
-        void CodeRay2d(ref Ray2d v);
-        void CodeRay3d(ref Ray3d v);
-        void CodeSphere3d(ref Sphere3d v);
-        void CodeTriangle2d(ref Triangle2d v);
-        void CodeTriangle3d(ref Triangle3d v);
         void CodeCameraIntrinsics(ref CameraIntrinsics v);
         void CodeCameraExtrinsics(ref CameraExtrinsics v);
 

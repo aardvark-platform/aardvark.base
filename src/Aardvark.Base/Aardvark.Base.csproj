@@ -23,6 +23,12 @@
     <None Include="**\*_template.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Geometry\Polygon2_template.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="Geometry\Types\Polygon\Polygon2_template.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base.Telemetry\Aardvark.Base.Telemetry.csproj" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

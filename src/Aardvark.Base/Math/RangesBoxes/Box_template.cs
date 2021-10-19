@@ -127,17 +127,27 @@ namespace Aardvark.Base
     //#     var bname = dim > 1 ? "box" : "range";
     //#     var bnamecaps = dim > 1 ? "Box" : "Range";
     //#     var type = t.Name;
+    //#     var ct = (ft == Meta.FloatType || ft == Meta.DoubleType) ? ft : Meta.ComputationTypeOf(ft);
+    //#     var ctype = ct.Name;
+    //#     var cch = ct.Char;
+    //#     var iboundingbox = "IBoundingBox" + dim + ch;
+    //#     var iboundingcircle = "IBoundingCircle" + dim + cch;
+    //#     var iboundingsphere = "IBoundingSphere" + dim + cch;
+    //#     var isize = "ISize" + dim + ch;
     //#     var minvalue = dim > 1 ? ltype + ".MinValue"
     //#                            : lt.IsReal ? "Constant<" + ltype + ">.ParseableMinValue" : ltype + ".MinValue";
     //#     var maxvalue = dim > 1 ? ltype + ".MaxValue"
     //#                            : lt.IsReal ? "Constant<" + ltype + ">.ParseableMaxValue" : ltype + ".MaxValue";
+    //#     var half = (ct == Meta.DoubleType) ? "0.5" : "0.5f";
     #region __type__
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct __type__
         : IEquatable<__type__>, IRange<__ltype__, __type__>, /*# if (dim > 1) {
-                */IBoundingBox__dim__d, ISize__dim__d,/*# } */ IFormattable
+                */__iboundingbox__, __isize__, /*# } if (dim == 2) {
+                */__iboundingcircle__, /*# } if (dim == 3) {
+                */__iboundingsphere__, /*# }*/IFormattable
     {
         [DataMember]
         public __ltype__ Min;
@@ -1557,29 +1567,29 @@ namespace Aardvark.Base
         /// Returns new box [0, iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ FromSize(ISize__dim__d iSize)
+        public static __type__ FromSize(ISize__dim____ch__ iSize)
         {
             return new __type__(
-                __ltype__.Zero, /*# if (ft != Meta.DoubleType) { */(__ltype__)/*# } */iSize.Size__dim__d);
+                __ltype__.Zero, iSize.Size__dim____ch__);
         }
 
         /// <summary>
         /// Returns new box [min, min + iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ FromMinAndSize(__ltype__ min, ISize__dim__d iSize)
+        public static __type__ FromMinAndSize(__ltype__ min, ISize__dim____ch__ iSize)
         {
             return new __type__(
-                min, min + /*# if (ft != Meta.DoubleType) { */(__ltype__)/*# } */iSize.Size__dim__d);
+                min, min + iSize.Size__dim____ch__);
         }
 
         /// <summary>
         /// Returns new box [center - iSize / 2, center + iSize / 2].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ FromCenterAndSize(__ltype__ center, ISize__dim__d iSize)
+        public static __type__ FromCenterAndSize(__ltype__ center, ISize__dim____ch__ iSize)
         {
-            var size = /*# if (ft != Meta.DoubleType) { */(__ltype__)/*# } */iSize.Size__dim__d;
+            var size = iSize.Size__dim____ch__;
             return new __type__(center - size / 2, center + size / 2);
         }
 
@@ -1655,12 +1665,15 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box__dim__d Transformed(M__dplus1____dplus1__d trafo)
+        //# {
+        //# var tc = (ft == Meta.FloatType) ? "f" : "d";
+        //# var tftype = (ft == Meta.FloatType) ? "float" : "double";
+        public Box__dim____tc__ Transformed(M__dplus1____dplus1____tc__ trafo)
         {
-            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim__d.Invalid; 
-            var t = new V__dim__d(/*# fields.ForEach((f, i) => {*/trafo.M__i____dim__/*#}, comma);*/);
-            var res = new Box__dim__d(t, t);
-            double av, bv;
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid; 
+            var t = new V__dim____tc__(/*# fields.ForEach((f, i) => {*/trafo.M__i____dim__/*#}, comma);*/);
+            var res = new Box__dim____tc__(t, t);
+            __tftype__ av, bv;
             //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
             //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
             av = trafo.M__i____j__ * Min.__fj__;
@@ -1673,10 +1686,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box__dim__d Transformed(Trafo__dim__d trafo)
+        public Box__dim____tc__ Transformed(Trafo__dim____tc__ trafo)
         {
             return Transformed(trafo.Forward);
         }
+        //# }
 
         #endregion
 
@@ -1784,22 +1798,46 @@ namespace Aardvark.Base
         //# }
         #endregion
 
-        #region IBoundingBox__dim__d Members
+        #region IBoundingBox__dim____ch__ Members
 
-        public Box__dim__d BoundingBox__dim__d
+        public Box__dim____ch__ BoundingBox__dim____ch__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box__dim__d(/*# if (ft != Meta.DoubleType) { */(V__dim__d)/*# } */Min, /*# if (ft != Meta.DoubleType) { */(V__dim__d)/*# } */Max); }
+            get { return this; }
         }
 
         #endregion
+        //# if (dim == 2) {
 
-        #region ISize__dim__d Members
+        #region IBoundingCircle__dim____cch__ Members
 
-        public V__dim__d Size__dim__d
+        public Circle__dim____cch__ BoundingCircle__dim____cch__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return /*# if (ft != Meta.DoubleType) { */(V__dim__d)/*# } */Size; }
+            get => IsInvalid ? Circle__dim____cch__.Invalid : new Circle__dim____cch__(/*# if (ft != ct) {*/(V__dim____cch__)/*# }*/Center, __half__ * Size.Length);
+        }
+
+        #endregion
+        //# }
+        //# if (dim == 3) {
+
+        #region IBoundingSphere__dim____cch__ Members
+
+        public Sphere__dim____cch__ BoundingSphere__dim____cch__
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Sphere__dim____cch__.Invalid : new Sphere__dim____cch__(/*# if (ft != ct) {*/(V__dim____cch__)/*# }*/Center, __half__ * Size.Length);
+        }
+
+        #endregion
+        //# }
+
+        #region ISize__dim____ch__ Members
+
+        public V__dim____ch__ Size__dim____ch__
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Size; }
         }
 
         #endregion
@@ -2407,5 +2445,38 @@ namespace Aardvark.Base
 
     #endregion
 
+    //# if (dim == 3) {
+    #region __type__AndFlags
+
+    [DataContract]
+    public struct __type__AndFlags
+    {
+        [DataMember]
+        public Box.Flags BFlags;
+        [DataMember]
+        public __type__ BBox;
+
+        public __type__AndFlags(__type__ union, __type__ box0, __type__ box1)
+        {
+            BFlags = 0;
+            BBox = union;
+            if (box0.Min.X > union.Min.X) { BBox.Min.X = box0.Min.X; BFlags |= Box.Flags.MinX0; }
+            if (box0.Min.Y > union.Min.Y) { BBox.Min.Y = box0.Min.Y; BFlags |= Box.Flags.MinY0; }
+            if (box0.Min.Z > union.Min.Z) { BBox.Min.Z = box0.Min.Z; BFlags |= Box.Flags.MinZ0; }
+            if (box0.Max.X < union.Max.X) { BBox.Max.X = box0.Max.X; BFlags |= Box.Flags.MaxX0; }
+            if (box0.Max.Y < union.Max.Y) { BBox.Max.Y = box0.Max.Y; BFlags |= Box.Flags.MaxY0; }
+            if (box0.Max.Z < union.Max.Z) { BBox.Max.Z = box0.Max.Z; BFlags |= Box.Flags.MaxZ0; }
+            if (box1.Min.X > union.Min.X) { BBox.Min.X = box1.Min.X; BFlags |= Box.Flags.MinX1; }
+            if (box1.Min.Y > union.Min.Y) { BBox.Min.Y = box1.Min.Y; BFlags |= Box.Flags.MinY1; }
+            if (box1.Min.Z > union.Min.Z) { BBox.Min.Z = box1.Min.Z; BFlags |= Box.Flags.MinZ1; }
+            if (box1.Max.X < union.Max.X) { BBox.Max.X = box1.Max.X; BFlags |= Box.Flags.MaxX1; }
+            if (box1.Max.Y < union.Max.Y) { BBox.Max.Y = box1.Max.Y; BFlags |= Box.Flags.MaxY1; }
+            if (box1.Max.Z < union.Max.Z) { BBox.Max.Z = box1.Max.Z; BFlags |= Box.Flags.MaxZ1; }
+        }
+    }
+
+    #endregion
+
+    //# }
     //# }
 }

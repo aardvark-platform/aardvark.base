@@ -91,7 +91,7 @@ namespace Aardvark.Base
     [DataContract]
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __vtype__ : IVector<double>, ISize__d__d, IFormattable, IEquatable<__vtype__>
+    public partial struct __vtype__ : IVector<double>, ISize__d____fchar__, IFormattable, IEquatable<__vtype__>
     {
         //# fields.ForEach(f => {
         [DataMember]
@@ -1660,9 +1660,9 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region ISize__d__d Members
+        #region ISize__d____fchar__ Members
 
-        public V__d__d Size__d__d { get { return (V__d__d)this; } }
+        public __vtype__ Size__d____fchar__ { get { return this; } }
 
         #endregion
 
@@ -1880,8 +1880,9 @@ namespace Aardvark.Base
         {
             var s = v.Length; if (s == 0) return;
             s = 1 / s;
-            /*# fields.ForEach(f => { */
-            v.__f__ *= s; /*# }); */
+            //# fields.ForEach(f => {
+            v.__f__ *= s;
+            //# });
         }
 
         //# } // ft.IsReal
@@ -2000,13 +2001,13 @@ namespace Aardvark.Base
             //# if (ft.IsReal) {
             var p0p1 = p1 - p0;
             var p0q = query - p0;
-            /*# if (!hasT) { */
-            var /*# } */t = Dot(p0q, p0p1);
-            if (t <= 0) { /*# if (hasT) { */t = 0; /*# } */return Distance(query, p0); }
+            /*# if (!hasT) {
+            */var /*# } */t = Dot(p0q, p0p1);
+            if (t <= 0) { /*# if (hasT) { */t = 0; /*# } */return p0q.Length; }
             var denom = p0p1.LengthSquared;
             if (t >= denom) { /*# if (hasT) { */t = 1; /*# } */return Distance(query, p1); }
             t /= denom;
-            return Distance(query, p0 + t * p0p1);
+            return (p0q - t * p0p1).Length;
             //# } else {
             return DistanceToLine(__cast__query, __cast__p0, __cast__p1/*# if (hasT) { */, out t/*# } */);
             //# }
@@ -2023,11 +2024,11 @@ namespace Aardvark.Base
             //# if (ft.IsReal) {
             var p0p1 = p1 - p0;
             var p0q = query - p0;
-            /*# if (!hasT) { */
-            var /*# } */t = Dot(p0q, p0p1);
+            /*# if (!hasT) {
+            */var /*# } */t = Dot(p0q, p0p1);
             var denom = p0p1.LengthSquared;
             t /= denom;
-            return Distance(query, p0 + t * p0p1);
+            return (p0q - t * p0p1).Length;
             //# } else {
             return DistanceToInfiniteLine(__cast__query, __cast__p0, __cast__p1/*# if (hasT) { */, out t/*# } */);
             //# }

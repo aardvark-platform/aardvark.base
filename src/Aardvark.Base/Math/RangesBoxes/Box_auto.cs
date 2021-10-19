@@ -113,7 +113,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1b
-        : IEquatable<Range1b>, IRange<byte, Range1b>,  IFormattable
+        : IEquatable<Range1b>, IRange<byte, Range1b>, IFormattable
     {
         [DataMember]
         public byte Min;
@@ -1105,7 +1105,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1sb
-        : IEquatable<Range1sb>, IRange<sbyte, Range1sb>,  IFormattable
+        : IEquatable<Range1sb>, IRange<sbyte, Range1sb>, IFormattable
     {
         [DataMember]
         public sbyte Min;
@@ -2097,7 +2097,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1s
-        : IEquatable<Range1s>, IRange<short, Range1s>,  IFormattable
+        : IEquatable<Range1s>, IRange<short, Range1s>, IFormattable
     {
         [DataMember]
         public short Min;
@@ -3089,7 +3089,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1us
-        : IEquatable<Range1us>, IRange<ushort, Range1us>,  IFormattable
+        : IEquatable<Range1us>, IRange<ushort, Range1us>, IFormattable
     {
         [DataMember]
         public ushort Min;
@@ -4081,7 +4081,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1i
-        : IEquatable<Range1i>, IRange<int, Range1i>,  IFormattable
+        : IEquatable<Range1i>, IRange<int, Range1i>, IFormattable
     {
         [DataMember]
         public int Min;
@@ -5073,7 +5073,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1ui
-        : IEquatable<Range1ui>, IRange<uint, Range1ui>,  IFormattable
+        : IEquatable<Range1ui>, IRange<uint, Range1ui>, IFormattable
     {
         [DataMember]
         public uint Min;
@@ -6065,7 +6065,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1l
-        : IEquatable<Range1l>, IRange<long, Range1l>,  IFormattable
+        : IEquatable<Range1l>, IRange<long, Range1l>, IFormattable
     {
         [DataMember]
         public long Min;
@@ -7057,7 +7057,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1ul
-        : IEquatable<Range1ul>, IRange<ulong, Range1ul>,  IFormattable
+        : IEquatable<Range1ul>, IRange<ulong, Range1ul>, IFormattable
     {
         [DataMember]
         public ulong Min;
@@ -8049,7 +8049,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1f
-        : IEquatable<Range1f>, IRange<float, Range1f>,  IFormattable
+        : IEquatable<Range1f>, IRange<float, Range1f>, IFormattable
     {
         [DataMember]
         public float Min;
@@ -9060,7 +9060,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Range1d
-        : IEquatable<Range1d>, IRange<double, Range1d>,  IFormattable
+        : IEquatable<Range1d>, IRange<double, Range1d>, IFormattable
     {
         [DataMember]
         public double Min;
@@ -10071,7 +10071,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2i
-        : IEquatable<Box2i>, IRange<V2i, Box2i>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2i>, IRange<V2i, Box2i>, IBoundingBox2i, ISize2i, IBoundingCircle2d, IFormattable
     {
         [DataMember]
         public V2i Min;
@@ -11139,29 +11139,29 @@ namespace Aardvark.Base
         /// Returns new box [0, iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2i FromSize(ISize2d iSize)
+        public static Box2i FromSize(ISize2i iSize)
         {
             return new Box2i(
-                V2i.Zero, (V2i)iSize.Size2d);
+                V2i.Zero, iSize.Size2i);
         }
 
         /// <summary>
         /// Returns new box [min, min + iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2i FromMinAndSize(V2i min, ISize2d iSize)
+        public static Box2i FromMinAndSize(V2i min, ISize2i iSize)
         {
             return new Box2i(
-                min, min + (V2i)iSize.Size2d);
+                min, min + iSize.Size2i);
         }
 
         /// <summary>
         /// Returns new box [center - iSize / 2, center + iSize / 2].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2i FromCenterAndSize(V2i center, ISize2d iSize)
+        public static Box2i FromCenterAndSize(V2i center, ISize2i iSize)
         {
-            var size = (V2i)iSize.Size2d;
+            var size = iSize.Size2i;
             return new Box2i(center - size / 2, center + size / 2);
         }
 
@@ -11350,22 +11350,32 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region IBoundingBox2d Members
+        #region IBoundingBox2i Members
 
-        public Box2d BoundingBox2d
+        public Box2i BoundingBox2i
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box2d((V2d)Min, (V2d)Max); }
+            get { return this; }
         }
 
         #endregion
 
-        #region ISize2d Members
+        #region IBoundingCircle2d Members
 
-        public V2d Size2d
+        public Circle2d BoundingCircle2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (V2d)Size; }
+            get => IsInvalid ? Circle2d.Invalid : new Circle2d((V2d)Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
+        #region ISize2i Members
+
+        public V2i Size2i
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Size; }
         }
 
         #endregion
@@ -11592,7 +11602,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2l
-        : IEquatable<Box2l>, IRange<V2l, Box2l>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2l>, IRange<V2l, Box2l>, IBoundingBox2l, ISize2l, IBoundingCircle2d, IFormattable
     {
         [DataMember]
         public V2l Min;
@@ -12660,29 +12670,29 @@ namespace Aardvark.Base
         /// Returns new box [0, iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2l FromSize(ISize2d iSize)
+        public static Box2l FromSize(ISize2l iSize)
         {
             return new Box2l(
-                V2l.Zero, (V2l)iSize.Size2d);
+                V2l.Zero, iSize.Size2l);
         }
 
         /// <summary>
         /// Returns new box [min, min + iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2l FromMinAndSize(V2l min, ISize2d iSize)
+        public static Box2l FromMinAndSize(V2l min, ISize2l iSize)
         {
             return new Box2l(
-                min, min + (V2l)iSize.Size2d);
+                min, min + iSize.Size2l);
         }
 
         /// <summary>
         /// Returns new box [center - iSize / 2, center + iSize / 2].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2l FromCenterAndSize(V2l center, ISize2d iSize)
+        public static Box2l FromCenterAndSize(V2l center, ISize2l iSize)
         {
-            var size = (V2l)iSize.Size2d;
+            var size = iSize.Size2l;
             return new Box2l(center - size / 2, center + size / 2);
         }
 
@@ -12871,22 +12881,32 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region IBoundingBox2d Members
+        #region IBoundingBox2l Members
 
-        public Box2d BoundingBox2d
+        public Box2l BoundingBox2l
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box2d((V2d)Min, (V2d)Max); }
+            get { return this; }
         }
 
         #endregion
 
-        #region ISize2d Members
+        #region IBoundingCircle2d Members
 
-        public V2d Size2d
+        public Circle2d BoundingCircle2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (V2d)Size; }
+            get => IsInvalid ? Circle2d.Invalid : new Circle2d((V2d)Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
+        #region ISize2l Members
+
+        public V2l Size2l
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Size; }
         }
 
         #endregion
@@ -13113,7 +13133,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2f
-        : IEquatable<Box2f>, IRange<V2f, Box2f>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2f>, IRange<V2f, Box2f>, IBoundingBox2f, ISize2f, IBoundingCircle2f, IFormattable
     {
         [DataMember]
         public V2f Min;
@@ -14298,29 +14318,29 @@ namespace Aardvark.Base
         /// Returns new box [0, iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2f FromSize(ISize2d iSize)
+        public static Box2f FromSize(ISize2f iSize)
         {
             return new Box2f(
-                V2f.Zero, (V2f)iSize.Size2d);
+                V2f.Zero, iSize.Size2f);
         }
 
         /// <summary>
         /// Returns new box [min, min + iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2f FromMinAndSize(V2f min, ISize2d iSize)
+        public static Box2f FromMinAndSize(V2f min, ISize2f iSize)
         {
             return new Box2f(
-                min, min + (V2f)iSize.Size2d);
+                min, min + iSize.Size2f);
         }
 
         /// <summary>
         /// Returns new box [center - iSize / 2, center + iSize / 2].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box2f FromCenterAndSize(V2f center, ISize2d iSize)
+        public static Box2f FromCenterAndSize(V2f center, ISize2f iSize)
         {
-            var size = (V2f)iSize.Size2d;
+            var size = iSize.Size2f;
             return new Box2f(center - size / 2, center + size / 2);
         }
 
@@ -14394,12 +14414,12 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box2d Transformed(M33d trafo)
+        public Box2f Transformed(M33f trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
-            var t = new V2d(trafo.M02, trafo.M12);
-            var res = new Box2d(t, t);
-            double av, bv;
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid; 
+            var t = new V2f(trafo.M02, trafo.M12);
+            var res = new Box2f(t, t);
+            float av, bv;
             av = trafo.M00 * Min.X;
             bv = trafo.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
@@ -14420,7 +14440,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d Transformed(Trafo2d trafo)
+        public Box2f Transformed(Trafo2f trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -14498,22 +14518,32 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region IBoundingBox2d Members
+        #region IBoundingBox2f Members
 
-        public Box2d BoundingBox2d
+        public Box2f BoundingBox2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box2d((V2d)Min, (V2d)Max); }
+            get { return this; }
         }
 
         #endregion
 
-        #region ISize2d Members
+        #region IBoundingCircle2f Members
 
-        public V2d Size2d
+        public Circle2f BoundingCircle2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (V2d)Size; }
+            get => IsInvalid ? Circle2f.Invalid : new Circle2f(Center, 0.5f * Size.Length);
+        }
+
+        #endregion
+
+        #region ISize2f Members
+
+        public V2f Size2f
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Size; }
         }
 
         #endregion
@@ -14740,7 +14770,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box2d
-        : IEquatable<Box2d>, IRange<V2d, Box2d>, IBoundingBox2d, ISize2d, IFormattable
+        : IEquatable<Box2d>, IRange<V2d, Box2d>, IBoundingBox2d, ISize2d, IBoundingCircle2d, IFormattable
     {
         [DataMember]
         public V2d Min;
@@ -16130,7 +16160,17 @@ namespace Aardvark.Base
         public Box2d BoundingBox2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box2d(Min, Max); }
+            get { return this; }
+        }
+
+        #endregion
+
+        #region IBoundingCircle2d Members
+
+        public Circle2d BoundingCircle2d
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Circle2d.Invalid : new Circle2d(Center, 0.5 * Size.Length);
         }
 
         #endregion
@@ -16367,7 +16407,7 @@ namespace Aardvark.Base
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3i
-        : IEquatable<Box3i>, IRange<V3i, Box3i>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3i>, IRange<V3i, Box3i>, IBoundingBox3i, ISize3i, IBoundingSphere3d, IFormattable
     {
         [DataMember]
         public V3i Min;
@@ -17417,29 +17457,29 @@ namespace Aardvark.Base
         /// Returns new box [0, iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3i FromSize(ISize3d iSize)
+        public static Box3i FromSize(ISize3i iSize)
         {
             return new Box3i(
-                V3i.Zero, (V3i)iSize.Size3d);
+                V3i.Zero, iSize.Size3i);
         }
 
         /// <summary>
         /// Returns new box [min, min + iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3i FromMinAndSize(V3i min, ISize3d iSize)
+        public static Box3i FromMinAndSize(V3i min, ISize3i iSize)
         {
             return new Box3i(
-                min, min + (V3i)iSize.Size3d);
+                min, min + iSize.Size3i);
         }
 
         /// <summary>
         /// Returns new box [center - iSize / 2, center + iSize / 2].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3i FromCenterAndSize(V3i center, ISize3d iSize)
+        public static Box3i FromCenterAndSize(V3i center, ISize3i iSize)
         {
-            var size = (V3i)iSize.Size3d;
+            var size = iSize.Size3i;
             return new Box3i(center - size / 2, center + size / 2);
         }
 
@@ -17623,22 +17663,32 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region IBoundingBox3d Members
+        #region IBoundingBox3i Members
 
-        public Box3d BoundingBox3d
+        public Box3i BoundingBox3i
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box3d((V3d)Min, (V3d)Max); }
+            get { return this; }
         }
 
         #endregion
 
-        #region ISize3d Members
+        #region IBoundingSphere3d Members
 
-        public V3d Size3d
+        public Sphere3d BoundingSphere3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (V3d)Size; }
+            get => IsInvalid ? Sphere3d.Invalid : new Sphere3d((V3d)Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
+        #region ISize3i Members
+
+        public V3i Size3i
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Size; }
         }
 
         #endregion
@@ -18209,12 +18259,43 @@ namespace Aardvark.Base
 
     #endregion
 
+    #region Box3iAndFlags
+
+    [DataContract]
+    public struct Box3iAndFlags
+    {
+        [DataMember]
+        public Box.Flags BFlags;
+        [DataMember]
+        public Box3i BBox;
+
+        public Box3iAndFlags(Box3i union, Box3i box0, Box3i box1)
+        {
+            BFlags = 0;
+            BBox = union;
+            if (box0.Min.X > union.Min.X) { BBox.Min.X = box0.Min.X; BFlags |= Box.Flags.MinX0; }
+            if (box0.Min.Y > union.Min.Y) { BBox.Min.Y = box0.Min.Y; BFlags |= Box.Flags.MinY0; }
+            if (box0.Min.Z > union.Min.Z) { BBox.Min.Z = box0.Min.Z; BFlags |= Box.Flags.MinZ0; }
+            if (box0.Max.X < union.Max.X) { BBox.Max.X = box0.Max.X; BFlags |= Box.Flags.MaxX0; }
+            if (box0.Max.Y < union.Max.Y) { BBox.Max.Y = box0.Max.Y; BFlags |= Box.Flags.MaxY0; }
+            if (box0.Max.Z < union.Max.Z) { BBox.Max.Z = box0.Max.Z; BFlags |= Box.Flags.MaxZ0; }
+            if (box1.Min.X > union.Min.X) { BBox.Min.X = box1.Min.X; BFlags |= Box.Flags.MinX1; }
+            if (box1.Min.Y > union.Min.Y) { BBox.Min.Y = box1.Min.Y; BFlags |= Box.Flags.MinY1; }
+            if (box1.Min.Z > union.Min.Z) { BBox.Min.Z = box1.Min.Z; BFlags |= Box.Flags.MinZ1; }
+            if (box1.Max.X < union.Max.X) { BBox.Max.X = box1.Max.X; BFlags |= Box.Flags.MaxX1; }
+            if (box1.Max.Y < union.Max.Y) { BBox.Max.Y = box1.Max.Y; BFlags |= Box.Flags.MaxY1; }
+            if (box1.Max.Z < union.Max.Z) { BBox.Max.Z = box1.Max.Z; BFlags |= Box.Flags.MaxZ1; }
+        }
+    }
+
+    #endregion
+
     #region Box3l
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3l
-        : IEquatable<Box3l>, IRange<V3l, Box3l>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3l>, IRange<V3l, Box3l>, IBoundingBox3l, ISize3l, IBoundingSphere3d, IFormattable
     {
         [DataMember]
         public V3l Min;
@@ -19264,29 +19345,29 @@ namespace Aardvark.Base
         /// Returns new box [0, iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3l FromSize(ISize3d iSize)
+        public static Box3l FromSize(ISize3l iSize)
         {
             return new Box3l(
-                V3l.Zero, (V3l)iSize.Size3d);
+                V3l.Zero, iSize.Size3l);
         }
 
         /// <summary>
         /// Returns new box [min, min + iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3l FromMinAndSize(V3l min, ISize3d iSize)
+        public static Box3l FromMinAndSize(V3l min, ISize3l iSize)
         {
             return new Box3l(
-                min, min + (V3l)iSize.Size3d);
+                min, min + iSize.Size3l);
         }
 
         /// <summary>
         /// Returns new box [center - iSize / 2, center + iSize / 2].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3l FromCenterAndSize(V3l center, ISize3d iSize)
+        public static Box3l FromCenterAndSize(V3l center, ISize3l iSize)
         {
-            var size = (V3l)iSize.Size3d;
+            var size = iSize.Size3l;
             return new Box3l(center - size / 2, center + size / 2);
         }
 
@@ -19470,22 +19551,32 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region IBoundingBox3d Members
+        #region IBoundingBox3l Members
 
-        public Box3d BoundingBox3d
+        public Box3l BoundingBox3l
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box3d((V3d)Min, (V3d)Max); }
+            get { return this; }
         }
 
         #endregion
 
-        #region ISize3d Members
+        #region IBoundingSphere3d Members
 
-        public V3d Size3d
+        public Sphere3d BoundingSphere3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (V3d)Size; }
+            get => IsInvalid ? Sphere3d.Invalid : new Sphere3d((V3d)Center, 0.5 * Size.Length);
+        }
+
+        #endregion
+
+        #region ISize3l Members
+
+        public V3l Size3l
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Size; }
         }
 
         #endregion
@@ -20056,12 +20147,43 @@ namespace Aardvark.Base
 
     #endregion
 
+    #region Box3lAndFlags
+
+    [DataContract]
+    public struct Box3lAndFlags
+    {
+        [DataMember]
+        public Box.Flags BFlags;
+        [DataMember]
+        public Box3l BBox;
+
+        public Box3lAndFlags(Box3l union, Box3l box0, Box3l box1)
+        {
+            BFlags = 0;
+            BBox = union;
+            if (box0.Min.X > union.Min.X) { BBox.Min.X = box0.Min.X; BFlags |= Box.Flags.MinX0; }
+            if (box0.Min.Y > union.Min.Y) { BBox.Min.Y = box0.Min.Y; BFlags |= Box.Flags.MinY0; }
+            if (box0.Min.Z > union.Min.Z) { BBox.Min.Z = box0.Min.Z; BFlags |= Box.Flags.MinZ0; }
+            if (box0.Max.X < union.Max.X) { BBox.Max.X = box0.Max.X; BFlags |= Box.Flags.MaxX0; }
+            if (box0.Max.Y < union.Max.Y) { BBox.Max.Y = box0.Max.Y; BFlags |= Box.Flags.MaxY0; }
+            if (box0.Max.Z < union.Max.Z) { BBox.Max.Z = box0.Max.Z; BFlags |= Box.Flags.MaxZ0; }
+            if (box1.Min.X > union.Min.X) { BBox.Min.X = box1.Min.X; BFlags |= Box.Flags.MinX1; }
+            if (box1.Min.Y > union.Min.Y) { BBox.Min.Y = box1.Min.Y; BFlags |= Box.Flags.MinY1; }
+            if (box1.Min.Z > union.Min.Z) { BBox.Min.Z = box1.Min.Z; BFlags |= Box.Flags.MinZ1; }
+            if (box1.Max.X < union.Max.X) { BBox.Max.X = box1.Max.X; BFlags |= Box.Flags.MaxX1; }
+            if (box1.Max.Y < union.Max.Y) { BBox.Max.Y = box1.Max.Y; BFlags |= Box.Flags.MaxY1; }
+            if (box1.Max.Z < union.Max.Z) { BBox.Max.Z = box1.Max.Z; BFlags |= Box.Flags.MaxZ1; }
+        }
+    }
+
+    #endregion
+
     #region Box3f
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3f
-        : IEquatable<Box3f>, IRange<V3f, Box3f>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3f>, IRange<V3f, Box3f>, IBoundingBox3f, ISize3f, IBoundingSphere3f, IFormattable
     {
         [DataMember]
         public V3f Min;
@@ -21234,29 +21356,29 @@ namespace Aardvark.Base
         /// Returns new box [0, iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3f FromSize(ISize3d iSize)
+        public static Box3f FromSize(ISize3f iSize)
         {
             return new Box3f(
-                V3f.Zero, (V3f)iSize.Size3d);
+                V3f.Zero, iSize.Size3f);
         }
 
         /// <summary>
         /// Returns new box [min, min + iSize].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3f FromMinAndSize(V3f min, ISize3d iSize)
+        public static Box3f FromMinAndSize(V3f min, ISize3f iSize)
         {
             return new Box3f(
-                min, min + (V3f)iSize.Size3d);
+                min, min + iSize.Size3f);
         }
 
         /// <summary>
         /// Returns new box [center - iSize / 2, center + iSize / 2].
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Box3f FromCenterAndSize(V3f center, ISize3d iSize)
+        public static Box3f FromCenterAndSize(V3f center, ISize3f iSize)
         {
-            var size = (V3f)iSize.Size3d;
+            var size = iSize.Size3f;
             return new Box3f(center - size / 2, center + size / 2);
         }
 
@@ -21296,12 +21418,12 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box3d Transformed(M44d trafo)
+        public Box3f Transformed(M44f trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
-            var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
-            var res = new Box3d(t, t);
-            double av, bv;
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid; 
+            var t = new V3f(trafo.M03, trafo.M13, trafo.M23);
+            var res = new Box3f(t, t);
+            float av, bv;
             av = trafo.M00 * Min.X;
             bv = trafo.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
@@ -21342,7 +21464,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d Transformed(Trafo3d trafo)
+        public Box3f Transformed(Trafo3f trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -21428,22 +21550,32 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region IBoundingBox3d Members
+        #region IBoundingBox3f Members
 
-        public Box3d BoundingBox3d
+        public Box3f BoundingBox3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box3d((V3d)Min, (V3d)Max); }
+            get { return this; }
         }
 
         #endregion
 
-        #region ISize3d Members
+        #region IBoundingSphere3f Members
 
-        public V3d Size3d
+        public Sphere3f BoundingSphere3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (V3d)Size; }
+            get => IsInvalid ? Sphere3f.Invalid : new Sphere3f(Center, 0.5f * Size.Length);
+        }
+
+        #endregion
+
+        #region ISize3f Members
+
+        public V3f Size3f
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Size; }
         }
 
         #endregion
@@ -22014,12 +22146,43 @@ namespace Aardvark.Base
 
     #endregion
 
+    #region Box3fAndFlags
+
+    [DataContract]
+    public struct Box3fAndFlags
+    {
+        [DataMember]
+        public Box.Flags BFlags;
+        [DataMember]
+        public Box3f BBox;
+
+        public Box3fAndFlags(Box3f union, Box3f box0, Box3f box1)
+        {
+            BFlags = 0;
+            BBox = union;
+            if (box0.Min.X > union.Min.X) { BBox.Min.X = box0.Min.X; BFlags |= Box.Flags.MinX0; }
+            if (box0.Min.Y > union.Min.Y) { BBox.Min.Y = box0.Min.Y; BFlags |= Box.Flags.MinY0; }
+            if (box0.Min.Z > union.Min.Z) { BBox.Min.Z = box0.Min.Z; BFlags |= Box.Flags.MinZ0; }
+            if (box0.Max.X < union.Max.X) { BBox.Max.X = box0.Max.X; BFlags |= Box.Flags.MaxX0; }
+            if (box0.Max.Y < union.Max.Y) { BBox.Max.Y = box0.Max.Y; BFlags |= Box.Flags.MaxY0; }
+            if (box0.Max.Z < union.Max.Z) { BBox.Max.Z = box0.Max.Z; BFlags |= Box.Flags.MaxZ0; }
+            if (box1.Min.X > union.Min.X) { BBox.Min.X = box1.Min.X; BFlags |= Box.Flags.MinX1; }
+            if (box1.Min.Y > union.Min.Y) { BBox.Min.Y = box1.Min.Y; BFlags |= Box.Flags.MinY1; }
+            if (box1.Min.Z > union.Min.Z) { BBox.Min.Z = box1.Min.Z; BFlags |= Box.Flags.MinZ1; }
+            if (box1.Max.X < union.Max.X) { BBox.Max.X = box1.Max.X; BFlags |= Box.Flags.MaxX1; }
+            if (box1.Max.Y < union.Max.Y) { BBox.Max.Y = box1.Max.Y; BFlags |= Box.Flags.MaxY1; }
+            if (box1.Max.Z < union.Max.Z) { BBox.Max.Z = box1.Max.Z; BFlags |= Box.Flags.MaxZ1; }
+        }
+    }
+
+    #endregion
+
     #region Box3d
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public partial struct Box3d
-        : IEquatable<Box3d>, IRange<V3d, Box3d>, IBoundingBox3d, ISize3d, IFormattable
+        : IEquatable<Box3d>, IRange<V3d, Box3d>, IBoundingBox3d, ISize3d, IBoundingSphere3d, IFormattable
     {
         [DataMember]
         public V3d Min;
@@ -23391,7 +23554,17 @@ namespace Aardvark.Base
         public Box3d BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new Box3d(Min, Max); }
+            get { return this; }
+        }
+
+        #endregion
+
+        #region IBoundingSphere3d Members
+
+        public Sphere3d BoundingSphere3d
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => IsInvalid ? Sphere3d.Invalid : new Sphere3d(Center, 0.5 * Size.Length);
         }
 
         #endregion
@@ -23968,6 +24141,37 @@ namespace Aardvark.Base
             => ApproximateEquals(a.Min, b.Min, tolerance) && ApproximateEquals(a.Max, b.Max, tolerance);
 
         #endregion
+    }
+
+    #endregion
+
+    #region Box3dAndFlags
+
+    [DataContract]
+    public struct Box3dAndFlags
+    {
+        [DataMember]
+        public Box.Flags BFlags;
+        [DataMember]
+        public Box3d BBox;
+
+        public Box3dAndFlags(Box3d union, Box3d box0, Box3d box1)
+        {
+            BFlags = 0;
+            BBox = union;
+            if (box0.Min.X > union.Min.X) { BBox.Min.X = box0.Min.X; BFlags |= Box.Flags.MinX0; }
+            if (box0.Min.Y > union.Min.Y) { BBox.Min.Y = box0.Min.Y; BFlags |= Box.Flags.MinY0; }
+            if (box0.Min.Z > union.Min.Z) { BBox.Min.Z = box0.Min.Z; BFlags |= Box.Flags.MinZ0; }
+            if (box0.Max.X < union.Max.X) { BBox.Max.X = box0.Max.X; BFlags |= Box.Flags.MaxX0; }
+            if (box0.Max.Y < union.Max.Y) { BBox.Max.Y = box0.Max.Y; BFlags |= Box.Flags.MaxY0; }
+            if (box0.Max.Z < union.Max.Z) { BBox.Max.Z = box0.Max.Z; BFlags |= Box.Flags.MaxZ0; }
+            if (box1.Min.X > union.Min.X) { BBox.Min.X = box1.Min.X; BFlags |= Box.Flags.MinX1; }
+            if (box1.Min.Y > union.Min.Y) { BBox.Min.Y = box1.Min.Y; BFlags |= Box.Flags.MinY1; }
+            if (box1.Min.Z > union.Min.Z) { BBox.Min.Z = box1.Min.Z; BFlags |= Box.Flags.MinZ1; }
+            if (box1.Max.X < union.Max.X) { BBox.Max.X = box1.Max.X; BFlags |= Box.Flags.MaxX1; }
+            if (box1.Max.Y < union.Max.Y) { BBox.Max.Y = box1.Max.Y; BFlags |= Box.Flags.MaxY1; }
+            if (box1.Max.Z < union.Max.Z) { BBox.Max.Z = box1.Max.Z; BFlags |= Box.Flags.MaxZ1; }
+        }
     }
 
     #endregion

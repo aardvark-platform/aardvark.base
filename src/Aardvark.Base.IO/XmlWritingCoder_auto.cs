@@ -74,6 +74,38 @@ namespace Aardvark.Base.Coder
 
         #endregion
 
+        #region Geometry Types
+
+        public void CodeCircle2f(ref Circle2f v) { throw new NotImplementedException(); }
+        public void CodeLine2f(ref Line2f v) { throw new NotImplementedException(); }
+        public void CodeLine3f(ref Line3f v) { throw new NotImplementedException(); }
+        public void CodePlane2f(ref Plane2f v) { throw new NotImplementedException(); }
+        public void CodePlane3f(ref Plane3f v) { throw new NotImplementedException(); }
+        public void CodePlaneWithPoint3f(ref PlaneWithPoint3f v) { throw new NotImplementedException(); }
+        public void CodeQuad2f(ref Quad2f v) { throw new NotImplementedException(); }
+        public void CodeQuad3f(ref Quad3f v) { throw new NotImplementedException(); }
+        public void CodeRay2f(ref Ray2f v) { throw new NotImplementedException(); }
+        public void CodeRay3f(ref Ray3f v) { throw new NotImplementedException(); }
+        public void CodeSphere3f(ref Sphere3f v) { throw new NotImplementedException(); }
+        public void CodeTriangle2f(ref Triangle2f v) { throw new NotImplementedException(); }
+        public void CodeTriangle3f(ref Triangle3f v) { throw new NotImplementedException(); }
+
+        public void CodeCircle2d(ref Circle2d v) { throw new NotImplementedException(); }
+        public void CodeLine2d(ref Line2d v) { throw new NotImplementedException(); }
+        public void CodeLine3d(ref Line3d v) { throw new NotImplementedException(); }
+        public void CodePlane2d(ref Plane2d v) { throw new NotImplementedException(); }
+        public void CodePlane3d(ref Plane3d v) { throw new NotImplementedException(); }
+        public void CodePlaneWithPoint3d(ref PlaneWithPoint3d v) { throw new NotImplementedException(); }
+        public void CodeQuad2d(ref Quad2d v) { throw new NotImplementedException(); }
+        public void CodeQuad3d(ref Quad3d v) { throw new NotImplementedException(); }
+        public void CodeRay2d(ref Ray2d v) { throw new NotImplementedException(); }
+        public void CodeRay3d(ref Ray3d v) { throw new NotImplementedException(); }
+        public void CodeSphere3d(ref Sphere3d v) { throw new NotImplementedException(); }
+        public void CodeTriangle2d(ref Triangle2d v) { throw new NotImplementedException(); }
+        public void CodeTriangle3d(ref Triangle3d v) { throw new NotImplementedException(); }
+
+        #endregion
+
         #region Colors
 
         public void CodeC3b(ref C3b v) { throw new NotImplementedException(); }
@@ -630,6 +662,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVector_of_Circle2f_(ref Vector<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Line2f_(ref Vector<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Line3f_(ref Vector<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Plane2f_(ref Vector<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Plane3f_(ref Vector<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_PlaneWithPoint3f_(ref Vector<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Quad2f_(ref Vector<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Quad3f_(ref Vector<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Ray2f_(ref Vector<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Ray3f_(ref Vector<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Sphere3f_(ref Vector<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Triangle2f_(ref Vector<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVector_of_Triangle3f_(ref Vector<Triangle3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeMatrix_of_Byte_(ref Matrix<byte> value)
         {
             throw new NotImplementedException();
@@ -1146,6 +1243,71 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeMatrix_of_Triangle3d_(ref Matrix<Triangle3d> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Circle2f_(ref Matrix<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Line2f_(ref Matrix<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Line3f_(ref Matrix<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Plane2f_(ref Matrix<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Plane3f_(ref Matrix<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_PlaneWithPoint3f_(ref Matrix<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Quad2f_(ref Matrix<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Quad3f_(ref Matrix<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Ray2f_(ref Matrix<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Ray3f_(ref Matrix<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Sphere3f_(ref Matrix<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Triangle2f_(ref Matrix<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeMatrix_of_Triangle3f_(ref Matrix<Triangle3f> value)
         {
             throw new NotImplementedException();
         }
@@ -1670,6 +1832,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeVolume_of_Circle2f_(ref Volume<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Line2f_(ref Volume<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Line3f_(ref Volume<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Plane2f_(ref Volume<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Plane3f_(ref Volume<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_PlaneWithPoint3f_(ref Volume<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Quad2f_(ref Volume<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Quad3f_(ref Volume<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Ray2f_(ref Volume<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Ray3f_(ref Volume<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Sphere3f_(ref Volume<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Triangle2f_(ref Volume<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeVolume_of_Triangle3f_(ref Volume<Triangle3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeTensor_of_Byte_(ref Tensor<byte> value)
         {
             throw new NotImplementedException();
@@ -2190,6 +2417,71 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeTensor_of_Circle2f_(ref Tensor<Circle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Line2f_(ref Tensor<Line2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Line3f_(ref Tensor<Line3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Plane2f_(ref Tensor<Plane2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Plane3f_(ref Tensor<Plane3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_PlaneWithPoint3f_(ref Tensor<PlaneWithPoint3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Quad2f_(ref Tensor<Quad2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Quad3f_(ref Tensor<Quad3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Ray2f_(ref Tensor<Ray2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Ray3f_(ref Tensor<Ray3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Sphere3f_(ref Tensor<Sphere3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Triangle2f_(ref Tensor<Triangle2f> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeTensor_of_Triangle3f_(ref Tensor<Triangle3f> value)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Arrays
@@ -2281,6 +2573,19 @@ namespace Aardvark.Base.Coder
         public void CodeSphere3dArray(ref Sphere3d[] v) { throw new NotImplementedException(); }
         public void CodeTriangle2dArray(ref Triangle2d[] v) { throw new NotImplementedException(); }
         public void CodeTriangle3dArray(ref Triangle3d[] v) { throw new NotImplementedException(); }
+        public void CodeCircle2fArray(ref Circle2f[] v) { throw new NotImplementedException(); }
+        public void CodeLine2fArray(ref Line2f[] v) { throw new NotImplementedException(); }
+        public void CodeLine3fArray(ref Line3f[] v) { throw new NotImplementedException(); }
+        public void CodePlane2fArray(ref Plane2f[] v) { throw new NotImplementedException(); }
+        public void CodePlane3fArray(ref Plane3f[] v) { throw new NotImplementedException(); }
+        public void CodePlaneWithPoint3fArray(ref PlaneWithPoint3f[] v) { throw new NotImplementedException(); }
+        public void CodeQuad2fArray(ref Quad2f[] v) { throw new NotImplementedException(); }
+        public void CodeQuad3fArray(ref Quad3f[] v) { throw new NotImplementedException(); }
+        public void CodeRay2fArray(ref Ray2f[] v) { throw new NotImplementedException(); }
+        public void CodeRay3fArray(ref Ray3f[] v) { throw new NotImplementedException(); }
+        public void CodeSphere3fArray(ref Sphere3f[] v) { throw new NotImplementedException(); }
+        public void CodeTriangle2fArray(ref Triangle2f[] v) { throw new NotImplementedException(); }
+        public void CodeTriangle3fArray(ref Triangle3f[] v) { throw new NotImplementedException(); }
 
         #endregion
 
@@ -2723,6 +3028,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Sphere3d_(ref List<Sphere3d> v) { throw new NotImplementedException(); }
         public void CodeList_of_Triangle2d_(ref List<Triangle2d> v) { throw new NotImplementedException(); }
         public void CodeList_of_Triangle3d_(ref List<Triangle3d> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Circle2f_(ref List<Circle2f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Line2f_(ref List<Line2f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Line3f_(ref List<Line3f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Plane2f_(ref List<Plane2f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Plane3f_(ref List<Plane3f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_PlaneWithPoint3f_(ref List<PlaneWithPoint3f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Quad2f_(ref List<Quad2f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Quad3f_(ref List<Quad3f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Ray2f_(ref List<Ray2f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Ray3f_(ref List<Ray3f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Sphere3f_(ref List<Sphere3f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Triangle2f_(ref List<Triangle2f> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Triangle3f_(ref List<Triangle3f> v) { throw new NotImplementedException(); }
 
         #endregion
 
@@ -2832,6 +3150,19 @@ namespace Aardvark.Base.Coder
         public void CodeVector_of_Sphere3d_Array(ref Vector<Sphere3d>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Triangle2d_Array(ref Vector<Triangle2d>[] v) { throw new NotImplementedException(); }
         public void CodeVector_of_Triangle3d_Array(ref Vector<Triangle3d>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Circle2f_Array(ref Vector<Circle2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Line2f_Array(ref Vector<Line2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Line3f_Array(ref Vector<Line3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Plane2f_Array(ref Vector<Plane2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Plane3f_Array(ref Vector<Plane3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_PlaneWithPoint3f_Array(ref Vector<PlaneWithPoint3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Quad2f_Array(ref Vector<Quad2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Quad3f_Array(ref Vector<Quad3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Ray2f_Array(ref Vector<Ray2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Ray3f_Array(ref Vector<Ray3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Sphere3f_Array(ref Vector<Sphere3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Triangle2f_Array(ref Vector<Triangle2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVector_of_Triangle3f_Array(ref Vector<Triangle3f>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Byte_Array(ref Matrix<byte>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_SByte_Array(ref Matrix<sbyte>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Short_Array(ref Matrix<short>[] v) { throw new NotImplementedException(); }
@@ -2936,6 +3267,19 @@ namespace Aardvark.Base.Coder
         public void CodeMatrix_of_Sphere3d_Array(ref Matrix<Sphere3d>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Triangle2d_Array(ref Matrix<Triangle2d>[] v) { throw new NotImplementedException(); }
         public void CodeMatrix_of_Triangle3d_Array(ref Matrix<Triangle3d>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Circle2f_Array(ref Matrix<Circle2f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Line2f_Array(ref Matrix<Line2f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Line3f_Array(ref Matrix<Line3f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Plane2f_Array(ref Matrix<Plane2f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Plane3f_Array(ref Matrix<Plane3f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_PlaneWithPoint3f_Array(ref Matrix<PlaneWithPoint3f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Quad2f_Array(ref Matrix<Quad2f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Quad3f_Array(ref Matrix<Quad3f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Ray2f_Array(ref Matrix<Ray2f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Ray3f_Array(ref Matrix<Ray3f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Sphere3f_Array(ref Matrix<Sphere3f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Triangle2f_Array(ref Matrix<Triangle2f>[] v) { throw new NotImplementedException(); }
+        public void CodeMatrix_of_Triangle3f_Array(ref Matrix<Triangle3f>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Byte_Array(ref Volume<byte>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_SByte_Array(ref Volume<sbyte>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Short_Array(ref Volume<short>[] v) { throw new NotImplementedException(); }
@@ -3040,6 +3384,19 @@ namespace Aardvark.Base.Coder
         public void CodeVolume_of_Sphere3d_Array(ref Volume<Sphere3d>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Triangle2d_Array(ref Volume<Triangle2d>[] v) { throw new NotImplementedException(); }
         public void CodeVolume_of_Triangle3d_Array(ref Volume<Triangle3d>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Circle2f_Array(ref Volume<Circle2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Line2f_Array(ref Volume<Line2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Line3f_Array(ref Volume<Line3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Plane2f_Array(ref Volume<Plane2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Plane3f_Array(ref Volume<Plane3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_PlaneWithPoint3f_Array(ref Volume<PlaneWithPoint3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Quad2f_Array(ref Volume<Quad2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Quad3f_Array(ref Volume<Quad3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Ray2f_Array(ref Volume<Ray2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Ray3f_Array(ref Volume<Ray3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Sphere3f_Array(ref Volume<Sphere3f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Triangle2f_Array(ref Volume<Triangle2f>[] v) { throw new NotImplementedException(); }
+        public void CodeVolume_of_Triangle3f_Array(ref Volume<Triangle3f>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Byte_Array(ref Tensor<byte>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_SByte_Array(ref Tensor<sbyte>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Short_Array(ref Tensor<short>[] v) { throw new NotImplementedException(); }
@@ -3144,6 +3501,19 @@ namespace Aardvark.Base.Coder
         public void CodeTensor_of_Sphere3d_Array(ref Tensor<Sphere3d>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Triangle2d_Array(ref Tensor<Triangle2d>[] v) { throw new NotImplementedException(); }
         public void CodeTensor_of_Triangle3d_Array(ref Tensor<Triangle3d>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Circle2f_Array(ref Tensor<Circle2f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Line2f_Array(ref Tensor<Line2f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Line3f_Array(ref Tensor<Line3f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Plane2f_Array(ref Tensor<Plane2f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Plane3f_Array(ref Tensor<Plane3f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_PlaneWithPoint3f_Array(ref Tensor<PlaneWithPoint3f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Quad2f_Array(ref Tensor<Quad2f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Quad3f_Array(ref Tensor<Quad3f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Ray2f_Array(ref Tensor<Ray2f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Ray3f_Array(ref Tensor<Ray3f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Sphere3f_Array(ref Tensor<Sphere3f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Triangle2f_Array(ref Tensor<Triangle2f>[] v) { throw new NotImplementedException(); }
+        public void CodeTensor_of_Triangle3f_Array(ref Tensor<Triangle3f>[] v) { throw new NotImplementedException(); }
 
         #endregion
 
@@ -3253,6 +3623,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Vector_of_Sphere3d__(ref List<Vector<Sphere3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Triangle2d__(ref List<Vector<Triangle2d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Vector_of_Triangle3d__(ref List<Vector<Triangle3d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Circle2f__(ref List<Vector<Circle2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Line2f__(ref List<Vector<Line2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Line3f__(ref List<Vector<Line3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Plane2f__(ref List<Vector<Plane2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Plane3f__(ref List<Vector<Plane3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_PlaneWithPoint3f__(ref List<Vector<PlaneWithPoint3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Quad2f__(ref List<Vector<Quad2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Quad3f__(ref List<Vector<Quad3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Ray2f__(ref List<Vector<Ray2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Ray3f__(ref List<Vector<Ray3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Sphere3f__(ref List<Vector<Sphere3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Triangle2f__(ref List<Vector<Triangle2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Vector_of_Triangle3f__(ref List<Vector<Triangle3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Byte__(ref List<Matrix<byte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_SByte__(ref List<Matrix<sbyte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Short__(ref List<Matrix<short>> v) { throw new NotImplementedException(); }
@@ -3357,6 +3740,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Matrix_of_Sphere3d__(ref List<Matrix<Sphere3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Triangle2d__(ref List<Matrix<Triangle2d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Matrix_of_Triangle3d__(ref List<Matrix<Triangle3d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Circle2f__(ref List<Matrix<Circle2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Line2f__(ref List<Matrix<Line2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Line3f__(ref List<Matrix<Line3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Plane2f__(ref List<Matrix<Plane2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Plane3f__(ref List<Matrix<Plane3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_PlaneWithPoint3f__(ref List<Matrix<PlaneWithPoint3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Quad2f__(ref List<Matrix<Quad2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Quad3f__(ref List<Matrix<Quad3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Ray2f__(ref List<Matrix<Ray2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Ray3f__(ref List<Matrix<Ray3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Sphere3f__(ref List<Matrix<Sphere3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Triangle2f__(ref List<Matrix<Triangle2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Matrix_of_Triangle3f__(ref List<Matrix<Triangle3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Byte__(ref List<Volume<byte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_SByte__(ref List<Volume<sbyte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Short__(ref List<Volume<short>> v) { throw new NotImplementedException(); }
@@ -3461,6 +3857,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Volume_of_Sphere3d__(ref List<Volume<Sphere3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Triangle2d__(ref List<Volume<Triangle2d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Volume_of_Triangle3d__(ref List<Volume<Triangle3d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Circle2f__(ref List<Volume<Circle2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Line2f__(ref List<Volume<Line2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Line3f__(ref List<Volume<Line3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Plane2f__(ref List<Volume<Plane2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Plane3f__(ref List<Volume<Plane3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_PlaneWithPoint3f__(ref List<Volume<PlaneWithPoint3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Quad2f__(ref List<Volume<Quad2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Quad3f__(ref List<Volume<Quad3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Ray2f__(ref List<Volume<Ray2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Ray3f__(ref List<Volume<Ray3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Sphere3f__(ref List<Volume<Sphere3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Triangle2f__(ref List<Volume<Triangle2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Volume_of_Triangle3f__(ref List<Volume<Triangle3f>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Byte__(ref List<Tensor<byte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_SByte__(ref List<Tensor<sbyte>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Short__(ref List<Tensor<short>> v) { throw new NotImplementedException(); }
@@ -3565,6 +3974,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Tensor_of_Sphere3d__(ref List<Tensor<Sphere3d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Triangle2d__(ref List<Tensor<Triangle2d>> v) { throw new NotImplementedException(); }
         public void CodeList_of_Tensor_of_Triangle3d__(ref List<Tensor<Triangle3d>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Circle2f__(ref List<Tensor<Circle2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Line2f__(ref List<Tensor<Line2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Line3f__(ref List<Tensor<Line3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Plane2f__(ref List<Tensor<Plane2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Plane3f__(ref List<Tensor<Plane3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_PlaneWithPoint3f__(ref List<Tensor<PlaneWithPoint3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Quad2f__(ref List<Tensor<Quad2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Quad3f__(ref List<Tensor<Quad3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Ray2f__(ref List<Tensor<Ray2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Ray3f__(ref List<Tensor<Ray3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Sphere3f__(ref List<Tensor<Sphere3f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Triangle2f__(ref List<Tensor<Triangle2f>> v) { throw new NotImplementedException(); }
+        public void CodeList_of_Tensor_of_Triangle3f__(ref List<Tensor<Triangle3f>> v) { throw new NotImplementedException(); }
 
         #endregion
     }
@@ -3633,6 +4055,38 @@ namespace Aardvark.Base.Coder
         public void CodeBox3l(ref Box3l v) { AddValue(v.ToString()); }
         public void CodeBox3f(ref Box3f v) { AddValue(v.ToString()); }
         public void CodeBox3d(ref Box3d v) { AddValue(v.ToString()); }
+
+        #endregion
+
+        #region Geometry Types
+
+        public void CodeCircle2f(ref Circle2f v) { AddValue(v.ToString()); }
+        public void CodeLine2f(ref Line2f v) { AddValue(v.ToString()); }
+        public void CodeLine3f(ref Line3f v) { AddValue(v.ToString()); }
+        public void CodePlane2f(ref Plane2f v) { AddValue(v.ToString()); }
+        public void CodePlane3f(ref Plane3f v) { AddValue(v.ToString()); }
+        public void CodePlaneWithPoint3f(ref PlaneWithPoint3f v) { AddValue(v.ToString()); }
+        public void CodeQuad2f(ref Quad2f v) { AddValue(v.ToString()); }
+        public void CodeQuad3f(ref Quad3f v) { AddValue(v.ToString()); }
+        public void CodeRay2f(ref Ray2f v) { AddValue(v.ToString()); }
+        public void CodeRay3f(ref Ray3f v) { AddValue(v.ToString()); }
+        public void CodeSphere3f(ref Sphere3f v) { AddValue(v.ToString()); }
+        public void CodeTriangle2f(ref Triangle2f v) { AddValue(v.ToString()); }
+        public void CodeTriangle3f(ref Triangle3f v) { AddValue(v.ToString()); }
+
+        public void CodeCircle2d(ref Circle2d v) { AddValue(v.ToString()); }
+        public void CodeLine2d(ref Line2d v) { AddValue(v.ToString()); }
+        public void CodeLine3d(ref Line3d v) { AddValue(v.ToString()); }
+        public void CodePlane2d(ref Plane2d v) { AddValue(v.ToString()); }
+        public void CodePlane3d(ref Plane3d v) { AddValue(v.ToString()); }
+        public void CodePlaneWithPoint3d(ref PlaneWithPoint3d v) { AddValue(v.ToString()); }
+        public void CodeQuad2d(ref Quad2d v) { AddValue(v.ToString()); }
+        public void CodeQuad3d(ref Quad3d v) { AddValue(v.ToString()); }
+        public void CodeRay2d(ref Ray2d v) { AddValue(v.ToString()); }
+        public void CodeRay3d(ref Ray3d v) { AddValue(v.ToString()); }
+        public void CodeSphere3d(ref Sphere3d v) { AddValue(v.ToString()); }
+        public void CodeTriangle2d(ref Triangle2d v) { AddValue(v.ToString()); }
+        public void CodeTriangle3d(ref Triangle3d v) { AddValue(v.ToString()); }
 
         #endregion
 
@@ -8456,6 +8910,604 @@ namespace Aardvark.Base.Coder
             AddValue(item);
         }
 
+        public void CodeVector_of_Circle2f_(ref Vector<Circle2f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeCircle2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Line2f_(ref Vector<Line2f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeLine2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Line3f_(ref Vector<Line3f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeLine3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Plane2f_(ref Vector<Plane2f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlane2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Plane3f_(ref Vector<Plane3f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlane3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_PlaneWithPoint3f_(ref Vector<PlaneWithPoint3f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlaneWithPoint3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Quad2f_(ref Vector<Quad2f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeQuad2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Quad3f_(ref Vector<Quad3f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeQuad3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Ray2f_(ref Vector<Ray2f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeRay2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Ray3f_(ref Vector<Ray3f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeRay3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Sphere3f_(ref Vector<Sphere3f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeSphere3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Triangle2f_(ref Vector<Triangle2f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTriangle2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVector_of_Triangle3f_(ref Vector<Triangle3f> value)
+        {
+            var item = new XElement("Vector");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTriangle3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLong(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLong(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
         public void CodeMatrix_of_Byte_(ref Matrix<byte> value)
         {
             var item = new XElement("Matrix");
@@ -13205,6 +14257,604 @@ namespace Aardvark.Base.Coder
             m_element = element;
 
             var data = value.Data; CodeTriangle3dArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Circle2f_(ref Matrix<Circle2f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeCircle2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Line2f_(ref Matrix<Line2f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeLine2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Line3f_(ref Matrix<Line3f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeLine3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Plane2f_(ref Matrix<Plane2f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlane2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Plane3f_(ref Matrix<Plane3f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlane3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_PlaneWithPoint3f_(ref Matrix<PlaneWithPoint3f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlaneWithPoint3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Quad2f_(ref Matrix<Quad2f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeQuad2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Quad3f_(ref Matrix<Quad3f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeQuad3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Ray2f_(ref Matrix<Ray2f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeRay2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Ray3f_(ref Matrix<Ray3f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeRay3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Sphere3f_(ref Matrix<Sphere3f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeSphere3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Triangle2f_(ref Matrix<Triangle2f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTriangle2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV2l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV2l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeMatrix_of_Triangle3f_(ref Matrix<Triangle3f> value)
+        {
+            var item = new XElement("Matrix");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTriangle3fArray(ref data);
 
             m_element = m_elementStack.Pop();
             m_element.Add(element);
@@ -18024,6 +19674,604 @@ namespace Aardvark.Base.Coder
             AddValue(item);
         }
 
+        public void CodeVolume_of_Circle2f_(ref Volume<Circle2f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeCircle2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Line2f_(ref Volume<Line2f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeLine2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Line3f_(ref Volume<Line3f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeLine3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Plane2f_(ref Volume<Plane2f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlane2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Plane3f_(ref Volume<Plane3f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlane3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_PlaneWithPoint3f_(ref Volume<PlaneWithPoint3f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlaneWithPoint3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Quad2f_(ref Volume<Quad2f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeQuad2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Quad3f_(ref Volume<Quad3f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeQuad3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Ray2f_(ref Volume<Ray2f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeRay2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Ray3f_(ref Volume<Ray3f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeRay3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Sphere3f_(ref Volume<Sphere3f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeSphere3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Triangle2f_(ref Volume<Triangle2f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTriangle2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeVolume_of_Triangle3f_(ref Volume<Triangle3f> value)
+        {
+            var item = new XElement("Volume");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTriangle3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeV3l(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeV3l(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
         public void CodeTensor_of_Byte_(ref Tensor<byte> value)
         {
             var item = new XElement("Tensor");
@@ -22808,6 +25056,604 @@ namespace Aardvark.Base.Coder
             AddValue(item);
         }
 
+        public void CodeTensor_of_Circle2f_(ref Tensor<Circle2f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeCircle2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Line2f_(ref Tensor<Line2f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeLine2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Line3f_(ref Tensor<Line3f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeLine3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Plane2f_(ref Tensor<Plane2f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlane2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Plane3f_(ref Tensor<Plane3f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlane3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_PlaneWithPoint3f_(ref Tensor<PlaneWithPoint3f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodePlaneWithPoint3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Quad2f_(ref Tensor<Quad2f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeQuad2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Quad3f_(ref Tensor<Quad3f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeQuad3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Ray2f_(ref Tensor<Ray2f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeRay2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Ray3f_(ref Tensor<Ray3f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeRay3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Sphere3f_(ref Tensor<Sphere3f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeSphere3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Triangle2f_(ref Tensor<Triangle2f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTriangle2fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
+        public void CodeTensor_of_Triangle3f_(ref Tensor<Triangle3f> value)
+        {
+            var item = new XElement("Tensor");
+            m_elementStack.Push(m_element);
+            m_element = item;
+
+            var element = new XElement("Data");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var data = value.Data; CodeTriangle3fArray(ref data);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Origin");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var origin = value.Origin; CodeLong(ref origin);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Length");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var size = value.Size; CodeLongArray(ref size);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            element = new XElement("Delta");
+            m_elementStack.Push(m_element);
+            m_element = element;
+
+            var delta = value.Delta; CodeLongArray(ref delta);
+
+            m_element = m_elementStack.Pop();
+            m_element.Add(element);
+
+            m_element = m_elementStack.Pop();
+            AddValue(item);
+        }
+
         #endregion
 
         #region Arrays
@@ -22899,6 +25745,19 @@ namespace Aardvark.Base.Coder
         public void CodeSphere3dArray(ref Sphere3d[] v) { CodeArrayOfStruct(v); }
         public void CodeTriangle2dArray(ref Triangle2d[] v) { CodeArrayOfStruct(v); }
         public void CodeTriangle3dArray(ref Triangle3d[] v) { CodeArrayOfStruct(v); }
+        public void CodeCircle2fArray(ref Circle2f[] v) { CodeArrayOfStruct(v); }
+        public void CodeLine2fArray(ref Line2f[] v) { CodeArrayOfStruct(v); }
+        public void CodeLine3fArray(ref Line3f[] v) { CodeArrayOfStruct(v); }
+        public void CodePlane2fArray(ref Plane2f[] v) { CodeArrayOfStruct(v); }
+        public void CodePlane3fArray(ref Plane3f[] v) { CodeArrayOfStruct(v); }
+        public void CodePlaneWithPoint3fArray(ref PlaneWithPoint3f[] v) { CodeArrayOfStruct(v); }
+        public void CodeQuad2fArray(ref Quad2f[] v) { CodeArrayOfStruct(v); }
+        public void CodeQuad3fArray(ref Quad3f[] v) { CodeArrayOfStruct(v); }
+        public void CodeRay2fArray(ref Ray2f[] v) { CodeArrayOfStruct(v); }
+        public void CodeRay3fArray(ref Ray3f[] v) { CodeArrayOfStruct(v); }
+        public void CodeSphere3fArray(ref Sphere3f[] v) { CodeArrayOfStruct(v); }
+        public void CodeTriangle2fArray(ref Triangle2f[] v) { CodeArrayOfStruct(v); }
+        public void CodeTriangle3fArray(ref Triangle3f[] v) { CodeArrayOfStruct(v); }
 
         #endregion
 
@@ -23341,6 +26200,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Sphere3d_(ref List<Sphere3d> v) { CodeListOfStruct(v); }
         public void CodeList_of_Triangle2d_(ref List<Triangle2d> v) { CodeListOfStruct(v); }
         public void CodeList_of_Triangle3d_(ref List<Triangle3d> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Circle2f_(ref List<Circle2f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Line2f_(ref List<Line2f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Line3f_(ref List<Line3f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Plane2f_(ref List<Plane2f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Plane3f_(ref List<Plane3f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_PlaneWithPoint3f_(ref List<PlaneWithPoint3f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Quad2f_(ref List<Quad2f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Quad3f_(ref List<Quad3f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Ray2f_(ref List<Ray2f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Ray3f_(ref List<Ray3f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Sphere3f_(ref List<Sphere3f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Triangle2f_(ref List<Triangle2f> v) { CodeListOfStruct(v); }
+        public void CodeList_of_Triangle3f_(ref List<Triangle3f> v) { CodeListOfStruct(v); }
 
         #endregion
 
@@ -23450,6 +26322,19 @@ namespace Aardvark.Base.Coder
         public void CodeVector_of_Sphere3d_Array(ref Vector<Sphere3d>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Triangle2d_Array(ref Vector<Triangle2d>[] v) { CodeArrayOf(v); }
         public void CodeVector_of_Triangle3d_Array(ref Vector<Triangle3d>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Circle2f_Array(ref Vector<Circle2f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Line2f_Array(ref Vector<Line2f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Line3f_Array(ref Vector<Line3f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Plane2f_Array(ref Vector<Plane2f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Plane3f_Array(ref Vector<Plane3f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_PlaneWithPoint3f_Array(ref Vector<PlaneWithPoint3f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Quad2f_Array(ref Vector<Quad2f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Quad3f_Array(ref Vector<Quad3f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Ray2f_Array(ref Vector<Ray2f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Ray3f_Array(ref Vector<Ray3f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Sphere3f_Array(ref Vector<Sphere3f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Triangle2f_Array(ref Vector<Triangle2f>[] v) { CodeArrayOf(v); }
+        public void CodeVector_of_Triangle3f_Array(ref Vector<Triangle3f>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Byte_Array(ref Matrix<byte>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_SByte_Array(ref Matrix<sbyte>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Short_Array(ref Matrix<short>[] v) { CodeArrayOf(v); }
@@ -23554,6 +26439,19 @@ namespace Aardvark.Base.Coder
         public void CodeMatrix_of_Sphere3d_Array(ref Matrix<Sphere3d>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Triangle2d_Array(ref Matrix<Triangle2d>[] v) { CodeArrayOf(v); }
         public void CodeMatrix_of_Triangle3d_Array(ref Matrix<Triangle3d>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Circle2f_Array(ref Matrix<Circle2f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Line2f_Array(ref Matrix<Line2f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Line3f_Array(ref Matrix<Line3f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Plane2f_Array(ref Matrix<Plane2f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Plane3f_Array(ref Matrix<Plane3f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_PlaneWithPoint3f_Array(ref Matrix<PlaneWithPoint3f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Quad2f_Array(ref Matrix<Quad2f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Quad3f_Array(ref Matrix<Quad3f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Ray2f_Array(ref Matrix<Ray2f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Ray3f_Array(ref Matrix<Ray3f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Sphere3f_Array(ref Matrix<Sphere3f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Triangle2f_Array(ref Matrix<Triangle2f>[] v) { CodeArrayOf(v); }
+        public void CodeMatrix_of_Triangle3f_Array(ref Matrix<Triangle3f>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Byte_Array(ref Volume<byte>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_SByte_Array(ref Volume<sbyte>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Short_Array(ref Volume<short>[] v) { CodeArrayOf(v); }
@@ -23658,6 +26556,19 @@ namespace Aardvark.Base.Coder
         public void CodeVolume_of_Sphere3d_Array(ref Volume<Sphere3d>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Triangle2d_Array(ref Volume<Triangle2d>[] v) { CodeArrayOf(v); }
         public void CodeVolume_of_Triangle3d_Array(ref Volume<Triangle3d>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Circle2f_Array(ref Volume<Circle2f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Line2f_Array(ref Volume<Line2f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Line3f_Array(ref Volume<Line3f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Plane2f_Array(ref Volume<Plane2f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Plane3f_Array(ref Volume<Plane3f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_PlaneWithPoint3f_Array(ref Volume<PlaneWithPoint3f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Quad2f_Array(ref Volume<Quad2f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Quad3f_Array(ref Volume<Quad3f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Ray2f_Array(ref Volume<Ray2f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Ray3f_Array(ref Volume<Ray3f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Sphere3f_Array(ref Volume<Sphere3f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Triangle2f_Array(ref Volume<Triangle2f>[] v) { CodeArrayOf(v); }
+        public void CodeVolume_of_Triangle3f_Array(ref Volume<Triangle3f>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Byte_Array(ref Tensor<byte>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_SByte_Array(ref Tensor<sbyte>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Short_Array(ref Tensor<short>[] v) { CodeArrayOf(v); }
@@ -23762,6 +26673,19 @@ namespace Aardvark.Base.Coder
         public void CodeTensor_of_Sphere3d_Array(ref Tensor<Sphere3d>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Triangle2d_Array(ref Tensor<Triangle2d>[] v) { CodeArrayOf(v); }
         public void CodeTensor_of_Triangle3d_Array(ref Tensor<Triangle3d>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Circle2f_Array(ref Tensor<Circle2f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Line2f_Array(ref Tensor<Line2f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Line3f_Array(ref Tensor<Line3f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Plane2f_Array(ref Tensor<Plane2f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Plane3f_Array(ref Tensor<Plane3f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_PlaneWithPoint3f_Array(ref Tensor<PlaneWithPoint3f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Quad2f_Array(ref Tensor<Quad2f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Quad3f_Array(ref Tensor<Quad3f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Ray2f_Array(ref Tensor<Ray2f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Ray3f_Array(ref Tensor<Ray3f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Sphere3f_Array(ref Tensor<Sphere3f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Triangle2f_Array(ref Tensor<Triangle2f>[] v) { CodeArrayOf(v); }
+        public void CodeTensor_of_Triangle3f_Array(ref Tensor<Triangle3f>[] v) { CodeArrayOf(v); }
 
         #endregion
 
@@ -23871,6 +26795,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Vector_of_Sphere3d__(ref List<Vector<Sphere3d>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Triangle2d__(ref List<Vector<Triangle2d>> v) { CodeListOf(v); }
         public void CodeList_of_Vector_of_Triangle3d__(ref List<Vector<Triangle3d>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Circle2f__(ref List<Vector<Circle2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Line2f__(ref List<Vector<Line2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Line3f__(ref List<Vector<Line3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Plane2f__(ref List<Vector<Plane2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Plane3f__(ref List<Vector<Plane3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_PlaneWithPoint3f__(ref List<Vector<PlaneWithPoint3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Quad2f__(ref List<Vector<Quad2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Quad3f__(ref List<Vector<Quad3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Ray2f__(ref List<Vector<Ray2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Ray3f__(ref List<Vector<Ray3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Sphere3f__(ref List<Vector<Sphere3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Triangle2f__(ref List<Vector<Triangle2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Vector_of_Triangle3f__(ref List<Vector<Triangle3f>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Byte__(ref List<Matrix<byte>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_SByte__(ref List<Matrix<sbyte>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Short__(ref List<Matrix<short>> v) { CodeListOf(v); }
@@ -23975,6 +26912,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Matrix_of_Sphere3d__(ref List<Matrix<Sphere3d>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Triangle2d__(ref List<Matrix<Triangle2d>> v) { CodeListOf(v); }
         public void CodeList_of_Matrix_of_Triangle3d__(ref List<Matrix<Triangle3d>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Circle2f__(ref List<Matrix<Circle2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Line2f__(ref List<Matrix<Line2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Line3f__(ref List<Matrix<Line3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Plane2f__(ref List<Matrix<Plane2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Plane3f__(ref List<Matrix<Plane3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_PlaneWithPoint3f__(ref List<Matrix<PlaneWithPoint3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Quad2f__(ref List<Matrix<Quad2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Quad3f__(ref List<Matrix<Quad3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Ray2f__(ref List<Matrix<Ray2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Ray3f__(ref List<Matrix<Ray3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Sphere3f__(ref List<Matrix<Sphere3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Triangle2f__(ref List<Matrix<Triangle2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Matrix_of_Triangle3f__(ref List<Matrix<Triangle3f>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Byte__(ref List<Volume<byte>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_SByte__(ref List<Volume<sbyte>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Short__(ref List<Volume<short>> v) { CodeListOf(v); }
@@ -24079,6 +27029,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Volume_of_Sphere3d__(ref List<Volume<Sphere3d>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Triangle2d__(ref List<Volume<Triangle2d>> v) { CodeListOf(v); }
         public void CodeList_of_Volume_of_Triangle3d__(ref List<Volume<Triangle3d>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Circle2f__(ref List<Volume<Circle2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Line2f__(ref List<Volume<Line2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Line3f__(ref List<Volume<Line3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Plane2f__(ref List<Volume<Plane2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Plane3f__(ref List<Volume<Plane3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_PlaneWithPoint3f__(ref List<Volume<PlaneWithPoint3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Quad2f__(ref List<Volume<Quad2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Quad3f__(ref List<Volume<Quad3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Ray2f__(ref List<Volume<Ray2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Ray3f__(ref List<Volume<Ray3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Sphere3f__(ref List<Volume<Sphere3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Triangle2f__(ref List<Volume<Triangle2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Volume_of_Triangle3f__(ref List<Volume<Triangle3f>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Byte__(ref List<Tensor<byte>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_SByte__(ref List<Tensor<sbyte>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Short__(ref List<Tensor<short>> v) { CodeListOf(v); }
@@ -24183,6 +27146,19 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Tensor_of_Sphere3d__(ref List<Tensor<Sphere3d>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Triangle2d__(ref List<Tensor<Triangle2d>> v) { CodeListOf(v); }
         public void CodeList_of_Tensor_of_Triangle3d__(ref List<Tensor<Triangle3d>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Circle2f__(ref List<Tensor<Circle2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Line2f__(ref List<Tensor<Line2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Line3f__(ref List<Tensor<Line3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Plane2f__(ref List<Tensor<Plane2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Plane3f__(ref List<Tensor<Plane3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_PlaneWithPoint3f__(ref List<Tensor<PlaneWithPoint3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Quad2f__(ref List<Tensor<Quad2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Quad3f__(ref List<Tensor<Quad3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Ray2f__(ref List<Tensor<Ray2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Ray3f__(ref List<Tensor<Ray3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Sphere3f__(ref List<Tensor<Sphere3f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Triangle2f__(ref List<Tensor<Triangle2f>> v) { CodeListOf(v); }
+        public void CodeList_of_Tensor_of_Triangle3f__(ref List<Tensor<Triangle3f>> v) { CodeListOf(v); }
 
         #endregion
     }

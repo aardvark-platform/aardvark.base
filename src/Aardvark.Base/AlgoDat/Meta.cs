@@ -850,6 +850,20 @@ namespace Aardvark.Base
         public static readonly SimpleType Triangle2dType = new SimpleType() { Name = "Triangle2d" };
         public static readonly SimpleType Triangle3dType = new SimpleType() { Name = "Triangle3d" };
 
+        public static readonly SimpleType Circle2fType = new SimpleType() { Name = "Circle2f" };
+        public static readonly SimpleType Line2fType = new SimpleType() { Name = "Line2f" };
+        public static readonly SimpleType Line3fType = new SimpleType() { Name = "Line3f" };
+        public static readonly SimpleType Plane2fType = new SimpleType() { Name = "Plane2f" };
+        public static readonly SimpleType Plane3fType = new SimpleType() { Name = "Plane3f" };
+        public static readonly SimpleType PlaneWithPoint3fType = new SimpleType() { Name = "PlaneWithPoint3f" };
+        public static readonly SimpleType Quad2fType = new SimpleType() { Name = "Quad2f" };
+        public static readonly SimpleType Quad3fType = new SimpleType() { Name = "Quad3f" };
+        public static readonly SimpleType Ray2fType = new SimpleType() { Name = "Ray2f" };
+        public static readonly SimpleType Ray3fType = new SimpleType() { Name = "Ray3f" };
+        public static readonly SimpleType Sphere3fType = new SimpleType() { Name = "Sphere3f" };
+        public static readonly SimpleType Triangle2fType = new SimpleType() { Name = "Triangle2f" };
+        public static readonly SimpleType Triangle3fType = new SimpleType() { Name = "Triangle3f" };
+
         /// <summary>
         /// All geometry types that need to be serialized.
         /// </summary>
@@ -857,7 +871,11 @@ namespace Aardvark.Base
         {
             Circle2dType, Line2dType, Line3dType, Plane2dType, Plane3dType, PlaneWithPoint3dType,
             Quad2dType, Quad3dType, Ray2dType, Ray3dType, Sphere3dType,
-            Triangle2dType, Triangle3dType
+            Triangle2dType, Triangle3dType,
+
+            Circle2fType, Line2fType, Line3fType, Plane2fType, Plane3fType, PlaneWithPoint3fType,
+            Quad2fType, Quad3fType, Ray2fType, Ray3fType, Sphere3fType,
+            Triangle2fType, Triangle3fType
         };
 
         #region Fun related

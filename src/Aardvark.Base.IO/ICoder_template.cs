@@ -80,5 +80,26 @@ namespace Aardvark.Base.Coder
 
         #endregion
 
+        #region Geometry Types
+
+        //# foreach (var isDouble in new[] { false, true }) {
+        //#   var ftype = isDouble ? "Double" : "Float";
+        //#   var tc = isDouble ? "d" : "f";
+        void CodeCircle2__tc__(ref Circle2__tc__ v);
+        void CodeLine2__tc__(ref Line2__tc__ v);
+        void CodeLine3__tc__(ref Line3__tc__ v);
+        void CodePlane2__tc__(ref Plane2__tc__ v);
+        void CodePlane3__tc__(ref Plane3__tc__ v);
+        void CodePlaneWithPoint3__tc__(ref PlaneWithPoint3__tc__ v);
+        void CodeQuad2__tc__(ref Quad2__tc__ v);
+        void CodeQuad3__tc__(ref Quad3__tc__ v);
+        void CodeRay2__tc__(ref Ray2__tc__ v);
+        void CodeRay3__tc__(ref Ray3__tc__ v);
+        void CodeSphere3__tc__(ref Sphere3__tc__ v);
+        void CodeTriangle2__tc__(ref Triangle2__tc__ v);
+        void CodeTriangle3__tc__(ref Triangle3__tc__ v);
+
+        //# }
+        #endregion
     }
 }
