@@ -11,6 +11,7 @@ namespace Aardvark.Base
 
     //# Action comma = () => Out(", ");
     //# Action add = () => Out(" + ");
+    //# var inttypes = Meta.IntegerTypes;
     //# var signedtypes = Meta.SignedTypes;
     //# var unsignedtypes = Meta.UnsignedTypes;
     //# var numtypes = Meta.StandardNumericTypes;
@@ -1155,18 +1156,24 @@ namespace Aardvark.Base
         public static bool IsPowerOfTwo(this __t.Name__ x) => (x & (x - 1)) == 0;
 
         //# });
+        //# inttypes.ForEach(t => {
         /// <summary>
         /// Returns 2 raised to the power of the value.
-        /// The exponent <paramref name="x"/> must not be negative.
+        //# if (signedtypes.Contains(t)) {
+        /// The exponent <paramref name="x"/> must be within [0, 64).
+        //# } else {
+        /// The exponent <paramref name="x"/> must be less than 64.
+        //# }
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long PowerOfTwo(this long x)
+        public static ulong PowerOfTwo(this __t.Name__ x)
         {
-            Debug.Assert(x >= 0);
-            return 1L << (int)x;
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
         }
 
+        //# });
         //# fdtypes.ForEach(t => {
         /// <summary>
         /// Returns 2 raised to the power of the value.

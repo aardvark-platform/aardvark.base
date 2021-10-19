@@ -5044,14 +5044,98 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns 2 raised to the power of the value.
-        /// The exponent <paramref name="x"/> must be in the range [0,62].
+        /// The exponent <paramref name="x"/> must be less than 64.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static long PowerOfTwo(this long x)
+        public static ulong PowerOfTwo(this byte x)
         {
-            Debug.Assert(x >= 0 && x <= 62);
-            return 1L << (int)x;
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
+        }
+
+        /// <summary>
+        /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must be within [0, 64).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong PowerOfTwo(this sbyte x)
+        {
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
+        }
+
+        /// <summary>
+        /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must be within [0, 64).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong PowerOfTwo(this short x)
+        {
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
+        }
+
+        /// <summary>
+        /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must be less than 64.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong PowerOfTwo(this ushort x)
+        {
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
+        }
+
+        /// <summary>
+        /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must be within [0, 64).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong PowerOfTwo(this int x)
+        {
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
+        }
+
+        /// <summary>
+        /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must be less than 64.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong PowerOfTwo(this uint x)
+        {
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
+        }
+
+        /// <summary>
+        /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must be within [0, 64).
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong PowerOfTwo(this long x)
+        {
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
+        }
+
+        /// <summary>
+        /// Returns 2 raised to the power of the value.
+        /// The exponent <paramref name="x"/> must be less than 64.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong PowerOfTwo(this ulong x)
+        {
+            Debug.Assert(x >= 0 && x < 64);
+            return 1UL << (int)x;
         }
 
         /// <summary>
