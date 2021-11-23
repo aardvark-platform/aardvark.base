@@ -87,6 +87,20 @@ namespace Aardvark.Base
             Telemetry.Register("Report: Values/s", CountCallsToValues.RatePerSecond());
             Telemetry.Register("Report: Progress", CountCallsToProgress);
             Telemetry.Register("Report: Progress/s", CountCallsToProgress.RatePerSecond());
+
+            try
+            {
+                s_defaultForeground = Console.ForegroundColor;
+                s_defaultBackground = Console.BackgroundColor;
+                s_coloredConsole = true;
+            }
+            catch
+            {
+                s_coloredConsole = false;
+                s_defaultForeground = ConsoleColor.White;
+                s_defaultBackground = ConsoleColor.Black;
+            }
+
         }
 
         #endregion
@@ -114,12 +128,21 @@ namespace Aardvark.Base
             Console.Write(message); Console.Out.Flush();
         }
 
+        private static bool s_coloredConsole;
+        private static ConsoleColor s_defaultForeground;
+        private static ConsoleColor s_defaultBackground;
+
+
 #if !__ANDROID__
-        private static ConsoleColor s_defaultForeground = Console.ForegroundColor;
-        private static ConsoleColor s_defaultBackground = Console.BackgroundColor;
 
         public static void ConsoleColoredWriteAct(int threadIndex, LogType type, int level, string message)
         {
+            if(!s_coloredConsole)
+            {
+                ConsoleWriteAct(threadIndex, type, level, message);
+                return;
+            }
+
             bool resetBackground = false;
             switch (type)
             {
@@ -152,6 +175,11 @@ namespace Aardvark.Base
         public static void ConsoleForegroundColoredWriteAct(
                 int threadIndex, LogType type, int level, string message)
         {
+            if (!s_coloredConsole)
+            {
+                ConsoleWriteAct(threadIndex, type, level, message);
+                return;
+            }
             switch (type)
             {
                 case LogType.Fatal: Console.ForegroundColor = ConsoleColor.Red; break;
@@ -286,6 +314,8 @@ namespace Aardvark.Base
         /// You can add and remove log targets by adding or removing them from Targets.
         /// </summary>
         public readonly static MultiLogTarget Targets = new MultiLogTarget(ConsoleTarget, LogTarget);
+
+        public static readonly ILogTarget NoTarget = new MultiLogTarget();
 
         /// <summary>
         /// If you only want a single log target, you can assign it to the RootTarget.

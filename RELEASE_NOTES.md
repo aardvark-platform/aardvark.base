@@ -1,3 +1,6 @@
+### 5.1.21
+- [Report] workaround for getting/setting Console.ForegroundColor when not available. added `NoTarget` to Report for disabling
+
 ### 5.1.20
 - add Cell.GetCommonRoot(...) and corresponding constructor overloads; same for Cell2d
 
