@@ -2509,6 +2509,22 @@ namespace Aardvark.Base
                 => BitConverter.Int32BitsToSingle(x);
         #endif
 
+        /// <summary>
+        /// Returns the bit representation of the given <see cref="float"/> value as a <see cref="uint"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe uint FloatToUnsignedBits(this float x)
+            => *((uint*)&x);
+
+        /// <summary>
+        /// Returns the <see cref="float"/> value represented by the given <see cref="uint"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe float FloatFromUnsignedBits(this uint x)
+            => *((float*)&x);
+
         #if NETSTANDARD2_0
             /// <summary>
             /// Returns the bit representation of the given <see cref="double"/> value as a <see cref="long"/>.
@@ -2542,6 +2558,22 @@ namespace Aardvark.Base
             public static double FloatFromBits(this long x)
                 => BitConverter.Int64BitsToDouble(x);
         #endif
+
+        /// <summary>
+        /// Returns the bit representation of the given <see cref="double"/> value as a <see cref="ulong"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe ulong FloatToUnsignedBits(this double x)
+            => *((ulong*)&x);
+
+        /// <summary>
+        /// Returns the <see cref="double"/> value represented by the given <see cref="ulong"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe double FloatFromUnsignedBits(this ulong x)
+            => *((double*)&x);
 
         #endregion
 

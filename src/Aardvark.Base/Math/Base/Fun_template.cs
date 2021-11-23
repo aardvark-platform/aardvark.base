@@ -657,6 +657,7 @@ namespace Aardvark.Base
         //# fdtypes.ForEach(t => {
         //# var type = t.Name;
         //# var isDouble = (t == Meta.DoubleType);
+        //# {
         //# var toBits = isDouble ? "DoubleToInt64Bits" : "SingleToInt32Bits";
         //# var fromBits = isDouble ? "Int64BitsToDouble" : "Int32BitsToSingle";
         //# var bittype = isDouble ? "long" : "int";
@@ -693,6 +694,26 @@ namespace Aardvark.Base
             public static __type__ FloatFromBits(this __bittype__ x)
                 => BitConverter.__fromBits__(x);
         #endif
+        //# }
+
+        //# {
+        //# var bittype = isDouble ? "ulong" : "uint";
+        /// <summary>
+        /// Returns the bit representation of the given <see cref="__type__"/> value as a <see cref="__bittype__"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe __bittype__ FloatToUnsignedBits(this __type__ x)
+            => *((__bittype__*)&x);
+
+        /// <summary>
+        /// Returns the <see cref="__type__"/> value represented by the given <see cref="__bittype__"/>.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe __type__ FloatFromUnsignedBits(this __bittype__ x)
+            => *((__type__*)&x);
+        //# }
 
         //# });
         #endregion

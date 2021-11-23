@@ -986,6 +986,15 @@ namespace Aardvark.Base
             => !plane.Normal.IsOrthogonalTo(ray.Direction);
 
         /// <summary>
+        /// Returns true if the Plane2d and the Ray2d intersect.
+        /// point holds the Intersection-Point if an intersection is found (else V2d.NaN)
+        /// ATTENTION: Works only with Normalized Plane2ds
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Intersects(this Plane2f plane, Ray2f ray, out V2f point)
+            => plane.Intersects(ray, out float t, out point);
+
+        /// <summary>
         /// Returns true if the Plane2f and the Ray2f intersect.
         /// t holds the ray paramater of the intersection point if the intersection is found (else Double.PositiveInfinity).
         /// ATTENTION: Works only with Normalized Plane2ds
@@ -5151,6 +5160,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(this Plane2d plane, Ray2d ray)
             => !plane.Normal.IsOrthogonalTo(ray.Direction);
+
+        /// <summary>
+        /// Returns true if the Plane2d and the Ray2d intersect.
+        /// point holds the Intersection-Point if an intersection is found (else V2d.NaN)
+        /// ATTENTION: Works only with Normalized Plane2ds
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Intersects(this Plane2d plane, Ray2d ray, out V2d point)
+            => plane.Intersects(ray, out double t, out point);
 
         /// <summary>
         /// Returns true if the Plane2d and the Ray2d intersect.
