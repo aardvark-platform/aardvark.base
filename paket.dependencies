@@ -1,7 +1,7 @@
 framework: netstandard2.0, net471, netcoreapp3.1
 source https://api.nuget.org/v3/index.json
 
-nuget FSharp.Core                  >= 4.7.0 lowest_matching: true
+nuget FSharp.Core                  >= 5.0.0 lowest_matching: true
 nuget Microsoft.NETFramework.ReferenceAssemblies >= 1.0.0 lowest_matching: true
 
 nuget Aardvark.Base.TypeProviders  ~> 4.5.15
@@ -17,17 +17,16 @@ nuget FSharp.Data.Adaptive         ~> 1.2.0
 nuget CSharp.Data.Adaptive         ~> 1.2.0
 nuget Unofficial.LibTessDotNet     ~> 2.0.2
 
-nuget System.Reactive        
+nuget System.Reactive              
 nuget NUnit                        ~> 3.12.0
-nuget FsUnit                       
-nuget FsCheck                      
-nuget FsCheck.NUnit                
+nuget FsUnit                       = 4.0.2
+nuget FsCheck                      = 2.14.4
+nuget FsCheck.NUnit                = 2.14.4
 nuget NUnit3TestAdapter            ~> 3.16.1
 nuget Microsoft.NET.Test.Sdk       ~> 15.8.0
-nuget Expecto                      
-nuget Expecto.FsCheck              
-nuget Expecto.VisualStudio.TestAdapter version_in_path: true
-nuget YoloDev.Expecto.TestSdk
+nuget Expecto                      = 8.12
+nuget Expecto.FsCheck              = 8.12
+nuget YoloDev.Expecto.TestSdk      = 0.8
 
 
 nuget FsPickler                    ~> 5.3.2
@@ -44,3 +43,4 @@ group Build
 framework: netstandard2.0
 source https://api.nuget.org/v3/index.json
 github aardvark-platform/aardvark.fake:v511
+nuget Mono.Cecil

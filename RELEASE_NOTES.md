@@ -1,3 +1,6 @@
+### 5.1.22
+- updated to FSharp.Core >= 5.0.0
+
 ### 5.1.21
 - [Report] workaround for getting/setting Console.ForegroundColor when not available. added `NoTarget` to Report for disabling
 

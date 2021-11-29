@@ -15,6 +15,7 @@ open Fake
 open Fake.Core
 open Fake.IO.Globbing.Operators
 open Fake.Core.TargetOperators
+open Mono.Cecil
 
 do Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
@@ -59,6 +60,32 @@ Target.create "PushDev" (fun _ ->
     DefaultSetup.push ["https://vrvis.myget.org/F/aardvark_public/api/v2" ,"public.key"]
     
 )
+
+Target.create "CheckWitnesses" (fun _ ->
+
+    let folder = 
+        if config.debug then "Debug"
+        else "Release"
+
+    use ass = Mono.Cecil.AssemblyDefinition.ReadAssembly(Path.Combine(__SOURCE_DIRECTORY__, "bin", folder, "netstandard2.0", "Aardvark.Base.FSharp.dll"))
+    
+    let hasWitnesses = 
+        ass.MainModule.Types |> Seq.exists (fun t ->
+            if t.Name = "VecModule" then
+                t.Methods |> Seq.exists (fun m ->
+                    m.Name = "dot$W"
+                )
+            else 
+                false    
+        )
+
+    if not hasWitnesses then
+        failwith "Witnesses not found"
+)
+
+"Compile" ?=> "CheckWitnesses"
+"CheckWitnesses" ==> "CreatePackage"
+
 
 "CreatePackage" ==> "PushGithub"
 "CreatePackage" ==> "PushDev"

@@ -2,7 +2,6 @@ FsCheck
 FsCheck.NUnit
 Expecto
 Expecto.FsCheck
-Expecto.VisualStudio.TestAdapter
 FSharp.Core
 FsUnit
 NUnit
