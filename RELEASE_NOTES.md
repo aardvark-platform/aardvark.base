@@ -1,3 +1,6 @@
+### 5.1.24
+- "simulated" MD5 via truncated SHA1 (please don't hit me security bubble)
+
 ### 5.1.23
 - switched MD5 to SHA1
 

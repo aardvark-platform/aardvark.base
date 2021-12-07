@@ -1248,7 +1248,7 @@ module Temp =
          
 [<EntryPoint; STAThread>]
 let main argv = 
-
+    Aardvark.Init()
     let a = Array.init (1 <<< 20) id
 
     let sw = System.Diagnostics.Stopwatch.StartNew()

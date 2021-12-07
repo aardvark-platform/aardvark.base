@@ -2345,7 +2345,11 @@ namespace Aardvark.Base
         public static byte[] ComputeMD5Hash(this byte[] data)
         {
             using (var md5 = SHA1.Create())
-                return md5.ComputeHash(data);
+            { 
+                var bytes = md5.ComputeHash(data);
+                Array.Resize(ref bytes, 16);
+                return bytes;
+            }
         }
 
         /// <summary>
