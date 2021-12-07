@@ -15,7 +15,7 @@ open System.Threading
 
 #nowarn "9"
 
-let hash = MD5.Create()
+let hash = SHA1.Create()
 let md5 (str : string) =
     str |> Encoding.Unicode.GetBytes |> hash.ComputeHash |> Guid
 

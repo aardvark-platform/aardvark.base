@@ -1475,7 +1475,7 @@ namespace Aardvark.Base
                             string dstFolder = NativeLibraryPath;
                             if (SeparateLibraryDirectories)
                             {
-                                var md5 = System.Security.Cryptography.MD5.Create();
+                                var md5 = System.Security.Cryptography.SHA1.Create();
                                 var hash = new Guid(md5.ComputeHash(s));
                                 md5.Dispose();
                                 var bits = IntPtr.Size * 8;
