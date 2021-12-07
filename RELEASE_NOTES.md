@@ -1,6 +1,6 @@
 ### 5.1.23
 - switched MD5 to SHA1
-- 
+
 ### 5.1.22
 - updated to FSharp.Core >= 5.0.0
 
