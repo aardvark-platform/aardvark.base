@@ -1476,7 +1476,9 @@ namespace Aardvark.Base
                             if (SeparateLibraryDirectories)
                             {
                                 var md5 = System.Security.Cryptography.SHA1.Create();
-                                var hash = new Guid(md5.ComputeHash(s));
+                                var bytes = md5.ComputeHash(s);
+                                Array.Resize(ref bytes, 16);
+                                var hash = new Guid(bytes);
                                 md5.Dispose();
                                 var bits = IntPtr.Size * 8;
                                 var folderName = string.Format("{0}-{1}-{2}", assembly.GetName().Name, hash.ToString(), bits);
