@@ -163,7 +163,6 @@ namespace Aardvark.Base
                     "Suave",
                     "Newtonsoft.Json",
                     "Aether",
-                    "Ceres",
                     "CommonMark",
                     "CSharp.Data.Adaptive",
                     "FSharp.Data.Adaptive",
