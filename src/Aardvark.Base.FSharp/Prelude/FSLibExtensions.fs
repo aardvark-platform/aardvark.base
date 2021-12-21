@@ -23,6 +23,9 @@ module Prelude =
                 result <- Map.add k v result
             result
 
+        let unionMany (input : seq<Map<'k, 'v>>) =
+            (Map.empty, input) ||> Seq.fold union
+
     module Seq =
         let iter' (f : 'a -> 'b) (s : seq<'a>) = 
             for i in s do
