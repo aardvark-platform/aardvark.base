@@ -112,9 +112,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Introspection is based on Assembly.GetEntryAssembly which represents the managed 
         /// entry point (i.e. the first assembly that was executed by AppDomain.ExecuteAssembly).
-        /// However, startet from an unmanged entry point (like VisualStudio tests) Assembly.GetEntryAssembly
+        /// However, started from an unmanaged entry point (like VisualStudio tests) Assembly.GetEntryAssembly
         /// is null. To allow us to start from unmanaged hosting processes this alternative
-        /// has been implented.
+        /// has been implemented.
         /// A second use case are managed interactive shells like fsi.exi. Here we want to
         /// start our dependency walk at a custom assembly instead of the running assembly 
         /// which is the interactive shell host.
@@ -163,7 +163,6 @@ namespace Aardvark.Base
                     "Suave",
                     "Newtonsoft.Json",
                     "Aether",
-                    "Ceres",
                     "CommonMark",
                     "CSharp.Data.Adaptive",
                     "FSharp.Data.Adaptive",
@@ -1475,8 +1474,10 @@ namespace Aardvark.Base
                             string dstFolder = NativeLibraryPath;
                             if (SeparateLibraryDirectories)
                             {
-                                var md5 = System.Security.Cryptography.MD5.Create();
-                                var hash = new Guid(md5.ComputeHash(s));
+                                var md5 = System.Security.Cryptography.SHA1.Create();
+                                var bytes = md5.ComputeHash(s);
+                                Array.Resize(ref bytes, 16);
+                                var hash = new Guid(bytes);
                                 md5.Dispose();
                                 var bits = IntPtr.Size * 8;
                                 var folderName = string.Format("{0}-{1}-{2}", assembly.GetName().Name, hash.ToString(), bits);
@@ -1571,6 +1572,11 @@ namespace Aardvark.Base
 
                 if (os == OS.Linux && realName.ToLower() == "devil") formats = new[] { "libIL.so" }.Concat(formats);
 
+                // NOTE: IPP will try to load other IPP native libs internally (not triggering the ResolvingUnmanagedDll callback) and show a message box if it fails -> make sure native dependencies between them can be resolved
+                //        - for some reason SetDllDirectory is required even LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR is used that will include the directory of the library that should be loaded
+                //        - for some other reason AddDllDirectory does not help loading libraries, even it should provide similar behavior than SetDllDirectory
+                var setDllDir = os == OS.Win32 && assembly != null && assembly.GetName().Name == "IPP";
+
                 foreach (var fmt in formats)
                 {
                     var libName = string.Format(fmt, realName);
@@ -1581,7 +1587,9 @@ namespace Aardvark.Base
                         var lowerLibName = libName.ToLower();
                         var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
                         if (libPath != null)
-                        {
+                        {            
+                            if (setDllDir) Kernel32.SetDllDirectory(p);
+
                             probe = libPath;
                             if (NativeLibrary.TryLoad(libPath, out ptr)) return ptr;
                             else Report.Warn("found native library {0} in {1} but it could not be loaded.", Path.GetFileName(libPath), p);
@@ -1765,8 +1773,8 @@ namespace Aardvark.Base
 
 #else
 
-                        // NOTE: libraries such as IPP are spread over multiple dlls that will now get loaded in an undeterministic order -> make sure native depenendies between them can be resolved
-                        //        - for some reason SetDllDirectory is required even LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR is used that will include the directoy of the library that should be loaded
+                        // NOTE: libraries such as IPP are spread over multiple dlls that will now get loaded in an nondeterministic order -> make sure native dependencies between them can be resolved
+                        //        - for some reason SetDllDirectory is required even LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR is used that will include the directory of the library that should be loaded
                         //        - for some other reason AddDllDirectory does not help loading libraries, even it should provide similar behavior than SetDllDirectory
                         if (platform == "windows")
                             Kernel32.SetDllDirectory(dstFolder);

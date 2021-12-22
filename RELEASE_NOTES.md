@@ -1,3 +1,15 @@
+### 5.1.25
+- another SHA1 truncate
+
+### 5.1.24
+- "simulated" MD5 via truncated SHA1 (please don't hit me security bubble)
+
+### 5.1.23
+- switched MD5 to SHA1
+
+### 5.1.22
+- updated to FSharp.Core >= 5.0.0
+
 ### 5.1.21
 - [Report] workaround for getting/setting Console.ForegroundColor when not available. added `NoTarget` to Report for disabling
 
