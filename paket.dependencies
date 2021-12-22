@@ -46,3 +46,4 @@ framework: netstandard2.0
 source https://api.nuget.org/v3/index.json
 github aardvark-platform/aardvark.fake:v511
 nuget Mono.Cecil
+nuget FSharp.Core >= 5.0.0 lowest_matching: true
