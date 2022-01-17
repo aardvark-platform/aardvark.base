@@ -766,120 +766,209 @@ module PrimitiveValueConverter =
     
     let private colorConversions =
         [
-            ( fun (b : C3b)        -> V3i(int b.R, int b.G, int b.B) ) :> obj
-            ( fun (b : C3b)        -> C3ui(uint32 b.R, uint32 b.G, uint32 b.B) ) :> obj
-            ( fun (b : C3b)        -> V3l(int64 b.R, int64 b.G, int64 b.B) ) :> obj
-            ( fun (b : C3b)        -> C3f(b).ToV3f() ) :> obj
-            ( fun (b : C3b)        -> C3f(b).ToV3d() ) :> obj
-            ( fun (b : C3b)        -> V4i(int b.R, int b.G, int b.B, 255) ) :> obj
-            ( fun (b : C3b)        -> C4ui(uint32 b.R, uint32 b.G, uint32 b.B, 255u) ) :> obj
-            ( fun (b : C3b)        -> V4l(int64 b.R, int64 b.G, int64 b.B, 255L) ) :> obj
-            ( fun (b : C3b)        -> C4f(b).ToV4f() ) :> obj
-            ( fun (b : C3b)        -> C4f(b).ToV4d() ) :> obj
+            // C3b -> other colors
+            ( fun (v : C3b)        -> C3b(v) ) :> obj
+            ( fun (v : C3b)        -> C4b(v) ) :> obj
+            ( fun (v : C3b)        -> C3us(v) ) :> obj
+            ( fun (v : C3b)        -> C4us(v) ) :> obj
+            ( fun (v : C3b)        -> C3ui(v) ) :> obj
+            ( fun (v : C3b)        -> C4ui(v) ) :> obj
+            ( fun (v : C3b)        -> C3f(v) ) :> obj
+            ( fun (v : C3b)        -> C4f(v) ) :> obj
+            ( fun (v : C3b)        -> C3d(v) ) :> obj
+            ( fun (v : C3b)        -> C4d(v) ) :> obj
 
-            ( fun (b : C4b)        -> V3i(int b.R, int b.G, int b.B) ) :> obj
-            ( fun (b : C4b)        -> C3ui(uint32 b.R, uint32 b.G, uint32 b.B) ) :> obj
-            ( fun (b : C4b)        -> V3l(int64 b.R, int64 b.G, int64 b.B) ) :> obj
-            ( fun (b : C4b)        -> C3f(b).ToV3f() ) :> obj
-            ( fun (b : C4b)        -> C3f(b).ToV3d() ) :> obj
-            ( fun (b : C4b)        -> V4i(int b.R, int b.G, int b.B, int b.A) ) :> obj
-            ( fun (b : C4b)        -> C4ui(uint32 b.R, uint32 b.G, uint32 b.B, uint32 b.A) ) :> obj
-            ( fun (b : C4b)        -> V4l(int64 b.R, int64 b.G, int64 b.B, int64 b.A) ) :> obj
-            ( fun (b : C4b)        -> C4f(b).ToV4f() ) :> obj
-            ( fun (b : C4b)        -> C4f(b).ToV4d() ) :> obj
+            // C3b -> vectors
+            ( fun (v : C3b)        -> v.ToV3i() ) :> obj
+            ( fun (v : C3b)        -> v.ToV4i() ) :> obj
+            ( fun (v : C3b)        -> v.ToV3l() ) :> obj
+            ( fun (v : C3b)        -> v.ToV4l() ) :> obj
+            ( fun (v : C3b)        -> C3f(v).ToV3f() ) :> obj
+            ( fun (v : C3b)        -> C4f(v).ToV4f() ) :> obj
+            ( fun (v : C3b)        -> C3d(v).ToV3d() ) :> obj
+            ( fun (v : C3b)        -> C4d(v).ToV4d() ) :> obj
 
-            ( fun (b : C3us)        -> V3i(int b.R, int b.G, int b.B) ) :> obj
-            ( fun (b : C3us)        -> C3ui(uint32 b.R, uint32 b.G, uint32 b.B) ) :> obj
-            ( fun (b : C3us)        -> V3l(int64 b.R, int64 b.G, int64 b.B) ) :> obj
-            ( fun (b : C3us)        -> C3f(b).ToV3f() ) :> obj
-            ( fun (b : C3us)        -> C3f(b).ToV3d() ) :> obj
-            ( fun (b : C3us)        -> V4i(int b.R, int b.G, int b.B, 255) ) :> obj
-            ( fun (b : C3us)        -> C4ui(uint32 b.R, uint32 b.G, uint32 b.B, 255u) ) :> obj
-            ( fun (b : C3us)        -> V4l(int64 b.R, int64 b.G, int64 b.B, 255L) ) :> obj
-            ( fun (b : C3us)        -> C4f(b).ToV4f() ) :> obj
-            ( fun (b : C3us)        -> C4f(b).ToV4d() ) :> obj
+            // C4b -> other colors
+            ( fun (v : C4b)        -> C3b(v) ) :> obj
+            ( fun (v : C4b)        -> C4b(v) ) :> obj
+            ( fun (v : C4b)        -> C3us(v) ) :> obj
+            ( fun (v : C4b)        -> C4us(v) ) :> obj
+            ( fun (v : C4b)        -> C3ui(v) ) :> obj
+            ( fun (v : C4b)        -> C4ui(v) ) :> obj
+            ( fun (v : C4b)        -> C3f(v) ) :> obj
+            ( fun (v : C4b)        -> C4f(v) ) :> obj
+            ( fun (v : C4b)        -> C3d(v) ) :> obj
+            ( fun (v : C4b)        -> C4d(v) ) :> obj
 
-            ( fun (b : C4us)        -> V3i(int b.R, int b.G, int b.B) ) :> obj
-            ( fun (b : C4us)        -> C3ui(uint32 b.R, uint32 b.G, uint32 b.B) ) :> obj
-            ( fun (b : C4us)        -> V3l(int64 b.R, int64 b.G, int64 b.B) ) :> obj
-            ( fun (b : C4us)        -> C3f(b).ToV3f() ) :> obj
-            ( fun (b : C4us)        -> C3f(b).ToV3d() ) :> obj
-            ( fun (b : C4us)        -> V4i(int b.R, int b.G, int b.B, int b.A) ) :> obj
-            ( fun (b : C4us)        -> C4ui(uint32 b.R, uint32 b.G, uint32 b.B, uint32 b.A) ) :> obj
-            ( fun (b : C4us)        -> V4l(int64 b.R, int64 b.G, int64 b.B, int64 b.A) ) :> obj
-            ( fun (b : C4us)        -> C4f(b).ToV4f() ) :> obj
-            ( fun (b : C4us)        -> C4f(b).ToV4d() ) :> obj
-
-
-            ( fun (b : C3ui)        -> V3i(int b.R, int b.G, int b.B) ) :> obj
-            ( fun (b : C3ui)        -> b ) :> obj
-            ( fun (b : C3ui)        -> V3l(int64 b.R, int64 b.G, int64 b.B) ) :> obj
-            ( fun (b : C3ui)        -> C3f(b).ToV3f() ) :> obj
-            ( fun (b : C3ui)        -> C3f(b).ToV3d() ) :> obj
-            ( fun (b : C3ui)        -> V4i(int b.R, int b.G, int b.B, 255) ) :> obj
-            ( fun (b : C3ui)        -> C4ui(uint32 b.R, uint32 b.G, uint32 b.B, 255u) ) :> obj
-            ( fun (b : C3ui)        -> V4l(int64 b.R, int64 b.G, int64 b.B, 255L) ) :> obj
-            ( fun (b : C3ui)        -> C4f(b).ToV4f() ) :> obj
-            ( fun (b : C3ui)        -> C4f(b).ToV4d() ) :> obj
-
-            ( fun (b : C4ui)        -> V3i(int b.R, int b.G, int b.B) ) :> obj
-            ( fun (b : C4ui)        -> C3ui(uint32 b.R, uint32 b.G, uint32 b.B) ) :> obj
-            ( fun (b : C4ui)        -> V3l(int64 b.R, int64 b.G, int64 b.B) ) :> obj
-            ( fun (b : C4ui)        -> C3f(b).ToV3f() ) :> obj
-            ( fun (b : C4ui)        -> C3f(b).ToV3d() ) :> obj
-            ( fun (b : C4ui)        -> V4i(int b.R, int b.G, int b.B, int b.A) ) :> obj
-            ( fun (b : C4ui)        -> b ) :> obj
-            ( fun (b : C4ui)        -> V4l(int64 b.R, int64 b.G, int64 b.B, int64 b.A) ) :> obj
-            ( fun (b : C4ui)        -> C4f(b).ToV4f() ) :> obj
-            ( fun (b : C4ui)        -> C4f(b).ToV4d() ) :> obj
+            // C4b -> vectors
+            ( fun (v : C4b)        -> v.ToV3i() ) :> obj
+            ( fun (v : C4b)        -> v.ToV4i() ) :> obj
+            ( fun (v : C4b)        -> v.ToV3l() ) :> obj
+            ( fun (v : C4b)        -> v.ToV4l() ) :> obj
+            ( fun (v : C4b)        -> C3f(v).ToV3f() ) :> obj
+            ( fun (v : C4b)        -> C4f(v).ToV4f() ) :> obj
+            ( fun (v : C4b)        -> C3d(v).ToV3d() ) :> obj
+            ( fun (v : C4b)        -> C4d(v).ToV4d() ) :> obj
 
 
-            ( fun (b : C3f)        -> C3b(b).ToV3i() ) :> obj
-            ( fun (b : C3f)        -> C3ui(b) ) :> obj
-            ( fun (b : C3f)        -> C3ui(b).ToV3l() ) :> obj
-            ( fun (b : C3f)        -> b.ToV3f() ) :> obj
-            ( fun (b : C3f)        -> b.ToV3d() ) :> obj
-            ( fun (b : C3f)        -> C4b(b).ToV4i() ) :> obj
-            ( fun (b : C3f)        -> C4ui(b) ) :> obj
-            ( fun (b : C3f)        -> C4ui(b).ToV4l() ) :> obj
-            ( fun (b : C3f)        -> b.ToV4f() ) :> obj
-            ( fun (b : C3f)        -> b.ToV4d() ) :> obj
+            // C3us -> other colors
+            ( fun (v : C3us)       -> C3b(v) ) :> obj
+            ( fun (v : C3us)       -> C4b(v) ) :> obj
+            ( fun (v : C3us)       -> C3us(v) ) :> obj
+            ( fun (v : C3us)       -> C4us(v) ) :> obj
+            ( fun (v : C3us)       -> C3ui(v) ) :> obj
+            ( fun (v : C3us)       -> C4ui(v) ) :> obj
+            ( fun (v : C3us)       -> C3f(v) ) :> obj
+            ( fun (v : C3us)       -> C4f(v) ) :> obj
+            ( fun (v : C3us)       -> C3d(v) ) :> obj
+            ( fun (v : C3us)       -> C4d(v) ) :> obj
 
-            ( fun (b : C4f)        -> C3b(b).ToV3i() ) :> obj
-            ( fun (b : C4f)        -> C3ui(b) ) :> obj
-            ( fun (b : C4f)        -> C3ui(b).ToV3l() ) :> obj
-            ( fun (b : C4f)        -> b.ToV3f() ) :> obj
-            ( fun (b : C4f)        -> b.ToV3d() ) :> obj
-            ( fun (b : C4f)        -> C4b(b).ToV4i() ) :> obj
-            ( fun (b : C4f)        -> C4ui(b) ) :> obj
-            ( fun (b : C4f)        -> C4ui(b).ToV4l() ) :> obj
-            ( fun (b : C4f)        -> b.ToV4f() ) :> obj
-            ( fun (b : C4f)        -> b.ToV4d() ) :> obj
+            // C3us -> vectors
+            ( fun (v : C3us)       -> v.ToV3i() ) :> obj
+            ( fun (v : C3us)       -> v.ToV4i() ) :> obj
+            ( fun (v : C3us)       -> v.ToV3l() ) :> obj
+            ( fun (v : C3us)       -> v.ToV4l() ) :> obj
+            ( fun (v : C3us)       -> C3f(v).ToV3f() ) :> obj
+            ( fun (v : C3us)       -> C4f(v).ToV4f() ) :> obj
+            ( fun (v : C3us)       -> C3d(v).ToV3d() ) :> obj
+            ( fun (v : C3us)       -> C4d(v).ToV4d() ) :> obj
+
+            // C4us -> other colors
+            ( fun (v : C4us)       -> C3b(v) ) :> obj
+            ( fun (v : C4us)       -> C4b(v) ) :> obj
+            ( fun (v : C4us)       -> C3us(v) ) :> obj
+            ( fun (v : C4us)       -> C4us(v) ) :> obj
+            ( fun (v : C4us)       -> C3ui(v) ) :> obj
+            ( fun (v : C4us)       -> C4ui(v) ) :> obj
+            ( fun (v : C4us)       -> C3f(v) ) :> obj
+            ( fun (v : C4us)       -> C4f(v) ) :> obj
+            ( fun (v : C4us)       -> C3d(v) ) :> obj
+            ( fun (v : C4us)       -> C4d(v) ) :> obj
+
+            // C4us -> vectors
+            ( fun (v : C4us)       -> v.ToV3i() ) :> obj
+            ( fun (v : C4us)       -> v.ToV4i() ) :> obj
+            ( fun (v : C4us)       -> v.ToV3l() ) :> obj
+            ( fun (v : C4us)       -> v.ToV4l() ) :> obj
+            ( fun (v : C4us)       -> C3f(v).ToV3f() ) :> obj
+            ( fun (v : C4us)       -> C4f(v).ToV4f() ) :> obj
+            ( fun (v : C4us)       -> C3d(v).ToV3d() ) :> obj
+            ( fun (v : C4us)       -> C4d(v).ToV4d() ) :> obj
 
 
-            ( fun (b : C3d)        -> C3b(b).ToV3i() ) :> obj
-            ( fun (b : C3d)        -> C3ui(b) ) :> obj
-            ( fun (b : C3d)        -> C3ui(b).ToV3l() ) :> obj
-            ( fun (b : C3d)        -> C3f(b).ToV3f() ) :> obj
-            ( fun (b : C3d)        -> b.ToV3d() ) :> obj
-            ( fun (b : C3d)        -> C4b(b).ToV4i() ) :> obj
-            ( fun (b : C3d)        -> C4ui(b) ) :> obj
-            ( fun (b : C3d)        -> C4ui(b).ToV4l() ) :> obj
-            ( fun (b : C3d)        -> C4f(b).ToV4f() ) :> obj
-            ( fun (b : C3d)        -> b.ToV4d() ) :> obj
+            // C3ui-> other colors
+            ( fun (v : C3ui)       -> C3b(v) ) :> obj
+            ( fun (v : C3ui)       -> C4b(v) ) :> obj
+            ( fun (v : C3ui)       -> C3us(v) ) :> obj
+            ( fun (v : C3ui)       -> C4us(v) ) :> obj
+            ( fun (v : C3ui)       -> C3ui(v) ) :> obj
+            ( fun (v : C3ui)       -> C4ui(v) ) :> obj
+            ( fun (v : C3ui)       -> C3f(v) ) :> obj
+            ( fun (v : C3ui)       -> C4f(v) ) :> obj
+            ( fun (v : C3ui)       -> C3d(v) ) :> obj
+            ( fun (v : C3ui)       -> C4d(v) ) :> obj
 
-            ( fun (b : C4d)        -> C3b(b).ToV3i() ) :> obj
-            ( fun (b : C4d)        -> C3ui(b) ) :> obj
-            ( fun (b : C4d)        -> C3ui(b).ToV3l() ) :> obj
-            ( fun (b : C4d)        -> C3f(b).ToV3f() ) :> obj
-            ( fun (b : C4d)        -> b.ToV3d() ) :> obj
-            ( fun (b : C4d)        -> C4b(b).ToV4i() ) :> obj
-            ( fun (b : C4d)        -> C4ui(b) ) :> obj
-            ( fun (b : C4d)        -> C4ui(b).ToV4l() ) :> obj
-            ( fun (b : C4d)        -> C4f(b).ToV4f() ) :> obj
-            ( fun (b : C4d)        -> b.ToV4d() ) :> obj
+            // C3ui -> vectors
+            ( fun (v : C3ui)       -> v.ToV3l() ) :> obj
+            ( fun (v : C3ui)       -> v.ToV4l() ) :> obj
+            ( fun (v : C3ui)       -> C3f(v).ToV3f() ) :> obj
+            ( fun (v : C3ui)       -> C4f(v).ToV4f() ) :> obj
+            ( fun (v : C3ui)       -> C3d(v).ToV3d() ) :> obj
+            ( fun (v : C3ui)       -> C4d(v).ToV4d() ) :> obj
+
+            // C4ui -> other colors
+            ( fun (v : C4ui)       -> C3b(v) ) :> obj
+            ( fun (v : C4ui)       -> C4b(v) ) :> obj
+            ( fun (v : C4ui)       -> C3us(v) ) :> obj
+            ( fun (v : C4ui)       -> C4us(v) ) :> obj
+            ( fun (v : C4ui)       -> C3ui(v) ) :> obj
+            ( fun (v : C4ui)       -> C4ui(v) ) :> obj
+            ( fun (v : C4ui)       -> C3f(v) ) :> obj
+            ( fun (v : C4ui)       -> C4f(v) ) :> obj
+            ( fun (v : C4ui)       -> C3d(v) ) :> obj
+            ( fun (v : C4ui)       -> C4d(v) ) :> obj
+
+            // C4ui -> vectors
+            ( fun (v : C4ui)       -> v.ToV3l() ) :> obj
+            ( fun (v : C4ui)       -> v.ToV4l() ) :> obj
+            ( fun (v : C4ui)       -> C3f(v).ToV3f() ) :> obj
+            ( fun (v : C4ui)       -> C4f(v).ToV4f() ) :> obj
+            ( fun (v : C4ui)       -> C3d(v).ToV3d() ) :> obj
+            ( fun (v : C4ui)       -> C4d(v).ToV4d() ) :> obj
 
 
+            // C3f -> other colors
+            ( fun (v : C3f)        -> C3b(v) ) :> obj
+            ( fun (v : C3f)        -> C4b(v) ) :> obj
+            ( fun (v : C3f)        -> C3us(v) ) :> obj
+            ( fun (v : C3f)        -> C4us(v) ) :> obj
+            ( fun (v : C3f)        -> C3ui(v) ) :> obj
+            ( fun (v : C3f)        -> C4ui(v) ) :> obj
+            ( fun (v : C3f)        -> C3f(v) ) :> obj
+            ( fun (v : C3f)        -> C4f(v) ) :> obj
+            ( fun (v : C3f)        -> C3d(v) ) :> obj
+            ( fun (v : C3f)        -> C4d(v) ) :> obj
+
+            // C3f -> vectors
+            ( fun (v : C3f)        -> v.ToV3f() ) :> obj
+            ( fun (v : C3f)        -> v.ToV4f() ) :> obj
+            ( fun (v : C3f)        -> v.ToV3d() ) :> obj
+            ( fun (v : C3f)        -> v.ToV4d() ) :> obj
+
+            // C4f -> other colors
+            ( fun (v : C4f)        -> C3b(v) ) :> obj
+            ( fun (v : C4f)        -> C4b(v) ) :> obj
+            ( fun (v : C4f)        -> C3us(v) ) :> obj
+            ( fun (v : C4f)        -> C4us(v) ) :> obj
+            ( fun (v : C4f)        -> C3ui(v) ) :> obj
+            ( fun (v : C4f)        -> C4ui(v) ) :> obj
+            ( fun (v : C4f)        -> C3f(v) ) :> obj
+            ( fun (v : C4f)        -> C4f(v) ) :> obj
+            ( fun (v : C4f)        -> C3d(v) ) :> obj
+            ( fun (v : C4f)        -> C4d(v) ) :> obj
+
+            // C4f -> vectors
+            ( fun (v : C4f)        -> v.ToV3f() ) :> obj
+            ( fun (v : C4f)        -> v.ToV4f() ) :> obj
+            ( fun (v : C4f)        -> v.ToV3d() ) :> obj
+            ( fun (v : C4f)        -> v.ToV4d() ) :> obj
+
+
+            // C3d -> other colors
+            ( fun (v : C3d)        -> C3b(v) ) :> obj
+            ( fun (v : C3d)        -> C4b(v) ) :> obj
+            ( fun (v : C3d)        -> C3us(v) ) :> obj
+            ( fun (v : C3d)        -> C4us(v) ) :> obj
+            ( fun (v : C3d)        -> C3ui(v) ) :> obj
+            ( fun (v : C3d)        -> C4ui(v) ) :> obj
+            ( fun (v : C3d)        -> C3f(v) ) :> obj
+            ( fun (v : C3d)        -> C4f(v) ) :> obj
+            ( fun (v : C3d)        -> C3d(v) ) :> obj
+            ( fun (v : C3d)        -> C4d(v) ) :> obj
+
+            // C3d -> vectors
+            ( fun (v : C3d)        -> v.ToV3f() ) :> obj
+            ( fun (v : C3d)        -> v.ToV4f() ) :> obj
+            ( fun (v : C3d)        -> v.ToV3d() ) :> obj
+            ( fun (v : C3d)        -> v.ToV4d() ) :> obj
+
+            // C4d -> other colors
+            ( fun (v : C4d)        -> C3b(v) ) :> obj
+            ( fun (v : C4d)        -> C4b(v) ) :> obj
+            ( fun (v : C4d)        -> C3us(v) ) :> obj
+            ( fun (v : C4d)        -> C4us(v) ) :> obj
+            ( fun (v : C4d)        -> C3ui(v) ) :> obj
+            ( fun (v : C4d)        -> C4ui(v) ) :> obj
+            ( fun (v : C4d)        -> C3f(v) ) :> obj
+            ( fun (v : C4d)        -> C4f(v) ) :> obj
+            ( fun (v : C4d)        -> C3d(v) ) :> obj
+            ( fun (v : C4d)        -> C4d(v) ) :> obj
+
+            // C4d -> vectors
+            ( fun (v : C4d)        -> v.ToV3f() ) :> obj
+            ( fun (v : C4d)        -> v.ToV4f() ) :> obj
+            ( fun (v : C4d)        -> v.ToV3d() ) :> obj
+            ( fun (v : C4d)        -> v.ToV4d() ) :> obj
         ]
 
 
