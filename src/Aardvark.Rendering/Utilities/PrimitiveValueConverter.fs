@@ -969,6 +969,62 @@ module PrimitiveValueConverter =
             ( fun (v : C4d)        -> v.ToV4f() ) :> obj
             ( fun (v : C4d)        -> v.ToV3d() ) :> obj
             ( fun (v : C4d)        -> v.ToV4d() ) :> obj
+
+
+            // V3i -> colors
+            ( fun (v : V3i)        -> C3b(v) ) :> obj
+            ( fun (v : V3i)        -> C4b(v) ) :> obj
+            ( fun (v : V3i)        -> C3us(v) ) :> obj
+            ( fun (v : V3i)        -> C4us(v) ) :> obj
+
+            // V4i -> colors
+            ( fun (v : V4i)        -> C3b(v) ) :> obj
+            ( fun (v : V4i)        -> C4b(v) ) :> obj
+            ( fun (v : V4i)        -> C3us(v) ) :> obj
+            ( fun (v : V4i)        -> C4us(v) ) :> obj
+
+
+            // V3l -> colors
+            ( fun (v : V3l)        -> C3b(v) ) :> obj
+            ( fun (v : V3l)        -> C4b(v) ) :> obj
+            ( fun (v : V3l)        -> C3us(v) ) :> obj
+            ( fun (v : V3l)        -> C4us(v) ) :> obj
+            ( fun (v : V3l)        -> C3ui(v) ) :> obj
+            ( fun (v : V3l)        -> C4ui(v) ) :> obj
+
+            // V4l -> colors
+            ( fun (v : V4l)        -> C3b(v) ) :> obj
+            ( fun (v : V4l)        -> C4b(v) ) :> obj
+            ( fun (v : V4l)        -> C3us(v) ) :> obj
+            ( fun (v : V4l)        -> C4us(v) ) :> obj
+            ( fun (v : V4l)        -> C3ui(v) ) :> obj
+            ( fun (v : V4l)        -> C4ui(v) ) :> obj
+
+
+            // V3f -> colors
+            ( fun (v : V3f)        -> C3f(v) ) :> obj
+            ( fun (v : V3f)        -> C4f(v) ) :> obj
+            ( fun (v : V3f)        -> C3d(v) ) :> obj
+            ( fun (v : V3f)        -> C4d(v) ) :> obj
+
+            // V4f -> colors
+            ( fun (v : V4f)        -> C3f(v) ) :> obj
+            ( fun (v : V4f)        -> C4f(v) ) :> obj
+            ( fun (v : V4f)        -> C3d(v) ) :> obj
+            ( fun (v : V4f)        -> C4d(v) ) :> obj
+
+
+            // V3d -> colors
+            ( fun (v : V3d)        -> C3f(v) ) :> obj
+            ( fun (v : V3d)        -> C4f(v) ) :> obj
+            ( fun (v : V3d)        -> C3d(v) ) :> obj
+            ( fun (v : V3d)        -> C4d(v) ) :> obj
+
+            // V4d -> colors
+            ( fun (v : V4d)        -> C3f(v) ) :> obj
+            ( fun (v : V4d)        -> C4f(v) ) :> obj
+            ( fun (v : V4d)        -> C3d(v) ) :> obj
+            ( fun (v : V4d)        -> C4d(v) ) :> obj
         ]
 
 
