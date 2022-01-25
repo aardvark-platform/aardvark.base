@@ -16,14 +16,17 @@
 	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.1</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ImageLoading.fs" />
     <Compile Include="PolyRegion2dTests.fs" />
     <Compile Include="Regression.fs" />
     <Compile Include="TexturePacking.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
     <ProjectReference Include="..\..\Aardvark.Geometry\Aardvark.Geometry.fsproj" />
+    <ProjectReference Include="..\..\Aardvark.PixImage.DevIL\Aardvark.PixImage.DevIL.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

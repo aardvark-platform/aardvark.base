@@ -61,7 +61,7 @@ module TexturePackingTests =
         // no extra rects
         all.IsEmpty |> should be True
 
-    [<EntryPoint>]
+
     let run args =
         
         let gen = SizeGenerator()
