@@ -1,5 +1,6 @@
-Unofficial.LibTessDotNet
 FSharp.Core
+Aardvark.Build
+Unofficial.LibTessDotNet
 FsPickler
 Aardvark.Base.TypeProviders
 FSharp.Data.Adaptive
