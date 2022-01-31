@@ -242,6 +242,11 @@ namespace Aardvark.Base
                 { PixFormat.IntRGBA, (x, y, c) => new PixImage<int>(Col.Format.RGBA, x, y, c) },
                 { PixFormat.IntRGBP, (x, y, c) => new PixImage<int>(Col.Format.RGBP, x, y, c) },
 
+                { PixFormat.HalfGray, (x, y, c) => new PixImage<Half>(Col.Format.Gray, x, y, c) },
+                { PixFormat.HalfRGB, (x, y, c) => new PixImage<Half>(Col.Format.RGB, x, y, c) },
+                { PixFormat.HalfRGBA, (x, y, c) => new PixImage<Half>(Col.Format.RGBA, x, y, c) },
+                { PixFormat.HalfRGBP, (x, y, c) => new PixImage<Half>(Col.Format.RGBP, x, y, c) },
+
                 { PixFormat.FloatGray, (x, y, c) => new PixImage<float>(Col.Format.Gray, x, y, c) },
                 { PixFormat.FloatRGB, (x, y, c) => new PixImage<float>(Col.Format.RGB, x, y, c) },
                 { PixFormat.FloatRGBA, (x, y, c) => new PixImage<float>(Col.Format.RGBA, x, y, c) },
@@ -268,6 +273,8 @@ namespace Aardvark.Base
                                     new PixImage<uint>(f, ((uint[])a).CreateImageVolume(new V3l(x, y, c))) },
                 { typeof(int[]), (a, f, x, y, c) =>
                                     new PixImage<int>(f, ((int[])a).CreateImageVolume(new V3l(x, y, c))) },
+                { typeof(Half[]), (a, f, x, y, c) =>
+                                    new PixImage<Half>(f, ((Half[])a).CreateImageVolume(new V3l(x, y, c))) },
                 { typeof(float[]), (a, f, x, y, c) =>
                                     new PixImage<float>(f, ((float[])a).CreateImageVolume(new V3l(x, y, c))) },
                 { typeof(double[]), (a, f, x, y, c) =>

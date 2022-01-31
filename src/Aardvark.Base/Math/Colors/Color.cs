@@ -1399,6 +1399,14 @@ namespace Aardvark.Base
         public static readonly PixFormat IntBGRP = new PixFormat(typeof(int), Col.Format.BGRP);
         public static readonly PixFormat IntRGBP = new PixFormat(typeof(int), Col.Format.RGBP);
 
+        public static readonly PixFormat HalfGray = new PixFormat(typeof(Half), Col.Format.Gray);
+        public static readonly PixFormat HalfBGR = new PixFormat(typeof(Half), Col.Format.BGR);
+        public static readonly PixFormat HalfRGB = new PixFormat(typeof(Half), Col.Format.RGB);
+        public static readonly PixFormat HalfBGRA = new PixFormat(typeof(Half), Col.Format.BGRA);
+        public static readonly PixFormat HalfRGBA = new PixFormat(typeof(Half), Col.Format.RGBA);
+        public static readonly PixFormat HalfBGRP = new PixFormat(typeof(Half), Col.Format.BGRP);
+        public static readonly PixFormat HalfRGBP = new PixFormat(typeof(Half), Col.Format.RGBP);
+
         public static readonly PixFormat FloatGray = new PixFormat(typeof(float), Col.Format.Gray);
         public static readonly PixFormat FloatBGR = new PixFormat(typeof(float), Col.Format.BGR);
         public static readonly PixFormat FloatRGB = new PixFormat(typeof(float), Col.Format.RGB);
