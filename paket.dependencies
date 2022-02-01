@@ -5,7 +5,7 @@ source https://api.nuget.org/v3/index.json
 
 nuget FSharp.Core                  >= 5.0.0 lowest_matching: true
 nuget Microsoft.NETFramework.ReferenceAssemblies >= 1.0.0 lowest_matching: true
-nuget Aardvark.Build               ~> 1.0.9
+nuget Aardvark.Build               ~> 1.0.10
 
 nuget Aardvark.Base.TypeProviders  ~> 4.5.15
 nuget System.Collections.Immutable >= 1.7.0 lowest_matching: true
