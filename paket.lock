@@ -5,7 +5,7 @@ NUGET
     Aardvark.Base.TypeProviders (4.5.15)
       FSharp.Core (>= 3.1.2.5) - restriction: || (== net472) (&& (== net6.0) (>= net45)) (&& (== netcoreapp3.1) (>= net45)) (&& (== netstandard2.0) (>= net45))
       FSharp.Core (>= 4.2.3) - restriction: || (&& (== net472) (< net45)) (== net6.0) (== netcoreapp3.1) (== netstandard2.0)
-    Aardvark.Build (1.0.7)
+    Aardvark.Build (1.0.9)
     BenchmarkDotNet (0.12.1)
       BenchmarkDotNet.Annotations (>= 0.12.1)
       CommandLineParser (>= 2.4.3)
