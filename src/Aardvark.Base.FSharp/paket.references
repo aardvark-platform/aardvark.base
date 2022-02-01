@@ -1,4 +1,5 @@
 FSharp.Core
+Aardvark.Build
 System.Dynamic.Runtime
 FsPickler
 Aardvark.Base.TypeProviders
