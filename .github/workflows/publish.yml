@@ -22,9 +22,9 @@ jobs:
         run: dotnet tool restore
       - name: Restore
         run: dotnet paket restore
-      - name: Generate Code
-        shell: cmd
-        run: generate.cmd
+      # - name: Generate Code
+      #   shell: cmd
+      #   run: generate.cmd
       - name: Build
         shell: cmd
         run: dotnet build -c Release src\Aardvark.sln
@@ -42,8 +42,8 @@ jobs:
           NUGET_KEY: ${{ secrets.GITHUB_TOKEN }}
         shell: cmd
         run: dotnet nuget push "bin\pack\*.nupkg" -k %NUGET_KEY% -s "https://nuget.pkg.github.com/aardvark-platform/index.json" --skip-duplicate
-      # - name: NuGet
-      #   env:
-      #     NUGET_KEY: ${{ secrets.NUGET_KEY }}
-      #   shell: cmd
-      #   run: dotnet nuget push "bin\pack\*.nupkg" -k %NUGET_KEY% -s "https://api.nuget.org/v3/index.json" --skip-duplicate
+      - name: NuGet
+        env:
+          NUGET_KEY: ${{ secrets.NUGET_KEY }}
+        shell: cmd
+        run: dotnet nuget push "bin\pack\*.nupkg" -k %NUGET_KEY% -s "https://api.nuget.org/v3/index.json" --skip-duplicate
