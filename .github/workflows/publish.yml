@@ -23,10 +23,8 @@ jobs:
       - name: Restore
         run: dotnet paket restore
       - name: Generate Code
-        run: 
-          - dotnet build src\CodeGenerator\CodeGenerator.csproj
-          - dotnet build src\Aardvark.Base\Aardvark.Base.csproj
-          - bin\Debug\CodeGenerator.exe
+        shell: cmd
+        run: generate.cmd
       - name: Build
         shell: cmd
         run: dotnet build -c Release src\Aardvark.sln
