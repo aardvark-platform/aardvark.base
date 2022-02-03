@@ -74,5 +74,85 @@ namespace Aardvark.Tests
 
             }
         }
+
+        [Test]
+        public void IndexerC4b()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 32; i++)
+            {
+                var color = new C4b(rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt());
+
+                Assert.AreEqual(color.R, color[0]);
+                Assert.AreEqual(color.G, color[1]);
+                Assert.AreEqual(color.B, color[2]);
+                Assert.AreEqual(color.A, color[3]);
+            }
+        }
+
+        [Test]
+        public void IndexerC4us()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 32; i++)
+            {
+                var color = new C4us(rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt());
+
+                Assert.AreEqual(color.R, color[0]);
+                Assert.AreEqual(color.G, color[1]);
+                Assert.AreEqual(color.B, color[2]);
+                Assert.AreEqual(color.A, color[3]);
+            }
+        }
+
+        [Test]
+        public void IndexerC4ui()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 32; i++)
+            {
+                var color = rnd.UniformC4ui();
+
+                Assert.AreEqual(color.R, color[0]);
+                Assert.AreEqual(color.G, color[1]);
+                Assert.AreEqual(color.B, color[2]);
+                Assert.AreEqual(color.A, color[3]);
+            }
+        }
+
+        [Test]
+        public void IndexerC4f()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 32; i++)
+            {
+                var color = rnd.UniformC4f();
+
+                Assert.AreEqual(color.R, color[0]);
+                Assert.AreEqual(color.G, color[1]);
+                Assert.AreEqual(color.B, color[2]);
+                Assert.AreEqual(color.A, color[3]);
+            }
+        }
+
+        [Test]
+        public void IndexerC4d()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 32; i++)
+            {
+                var color = rnd.UniformC4d();
+
+                Assert.AreEqual(color.R, color[0]);
+                Assert.AreEqual(color.G, color[1]);
+                Assert.AreEqual(color.B, color[2]);
+                Assert.AreEqual(color.A, color[3]);
+            }
+        }
     }
 }

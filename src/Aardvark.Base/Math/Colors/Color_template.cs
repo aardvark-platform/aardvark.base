@@ -256,7 +256,7 @@ namespace Aardvark.Base
     //#     var ft_to_b = fttobmap[ft];
     //#     var fabs_p = isReal ? "Fun.Abs(" : "";
     //#     var q_fabs = isReal ? ")" : "";
-    //#     var getptr = "&" + fields[0];
+    //#     var getptr = "&" + ((ft == Meta.ByteType) ? fields[2] : fields[0]);
     //#     var rgba = t.HasAlpha ? "RGBA" : "RGB";
     //#     var maxval = maxvalmap[ft];
     #region __type__
@@ -798,6 +798,11 @@ namespace Aardvark.Base
 
         #region Indexer
 
+        //# if (ft == Meta.ByteType) {
+        // Byte colors have a different byte order (red and blue are swapped)
+        private static readonly byte[] IndexMapping = new byte[] { 2, 1, 0, 3 };
+
+        //# }
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
@@ -806,12 +811,12 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                fixed (__ftype__* ptr = __getptr__) { ptr[i] = value; }
+                fixed (__ftype__* ptr = __getptr__) { ptr[/*#if (ft == Meta.ByteType) {*/IndexMapping[i]/*# } else {*/i/*#}*/] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                fixed (__ftype__* ptr = __getptr__) { return ptr[i]; }
+                fixed (__ftype__* ptr = __getptr__) { return ptr[/*#if (ft == Meta.ByteType) {*/IndexMapping[i]/*# } else {*/i/*#}*/]; }
             }
         }
 
