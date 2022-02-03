@@ -931,6 +931,32 @@ namespace Aardvark.Base
         }
 
         //# } // t1
+        //# if (!ft.IsReal) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ operator *(__type__ col, __ftype__ scalar)
+        {
+            return new __type__(/*# fields.ForEach(f => { */(__ftype__)(col.__f__ * scalar)/*# }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ operator *(__ftype__ scalar, __type__ col)
+        {
+            return new __type__(/*# fields.ForEach(f => { */(__ftype__)(scalar * col.__f__)/*# }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ operator /(__type__ col, __ftype__ scalar)
+        {
+            return new __type__(/*# fields.ForEach(f => { */(__ftype__)(col.__f__ / scalar)/*# }, comma); */);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ operator /(__ftype__ scalar, __type__ col)
+        {
+            return new __type__(/*# fields.ForEach(f => { */(__ftype__)(scalar / col.__f__)/*# }, comma); */);
+        }
+
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__type__ c0, __type__ c1)
         {

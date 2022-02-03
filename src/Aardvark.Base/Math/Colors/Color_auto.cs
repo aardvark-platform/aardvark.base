@@ -1344,6 +1344,30 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b operator *(C3b col, byte scalar)
+        {
+            return new C3b((byte)(col.R * scalar), (byte)(col.G * scalar), (byte)(col.B * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b operator *(byte scalar, C3b col)
+        {
+            return new C3b((byte)(scalar * col.R), (byte)(scalar * col.G), (byte)(scalar * col.B));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b operator /(C3b col, byte scalar)
+        {
+            return new C3b((byte)(col.R / scalar), (byte)(col.G / scalar), (byte)(col.B / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b operator /(byte scalar, C3b col)
+        {
+            return new C3b((byte)(scalar / col.R), (byte)(scalar / col.G), (byte)(scalar / col.B));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator *(C3b c0, C3b c1)
         {
             return new C3b((byte)(c0.R * c1.R), (byte)(c0.G * c1.G), (byte)(c0.B * c1.B));
@@ -3443,6 +3467,30 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us operator *(C3us col, ushort scalar)
+        {
+            return new C3us((ushort)(col.R * scalar), (ushort)(col.G * scalar), (ushort)(col.B * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us operator *(ushort scalar, C3us col)
+        {
+            return new C3us((ushort)(scalar * col.R), (ushort)(scalar * col.G), (ushort)(scalar * col.B));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us operator /(C3us col, ushort scalar)
+        {
+            return new C3us((ushort)(col.R / scalar), (ushort)(col.G / scalar), (ushort)(col.B / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us operator /(ushort scalar, C3us col)
+        {
+            return new C3us((ushort)(scalar / col.R), (ushort)(scalar / col.G), (ushort)(scalar / col.B));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator *(C3us c0, C3us c1)
         {
             return new C3us((ushort)(c0.R * c1.R), (ushort)(c0.G * c1.G), (ushort)(c0.B * c1.B));
@@ -5470,6 +5518,30 @@ namespace Aardvark.Base
                 (uint)(c0.R - Col.UIntFromDouble(c1.R)), 
                 (uint)(c0.G - Col.UIntFromDouble(c1.G)), 
                 (uint)(c0.B - Col.UIntFromDouble(c1.B)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui operator *(C3ui col, uint scalar)
+        {
+            return new C3ui((uint)(col.R * scalar), (uint)(col.G * scalar), (uint)(col.B * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui operator *(uint scalar, C3ui col)
+        {
+            return new C3ui((uint)(scalar * col.R), (uint)(scalar * col.G), (uint)(scalar * col.B));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui operator /(C3ui col, uint scalar)
+        {
+            return new C3ui((uint)(col.R / scalar), (uint)(col.G / scalar), (uint)(col.B / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui operator /(uint scalar, C3ui col)
+        {
+            return new C3ui((uint)(scalar / col.R), (uint)(scalar / col.G), (uint)(scalar / col.B));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11862,6 +11934,30 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b operator *(C4b col, byte scalar)
+        {
+            return new C4b((byte)(col.R * scalar), (byte)(col.G * scalar), (byte)(col.B * scalar), (byte)(col.A * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b operator *(byte scalar, C4b col)
+        {
+            return new C4b((byte)(scalar * col.R), (byte)(scalar * col.G), (byte)(scalar * col.B), (byte)(scalar * col.A));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b operator /(C4b col, byte scalar)
+        {
+            return new C4b((byte)(col.R / scalar), (byte)(col.G / scalar), (byte)(col.B / scalar), (byte)(col.A / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b operator /(byte scalar, C4b col)
+        {
+            return new C4b((byte)(scalar / col.R), (byte)(scalar / col.G), (byte)(scalar / col.B), (byte)(scalar / col.A));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator *(C4b c0, C4b c1)
         {
             return new C4b((byte)(c0.R * c1.R), (byte)(c0.G * c1.G), (byte)(c0.B * c1.B), (byte)(c0.A * c1.A));
@@ -14229,6 +14325,30 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us operator *(C4us col, ushort scalar)
+        {
+            return new C4us((ushort)(col.R * scalar), (ushort)(col.G * scalar), (ushort)(col.B * scalar), (ushort)(col.A * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us operator *(ushort scalar, C4us col)
+        {
+            return new C4us((ushort)(scalar * col.R), (ushort)(scalar * col.G), (ushort)(scalar * col.B), (ushort)(scalar * col.A));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us operator /(C4us col, ushort scalar)
+        {
+            return new C4us((ushort)(col.R / scalar), (ushort)(col.G / scalar), (ushort)(col.B / scalar), (ushort)(col.A / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us operator /(ushort scalar, C4us col)
+        {
+            return new C4us((ushort)(scalar / col.R), (ushort)(scalar / col.G), (ushort)(scalar / col.B), (ushort)(scalar / col.A));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator *(C4us c0, C4us c1)
         {
             return new C4us((ushort)(c0.R * c1.R), (ushort)(c0.G * c1.G), (ushort)(c0.B * c1.B), (ushort)(c0.A * c1.A));
@@ -16507,6 +16627,30 @@ namespace Aardvark.Base
                 (uint)(c0.G - Col.UIntFromDouble(c1.G)), 
                 (uint)(c0.B - Col.UIntFromDouble(c1.B)), 
                 (uint)(c0.A - Col.UIntFromDouble(c1.A)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui operator *(C4ui col, uint scalar)
+        {
+            return new C4ui((uint)(col.R * scalar), (uint)(col.G * scalar), (uint)(col.B * scalar), (uint)(col.A * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui operator *(uint scalar, C4ui col)
+        {
+            return new C4ui((uint)(scalar * col.R), (uint)(scalar * col.G), (uint)(scalar * col.B), (uint)(scalar * col.A));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui operator /(C4ui col, uint scalar)
+        {
+            return new C4ui((uint)(col.R / scalar), (uint)(col.G / scalar), (uint)(col.B / scalar), (uint)(col.A / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui operator /(uint scalar, C4ui col)
+        {
+            return new C4ui((uint)(scalar / col.R), (uint)(scalar / col.G), (uint)(scalar / col.B), (uint)(scalar / col.A));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

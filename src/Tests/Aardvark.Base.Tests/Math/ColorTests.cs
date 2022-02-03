@@ -154,5 +154,22 @@ namespace Aardvark.Tests
                 Assert.AreEqual(color.A, color[3]);
             }
         }
+
+        [Test]
+        public void ScalarOperators()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 32; i++)
+            {
+                var color = new C4b(rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt(), rnd.UniformInt());
+                var scalar = (byte)rnd.UniformInt();
+
+                Assert.AreEqual(color * new C4b(scalar, scalar, scalar, scalar), color * scalar);
+                Assert.AreEqual(new C4b(scalar, scalar, scalar, scalar) * color, scalar * color);
+                Assert.AreEqual(color / new C4b(scalar, scalar, scalar, scalar), color / scalar);
+                Assert.AreEqual(new C4b(scalar, scalar, scalar, scalar) / color, scalar / color);
+            }
+        }
     }
 }
