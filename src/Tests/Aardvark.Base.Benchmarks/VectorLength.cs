@@ -5,7 +5,7 @@ using System;
 
 namespace Aardvark.Base.Benchmarks
 {
-    //[SimpleJob(RuntimeMoniker.Net471)]
+    //[SimpleJob(RuntimeMoniker.Net472)]
     [SimpleJob(RuntimeMoniker.NetCoreApp31)]
     [DisassemblyDiagnoser(printSource: true)]
     public class V4fLength

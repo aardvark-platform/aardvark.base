@@ -1,0 +1,18 @@
+{
+    "version": 1,
+    "isRoot": true,
+    "tools": {
+      "paket": {
+        "version": "7.0.0-alpha003",
+        "commands": [
+          "paket"
+        ]
+      },
+      "aardpack": {
+        "version": "1.0.10",
+        "commands": [
+          "aardpack"
+        ]
+      }
+    }
+  }
