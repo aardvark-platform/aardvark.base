@@ -541,6 +541,9 @@ type PolyRegion private(polygons : list<Polygon2d>) =
         // TODO: better implementation possible
         (other * x).IsEmpty |> not
 
+    member x.Overlaps(b : Box2d) =
+        x.Overlaps(PolyRegion(b.ToPolygon2dCCW()))
+
 
     new(p : Polygon2d, tess : TessellationRule) =
         if p.PointCount < 3 then
