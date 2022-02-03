@@ -291,13 +291,11 @@ module Generator =
                 float dim
             ]
 
-
-
-    let iter (coord : CoordDescription) (components : string[]) =
+    let iterPtr (coord : CoordDescription) (components : string[]) =
         let suffix = components |> String.concat ""
 
-        start "member inline private x.Iter%s(action : %s -> 'a -> unit) = " suffix coord.typ
-        line "let action = OptimizedClosures.FSharpFunc<%s, 'a, unit>.Adapt(action)" coord.typ
+        start "member inline private x.IterPtr%s(action : %s -> nativeptr<'a> -> unit) = " suffix coord.typ
+        line "let action = OptimizedClosures.FSharpFunc<%s, nativeptr<'a>, unit>.Adapt(action)" coord.typ
         line "let sa = nativeint (sizeof<'a>)"
         line "let mutable ptr = ptr |> NativePtr.toNativeInt"
         line "ptr <- ptr + nativeint info.Origin * sa"
@@ -323,7 +321,7 @@ module Generator =
         let rec buildLoop (index : int) =
             if index >= components.Length then
                 //line "let c = %s" (coord.view "coord" "x.Size")
-                line "action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))"
+                line "action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)"
                 //line "NativePtr.write (NativePtr.ofNativeInt<'a> ptr) (getValue coord)"
             else
                 let mine = components.[index]
@@ -336,6 +334,58 @@ module Generator =
                 if coord.integral then line "%s" (coord.set "coord" mine (sprintf "%s + %s" (coord.get "coord" mine) (coord.compStep "x.Size" mine)))
                 else line "%s" (coord.set "coord" mine (sprintf "%s + %s" (coord.get "coord" mine) (coord.get "step" mine)))
                 line "ptr <- ptr + j%s" mine
+                stop()
+
+        buildLoop 0
+        stop()
+
+    let iterPtr2 (coord : CoordDescription) (components : string[]) =
+        let name = getNativeName coord.dim
+        let suffix = components |> String.concat ""
+
+        start "member inline private x.IterPtr2%s(other : %s<'b>, action : %s -> nativeptr<'a> -> nativeptr<'b> -> unit) = " suffix name coord.typ
+        line "let action = OptimizedClosures.FSharpFunc<%s, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)" coord.typ
+        line "let sa = nativeint (sizeof<'a>)"
+        line "let sb = nativeint (sizeof<'b>)"
+        line "let mutable ia = ptr |> NativePtr.toNativeInt"
+        line "let mutable ib = other.Pointer |> NativePtr.toNativeInt"
+        line "ia <- ia + nativeint info.Origin * sa"
+        line "ib <- ib + nativeint other.Info.Origin * sb"
+
+        for d in 0 .. components.Length-2 do
+            let mine = components.[d]
+            let next = components.[d + 1]
+            line "let s%s = nativeint (info.S%s * info.D%s) * sa" mine mine mine
+            line "let ja%s = nativeint (info.D%s - info.S%s * info.D%s) * sa" mine mine next next
+            line "let jb%s = nativeint (other.Info.D%s - other.Info.S%s * other.Info.D%s) * sb" mine mine next next
+
+        let mine = components.[components.Length-1]
+        line "let s%s = nativeint (info.S%s * info.D%s) * sa" mine mine mine
+        line "let ja%s = nativeint (info.D%s) * sa" mine mine
+        line "let jb%s = nativeint (other.Info.D%s) * sb" mine mine
+
+        if not coord.integral then
+            line "let initialCoord = %s" (coord.init "x.Size")
+            line "let step = %s" (coord.step "x.Size")
+            line "let mutable coord = initialCoord"
+        else
+            line "let mutable coord = %s" (coord.init "x.Size")
+
+        let rec buildLoop (index : int) =
+            if index >= components.Length then
+                line "action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)"
+            else
+                let mine = components.[index]
+                line "let e%s = ia + s%s" mine mine
+                if index <> 0 then 
+                    if coord.integral then line "%s" (coord.set "coord" mine (coord.compInit "x.Size" mine))
+                    else line "%s" (coord.set "coord" mine (coord.get "initialCoord" mine))
+                start "while ia <> e%s do" mine 
+                buildLoop (index + 1)
+                if coord.integral then line "%s" (coord.set "coord" mine (sprintf "%s + %s" (coord.get "coord" mine) (coord.compStep "x.Size" mine)))
+                else line "%s" (coord.set "coord" mine (sprintf "%s + %s" (coord.get "coord" mine) (coord.get "step" mine)))
+                line "ia <- ia + ja%s" mine
+                line "ib <- ib + jb%s" mine
                 stop()
 
         buildLoop 0
@@ -1043,10 +1093,36 @@ module Generator =
             for perm in allPermutations componentNames do coordSetter coord (List.toArray perm)
             dispatcher id componentNames "SetByCoord" ["value", sprintf "%s -> 'a" coord.typ]
 
-        // Iter (value)
+        // IterPtr (action)
         for coord in CoordDescription.all dim do
-            for perm in allPermutations componentNames do iter coord (List.toArray perm)
-            dispatcher id componentNames "Iter" ["action", sprintf "%s -> 'a -> unit" coord.typ]
+            for perm in allPermutations componentNames do iterPtr coord (List.toArray perm)
+            dispatcher id componentNames "IterPtr" ["action", sprintf "%s -> nativeptr<'a> -> unit" coord.typ]
+
+        // Iter (action)
+        for coord in CoordDescription.all dim do
+            start "member x.Iter(action : %s -> 'a -> unit) = " coord.typ
+            line "x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))"
+            stop()
+
+        // IterPtr2 (other, action)
+        for coord in CoordDescription.all dim do
+            for perm in allPermutations componentNames do iterPtr2 coord (List.toArray perm)
+
+            let check () =
+                start "if info.Size <> other.Info.Size then"
+                line "failwithf \"%s size mismatch: { src = %%A; dst = %%A }\" info.Size other.Info.Size" name
+                stop()
+
+            dispatcher check componentNames "IterPtr2" [
+                    "other", sprintf "%s<'b>" name
+                    "action", sprintf "%s -> nativeptr<'a> -> nativeptr<'b> -> unit" coord.typ
+                ]
+
+        // Iter2 (other, action)
+        for coord in CoordDescription.all dim do
+            start "member x.Iter2(other : %s<'b>, action : %s -> 'a -> 'b -> unit) = " name coord.typ
+            line "x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))"
+            stop()
 
         // BlitTo(other, lerp) 
         for perm in allPermutations componentNames do 
@@ -1162,10 +1238,18 @@ module Generator =
         line "let using (m : %s<'a>) (f : %s<'a> -> 'b) = %s<'a>.Using(m, f)" managedName name  name
         line ""
         line "/// iterates over all entries of the given %s and executes the given action" name
-        start "let inline iter (action : %s -> 'a -> unit) (m : %s<'a>) = m.Iter(action)" lv name 
+        line "let inline iter (action : %s -> 'a -> unit) (m : %s<'a>) = m.Iter(action)" lv name
+        line ""
+        line "/// iterates over all entries of the given %s and executes the given action" name
+        line "let inline iterPtr (action : %s -> nativeptr<'a> -> unit) (m : %s<'a>) = m.IterPtr(action)" lv name 
+        line ""
+        line "/// iterates over all entries of both of the given %ss and executes the given action" name
+        line "let inline iter2 (action : %s -> 'a -> 'b -> unit) (l : %s<'a>) (r : %s<'b>) = l.Iter2(r, action)" lv name name
+        line ""
+        line "/// iterates over all entries of both of the given %ss and executes the given action" name
+        line "let inline iterPtr2 (action : %s -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : %s<'a>) (r : %s<'b>) = l.IterPtr2(r, action)" lv name name
 
-        
-        stop()
+
         stop()
 
         line ""
