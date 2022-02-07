@@ -977,6 +977,9 @@ namespace Aardvark.Base
 
         #region Indexer
 
+        // Byte colors have a different byte order (red and blue are swapped)
+        private static readonly byte[] IndexMapping = new byte[] { 2, 1, 0, 3 };
+
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
@@ -985,12 +988,12 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                fixed (byte* ptr = &R) { ptr[i] = value; }
+                fixed (byte* ptr = &B) { ptr[IndexMapping[i]] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                fixed (byte* ptr = &R) { return ptr[i]; }
+                fixed (byte* ptr = &B) { return ptr[IndexMapping[i]]; }
             }
         }
 
@@ -11476,6 +11479,9 @@ namespace Aardvark.Base
 
         #region Indexer
 
+        // Byte colors have a different byte order (red and blue are swapped)
+        private static readonly byte[] IndexMapping = new byte[] { 2, 1, 0, 3 };
+
         /// <summary>
         /// Indexer in canonical order 0=R, 1=G, 2=B, 3=A (availability depending on color type).
         /// </summary>
@@ -11484,12 +11490,12 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                fixed (byte* ptr = &R) { ptr[i] = value; }
+                fixed (byte* ptr = &B) { ptr[IndexMapping[i]] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                fixed (byte* ptr = &R) { return ptr[i]; }
+                fixed (byte* ptr = &B) { return ptr[IndexMapping[i]]; }
             }
         }
 
