@@ -1,3 +1,12 @@
+### 5.1.26
+- added PixImage and PixVolume related extensions to native tensors
+- added PolyRegion2d.Overlaps(Box2d)
+- fixed byte color indexing
+- removed unnecessary DevILSharp references
+- added Map.unionMany
+- fixed Ceres native unpack
+- workaround for loading native IPP dependencies
+
 ### 5.1.25
 - another SHA1 truncate
 
