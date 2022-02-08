@@ -2,12 +2,14 @@ namespace Aardvark.Base
 
 open Microsoft.FSharp.NativeInterop
 open System.Runtime.InteropServices
+open System.Reflection
 
 #nowarn "9"
 
 [<Sealed>]
 type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo) = 
     member x.Pointer = ptr
+    member x.Address = NativePtr.toNativeInt ptr
     member x.Info = info
     member x.Size = info.Size
     member x.Delta = info.Delta
@@ -384,42 +386,46 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
 
 /// The NativeVector module providers convenient F#-style functions for accessing NativeVectors
 module NativeVector =
+    /// Creates a new NativeVector from the given address and info struct
+    let inline ofNativeInt<'a when 'a : unmanaged> (info : VectorInfo) (address : nativeint) = NativeVector<'a>(NativePtr.ofNativeInt address, info)
+    
     let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) =
         ((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))
     let inline private lerper t a b = lerpy (Unchecked.defaultof<Fun>) t a b
-    /// sets the entire Vector to the given value
+    /// Sets the entire Vector to the given value
     let inline set (value : 'a) (dst : NativeVector<'a>) = dst.Set(value)
     
-    /// sets each entry to the value computed by getValue
+    /// Sets each entry to the value computed by getValue
     let inline setByCoord (getValue : int64 -> 'a) (m : NativeVector<'a>) = m.SetByCoord(getValue)
     
     let inline blit (src : NativeVector<'a>) (dst : NativeVector<'a>) = src.BlitTo(dst, lerper)
     
-    /// copies the content of 'src' to 'dst'
+    /// Copies the content of 'src' to 'dst'
     let inline copy (src : NativeVector<'a>) (dst : NativeVector<'a>) = src.CopyTo(dst)
     
-    /// copies the content of 'src' to 'dst' by applying the given function
+    /// Copies the content of 'src' to 'dst' by applying the given function
     let inline copyWith (f : 'a -> 'b) (src : NativeVector<'a>) (dst : NativeVector<'b>) = src.CopyTo(dst, f)
     
-    /// temporarily pins a Vector making it available as NativeVector
+    /// Temporarily pins a Vector making it available as NativeVector
     let using (m : Vector<'a>) (f : NativeVector<'a> -> 'b) = NativeVector<'a>.Using(m, f)
     
-    /// iterates over all entries of the given NativeVector and executes the given action
+    /// Iterates over all entries of the given NativeVector and executes the given action
     let inline iter (action : int64 -> 'a -> unit) (m : NativeVector<'a>) = m.Iter(action)
     
-    /// iterates over all entries of the given NativeVector and executes the given action
+    /// Iterates over all entries of the given NativeVector and executes the given action
     let inline iterPtr (action : int64 -> nativeptr<'a> -> unit) (m : NativeVector<'a>) = m.IterPtr(action)
     
-    /// iterates over all entries of both of the given NativeVectors and executes the given action
+    /// Iterates over all entries of both of the given NativeVectors and executes the given action
     let inline iter2 (action : int64 -> 'a -> 'b -> unit) (l : NativeVector<'a>) (r : NativeVector<'b>) = l.Iter2(r, action)
     
-    /// iterates over all entries of both of the given NativeVectors and executes the given action
+    /// Iterates over all entries of both of the given NativeVectors and executes the given action
     let inline iterPtr2 (action : int64 -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : NativeVector<'a>) (r : NativeVector<'b>) = l.IterPtr2(r, action)
 
 
 [<Sealed>]
 type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo) = 
     member x.Pointer = ptr
+    member x.Address = NativePtr.toNativeInt ptr
     member x.Info = info
     member x.Size = info.Size
     member x.Delta = info.Delta
@@ -1702,44 +1708,48 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
 
 /// The NativeMatrix module providers convenient F#-style functions for accessing NativeMatrixs
 module NativeMatrix =
+    /// Creates a new NativeMatrix from the given address and info struct
+    let inline ofNativeInt<'a when 'a : unmanaged> (info : MatrixInfo) (address : nativeint) = NativeMatrix<'a>(NativePtr.ofNativeInt address, info)
+    
     let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) =
         ((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))
     let inline private lerper t a b = lerpy (Unchecked.defaultof<Fun>) t a b
-    /// sets the entire Matrix to the given value
+    /// Sets the entire Matrix to the given value
     let inline set (value : 'a) (dst : NativeMatrix<'a>) = dst.Set(value)
     
-    /// sets each entry to the value computed by getValue
+    /// Sets each entry to the value computed by getValue
     let inline setByCoord (getValue : V2l -> 'a) (m : NativeMatrix<'a>) = m.SetByCoord(getValue)
     
     let inline sample (location : V2d) (m : NativeMatrix<'a>) = m.SampleLinear(location, lerper)
     
     let inline blit (src : NativeMatrix<'a>) (dst : NativeMatrix<'a>) = src.BlitTo(dst, lerper)
     
-    /// copies the content of 'src' to 'dst'
+    /// Copies the content of 'src' to 'dst'
     let inline copy (src : NativeMatrix<'a>) (dst : NativeMatrix<'a>) = src.CopyTo(dst)
     
-    /// copies the content of 'src' to 'dst' by applying the given function
+    /// Copies the content of 'src' to 'dst' by applying the given function
     let inline copyWith (f : 'a -> 'b) (src : NativeMatrix<'a>) (dst : NativeMatrix<'b>) = src.CopyTo(dst, f)
     
-    /// temporarily pins a Matrix making it available as NativeMatrix
+    /// Temporarily pins a Matrix making it available as NativeMatrix
     let using (m : Matrix<'a>) (f : NativeMatrix<'a> -> 'b) = NativeMatrix<'a>.Using(m, f)
     
-    /// iterates over all entries of the given NativeMatrix and executes the given action
+    /// Iterates over all entries of the given NativeMatrix and executes the given action
     let inline iter (action : V2l -> 'a -> unit) (m : NativeMatrix<'a>) = m.Iter(action)
     
-    /// iterates over all entries of the given NativeMatrix and executes the given action
+    /// Iterates over all entries of the given NativeMatrix and executes the given action
     let inline iterPtr (action : V2l -> nativeptr<'a> -> unit) (m : NativeMatrix<'a>) = m.IterPtr(action)
     
-    /// iterates over all entries of both of the given NativeMatrixs and executes the given action
+    /// Iterates over all entries of both of the given NativeMatrixs and executes the given action
     let inline iter2 (action : V2l -> 'a -> 'b -> unit) (l : NativeMatrix<'a>) (r : NativeMatrix<'b>) = l.Iter2(r, action)
     
-    /// iterates over all entries of both of the given NativeMatrixs and executes the given action
+    /// Iterates over all entries of both of the given NativeMatrixs and executes the given action
     let inline iterPtr2 (action : V2l -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : NativeMatrix<'a>) (r : NativeMatrix<'b>) = l.IterPtr2(r, action)
 
 
 [<Sealed>]
 type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo) = 
     member x.Pointer = ptr
+    member x.Address = NativePtr.toNativeInt ptr
     member x.Info = info
     member x.Size = info.Size
     member x.Delta = info.Delta
@@ -7781,44 +7791,94 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
 
 /// The NativeVolume module providers convenient F#-style functions for accessing NativeVolumes
 module NativeVolume =
+    /// Creates a new NativeVolume from the given address and info struct
+    let inline ofNativeInt<'a when 'a : unmanaged> (info : VolumeInfo) (address : nativeint) = NativeVolume<'a>(NativePtr.ofNativeInt address, info)
+    
     let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) =
         ((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))
     let inline private lerper t a b = lerpy (Unchecked.defaultof<Fun>) t a b
-    /// sets the entire Volume to the given value
+    /// Sets the entire Volume to the given value
     let inline set (value : 'a) (dst : NativeVolume<'a>) = dst.Set(value)
     
-    /// sets each entry to the value computed by getValue
+    /// Sets each entry to the value computed by getValue
     let inline setByCoord (getValue : V3l -> 'a) (m : NativeVolume<'a>) = m.SetByCoord(getValue)
     
     let inline sample (location : V3d) (m : NativeVolume<'a>) = m.SampleLinear(location, lerper)
     
     let inline blit (src : NativeVolume<'a>) (dst : NativeVolume<'a>) = src.BlitTo(dst, lerper)
     
-    /// copies the content of 'src' to 'dst'
+    /// Copies the content of 'src' to 'dst'
     let inline copy (src : NativeVolume<'a>) (dst : NativeVolume<'a>) = src.CopyTo(dst)
     
-    /// copies the content of 'src' to 'dst' by applying the given function
+    /// Copies the content of 'src' to 'dst' by applying the given function
     let inline copyWith (f : 'a -> 'b) (src : NativeVolume<'a>) (dst : NativeVolume<'b>) = src.CopyTo(dst, f)
     
-    /// temporarily pins a Volume making it available as NativeVolume
+    /// Temporarily pins a Volume making it available as NativeVolume
     let using (m : Volume<'a>) (f : NativeVolume<'a> -> 'b) = NativeVolume<'a>.Using(m, f)
     
-    /// iterates over all entries of the given NativeVolume and executes the given action
+    /// Iterates over all entries of the given NativeVolume and executes the given action
     let inline iter (action : V3l -> 'a -> unit) (m : NativeVolume<'a>) = m.Iter(action)
     
-    /// iterates over all entries of the given NativeVolume and executes the given action
+    /// Iterates over all entries of the given NativeVolume and executes the given action
     let inline iterPtr (action : V3l -> nativeptr<'a> -> unit) (m : NativeVolume<'a>) = m.IterPtr(action)
     
-    /// iterates over all entries of both of the given NativeVolumes and executes the given action
+    /// Iterates over all entries of both of the given NativeVolumes and executes the given action
     let inline iter2 (action : V3l -> 'a -> 'b -> unit) (l : NativeVolume<'a>) (r : NativeVolume<'b>) = l.Iter2(r, action)
     
-    /// iterates over all entries of both of the given NativeVolumes and executes the given action
+    /// Iterates over all entries of both of the given NativeVolumes and executes the given action
     let inline iterPtr2 (action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : NativeVolume<'a>) (r : NativeVolume<'b>) = l.IterPtr2(r, action)
+
+[<AutoOpen>]
+module PixImageTensorExtensions =
+    module PixImage =
+        /// Pins the given PixImage as a NativeVolume and executes the given action
+        let inline pin (pi : PixImage<'a>) (f : NativeVolume<'a> -> 'b) : 'b =
+            NativeVolume.using pi.Volume f
+        
+        /// Pins the given PixImages as a NativeVolumes and executes the given action
+        let inline pin2 (l : PixImage<'a>) (r : PixImage<'b>) (f : NativeVolume<'a> -> NativeVolume<'b> -> 'c)  : 'c =
+            pin l (fun lv -> pin r (fun rv -> f lv rv))
+        
+        /// Copies the given PixImage to the given NativeVolume
+        let inline copyToNativeVolume (dst : NativeVolume<'a>) (pix : PixImage<'a>)  =
+            pin pix (fun src -> NativeVolume.copy src dst)
+        
+        /// Copies from the given NativeVolume to the given PixImage
+        let inline copyFromNativeVolume (src : NativeVolume<'a>) (pix : PixImage<'a>) =
+            pin pix (fun dst -> NativeVolume.copy src dst)
+        
+        [<AutoOpen>]
+        module private CopyDispatch =
+            type private Dispatcher() =
+                static member CopyImageToNative<'a when 'a : unmanaged>(src : PixImage<'a>, dst : nativeint, dstInfo : VolumeInfo) =
+                    let dst = dst |> NativeVolume.ofNativeInt dstInfo
+                    src |> copyToNativeVolume dst
+                
+                static member CopyNativeToImage<'a when 'a : unmanaged>(src : nativeint, srcInfo : VolumeInfo, dst : PixImage<'a>) =
+                    let src = src |> NativeVolume.ofNativeInt srcInfo
+                    dst |> copyFromNativeVolume src
+            
+            module Method =
+                let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public
+                let copyImageToNative = typeof<Dispatcher>.GetMethod("CopyImageToNative", flags)
+                let copyNativeToImage = typeof<Dispatcher>.GetMethod("CopyNativeToImage", flags)
+        
+        /// Copies the given untyped PixImage to the given native address
+        let copyToNative (dst : nativeint) (dstInfo : VolumeInfo) (pix : PixImage) =
+            let mi = Method.copyImageToNative.MakeGenericMethod [| pix.PixFormat.Type |]
+            mi.Invoke(null, [|pix; dst; dstInfo|]) |> ignore
+        
+        /// Copies from the given native address to the given untyped PixImage
+        let copyFromNative (src : nativeint) (srcInfo : VolumeInfo) (pix : PixImage) =
+            let mi = Method.copyNativeToImage.MakeGenericMethod [| pix.PixFormat.Type |]
+            mi.Invoke(null, [|src; srcInfo; pix|]) |> ignore
+        
 
 
 [<Sealed>]
 type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4Info) = 
     member x.Pointer = ptr
+    member x.Address = NativePtr.toNativeInt ptr
     member x.Info = info
     member x.Size = info.Size
     member x.Delta = info.Delta
@@ -51862,38 +51922,87 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
 
 /// The NativeTensor4 module providers convenient F#-style functions for accessing NativeTensor4s
 module NativeTensor4 =
+    /// Creates a new NativeTensor4 from the given address and info struct
+    let inline ofNativeInt<'a when 'a : unmanaged> (info : Tensor4Info) (address : nativeint) = NativeTensor4<'a>(NativePtr.ofNativeInt address, info)
+    
     let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) =
         ((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))
     let inline private lerper t a b = lerpy (Unchecked.defaultof<Fun>) t a b
-    /// sets the entire Tensor4 to the given value
+    /// Sets the entire Tensor4 to the given value
     let inline set (value : 'a) (dst : NativeTensor4<'a>) = dst.Set(value)
     
-    /// sets each entry to the value computed by getValue
+    /// Sets each entry to the value computed by getValue
     let inline setByCoord (getValue : V4l -> 'a) (m : NativeTensor4<'a>) = m.SetByCoord(getValue)
     
     let inline sample (location : V4d) (m : NativeTensor4<'a>) = m.SampleLinear(location, lerper)
     
     let inline blit (src : NativeTensor4<'a>) (dst : NativeTensor4<'a>) = src.BlitTo(dst, lerper)
     
-    /// copies the content of 'src' to 'dst'
+    /// Copies the content of 'src' to 'dst'
     let inline copy (src : NativeTensor4<'a>) (dst : NativeTensor4<'a>) = src.CopyTo(dst)
     
-    /// copies the content of 'src' to 'dst' by applying the given function
+    /// Copies the content of 'src' to 'dst' by applying the given function
     let inline copyWith (f : 'a -> 'b) (src : NativeTensor4<'a>) (dst : NativeTensor4<'b>) = src.CopyTo(dst, f)
     
-    /// temporarily pins a Tensor4 making it available as NativeTensor4
+    /// Temporarily pins a Tensor4 making it available as NativeTensor4
     let using (m : Tensor4<'a>) (f : NativeTensor4<'a> -> 'b) = NativeTensor4<'a>.Using(m, f)
     
-    /// iterates over all entries of the given NativeTensor4 and executes the given action
+    /// Iterates over all entries of the given NativeTensor4 and executes the given action
     let inline iter (action : V4l -> 'a -> unit) (m : NativeTensor4<'a>) = m.Iter(action)
     
-    /// iterates over all entries of the given NativeTensor4 and executes the given action
+    /// Iterates over all entries of the given NativeTensor4 and executes the given action
     let inline iterPtr (action : V4l -> nativeptr<'a> -> unit) (m : NativeTensor4<'a>) = m.IterPtr(action)
     
-    /// iterates over all entries of both of the given NativeTensor4s and executes the given action
+    /// Iterates over all entries of both of the given NativeTensor4s and executes the given action
     let inline iter2 (action : V4l -> 'a -> 'b -> unit) (l : NativeTensor4<'a>) (r : NativeTensor4<'b>) = l.Iter2(r, action)
     
-    /// iterates over all entries of both of the given NativeTensor4s and executes the given action
+    /// Iterates over all entries of both of the given NativeTensor4s and executes the given action
     let inline iterPtr2 (action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : NativeTensor4<'a>) (r : NativeTensor4<'b>) = l.IterPtr2(r, action)
+
+[<AutoOpen>]
+module PixVolumeTensorExtensions =
+    module PixVolume =
+        /// Pins the given PixVolume as a NativeTensor4 and executes the given action
+        let inline pin (pi : PixVolume<'a>) (f : NativeTensor4<'a> -> 'b) : 'b =
+            NativeTensor4.using pi.Tensor4 f
+        
+        /// Pins the given PixVolumes as a NativeTensor4s and executes the given action
+        let inline pin2 (l : PixVolume<'a>) (r : PixVolume<'b>) (f : NativeTensor4<'a> -> NativeTensor4<'b> -> 'c)  : 'c =
+            pin l (fun lv -> pin r (fun rv -> f lv rv))
+        
+        /// Copies the given PixVolume to the given NativeTensor4
+        let inline copyToNativeTensor4 (dst : NativeTensor4<'a>) (pix : PixVolume<'a>)  =
+            pin pix (fun src -> NativeTensor4.copy src dst)
+        
+        /// Copies from the given NativeTensor4 to the given PixVolume
+        let inline copyFromNativeTensor4 (src : NativeTensor4<'a>) (pix : PixVolume<'a>) =
+            pin pix (fun dst -> NativeTensor4.copy src dst)
+        
+        [<AutoOpen>]
+        module private CopyDispatch =
+            type private Dispatcher() =
+                static member CopyImageToNative<'a when 'a : unmanaged>(src : PixVolume<'a>, dst : nativeint, dstInfo : Tensor4Info) =
+                    let dst = dst |> NativeTensor4.ofNativeInt dstInfo
+                    src |> copyToNativeTensor4 dst
+                
+                static member CopyNativeToImage<'a when 'a : unmanaged>(src : nativeint, srcInfo : Tensor4Info, dst : PixVolume<'a>) =
+                    let src = src |> NativeTensor4.ofNativeInt srcInfo
+                    dst |> copyFromNativeTensor4 src
+            
+            module Method =
+                let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public
+                let copyImageToNative = typeof<Dispatcher>.GetMethod("CopyImageToNative", flags)
+                let copyNativeToImage = typeof<Dispatcher>.GetMethod("CopyNativeToImage", flags)
+        
+        /// Copies the given untyped PixVolume to the given native address
+        let copyToNative (dst : nativeint) (dstInfo : Tensor4Info) (pix : PixVolume) =
+            let mi = Method.copyImageToNative.MakeGenericMethod [| pix.PixFormat.Type |]
+            mi.Invoke(null, [|pix; dst; dstInfo|]) |> ignore
+        
+        /// Copies from the given native address to the given untyped PixVolume
+        let copyFromNative (src : nativeint) (srcInfo : Tensor4Info) (pix : PixVolume) =
+            let mi = Method.copyNativeToImage.MakeGenericMethod [| pix.PixFormat.Type |]
+            mi.Invoke(null, [|src; srcInfo; pix|]) |> ignore
+        
 
 

@@ -47,6 +47,12 @@ module Generator =
             4, ("V4d", "V4f")
         ]
 
+    let pixNames =
+        Map.ofList [
+            3, "PixImage"
+            4, "PixVolume"
+        ]
+
     let getManagedName (dim : int) =
         match Map.tryFind dim tensorNames with
             | Some n -> n
@@ -1055,6 +1061,7 @@ module Generator =
         let infoName = managedName + "Info"
         let name = getNativeName dim
         let componentNames = Array.take dim componentNames |> Array.toList
+        let pixName = Map.tryFind dim pixNames
 
 
         let tFloat = 
@@ -1073,6 +1080,7 @@ module Generator =
         line "[<Sealed>]"
         start "type %s<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : %s) = " name infoName
         line "member x.Pointer = ptr"
+        line "member x.Address = NativePtr.toNativeInt ptr"
         line "member x.Info = info"
         line "member x.Size = info.Size"
         line "member x.Delta = info.Delta"
@@ -1205,6 +1213,10 @@ module Generator =
         line "/// The %s module providers convenient F#-style functions for accessing %ss" name name
         start "module %s =" name
 
+        line "/// Creates a new %s from the given address and info struct" name
+        line "let inline ofNativeInt<'a when 'a : unmanaged> (info : %s) (address : nativeint) = %s<'a>(NativePtr.ofNativeInt address, info)" infoName name
+        line ""
+
         start "let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) ="
         line "((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))"
         stop()
@@ -1213,11 +1225,11 @@ module Generator =
 
 
 
-        line "/// sets the entire %s to the given value" managedName
+        line "/// Sets the entire %s to the given value" managedName
         line "let inline set (value : 'a) (dst : %s<'a>) = dst.Set(value)" name 
         
         line ""
-        line "/// sets each entry to the value computed by getValue"
+        line "/// Sets each entry to the value computed by getValue"
         line "let inline setByCoord (getValue : %s -> 'a) (m : %s<'a>) = m.SetByCoord(getValue)" lv name 
         
         if dim > 1 then
@@ -1228,41 +1240,114 @@ module Generator =
         line "let inline blit (src : %s<'a>) (dst : %s<'a>) = src.BlitTo(dst, lerper)" name name 
         
         line ""
-        line "/// copies the content of 'src' to 'dst'"
+        line "/// Copies the content of 'src' to 'dst'"
         line "let inline copy (src : %s<'a>) (dst : %s<'a>) = src.CopyTo(dst)" name name 
         line ""
-        line "/// copies the content of 'src' to 'dst' by applying the given function"
+        line "/// Copies the content of 'src' to 'dst' by applying the given function"
         line "let inline copyWith (f : 'a -> 'b) (src : %s<'a>) (dst : %s<'b>) = src.CopyTo(dst, f)" name name 
         line ""
-        line "/// temporarily pins a %s making it available as %s" managedName name
+        line "/// Temporarily pins a %s making it available as %s" managedName name
         line "let using (m : %s<'a>) (f : %s<'a> -> 'b) = %s<'a>.Using(m, f)" managedName name  name
         line ""
-        line "/// iterates over all entries of the given %s and executes the given action" name
+        line "/// Iterates over all entries of the given %s and executes the given action" name
         line "let inline iter (action : %s -> 'a -> unit) (m : %s<'a>) = m.Iter(action)" lv name
         line ""
-        line "/// iterates over all entries of the given %s and executes the given action" name
+        line "/// Iterates over all entries of the given %s and executes the given action" name
         line "let inline iterPtr (action : %s -> nativeptr<'a> -> unit) (m : %s<'a>) = m.IterPtr(action)" lv name 
         line ""
-        line "/// iterates over all entries of both of the given %ss and executes the given action" name
+        line "/// Iterates over all entries of both of the given %ss and executes the given action" name
         line "let inline iter2 (action : %s -> 'a -> 'b -> unit) (l : %s<'a>) (r : %s<'b>) = l.Iter2(r, action)" lv name name
         line ""
-        line "/// iterates over all entries of both of the given %ss and executes the given action" name
+        line "/// Iterates over all entries of both of the given %ss and executes the given action" name
         line "let inline iterPtr2 (action : %s -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : %s<'a>) (r : %s<'b>) = l.IterPtr2(r, action)" lv name name
 
-
         stop()
-
-        line ""
         line ""
 
+        match pixName with
+        | Some pix ->
+            line "[<AutoOpen>]"
+            start "module %sTensorExtensions =" pix
+            start "module %s =" pix
 
-        ()
+            line "/// Pins the given %s as a %s and executes the given action" pix name
+            start "let inline pin (pi : %s<'a>) (f : %s<'a> -> 'b) : 'b =" pix name
+            line "%s.using pi.%s f" name managedName
+            stop()
+            line ""
+
+            line "/// Pins the given %ss as a %ss and executes the given action" pix name
+            start "let inline pin2 (l : %s<'a>) (r : %s<'b>) (f : %s<'a> -> %s<'b> -> 'c)  : 'c =" pix pix name name
+            line "pin l (fun lv -> pin r (fun rv -> f lv rv))"
+            stop()
+            line ""
+
+            line "/// Copies the given %s to the given %s" pix name
+            start "let inline copyTo%s (dst : %s<'a>) (pix : %s<'a>)  =" name name pix
+            line "pin pix (fun src -> %s.copy src dst)" name
+            stop()
+            line ""
+
+            line "/// Copies from the given %s to the given %s" name pix
+            start "let inline copyFrom%s (src : %s<'a>) (pix : %s<'a>) =" name name pix
+            line "pin pix (fun dst -> %s.copy src dst)" name
+            stop()
+            line ""
+
+            line "[<AutoOpen>]"
+            start "module private CopyDispatch ="
+            start "type private Dispatcher() ="
+            start "static member CopyImageToNative<'a when 'a : unmanaged>(src : %s<'a>, dst : nativeint, dstInfo : %sInfo) =" pix managedName
+            line "let dst = dst |> %s.ofNativeInt dstInfo" name
+            line "src |> copyTo%s dst" name
+            stop()
+            line ""
+
+            start "static member CopyNativeToImage<'a when 'a : unmanaged>(src : nativeint, srcInfo : %sInfo, dst : %s<'a>) =" managedName pix
+            line "let src = src |> %s.ofNativeInt srcInfo" name
+            line "dst |> copyFrom%s src" name
+            stop()
+
+            stop() // Dispatcher end
+            line ""
+
+            start "module Method ="
+            line "let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public"
+            line "let copyImageToNative = typeof<Dispatcher>.GetMethod(\"CopyImageToNative\", flags)"
+            line "let copyNativeToImage = typeof<Dispatcher>.GetMethod(\"CopyNativeToImage\", flags)"
+            stop() // Method end
+
+            stop() // CopyDispatch end
+            line""
+
+            line "/// Copies the given untyped %s to the given native address" pix
+            start "let copyToNative (dst : nativeint) (dstInfo : %sInfo) (pix : %s) =" managedName pix
+            line "let mi = Method.copyImageToNative.MakeGenericMethod [| pix.PixFormat.Type |]"
+            line "mi.Invoke(null, [|pix; dst; dstInfo|]) |> ignore"
+            stop()
+            line ""
+
+            line "/// Copies from the given native address to the given untyped %s" pix
+            start "let copyFromNative (src : nativeint) (srcInfo : %sInfo) (pix : %s) =" managedName pix
+            line "let mi = Method.copyNativeToImage.MakeGenericMethod [| pix.PixFormat.Type |]"
+            line "mi.Invoke(null, [|src; srcInfo; pix|]) |> ignore"
+            stop()
+            line ""
+
+            stop()
+            stop()
+            line ""
+
+        | _ -> ()
+
+        line ""
 
     let run() =
         line "namespace Aardvark.Base"
         line ""
         line "open Microsoft.FSharp.NativeInterop"
         line "open System.Runtime.InteropServices"
+        line "open System.Reflection"
         line ""
         line "#nowarn \"9\""
         line ""

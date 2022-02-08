@@ -31,13 +31,10 @@ module TensorTests =
         let src = PixImage.random <| V2i size
         let dst = PixImage<uint8>(Col.Format.RGBA, size)
 
-        NativeVolume.using src.Volume (fun srcVolume ->
+        PixImage.pin2 src dst (fun srcVolume dstVolume ->
             let srcTensor = srcVolume.MirrorY().ToXYWTensor4()
-
-            NativeVolume.using dst.Volume (fun dstVolume ->
-                let dstTensor = dstVolume.ToXYWTensor4()
-                NativeTensor4.copy srcTensor dstTensor
-            )
+            let dstTensor = dstVolume.ToXYWTensor4()
+            NativeTensor4.copy srcTensor dstTensor
         )
 
         let srcMatrix = src.GetMatrix<C4b>()
@@ -53,7 +50,7 @@ module TensorTests =
         let info = Tensor4Info(V4l(2, 2, 1, 1), V4l(1, 2, 4, 4))
 
         pinned data (fun ptr ->
-            let nv = NativeTensor4<int>(NativePtr.ofNativeInt ptr, info)
+            let nv = NativeTensor4.ofNativeInt<int> info ptr
 
             let mutable index = 0
             nv |> NativeTensor4.iterPtr (fun coord ptr ->
@@ -86,3 +83,21 @@ module TensorTests =
         (srcArray, dstArray) ||> Array.iter2 (fun a b ->
             (int64 a) |> should equal b
         )
+
+    [<Test>]
+    let ``[TensorTests] copy untyped PixImage``() =
+        let size = V2i(123, 321)
+        let src = PixImage.random <| V2i size
+        let dst = PixImage<uint32>(Col.Format.RGBA, size)
+
+        PixImage.pin dst (fun dst ->
+            let info =
+                let info = dst.MirrorY().Info
+                VolumeInfo(info.Origin * 4L, info.Size, info.Delta * 4L)
+            src |> PixImage.copyToNative dst.Address info
+        )
+
+        for y = 0 to size.Y - 1 do
+            for x = 0 to size.X - 1 do
+                for c in 0L .. 3L do
+                    dst.GetChannel(c).[x, y] |> should equal (uint32 <| src.GetChannel(c).[x, size.Y - 1 - y])
