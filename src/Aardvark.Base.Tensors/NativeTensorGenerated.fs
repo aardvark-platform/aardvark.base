@@ -2,12 +2,14 @@ namespace Aardvark.Base
 
 open Microsoft.FSharp.NativeInterop
 open System.Runtime.InteropServices
+open System.Reflection
 
 #nowarn "9"
 
 [<Sealed>]
 type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo) = 
     member x.Pointer = ptr
+    member x.Address = NativePtr.toNativeInt ptr
     member x.Info = info
     member x.Size = info.Size
     member x.Delta = info.Delta
@@ -74,8 +76,8 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
             ptr <- ptr + jX
     member x.SetByCoord(value : float -> 'a) = 
         x.SetByCoordX(value)
-    member inline private x.IterX(action : int64 -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<int64, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrX(action : int64 -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<int64, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -84,13 +86,13 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
         let mutable coord = 0L
         let eX = ptr + sX
         while ptr <> eX do
-            action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+            action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
             coord <- coord + 1L
             ptr <- ptr + jX
-    member x.Iter(action : int64 -> 'a -> unit) = 
-        x.IterX(action)
-    member inline private x.IterX(action : int -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<int, 'a, unit>.Adapt(action)
+    member x.IterPtr(action : int64 -> nativeptr<'a> -> unit) = 
+        x.IterPtrX(action)
+    member inline private x.IterPtrX(action : int -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<int, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -99,13 +101,13 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
         let mutable coord = 0
         let eX = ptr + sX
         while ptr <> eX do
-            action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+            action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
             coord <- coord + 1
             ptr <- ptr + jX
-    member x.Iter(action : int -> 'a -> unit) = 
-        x.IterX(action)
-    member inline private x.IterX(action : float -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<float, 'a, unit>.Adapt(action)
+    member x.IterPtr(action : int -> nativeptr<'a> -> unit) = 
+        x.IterPtrX(action)
+    member inline private x.IterPtrX(action : float -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<float, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -116,11 +118,91 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
         let mutable coord = initialCoord
         let eX = ptr + sX
         while ptr <> eX do
-            action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+            action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
             coord <- coord + step
             ptr <- ptr + jX
+    member x.IterPtr(action : float -> nativeptr<'a> -> unit) = 
+        x.IterPtrX(action)
+    member x.Iter(action : int64 -> 'a -> unit) = 
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
+    member x.Iter(action : int -> 'a -> unit) = 
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
     member x.Iter(action : float -> 'a -> unit) = 
-        x.IterX(action)
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
+    member inline private x.IterPtr2X(other : NativeVector<'b>, action : int64 -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<int64, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = 0L
+        let eX = ia + sX
+        while ia <> eX do
+            action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+            coord <- coord + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member x.IterPtr2(other : NativeVector<'b>, action : int64 -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeVector size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        x.IterPtr2X(other, action)
+    member inline private x.IterPtr2X(other : NativeVector<'b>, action : int -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<int, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = 0
+        let eX = ia + sX
+        while ia <> eX do
+            action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+            coord <- coord + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member x.IterPtr2(other : NativeVector<'b>, action : int -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeVector size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        x.IterPtr2X(other, action)
+    member inline private x.IterPtr2X(other : NativeVector<'b>, action : float -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<float, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = 0.5 / float(x.Size)
+        let step = 1.0 / float(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+            coord <- coord + step
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member x.IterPtr2(other : NativeVector<'b>, action : float -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeVector size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        x.IterPtr2X(other, action)
+    member x.Iter2(other : NativeVector<'b>, action : int64 -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
+    member x.Iter2(other : NativeVector<'b>, action : int -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
+    member x.Iter2(other : NativeVector<'b>, action : float -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
     member inline private x.BlitToInternalX(y : NativeVector<'a>, srcOffset : float, srcSize : float, lerp : float -> 'a -> 'a -> 'a) = 
         let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)
         let sa = nativeint (sizeof<'a>)
@@ -304,33 +386,46 @@ type NativeVector<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VectorInfo
 
 /// The NativeVector module providers convenient F#-style functions for accessing NativeVectors
 module NativeVector =
+    /// Creates a new NativeVector from the given address and info struct
+    let inline ofNativeInt<'a when 'a : unmanaged> (info : VectorInfo) (address : nativeint) = NativeVector<'a>(NativePtr.ofNativeInt address, info)
+    
     let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) =
         ((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))
     let inline private lerper t a b = lerpy (Unchecked.defaultof<Fun>) t a b
-    /// sets the entire Vector to the given value
+    /// Sets the entire Vector to the given value
     let inline set (value : 'a) (dst : NativeVector<'a>) = dst.Set(value)
     
-    /// sets each entry to the value computed by getValue
+    /// Sets each entry to the value computed by getValue
     let inline setByCoord (getValue : int64 -> 'a) (m : NativeVector<'a>) = m.SetByCoord(getValue)
     
     let inline blit (src : NativeVector<'a>) (dst : NativeVector<'a>) = src.BlitTo(dst, lerper)
     
-    /// copies the content of 'src' to 'dst'
+    /// Copies the content of 'src' to 'dst'
     let inline copy (src : NativeVector<'a>) (dst : NativeVector<'a>) = src.CopyTo(dst)
     
-    /// copies the content of 'src' to 'dst' by applying the given function
+    /// Copies the content of 'src' to 'dst' by applying the given function
     let inline copyWith (f : 'a -> 'b) (src : NativeVector<'a>) (dst : NativeVector<'b>) = src.CopyTo(dst, f)
     
-    /// temporarily pins a Vector making it available as NativeVector
+    /// Temporarily pins a Vector making it available as NativeVector
     let using (m : Vector<'a>) (f : NativeVector<'a> -> 'b) = NativeVector<'a>.Using(m, f)
     
-    /// iterates over all entries of the given NativeVector and executes the given action
+    /// Iterates over all entries of the given NativeVector and executes the given action
     let inline iter (action : int64 -> 'a -> unit) (m : NativeVector<'a>) = m.Iter(action)
+    
+    /// Iterates over all entries of the given NativeVector and executes the given action
+    let inline iterPtr (action : int64 -> nativeptr<'a> -> unit) (m : NativeVector<'a>) = m.IterPtr(action)
+    
+    /// Iterates over all entries of both of the given NativeVectors and executes the given action
+    let inline iter2 (action : int64 -> 'a -> 'b -> unit) (l : NativeVector<'a>) (r : NativeVector<'b>) = l.Iter2(r, action)
+    
+    /// Iterates over all entries of both of the given NativeVectors and executes the given action
+    let inline iterPtr2 (action : int64 -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : NativeVector<'a>) (r : NativeVector<'b>) = l.IterPtr2(r, action)
 
 
 [<Sealed>]
 type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo) = 
     member x.Pointer = ptr
+    member x.Address = NativePtr.toNativeInt ptr
     member x.Info = info
     member x.Size = info.Size
     member x.Delta = info.Delta
@@ -511,8 +606,8 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
         let cXY = compare (abs info.DX) (abs info.DY)
         if cXY >= 0  then x.SetByCoordXY(value)
         else x.SetByCoordYX(value)
-    member inline private x.IterXY(action : V2l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V2l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXY(action : V2l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -526,13 +621,13 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
             let eY = ptr + sY
             coord.Y <- 0L
             while ptr <> eY do
-                action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                 coord.Y <- coord.Y + 1L
                 ptr <- ptr + jY
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterYX(action : V2l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V2l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYX(action : V2l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -546,17 +641,17 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
             let eX = ptr + sX
             coord.X <- 0L
             while ptr <> eX do
-                action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                 coord.X <- coord.X + 1L
                 ptr <- ptr + jX
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member x.Iter(action : V2l -> 'a -> unit) = 
+    member x.IterPtr(action : V2l -> nativeptr<'a> -> unit) = 
         let cXY = compare (abs info.DX) (abs info.DY)
-        if cXY >= 0  then x.IterXY(action)
-        else x.IterYX(action)
-    member inline private x.IterXY(action : V2i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V2i, 'a, unit>.Adapt(action)
+        if cXY >= 0  then x.IterPtrXY(action)
+        else x.IterPtrYX(action)
+    member inline private x.IterPtrXY(action : V2i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2i, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -570,13 +665,13 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
             let eY = ptr + sY
             coord.Y <- 0
             while ptr <> eY do
-                action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                 coord.Y <- coord.Y + 1
                 ptr <- ptr + jY
             coord.X <- coord.X + 1
             ptr <- ptr + jX
-    member inline private x.IterYX(action : V2i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V2i, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYX(action : V2i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2i, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -590,17 +685,17 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
             let eX = ptr + sX
             coord.X <- 0
             while ptr <> eX do
-                action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                 coord.X <- coord.X + 1
                 ptr <- ptr + jX
             coord.Y <- coord.Y + 1
             ptr <- ptr + jY
-    member x.Iter(action : V2i -> 'a -> unit) = 
+    member x.IterPtr(action : V2i -> nativeptr<'a> -> unit) = 
         let cXY = compare (abs info.DX) (abs info.DY)
-        if cXY >= 0  then x.IterXY(action)
-        else x.IterYX(action)
-    member inline private x.IterXY(action : V2d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V2d, 'a, unit>.Adapt(action)
+        if cXY >= 0  then x.IterPtrXY(action)
+        else x.IterPtrYX(action)
+    member inline private x.IterPtrXY(action : V2d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2d, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -616,13 +711,13 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
             let eY = ptr + sY
             coord.Y <- initialCoord.Y
             while ptr <> eY do
-                action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                 coord.Y <- coord.Y + step.Y
                 ptr <- ptr + jY
             coord.X <- coord.X + step.X
             ptr <- ptr + jX
-    member inline private x.IterYX(action : V2d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V2d, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYX(action : V2d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2d, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -638,15 +733,211 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
             let eX = ptr + sX
             coord.X <- initialCoord.X
             while ptr <> eX do
-                action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                 coord.X <- coord.X + step.X
                 ptr <- ptr + jX
             coord.Y <- coord.Y + step.Y
             ptr <- ptr + jY
-    member x.Iter(action : V2d -> 'a -> unit) = 
+    member x.IterPtr(action : V2d -> nativeptr<'a> -> unit) = 
         let cXY = compare (abs info.DX) (abs info.DY)
-        if cXY >= 0  then x.IterXY(action)
-        else x.IterYX(action)
+        if cXY >= 0  then x.IterPtrXY(action)
+        else x.IterPtrYX(action)
+    member x.Iter(action : V2l -> 'a -> unit) = 
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
+    member x.Iter(action : V2i -> 'a -> unit) = 
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
+    member x.Iter(action : V2d -> 'a -> unit) = 
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
+    member inline private x.IterPtr2XY(other : NativeMatrix<'b>, action : V2l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V2l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YX(other : NativeMatrix<'b>, action : V2l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V2l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member x.IterPtr2(other : NativeMatrix<'b>, action : V2l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeMatrix size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        let cXY = compare (abs info.DX) (abs info.DY)
+        if cXY >= 0  then x.IterPtr2XY(other, action)
+        else x.IterPtr2YX(other, action)
+    member inline private x.IterPtr2XY(other : NativeMatrix<'b>, action : V2i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V2i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YX(other : NativeMatrix<'b>, action : V2i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V2i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member x.IterPtr2(other : NativeMatrix<'b>, action : V2i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeMatrix size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        let cXY = compare (abs info.DX) (abs info.DY)
+        if cXY >= 0  then x.IterPtr2XY(other, action)
+        else x.IterPtr2YX(other, action)
+    member inline private x.IterPtr2XY(other : NativeMatrix<'b>, action : V2d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V2d(0.5, 0.5) / V2d(x.Size)
+        let step = V2d.One / V2d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YX(other : NativeMatrix<'b>, action : V2d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V2d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V2d(0.5, 0.5) / V2d(x.Size)
+        let step = V2d.One / V2d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member x.IterPtr2(other : NativeMatrix<'b>, action : V2d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeMatrix size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        let cXY = compare (abs info.DX) (abs info.DY)
+        if cXY >= 0  then x.IterPtr2XY(other, action)
+        else x.IterPtr2YX(other, action)
+    member x.Iter2(other : NativeMatrix<'b>, action : V2l -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
+    member x.Iter2(other : NativeMatrix<'b>, action : V2i -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
+    member x.Iter2(other : NativeMatrix<'b>, action : V2d -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
     member inline private x.BlitToInternalXY(y : NativeMatrix<'a>, srcOffset : V2d, srcSize : V2d, lerp : float -> 'a -> 'a -> 'a) = 
         let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)
         let sa = nativeint (sizeof<'a>)
@@ -1417,35 +1708,48 @@ type NativeMatrix<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : MatrixInfo
 
 /// The NativeMatrix module providers convenient F#-style functions for accessing NativeMatrixs
 module NativeMatrix =
+    /// Creates a new NativeMatrix from the given address and info struct
+    let inline ofNativeInt<'a when 'a : unmanaged> (info : MatrixInfo) (address : nativeint) = NativeMatrix<'a>(NativePtr.ofNativeInt address, info)
+    
     let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) =
         ((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))
     let inline private lerper t a b = lerpy (Unchecked.defaultof<Fun>) t a b
-    /// sets the entire Matrix to the given value
+    /// Sets the entire Matrix to the given value
     let inline set (value : 'a) (dst : NativeMatrix<'a>) = dst.Set(value)
     
-    /// sets each entry to the value computed by getValue
+    /// Sets each entry to the value computed by getValue
     let inline setByCoord (getValue : V2l -> 'a) (m : NativeMatrix<'a>) = m.SetByCoord(getValue)
     
     let inline sample (location : V2d) (m : NativeMatrix<'a>) = m.SampleLinear(location, lerper)
     
     let inline blit (src : NativeMatrix<'a>) (dst : NativeMatrix<'a>) = src.BlitTo(dst, lerper)
     
-    /// copies the content of 'src' to 'dst'
+    /// Copies the content of 'src' to 'dst'
     let inline copy (src : NativeMatrix<'a>) (dst : NativeMatrix<'a>) = src.CopyTo(dst)
     
-    /// copies the content of 'src' to 'dst' by applying the given function
+    /// Copies the content of 'src' to 'dst' by applying the given function
     let inline copyWith (f : 'a -> 'b) (src : NativeMatrix<'a>) (dst : NativeMatrix<'b>) = src.CopyTo(dst, f)
     
-    /// temporarily pins a Matrix making it available as NativeMatrix
+    /// Temporarily pins a Matrix making it available as NativeMatrix
     let using (m : Matrix<'a>) (f : NativeMatrix<'a> -> 'b) = NativeMatrix<'a>.Using(m, f)
     
-    /// iterates over all entries of the given NativeMatrix and executes the given action
+    /// Iterates over all entries of the given NativeMatrix and executes the given action
     let inline iter (action : V2l -> 'a -> unit) (m : NativeMatrix<'a>) = m.Iter(action)
+    
+    /// Iterates over all entries of the given NativeMatrix and executes the given action
+    let inline iterPtr (action : V2l -> nativeptr<'a> -> unit) (m : NativeMatrix<'a>) = m.IterPtr(action)
+    
+    /// Iterates over all entries of both of the given NativeMatrixs and executes the given action
+    let inline iter2 (action : V2l -> 'a -> 'b -> unit) (l : NativeMatrix<'a>) (r : NativeMatrix<'b>) = l.Iter2(r, action)
+    
+    /// Iterates over all entries of both of the given NativeMatrixs and executes the given action
+    let inline iterPtr2 (action : V2l -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : NativeMatrix<'a>) (r : NativeMatrix<'b>) = l.IterPtr2(r, action)
 
 
 [<Sealed>]
 type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo) = 
     member x.Pointer = ptr
+    member x.Address = NativePtr.toNativeInt ptr
     member x.Info = info
     member x.Size = info.Size
     member x.Delta = info.Delta
@@ -2120,8 +2424,8 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
         elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.SetByCoordXZY(value)
         elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.SetByCoordZXY(value)
         else x.SetByCoordZYX(value)
-    member inline private x.IterXYZ(action : V3l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXYZ(action : V3l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -2140,15 +2444,15 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
                 let eZ = ptr + sZ
                 coord.Z <- 0L
                 while ptr <> eZ do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                     coord.Z <- coord.Z + 1L
                     ptr <- ptr + jZ
                 coord.Y <- coord.Y + 1L
                 ptr <- ptr + jY
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterYXZ(action : V3l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYXZ(action : V3l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -2167,15 +2471,15 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
                 let eZ = ptr + sZ
                 coord.Z <- 0L
                 while ptr <> eZ do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                     coord.Z <- coord.Z + 1L
                     ptr <- ptr + jZ
                 coord.X <- coord.X + 1L
                 ptr <- ptr + jX
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member inline private x.IterYZX(action : V3l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYZX(action : V3l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -2194,15 +2498,15 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
                 let eX = ptr + sX
                 coord.X <- 0L
                 while ptr <> eX do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                     coord.X <- coord.X + 1L
                     ptr <- ptr + jX
                 coord.Z <- coord.Z + 1L
                 ptr <- ptr + jZ
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member inline private x.IterXZY(action : V3l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXZY(action : V3l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -2221,15 +2525,15 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
                 let eY = ptr + sY
                 coord.Y <- 0L
                 while ptr <> eY do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                     coord.Y <- coord.Y + 1L
                     ptr <- ptr + jY
                 coord.Z <- coord.Z + 1L
                 ptr <- ptr + jZ
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterZXY(action : V3l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrZXY(action : V3l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -2248,15 +2552,15 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
                 let eY = ptr + sY
                 coord.Y <- 0L
                 while ptr <> eY do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                     coord.Y <- coord.Y + 1L
                     ptr <- ptr + jY
                 coord.X <- coord.X + 1L
                 ptr <- ptr + jX
             coord.Z <- coord.Z + 1L
             ptr <- ptr + jZ
-    member inline private x.IterZYX(action : V3l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrZYX(action : V3l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -2275,379 +2579,1087 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
                 let eX = ptr + sX
                 coord.X <- 0L
                 while ptr <> eX do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                     coord.X <- coord.X + 1L
                     ptr <- ptr + jX
                 coord.Y <- coord.Y + 1L
                 ptr <- ptr + jY
             coord.Z <- coord.Z + 1L
             ptr <- ptr + jZ
+    member x.IterPtr(action : V3l -> nativeptr<'a> -> unit) = 
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterPtrXYZ(action)
+        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterPtrYXZ(action)
+        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterPtrYZX(action)
+        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterPtrXZY(action)
+        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterPtrZXY(action)
+        else x.IterPtrZYX(action)
+    member inline private x.IterPtrXYZ(action : V3i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let mutable coord = V3i.Zero
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eY = ptr + sY
+            coord.Y <- 0
+            while ptr <> eY do
+                let eZ = ptr + sZ
+                coord.Z <- 0
+                while ptr <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.Z <- coord.Z + 1
+                    ptr <- ptr + jZ
+                coord.Y <- coord.Y + 1
+                ptr <- ptr + jY
+            coord.X <- coord.X + 1
+            ptr <- ptr + jX
+    member inline private x.IterPtrYXZ(action : V3i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let mutable coord = V3i.Zero
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eX = ptr + sX
+            coord.X <- 0
+            while ptr <> eX do
+                let eZ = ptr + sZ
+                coord.Z <- 0
+                while ptr <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.Z <- coord.Z + 1
+                    ptr <- ptr + jZ
+                coord.X <- coord.X + 1
+                ptr <- ptr + jX
+            coord.Y <- coord.Y + 1
+            ptr <- ptr + jY
+    member inline private x.IterPtrYZX(action : V3i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let mutable coord = V3i.Zero
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eZ = ptr + sZ
+            coord.Z <- 0
+            while ptr <> eZ do
+                let eX = ptr + sX
+                coord.X <- 0
+                while ptr <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.X <- coord.X + 1
+                    ptr <- ptr + jX
+                coord.Z <- coord.Z + 1
+                ptr <- ptr + jZ
+            coord.Y <- coord.Y + 1
+            ptr <- ptr + jY
+    member inline private x.IterPtrXZY(action : V3i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let mutable coord = V3i.Zero
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eZ = ptr + sZ
+            coord.Z <- 0
+            while ptr <> eZ do
+                let eY = ptr + sY
+                coord.Y <- 0
+                while ptr <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.Y <- coord.Y + 1
+                    ptr <- ptr + jY
+                coord.Z <- coord.Z + 1
+                ptr <- ptr + jZ
+            coord.X <- coord.X + 1
+            ptr <- ptr + jX
+    member inline private x.IterPtrZXY(action : V3i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let mutable coord = V3i.Zero
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eX = ptr + sX
+            coord.X <- 0
+            while ptr <> eX do
+                let eY = ptr + sY
+                coord.Y <- 0
+                while ptr <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.Y <- coord.Y + 1
+                    ptr <- ptr + jY
+                coord.X <- coord.X + 1
+                ptr <- ptr + jX
+            coord.Z <- coord.Z + 1
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZYX(action : V3i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let mutable coord = V3i.Zero
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eY = ptr + sY
+            coord.Y <- 0
+            while ptr <> eY do
+                let eX = ptr + sX
+                coord.X <- 0
+                while ptr <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.X <- coord.X + 1
+                    ptr <- ptr + jX
+                coord.Y <- coord.Y + 1
+                ptr <- ptr + jY
+            coord.Z <- coord.Z + 1
+            ptr <- ptr + jZ
+    member x.IterPtr(action : V3i -> nativeptr<'a> -> unit) = 
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterPtrXYZ(action)
+        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterPtrYXZ(action)
+        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterPtrYZX(action)
+        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterPtrXZY(action)
+        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterPtrZXY(action)
+        else x.IterPtrZYX(action)
+    member inline private x.IterPtrXYZ(action : V3d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eY = ptr + sY
+            coord.Y <- initialCoord.Y
+            while ptr <> eY do
+                let eZ = ptr + sZ
+                coord.Z <- initialCoord.Z
+                while ptr <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.Z <- coord.Z + step.Z
+                    ptr <- ptr + jZ
+                coord.Y <- coord.Y + step.Y
+                ptr <- ptr + jY
+            coord.X <- coord.X + step.X
+            ptr <- ptr + jX
+    member inline private x.IterPtrYXZ(action : V3d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eX = ptr + sX
+            coord.X <- initialCoord.X
+            while ptr <> eX do
+                let eZ = ptr + sZ
+                coord.Z <- initialCoord.Z
+                while ptr <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.Z <- coord.Z + step.Z
+                    ptr <- ptr + jZ
+                coord.X <- coord.X + step.X
+                ptr <- ptr + jX
+            coord.Y <- coord.Y + step.Y
+            ptr <- ptr + jY
+    member inline private x.IterPtrYZX(action : V3d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eZ = ptr + sZ
+            coord.Z <- initialCoord.Z
+            while ptr <> eZ do
+                let eX = ptr + sX
+                coord.X <- initialCoord.X
+                while ptr <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.X <- coord.X + step.X
+                    ptr <- ptr + jX
+                coord.Z <- coord.Z + step.Z
+                ptr <- ptr + jZ
+            coord.Y <- coord.Y + step.Y
+            ptr <- ptr + jY
+    member inline private x.IterPtrXZY(action : V3d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eZ = ptr + sZ
+            coord.Z <- initialCoord.Z
+            while ptr <> eZ do
+                let eY = ptr + sY
+                coord.Y <- initialCoord.Y
+                while ptr <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.Y <- coord.Y + step.Y
+                    ptr <- ptr + jY
+                coord.Z <- coord.Z + step.Z
+                ptr <- ptr + jZ
+            coord.X <- coord.X + step.X
+            ptr <- ptr + jX
+    member inline private x.IterPtrZXY(action : V3d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eX = ptr + sX
+            coord.X <- initialCoord.X
+            while ptr <> eX do
+                let eY = ptr + sY
+                coord.Y <- initialCoord.Y
+                while ptr <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.Y <- coord.Y + step.Y
+                    ptr <- ptr + jY
+                coord.X <- coord.X + step.X
+                ptr <- ptr + jX
+            coord.Z <- coord.Z + step.Z
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZYX(action : V3d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eY = ptr + sY
+            coord.Y <- initialCoord.Y
+            while ptr <> eY do
+                let eX = ptr + sX
+                coord.X <- initialCoord.X
+                while ptr <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                    coord.X <- coord.X + step.X
+                    ptr <- ptr + jX
+                coord.Y <- coord.Y + step.Y
+                ptr <- ptr + jY
+            coord.Z <- coord.Z + step.Z
+            ptr <- ptr + jZ
+    member x.IterPtr(action : V3d -> nativeptr<'a> -> unit) = 
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterPtrXYZ(action)
+        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterPtrYXZ(action)
+        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterPtrYZX(action)
+        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterPtrXZY(action)
+        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterPtrZXY(action)
+        else x.IterPtrZYX(action)
     member x.Iter(action : V3l -> 'a -> unit) = 
-        let cXY = compare (abs info.DX) (abs info.DY)
-        let cXZ = compare (abs info.DX) (abs info.DZ)
-        let cYZ = compare (abs info.DY) (abs info.DZ)
-        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterXYZ(action)
-        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterYXZ(action)
-        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterYZX(action)
-        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterXZY(action)
-        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterZXY(action)
-        else x.IterZYX(action)
-    member inline private x.IterXYZ(action : V3i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let mutable coord = V3i.Zero
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eY = ptr + sY
-            coord.Y <- 0
-            while ptr <> eY do
-                let eZ = ptr + sZ
-                coord.Z <- 0
-                while ptr <> eZ do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.Z <- coord.Z + 1
-                    ptr <- ptr + jZ
-                coord.Y <- coord.Y + 1
-                ptr <- ptr + jY
-            coord.X <- coord.X + 1
-            ptr <- ptr + jX
-    member inline private x.IterYXZ(action : V3i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let mutable coord = V3i.Zero
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eX = ptr + sX
-            coord.X <- 0
-            while ptr <> eX do
-                let eZ = ptr + sZ
-                coord.Z <- 0
-                while ptr <> eZ do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.Z <- coord.Z + 1
-                    ptr <- ptr + jZ
-                coord.X <- coord.X + 1
-                ptr <- ptr + jX
-            coord.Y <- coord.Y + 1
-            ptr <- ptr + jY
-    member inline private x.IterYZX(action : V3i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let mutable coord = V3i.Zero
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eZ = ptr + sZ
-            coord.Z <- 0
-            while ptr <> eZ do
-                let eX = ptr + sX
-                coord.X <- 0
-                while ptr <> eX do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.X <- coord.X + 1
-                    ptr <- ptr + jX
-                coord.Z <- coord.Z + 1
-                ptr <- ptr + jZ
-            coord.Y <- coord.Y + 1
-            ptr <- ptr + jY
-    member inline private x.IterXZY(action : V3i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let mutable coord = V3i.Zero
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eZ = ptr + sZ
-            coord.Z <- 0
-            while ptr <> eZ do
-                let eY = ptr + sY
-                coord.Y <- 0
-                while ptr <> eY do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.Y <- coord.Y + 1
-                    ptr <- ptr + jY
-                coord.Z <- coord.Z + 1
-                ptr <- ptr + jZ
-            coord.X <- coord.X + 1
-            ptr <- ptr + jX
-    member inline private x.IterZXY(action : V3i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let mutable coord = V3i.Zero
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eX = ptr + sX
-            coord.X <- 0
-            while ptr <> eX do
-                let eY = ptr + sY
-                coord.Y <- 0
-                while ptr <> eY do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.Y <- coord.Y + 1
-                    ptr <- ptr + jY
-                coord.X <- coord.X + 1
-                ptr <- ptr + jX
-            coord.Z <- coord.Z + 1
-            ptr <- ptr + jZ
-    member inline private x.IterZYX(action : V3i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let mutable coord = V3i.Zero
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eY = ptr + sY
-            coord.Y <- 0
-            while ptr <> eY do
-                let eX = ptr + sX
-                coord.X <- 0
-                while ptr <> eX do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.X <- coord.X + 1
-                    ptr <- ptr + jX
-                coord.Y <- coord.Y + 1
-                ptr <- ptr + jY
-            coord.Z <- coord.Z + 1
-            ptr <- ptr + jZ
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
     member x.Iter(action : V3i -> 'a -> unit) = 
-        let cXY = compare (abs info.DX) (abs info.DY)
-        let cXZ = compare (abs info.DX) (abs info.DZ)
-        let cYZ = compare (abs info.DY) (abs info.DZ)
-        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterXYZ(action)
-        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterYXZ(action)
-        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterYZX(action)
-        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterXZY(action)
-        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterZXY(action)
-        else x.IterZYX(action)
-    member inline private x.IterXYZ(action : V3d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
-        let step = V3d.One / V3d(x.Size)
-        let mutable coord = initialCoord
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eY = ptr + sY
-            coord.Y <- initialCoord.Y
-            while ptr <> eY do
-                let eZ = ptr + sZ
-                coord.Z <- initialCoord.Z
-                while ptr <> eZ do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.Z <- coord.Z + step.Z
-                    ptr <- ptr + jZ
-                coord.Y <- coord.Y + step.Y
-                ptr <- ptr + jY
-            coord.X <- coord.X + step.X
-            ptr <- ptr + jX
-    member inline private x.IterYXZ(action : V3d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
-        let step = V3d.One / V3d(x.Size)
-        let mutable coord = initialCoord
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eX = ptr + sX
-            coord.X <- initialCoord.X
-            while ptr <> eX do
-                let eZ = ptr + sZ
-                coord.Z <- initialCoord.Z
-                while ptr <> eZ do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.Z <- coord.Z + step.Z
-                    ptr <- ptr + jZ
-                coord.X <- coord.X + step.X
-                ptr <- ptr + jX
-            coord.Y <- coord.Y + step.Y
-            ptr <- ptr + jY
-    member inline private x.IterYZX(action : V3d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
-        let step = V3d.One / V3d(x.Size)
-        let mutable coord = initialCoord
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eZ = ptr + sZ
-            coord.Z <- initialCoord.Z
-            while ptr <> eZ do
-                let eX = ptr + sX
-                coord.X <- initialCoord.X
-                while ptr <> eX do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.X <- coord.X + step.X
-                    ptr <- ptr + jX
-                coord.Z <- coord.Z + step.Z
-                ptr <- ptr + jZ
-            coord.Y <- coord.Y + step.Y
-            ptr <- ptr + jY
-    member inline private x.IterXZY(action : V3d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
-        let step = V3d.One / V3d(x.Size)
-        let mutable coord = initialCoord
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eZ = ptr + sZ
-            coord.Z <- initialCoord.Z
-            while ptr <> eZ do
-                let eY = ptr + sY
-                coord.Y <- initialCoord.Y
-                while ptr <> eY do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.Y <- coord.Y + step.Y
-                    ptr <- ptr + jY
-                coord.Z <- coord.Z + step.Z
-                ptr <- ptr + jZ
-            coord.X <- coord.X + step.X
-            ptr <- ptr + jX
-    member inline private x.IterZXY(action : V3d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
-        let step = V3d.One / V3d(x.Size)
-        let mutable coord = initialCoord
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eX = ptr + sX
-            coord.X <- initialCoord.X
-            while ptr <> eX do
-                let eY = ptr + sY
-                coord.Y <- initialCoord.Y
-                while ptr <> eY do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.Y <- coord.Y + step.Y
-                    ptr <- ptr + jY
-                coord.X <- coord.X + step.X
-                ptr <- ptr + jX
-            coord.Z <- coord.Z + step.Z
-            ptr <- ptr + jZ
-    member inline private x.IterZYX(action : V3d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V3d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
-        let step = V3d.One / V3d(x.Size)
-        let mutable coord = initialCoord
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eY = ptr + sY
-            coord.Y <- initialCoord.Y
-            while ptr <> eY do
-                let eX = ptr + sX
-                coord.X <- initialCoord.X
-                while ptr <> eX do
-                    action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                    coord.X <- coord.X + step.X
-                    ptr <- ptr + jX
-                coord.Y <- coord.Y + step.Y
-                ptr <- ptr + jY
-            coord.Z <- coord.Z + step.Z
-            ptr <- ptr + jZ
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
     member x.Iter(action : V3d -> 'a -> unit) = 
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
+    member inline private x.IterPtr2XYZ(other : NativeVolume<'b>, action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V3l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- 0L
+                while ia <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Z <- coord.Z + 1L
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXZ(other : NativeVolume<'b>, action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V3l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- 0L
+                while ia <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Z <- coord.Z + 1L
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZX(other : NativeVolume<'b>, action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V3l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- 0L
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- 0L
+                while ia <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.X <- coord.X + 1L
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + 1L
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XZY(other : NativeVolume<'b>, action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V3l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- 0L
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- 0L
+                while ia <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Y <- coord.Y + 1L
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + 1L
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXY(other : NativeVolume<'b>, action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V3l.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- 0L
+                while ia <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Y <- coord.Y + 1L
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + 1L
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYX(other : NativeVolume<'b>, action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V3l.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- 0L
+                while ia <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.X <- coord.X + 1L
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + 1L
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member x.IterPtr2(other : NativeVolume<'b>, action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeVolume size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
         let cXY = compare (abs info.DX) (abs info.DY)
         let cXZ = compare (abs info.DX) (abs info.DZ)
         let cYZ = compare (abs info.DY) (abs info.DZ)
-        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterXYZ(action)
-        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterYXZ(action)
-        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterYZX(action)
-        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterXZY(action)
-        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterZXY(action)
-        else x.IterZYX(action)
+        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterPtr2XYZ(other, action)
+        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterPtr2YXZ(other, action)
+        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterPtr2YZX(other, action)
+        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterPtr2XZY(other, action)
+        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterPtr2ZXY(other, action)
+        else x.IterPtr2ZYX(other, action)
+    member inline private x.IterPtr2XYZ(other : NativeVolume<'b>, action : V3i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V3i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- 0
+                while ia <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Z <- coord.Z + 1
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXZ(other : NativeVolume<'b>, action : V3i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V3i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- 0
+                while ia <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Z <- coord.Z + 1
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZX(other : NativeVolume<'b>, action : V3i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V3i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- 0
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- 0
+                while ia <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.X <- coord.X + 1
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + 1
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XZY(other : NativeVolume<'b>, action : V3i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V3i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- 0
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- 0
+                while ia <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Y <- coord.Y + 1
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + 1
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXY(other : NativeVolume<'b>, action : V3i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V3i.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- 0
+                while ia <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Y <- coord.Y + 1
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + 1
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYX(other : NativeVolume<'b>, action : V3i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V3i.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- 0
+                while ia <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.X <- coord.X + 1
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + 1
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member x.IterPtr2(other : NativeVolume<'b>, action : V3i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeVolume size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterPtr2XYZ(other, action)
+        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterPtr2YXZ(other, action)
+        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterPtr2YZX(other, action)
+        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterPtr2XZY(other, action)
+        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterPtr2ZXY(other, action)
+        else x.IterPtr2ZYX(other, action)
+    member inline private x.IterPtr2XYZ(other : NativeVolume<'b>, action : V3d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- initialCoord.Z
+                while ia <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Z <- coord.Z + step.Z
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXZ(other : NativeVolume<'b>, action : V3d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- initialCoord.Z
+                while ia <> eZ do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Z <- coord.Z + step.Z
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZX(other : NativeVolume<'b>, action : V3d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- initialCoord.Z
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- initialCoord.X
+                while ia <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.X <- coord.X + step.X
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + step.Z
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XZY(other : NativeVolume<'b>, action : V3d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- initialCoord.Z
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- initialCoord.Y
+                while ia <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Y <- coord.Y + step.Y
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + step.Z
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXY(other : NativeVolume<'b>, action : V3d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- initialCoord.Y
+                while ia <> eY do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.Y <- coord.Y + step.Y
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + step.Z
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYX(other : NativeVolume<'b>, action : V3d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V3d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V3d(0.5, 0.5, 0.5) / V3d(x.Size)
+        let step = V3d.One / V3d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- initialCoord.X
+                while ia <> eX do
+                    action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                    coord.X <- coord.X + step.X
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + step.Z
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member x.IterPtr2(other : NativeVolume<'b>, action : V3d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeVolume size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        if cXY >= 0  && cXZ >= 0  && cYZ >= 0  then x.IterPtr2XYZ(other, action)
+        elif cXY <= 0 && cXZ >= 0  && cYZ >= 0  then x.IterPtr2YXZ(other, action)
+        elif cXY <= 0 && cXZ <= 0 && cYZ >= 0  then x.IterPtr2YZX(other, action)
+        elif cXY >= 0  && cXZ >= 0  && cYZ <= 0 then x.IterPtr2XZY(other, action)
+        elif cXY >= 0  && cXZ <= 0 && cYZ <= 0 then x.IterPtr2ZXY(other, action)
+        else x.IterPtr2ZYX(other, action)
+    member x.Iter2(other : NativeVolume<'b>, action : V3l -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
+    member x.Iter2(other : NativeVolume<'b>, action : V3i -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
+    member x.Iter2(other : NativeVolume<'b>, action : V3d -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
     member inline private x.BlitToInternalXYZ(y : NativeVolume<'a>, srcOffset : V3d, srcSize : V3d, lerp : float -> 'a -> 'a -> 'a) = 
         let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)
         let sa = nativeint (sizeof<'a>)
@@ -6779,35 +7791,94 @@ type NativeVolume<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : VolumeInfo
 
 /// The NativeVolume module providers convenient F#-style functions for accessing NativeVolumes
 module NativeVolume =
+    /// Creates a new NativeVolume from the given address and info struct
+    let inline ofNativeInt<'a when 'a : unmanaged> (info : VolumeInfo) (address : nativeint) = NativeVolume<'a>(NativePtr.ofNativeInt address, info)
+    
     let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) =
         ((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))
     let inline private lerper t a b = lerpy (Unchecked.defaultof<Fun>) t a b
-    /// sets the entire Volume to the given value
+    /// Sets the entire Volume to the given value
     let inline set (value : 'a) (dst : NativeVolume<'a>) = dst.Set(value)
     
-    /// sets each entry to the value computed by getValue
+    /// Sets each entry to the value computed by getValue
     let inline setByCoord (getValue : V3l -> 'a) (m : NativeVolume<'a>) = m.SetByCoord(getValue)
     
     let inline sample (location : V3d) (m : NativeVolume<'a>) = m.SampleLinear(location, lerper)
     
     let inline blit (src : NativeVolume<'a>) (dst : NativeVolume<'a>) = src.BlitTo(dst, lerper)
     
-    /// copies the content of 'src' to 'dst'
+    /// Copies the content of 'src' to 'dst'
     let inline copy (src : NativeVolume<'a>) (dst : NativeVolume<'a>) = src.CopyTo(dst)
     
-    /// copies the content of 'src' to 'dst' by applying the given function
+    /// Copies the content of 'src' to 'dst' by applying the given function
     let inline copyWith (f : 'a -> 'b) (src : NativeVolume<'a>) (dst : NativeVolume<'b>) = src.CopyTo(dst, f)
     
-    /// temporarily pins a Volume making it available as NativeVolume
+    /// Temporarily pins a Volume making it available as NativeVolume
     let using (m : Volume<'a>) (f : NativeVolume<'a> -> 'b) = NativeVolume<'a>.Using(m, f)
     
-    /// iterates over all entries of the given NativeVolume and executes the given action
+    /// Iterates over all entries of the given NativeVolume and executes the given action
     let inline iter (action : V3l -> 'a -> unit) (m : NativeVolume<'a>) = m.Iter(action)
+    
+    /// Iterates over all entries of the given NativeVolume and executes the given action
+    let inline iterPtr (action : V3l -> nativeptr<'a> -> unit) (m : NativeVolume<'a>) = m.IterPtr(action)
+    
+    /// Iterates over all entries of both of the given NativeVolumes and executes the given action
+    let inline iter2 (action : V3l -> 'a -> 'b -> unit) (l : NativeVolume<'a>) (r : NativeVolume<'b>) = l.Iter2(r, action)
+    
+    /// Iterates over all entries of both of the given NativeVolumes and executes the given action
+    let inline iterPtr2 (action : V3l -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : NativeVolume<'a>) (r : NativeVolume<'b>) = l.IterPtr2(r, action)
+
+[<AutoOpen>]
+module PixImageTensorExtensions =
+    module PixImage =
+        /// Pins the given PixImage as a NativeVolume and executes the given action
+        let inline pin (pi : PixImage<'a>) (f : NativeVolume<'a> -> 'b) : 'b =
+            NativeVolume.using pi.Volume f
+        
+        /// Pins the given PixImages as a NativeVolumes and executes the given action
+        let inline pin2 (l : PixImage<'a>) (r : PixImage<'b>) (f : NativeVolume<'a> -> NativeVolume<'b> -> 'c)  : 'c =
+            pin l (fun lv -> pin r (fun rv -> f lv rv))
+        
+        /// Copies the given PixImage to the given NativeVolume
+        let inline copyToNativeVolume (dst : NativeVolume<'a>) (pix : PixImage<'a>)  =
+            pin pix (fun src -> NativeVolume.copy src dst)
+        
+        /// Copies from the given NativeVolume to the given PixImage
+        let inline copyFromNativeVolume (src : NativeVolume<'a>) (pix : PixImage<'a>) =
+            pin pix (fun dst -> NativeVolume.copy src dst)
+        
+        [<AutoOpen>]
+        module private CopyDispatch =
+            type private Dispatcher() =
+                static member CopyImageToNative<'a when 'a : unmanaged>(src : PixImage<'a>, dst : nativeint, dstInfo : VolumeInfo) =
+                    let dst = dst |> NativeVolume.ofNativeInt dstInfo
+                    src |> copyToNativeVolume dst
+                
+                static member CopyNativeToImage<'a when 'a : unmanaged>(src : nativeint, srcInfo : VolumeInfo, dst : PixImage<'a>) =
+                    let src = src |> NativeVolume.ofNativeInt srcInfo
+                    dst |> copyFromNativeVolume src
+            
+            module Method =
+                let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public
+                let copyImageToNative = typeof<Dispatcher>.GetMethod("CopyImageToNative", flags)
+                let copyNativeToImage = typeof<Dispatcher>.GetMethod("CopyNativeToImage", flags)
+        
+        /// Copies the given untyped PixImage to the given native address
+        let copyToNative (dst : nativeint) (dstInfo : VolumeInfo) (pix : PixImage) =
+            let mi = Method.copyImageToNative.MakeGenericMethod [| pix.PixFormat.Type |]
+            mi.Invoke(null, [|pix; dst; dstInfo|]) |> ignore
+        
+        /// Copies from the given native address to the given untyped PixImage
+        let copyFromNative (src : nativeint) (srcInfo : VolumeInfo) (pix : PixImage) =
+            let mi = Method.copyNativeToImage.MakeGenericMethod [| pix.PixFormat.Type |]
+            mi.Invoke(null, [|src; srcInfo; pix|]) |> ignore
+        
 
 
 [<Sealed>]
 type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4Info) = 
     member x.Pointer = ptr
+    member x.Address = NativePtr.toNativeInt ptr
     member x.Info = info
     member x.Size = info.Size
     member x.Delta = info.Delta
@@ -10064,8 +11135,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
         elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.SetByCoordWXZY(value)
         elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.SetByCoordWZXY(value)
         else x.SetByCoordWZYX(value)
-    member inline private x.IterXYZW(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXYZW(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10089,7 +11160,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eW = ptr + sW
                     coord.W <- 0L
                     while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.W <- coord.W + 1L
                         ptr <- ptr + jW
                     coord.Z <- coord.Z + 1L
@@ -10098,8 +11169,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jY
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterYXZW(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYXZW(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10123,7 +11194,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eW = ptr + sW
                     coord.W <- 0L
                     while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.W <- coord.W + 1L
                         ptr <- ptr + jW
                     coord.Z <- coord.Z + 1L
@@ -10132,8 +11203,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jX
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member inline private x.IterYZXW(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYZXW(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10157,7 +11228,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eW = ptr + sW
                     coord.W <- 0L
                     while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.W <- coord.W + 1L
                         ptr <- ptr + jW
                     coord.X <- coord.X + 1L
@@ -10166,8 +11237,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jZ
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member inline private x.IterYZWX(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYZWX(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10191,7 +11262,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eX = ptr + sX
                     coord.X <- 0L
                     while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.X <- coord.X + 1L
                         ptr <- ptr + jX
                     coord.W <- coord.W + 1L
@@ -10200,8 +11271,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jZ
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member inline private x.IterXZYW(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXZYW(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10225,7 +11296,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eW = ptr + sW
                     coord.W <- 0L
                     while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.W <- coord.W + 1L
                         ptr <- ptr + jW
                     coord.Y <- coord.Y + 1L
@@ -10234,8 +11305,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jZ
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterZXYW(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrZXYW(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10259,7 +11330,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eW = ptr + sW
                     coord.W <- 0L
                     while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.W <- coord.W + 1L
                         ptr <- ptr + jW
                     coord.Y <- coord.Y + 1L
@@ -10268,8 +11339,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jX
             coord.Z <- coord.Z + 1L
             ptr <- ptr + jZ
-    member inline private x.IterZYXW(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrZYXW(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10293,7 +11364,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eW = ptr + sW
                     coord.W <- 0L
                     while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.W <- coord.W + 1L
                         ptr <- ptr + jW
                     coord.X <- coord.X + 1L
@@ -10302,8 +11373,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jY
             coord.Z <- coord.Z + 1L
             ptr <- ptr + jZ
-    member inline private x.IterZYWX(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrZYWX(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10327,7 +11398,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eX = ptr + sX
                     coord.X <- 0L
                     while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.X <- coord.X + 1L
                         ptr <- ptr + jX
                     coord.W <- coord.W + 1L
@@ -10336,8 +11407,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jY
             coord.Z <- coord.Z + 1L
             ptr <- ptr + jZ
-    member inline private x.IterXZWY(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXZWY(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10361,7 +11432,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eY = ptr + sY
                     coord.Y <- 0L
                     while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Y <- coord.Y + 1L
                         ptr <- ptr + jY
                     coord.W <- coord.W + 1L
@@ -10370,8 +11441,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jZ
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterZXWY(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrZXWY(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10395,7 +11466,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eY = ptr + sY
                     coord.Y <- 0L
                     while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Y <- coord.Y + 1L
                         ptr <- ptr + jY
                     coord.W <- coord.W + 1L
@@ -10404,8 +11475,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jX
             coord.Z <- coord.Z + 1L
             ptr <- ptr + jZ
-    member inline private x.IterZWXY(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrZWXY(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10429,7 +11500,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eY = ptr + sY
                     coord.Y <- 0L
                     while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Y <- coord.Y + 1L
                         ptr <- ptr + jY
                     coord.X <- coord.X + 1L
@@ -10438,8 +11509,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jW
             coord.Z <- coord.Z + 1L
             ptr <- ptr + jZ
-    member inline private x.IterZWYX(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrZWYX(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10463,7 +11534,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eX = ptr + sX
                     coord.X <- 0L
                     while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.X <- coord.X + 1L
                         ptr <- ptr + jX
                     coord.Y <- coord.Y + 1L
@@ -10472,8 +11543,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jW
             coord.Z <- coord.Z + 1L
             ptr <- ptr + jZ
-    member inline private x.IterXYWZ(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXYWZ(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10497,7 +11568,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eZ = ptr + sZ
                     coord.Z <- 0L
                     while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Z <- coord.Z + 1L
                         ptr <- ptr + jZ
                     coord.W <- coord.W + 1L
@@ -10506,8 +11577,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jY
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterYXWZ(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYXWZ(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10531,7 +11602,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eZ = ptr + sZ
                     coord.Z <- 0L
                     while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Z <- coord.Z + 1L
                         ptr <- ptr + jZ
                     coord.W <- coord.W + 1L
@@ -10540,8 +11611,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jX
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member inline private x.IterYWXZ(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYWXZ(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10565,7 +11636,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eZ = ptr + sZ
                     coord.Z <- 0L
                     while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Z <- coord.Z + 1L
                         ptr <- ptr + jZ
                     coord.X <- coord.X + 1L
@@ -10574,8 +11645,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jW
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member inline private x.IterYWZX(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrYWZX(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10599,7 +11670,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eX = ptr + sX
                     coord.X <- 0L
                     while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.X <- coord.X + 1L
                         ptr <- ptr + jX
                     coord.Z <- coord.Z + 1L
@@ -10608,8 +11679,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jW
             coord.Y <- coord.Y + 1L
             ptr <- ptr + jY
-    member inline private x.IterXWYZ(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXWYZ(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10633,7 +11704,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eZ = ptr + sZ
                     coord.Z <- 0L
                     while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Z <- coord.Z + 1L
                         ptr <- ptr + jZ
                     coord.Y <- coord.Y + 1L
@@ -10642,8 +11713,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jW
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterWXYZ(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrWXYZ(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10667,7 +11738,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eZ = ptr + sZ
                     coord.Z <- 0L
                     while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Z <- coord.Z + 1L
                         ptr <- ptr + jZ
                     coord.Y <- coord.Y + 1L
@@ -10676,8 +11747,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jX
             coord.W <- coord.W + 1L
             ptr <- ptr + jW
-    member inline private x.IterWYXZ(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrWYXZ(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10701,7 +11772,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eZ = ptr + sZ
                     coord.Z <- 0L
                     while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Z <- coord.Z + 1L
                         ptr <- ptr + jZ
                     coord.X <- coord.X + 1L
@@ -10710,8 +11781,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jY
             coord.W <- coord.W + 1L
             ptr <- ptr + jW
-    member inline private x.IterWYZX(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrWYZX(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10735,7 +11806,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eX = ptr + sX
                     coord.X <- 0L
                     while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.X <- coord.X + 1L
                         ptr <- ptr + jX
                     coord.Z <- coord.Z + 1L
@@ -10744,8 +11815,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jY
             coord.W <- coord.W + 1L
             ptr <- ptr + jW
-    member inline private x.IterXWZY(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrXWZY(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10769,7 +11840,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eY = ptr + sY
                     coord.Y <- 0L
                     while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Y <- coord.Y + 1L
                         ptr <- ptr + jY
                     coord.Z <- coord.Z + 1L
@@ -10778,8 +11849,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jW
             coord.X <- coord.X + 1L
             ptr <- ptr + jX
-    member inline private x.IterWXZY(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrWXZY(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10803,7 +11874,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eY = ptr + sY
                     coord.Y <- 0L
                     while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Y <- coord.Y + 1L
                         ptr <- ptr + jY
                     coord.Z <- coord.Z + 1L
@@ -10812,8 +11883,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jX
             coord.W <- coord.W + 1L
             ptr <- ptr + jW
-    member inline private x.IterWZXY(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrWZXY(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10837,7 +11908,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eY = ptr + sY
                     coord.Y <- 0L
                     while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.Y <- coord.Y + 1L
                         ptr <- ptr + jY
                     coord.X <- coord.X + 1L
@@ -10846,8 +11917,8 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jZ
             coord.W <- coord.W + 1L
             ptr <- ptr + jW
-    member inline private x.IterWZYX(action : V4l -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4l, 'a, unit>.Adapt(action)
+    member inline private x.IterPtrWZYX(action : V4l -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, unit>.Adapt(action)
         let sa = nativeint (sizeof<'a>)
         let mutable ptr = ptr |> NativePtr.toNativeInt
         ptr <- ptr + nativeint info.Origin * sa
@@ -10871,7 +11942,7 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                     let eX = ptr + sX
                     coord.X <- 0L
                     while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
                         coord.X <- coord.X + 1L
                         ptr <- ptr + jX
                     coord.Y <- coord.Y + 1L
@@ -10880,1779 +11951,5178 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
                 ptr <- ptr + jZ
             coord.W <- coord.W + 1L
             ptr <- ptr + jW
+    member x.IterPtr(action : V4l -> nativeptr<'a> -> unit) = 
+        let cXW = compare (abs info.DX) (abs info.DW)
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYW = compare (abs info.DY) (abs info.DW)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        let cZW = compare (abs info.DZ) (abs info.DW)
+        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrXYZW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYXZW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYZXW(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYZWX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrXZYW(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZXYW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZYXW(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZYWX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrXZWY(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZXWY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZWXY(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZWYX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrXYWZ(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYXWZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYWXZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYWZX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrXWYZ(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWXYZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWYXZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWYZX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrXWZY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrWXZY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrWZXY(action)
+        else x.IterPtrWZYX(action)
+    member inline private x.IterPtrXYZW(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let mutable coord = V4i.Zero
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eY = ptr + sY
+            coord.Y <- 0
+            while ptr <> eY do
+                let eZ = ptr + sZ
+                coord.Z <- 0
+                while ptr <> eZ do
+                    let eW = ptr + sW
+                    coord.W <- 0
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + 1
+                        ptr <- ptr + jW
+                    coord.Z <- coord.Z + 1
+                    ptr <- ptr + jZ
+                coord.Y <- coord.Y + 1
+                ptr <- ptr + jY
+            coord.X <- coord.X + 1
+            ptr <- ptr + jX
+    member inline private x.IterPtrYXZW(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let mutable coord = V4i.Zero
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eX = ptr + sX
+            coord.X <- 0
+            while ptr <> eX do
+                let eZ = ptr + sZ
+                coord.Z <- 0
+                while ptr <> eZ do
+                    let eW = ptr + sW
+                    coord.W <- 0
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + 1
+                        ptr <- ptr + jW
+                    coord.Z <- coord.Z + 1
+                    ptr <- ptr + jZ
+                coord.X <- coord.X + 1
+                ptr <- ptr + jX
+            coord.Y <- coord.Y + 1
+            ptr <- ptr + jY
+    member inline private x.IterPtrYZXW(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let mutable coord = V4i.Zero
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eZ = ptr + sZ
+            coord.Z <- 0
+            while ptr <> eZ do
+                let eX = ptr + sX
+                coord.X <- 0
+                while ptr <> eX do
+                    let eW = ptr + sW
+                    coord.W <- 0
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + 1
+                        ptr <- ptr + jW
+                    coord.X <- coord.X + 1
+                    ptr <- ptr + jX
+                coord.Z <- coord.Z + 1
+                ptr <- ptr + jZ
+            coord.Y <- coord.Y + 1
+            ptr <- ptr + jY
+    member inline private x.IterPtrYZWX(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let mutable coord = V4i.Zero
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eZ = ptr + sZ
+            coord.Z <- 0
+            while ptr <> eZ do
+                let eW = ptr + sW
+                coord.W <- 0
+                while ptr <> eW do
+                    let eX = ptr + sX
+                    coord.X <- 0
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + 1
+                        ptr <- ptr + jX
+                    coord.W <- coord.W + 1
+                    ptr <- ptr + jW
+                coord.Z <- coord.Z + 1
+                ptr <- ptr + jZ
+            coord.Y <- coord.Y + 1
+            ptr <- ptr + jY
+    member inline private x.IterPtrXZYW(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let mutable coord = V4i.Zero
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eZ = ptr + sZ
+            coord.Z <- 0
+            while ptr <> eZ do
+                let eY = ptr + sY
+                coord.Y <- 0
+                while ptr <> eY do
+                    let eW = ptr + sW
+                    coord.W <- 0
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + 1
+                        ptr <- ptr + jW
+                    coord.Y <- coord.Y + 1
+                    ptr <- ptr + jY
+                coord.Z <- coord.Z + 1
+                ptr <- ptr + jZ
+            coord.X <- coord.X + 1
+            ptr <- ptr + jX
+    member inline private x.IterPtrZXYW(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let mutable coord = V4i.Zero
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eX = ptr + sX
+            coord.X <- 0
+            while ptr <> eX do
+                let eY = ptr + sY
+                coord.Y <- 0
+                while ptr <> eY do
+                    let eW = ptr + sW
+                    coord.W <- 0
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + 1
+                        ptr <- ptr + jW
+                    coord.Y <- coord.Y + 1
+                    ptr <- ptr + jY
+                coord.X <- coord.X + 1
+                ptr <- ptr + jX
+            coord.Z <- coord.Z + 1
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZYXW(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let mutable coord = V4i.Zero
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eY = ptr + sY
+            coord.Y <- 0
+            while ptr <> eY do
+                let eX = ptr + sX
+                coord.X <- 0
+                while ptr <> eX do
+                    let eW = ptr + sW
+                    coord.W <- 0
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + 1
+                        ptr <- ptr + jW
+                    coord.X <- coord.X + 1
+                    ptr <- ptr + jX
+                coord.Y <- coord.Y + 1
+                ptr <- ptr + jY
+            coord.Z <- coord.Z + 1
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZYWX(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let mutable coord = V4i.Zero
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eY = ptr + sY
+            coord.Y <- 0
+            while ptr <> eY do
+                let eW = ptr + sW
+                coord.W <- 0
+                while ptr <> eW do
+                    let eX = ptr + sX
+                    coord.X <- 0
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + 1
+                        ptr <- ptr + jX
+                    coord.W <- coord.W + 1
+                    ptr <- ptr + jW
+                coord.Y <- coord.Y + 1
+                ptr <- ptr + jY
+            coord.Z <- coord.Z + 1
+            ptr <- ptr + jZ
+    member inline private x.IterPtrXZWY(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let mutable coord = V4i.Zero
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eZ = ptr + sZ
+            coord.Z <- 0
+            while ptr <> eZ do
+                let eW = ptr + sW
+                coord.W <- 0
+                while ptr <> eW do
+                    let eY = ptr + sY
+                    coord.Y <- 0
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + 1
+                        ptr <- ptr + jY
+                    coord.W <- coord.W + 1
+                    ptr <- ptr + jW
+                coord.Z <- coord.Z + 1
+                ptr <- ptr + jZ
+            coord.X <- coord.X + 1
+            ptr <- ptr + jX
+    member inline private x.IterPtrZXWY(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let mutable coord = V4i.Zero
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eX = ptr + sX
+            coord.X <- 0
+            while ptr <> eX do
+                let eW = ptr + sW
+                coord.W <- 0
+                while ptr <> eW do
+                    let eY = ptr + sY
+                    coord.Y <- 0
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + 1
+                        ptr <- ptr + jY
+                    coord.W <- coord.W + 1
+                    ptr <- ptr + jW
+                coord.X <- coord.X + 1
+                ptr <- ptr + jX
+            coord.Z <- coord.Z + 1
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZWXY(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let mutable coord = V4i.Zero
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eW = ptr + sW
+            coord.W <- 0
+            while ptr <> eW do
+                let eX = ptr + sX
+                coord.X <- 0
+                while ptr <> eX do
+                    let eY = ptr + sY
+                    coord.Y <- 0
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + 1
+                        ptr <- ptr + jY
+                    coord.X <- coord.X + 1
+                    ptr <- ptr + jX
+                coord.W <- coord.W + 1
+                ptr <- ptr + jW
+            coord.Z <- coord.Z + 1
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZWYX(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let mutable coord = V4i.Zero
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eW = ptr + sW
+            coord.W <- 0
+            while ptr <> eW do
+                let eY = ptr + sY
+                coord.Y <- 0
+                while ptr <> eY do
+                    let eX = ptr + sX
+                    coord.X <- 0
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + 1
+                        ptr <- ptr + jX
+                    coord.Y <- coord.Y + 1
+                    ptr <- ptr + jY
+                coord.W <- coord.W + 1
+                ptr <- ptr + jW
+            coord.Z <- coord.Z + 1
+            ptr <- ptr + jZ
+    member inline private x.IterPtrXYWZ(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let mutable coord = V4i.Zero
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eY = ptr + sY
+            coord.Y <- 0
+            while ptr <> eY do
+                let eW = ptr + sW
+                coord.W <- 0
+                while ptr <> eW do
+                    let eZ = ptr + sZ
+                    coord.Z <- 0
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + 1
+                        ptr <- ptr + jZ
+                    coord.W <- coord.W + 1
+                    ptr <- ptr + jW
+                coord.Y <- coord.Y + 1
+                ptr <- ptr + jY
+            coord.X <- coord.X + 1
+            ptr <- ptr + jX
+    member inline private x.IterPtrYXWZ(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let mutable coord = V4i.Zero
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eX = ptr + sX
+            coord.X <- 0
+            while ptr <> eX do
+                let eW = ptr + sW
+                coord.W <- 0
+                while ptr <> eW do
+                    let eZ = ptr + sZ
+                    coord.Z <- 0
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + 1
+                        ptr <- ptr + jZ
+                    coord.W <- coord.W + 1
+                    ptr <- ptr + jW
+                coord.X <- coord.X + 1
+                ptr <- ptr + jX
+            coord.Y <- coord.Y + 1
+            ptr <- ptr + jY
+    member inline private x.IterPtrYWXZ(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let mutable coord = V4i.Zero
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eW = ptr + sW
+            coord.W <- 0
+            while ptr <> eW do
+                let eX = ptr + sX
+                coord.X <- 0
+                while ptr <> eX do
+                    let eZ = ptr + sZ
+                    coord.Z <- 0
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + 1
+                        ptr <- ptr + jZ
+                    coord.X <- coord.X + 1
+                    ptr <- ptr + jX
+                coord.W <- coord.W + 1
+                ptr <- ptr + jW
+            coord.Y <- coord.Y + 1
+            ptr <- ptr + jY
+    member inline private x.IterPtrYWZX(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let mutable coord = V4i.Zero
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eW = ptr + sW
+            coord.W <- 0
+            while ptr <> eW do
+                let eZ = ptr + sZ
+                coord.Z <- 0
+                while ptr <> eZ do
+                    let eX = ptr + sX
+                    coord.X <- 0
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + 1
+                        ptr <- ptr + jX
+                    coord.Z <- coord.Z + 1
+                    ptr <- ptr + jZ
+                coord.W <- coord.W + 1
+                ptr <- ptr + jW
+            coord.Y <- coord.Y + 1
+            ptr <- ptr + jY
+    member inline private x.IterPtrXWYZ(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let mutable coord = V4i.Zero
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eW = ptr + sW
+            coord.W <- 0
+            while ptr <> eW do
+                let eY = ptr + sY
+                coord.Y <- 0
+                while ptr <> eY do
+                    let eZ = ptr + sZ
+                    coord.Z <- 0
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + 1
+                        ptr <- ptr + jZ
+                    coord.Y <- coord.Y + 1
+                    ptr <- ptr + jY
+                coord.W <- coord.W + 1
+                ptr <- ptr + jW
+            coord.X <- coord.X + 1
+            ptr <- ptr + jX
+    member inline private x.IterPtrWXYZ(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let mutable coord = V4i.Zero
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eX = ptr + sX
+            coord.X <- 0
+            while ptr <> eX do
+                let eY = ptr + sY
+                coord.Y <- 0
+                while ptr <> eY do
+                    let eZ = ptr + sZ
+                    coord.Z <- 0
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + 1
+                        ptr <- ptr + jZ
+                    coord.Y <- coord.Y + 1
+                    ptr <- ptr + jY
+                coord.X <- coord.X + 1
+                ptr <- ptr + jX
+            coord.W <- coord.W + 1
+            ptr <- ptr + jW
+    member inline private x.IterPtrWYXZ(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let mutable coord = V4i.Zero
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eY = ptr + sY
+            coord.Y <- 0
+            while ptr <> eY do
+                let eX = ptr + sX
+                coord.X <- 0
+                while ptr <> eX do
+                    let eZ = ptr + sZ
+                    coord.Z <- 0
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + 1
+                        ptr <- ptr + jZ
+                    coord.X <- coord.X + 1
+                    ptr <- ptr + jX
+                coord.Y <- coord.Y + 1
+                ptr <- ptr + jY
+            coord.W <- coord.W + 1
+            ptr <- ptr + jW
+    member inline private x.IterPtrWYZX(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let mutable coord = V4i.Zero
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eY = ptr + sY
+            coord.Y <- 0
+            while ptr <> eY do
+                let eZ = ptr + sZ
+                coord.Z <- 0
+                while ptr <> eZ do
+                    let eX = ptr + sX
+                    coord.X <- 0
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + 1
+                        ptr <- ptr + jX
+                    coord.Z <- coord.Z + 1
+                    ptr <- ptr + jZ
+                coord.Y <- coord.Y + 1
+                ptr <- ptr + jY
+            coord.W <- coord.W + 1
+            ptr <- ptr + jW
+    member inline private x.IterPtrXWZY(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let mutable coord = V4i.Zero
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eW = ptr + sW
+            coord.W <- 0
+            while ptr <> eW do
+                let eZ = ptr + sZ
+                coord.Z <- 0
+                while ptr <> eZ do
+                    let eY = ptr + sY
+                    coord.Y <- 0
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + 1
+                        ptr <- ptr + jY
+                    coord.Z <- coord.Z + 1
+                    ptr <- ptr + jZ
+                coord.W <- coord.W + 1
+                ptr <- ptr + jW
+            coord.X <- coord.X + 1
+            ptr <- ptr + jX
+    member inline private x.IterPtrWXZY(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let mutable coord = V4i.Zero
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eX = ptr + sX
+            coord.X <- 0
+            while ptr <> eX do
+                let eZ = ptr + sZ
+                coord.Z <- 0
+                while ptr <> eZ do
+                    let eY = ptr + sY
+                    coord.Y <- 0
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + 1
+                        ptr <- ptr + jY
+                    coord.Z <- coord.Z + 1
+                    ptr <- ptr + jZ
+                coord.X <- coord.X + 1
+                ptr <- ptr + jX
+            coord.W <- coord.W + 1
+            ptr <- ptr + jW
+    member inline private x.IterPtrWZXY(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let mutable coord = V4i.Zero
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eZ = ptr + sZ
+            coord.Z <- 0
+            while ptr <> eZ do
+                let eX = ptr + sX
+                coord.X <- 0
+                while ptr <> eX do
+                    let eY = ptr + sY
+                    coord.Y <- 0
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + 1
+                        ptr <- ptr + jY
+                    coord.X <- coord.X + 1
+                    ptr <- ptr + jX
+                coord.Z <- coord.Z + 1
+                ptr <- ptr + jZ
+            coord.W <- coord.W + 1
+            ptr <- ptr + jW
+    member inline private x.IterPtrWZYX(action : V4i -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let mutable coord = V4i.Zero
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eZ = ptr + sZ
+            coord.Z <- 0
+            while ptr <> eZ do
+                let eY = ptr + sY
+                coord.Y <- 0
+                while ptr <> eY do
+                    let eX = ptr + sX
+                    coord.X <- 0
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + 1
+                        ptr <- ptr + jX
+                    coord.Y <- coord.Y + 1
+                    ptr <- ptr + jY
+                coord.Z <- coord.Z + 1
+                ptr <- ptr + jZ
+            coord.W <- coord.W + 1
+            ptr <- ptr + jW
+    member x.IterPtr(action : V4i -> nativeptr<'a> -> unit) = 
+        let cXW = compare (abs info.DX) (abs info.DW)
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYW = compare (abs info.DY) (abs info.DW)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        let cZW = compare (abs info.DZ) (abs info.DW)
+        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrXYZW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYXZW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYZXW(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYZWX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrXZYW(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZXYW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZYXW(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZYWX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrXZWY(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZXWY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZWXY(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZWYX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrXYWZ(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYXWZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYWXZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYWZX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrXWYZ(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWXYZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWYXZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWYZX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrXWZY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrWXZY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrWZXY(action)
+        else x.IterPtrWZYX(action)
+    member inline private x.IterPtrXYZW(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eY = ptr + sY
+            coord.Y <- initialCoord.Y
+            while ptr <> eY do
+                let eZ = ptr + sZ
+                coord.Z <- initialCoord.Z
+                while ptr <> eZ do
+                    let eW = ptr + sW
+                    coord.W <- initialCoord.W
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + step.W
+                        ptr <- ptr + jW
+                    coord.Z <- coord.Z + step.Z
+                    ptr <- ptr + jZ
+                coord.Y <- coord.Y + step.Y
+                ptr <- ptr + jY
+            coord.X <- coord.X + step.X
+            ptr <- ptr + jX
+    member inline private x.IterPtrYXZW(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eX = ptr + sX
+            coord.X <- initialCoord.X
+            while ptr <> eX do
+                let eZ = ptr + sZ
+                coord.Z <- initialCoord.Z
+                while ptr <> eZ do
+                    let eW = ptr + sW
+                    coord.W <- initialCoord.W
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + step.W
+                        ptr <- ptr + jW
+                    coord.Z <- coord.Z + step.Z
+                    ptr <- ptr + jZ
+                coord.X <- coord.X + step.X
+                ptr <- ptr + jX
+            coord.Y <- coord.Y + step.Y
+            ptr <- ptr + jY
+    member inline private x.IterPtrYZXW(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eZ = ptr + sZ
+            coord.Z <- initialCoord.Z
+            while ptr <> eZ do
+                let eX = ptr + sX
+                coord.X <- initialCoord.X
+                while ptr <> eX do
+                    let eW = ptr + sW
+                    coord.W <- initialCoord.W
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + step.W
+                        ptr <- ptr + jW
+                    coord.X <- coord.X + step.X
+                    ptr <- ptr + jX
+                coord.Z <- coord.Z + step.Z
+                ptr <- ptr + jZ
+            coord.Y <- coord.Y + step.Y
+            ptr <- ptr + jY
+    member inline private x.IterPtrYZWX(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eZ = ptr + sZ
+            coord.Z <- initialCoord.Z
+            while ptr <> eZ do
+                let eW = ptr + sW
+                coord.W <- initialCoord.W
+                while ptr <> eW do
+                    let eX = ptr + sX
+                    coord.X <- initialCoord.X
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + step.X
+                        ptr <- ptr + jX
+                    coord.W <- coord.W + step.W
+                    ptr <- ptr + jW
+                coord.Z <- coord.Z + step.Z
+                ptr <- ptr + jZ
+            coord.Y <- coord.Y + step.Y
+            ptr <- ptr + jY
+    member inline private x.IterPtrXZYW(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eZ = ptr + sZ
+            coord.Z <- initialCoord.Z
+            while ptr <> eZ do
+                let eY = ptr + sY
+                coord.Y <- initialCoord.Y
+                while ptr <> eY do
+                    let eW = ptr + sW
+                    coord.W <- initialCoord.W
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + step.W
+                        ptr <- ptr + jW
+                    coord.Y <- coord.Y + step.Y
+                    ptr <- ptr + jY
+                coord.Z <- coord.Z + step.Z
+                ptr <- ptr + jZ
+            coord.X <- coord.X + step.X
+            ptr <- ptr + jX
+    member inline private x.IterPtrZXYW(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eX = ptr + sX
+            coord.X <- initialCoord.X
+            while ptr <> eX do
+                let eY = ptr + sY
+                coord.Y <- initialCoord.Y
+                while ptr <> eY do
+                    let eW = ptr + sW
+                    coord.W <- initialCoord.W
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + step.W
+                        ptr <- ptr + jW
+                    coord.Y <- coord.Y + step.Y
+                    ptr <- ptr + jY
+                coord.X <- coord.X + step.X
+                ptr <- ptr + jX
+            coord.Z <- coord.Z + step.Z
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZYXW(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eY = ptr + sY
+            coord.Y <- initialCoord.Y
+            while ptr <> eY do
+                let eX = ptr + sX
+                coord.X <- initialCoord.X
+                while ptr <> eX do
+                    let eW = ptr + sW
+                    coord.W <- initialCoord.W
+                    while ptr <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.W <- coord.W + step.W
+                        ptr <- ptr + jW
+                    coord.X <- coord.X + step.X
+                    ptr <- ptr + jX
+                coord.Y <- coord.Y + step.Y
+                ptr <- ptr + jY
+            coord.Z <- coord.Z + step.Z
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZYWX(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eY = ptr + sY
+            coord.Y <- initialCoord.Y
+            while ptr <> eY do
+                let eW = ptr + sW
+                coord.W <- initialCoord.W
+                while ptr <> eW do
+                    let eX = ptr + sX
+                    coord.X <- initialCoord.X
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + step.X
+                        ptr <- ptr + jX
+                    coord.W <- coord.W + step.W
+                    ptr <- ptr + jW
+                coord.Y <- coord.Y + step.Y
+                ptr <- ptr + jY
+            coord.Z <- coord.Z + step.Z
+            ptr <- ptr + jZ
+    member inline private x.IterPtrXZWY(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eZ = ptr + sZ
+            coord.Z <- initialCoord.Z
+            while ptr <> eZ do
+                let eW = ptr + sW
+                coord.W <- initialCoord.W
+                while ptr <> eW do
+                    let eY = ptr + sY
+                    coord.Y <- initialCoord.Y
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + step.Y
+                        ptr <- ptr + jY
+                    coord.W <- coord.W + step.W
+                    ptr <- ptr + jW
+                coord.Z <- coord.Z + step.Z
+                ptr <- ptr + jZ
+            coord.X <- coord.X + step.X
+            ptr <- ptr + jX
+    member inline private x.IterPtrZXWY(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eX = ptr + sX
+            coord.X <- initialCoord.X
+            while ptr <> eX do
+                let eW = ptr + sW
+                coord.W <- initialCoord.W
+                while ptr <> eW do
+                    let eY = ptr + sY
+                    coord.Y <- initialCoord.Y
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + step.Y
+                        ptr <- ptr + jY
+                    coord.W <- coord.W + step.W
+                    ptr <- ptr + jW
+                coord.X <- coord.X + step.X
+                ptr <- ptr + jX
+            coord.Z <- coord.Z + step.Z
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZWXY(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eW = ptr + sW
+            coord.W <- initialCoord.W
+            while ptr <> eW do
+                let eX = ptr + sX
+                coord.X <- initialCoord.X
+                while ptr <> eX do
+                    let eY = ptr + sY
+                    coord.Y <- initialCoord.Y
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + step.Y
+                        ptr <- ptr + jY
+                    coord.X <- coord.X + step.X
+                    ptr <- ptr + jX
+                coord.W <- coord.W + step.W
+                ptr <- ptr + jW
+            coord.Z <- coord.Z + step.Z
+            ptr <- ptr + jZ
+    member inline private x.IterPtrZWYX(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ptr + sZ
+        while ptr <> eZ do
+            let eW = ptr + sW
+            coord.W <- initialCoord.W
+            while ptr <> eW do
+                let eY = ptr + sY
+                coord.Y <- initialCoord.Y
+                while ptr <> eY do
+                    let eX = ptr + sX
+                    coord.X <- initialCoord.X
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + step.X
+                        ptr <- ptr + jX
+                    coord.Y <- coord.Y + step.Y
+                    ptr <- ptr + jY
+                coord.W <- coord.W + step.W
+                ptr <- ptr + jW
+            coord.Z <- coord.Z + step.Z
+            ptr <- ptr + jZ
+    member inline private x.IterPtrXYWZ(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eY = ptr + sY
+            coord.Y <- initialCoord.Y
+            while ptr <> eY do
+                let eW = ptr + sW
+                coord.W <- initialCoord.W
+                while ptr <> eW do
+                    let eZ = ptr + sZ
+                    coord.Z <- initialCoord.Z
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + step.Z
+                        ptr <- ptr + jZ
+                    coord.W <- coord.W + step.W
+                    ptr <- ptr + jW
+                coord.Y <- coord.Y + step.Y
+                ptr <- ptr + jY
+            coord.X <- coord.X + step.X
+            ptr <- ptr + jX
+    member inline private x.IterPtrYXWZ(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eX = ptr + sX
+            coord.X <- initialCoord.X
+            while ptr <> eX do
+                let eW = ptr + sW
+                coord.W <- initialCoord.W
+                while ptr <> eW do
+                    let eZ = ptr + sZ
+                    coord.Z <- initialCoord.Z
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + step.Z
+                        ptr <- ptr + jZ
+                    coord.W <- coord.W + step.W
+                    ptr <- ptr + jW
+                coord.X <- coord.X + step.X
+                ptr <- ptr + jX
+            coord.Y <- coord.Y + step.Y
+            ptr <- ptr + jY
+    member inline private x.IterPtrYWXZ(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eW = ptr + sW
+            coord.W <- initialCoord.W
+            while ptr <> eW do
+                let eX = ptr + sX
+                coord.X <- initialCoord.X
+                while ptr <> eX do
+                    let eZ = ptr + sZ
+                    coord.Z <- initialCoord.Z
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + step.Z
+                        ptr <- ptr + jZ
+                    coord.X <- coord.X + step.X
+                    ptr <- ptr + jX
+                coord.W <- coord.W + step.W
+                ptr <- ptr + jW
+            coord.Y <- coord.Y + step.Y
+            ptr <- ptr + jY
+    member inline private x.IterPtrYWZX(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ptr + sY
+        while ptr <> eY do
+            let eW = ptr + sW
+            coord.W <- initialCoord.W
+            while ptr <> eW do
+                let eZ = ptr + sZ
+                coord.Z <- initialCoord.Z
+                while ptr <> eZ do
+                    let eX = ptr + sX
+                    coord.X <- initialCoord.X
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + step.X
+                        ptr <- ptr + jX
+                    coord.Z <- coord.Z + step.Z
+                    ptr <- ptr + jZ
+                coord.W <- coord.W + step.W
+                ptr <- ptr + jW
+            coord.Y <- coord.Y + step.Y
+            ptr <- ptr + jY
+    member inline private x.IterPtrXWYZ(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eW = ptr + sW
+            coord.W <- initialCoord.W
+            while ptr <> eW do
+                let eY = ptr + sY
+                coord.Y <- initialCoord.Y
+                while ptr <> eY do
+                    let eZ = ptr + sZ
+                    coord.Z <- initialCoord.Z
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + step.Z
+                        ptr <- ptr + jZ
+                    coord.Y <- coord.Y + step.Y
+                    ptr <- ptr + jY
+                coord.W <- coord.W + step.W
+                ptr <- ptr + jW
+            coord.X <- coord.X + step.X
+            ptr <- ptr + jX
+    member inline private x.IterPtrWXYZ(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eX = ptr + sX
+            coord.X <- initialCoord.X
+            while ptr <> eX do
+                let eY = ptr + sY
+                coord.Y <- initialCoord.Y
+                while ptr <> eY do
+                    let eZ = ptr + sZ
+                    coord.Z <- initialCoord.Z
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + step.Z
+                        ptr <- ptr + jZ
+                    coord.Y <- coord.Y + step.Y
+                    ptr <- ptr + jY
+                coord.X <- coord.X + step.X
+                ptr <- ptr + jX
+            coord.W <- coord.W + step.W
+            ptr <- ptr + jW
+    member inline private x.IterPtrWYXZ(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eY = ptr + sY
+            coord.Y <- initialCoord.Y
+            while ptr <> eY do
+                let eX = ptr + sX
+                coord.X <- initialCoord.X
+                while ptr <> eX do
+                    let eZ = ptr + sZ
+                    coord.Z <- initialCoord.Z
+                    while ptr <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Z <- coord.Z + step.Z
+                        ptr <- ptr + jZ
+                    coord.X <- coord.X + step.X
+                    ptr <- ptr + jX
+                coord.Y <- coord.Y + step.Y
+                ptr <- ptr + jY
+            coord.W <- coord.W + step.W
+            ptr <- ptr + jW
+    member inline private x.IterPtrWYZX(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eY = ptr + sY
+            coord.Y <- initialCoord.Y
+            while ptr <> eY do
+                let eZ = ptr + sZ
+                coord.Z <- initialCoord.Z
+                while ptr <> eZ do
+                    let eX = ptr + sX
+                    coord.X <- initialCoord.X
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + step.X
+                        ptr <- ptr + jX
+                    coord.Z <- coord.Z + step.Z
+                    ptr <- ptr + jZ
+                coord.Y <- coord.Y + step.Y
+                ptr <- ptr + jY
+            coord.W <- coord.W + step.W
+            ptr <- ptr + jW
+    member inline private x.IterPtrXWZY(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SW * info.DW) * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ptr + sX
+        while ptr <> eX do
+            let eW = ptr + sW
+            coord.W <- initialCoord.W
+            while ptr <> eW do
+                let eZ = ptr + sZ
+                coord.Z <- initialCoord.Z
+                while ptr <> eZ do
+                    let eY = ptr + sY
+                    coord.Y <- initialCoord.Y
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + step.Y
+                        ptr <- ptr + jY
+                    coord.Z <- coord.Z + step.Z
+                    ptr <- ptr + jZ
+                coord.W <- coord.W + step.W
+                ptr <- ptr + jW
+            coord.X <- coord.X + step.X
+            ptr <- ptr + jX
+    member inline private x.IterPtrWXZY(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eX = ptr + sX
+            coord.X <- initialCoord.X
+            while ptr <> eX do
+                let eZ = ptr + sZ
+                coord.Z <- initialCoord.Z
+                while ptr <> eZ do
+                    let eY = ptr + sY
+                    coord.Y <- initialCoord.Y
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + step.Y
+                        ptr <- ptr + jY
+                    coord.Z <- coord.Z + step.Z
+                    ptr <- ptr + jZ
+                coord.X <- coord.X + step.X
+                ptr <- ptr + jX
+            coord.W <- coord.W + step.W
+            ptr <- ptr + jW
+    member inline private x.IterPtrWZXY(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eZ = ptr + sZ
+            coord.Z <- initialCoord.Z
+            while ptr <> eZ do
+                let eX = ptr + sX
+                coord.X <- initialCoord.X
+                while ptr <> eX do
+                    let eY = ptr + sY
+                    coord.Y <- initialCoord.Y
+                    while ptr <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.Y <- coord.Y + step.Y
+                        ptr <- ptr + jY
+                    coord.X <- coord.X + step.X
+                    ptr <- ptr + jX
+                coord.Z <- coord.Z + step.Z
+                ptr <- ptr + jZ
+            coord.W <- coord.W + step.W
+            ptr <- ptr + jW
+    member inline private x.IterPtrWZYX(action : V4d -> nativeptr<'a> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let mutable ptr = ptr |> NativePtr.toNativeInt
+        ptr <- ptr + nativeint info.Origin * sa
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jY = nativeint (info.DY - info.SX * info.DX) * sa
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jX = nativeint (info.DX) * sa
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ptr + sW
+        while ptr <> eW do
+            let eZ = ptr + sZ
+            coord.Z <- initialCoord.Z
+            while ptr <> eZ do
+                let eY = ptr + sY
+                coord.Y <- initialCoord.Y
+                while ptr <> eY do
+                    let eX = ptr + sX
+                    coord.X <- initialCoord.X
+                    while ptr <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ptr)
+                        coord.X <- coord.X + step.X
+                        ptr <- ptr + jX
+                    coord.Y <- coord.Y + step.Y
+                    ptr <- ptr + jY
+                coord.Z <- coord.Z + step.Z
+                ptr <- ptr + jZ
+            coord.W <- coord.W + step.W
+            ptr <- ptr + jW
+    member x.IterPtr(action : V4d -> nativeptr<'a> -> unit) = 
+        let cXW = compare (abs info.DX) (abs info.DW)
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYW = compare (abs info.DY) (abs info.DW)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        let cZW = compare (abs info.DZ) (abs info.DW)
+        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrXYZW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYXZW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYZXW(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtrYZWX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrXZYW(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZXYW(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZYXW(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtrZYWX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrXZWY(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZXWY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZWXY(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtrZWYX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrXYWZ(action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYXWZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYWXZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtrYWZX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrXWYZ(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWXYZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWYXZ(action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtrWYZX(action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrXWZY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrWXZY(action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtrWZXY(action)
+        else x.IterPtrWZYX(action)
     member x.Iter(action : V4l -> 'a -> unit) = 
-        let cXW = compare (abs info.DX) (abs info.DW)
-        let cXY = compare (abs info.DX) (abs info.DY)
-        let cXZ = compare (abs info.DX) (abs info.DZ)
-        let cYW = compare (abs info.DY) (abs info.DW)
-        let cYZ = compare (abs info.DY) (abs info.DZ)
-        let cZW = compare (abs info.DZ) (abs info.DW)
-        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterXYZW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYXZW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYZXW(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYZWX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterXZYW(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZXYW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZYXW(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZYWX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterXZWY(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZXWY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZWXY(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZWYX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterXYWZ(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYXWZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYWXZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYWZX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterXWYZ(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWXYZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWYXZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWYZX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterXWZY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterWXZY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterWZXY(action)
-        else x.IterWZYX(action)
-    member inline private x.IterXYZW(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let mutable coord = V4i.Zero
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eY = ptr + sY
-            coord.Y <- 0
-            while ptr <> eY do
-                let eZ = ptr + sZ
-                coord.Z <- 0
-                while ptr <> eZ do
-                    let eW = ptr + sW
-                    coord.W <- 0
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + 1
-                        ptr <- ptr + jW
-                    coord.Z <- coord.Z + 1
-                    ptr <- ptr + jZ
-                coord.Y <- coord.Y + 1
-                ptr <- ptr + jY
-            coord.X <- coord.X + 1
-            ptr <- ptr + jX
-    member inline private x.IterYXZW(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let mutable coord = V4i.Zero
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eX = ptr + sX
-            coord.X <- 0
-            while ptr <> eX do
-                let eZ = ptr + sZ
-                coord.Z <- 0
-                while ptr <> eZ do
-                    let eW = ptr + sW
-                    coord.W <- 0
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + 1
-                        ptr <- ptr + jW
-                    coord.Z <- coord.Z + 1
-                    ptr <- ptr + jZ
-                coord.X <- coord.X + 1
-                ptr <- ptr + jX
-            coord.Y <- coord.Y + 1
-            ptr <- ptr + jY
-    member inline private x.IterYZXW(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let mutable coord = V4i.Zero
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eZ = ptr + sZ
-            coord.Z <- 0
-            while ptr <> eZ do
-                let eX = ptr + sX
-                coord.X <- 0
-                while ptr <> eX do
-                    let eW = ptr + sW
-                    coord.W <- 0
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + 1
-                        ptr <- ptr + jW
-                    coord.X <- coord.X + 1
-                    ptr <- ptr + jX
-                coord.Z <- coord.Z + 1
-                ptr <- ptr + jZ
-            coord.Y <- coord.Y + 1
-            ptr <- ptr + jY
-    member inline private x.IterYZWX(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let mutable coord = V4i.Zero
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eZ = ptr + sZ
-            coord.Z <- 0
-            while ptr <> eZ do
-                let eW = ptr + sW
-                coord.W <- 0
-                while ptr <> eW do
-                    let eX = ptr + sX
-                    coord.X <- 0
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + 1
-                        ptr <- ptr + jX
-                    coord.W <- coord.W + 1
-                    ptr <- ptr + jW
-                coord.Z <- coord.Z + 1
-                ptr <- ptr + jZ
-            coord.Y <- coord.Y + 1
-            ptr <- ptr + jY
-    member inline private x.IterXZYW(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let mutable coord = V4i.Zero
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eZ = ptr + sZ
-            coord.Z <- 0
-            while ptr <> eZ do
-                let eY = ptr + sY
-                coord.Y <- 0
-                while ptr <> eY do
-                    let eW = ptr + sW
-                    coord.W <- 0
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + 1
-                        ptr <- ptr + jW
-                    coord.Y <- coord.Y + 1
-                    ptr <- ptr + jY
-                coord.Z <- coord.Z + 1
-                ptr <- ptr + jZ
-            coord.X <- coord.X + 1
-            ptr <- ptr + jX
-    member inline private x.IterZXYW(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let mutable coord = V4i.Zero
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eX = ptr + sX
-            coord.X <- 0
-            while ptr <> eX do
-                let eY = ptr + sY
-                coord.Y <- 0
-                while ptr <> eY do
-                    let eW = ptr + sW
-                    coord.W <- 0
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + 1
-                        ptr <- ptr + jW
-                    coord.Y <- coord.Y + 1
-                    ptr <- ptr + jY
-                coord.X <- coord.X + 1
-                ptr <- ptr + jX
-            coord.Z <- coord.Z + 1
-            ptr <- ptr + jZ
-    member inline private x.IterZYXW(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let mutable coord = V4i.Zero
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eY = ptr + sY
-            coord.Y <- 0
-            while ptr <> eY do
-                let eX = ptr + sX
-                coord.X <- 0
-                while ptr <> eX do
-                    let eW = ptr + sW
-                    coord.W <- 0
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + 1
-                        ptr <- ptr + jW
-                    coord.X <- coord.X + 1
-                    ptr <- ptr + jX
-                coord.Y <- coord.Y + 1
-                ptr <- ptr + jY
-            coord.Z <- coord.Z + 1
-            ptr <- ptr + jZ
-    member inline private x.IterZYWX(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let mutable coord = V4i.Zero
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eY = ptr + sY
-            coord.Y <- 0
-            while ptr <> eY do
-                let eW = ptr + sW
-                coord.W <- 0
-                while ptr <> eW do
-                    let eX = ptr + sX
-                    coord.X <- 0
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + 1
-                        ptr <- ptr + jX
-                    coord.W <- coord.W + 1
-                    ptr <- ptr + jW
-                coord.Y <- coord.Y + 1
-                ptr <- ptr + jY
-            coord.Z <- coord.Z + 1
-            ptr <- ptr + jZ
-    member inline private x.IterXZWY(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let mutable coord = V4i.Zero
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eZ = ptr + sZ
-            coord.Z <- 0
-            while ptr <> eZ do
-                let eW = ptr + sW
-                coord.W <- 0
-                while ptr <> eW do
-                    let eY = ptr + sY
-                    coord.Y <- 0
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + 1
-                        ptr <- ptr + jY
-                    coord.W <- coord.W + 1
-                    ptr <- ptr + jW
-                coord.Z <- coord.Z + 1
-                ptr <- ptr + jZ
-            coord.X <- coord.X + 1
-            ptr <- ptr + jX
-    member inline private x.IterZXWY(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let mutable coord = V4i.Zero
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eX = ptr + sX
-            coord.X <- 0
-            while ptr <> eX do
-                let eW = ptr + sW
-                coord.W <- 0
-                while ptr <> eW do
-                    let eY = ptr + sY
-                    coord.Y <- 0
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + 1
-                        ptr <- ptr + jY
-                    coord.W <- coord.W + 1
-                    ptr <- ptr + jW
-                coord.X <- coord.X + 1
-                ptr <- ptr + jX
-            coord.Z <- coord.Z + 1
-            ptr <- ptr + jZ
-    member inline private x.IterZWXY(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let mutable coord = V4i.Zero
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eW = ptr + sW
-            coord.W <- 0
-            while ptr <> eW do
-                let eX = ptr + sX
-                coord.X <- 0
-                while ptr <> eX do
-                    let eY = ptr + sY
-                    coord.Y <- 0
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + 1
-                        ptr <- ptr + jY
-                    coord.X <- coord.X + 1
-                    ptr <- ptr + jX
-                coord.W <- coord.W + 1
-                ptr <- ptr + jW
-            coord.Z <- coord.Z + 1
-            ptr <- ptr + jZ
-    member inline private x.IterZWYX(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let mutable coord = V4i.Zero
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eW = ptr + sW
-            coord.W <- 0
-            while ptr <> eW do
-                let eY = ptr + sY
-                coord.Y <- 0
-                while ptr <> eY do
-                    let eX = ptr + sX
-                    coord.X <- 0
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + 1
-                        ptr <- ptr + jX
-                    coord.Y <- coord.Y + 1
-                    ptr <- ptr + jY
-                coord.W <- coord.W + 1
-                ptr <- ptr + jW
-            coord.Z <- coord.Z + 1
-            ptr <- ptr + jZ
-    member inline private x.IterXYWZ(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let mutable coord = V4i.Zero
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eY = ptr + sY
-            coord.Y <- 0
-            while ptr <> eY do
-                let eW = ptr + sW
-                coord.W <- 0
-                while ptr <> eW do
-                    let eZ = ptr + sZ
-                    coord.Z <- 0
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + 1
-                        ptr <- ptr + jZ
-                    coord.W <- coord.W + 1
-                    ptr <- ptr + jW
-                coord.Y <- coord.Y + 1
-                ptr <- ptr + jY
-            coord.X <- coord.X + 1
-            ptr <- ptr + jX
-    member inline private x.IterYXWZ(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let mutable coord = V4i.Zero
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eX = ptr + sX
-            coord.X <- 0
-            while ptr <> eX do
-                let eW = ptr + sW
-                coord.W <- 0
-                while ptr <> eW do
-                    let eZ = ptr + sZ
-                    coord.Z <- 0
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + 1
-                        ptr <- ptr + jZ
-                    coord.W <- coord.W + 1
-                    ptr <- ptr + jW
-                coord.X <- coord.X + 1
-                ptr <- ptr + jX
-            coord.Y <- coord.Y + 1
-            ptr <- ptr + jY
-    member inline private x.IterYWXZ(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let mutable coord = V4i.Zero
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eW = ptr + sW
-            coord.W <- 0
-            while ptr <> eW do
-                let eX = ptr + sX
-                coord.X <- 0
-                while ptr <> eX do
-                    let eZ = ptr + sZ
-                    coord.Z <- 0
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + 1
-                        ptr <- ptr + jZ
-                    coord.X <- coord.X + 1
-                    ptr <- ptr + jX
-                coord.W <- coord.W + 1
-                ptr <- ptr + jW
-            coord.Y <- coord.Y + 1
-            ptr <- ptr + jY
-    member inline private x.IterYWZX(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let mutable coord = V4i.Zero
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eW = ptr + sW
-            coord.W <- 0
-            while ptr <> eW do
-                let eZ = ptr + sZ
-                coord.Z <- 0
-                while ptr <> eZ do
-                    let eX = ptr + sX
-                    coord.X <- 0
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + 1
-                        ptr <- ptr + jX
-                    coord.Z <- coord.Z + 1
-                    ptr <- ptr + jZ
-                coord.W <- coord.W + 1
-                ptr <- ptr + jW
-            coord.Y <- coord.Y + 1
-            ptr <- ptr + jY
-    member inline private x.IterXWYZ(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let mutable coord = V4i.Zero
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eW = ptr + sW
-            coord.W <- 0
-            while ptr <> eW do
-                let eY = ptr + sY
-                coord.Y <- 0
-                while ptr <> eY do
-                    let eZ = ptr + sZ
-                    coord.Z <- 0
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + 1
-                        ptr <- ptr + jZ
-                    coord.Y <- coord.Y + 1
-                    ptr <- ptr + jY
-                coord.W <- coord.W + 1
-                ptr <- ptr + jW
-            coord.X <- coord.X + 1
-            ptr <- ptr + jX
-    member inline private x.IterWXYZ(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let mutable coord = V4i.Zero
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eX = ptr + sX
-            coord.X <- 0
-            while ptr <> eX do
-                let eY = ptr + sY
-                coord.Y <- 0
-                while ptr <> eY do
-                    let eZ = ptr + sZ
-                    coord.Z <- 0
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + 1
-                        ptr <- ptr + jZ
-                    coord.Y <- coord.Y + 1
-                    ptr <- ptr + jY
-                coord.X <- coord.X + 1
-                ptr <- ptr + jX
-            coord.W <- coord.W + 1
-            ptr <- ptr + jW
-    member inline private x.IterWYXZ(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let mutable coord = V4i.Zero
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eY = ptr + sY
-            coord.Y <- 0
-            while ptr <> eY do
-                let eX = ptr + sX
-                coord.X <- 0
-                while ptr <> eX do
-                    let eZ = ptr + sZ
-                    coord.Z <- 0
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + 1
-                        ptr <- ptr + jZ
-                    coord.X <- coord.X + 1
-                    ptr <- ptr + jX
-                coord.Y <- coord.Y + 1
-                ptr <- ptr + jY
-            coord.W <- coord.W + 1
-            ptr <- ptr + jW
-    member inline private x.IterWYZX(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let mutable coord = V4i.Zero
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eY = ptr + sY
-            coord.Y <- 0
-            while ptr <> eY do
-                let eZ = ptr + sZ
-                coord.Z <- 0
-                while ptr <> eZ do
-                    let eX = ptr + sX
-                    coord.X <- 0
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + 1
-                        ptr <- ptr + jX
-                    coord.Z <- coord.Z + 1
-                    ptr <- ptr + jZ
-                coord.Y <- coord.Y + 1
-                ptr <- ptr + jY
-            coord.W <- coord.W + 1
-            ptr <- ptr + jW
-    member inline private x.IterXWZY(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let mutable coord = V4i.Zero
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eW = ptr + sW
-            coord.W <- 0
-            while ptr <> eW do
-                let eZ = ptr + sZ
-                coord.Z <- 0
-                while ptr <> eZ do
-                    let eY = ptr + sY
-                    coord.Y <- 0
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + 1
-                        ptr <- ptr + jY
-                    coord.Z <- coord.Z + 1
-                    ptr <- ptr + jZ
-                coord.W <- coord.W + 1
-                ptr <- ptr + jW
-            coord.X <- coord.X + 1
-            ptr <- ptr + jX
-    member inline private x.IterWXZY(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let mutable coord = V4i.Zero
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eX = ptr + sX
-            coord.X <- 0
-            while ptr <> eX do
-                let eZ = ptr + sZ
-                coord.Z <- 0
-                while ptr <> eZ do
-                    let eY = ptr + sY
-                    coord.Y <- 0
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + 1
-                        ptr <- ptr + jY
-                    coord.Z <- coord.Z + 1
-                    ptr <- ptr + jZ
-                coord.X <- coord.X + 1
-                ptr <- ptr + jX
-            coord.W <- coord.W + 1
-            ptr <- ptr + jW
-    member inline private x.IterWZXY(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let mutable coord = V4i.Zero
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eZ = ptr + sZ
-            coord.Z <- 0
-            while ptr <> eZ do
-                let eX = ptr + sX
-                coord.X <- 0
-                while ptr <> eX do
-                    let eY = ptr + sY
-                    coord.Y <- 0
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + 1
-                        ptr <- ptr + jY
-                    coord.X <- coord.X + 1
-                    ptr <- ptr + jX
-                coord.Z <- coord.Z + 1
-                ptr <- ptr + jZ
-            coord.W <- coord.W + 1
-            ptr <- ptr + jW
-    member inline private x.IterWZYX(action : V4i -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4i, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let mutable coord = V4i.Zero
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eZ = ptr + sZ
-            coord.Z <- 0
-            while ptr <> eZ do
-                let eY = ptr + sY
-                coord.Y <- 0
-                while ptr <> eY do
-                    let eX = ptr + sX
-                    coord.X <- 0
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + 1
-                        ptr <- ptr + jX
-                    coord.Y <- coord.Y + 1
-                    ptr <- ptr + jY
-                coord.Z <- coord.Z + 1
-                ptr <- ptr + jZ
-            coord.W <- coord.W + 1
-            ptr <- ptr + jW
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
     member x.Iter(action : V4i -> 'a -> unit) = 
-        let cXW = compare (abs info.DX) (abs info.DW)
-        let cXY = compare (abs info.DX) (abs info.DY)
-        let cXZ = compare (abs info.DX) (abs info.DZ)
-        let cYW = compare (abs info.DY) (abs info.DW)
-        let cYZ = compare (abs info.DY) (abs info.DZ)
-        let cZW = compare (abs info.DZ) (abs info.DW)
-        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterXYZW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYXZW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYZXW(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYZWX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterXZYW(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZXYW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZYXW(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZYWX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterXZWY(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZXWY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZWXY(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZWYX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterXYWZ(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYXWZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYWXZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYWZX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterXWYZ(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWXYZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWYXZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWYZX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterXWZY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterWXZY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterWZXY(action)
-        else x.IterWZYX(action)
-    member inline private x.IterXYZW(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eY = ptr + sY
-            coord.Y <- initialCoord.Y
-            while ptr <> eY do
-                let eZ = ptr + sZ
-                coord.Z <- initialCoord.Z
-                while ptr <> eZ do
-                    let eW = ptr + sW
-                    coord.W <- initialCoord.W
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + step.W
-                        ptr <- ptr + jW
-                    coord.Z <- coord.Z + step.Z
-                    ptr <- ptr + jZ
-                coord.Y <- coord.Y + step.Y
-                ptr <- ptr + jY
-            coord.X <- coord.X + step.X
-            ptr <- ptr + jX
-    member inline private x.IterYXZW(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eX = ptr + sX
-            coord.X <- initialCoord.X
-            while ptr <> eX do
-                let eZ = ptr + sZ
-                coord.Z <- initialCoord.Z
-                while ptr <> eZ do
-                    let eW = ptr + sW
-                    coord.W <- initialCoord.W
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + step.W
-                        ptr <- ptr + jW
-                    coord.Z <- coord.Z + step.Z
-                    ptr <- ptr + jZ
-                coord.X <- coord.X + step.X
-                ptr <- ptr + jX
-            coord.Y <- coord.Y + step.Y
-            ptr <- ptr + jY
-    member inline private x.IterYZXW(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eZ = ptr + sZ
-            coord.Z <- initialCoord.Z
-            while ptr <> eZ do
-                let eX = ptr + sX
-                coord.X <- initialCoord.X
-                while ptr <> eX do
-                    let eW = ptr + sW
-                    coord.W <- initialCoord.W
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + step.W
-                        ptr <- ptr + jW
-                    coord.X <- coord.X + step.X
-                    ptr <- ptr + jX
-                coord.Z <- coord.Z + step.Z
-                ptr <- ptr + jZ
-            coord.Y <- coord.Y + step.Y
-            ptr <- ptr + jY
-    member inline private x.IterYZWX(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eZ = ptr + sZ
-            coord.Z <- initialCoord.Z
-            while ptr <> eZ do
-                let eW = ptr + sW
-                coord.W <- initialCoord.W
-                while ptr <> eW do
-                    let eX = ptr + sX
-                    coord.X <- initialCoord.X
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + step.X
-                        ptr <- ptr + jX
-                    coord.W <- coord.W + step.W
-                    ptr <- ptr + jW
-                coord.Z <- coord.Z + step.Z
-                ptr <- ptr + jZ
-            coord.Y <- coord.Y + step.Y
-            ptr <- ptr + jY
-    member inline private x.IterXZYW(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eZ = ptr + sZ
-            coord.Z <- initialCoord.Z
-            while ptr <> eZ do
-                let eY = ptr + sY
-                coord.Y <- initialCoord.Y
-                while ptr <> eY do
-                    let eW = ptr + sW
-                    coord.W <- initialCoord.W
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + step.W
-                        ptr <- ptr + jW
-                    coord.Y <- coord.Y + step.Y
-                    ptr <- ptr + jY
-                coord.Z <- coord.Z + step.Z
-                ptr <- ptr + jZ
-            coord.X <- coord.X + step.X
-            ptr <- ptr + jX
-    member inline private x.IterZXYW(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eX = ptr + sX
-            coord.X <- initialCoord.X
-            while ptr <> eX do
-                let eY = ptr + sY
-                coord.Y <- initialCoord.Y
-                while ptr <> eY do
-                    let eW = ptr + sW
-                    coord.W <- initialCoord.W
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + step.W
-                        ptr <- ptr + jW
-                    coord.Y <- coord.Y + step.Y
-                    ptr <- ptr + jY
-                coord.X <- coord.X + step.X
-                ptr <- ptr + jX
-            coord.Z <- coord.Z + step.Z
-            ptr <- ptr + jZ
-    member inline private x.IterZYXW(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eY = ptr + sY
-            coord.Y <- initialCoord.Y
-            while ptr <> eY do
-                let eX = ptr + sX
-                coord.X <- initialCoord.X
-                while ptr <> eX do
-                    let eW = ptr + sW
-                    coord.W <- initialCoord.W
-                    while ptr <> eW do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.W <- coord.W + step.W
-                        ptr <- ptr + jW
-                    coord.X <- coord.X + step.X
-                    ptr <- ptr + jX
-                coord.Y <- coord.Y + step.Y
-                ptr <- ptr + jY
-            coord.Z <- coord.Z + step.Z
-            ptr <- ptr + jZ
-    member inline private x.IterZYWX(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eY = ptr + sY
-            coord.Y <- initialCoord.Y
-            while ptr <> eY do
-                let eW = ptr + sW
-                coord.W <- initialCoord.W
-                while ptr <> eW do
-                    let eX = ptr + sX
-                    coord.X <- initialCoord.X
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + step.X
-                        ptr <- ptr + jX
-                    coord.W <- coord.W + step.W
-                    ptr <- ptr + jW
-                coord.Y <- coord.Y + step.Y
-                ptr <- ptr + jY
-            coord.Z <- coord.Z + step.Z
-            ptr <- ptr + jZ
-    member inline private x.IterXZWY(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eZ = ptr + sZ
-            coord.Z <- initialCoord.Z
-            while ptr <> eZ do
-                let eW = ptr + sW
-                coord.W <- initialCoord.W
-                while ptr <> eW do
-                    let eY = ptr + sY
-                    coord.Y <- initialCoord.Y
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + step.Y
-                        ptr <- ptr + jY
-                    coord.W <- coord.W + step.W
-                    ptr <- ptr + jW
-                coord.Z <- coord.Z + step.Z
-                ptr <- ptr + jZ
-            coord.X <- coord.X + step.X
-            ptr <- ptr + jX
-    member inline private x.IterZXWY(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eX = ptr + sX
-            coord.X <- initialCoord.X
-            while ptr <> eX do
-                let eW = ptr + sW
-                coord.W <- initialCoord.W
-                while ptr <> eW do
-                    let eY = ptr + sY
-                    coord.Y <- initialCoord.Y
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + step.Y
-                        ptr <- ptr + jY
-                    coord.W <- coord.W + step.W
-                    ptr <- ptr + jW
-                coord.X <- coord.X + step.X
-                ptr <- ptr + jX
-            coord.Z <- coord.Z + step.Z
-            ptr <- ptr + jZ
-    member inline private x.IterZWXY(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eW = ptr + sW
-            coord.W <- initialCoord.W
-            while ptr <> eW do
-                let eX = ptr + sX
-                coord.X <- initialCoord.X
-                while ptr <> eX do
-                    let eY = ptr + sY
-                    coord.Y <- initialCoord.Y
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + step.Y
-                        ptr <- ptr + jY
-                    coord.X <- coord.X + step.X
-                    ptr <- ptr + jX
-                coord.W <- coord.W + step.W
-                ptr <- ptr + jW
-            coord.Z <- coord.Z + step.Z
-            ptr <- ptr + jZ
-    member inline private x.IterZWYX(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eZ = ptr + sZ
-        while ptr <> eZ do
-            let eW = ptr + sW
-            coord.W <- initialCoord.W
-            while ptr <> eW do
-                let eY = ptr + sY
-                coord.Y <- initialCoord.Y
-                while ptr <> eY do
-                    let eX = ptr + sX
-                    coord.X <- initialCoord.X
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + step.X
-                        ptr <- ptr + jX
-                    coord.Y <- coord.Y + step.Y
-                    ptr <- ptr + jY
-                coord.W <- coord.W + step.W
-                ptr <- ptr + jW
-            coord.Z <- coord.Z + step.Z
-            ptr <- ptr + jZ
-    member inline private x.IterXYWZ(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eY = ptr + sY
-            coord.Y <- initialCoord.Y
-            while ptr <> eY do
-                let eW = ptr + sW
-                coord.W <- initialCoord.W
-                while ptr <> eW do
-                    let eZ = ptr + sZ
-                    coord.Z <- initialCoord.Z
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + step.Z
-                        ptr <- ptr + jZ
-                    coord.W <- coord.W + step.W
-                    ptr <- ptr + jW
-                coord.Y <- coord.Y + step.Y
-                ptr <- ptr + jY
-            coord.X <- coord.X + step.X
-            ptr <- ptr + jX
-    member inline private x.IterYXWZ(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eX = ptr + sX
-            coord.X <- initialCoord.X
-            while ptr <> eX do
-                let eW = ptr + sW
-                coord.W <- initialCoord.W
-                while ptr <> eW do
-                    let eZ = ptr + sZ
-                    coord.Z <- initialCoord.Z
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + step.Z
-                        ptr <- ptr + jZ
-                    coord.W <- coord.W + step.W
-                    ptr <- ptr + jW
-                coord.X <- coord.X + step.X
-                ptr <- ptr + jX
-            coord.Y <- coord.Y + step.Y
-            ptr <- ptr + jY
-    member inline private x.IterYWXZ(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eW = ptr + sW
-            coord.W <- initialCoord.W
-            while ptr <> eW do
-                let eX = ptr + sX
-                coord.X <- initialCoord.X
-                while ptr <> eX do
-                    let eZ = ptr + sZ
-                    coord.Z <- initialCoord.Z
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + step.Z
-                        ptr <- ptr + jZ
-                    coord.X <- coord.X + step.X
-                    ptr <- ptr + jX
-                coord.W <- coord.W + step.W
-                ptr <- ptr + jW
-            coord.Y <- coord.Y + step.Y
-            ptr <- ptr + jY
-    member inline private x.IterYWZX(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eY = ptr + sY
-        while ptr <> eY do
-            let eW = ptr + sW
-            coord.W <- initialCoord.W
-            while ptr <> eW do
-                let eZ = ptr + sZ
-                coord.Z <- initialCoord.Z
-                while ptr <> eZ do
-                    let eX = ptr + sX
-                    coord.X <- initialCoord.X
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + step.X
-                        ptr <- ptr + jX
-                    coord.Z <- coord.Z + step.Z
-                    ptr <- ptr + jZ
-                coord.W <- coord.W + step.W
-                ptr <- ptr + jW
-            coord.Y <- coord.Y + step.Y
-            ptr <- ptr + jY
-    member inline private x.IterXWYZ(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eW = ptr + sW
-            coord.W <- initialCoord.W
-            while ptr <> eW do
-                let eY = ptr + sY
-                coord.Y <- initialCoord.Y
-                while ptr <> eY do
-                    let eZ = ptr + sZ
-                    coord.Z <- initialCoord.Z
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + step.Z
-                        ptr <- ptr + jZ
-                    coord.Y <- coord.Y + step.Y
-                    ptr <- ptr + jY
-                coord.W <- coord.W + step.W
-                ptr <- ptr + jW
-            coord.X <- coord.X + step.X
-            ptr <- ptr + jX
-    member inline private x.IterWXYZ(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eX = ptr + sX
-            coord.X <- initialCoord.X
-            while ptr <> eX do
-                let eY = ptr + sY
-                coord.Y <- initialCoord.Y
-                while ptr <> eY do
-                    let eZ = ptr + sZ
-                    coord.Z <- initialCoord.Z
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + step.Z
-                        ptr <- ptr + jZ
-                    coord.Y <- coord.Y + step.Y
-                    ptr <- ptr + jY
-                coord.X <- coord.X + step.X
-                ptr <- ptr + jX
-            coord.W <- coord.W + step.W
-            ptr <- ptr + jW
-    member inline private x.IterWYXZ(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eY = ptr + sY
-            coord.Y <- initialCoord.Y
-            while ptr <> eY do
-                let eX = ptr + sX
-                coord.X <- initialCoord.X
-                while ptr <> eX do
-                    let eZ = ptr + sZ
-                    coord.Z <- initialCoord.Z
-                    while ptr <> eZ do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Z <- coord.Z + step.Z
-                        ptr <- ptr + jZ
-                    coord.X <- coord.X + step.X
-                    ptr <- ptr + jX
-                coord.Y <- coord.Y + step.Y
-                ptr <- ptr + jY
-            coord.W <- coord.W + step.W
-            ptr <- ptr + jW
-    member inline private x.IterWYZX(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eY = ptr + sY
-            coord.Y <- initialCoord.Y
-            while ptr <> eY do
-                let eZ = ptr + sZ
-                coord.Z <- initialCoord.Z
-                while ptr <> eZ do
-                    let eX = ptr + sX
-                    coord.X <- initialCoord.X
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + step.X
-                        ptr <- ptr + jX
-                    coord.Z <- coord.Z + step.Z
-                    ptr <- ptr + jZ
-                coord.Y <- coord.Y + step.Y
-                ptr <- ptr + jY
-            coord.W <- coord.W + step.W
-            ptr <- ptr + jW
-    member inline private x.IterXWZY(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SW * info.DW) * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eX = ptr + sX
-        while ptr <> eX do
-            let eW = ptr + sW
-            coord.W <- initialCoord.W
-            while ptr <> eW do
-                let eZ = ptr + sZ
-                coord.Z <- initialCoord.Z
-                while ptr <> eZ do
-                    let eY = ptr + sY
-                    coord.Y <- initialCoord.Y
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + step.Y
-                        ptr <- ptr + jY
-                    coord.Z <- coord.Z + step.Z
-                    ptr <- ptr + jZ
-                coord.W <- coord.W + step.W
-                ptr <- ptr + jW
-            coord.X <- coord.X + step.X
-            ptr <- ptr + jX
-    member inline private x.IterWXZY(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eX = ptr + sX
-            coord.X <- initialCoord.X
-            while ptr <> eX do
-                let eZ = ptr + sZ
-                coord.Z <- initialCoord.Z
-                while ptr <> eZ do
-                    let eY = ptr + sY
-                    coord.Y <- initialCoord.Y
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + step.Y
-                        ptr <- ptr + jY
-                    coord.Z <- coord.Z + step.Z
-                    ptr <- ptr + jZ
-                coord.X <- coord.X + step.X
-                ptr <- ptr + jX
-            coord.W <- coord.W + step.W
-            ptr <- ptr + jW
-    member inline private x.IterWZXY(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eZ = ptr + sZ
-            coord.Z <- initialCoord.Z
-            while ptr <> eZ do
-                let eX = ptr + sX
-                coord.X <- initialCoord.X
-                while ptr <> eX do
-                    let eY = ptr + sY
-                    coord.Y <- initialCoord.Y
-                    while ptr <> eY do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.Y <- coord.Y + step.Y
-                        ptr <- ptr + jY
-                    coord.X <- coord.X + step.X
-                    ptr <- ptr + jX
-                coord.Z <- coord.Z + step.Z
-                ptr <- ptr + jZ
-            coord.W <- coord.W + step.W
-            ptr <- ptr + jW
-    member inline private x.IterWZYX(action : V4d -> 'a -> unit) = 
-        let action = OptimizedClosures.FSharpFunc<V4d, 'a, unit>.Adapt(action)
-        let sa = nativeint (sizeof<'a>)
-        let mutable ptr = ptr |> NativePtr.toNativeInt
-        ptr <- ptr + nativeint info.Origin * sa
-        let sW = nativeint (info.SW * info.DW) * sa
-        let jW = nativeint (info.DW - info.SZ * info.DZ) * sa
-        let sZ = nativeint (info.SZ * info.DZ) * sa
-        let jZ = nativeint (info.DZ - info.SY * info.DY) * sa
-        let sY = nativeint (info.SY * info.DY) * sa
-        let jY = nativeint (info.DY - info.SX * info.DX) * sa
-        let sX = nativeint (info.SX * info.DX) * sa
-        let jX = nativeint (info.DX) * sa
-        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
-        let step = V4d.One / V4d(x.Size)
-        let mutable coord = initialCoord
-        let eW = ptr + sW
-        while ptr <> eW do
-            let eZ = ptr + sZ
-            coord.Z <- initialCoord.Z
-            while ptr <> eZ do
-                let eY = ptr + sY
-                coord.Y <- initialCoord.Y
-                while ptr <> eY do
-                    let eX = ptr + sX
-                    coord.X <- initialCoord.X
-                    while ptr <> eX do
-                        action.Invoke(coord, NativePtr.read (NativePtr.ofNativeInt<'a> ptr))
-                        coord.X <- coord.X + step.X
-                        ptr <- ptr + jX
-                    coord.Y <- coord.Y + step.Y
-                    ptr <- ptr + jY
-                coord.Z <- coord.Z + step.Z
-                ptr <- ptr + jZ
-            coord.W <- coord.W + step.W
-            ptr <- ptr + jW
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
     member x.Iter(action : V4d -> 'a -> unit) = 
+        x.IterPtr(fun coord ptr -> action coord (NativePtr.read ptr))
+    member inline private x.IterPtr2XYZW(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- 0L
+                while ia <> eZ do
+                    let eW = ia + sW
+                    coord.W <- 0L
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1L
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Z <- coord.Z + 1L
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXZW(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- 0L
+                while ia <> eZ do
+                    let eW = ia + sW
+                    coord.W <- 0L
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1L
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Z <- coord.Z + 1L
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZXW(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- 0L
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- 0L
+                while ia <> eX do
+                    let eW = ia + sW
+                    coord.W <- 0L
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1L
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.X <- coord.X + 1L
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + 1L
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZWX(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- 0L
+            while ia <> eZ do
+                let eW = ia + sW
+                coord.W <- 0L
+                while ia <> eW do
+                    let eX = ia + sX
+                    coord.X <- 0L
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1L
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.W <- coord.W + 1L
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Z <- coord.Z + 1L
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XZYW(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- 0L
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- 0L
+                while ia <> eY do
+                    let eW = ia + sW
+                    coord.W <- 0L
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1L
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Y <- coord.Y + 1L
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + 1L
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXYW(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4l.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- 0L
+                while ia <> eY do
+                    let eW = ia + sW
+                    coord.W <- 0L
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1L
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Y <- coord.Y + 1L
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + 1L
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYXW(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4l.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- 0L
+                while ia <> eX do
+                    let eW = ia + sW
+                    coord.W <- 0L
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1L
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.X <- coord.X + 1L
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + 1L
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYWX(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4l.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                let eW = ia + sW
+                coord.W <- 0L
+                while ia <> eW do
+                    let eX = ia + sX
+                    coord.X <- 0L
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1L
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.W <- coord.W + 1L
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + 1L
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2XZWY(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- 0L
+            while ia <> eZ do
+                let eW = ia + sW
+                coord.W <- 0L
+                while ia <> eW do
+                    let eY = ia + sY
+                    coord.Y <- 0L
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1L
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.W <- coord.W + 1L
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Z <- coord.Z + 1L
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXWY(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4l.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                let eW = ia + sW
+                coord.W <- 0L
+                while ia <> eW do
+                    let eY = ia + sY
+                    coord.Y <- 0L
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1L
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.W <- coord.W + 1L
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + 1L
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZWXY(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4l.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eW = ia + sW
+            coord.W <- 0L
+            while ia <> eW do
+                let eX = ia + sX
+                coord.X <- 0L
+                while ia <> eX do
+                    let eY = ia + sY
+                    coord.Y <- 0L
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1L
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.X <- coord.X + 1L
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.W <- coord.W + 1L
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Z <- coord.Z + 1L
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZWYX(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4l.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eW = ia + sW
+            coord.W <- 0L
+            while ia <> eW do
+                let eY = ia + sY
+                coord.Y <- 0L
+                while ia <> eY do
+                    let eX = ia + sX
+                    coord.X <- 0L
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1L
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Y <- coord.Y + 1L
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.W <- coord.W + 1L
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Z <- coord.Z + 1L
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2XYWZ(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                let eW = ia + sW
+                coord.W <- 0L
+                while ia <> eW do
+                    let eZ = ia + sZ
+                    coord.Z <- 0L
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1L
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.W <- coord.W + 1L
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXWZ(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                let eW = ia + sW
+                coord.W <- 0L
+                while ia <> eW do
+                    let eZ = ia + sZ
+                    coord.Z <- 0L
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1L
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.W <- coord.W + 1L
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YWXZ(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eW = ia + sW
+            coord.W <- 0L
+            while ia <> eW do
+                let eX = ia + sX
+                coord.X <- 0L
+                while ia <> eX do
+                    let eZ = ia + sZ
+                    coord.Z <- 0L
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1L
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.X <- coord.X + 1L
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.W <- coord.W + 1L
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YWZX(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4l.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eW = ia + sW
+            coord.W <- 0L
+            while ia <> eW do
+                let eZ = ia + sZ
+                coord.Z <- 0L
+                while ia <> eZ do
+                    let eX = ia + sX
+                    coord.X <- 0L
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1L
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Z <- coord.Z + 1L
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.W <- coord.W + 1L
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Y <- coord.Y + 1L
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XWYZ(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eW = ia + sW
+            coord.W <- 0L
+            while ia <> eW do
+                let eY = ia + sY
+                coord.Y <- 0L
+                while ia <> eY do
+                    let eZ = ia + sZ
+                    coord.Z <- 0L
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1L
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.Y <- coord.Y + 1L
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.W <- coord.W + 1L
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2WXYZ(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4l.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- 0L
+                while ia <> eY do
+                    let eZ = ia + sZ
+                    coord.Z <- 0L
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1L
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.Y <- coord.Y + 1L
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.W <- coord.W + 1L
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WYXZ(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4l.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- 0L
+                while ia <> eX do
+                    let eZ = ia + sZ
+                    coord.Z <- 0L
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1L
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.X <- coord.X + 1L
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.W <- coord.W + 1L
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WYZX(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4l.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eY = ia + sY
+            coord.Y <- 0L
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- 0L
+                while ia <> eZ do
+                    let eX = ia + sX
+                    coord.X <- 0L
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1L
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Z <- coord.Z + 1L
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + 1L
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.W <- coord.W + 1L
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2XWZY(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4l.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eW = ia + sW
+            coord.W <- 0L
+            while ia <> eW do
+                let eZ = ia + sZ
+                coord.Z <- 0L
+                while ia <> eZ do
+                    let eY = ia + sY
+                    coord.Y <- 0L
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1L
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.Z <- coord.Z + 1L
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.W <- coord.W + 1L
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.X <- coord.X + 1L
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2WXZY(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4l.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eX = ia + sX
+            coord.X <- 0L
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- 0L
+                while ia <> eZ do
+                    let eY = ia + sY
+                    coord.Y <- 0L
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1L
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.Z <- coord.Z + 1L
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + 1L
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.W <- coord.W + 1L
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WZXY(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4l.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eZ = ia + sZ
+            coord.Z <- 0L
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- 0L
+                while ia <> eX do
+                    let eY = ia + sY
+                    coord.Y <- 0L
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1L
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.X <- coord.X + 1L
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + 1L
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.W <- coord.W + 1L
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WZYX(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4l, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4l.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eZ = ia + sZ
+            coord.Z <- 0L
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- 0L
+                while ia <> eY do
+                    let eX = ia + sX
+                    coord.X <- 0L
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1L
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Y <- coord.Y + 1L
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + 1L
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.W <- coord.W + 1L
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member x.IterPtr2(other : NativeTensor4<'b>, action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeTensor4 size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
         let cXW = compare (abs info.DX) (abs info.DW)
         let cXY = compare (abs info.DX) (abs info.DY)
         let cXZ = compare (abs info.DX) (abs info.DZ)
         let cYW = compare (abs info.DY) (abs info.DW)
         let cYZ = compare (abs info.DY) (abs info.DZ)
         let cZW = compare (abs info.DZ) (abs info.DW)
-        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterXYZW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYXZW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYZXW(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterYZWX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterXZYW(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZXYW(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZYXW(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterZYWX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterXZWY(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZXWY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZWXY(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterZWYX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterXYWZ(action)
-        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYXWZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYWXZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterYWZX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterXWYZ(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWXYZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWYXZ(action)
-        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterWYZX(action)
-        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterXWZY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterWXZY(action)
-        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterWZXY(action)
-        else x.IterWZYX(action)
+        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2XYZW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YXZW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YZXW(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YZWX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2XZYW(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZXYW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZYXW(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZYWX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2XZWY(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZXWY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZWXY(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZWYX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2XYWZ(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YXWZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YWXZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YWZX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2XWYZ(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WXYZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WYXZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WYZX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2XWZY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2WXZY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2WZXY(other, action)
+        else x.IterPtr2WZYX(other, action)
+    member inline private x.IterPtr2XYZW(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- 0
+                while ia <> eZ do
+                    let eW = ia + sW
+                    coord.W <- 0
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Z <- coord.Z + 1
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXZW(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- 0
+                while ia <> eZ do
+                    let eW = ia + sW
+                    coord.W <- 0
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Z <- coord.Z + 1
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZXW(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- 0
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- 0
+                while ia <> eX do
+                    let eW = ia + sW
+                    coord.W <- 0
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.X <- coord.X + 1
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + 1
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZWX(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- 0
+            while ia <> eZ do
+                let eW = ia + sW
+                coord.W <- 0
+                while ia <> eW do
+                    let eX = ia + sX
+                    coord.X <- 0
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.W <- coord.W + 1
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Z <- coord.Z + 1
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XZYW(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- 0
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- 0
+                while ia <> eY do
+                    let eW = ia + sW
+                    coord.W <- 0
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Y <- coord.Y + 1
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + 1
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXYW(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4i.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- 0
+                while ia <> eY do
+                    let eW = ia + sW
+                    coord.W <- 0
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Y <- coord.Y + 1
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + 1
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYXW(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let mutable coord = V4i.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- 0
+                while ia <> eX do
+                    let eW = ia + sW
+                    coord.W <- 0
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + 1
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.X <- coord.X + 1
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + 1
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYWX(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4i.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                let eW = ia + sW
+                coord.W <- 0
+                while ia <> eW do
+                    let eX = ia + sX
+                    coord.X <- 0
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.W <- coord.W + 1
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + 1
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2XZWY(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- 0
+            while ia <> eZ do
+                let eW = ia + sW
+                coord.W <- 0
+                while ia <> eW do
+                    let eY = ia + sY
+                    coord.Y <- 0
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.W <- coord.W + 1
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Z <- coord.Z + 1
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXWY(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4i.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                let eW = ia + sW
+                coord.W <- 0
+                while ia <> eW do
+                    let eY = ia + sY
+                    coord.Y <- 0
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.W <- coord.W + 1
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + 1
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZWXY(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4i.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eW = ia + sW
+            coord.W <- 0
+            while ia <> eW do
+                let eX = ia + sX
+                coord.X <- 0
+                while ia <> eX do
+                    let eY = ia + sY
+                    coord.Y <- 0
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.X <- coord.X + 1
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.W <- coord.W + 1
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Z <- coord.Z + 1
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZWYX(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4i.Zero
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eW = ia + sW
+            coord.W <- 0
+            while ia <> eW do
+                let eY = ia + sY
+                coord.Y <- 0
+                while ia <> eY do
+                    let eX = ia + sX
+                    coord.X <- 0
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Y <- coord.Y + 1
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.W <- coord.W + 1
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Z <- coord.Z + 1
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2XYWZ(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                let eW = ia + sW
+                coord.W <- 0
+                while ia <> eW do
+                    let eZ = ia + sZ
+                    coord.Z <- 0
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.W <- coord.W + 1
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXWZ(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                let eW = ia + sW
+                coord.W <- 0
+                while ia <> eW do
+                    let eZ = ia + sZ
+                    coord.Z <- 0
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.W <- coord.W + 1
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YWXZ(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eW = ia + sW
+            coord.W <- 0
+            while ia <> eW do
+                let eX = ia + sX
+                coord.X <- 0
+                while ia <> eX do
+                    let eZ = ia + sZ
+                    coord.Z <- 0
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.X <- coord.X + 1
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.W <- coord.W + 1
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YWZX(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4i.Zero
+        let eY = ia + sY
+        while ia <> eY do
+            let eW = ia + sW
+            coord.W <- 0
+            while ia <> eW do
+                let eZ = ia + sZ
+                coord.Z <- 0
+                while ia <> eZ do
+                    let eX = ia + sX
+                    coord.X <- 0
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Z <- coord.Z + 1
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.W <- coord.W + 1
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Y <- coord.Y + 1
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XWYZ(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eW = ia + sW
+            coord.W <- 0
+            while ia <> eW do
+                let eY = ia + sY
+                coord.Y <- 0
+                while ia <> eY do
+                    let eZ = ia + sZ
+                    coord.Z <- 0
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.Y <- coord.Y + 1
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.W <- coord.W + 1
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2WXYZ(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4i.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- 0
+                while ia <> eY do
+                    let eZ = ia + sZ
+                    coord.Z <- 0
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.Y <- coord.Y + 1
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.W <- coord.W + 1
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WYXZ(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let mutable coord = V4i.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- 0
+                while ia <> eX do
+                    let eZ = ia + sZ
+                    coord.Z <- 0
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + 1
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.X <- coord.X + 1
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.W <- coord.W + 1
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WYZX(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4i.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eY = ia + sY
+            coord.Y <- 0
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- 0
+                while ia <> eZ do
+                    let eX = ia + sX
+                    coord.X <- 0
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Z <- coord.Z + 1
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + 1
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.W <- coord.W + 1
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2XWZY(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4i.Zero
+        let eX = ia + sX
+        while ia <> eX do
+            let eW = ia + sW
+            coord.W <- 0
+            while ia <> eW do
+                let eZ = ia + sZ
+                coord.Z <- 0
+                while ia <> eZ do
+                    let eY = ia + sY
+                    coord.Y <- 0
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.Z <- coord.Z + 1
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.W <- coord.W + 1
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.X <- coord.X + 1
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2WXZY(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4i.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eX = ia + sX
+            coord.X <- 0
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- 0
+                while ia <> eZ do
+                    let eY = ia + sY
+                    coord.Y <- 0
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.Z <- coord.Z + 1
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + 1
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.W <- coord.W + 1
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WZXY(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let mutable coord = V4i.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eZ = ia + sZ
+            coord.Z <- 0
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- 0
+                while ia <> eX do
+                    let eY = ia + sY
+                    coord.Y <- 0
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + 1
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.X <- coord.X + 1
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + 1
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.W <- coord.W + 1
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WZYX(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4i, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let mutable coord = V4i.Zero
+        let eW = ia + sW
+        while ia <> eW do
+            let eZ = ia + sZ
+            coord.Z <- 0
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- 0
+                while ia <> eY do
+                    let eX = ia + sX
+                    coord.X <- 0
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + 1
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Y <- coord.Y + 1
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + 1
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.W <- coord.W + 1
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member x.IterPtr2(other : NativeTensor4<'b>, action : V4i -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeTensor4 size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        let cXW = compare (abs info.DX) (abs info.DW)
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYW = compare (abs info.DY) (abs info.DW)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        let cZW = compare (abs info.DZ) (abs info.DW)
+        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2XYZW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YXZW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YZXW(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YZWX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2XZYW(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZXYW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZYXW(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZYWX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2XZWY(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZXWY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZWXY(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZWYX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2XYWZ(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YXWZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YWXZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YWZX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2XWYZ(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WXYZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WYXZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WYZX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2XWZY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2WXZY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2WZXY(other, action)
+        else x.IterPtr2WZYX(other, action)
+    member inline private x.IterPtr2XYZW(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- initialCoord.Z
+                while ia <> eZ do
+                    let eW = ia + sW
+                    coord.W <- initialCoord.W
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + step.W
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Z <- coord.Z + step.Z
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXZW(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- initialCoord.Z
+                while ia <> eZ do
+                    let eW = ia + sW
+                    coord.W <- initialCoord.W
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + step.W
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Z <- coord.Z + step.Z
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZXW(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- initialCoord.Z
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- initialCoord.X
+                while ia <> eX do
+                    let eW = ia + sW
+                    coord.W <- initialCoord.W
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + step.W
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.X <- coord.X + step.X
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + step.Z
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YZWX(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eZ = ia + sZ
+            coord.Z <- initialCoord.Z
+            while ia <> eZ do
+                let eW = ia + sW
+                coord.W <- initialCoord.W
+                while ia <> eW do
+                    let eX = ia + sX
+                    coord.X <- initialCoord.X
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + step.X
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.W <- coord.W + step.W
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Z <- coord.Z + step.Z
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XZYW(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- initialCoord.Z
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- initialCoord.Y
+                while ia <> eY do
+                    let eW = ia + sW
+                    coord.W <- initialCoord.W
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + step.W
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Y <- coord.Y + step.Y
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + step.Z
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXYW(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- initialCoord.Y
+                while ia <> eY do
+                    let eW = ia + sW
+                    coord.W <- initialCoord.W
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + step.W
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.Y <- coord.Y + step.Y
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + step.Z
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYXW(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW) * sa
+        let jbW = nativeint (other.Info.DW) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- initialCoord.X
+                while ia <> eX do
+                    let eW = ia + sW
+                    coord.W <- initialCoord.W
+                    while ia <> eW do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.W <- coord.W + step.W
+                        ia <- ia + jaW
+                        ib <- ib + jbW
+                    coord.X <- coord.X + step.X
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + step.Z
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZYWX(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                let eW = ia + sW
+                coord.W <- initialCoord.W
+                while ia <> eW do
+                    let eX = ia + sX
+                    coord.X <- initialCoord.X
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + step.X
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.W <- coord.W + step.W
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.Z <- coord.Z + step.Z
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2XZWY(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eZ = ia + sZ
+            coord.Z <- initialCoord.Z
+            while ia <> eZ do
+                let eW = ia + sW
+                coord.W <- initialCoord.W
+                while ia <> eW do
+                    let eY = ia + sY
+                    coord.Y <- initialCoord.Y
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + step.Y
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.W <- coord.W + step.W
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Z <- coord.Z + step.Z
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2ZXWY(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                let eW = ia + sW
+                coord.W <- initialCoord.W
+                while ia <> eW do
+                    let eY = ia + sY
+                    coord.Y <- initialCoord.Y
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + step.Y
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.W <- coord.W + step.W
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Z <- coord.Z + step.Z
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZWXY(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eW = ia + sW
+            coord.W <- initialCoord.W
+            while ia <> eW do
+                let eX = ia + sX
+                coord.X <- initialCoord.X
+                while ia <> eX do
+                    let eY = ia + sY
+                    coord.Y <- initialCoord.Y
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + step.Y
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.X <- coord.X + step.X
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.W <- coord.W + step.W
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Z <- coord.Z + step.Z
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2ZWYX(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SW * info.DW) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eZ = ia + sZ
+        while ia <> eZ do
+            let eW = ia + sW
+            coord.W <- initialCoord.W
+            while ia <> eW do
+                let eY = ia + sY
+                coord.Y <- initialCoord.Y
+                while ia <> eY do
+                    let eX = ia + sX
+                    coord.X <- initialCoord.X
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + step.X
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Y <- coord.Y + step.Y
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.W <- coord.W + step.W
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Z <- coord.Z + step.Z
+            ia <- ia + jaZ
+            ib <- ib + jbZ
+    member inline private x.IterPtr2XYWZ(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                let eW = ia + sW
+                coord.W <- initialCoord.W
+                while ia <> eW do
+                    let eZ = ia + sZ
+                    coord.Z <- initialCoord.Z
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + step.Z
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.W <- coord.W + step.W
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2YXWZ(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                let eW = ia + sW
+                coord.W <- initialCoord.W
+                while ia <> eW do
+                    let eZ = ia + sZ
+                    coord.Z <- initialCoord.Z
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + step.Z
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.W <- coord.W + step.W
+                    ia <- ia + jaW
+                    ib <- ib + jbW
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YWXZ(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eW = ia + sW
+            coord.W <- initialCoord.W
+            while ia <> eW do
+                let eX = ia + sX
+                coord.X <- initialCoord.X
+                while ia <> eX do
+                    let eZ = ia + sZ
+                    coord.Z <- initialCoord.Z
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + step.Z
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.X <- coord.X + step.X
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.W <- coord.W + step.W
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2YWZX(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SW * info.DW) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eY = ia + sY
+        while ia <> eY do
+            let eW = ia + sW
+            coord.W <- initialCoord.W
+            while ia <> eW do
+                let eZ = ia + sZ
+                coord.Z <- initialCoord.Z
+                while ia <> eZ do
+                    let eX = ia + sX
+                    coord.X <- initialCoord.X
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + step.X
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Z <- coord.Z + step.Z
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.W <- coord.W + step.W
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.Y <- coord.Y + step.Y
+            ia <- ia + jaY
+            ib <- ib + jbY
+    member inline private x.IterPtr2XWYZ(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eW = ia + sW
+            coord.W <- initialCoord.W
+            while ia <> eW do
+                let eY = ia + sY
+                coord.Y <- initialCoord.Y
+                while ia <> eY do
+                    let eZ = ia + sZ
+                    coord.Z <- initialCoord.Z
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + step.Z
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.Y <- coord.Y + step.Y
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.W <- coord.W + step.W
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2WXYZ(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ia + sW
+        while ia <> eW do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                let eY = ia + sY
+                coord.Y <- initialCoord.Y
+                while ia <> eY do
+                    let eZ = ia + sZ
+                    coord.Z <- initialCoord.Z
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + step.Z
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.Y <- coord.Y + step.Y
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.W <- coord.W + step.W
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WYXZ(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ) * sa
+        let jbZ = nativeint (other.Info.DZ) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ia + sW
+        while ia <> eW do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                let eX = ia + sX
+                coord.X <- initialCoord.X
+                while ia <> eX do
+                    let eZ = ia + sZ
+                    coord.Z <- initialCoord.Z
+                    while ia <> eZ do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Z <- coord.Z + step.Z
+                        ia <- ia + jaZ
+                        ib <- ib + jbZ
+                    coord.X <- coord.X + step.X
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.W <- coord.W + step.W
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WYZX(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SY * info.DY) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SZ * info.DZ) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ia + sW
+        while ia <> eW do
+            let eY = ia + sY
+            coord.Y <- initialCoord.Y
+            while ia <> eY do
+                let eZ = ia + sZ
+                coord.Z <- initialCoord.Z
+                while ia <> eZ do
+                    let eX = ia + sX
+                    coord.X <- initialCoord.X
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + step.X
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Z <- coord.Z + step.Z
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.Y <- coord.Y + step.Y
+                ia <- ia + jaY
+                ib <- ib + jbY
+            coord.W <- coord.W + step.W
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2XWZY(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SW * info.DW) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SW * other.Info.DW) * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eX = ia + sX
+        while ia <> eX do
+            let eW = ia + sW
+            coord.W <- initialCoord.W
+            while ia <> eW do
+                let eZ = ia + sZ
+                coord.Z <- initialCoord.Z
+                while ia <> eZ do
+                    let eY = ia + sY
+                    coord.Y <- initialCoord.Y
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + step.Y
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.Z <- coord.Z + step.Z
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.W <- coord.W + step.W
+                ia <- ia + jaW
+                ib <- ib + jbW
+            coord.X <- coord.X + step.X
+            ia <- ia + jaX
+            ib <- ib + jbX
+    member inline private x.IterPtr2WXZY(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SX * info.DX) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SZ * info.DZ) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ia + sW
+        while ia <> eW do
+            let eX = ia + sX
+            coord.X <- initialCoord.X
+            while ia <> eX do
+                let eZ = ia + sZ
+                coord.Z <- initialCoord.Z
+                while ia <> eZ do
+                    let eY = ia + sY
+                    coord.Y <- initialCoord.Y
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + step.Y
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.Z <- coord.Z + step.Z
+                    ia <- ia + jaZ
+                    ib <- ib + jbZ
+                coord.X <- coord.X + step.X
+                ia <- ia + jaX
+                ib <- ib + jbX
+            coord.W <- coord.W + step.W
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WZXY(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SX * info.DX) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX - info.SY * info.DY) * sa
+        let jbX = nativeint (other.Info.DX - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY) * sa
+        let jbY = nativeint (other.Info.DY) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ia + sW
+        while ia <> eW do
+            let eZ = ia + sZ
+            coord.Z <- initialCoord.Z
+            while ia <> eZ do
+                let eX = ia + sX
+                coord.X <- initialCoord.X
+                while ia <> eX do
+                    let eY = ia + sY
+                    coord.Y <- initialCoord.Y
+                    while ia <> eY do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.Y <- coord.Y + step.Y
+                        ia <- ia + jaY
+                        ib <- ib + jbY
+                    coord.X <- coord.X + step.X
+                    ia <- ia + jaX
+                    ib <- ib + jbX
+                coord.Z <- coord.Z + step.Z
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.W <- coord.W + step.W
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member inline private x.IterPtr2WZYX(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        let action = OptimizedClosures.FSharpFunc<V4d, nativeptr<'a>, nativeptr<'b>, unit>.Adapt(action)
+        let sa = nativeint (sizeof<'a>)
+        let sb = nativeint (sizeof<'b>)
+        let mutable ia = ptr |> NativePtr.toNativeInt
+        let mutable ib = other.Pointer |> NativePtr.toNativeInt
+        ia <- ia + nativeint info.Origin * sa
+        ib <- ib + nativeint other.Info.Origin * sb
+        let sW = nativeint (info.SW * info.DW) * sa
+        let jaW = nativeint (info.DW - info.SZ * info.DZ) * sa
+        let jbW = nativeint (other.Info.DW - other.Info.SZ * other.Info.DZ) * sb
+        let sZ = nativeint (info.SZ * info.DZ) * sa
+        let jaZ = nativeint (info.DZ - info.SY * info.DY) * sa
+        let jbZ = nativeint (other.Info.DZ - other.Info.SY * other.Info.DY) * sb
+        let sY = nativeint (info.SY * info.DY) * sa
+        let jaY = nativeint (info.DY - info.SX * info.DX) * sa
+        let jbY = nativeint (other.Info.DY - other.Info.SX * other.Info.DX) * sb
+        let sX = nativeint (info.SX * info.DX) * sa
+        let jaX = nativeint (info.DX) * sa
+        let jbX = nativeint (other.Info.DX) * sb
+        let initialCoord = V4d(0.5, 0.5, 0.5, 0.5) / V4d(x.Size)
+        let step = V4d.One / V4d(x.Size)
+        let mutable coord = initialCoord
+        let eW = ia + sW
+        while ia <> eW do
+            let eZ = ia + sZ
+            coord.Z <- initialCoord.Z
+            while ia <> eZ do
+                let eY = ia + sY
+                coord.Y <- initialCoord.Y
+                while ia <> eY do
+                    let eX = ia + sX
+                    coord.X <- initialCoord.X
+                    while ia <> eX do
+                        action.Invoke(coord, NativePtr.ofNativeInt<'a> ia, NativePtr.ofNativeInt<'b> ib)
+                        coord.X <- coord.X + step.X
+                        ia <- ia + jaX
+                        ib <- ib + jbX
+                    coord.Y <- coord.Y + step.Y
+                    ia <- ia + jaY
+                    ib <- ib + jbY
+                coord.Z <- coord.Z + step.Z
+                ia <- ia + jaZ
+                ib <- ib + jbZ
+            coord.W <- coord.W + step.W
+            ia <- ia + jaW
+            ib <- ib + jbW
+    member x.IterPtr2(other : NativeTensor4<'b>, action : V4d -> nativeptr<'a> -> nativeptr<'b> -> unit) = 
+        if info.Size <> other.Info.Size then
+            failwithf "NativeTensor4 size mismatch: { src = %A; dst = %A }" info.Size other.Info.Size
+        let cXW = compare (abs info.DX) (abs info.DW)
+        let cXY = compare (abs info.DX) (abs info.DY)
+        let cXZ = compare (abs info.DX) (abs info.DZ)
+        let cYW = compare (abs info.DY) (abs info.DW)
+        let cYZ = compare (abs info.DY) (abs info.DZ)
+        let cZW = compare (abs info.DZ) (abs info.DW)
+        if cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2XYZW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YXZW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YZXW(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW >= 0  then x.IterPtr2YZWX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2XZYW(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZXYW(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZYXW(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZYWX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2XZWY(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZXWY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZWXY(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW >= 0  then x.IterPtr2ZWYX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2XYWZ(other, action)
+        elif cXW >= 0  && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YXWZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YWXZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW >= 0  && cYZ >= 0  && cZW <= 0 then x.IterPtr2YWZX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2XWYZ(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WXYZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ >= 0  && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WYXZ(other, action)
+        elif cXW <= 0 && cXY <= 0 && cXZ <= 0 && cYW <= 0 && cYZ >= 0  && cZW <= 0 then x.IterPtr2WYZX(other, action)
+        elif cXW >= 0  && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2XWZY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ >= 0  && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2WXZY(other, action)
+        elif cXW <= 0 && cXY >= 0  && cXZ <= 0 && cYW <= 0 && cYZ <= 0 && cZW <= 0 then x.IterPtr2WZXY(other, action)
+        else x.IterPtr2WZYX(other, action)
+    member x.Iter2(other : NativeTensor4<'b>, action : V4l -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
+    member x.Iter2(other : NativeTensor4<'b>, action : V4i -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
+    member x.Iter2(other : NativeTensor4<'b>, action : V4d -> 'a -> 'b -> unit) = 
+        x.IterPtr2(other, fun coord p1 p2 -> action coord (NativePtr.read p1) (NativePtr.read p2))
     member inline private x.BlitToInternalXYZW(y : NativeTensor4<'a>, srcOffset : V4d, srcSize : V4d, lerp : float -> 'a -> 'a -> 'a) = 
         let lerp = OptimizedClosures.FSharpFunc<float, 'a, 'a, 'a>.Adapt(lerp)
         let sa = nativeint (sizeof<'a>)
@@ -47452,29 +51922,87 @@ type NativeTensor4<'a when 'a : unmanaged>(ptr : nativeptr<'a>, info : Tensor4In
 
 /// The NativeTensor4 module providers convenient F#-style functions for accessing NativeTensor4s
 module NativeTensor4 =
+    /// Creates a new NativeTensor4 from the given address and info struct
+    let inline ofNativeInt<'a when 'a : unmanaged> (info : Tensor4Info) (address : nativeint) = NativeTensor4<'a>(NativePtr.ofNativeInt address, info)
+    
     let inline private lerpy< ^a, ^b when (^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b)> (_ : ^a) (t : float) (a : ^b) (b : ^b) =
         ((^a or ^b) : (static member Lerp : float * ^b * ^b -> ^b) (t, a,b))
     let inline private lerper t a b = lerpy (Unchecked.defaultof<Fun>) t a b
-    /// sets the entire Tensor4 to the given value
+    /// Sets the entire Tensor4 to the given value
     let inline set (value : 'a) (dst : NativeTensor4<'a>) = dst.Set(value)
     
-    /// sets each entry to the value computed by getValue
+    /// Sets each entry to the value computed by getValue
     let inline setByCoord (getValue : V4l -> 'a) (m : NativeTensor4<'a>) = m.SetByCoord(getValue)
     
     let inline sample (location : V4d) (m : NativeTensor4<'a>) = m.SampleLinear(location, lerper)
     
     let inline blit (src : NativeTensor4<'a>) (dst : NativeTensor4<'a>) = src.BlitTo(dst, lerper)
     
-    /// copies the content of 'src' to 'dst'
+    /// Copies the content of 'src' to 'dst'
     let inline copy (src : NativeTensor4<'a>) (dst : NativeTensor4<'a>) = src.CopyTo(dst)
     
-    /// copies the content of 'src' to 'dst' by applying the given function
+    /// Copies the content of 'src' to 'dst' by applying the given function
     let inline copyWith (f : 'a -> 'b) (src : NativeTensor4<'a>) (dst : NativeTensor4<'b>) = src.CopyTo(dst, f)
     
-    /// temporarily pins a Tensor4 making it available as NativeTensor4
+    /// Temporarily pins a Tensor4 making it available as NativeTensor4
     let using (m : Tensor4<'a>) (f : NativeTensor4<'a> -> 'b) = NativeTensor4<'a>.Using(m, f)
     
-    /// iterates over all entries of the given NativeTensor4 and executes the given action
+    /// Iterates over all entries of the given NativeTensor4 and executes the given action
     let inline iter (action : V4l -> 'a -> unit) (m : NativeTensor4<'a>) = m.Iter(action)
+    
+    /// Iterates over all entries of the given NativeTensor4 and executes the given action
+    let inline iterPtr (action : V4l -> nativeptr<'a> -> unit) (m : NativeTensor4<'a>) = m.IterPtr(action)
+    
+    /// Iterates over all entries of both of the given NativeTensor4s and executes the given action
+    let inline iter2 (action : V4l -> 'a -> 'b -> unit) (l : NativeTensor4<'a>) (r : NativeTensor4<'b>) = l.Iter2(r, action)
+    
+    /// Iterates over all entries of both of the given NativeTensor4s and executes the given action
+    let inline iterPtr2 (action : V4l -> nativeptr<'a> -> nativeptr<'b> -> unit) (l : NativeTensor4<'a>) (r : NativeTensor4<'b>) = l.IterPtr2(r, action)
+
+[<AutoOpen>]
+module PixVolumeTensorExtensions =
+    module PixVolume =
+        /// Pins the given PixVolume as a NativeTensor4 and executes the given action
+        let inline pin (pi : PixVolume<'a>) (f : NativeTensor4<'a> -> 'b) : 'b =
+            NativeTensor4.using pi.Tensor4 f
+        
+        /// Pins the given PixVolumes as a NativeTensor4s and executes the given action
+        let inline pin2 (l : PixVolume<'a>) (r : PixVolume<'b>) (f : NativeTensor4<'a> -> NativeTensor4<'b> -> 'c)  : 'c =
+            pin l (fun lv -> pin r (fun rv -> f lv rv))
+        
+        /// Copies the given PixVolume to the given NativeTensor4
+        let inline copyToNativeTensor4 (dst : NativeTensor4<'a>) (pix : PixVolume<'a>)  =
+            pin pix (fun src -> NativeTensor4.copy src dst)
+        
+        /// Copies from the given NativeTensor4 to the given PixVolume
+        let inline copyFromNativeTensor4 (src : NativeTensor4<'a>) (pix : PixVolume<'a>) =
+            pin pix (fun dst -> NativeTensor4.copy src dst)
+        
+        [<AutoOpen>]
+        module private CopyDispatch =
+            type private Dispatcher() =
+                static member CopyImageToNative<'a when 'a : unmanaged>(src : PixVolume<'a>, dst : nativeint, dstInfo : Tensor4Info) =
+                    let dst = dst |> NativeTensor4.ofNativeInt dstInfo
+                    src |> copyToNativeTensor4 dst
+                
+                static member CopyNativeToImage<'a when 'a : unmanaged>(src : nativeint, srcInfo : Tensor4Info, dst : PixVolume<'a>) =
+                    let src = src |> NativeTensor4.ofNativeInt srcInfo
+                    dst |> copyFromNativeTensor4 src
+            
+            module Method =
+                let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public
+                let copyImageToNative = typeof<Dispatcher>.GetMethod("CopyImageToNative", flags)
+                let copyNativeToImage = typeof<Dispatcher>.GetMethod("CopyNativeToImage", flags)
+        
+        /// Copies the given untyped PixVolume to the given native address
+        let copyToNative (dst : nativeint) (dstInfo : Tensor4Info) (pix : PixVolume) =
+            let mi = Method.copyImageToNative.MakeGenericMethod [| pix.PixFormat.Type |]
+            mi.Invoke(null, [|pix; dst; dstInfo|]) |> ignore
+        
+        /// Copies from the given native address to the given untyped PixVolume
+        let copyFromNative (src : nativeint) (srcInfo : Tensor4Info) (pix : PixVolume) =
+            let mi = Method.copyNativeToImage.MakeGenericMethod [| pix.PixFormat.Type |]
+            mi.Invoke(null, [|src; srcInfo; pix|]) |> ignore
+        
 
 
