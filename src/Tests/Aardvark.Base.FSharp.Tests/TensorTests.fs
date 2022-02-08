@@ -4,13 +4,16 @@ open Aardvark.Base
 
 open FsUnit
 open NUnit.Framework
+open Microsoft.FSharp.NativeInterop
+
+#nowarn "9"
 
 module TensorTests =
 
     module private PixImage =
-    
+
         let rng = RandomSystem(1)
-    
+
         let random (size : V2i) =
             let pi = PixImage<uint8>(Col.Format.RGBA, size)
             for c in pi.ChannelArray do
@@ -27,14 +30,11 @@ module TensorTests =
         let size = V2i size
         let src = PixImage.random <| V2i size
         let dst = PixImage<uint8>(Col.Format.RGBA, size)
-        
-        NativeVolume.using src.Volume (fun srcVolume ->
-            let srcTensor = srcVolume.MirrorY().ToXYWTensor4()
 
-            NativeVolume.using dst.Volume (fun dstVolume ->
-                let dstTensor = dstVolume.ToXYWTensor4()
-                NativeTensor4.copy srcTensor dstTensor
-            )
+        PixImage.pin2 src dst (fun srcVolume dstVolume ->
+            let srcTensor = srcVolume.MirrorY().ToXYWTensor4()
+            let dstTensor = dstVolume.ToXYWTensor4()
+            NativeTensor4.copy srcTensor dstTensor
         )
 
         let srcMatrix = src.GetMatrix<C4b>()
@@ -43,3 +43,61 @@ module TensorTests =
         for x = 0 to size.X - 1 do
             for y = 0 to size.Y - 1 do
                 dstMatrix.[x, y] |> should equal srcMatrix.[x, size.Y - 1 - y]
+
+    [<Test>]
+    let ``[TensorTests] iterPtr with non-byte elements``() =
+        let data = [| 42; 32; 108; -34 |]
+        let info = Tensor4Info(V4l(2, 2, 1, 1), V4l(1, 2, 4, 4))
+
+        pinned data (fun ptr ->
+            let nv = NativeTensor4.ofNativeInt<int> info ptr
+
+            let mutable index = 0
+            nv |> NativeTensor4.iterPtr (fun coord ptr ->
+                let value = NativePtr.read ptr
+                value |> should equal data.[index]
+                index <- index + 1
+            )
+        )
+
+    [<Test>]
+    let ``[TensorTests] iterPtr2 with different element types``() =
+        let srcArray = [| 42; 32; 108; -34 |]
+        let dstArray = [| 0L; 0L; 0L; 0L |]
+        let info = Tensor4Info(V4l(2, 2, 1, 1), V4l(2, 1, 4, 4))
+
+        pinned srcArray (fun srcPtr ->
+            pinned dstArray (fun dstPtr ->
+                let src = NativeTensor4<int>(NativePtr.ofNativeInt srcPtr, info)
+                let dst = NativeTensor4<int64>(NativePtr.ofNativeInt dstPtr, info)
+
+                (src, dst) ||> NativeTensor4.iterPtr2 (fun coord src dst ->
+                    let value = NativePtr.read src
+                    value |> int64 |> NativePtr.write dst
+
+                    value |> should equal srcArray.[int <| coord.X * info.DX + coord.Y * info.DY]
+                )
+            )
+        )
+
+        (srcArray, dstArray) ||> Array.iter2 (fun a b ->
+            (int64 a) |> should equal b
+        )
+
+    [<Test>]
+    let ``[TensorTests] copy untyped PixImage``() =
+        let size = V2i(123, 321)
+        let src = PixImage.random <| V2i size
+        let dst = PixImage<uint32>(Col.Format.RGBA, size)
+
+        PixImage.pin dst (fun dst ->
+            let info =
+                let info = dst.MirrorY().Info
+                VolumeInfo(info.Origin * 4L, info.Size, info.Delta * 4L)
+            src |> PixImage.copyToNative dst.Address info
+        )
+
+        for y = 0 to size.Y - 1 do
+            for x = 0 to size.X - 1 do
+                for c in 0L .. 3L do
+                    dst.GetChannel(c).[x, y] |> should equal (uint32 <| src.GetChannel(c).[x, size.Y - 1 - y])

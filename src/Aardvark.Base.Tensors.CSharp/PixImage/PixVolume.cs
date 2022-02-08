@@ -114,6 +114,8 @@ namespace Aardvark.Base
 
         public abstract PixFormat PixFormat { get; }
 
+        public abstract Tensor4Info Tensor4Info { get; }
+
         public abstract V3i Size { get; }
 
         public abstract V3l SizeL { get; }
@@ -307,6 +309,8 @@ namespace Aardvark.Base
 
         #region Properties
 
+        public override Tensor4Info Tensor4Info => Tensor4.Info;
+
         public override V3i Size
         {
             get { return (V3i)Tensor4.Info.Size.XYZ; }
@@ -365,7 +369,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+
         #region Conversions
 
         public PixVolume<T> ToImageLayout()
