@@ -12,7 +12,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="NativeTensors.fs" />
     <None Include="NativeTensorGenerator.fsx" />
     <Compile Include="NativeTensorGenerated.fs" />
     <Compile Include="NativeTensorExtensions.fs" />
