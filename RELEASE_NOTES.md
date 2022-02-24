@@ -1,3 +1,7 @@
+### 5.1.27
+- added Transformed method for MatrixInfo and VolumeInfo
+- fixed ldconfig regex for entries with ABI
+
 ### 5.1.26
 - added PixImage and PixVolume related extensions to native tensors
 - added PolyRegion2d.Overlaps(Box2d)
@@ -55,9 +59,9 @@
 
 ### 5.1.13
  - added Plane2d.Intersects overload that was removed accidentally
- 
+
 ### 5.1.12
- - added missing XmlIgnore attribute to vector swizzles 
+ - added missing XmlIgnore attribute to vector swizzles
  - added ValuesWithKeyEnumerator to Dicts
  - preparations for .net 5 single file deployment
  - added missing finite checks to vectors and matrices
@@ -68,7 +72,7 @@
 
 ### 5.1.11
  - added some IAssemblerStream methods (AddInt, MulInt, etc.)
- 
+
 ### 5.1.10
  - fixed mscorlib recursive resource lookup (#61)
  - added Constant<T> initialization (#59)
