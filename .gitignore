@@ -33,3 +33,4 @@ Aardvark.log
 /build.fsx.lock
 .ionide
 /.vs
+.idea

@@ -391,6 +391,17 @@ namespace Aardvark.Base
 
         public static PixImage CreateRaw(Stream stream, PixLoadOptions options = PixLoadOptions.Default)
         {
+            // If input is unseekable, copy to memory first.
+            if (!stream.CanSeek)
+            {
+                using (var temp = new MemoryStream())
+                {
+                    stream.CopyTo(temp);
+                    temp.Position = 0L;
+                    return CreateRaw(temp, options);
+                }
+            }
+
             Exception exception = null;
 
             var initialPos = stream.Position;
