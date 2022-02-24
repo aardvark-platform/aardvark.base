@@ -1031,7 +1031,7 @@ namespace Aardvark.Base
 
         private static class LdConfig
         {
-            static Regex rx = new Regex(@"[ \t]*(?<name>[^ \t]+)[ \t]+\((?<libc>[^,]+)\,(?<arch>[^\)]+)\)[ \t]*\=\>[ \t]*(?<path>.*)");
+            static Regex rx = new Regex(@"[ \t]*(?<name>[^ \t]+)[ \t]+\((?<libc>[^,]+)\,(?<arch>[^,\)]+)[^\)]*\)[ \t]*\=\>[ \t]*(?<path>.*)");
             static Dictionary<string, string> result = new Dictionary<string, string>();
             static bool loaded = false;
 
