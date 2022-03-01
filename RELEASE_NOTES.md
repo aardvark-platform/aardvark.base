@@ -1,3 +1,6 @@
+### 5.2.0
+- https://github.com/aardvark-platform/aardvark.docs/wiki/Aardvark-5.2-changelog
+
 ### 5.1.27
 - added Transformed method for MatrixInfo and VolumeInfo
 - fixed ldconfig regex for entries with ABI
