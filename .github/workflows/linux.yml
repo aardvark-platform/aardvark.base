@@ -17,5 +17,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.100'
     - name: Build
-      run: sudo apt-get install fsharp -qq && sh ./build.sh
+      run: sh ./build.sh
