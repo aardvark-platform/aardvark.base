@@ -30,22 +30,24 @@ type ImageSharpImageExtensions private() =
 
     /// Temporarily pins an Image as NativeMatrix.
     [<Extension>]
-    static member Pin(this : Image<'TPixel>, action : NativeMatrix<'TPixel> -> 'T) =
-        let frame = this.GetPixelRowSpan(0)
-        let ptr = &&frame.GetPinnableReference()
+    static member Pin(this : Image<'TPixel>, action : NativeMatrix<'TPixel> -> unit) =
+        this.ProcessPixelRows(fun rows ->
+            let frame = rows.GetRowSpan(0)
+            let ptr = &&frame.GetPinnableReference()
 
-        let src = 
-            NativeMatrix<'TPixel>(
-                NativePtr.cast ptr,
-                MatrixInfo(
-                    0L,
-                    V2l(this.Width, this.Height),
-                    V2l(1L, int64 this.Width)
+            let src =
+                NativeMatrix<'TPixel>(
+                    NativePtr.cast ptr,
+                    MatrixInfo(
+                        0L,
+                        V2l(this.Width, this.Height),
+                        V2l(1L, int64 this.Width)
+                    )
                 )
-            )
 
-        action src
-        
+            action src
+        )
+
     /// Converts the color to a C4b.
     [<Extension>]
     static member inline ToC4b(v : Rgba32) = C4b(v.R, v.G, v.B, v.A)
@@ -180,46 +182,52 @@ module private ImageSharpHelpers =
             None
 
     let piDirect<'TPixel, 'T when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>) : unit =
-        let frame = img.GetPixelRowSpan(0)
-        let ptr = &&frame.GetPinnableReference()
 
-        let channels = dst.ChannelCount 
-        let size = V2i(img.Width, img.Height)
+        img.ProcessPixelRows(fun rows ->
+            let frame = rows.GetRowSpan(0)
+            let ptr = &&frame.GetPinnableReference()
 
-        let src = 
-            NativeVolume<'T>(
-                NativePtr.cast ptr,
-                VolumeInfo(
-                    0L,
-                    V3l(size.X, size.Y, channels),
-                    V3l(int64 channels, int64 size.X * int64 channels, 1L)
+            let channels = dst.ChannelCount 
+            let size = V2i(img.Width, img.Height)
+
+            let src = 
+                NativeVolume<'T>(
+                    NativePtr.cast ptr,
+                    VolumeInfo(
+                        0L,
+                        V3l(size.X, size.Y, channels),
+                        V3l(int64 channels, int64 size.X * int64 channels, 1L)
+                    )
                 )
+            NativeVolume.using dst.Volume (fun dst ->
+                NativeVolume.copy src dst
             )
-        NativeVolume.using dst.Volume (fun dst ->
-            NativeVolume.copy src dst
         )
 
     let piChannel<'TPixel, 'T when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>, order : int[]) : unit =
-        let frame = img.GetPixelRowSpan(0)
-        let ptr = &&frame.GetPinnableReference()
 
-        let channels = dst.ChannelCount
-        let size = V2i(img.Width, img.Height)
+        img.ProcessPixelRows(fun rows ->
+            let frame = rows.GetRowSpan(0)
+            let ptr = &&frame.GetPinnableReference()
 
-        let src = 
-            NativeVolume<'T>(
-                NativePtr.cast ptr,
-                VolumeInfo(
-                    0L,
-                    V3l(size.X, size.Y, channels),
-                    V3l(int64 channels, int64 size.X * int64 channels, 1L)
+            let channels = dst.ChannelCount
+            let size = V2i(img.Width, img.Height)
+
+            let src = 
+                NativeVolume<'T>(
+                    NativePtr.cast ptr,
+                    VolumeInfo(
+                        0L,
+                        V3l(size.X, size.Y, channels),
+                        V3l(int64 channels, int64 size.X * int64 channels, 1L)
+                    )
                 )
-            )
 
-        NativeVolume.using dst.Volume (fun dst ->
-            for dc in 0 .. channels - 1 do
-                let sc = order.[dc]
-                NativeMatrix.copy src.[*,*, sc] dst.[*,*,dc]
+            NativeVolume.using dst.Volume (fun dst ->
+                for dc in 0 .. channels - 1 do
+                    let sc = order.[dc]
+                    NativeMatrix.copy src.[*,*, sc] dst.[*,*,dc]
+            )
         )
         
     let piMapping<'TPixel, 'T, 'C when 'T : unmanaged and 'C : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>, convert : 'TPixel -> 'C) =
@@ -241,96 +249,100 @@ module private ImageSharpHelpers =
 
     let imgDirect<'T, 'TPixel when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : PixImage<'T>) : Image<'TPixel> =
         let res = new Image<'TPixel>(img.Size.X, img.Size.Y)
-        let frame = res.GetPixelRowSpan(0)
-        let dst = &&frame.GetPinnableReference()
+        res.ProcessPixelRows(fun rows ->
+            let frame = rows.GetRowSpan(0)
+            let dst = &&frame.GetPinnableReference()
 
-        let size = img.Size
-        let channels = img.ChannelCount
-        let dst = 
-            NativeVolume<'T>(
-                NativePtr.cast dst,
-                VolumeInfo(
-                    0L,
-                    V3l(size.X, size.Y, channels),
-                    V3l(int64 channels, int64 size.X * int64 channels, 1L)
+            let size = img.Size
+            let channels = img.ChannelCount
+            let dst = 
+                NativeVolume<'T>(
+                    NativePtr.cast dst,
+                    VolumeInfo(
+                        0L,
+                        V3l(size.X, size.Y, channels),
+                        V3l(int64 channels, int64 size.X * int64 channels, 1L)
+                    )
                 )
-            )
 
-        NativeVolume.using img.Volume (fun src ->
-            NativeVolume.copy src dst
+            NativeVolume.using img.Volume (fun src ->
+                NativeVolume.copy src dst
+            )
         )
         res
       
     let imgConvert<'T, 'TPixel when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (mapping : 'T[] -> 'TPixel) (img : PixImage<'T>) : Image<'TPixel> =
         let res = new Image<'TPixel>(img.Size.X, img.Size.Y)
-        let frame = res.GetPixelRowSpan(0)
-        let dst = &&frame.GetPinnableReference()
+        res.ProcessPixelRows(fun rows ->
+            let frame = rows.GetRowSpan(0)
+            let dst = &&frame.GetPinnableReference()
 
-        let size = img.Size
-        let channels = img.ChannelCount
+            let size = img.Size
+            let channels = img.ChannelCount
 
 
-        let dst = 
-            NativeMatrix<'TPixel>(
-                dst,
-                MatrixInfo(
-                    0L,
-                    V2l(size.X, size.Y),
-                    V2l(1L, int64 size.X)
+            let dst = 
+                NativeMatrix<'TPixel>(
+                    dst,
+                    MatrixInfo(
+                        0L,
+                        V2l(size.X, size.Y),
+                        V2l(1L, int64 size.X)
+                    )
                 )
-            )
 
 
 
-        let values = Array.zeroCreate channels
-        NativeVolume.using img.Volume (fun src ->
-            //let dx = src.DX
-            //let dy = src.DY
-            //let dz = src.DZ
+            let values = Array.zeroCreate channels
+            NativeVolume.using img.Volume (fun src ->
+                //let dx = src.DX
+                //let dy = src.DY
+                //let dz = src.DZ
 
 
-            let ldsx = nativeint (src.DX * src.SX)
-            let ldsy = nativeint (src.DY * src.SY)
-            let ldsz = nativeint (src.DZ * src.SZ)
-            let ljy = nativeint src.DY - ldsx - ldsz
-            let ljx = nativeint src.DX - ldsz
-            let ljz = nativeint src.DZ
+                let ldsx = nativeint (src.DX * src.SX)
+                let ldsy = nativeint (src.DY * src.SY)
+                let ldsz = nativeint (src.DZ * src.SZ)
+                let ljy = nativeint src.DY - ldsx - ldsz
+                let ljx = nativeint src.DX - ldsz
+                let ljz = nativeint src.DZ
 
             
-            let rdsx = nativeint (dst.DX * dst.SX)
-            let rdsy = nativeint (dst.DY * dst.SY)
-            let rjy = nativeint dst.DY - rdsx
-            let rjx = nativeint dst.DX
+                let rdsx = nativeint (dst.DX * dst.SX)
+                let rdsy = nativeint (dst.DY * dst.SY)
+                let rjy = nativeint dst.DY - rdsx
+                let rjx = nativeint dst.DX
 
 
-            let mutable lPtr = NativePtr.toNativeInt src.Pointer
-            let mutable rPtr = NativePtr.toNativeInt dst.Pointer
-            let mutable x = 0
-            let mutable y = 0
-            let e = lPtr + ldsx + ldsy
-            while lPtr < e do
-                let ex = lPtr + ldsx
-                x <- 0
-                while lPtr < ex do
-                    let ez = lPtr + ldsz
-                    let mutable z = 0
-                    while lPtr < ez do
-                        values.[z] <- NativeInt.read<'T> lPtr
-                        lPtr <- lPtr + ljz
-                        z <- z + 1
+                let mutable lPtr = NativePtr.toNativeInt src.Pointer
+                let mutable rPtr = NativePtr.toNativeInt dst.Pointer
+                let mutable x = 0
+                let mutable y = 0
+                let e = lPtr + ldsx + ldsy
+                while lPtr < e do
+                    let ex = lPtr + ldsx
+                    x <- 0
+                    while lPtr < ex do
+                        let ez = lPtr + ldsz
+                        let mutable z = 0
+                        while lPtr < ez do
+                            values.[z] <- NativeInt.read<'T> lPtr
+                            lPtr <- lPtr + ljz
+                            z <- z + 1
 
-                    let pp = mapping values
-                    NativeInt.write rPtr pp
+                        let pp = mapping values
+                        NativeInt.write rPtr pp
 
-                    rPtr <- rPtr + rjx
-                    lPtr <- lPtr + ljx
-                    x <- x + 1
+                        rPtr <- rPtr + rjx
+                        lPtr <- lPtr + ljx
+                        x <- x + 1
                     
-                rPtr <- rPtr + rjy
-                lPtr <- lPtr + ljy
-                y <- y + 1
+                    rPtr <- rPtr + rjy
+                    lPtr <- lPtr + ljy
+                    y <- y + 1
 
-            ()
+                ()
+            )
         )
         res
         
