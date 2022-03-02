@@ -5,223 +5,198 @@ open System
 open System.IO
 open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
-open System.Reflection
-open System.Reflection.Emit
 open SixLabors.ImageSharp
-open SixLabors.ImageSharp.Advanced
 open SixLabors.ImageSharp.Processing
-open SixLabors.ImageSharp.Metadata.Profiles
 open SixLabors.ImageSharp.Metadata.Profiles.Exif
-open SixLabors.ImageSharp.Metadata.Profiles.Icc
 open SixLabors.ImageSharp.Formats
 open SixLabors.ImageSharp.PixelFormats
 open SixLabors.ImageSharp.Processing.Processors.Transforms
 open System.Runtime.CompilerServices
-open SixLabors.ImageSharp.Processing.Processors.Normalization
 
 #nowarn "9"
-#nowarn "51"
 
+[<AutoOpen>]
+module private ImageSharpExtensions =
 
+    module Image =
 
-/// Extensions for interop between PixImage and ImageSharp Images.
-[<AbstractClass; Sealed; Extension>]
-type ImageSharpImageExtensions private() =
+        let private cfg =
+            let mutable cfg = Configuration.Default.Clone()
+            cfg.PreferContiguousImageBuffers <- true
+            cfg
 
-    /// Temporarily pins an Image as NativeMatrix.
-    [<Extension>]
-    static member Pin(this : Image<'TPixel>, action : NativeMatrix<'TPixel> -> unit) =
-        this.ProcessPixelRows(fun rows ->
-            let frame = rows.GetRowSpan(0)
-            let ptr = &&frame.GetPinnableReference()
+        let create (size : V2i) =
+            new Image<'T>(cfg, size.X, size.Y)
 
-            let src =
-                NativeMatrix<'TPixel>(
-                    NativePtr.cast ptr,
-                    MatrixInfo(
-                        0L,
-                        V2l(this.Width, this.Height),
-                        V2l(1L, int64 this.Width)
+        let load (stream : Stream) =
+            Image.Load(cfg, stream)
+
+    /// Extensions for interop between PixImage and ImageSharp Images.
+    [<AbstractClass; Sealed; Extension>]
+    type ImageSharpImageExtensions private() =
+
+        [<Extension>]
+        static member Pin(this : Image<'T>, action : nativeptr<'T> -> unit) =
+            match this.DangerousTryGetSinglePixelMemory() with
+            | (true, memory) ->
+                use ptr = memory.Pin()
+                ptr.Pointer |> NativePtr.ofVoidPtr |> action
+
+            | _ ->
+                failwithf "[ImageSharp] Failed to pin image"
+
+        /// Temporarily pins an Image as NativeMatrix.
+        [<Extension>]
+        static member PinMatrix(this : Image<'T>, action : NativeMatrix<'T> -> unit) =
+            this.Pin(fun ptr ->
+                let src =
+                    NativeMatrix<'T>(
+                        NativePtr.cast ptr,
+                        MatrixInfo(
+                            0L,
+                            V2l(this.Width, this.Height),
+                            V2l(1L, int64 this.Width)
+                        )
                     )
-                )
 
-            action src
-        )
+                action src
+            )
 
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : Rgba32) = C4b(v.R, v.G, v.B, v.A)
-    
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : Argb32) = C4b(v.R, v.G, v.B, v.A)
-    
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : Bgra32) = C4b(v.R, v.G, v.B, v.A)
-    
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : Rgb24) = C4b(v.R, v.G, v.B, 255uy)
-    
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : Bgr24) = C4b(v.R, v.G, v.B, 255uy)
-    
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : Bgra4444) = 
-        let mutable c = Rgba32()
-        v.ToRgba32(&c)
-        C4b(c.R, c.G, c.B, c.A)
-        
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : Bgra5551) = 
-        let mutable c = Rgba32()
-        v.ToRgba32(&c)
-        C4b(c.R, c.G, c.B, c.A)
-        
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : PixelFormats.Byte4) = 
-        let mutable c = Rgba32()
-        v.ToRgba32(&c)
-        C4b(c.R, c.G, c.B, c.A)
-        
-    /// Converts the color to a C4b.
-    [<Extension>]
-    static member inline ToC4b(v : IPixel) = 
-        let mutable c = Rgba32()
-        v.ToRgba32(&c)
-        C4b(c.R, c.G, c.B, c.A)
-      
-        
-    /// Converts the color to a C3b.
-    [<Extension>]
-    static member inline ToC3b(v : Rgba32) = C3b(v.R, v.G, v.B)
-    
-    /// Converts the color to a C3b.
-    [<Extension>]
-    static member inline ToC3b(v : Argb32) = C3b(v.R, v.G, v.B)
-    
-    /// Converts the color to a C3b.
-    [<Extension>]
-    static member inline ToC3b(v : Bgra32) = C3b(v.R, v.G, v.B)
-    
-    /// Converts the color to a C3b.
-    [<Extension>]
-    static member inline ToC3b(v : Rgb24) = C3b(v.R, v.G, v.B)
-    
-    /// Converts the color to a C3b.
-    [<Extension>]
-    static member inline ToC3b(v : Bgr24) = C3b(v.R, v.G, v.B)
-    
-    /// Converts the color to a C3b.
-    [<Extension>]
-    static member inline ToC3b(v : Rgba1010102) = 
-        let mutable c = Rgba32()
-        v.ToRgba32(&c)
-        C3b(c.R, c.G, c.B)
-        
-    /// Converts the color to a C3b.
-    [<Extension>]
-    static member inline ToC3b(v : Bgr565) = 
-        let mutable c = Rgba32()
-        v.ToRgba32(&c)
-        C3b(c.R, c.G, c.B)
-        
-    /// Converts the color to a C3b.
-    [<Extension>]
-    static member inline ToC3b(v : IPixel) = 
-        let mutable c = Rgba32()
-        v.ToRgba32(&c)
-        C3b(c.R, c.G, c.B)
+        /// Temporarily pins an Image as NativeVolume.
+        [<Extension>]
+        static member PinVolume(this : Image<'T>, channels : int, action : NativeVolume<'T> -> unit) =
+            this.Pin(fun ptr ->
+                let src =
+                    NativeVolume<'T>(
+                        NativePtr.cast ptr,
+                        VolumeInfo(
+                            0L,
+                            V3l(this.Width, this.Height, channels),
+                            V3l(int64 channels, int64 this.Width * int64 channels, 1L)
+                        )
+                    )
 
-    [<Extension>]
-    static member internal TryGetValue(this : ExifProfile, tag : ExifTag<'v>, [<Out>] v: byref<'v>) =
-        let r = this.GetValue tag
-        if isNull r then false
-        else 
-            v <- r.Value  
-            true
+                action src
+            )
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : Rgba32) = C4b(v.R, v.G, v.B, v.A)
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : Argb32) = C4b(v.R, v.G, v.B, v.A)
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : Bgra32) = C4b(v.R, v.G, v.B, v.A)
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : Rgb24) = C4b(v.R, v.G, v.B, 255uy)
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : Bgr24) = C4b(v.R, v.G, v.B, 255uy)
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : Bgra4444) =
+            let mutable c = Rgba32()
+            v.ToRgba32(&c)
+            C4b(c.R, c.G, c.B, c.A)
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : Bgra5551) =
+            let mutable c = Rgba32()
+            v.ToRgba32(&c)
+            C4b(c.R, c.G, c.B, c.A)
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : PixelFormats.Byte4) =
+            let mutable c = Rgba32()
+            v.ToRgba32(&c)
+            C4b(c.R, c.G, c.B, c.A)
+
+        /// Converts the color to a C4b.
+        [<Extension>]
+        static member inline ToC4b(v : IPixel) =
+            let mutable c = Rgba32()
+            v.ToRgba32(&c)
+            C4b(c.R, c.G, c.B, c.A)
+
+
+        /// Converts the color to a C3b.
+        [<Extension>]
+        static member inline ToC3b(v : Rgba32) = C3b(v.R, v.G, v.B)
+
+        /// Converts the color to a C3b.
+        [<Extension>]
+        static member inline ToC3b(v : Argb32) = C3b(v.R, v.G, v.B)
+
+        /// Converts the color to a C3b.
+        [<Extension>]
+        static member inline ToC3b(v : Bgra32) = C3b(v.R, v.G, v.B)
+
+        /// Converts the color to a C3b.
+        [<Extension>]
+        static member inline ToC3b(v : Rgb24) = C3b(v.R, v.G, v.B)
+
+        /// Converts the color to a C3b.
+        [<Extension>]
+        static member inline ToC3b(v : Bgr24) = C3b(v.R, v.G, v.B)
+
+        /// Converts the color to a C3b.
+        [<Extension>]
+        static member inline ToC3b(v : Rgba1010102) =
+            let mutable c = Rgba32()
+            v.ToRgba32(&c)
+            C3b(c.R, c.G, c.B)
+
+        /// Converts the color to a C3b.
+        [<Extension>]
+        static member inline ToC3b(v : Bgr565) =
+            let mutable c = Rgba32()
+            v.ToRgba32(&c)
+            C3b(c.R, c.G, c.B)
+
+        /// Converts the color to a C3b.
+        [<Extension>]
+        static member inline ToC3b(v : IPixel) =
+            let mutable c = Rgba32()
+            v.ToRgba32(&c)
+            C3b(c.R, c.G, c.B)
+
+        [<Extension>]
+        static member internal TryGetValue(this : ExifProfile, tag : ExifTag<'v>, [<Out>] v: byref<'v>) =
+            let r = this.GetValue tag
+            if isNull r then false
+            else
+                v <- r.Value
+                true
 
 /// Internal tools for copying beetween PixImage and ImageSharp Images.
 [<AutoOpen>]
 module private ImageSharpHelpers =
 
     let (!!) (a : bool, v : 'a) = if a then Some v else None
-        
-    let tryNumeric (v : option<IExifValue>) =
-        match v with
-        | Some v -> 
-            match v.GetValue() with
-            | :? uint8 as b -> Some (float b)
-            | :? int8 as b -> Some (float b)
-            | :? uint16 as b -> Some (float b)
-            | :? int16 as b -> Some (float b)
-            | :? uint32 as b -> Some (float b)
-            | :? int32 as b -> Some (float b)
-            | :? uint64 as b -> Some (float b)
-            | :? int64 as b -> Some (float b)
-            | :? float32 as b -> Some (float b)
-            | :? float as b -> Some (float b)
-            | :? Rational as b -> b.ToDouble() |> Some
-            | :? SignedRational as b -> b.ToDouble() |> Some
-            | _ -> None
-        | None ->
-            None
-
-    let tryCast<'b> (v : option<IExifValue>) =
-        match v with
-        | Some v -> 
-            match v.GetValue() with
-            | :? 'b as b -> Some b
-            | _ -> None
-        | None ->
-            None
 
     let piDirect<'TPixel, 'T when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>) : unit =
+        img.PinVolume(dst.ChannelCount, fun src ->
+            let src = src.Address |> NativeVolume.ofNativeInt<'T> src.Info
 
-        img.ProcessPixelRows(fun rows ->
-            let frame = rows.GetRowSpan(0)
-            let ptr = &&frame.GetPinnableReference()
-
-            let channels = dst.ChannelCount 
-            let size = V2i(img.Width, img.Height)
-
-            let src = 
-                NativeVolume<'T>(
-                    NativePtr.cast ptr,
-                    VolumeInfo(
-                        0L,
-                        V3l(size.X, size.Y, channels),
-                        V3l(int64 channels, int64 size.X * int64 channels, 1L)
-                    )
-                )
             NativeVolume.using dst.Volume (fun dst ->
                 NativeVolume.copy src dst
             )
         )
 
     let piChannel<'TPixel, 'T when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>, order : int[]) : unit =
+        let channels = dst.ChannelCount
 
-        img.ProcessPixelRows(fun rows ->
-            let frame = rows.GetRowSpan(0)
-            let ptr = &&frame.GetPinnableReference()
-
-            let channels = dst.ChannelCount
-            let size = V2i(img.Width, img.Height)
-
-            let src = 
-                NativeVolume<'T>(
-                    NativePtr.cast ptr,
-                    VolumeInfo(
-                        0L,
-                        V3l(size.X, size.Y, channels),
-                        V3l(int64 channels, int64 size.X * int64 channels, 1L)
-                    )
-                )
+        img.PinVolume(channels, fun src ->
+            let src = src.Address |> NativeVolume.ofNativeInt<'T> src.Info
 
             NativeVolume.using dst.Volume (fun dst ->
                 for dc in 0 .. channels - 1 do
@@ -229,123 +204,35 @@ module private ImageSharpHelpers =
                     NativeMatrix.copy src.[*,*, sc] dst.[*,*,dc]
             )
         )
-        
+
     let piMapping<'TPixel, 'T, 'C when 'T : unmanaged and 'C : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>, convert : 'TPixel -> 'C) =
         let size = V2i(img.Width, img.Height)
-        img.Pin (fun src ->
+        img.PinMatrix (fun src ->
             NativeVolume.using dst.Volume (fun dst ->
-                let dst = 
+                let dst =
                     NativeMatrix<'C>(
                         NativePtr.cast dst.Pointer,
                         MatrixInfo(
                             0L,
                             V2l(size.X, size.Y),
                             V2l(1L, int64 size.X)
-                        )    
+                        )
                     )
                 NativeMatrix.copyWith convert src dst
             )
         )
 
     let imgDirect<'T, 'TPixel when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : PixImage<'T>) : Image<'TPixel> =
-        let res = new Image<'TPixel>(img.Size.X, img.Size.Y)
-        res.ProcessPixelRows(fun rows ->
-            let frame = rows.GetRowSpan(0)
-            let dst = &&frame.GetPinnableReference()
-
-            let size = img.Size
-            let channels = img.ChannelCount
-            let dst = 
-                NativeVolume<'T>(
-                    NativePtr.cast dst,
-                    VolumeInfo(
-                        0L,
-                        V3l(size.X, size.Y, channels),
-                        V3l(int64 channels, int64 size.X * int64 channels, 1L)
-                    )
-                )
+        let res : Image<'TPixel> = Image.create img.Size
+        res.PinVolume(img.ChannelCount, fun dst ->
+            let dst = dst.Address |> NativeVolume.ofNativeInt dst.Info
 
             NativeVolume.using img.Volume (fun src ->
                 NativeVolume.copy src dst
             )
         )
         res
-      
-    let imgConvert<'T, 'TPixel when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (mapping : 'T[] -> 'TPixel) (img : PixImage<'T>) : Image<'TPixel> =
-        let res = new Image<'TPixel>(img.Size.X, img.Size.Y)
-        res.ProcessPixelRows(fun rows ->
-            let frame = rows.GetRowSpan(0)
-            let dst = &&frame.GetPinnableReference()
 
-            let size = img.Size
-            let channels = img.ChannelCount
-
-
-            let dst = 
-                NativeMatrix<'TPixel>(
-                    dst,
-                    MatrixInfo(
-                        0L,
-                        V2l(size.X, size.Y),
-                        V2l(1L, int64 size.X)
-                    )
-                )
-
-
-
-            let values = Array.zeroCreate channels
-            NativeVolume.using img.Volume (fun src ->
-                //let dx = src.DX
-                //let dy = src.DY
-                //let dz = src.DZ
-
-
-                let ldsx = nativeint (src.DX * src.SX)
-                let ldsy = nativeint (src.DY * src.SY)
-                let ldsz = nativeint (src.DZ * src.SZ)
-                let ljy = nativeint src.DY - ldsx - ldsz
-                let ljx = nativeint src.DX - ldsz
-                let ljz = nativeint src.DZ
-
-            
-                let rdsx = nativeint (dst.DX * dst.SX)
-                let rdsy = nativeint (dst.DY * dst.SY)
-                let rjy = nativeint dst.DY - rdsx
-                let rjx = nativeint dst.DX
-
-
-                let mutable lPtr = NativePtr.toNativeInt src.Pointer
-                let mutable rPtr = NativePtr.toNativeInt dst.Pointer
-                let mutable x = 0
-                let mutable y = 0
-                let e = lPtr + ldsx + ldsy
-                while lPtr < e do
-                    let ex = lPtr + ldsx
-                    x <- 0
-                    while lPtr < ex do
-                        let ez = lPtr + ldsz
-                        let mutable z = 0
-                        while lPtr < ez do
-                            values.[z] <- NativeInt.read<'T> lPtr
-                            lPtr <- lPtr + ljz
-                            z <- z + 1
-
-                        let pp = mapping values
-                        NativeInt.write rPtr pp
-
-                        rPtr <- rPtr + rjx
-                        lPtr <- lPtr + ljx
-                        x <- x + 1
-                    
-                    rPtr <- rPtr + rjy
-                    lPtr <- lPtr + ljy
-                    y <- y + 1
-
-                ()
-            )
-        )
-        res
-        
     let getSize (trafo : ImageTrafo) (w : int) (h : int) =
         match trafo with
         | ImageTrafo.Transpose -> V2i(h, w)
@@ -388,10 +275,10 @@ type CameraInfo =
         lensModel   : option<string>
     }
 
-    member x.sensorSize = 
+    member x.sensorSize =
         let d = 43.26661531 / (x.cropFactor * x.size.Length)
         V2d x.size * d
-    
+
     member x.normalizedFocalLengths =
         x.focal / x.sensorSize
 
@@ -404,19 +291,19 @@ type CameraInfo =
                 "size", string x.size
                 "crop", sprintf "%.3f" x.cropFactor
 
-                let model = 
+                let model =
                     if x.model.ToLower().StartsWith (x.make.ToLower()) then x.model.Substring(x.make.Length).Trim()
                     else x.model
 
                 "name", sprintf "%s %s" x.make model
 
-                let lensMake = 
+                let lensMake =
                     match x.lensMake with
                     | Some l -> l
                     | None -> x.make
                 match x.lensModel with
                 | Some m ->
-                    let m = 
+                    let m =
                         if m.ToLower().StartsWith (lensMake.ToLower()) then m.Substring lensMake.Length
                         else m
                     "lens", sprintf "%s %s" lensMake m
@@ -433,7 +320,7 @@ type CameraInfo =
                 | Some a -> "aperture", sprintf "%.3g" a
                 | None -> ()
             ]
-        props 
+        props
         |> Seq.map (fun (n,v) -> sprintf "%s: %s" n v)
         |> String.concat ", "
         |> sprintf "CameraInfo { %s }"
@@ -482,7 +369,7 @@ type PixImageSharp private() =
 
             PixFormat.FloatRGBA,            (fun (img : PixImage) -> imgDirect<float32, RgbaVector>(unbox img) :> Image)
         ]
-        
+
     static let getRotateAndFlipMode (img : IImageInfo) =
         if isNull img.Metadata.ExifProfile then
             RotateMode.None, FlipMode.None
@@ -527,22 +414,22 @@ type PixImageSharp private() =
         let loadFile (file : string) (options : PixLoadOptions) =
             try PixImageSharp.Create(file)
             with _ -> null
-            
+
         let loadStream (stream : Stream) (options : PixLoadOptions) =
             try PixImageSharp.Create(stream)
-            with _ -> 
+            with _ ->
                 try stream.Seek(0L, SeekOrigin.Begin) |> ignore
                 with _ -> ()
                 null
-                
+
         let saveFile (file : string) (options : PixSaveOptions) (fmt : PixFileFormat) (quality : int) (img : PixImage) =
             try PixImageSharp.SaveImageSharp(img, file, quality); true
             with _ -> false
-            
+
         let saveStream (stream : Stream) (options : PixSaveOptions) (fmt : PixFileFormat) (quality : int) (img : PixImage) =
             try PixImageSharp.SaveImageSharp(img, stream, fmt); true
             with _ -> false
-            
+
         let getInfo (file : string)=
             PixImageSharp.GetPixImageInfo(file)
 
@@ -553,17 +440,17 @@ type PixImageSharp private() =
             Func<_,_,_,_,_,_>(saveStream),
             Func<_,_>(getInfo)
         )
-        
+
     /// Tries to read a PixImage from the given Stream.
-    static member TryCreate(stream : Stream) =   
+    static member TryCreate(stream : Stream) =
         try
-            use img = Image.Load stream
+            use img = Image.load stream
             let tp = img.GetType().GetGenericArguments().[0]
             let trafo = getImageTrafo img
             toPixImage tp img trafo |> Some
         with _ ->
             None
-            
+
     /// Tries to read a PixImage from the given File.
     static member TryCreate(file : string) =
         if File.Exists file then
@@ -573,34 +460,18 @@ type PixImageSharp private() =
             None
 
     /// Reads a PixImage from the given Stream or fails if not an image.
-    static member Create(stream : Stream) =   
-        use img = Image.Load stream
+    static member Create(stream : Stream) =
+        use img = Image.load stream
         let tp = img.GetType().GetGenericArguments().[0]
         let trafo = getImageTrafo img
         toPixImage tp img trafo
-        
+
     /// Reads a Image from the given Stream or fails if not an image.
-    static member CreateImage(stream : Stream) =   
-        let img = Image.Load stream
+    static member CreateImage(stream : Stream) =
+        let img = Image.load stream
         img.Mutate(fun x -> x.AutoOrient() |> ignore)
         img
-        //let rot, flip = getRotateAndFlipMode img
-        //if rot <> RotateMode.None || flip <> FlipMode.None then
 
-        //    match rot with
-        //    | RotateMode.Rotate90 | RotateMode.Rotate270 ->
-        //        img.Mutate(fun x ->
-        //            x.AutoOrient() |> ignore
-        //        )
-                
-        //        V2i(img.Height, img.Width)
-        //    | _ ->
-        //        img.Mutate(fun s ->
-        //            s.Flip(flip).Rotate(rot) |> ignore
-        //        )
-        //        img
-        //else
-        //    img
     /// Reads a Image from the given File or fails if not an image.
     static member CreateImage(file : string) =
         use s = File.OpenRead file
@@ -610,9 +481,9 @@ type PixImageSharp private() =
     static member Create(file : string) =
         use s = File.OpenRead file
         PixImageSharp.Create s
-        
+
     /// Tries to get the EXIF-thumb for the image.
-    static member TryGetThumb(stream : Stream) =   
+    static member TryGetThumb(stream : Stream) =
         try
             let info = Image.Identify(stream)
             let trafo = getImageTrafo info
@@ -620,7 +491,7 @@ type PixImageSharp private() =
             toPixImage (thumb.GetType().GetGenericArguments().[0]) thumb trafo |> Some
         with _ ->
             None
-            
+
     /// Tries to get the EXIF-thumb for the image.
     static member TryGetThumb(file : string) =
         if File.Exists file then
@@ -630,49 +501,49 @@ type PixImageSharp private() =
             None
 
     /// Gets basic information from the Image without loading its content.
-    static member GetPixImageInfo(stream : Stream) =   
+    static member GetPixImageInfo(stream : Stream) =
         try
             let info = Image.Identify stream
             let trafo = getImageTrafo info
             PixImageInfo(PixFormat.ByteRGBA, getSize trafo info.Width info.Height)
         with _ ->
             null
-            
+
     /// Gets basic information from the Image without loading its content.
-    static member GetPixImageInfo(file : string) =   
+    static member GetPixImageInfo(file : string) =
         if File.Exists file then
             use s = File.OpenRead file
             PixImageSharp.GetPixImageInfo s
         else
             null
-            
-        
+
+
     /// Gets the (optional) CameraInfo for the given image.
     [<Extension>]
     static member TryGetCameraInfo(info : IImageInfo) =
-        
+
         option {
             if not (isNull info.Metadata.ExifProfile) then
                 let! make = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.Make)
                 let! model = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.Model)
-                let! focal = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.FocalLength) 
-                let aperture1 = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.ApertureValue) 
-                let lensMake = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.LensMake) 
-                let lensModel = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.LensModel) 
+                let! focal = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.FocalLength)
+                let aperture1 = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.ApertureValue)
+                let lensMake = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.LensMake)
+                let lensModel = !!info.Metadata.ExifProfile.TryGetValue(ExifTag.LensModel)
 
-                
-                let aperture = 
+
+                let aperture =
                     match aperture1 with
                     | Some a -> Some a
-                    | None -> !!info.Metadata.ExifProfile.TryGetValue(ExifTag.MaxApertureValue) 
+                    | None -> !!info.Metadata.ExifProfile.TryGetValue(ExifTag.MaxApertureValue)
 
                 let focal35 =
-                    !!info.Metadata.ExifProfile.TryGetValue(ExifTag.FocalLengthIn35mmFilm) 
+                    !!info.Metadata.ExifProfile.TryGetValue(ExifTag.FocalLengthIn35mmFilm)
 
                 let crop =
                     match focal35 with
                     | Some f35 -> float f35 / focal.ToDouble()
-                    | None -> 
+                    | None ->
                         if make.ToLower().Contains "canon" then 1.6 else 1.5
 
                 let trafo = getImageTrafo info
@@ -702,16 +573,16 @@ type PixImageSharp private() =
                     return! None
             else
                 return! None
-                
+
         }
-        
+
     [<Extension>]
     static member GetMetadata(image : IImageInfo) =
         let mutable res = Map.empty
         let exif = image.Metadata.ExifProfile
         if not (isNull exif) then
             for t in exif.Values do
-                let name = sprintf "%A" t.Tag 
+                let name = sprintf "%A" t.Tag
                 let value = t
                 res <- Map.add name value res
 
@@ -729,14 +600,14 @@ type PixImageSharp private() =
             info.TryGetCameraInfo()
         with _ ->
             None
-            
+
     /// Gets the CameraInfo for the given image or fails if not existing.
     [<Extension>]
     static member GetCameraInfo(info : IImageInfo) =
         match info.TryGetCameraInfo() with
         | Some info -> info
         | None -> failwithf "image does not contain CameraInfo: %A" info
-        
+
     /// Gets the CameraInfo for the given file or fails if no camera info was found.
     static member GetCameraInfo(file : string) =
         match PixImageSharp.TryGetCameraInfo file with
@@ -747,14 +618,14 @@ type PixImageSharp private() =
     [<Extension>]
     static member ToImage(image : PixImage) =
         toImage image.PixFormat image
-        
+
     /// Converts the ImageSharp Image to a PixImage using the given transformation.
     [<Extension>]
     static member ToPixImage(image : Image, trafo : ImageTrafo) =
         if isNull image then raise <| NullReferenceException("Image")
         let t = image.GetType().GetGenericArguments().[0]
         toPixImage t image trafo
-        
+
     /// Converts the ImageSharp Image to a PixImage.
     [<Extension>]
     static member ToPixImage(image : Image) =
@@ -765,7 +636,7 @@ type PixImageSharp private() =
     static member SaveImageSharp(image : PixImage<'T>, file : string) =
         use img = toImage image.PixFormat image
         img.Save file
-        
+
     /// Saves the Image to a file using ImageSharp.
     [<Extension>]
     static member SaveImageSharp(image : PixImage<'T>, file : string, quality : int) =
@@ -775,7 +646,7 @@ type PixImageSharp private() =
             img.Save(file, Jpeg.JpegEncoder(Quality = toNullable quality))
         else
             img.Save(file)
-        
+
     /// Saves the Image to a Stream using the given format and quality.
     [<Extension>]
     static member SaveImageSharp(image : PixImage<'T>, stream : Stream, fmt : PixFileFormat, quality : int) =
@@ -791,12 +662,12 @@ type PixImageSharp private() =
             img.SaveAsGif(stream)
         | _ ->
             failwithf "[ImageSharp] format %A not supported" fmt
-           
-    /// Saves the Image to a Stream using the given format. 
+
+    /// Saves the Image to a Stream using the given format.
     [<Extension>]
     static member SaveImageSharp(image : PixImage<'T>, stream : Stream, fmt : PixFileFormat) =
         PixImageSharp.SaveImageSharp(image, stream, fmt, -1)
-            
+
     /// Converts an Image to binary data with the given format and quality.
     [<Extension>]
     static member ToBinary(img : Image, fmt : PixFileFormat, quality: int) =
@@ -813,37 +684,37 @@ type PixImageSharp private() =
         | _ ->
             failwithf "[ImageSharp] format %A not supported" fmt
         stream.ToArray()
-        
+
     /// Converts a PixImage to binary data with the given format and quality.
     [<Extension>]
     static member ToBinary(image : PixImage<'T>, fmt : PixFileFormat, quality: int) =
         use ms = new MemoryStream()
         image.SaveImageSharp(ms, fmt, quality)
         ms.ToArray()
-        
+
     /// Converts a PixImage to binary data with the given format.
     [<Extension>]
     static member ToBinary(image : PixImage<'T>, fmt : PixFileFormat) =
         use ms = new MemoryStream()
         image.SaveImageSharp(ms, fmt)
         ms.ToArray()
-        
+
     /// Converts a PixImage to png data.
     [<Extension>]
     static member ToPngData(image : PixImage<'T>) = image.ToBinary(PixFileFormat.Png)
-    
+
     /// Converts a PixImage to jpeg data with the specified quality.
     [<Extension>]
     static member ToJpegData(image : PixImage<'T>, quality : int) = image.ToBinary(PixFileFormat.Jpeg, quality)
-        
+
     /// Converts a PixImage to jpeg data.
     [<Extension>]
     static member ToJpegData(image : PixImage<'T>) = image.ToBinary(PixFileFormat.Jpeg)
-        
+
     /// Converts a PixImage to bmp data.
     [<Extension>]
     static member ToBmpData(image : PixImage<'T>) = image.ToBinary(PixFileFormat.Bmp)
-    
+
     /// Converts a PixImage to gif data.
     [<Extension>]
     static member ToGifData(image : PixImage<'T>) = image.ToBinary(PixFileFormat.Gif)
@@ -863,10 +734,10 @@ type PixImageSharp private() =
             )
             |> ignore
         )
-        
+
         let tp = img.GetType().GetGenericArguments().[0]
         toPixImage tp img ImageTrafo.Identity |> unbox<PixImage<'T>>
-      
+
     /// Resizes the image to the specified size using the given resampler.
     [<Extension>]
     static member ResizedImageSharp(image : Image, size : V2i, sampler : IResampler) =
@@ -881,7 +752,7 @@ type PixImageSharp private() =
             |> ignore
         )
         img
-      
+
     /// Resizes the image to the specified size using the given interpolation mode.
     [<Extension>]
     static member ResizedImageSharp(image : Image, size : V2i, interpolation : ImageInterpolation) =
@@ -895,7 +766,7 @@ type PixImageSharp private() =
             | _ -> KnownResamplers.Bicubic
 
         image.ResizedImageSharp(size, sampler)
-      
+
     /// Resizes the image to the specified size using the given interpolation mode.
     [<Extension>]
     static member ResizedImageSharp(image : PixImage<'T>, size : V2i, interpolation : ImageInterpolation) =
@@ -909,7 +780,7 @@ type PixImageSharp private() =
             | _ -> KnownResamplers.Bicubic
 
         image.ResizedImageSharp(size, sampler)
-        
+
     /// Sobel edge detection.
     [<Extension>]
     static member EdgeDetect(img : PixImage<'T>) =
@@ -917,19 +788,19 @@ type PixImageSharp private() =
         img.Mutate(fun image ->
             image
                 .Grayscale()
-                .DetectEdges(Processing.Processors.Convolution.EdgeDetectorCompassKernel.Robinson) 
+                .DetectEdges(Processing.Processors.Convolution.EdgeDetectorCompassKernel.Robinson)
                 |> ignore
         )
         img.ToPixImage() |> unbox<PixImage<'T>>
- 
+
     /// Sobel edge detection.
     [<Extension>]
-    static member EdgeDetect(image : PixImage) = 
+    static member EdgeDetect(image : PixImage) =
         image.Visit {
             new IPixImageVisitor<PixImage> with
                 member x.Visit<'T>(image : PixImage<'T>) = image.EdgeDetect() :> PixImage
-        } 
-        
+        }
+
     //[<Extension>]
     //static member EqualizeHistogram(image : Image) =
     //    image.Clone(fun ctx ->
@@ -946,23 +817,23 @@ type PixImageSharp private() =
             ctx.Grayscale().HistogramEqualization()
             |> ignore
         ).CloneAs<L8>()
-     
+
     /// Saves the Image to a file using ImageSharp.
     [<Extension>]
-    static member SaveImageSharp(image : PixImage, file : string, quality : int) = 
+    static member SaveImageSharp(image : PixImage, file : string, quality : int) =
         image.Visit {
             new IPixImageVisitor<obj> with
                 member x.Visit<'T>(image : PixImage<'T>) = image.SaveImageSharp(file, quality); null
         } |> ignore
-        
+
     /// Saves the Image to a file using ImageSharp.
     [<Extension>]
-    static member SaveImageSharp(image : PixImage, file : string) = 
+    static member SaveImageSharp(image : PixImage, file : string) =
         image.Visit {
             new IPixImageVisitor<obj> with
                 member x.Visit<'T>(image : PixImage<'T>) = image.SaveImageSharp(file); null
         } |> ignore
-        
+
     /// Saves the Image to a Stream using the given format and quality.
     [<Extension>]
     static member SaveImageSharp(image : PixImage, stream : Stream, fmt : PixFileFormat, quality : int) =
@@ -970,7 +841,7 @@ type PixImageSharp private() =
             new IPixImageVisitor<obj> with
                 member x.Visit<'T>(image : PixImage<'T>) = image.SaveImageSharp(stream, fmt, quality); null
         } |> ignore
-        
+
     /// Saves the Image to a Stream using the given format.
     [<Extension>]
     static member SaveImageSharp(image : PixImage, stream : Stream, fmt : PixFileFormat) =
@@ -978,7 +849,7 @@ type PixImageSharp private() =
             new IPixImageVisitor<obj> with
                 member x.Visit<'T>(image : PixImage<'T>) = image.SaveImageSharp(stream, fmt); null
         } |> ignore
-        
+
     /// Converts a PixImage to binary data with the given format and quality.
     [<Extension>]
     static member ToBinary(image : PixImage, fmt : PixFileFormat, quality: int) =
@@ -986,7 +857,7 @@ type PixImageSharp private() =
             new IPixImageVisitor<byte[]> with
                 member x.Visit<'T>(image : PixImage<'T>) = image.ToBinary(fmt, quality)
         }
-        
+
     /// Converts a PixImage to binary data with the given format.
     [<Extension>]
     static member ToBinary(image : PixImage, fmt : PixFileFormat) =
@@ -994,7 +865,7 @@ type PixImageSharp private() =
             new IPixImageVisitor<byte[]> with
                 member x.Visit<'T>(image : PixImage<'T>) = image.ToBinary(fmt)
         }
-    
+
     /// Converts a PixImage to png data with the given quality.
     [<Extension>]
     static member ToPngData(image : PixImage, quality : int) = image.ToBinary(PixFileFormat.Jpeg, quality)
@@ -1002,15 +873,15 @@ type PixImageSharp private() =
     /// Converts a PixImage to jpeg data with the given quality.
     [<Extension>]
     static member ToJpegData(image : PixImage, quality : int) = image.ToBinary(PixFileFormat.Jpeg, quality)
-        
+
     /// Converts a PixImage to jpeg data.
     [<Extension>]
     static member ToJpegData(image : PixImage) = image.ToBinary(PixFileFormat.Jpeg)
-        
+
     /// Converts a PixImage to bmp data.
     [<Extension>]
     static member ToBmpData(image : PixImage) = image.ToBinary(PixFileFormat.Bmp)
-    
+
     /// Converts a PixImage to gif data.
     [<Extension>]
     static member ToGifData(image : PixImage) = image.ToBinary(PixFileFormat.Gif)
@@ -1022,7 +893,7 @@ type PixImageSharp private() =
             new IPixImageVisitor<PixImage> with
                 member x.Visit<'T>(image : PixImage<'T>) = image.ResizedImageSharp(size, sampler) :> PixImage
         }
-        
+
     /// Resizes the image to the specified size using the given interpoation mode.
     [<Extension>]
     static member ResizedImageSharp(image : PixImage, size : V2i, interpolation : ImageInterpolation) =
