@@ -175,7 +175,7 @@ module private ImageSharpHelpers =
     let piDirect<'TPixel, 'T when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>) : unit =
         img.PinVolumeRows(dst.ChannelCount, fun y src ->
             let src = src.Address |> NativeVolume.ofNativeInt<'T> src.Info
-            let dst = dst.Volume.ImageRow(y)
+            let dst = dst.Volume.ImageRow(int64 y)
 
             NativeVolume.using dst (fun dst ->
                 NativeVolume.copy src dst
@@ -187,7 +187,7 @@ module private ImageSharpHelpers =
 
         img.PinVolumeRows(channels, fun y src ->
             let src = src.Address |> NativeVolume.ofNativeInt<'T> src.Info
-            let dst = dst.Volume.ImageRow(y)
+            let dst = dst.Volume.ImageRow(int64 y)
 
             NativeVolume.using dst (fun dst ->
                 for dc in 0 .. channels - 1 do
@@ -216,7 +216,7 @@ module private ImageSharpHelpers =
     let imgDirect<'T, 'TPixel when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : PixImage<'T>) : Image<'TPixel> =
         let res = new Image<'TPixel>(img.Size.X, img.Size.Y)
         res.PinVolumeRows(img.ChannelCount, fun y dst ->
-            let src = img.Volume.ImageRow(y)
+            let src = img.Volume.ImageRow(int64 y)
             let dst = dst.Address |> NativeVolume.ofNativeInt dst.Info
 
             NativeVolume.using src (fun src ->
