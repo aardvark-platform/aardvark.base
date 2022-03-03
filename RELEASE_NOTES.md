@@ -1,3 +1,6 @@
+### 5.2.2
+- [ImageSharp] Implemented proper per row processing
+
 ### 5.2.1
 - [ImageSharp] Switched to contiguous image buffers
 
