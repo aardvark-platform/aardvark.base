@@ -18,65 +18,54 @@ open System.Runtime.CompilerServices
 [<AutoOpen>]
 module private ImageSharpExtensions =
 
-    module Image =
-
-        let private cfg =
-            let mutable cfg = Configuration.Default.Clone()
-            cfg.PreferContiguousImageBuffers <- true
-            cfg
-
-        let create (size : V2i) =
-            new Image<'T>(cfg, size.X, size.Y)
-
-        let load (stream : Stream) =
-            Image.Load(cfg, stream)
-
     /// Extensions for interop between PixImage and ImageSharp Images.
     [<AbstractClass; Sealed; Extension>]
     type ImageSharpImageExtensions private() =
 
         [<Extension>]
-        static member Pin(this : Image<'T>, action : nativeptr<'T> -> unit) =
-            match this.DangerousTryGetSinglePixelMemory() with
-            | (true, memory) ->
-                use ptr = memory.Pin()
-                ptr.Pointer |> NativePtr.ofVoidPtr |> action
+        static member PinRows(this : Image<'T>, action : int -> nativeptr<'T> -> unit) =
+            this.ProcessPixelRows(fun rows ->
+                for y = 0 to rows.Height - 1 do
+                    let span = rows.GetRowSpan(y)
 
-            | _ ->
-                failwithf "[ImageSharp] Failed to pin image"
+                    SpanPinning.Pin(span, fun address ->
+                        let ptr = NativePtr.ofNativeInt address
+                        ptr |> action y
+                    )
+            )
 
-        /// Temporarily pins an Image as NativeMatrix.
+        /// Temporarily pins Image rows as a NativeMatrix.
         [<Extension>]
-        static member PinMatrix(this : Image<'T>, action : NativeMatrix<'T> -> unit) =
-            this.Pin(fun ptr ->
+        static member PinMatrixRows(this : Image<'T>, action : int -> NativeMatrix<'T> -> unit) =
+            this.PinRows(fun y ptr ->
                 let src =
                     NativeMatrix<'T>(
                         NativePtr.cast ptr,
                         MatrixInfo(
                             0L,
-                            V2l(this.Width, this.Height),
+                            V2l(this.Width, 1),
                             V2l(1L, int64 this.Width)
                         )
                     )
 
-                action src
+                action y src
             )
 
-        /// Temporarily pins an Image as NativeVolume.
+        /// Temporarily pins Image rows as a NativeVolume.
         [<Extension>]
-        static member PinVolume(this : Image<'T>, channels : int, action : NativeVolume<'T> -> unit) =
-            this.Pin(fun ptr ->
+        static member PinVolumeRows(this : Image<'T>, channels : int, action : int -> NativeVolume<'T> -> unit) =
+            this.PinRows(fun y ptr ->
                 let src =
                     NativeVolume<'T>(
                         NativePtr.cast ptr,
                         VolumeInfo(
                             0L,
-                            V3l(this.Width, this.Height, channels),
+                            V3l(this.Width, 1, channels),
                             V3l(int64 channels, int64 this.Width * int64 channels, 1L)
                         )
                     )
 
-                action src
+                action y src
             )
 
         /// Converts the color to a C4b.
@@ -184,10 +173,11 @@ module private ImageSharpHelpers =
     let (!!) (a : bool, v : 'a) = if a then Some v else None
 
     let piDirect<'TPixel, 'T when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>) : unit =
-        img.PinVolume(dst.ChannelCount, fun src ->
+        img.PinVolumeRows(dst.ChannelCount, fun y src ->
             let src = src.Address |> NativeVolume.ofNativeInt<'T> src.Info
+            let dst = dst.Volume.ImageRow(y)
 
-            NativeVolume.using dst.Volume (fun dst ->
+            NativeVolume.using dst (fun dst ->
                 NativeVolume.copy src dst
             )
         )
@@ -195,10 +185,11 @@ module private ImageSharpHelpers =
     let piChannel<'TPixel, 'T when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>, order : int[]) : unit =
         let channels = dst.ChannelCount
 
-        img.PinVolume(channels, fun src ->
+        img.PinVolumeRows(channels, fun y src ->
             let src = src.Address |> NativeVolume.ofNativeInt<'T> src.Info
+            let dst = dst.Volume.ImageRow(y)
 
-            NativeVolume.using dst.Volume (fun dst ->
+            NativeVolume.using dst (fun dst ->
                 for dc in 0 .. channels - 1 do
                     let sc = order.[dc]
                     NativeMatrix.copy src.[*,*, sc] dst.[*,*,dc]
@@ -207,7 +198,7 @@ module private ImageSharpHelpers =
 
     let piMapping<'TPixel, 'T, 'C when 'T : unmanaged and 'C : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : Image<'TPixel>, dst : PixImage<'T>, convert : 'TPixel -> 'C) =
         let size = V2i(img.Width, img.Height)
-        img.PinMatrix (fun src ->
+        img.PinMatrixRows (fun y src ->
             NativeVolume.using dst.Volume (fun dst ->
                 let dst =
                     NativeMatrix<'C>(
@@ -217,17 +208,18 @@ module private ImageSharpHelpers =
                             V2l(size.X, size.Y),
                             V2l(1L, int64 size.X)
                         )
-                    )
+                    ).SubMatrix(V2i(0, y), V2i(size.X, 1))
                 NativeMatrix.copyWith convert src dst
             )
         )
 
     let imgDirect<'T, 'TPixel when 'T : unmanaged and 'TPixel : (new : unit -> 'TPixel) and 'TPixel : struct and 'TPixel :> IPixel<'TPixel> and 'TPixel : unmanaged> (img : PixImage<'T>) : Image<'TPixel> =
-        let res : Image<'TPixel> = Image.create img.Size
-        res.PinVolume(img.ChannelCount, fun dst ->
+        let res = new Image<'TPixel>(img.Size.X, img.Size.Y)
+        res.PinVolumeRows(img.ChannelCount, fun y dst ->
+            let src = img.Volume.ImageRow(y)
             let dst = dst.Address |> NativeVolume.ofNativeInt dst.Info
 
-            NativeVolume.using img.Volume (fun src ->
+            NativeVolume.using src (fun src ->
                 NativeVolume.copy src dst
             )
         )
@@ -444,7 +436,7 @@ type PixImageSharp private() =
     /// Tries to read a PixImage from the given Stream.
     static member TryCreate(stream : Stream) =
         try
-            use img = Image.load stream
+            use img = Image.Load stream
             let tp = img.GetType().GetGenericArguments().[0]
             let trafo = getImageTrafo img
             toPixImage tp img trafo |> Some
@@ -461,14 +453,14 @@ type PixImageSharp private() =
 
     /// Reads a PixImage from the given Stream or fails if not an image.
     static member Create(stream : Stream) =
-        use img = Image.load stream
+        use img = Image.Load stream
         let tp = img.GetType().GetGenericArguments().[0]
         let trafo = getImageTrafo img
         toPixImage tp img trafo
 
     /// Reads a Image from the given Stream or fails if not an image.
     static member CreateImage(stream : Stream) =
-        let img = Image.load stream
+        let img = Image.Load stream
         img.Mutate(fun x -> x.AutoOrient() |> ignore)
         img
 

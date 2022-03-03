@@ -16,6 +16,7 @@
 	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.1</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="data\test.jpg" />
     <Compile Include="TensorTests.fs" />
     <Compile Include="ImageSharpTests.fs" />
     <Compile Include="SVDTests.fs" />
@@ -30,6 +31,7 @@
     <Compile Include="OrderMaintenanceTrie.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
