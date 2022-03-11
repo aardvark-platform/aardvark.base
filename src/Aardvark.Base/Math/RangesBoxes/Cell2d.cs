@@ -373,6 +373,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Get the global quadtrant this cell is located in, or no value if this is a centered cell.
+        /// </summary>
+        public int? Quadrant
+        {
+            get
+            {
+                if (IsCenteredAtOrigin) return null;
+
+                var o = 0;
+                if (X >= 0) o = 1;
+                if (Y >= 0) o |= 2;
+                return o;
+            }
+        }
+
+        /// <summary>
         /// Returns smallest common root of a and b.
         /// </summary>
         public static Cell2d GetCommonRoot(Cell2d a, Cell2d b)
@@ -405,9 +421,23 @@ namespace Aardvark.Base
                 }
                 else
                 {
-                    // if no cell is centered, then recursively grow smaller cell (take parent)
-                    // until a and b meet at their common root
-                    return a.Exponent > b.Exponent ? GetCommonRoot(a, b.Parent) : GetCommonRoot(a.Parent, b);
+                    // if no cell is centered, ...
+                    if (a.Quadrant == b.Quadrant)
+                    {
+                        // and both cells are located in the same global quadrant,
+                        // then recursively grow smaller cell (take parent)
+                        // until a and b meet at their common root
+                        return a.Exponent > b.Exponent ? GetCommonRoot(a, b.Parent) : GetCommonRoot(a.Parent, b);
+                    }
+                    else
+                    {
+                        // and each cell is located in a different global quadrant,
+                        // then take a centered cell and enlarge it until it contains both A and B
+                        var c = new Cell2d(Math.Max(a.Exponent, b.Exponent) + 1); // centered cell needs to be at least twice as large as the bigger one of A and B
+                        while (!c.Contains(a)) c = c.Parent;
+                        while (!c.Contains(b)) c = c.Parent;
+                        return c;
+                    }
                 }
             }
         }

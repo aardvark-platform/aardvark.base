@@ -491,7 +491,7 @@ namespace Aardvark.Tests
             var r = Cell.GetCommonRoot(new Cell(0,0,0,0), new Cell(1,0,0,-1));
             Assert.IsTrue(r == new Cell(0,0,0,0));
             r = Cell.GetCommonRoot(new Cell(0, 0, 0, 0), new Cell(1, -3, 0, -5));
-            Assert.IsTrue(r == new Cell(0, 0, 0, 0));
+            Assert.IsTrue(r == new Cell(1));
         }
 
         [Test]

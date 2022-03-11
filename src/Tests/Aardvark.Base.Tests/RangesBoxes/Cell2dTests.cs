@@ -471,7 +471,7 @@ namespace Aardvark.Tests
             var r = Cell2d.GetCommonRoot(new Cell2d(0, 0, 0), new Cell2d(1, 0, -1));
             Assert.IsTrue(r == new Cell2d(0, 0, 0));
             r = Cell2d.GetCommonRoot(new Cell2d(0, 0, 0), new Cell2d(1, -3, -5));
-            Assert.IsTrue(r == new Cell2d(0, 0, 0));
+            Assert.IsTrue(r == new Cell2d(1));
         }
 
         [Test]

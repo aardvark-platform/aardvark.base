@@ -378,6 +378,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Get the global octant this cell is located in, or no value if this is a centered cell.
+        /// </summary>
+        public int? Octant
+        {
+            get
+            {
+                if (IsCenteredAtOrigin) return null;
+
+                var o = 0;
+                if (X >= 0) o  = 1;
+                if (Y >= 0) o |= 2;
+                if (Z >= 0) o |= 4;
+                return o;
+            }
+        }
+
+        /// <summary>
         /// Returns smallest common root of a and b.
         /// </summary>
         public static Cell GetCommonRoot(Cell a, Cell b)
@@ -410,9 +427,23 @@ namespace Aardvark.Base
                 }
                 else
                 {
-                    // if no cell is centered, then recursively grow smaller cell (take parent)
-                    // until a and b meet at their common root
-                    return a.Exponent > b.Exponent ? GetCommonRoot(a, b.Parent) : GetCommonRoot(a.Parent, b);
+                    // if no cell is centered, ...
+                    if (a.Octant == b.Octant)
+                    {
+                        // and both cells are located in the same global octant,
+                        // then recursively grow smaller cell (take parent)
+                        // until a and b meet at their common root
+                        return a.Exponent > b.Exponent ? GetCommonRoot(a, b.Parent) : GetCommonRoot(a.Parent, b);
+                    }
+                    else
+                    {
+                        // and each cell is located in a different global octant,
+                        // then take a centered cell and enlarge it until it contains both A and B
+                        var c = new Cell(Math.Max(a.Exponent, b.Exponent) + 1); // centered cell needs to be at least twice as large as the bigger one of A and B
+                        while (!c.Contains(a)) c = c.Parent;
+                        while (!c.Contains(b)) c = c.Parent;
+                        return c;
+                    }
                 }
             }
         }
