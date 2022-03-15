@@ -380,6 +380,68 @@ namespace Aardvark.Base
 
 
         #endregion
+
+        #region Transformations
+
+        /// <summary>
+        /// Transforms a <see cref="V3f"/> by a <see cref="Trafo2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f Transform(this Trafo2f r, V3f v)
+            => r.Forward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by a <see cref="Trafo2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f TransformDir(this Trafo2f r, V2f v)
+            => r.Forward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by a <see cref="Trafo2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f TransformPos(this Trafo2f r, V2f p)
+            => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.Z is presumed 0.0) by a <see cref="Trafo2f"/>
+        /// (i.e. by its transposed backward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f TransformNormal(this Trafo2f r, V2f n)
+            => r.Backward.TransposedTransformDir(n);
+
+        /// <summary>
+        /// Transforms a <see cref="V3f"/> by the inverse of a <see cref="Trafo2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f InvTransform(this Trafo2f r, V3f v)
+            => r.Backward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by the inverse of a <see cref="Trafo2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransformDir(this Trafo2f r, V2f v)
+            => r.Backward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by the inverse of a <see cref="Trafo2f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransformPos(this Trafo2f r, V2f p)
+            => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.Z is presumed 0.0) by the inverse of a <see cref="Trafo2f"/>
+        /// (i.e. by its transposed forward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransformNormal(this Trafo2f r, V2f n)
+            => r.Forward.TransposedTransformDir(n);
+
+        #endregion
     }
 
     public static partial class Fun
@@ -1150,6 +1212,68 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Transformations
+
+        /// <summary>
+        /// Transforms a <see cref="V4f"/> by a <see cref="Trafo3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f Transform(this Trafo3f r, V4f v)
+            => r.Forward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by a <see cref="Trafo3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f TransformDir(this Trafo3f r, V3f v)
+            => r.Forward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by a <see cref="Trafo3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f TransformPos(this Trafo3f r, V3f p)
+            => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.W is presumed 0.0) by a <see cref="Trafo3f"/>
+        /// (i.e. by its transposed backward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f TransformNormal(this Trafo3f r, V3f n)
+            => r.Backward.TransposedTransformDir(n);
+
+        /// <summary>
+        /// Transforms a <see cref="V4f"/> by the inverse of a <see cref="Trafo3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f InvTransform(this Trafo3f r, V4f v)
+            => r.Backward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by the inverse of a <see cref="Trafo3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f InvTransformDir(this Trafo3f r, V3f v)
+            => r.Backward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by the inverse of a <see cref="Trafo3f"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f InvTransformPos(this Trafo3f r, V3f p)
+            => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.W is presumed 0.0) by the inverse of a <see cref="Trafo3f"/>
+        /// (i.e. by its transposed forward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f InvTransformNormal(this Trafo3f r, V3f n)
+            => r.Forward.TransposedTransformDir(n);
+
+        #endregion
     }
 
     public static partial class Fun
@@ -1537,6 +1661,68 @@ namespace Aardvark.Base
         public static V2d GetScaleVector(this Trafo2d trafo)
             => trafo.Forward.GetScaleVector2();
 
+
+        #endregion
+
+        #region Transformations
+
+        /// <summary>
+        /// Transforms a <see cref="V3d"/> by a <see cref="Trafo2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d Transform(this Trafo2d r, V3d v)
+            => r.Forward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by a <see cref="Trafo2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d TransformDir(this Trafo2d r, V2d v)
+            => r.Forward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by a <see cref="Trafo2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d TransformPos(this Trafo2d r, V2d p)
+            => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.Z is presumed 0.0) by a <see cref="Trafo2d"/>
+        /// (i.e. by its transposed backward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d TransformNormal(this Trafo2d r, V2d n)
+            => r.Backward.TransposedTransformDir(n);
+
+        /// <summary>
+        /// Transforms a <see cref="V3d"/> by the inverse of a <see cref="Trafo2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d InvTransform(this Trafo2d r, V3d v)
+            => r.Backward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.Z is presumed 0.0) by the inverse of a <see cref="Trafo2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransformDir(this Trafo2d r, V2d v)
+            => r.Backward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by the inverse of a <see cref="Trafo2d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransformPos(this Trafo2d r, V2d p)
+            => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.Z is presumed 0.0) by the inverse of a <see cref="Trafo2d"/>
+        /// (i.e. by its transposed forward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransformNormal(this Trafo2d r, V2d n)
+            => r.Forward.TransposedTransformDir(n);
 
         #endregion
     }
@@ -2317,6 +2503,68 @@ namespace Aardvark.Base
             if (trafo.Forward.Determinant < 0)
                 scale.Y = -scale.Y;
         }
+
+        #endregion
+
+        #region Transformations
+
+        /// <summary>
+        /// Transforms a <see cref="V4d"/> by a <see cref="Trafo3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d Transform(this Trafo3d r, V4d v)
+            => r.Forward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by a <see cref="Trafo3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d TransformDir(this Trafo3d r, V3d v)
+            => r.Forward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by a <see cref="Trafo3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d TransformPos(this Trafo3d r, V3d p)
+            => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.W is presumed 0.0) by a <see cref="Trafo3d"/>
+        /// (i.e. by its transposed backward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d TransformNormal(this Trafo3d r, V3d n)
+            => r.Backward.TransposedTransformDir(n);
+
+        /// <summary>
+        /// Transforms a <see cref="V4d"/> by the inverse of a <see cref="Trafo3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d InvTransform(this Trafo3d r, V4d v)
+            => r.Backward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.W is presumed 0.0) by the inverse of a <see cref="Trafo3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d InvTransformDir(this Trafo3d r, V3d v)
+            => r.Backward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by the inverse of a <see cref="Trafo3d"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d InvTransformPos(this Trafo3d r, V3d p)
+            => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.W is presumed 0.0) by the inverse of a <see cref="Trafo3d"/>
+        /// (i.e. by its transposed forward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d InvTransformNormal(this Trafo3d r, V3d n)
+            => r.Forward.TransposedTransformDir(n);
 
         #endregion
     }

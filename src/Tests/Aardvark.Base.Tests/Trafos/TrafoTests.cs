@@ -307,5 +307,37 @@ namespace Aardvark.Tests
                 TrafoTesting.AreEqual(res, res_ref);
             });
         }
+
+        [Test]
+        public static void TransformTest()
+        {
+            TrafoTesting.GenericTest(rnd =>
+            {
+                var trafo = TrafoTesting.GetRandomTrafo(rnd);
+                var v3d = rnd.UniformV3d() * rnd.UniformInt(100);
+                var v4d = rnd.UniformV4d() * rnd.UniformInt(100);
+
+                Assert.AreEqual(trafo.Transform(v4d), trafo.Forward.Transform(v4d));
+                Assert.AreEqual(trafo.TransformPos(v3d), trafo.Forward.TransformPos(v3d));
+                Assert.AreEqual(trafo.TransformDir(v3d), trafo.Forward.TransformDir(v3d));
+                Assert.AreEqual(trafo.TransformNormal(v3d), trafo.Backward.TransposedTransformDir(v3d));
+            });
+        }
+
+        [Test]
+        public static void InvTransformTest()
+        {
+            TrafoTesting.GenericTest(rnd =>
+            {
+                var trafo = TrafoTesting.GetRandomTrafo(rnd);
+                var v3d = rnd.UniformV3d() * rnd.UniformInt(100);
+                var v4d = rnd.UniformV4d() * rnd.UniformInt(100);
+
+                Assert.AreEqual(trafo.InvTransform(v4d), trafo.Backward.Transform(v4d));
+                Assert.AreEqual(trafo.InvTransformPos(v3d), trafo.Backward.TransformPos(v3d));
+                Assert.AreEqual(trafo.InvTransformDir(v3d), trafo.Backward.TransformDir(v3d));
+                Assert.AreEqual(trafo.InvTransformNormal(v3d), trafo.Forward.TransposedTransformDir(v3d));
+            });
+        }
     }
 }

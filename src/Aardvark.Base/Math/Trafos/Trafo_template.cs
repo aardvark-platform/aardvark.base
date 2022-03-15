@@ -39,6 +39,7 @@ namespace Aardvark.Base
     //#     var vmt = "V" + m + tc;
     //#     var nfields = fields.Take(n).ToArray();
     //#     var nfieldsL = fieldsL.Take(n).ToArray();
+    //#     var fn = fields[n];
     //#     var isDouble = (rt == Meta.DoubleType);
     #region __type__
 
@@ -830,6 +831,68 @@ namespace Aardvark.Base
                 scale.Y = -scale.Y;
         }
         //# }
+
+        #endregion
+
+        #region Transformations
+
+        /// <summary>
+        /// Transforms a <see cref="__vmt__"/> by a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmt__ Transform(this __type__ r, __vmt__ v)
+            => r.Forward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.__fn__ is presumed 0.0) by a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ TransformDir(this __type__ r, __vnt__ v)
+            => r.Forward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.__fn__ is presumed 1.0) by a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ TransformPos(this __type__ r, __vnt__ p)
+            => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.__fn__ is presumed 0.0) by a <see cref="__type__"/>
+        /// (i.e. by its transposed backward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ TransformNormal(this __type__ r, __vnt__ n)
+            => r.Backward.TransposedTransformDir(n);
+
+        /// <summary>
+        /// Transforms a <see cref="__vmt__"/> by the inverse of a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmt__ InvTransform(this __type__ r, __vmt__ v)
+            => r.Backward.Transform(v);
+
+        /// <summary>
+        /// Transforms direction vector v (v.__fn__ is presumed 0.0) by the inverse of a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ InvTransformDir(this __type__ r, __vnt__ v)
+            => r.Backward.TransformDir(v);
+
+        /// <summary>
+        /// Transforms point p (p.__fn__ is presumed 1.0) by the inverse of a <see cref="__type__"/>.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ InvTransformPos(this __type__ r, __vnt__ p)
+            => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms normal vector n (n.__fn__ is presumed 0.0) by the inverse of a <see cref="__type__"/>
+        /// (i.e. by its transposed forward matrix).
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ InvTransformNormal(this __type__ r, __vnt__ n)
+            => r.Forward.TransposedTransformDir(n);
 
         #endregion
     }
