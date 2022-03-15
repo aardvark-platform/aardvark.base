@@ -65,7 +65,7 @@ namespace CodeGenerator
                 {
                     foreach (var line in File.ReadAllLines(args[0]))
                     {
-                        var parts = line.Split(new char[] { ' ', '\t' },
+                        var parts = line.Split(new [] { ' ', '\t' },
                                     StringSplitOptions.RemoveEmptyEntries);
                         tasks.Add(new Task
                         {
@@ -80,7 +80,7 @@ namespace CodeGenerator
                     tasks.Add(new Task { TemplateFileName = args[0], OutputFileName = args[1] });
             }
             else
-                dir = Path.Combine("..", "..", "..");
+                dir = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location),"..", "..", "..");
 
             if (dir != null)
             {

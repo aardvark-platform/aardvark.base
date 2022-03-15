@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.CSharp;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace CodeGenerator
 {
@@ -25,128 +27,66 @@ namespace CodeGenerator
             IEnumerable<string> sourceLines,
             IEnumerable<string> dllsToReference,
             string tmpDirectoryName,
-            out CompilerResults compilerResults
+            out string[] errors
             )
         {
-            var newAssemblyName = "Aardvark." + s_uid + ".dll";
-            s_uid++;
+            var sb = new StringBuilder();
+            foreach(var line in sourceLines) sb.AppendLine(line);
+            var syntaxTree = CSharpSyntaxTree.ParseText(sb.ToString());
 
-#if NEVERMORE
-            string sourceFileName =
-                Path.Combine(tmpDirectoryName, "Aardvark." + s_uid + ".cs");
-            string assemblyFileName =
-                Path.Combine(tmpDirectoryName, newAssemblyName);
-            s_uid++;
+            var dir = Path.GetDirectoryName(typeof(CompilerServices).Assembly.Location);
 
-            // create tmp directory if necessary
-            if (!Directory.Exists(tmpDirectoryName))
+            var references =
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .Concat(new[] { typeof(System.Xml.Linq.XName).Assembly })
+                    .Distinct()
+                    .Select(a => {
+                        if(String.IsNullOrWhiteSpace(a.Location)) return null;
+                        try { return MetadataReference.CreateFromFile(a.Location); }
+                        catch(Exception) { return null; }
+                    })
+                    .Where(r => r != null).ToArray();
+            //
+            // var references =
+            //     dllsToReference
+            //         .Select(dll => {
+            //             if(File.Exists(Path.Combine(dir, dll))) return MetadataReference.CreateFromFile(dll);
+            //             else {
+            //                 try 
+            //                 {
+            //                     var aa = Assembly.Load(dll);
+            //                     return MetadataReference.CreateFromFile(aa.Location);
+            //                 }
+            //                 catch(Exception) {
+            //                     return null;
+            //                 }   
+            //             }
+            //         })
+            //         .Where(a => a != null)
+            //         .ToArray();
+
+            CSharpCompilation compilation = CSharpCompilation.Create(
+                Guid.NewGuid().ToString(),
+                new[] { syntaxTree },
+                references,
+                new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+            using (var dllStream = new MemoryStream())
+            using (var pdbStream = new MemoryStream())
             {
-                Directory.CreateDirectory(tmpDirectoryName);
-            }
-
-            // create source code file
-            File.WriteAllLines(sourceFileName, sourceLines.ToArray());
-
-            // 
-            if (File.Exists(assemblyFileName)) File.Delete(assemblyFileName);
-
-            string assemblyReferences =
-                @"/r:System.Core.dll " +
-                @"/r:System.Data.Linq.dll " +
-                Environment.NewLine
-                ;
-            if (dllsToReference != null)
-            {
-                foreach (string s in dllsToReference)
+                var emitResult = compilation.Emit(dllStream, pdbStream);
+                if (emitResult.Success)
                 {
-                    assemblyReferences += @"/r:" + s + Environment.NewLine;
+                    errors = Array.Empty<string>();
+                    return Assembly.Load(dllStream.ToArray());
                 }
-            }
-
-            if (!File.Exists(CompilerExecutablePath))
-            {
-                throw new FileNotFoundException(CompilerExecutablePath);
-            }
-
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.WorkingDirectory = tmpDirectoryName;
-            psi.FileName = CompilerExecutablePath;
-            psi.Arguments =
-                assemblyReferences +
-                "/r:System.Windows.Forms.dll " +
-                "/target:library " +
-                "\"/out:" + assemblyFileName + "\" " +
-                "\"" + sourceFileName + "\""
-                ;
-            psi.RedirectStandardOutput = true;
-            psi.RedirectStandardError = true;
-            psi.UseShellExecute = false;
-
-            Console.WriteLine("csc.exe " + psi.Arguments);
-
-            Process p = Process.Start(psi);
-            p.WaitForExit();
-
-            File.Delete(sourceFileName);
-
-            if (File.Exists(assemblyFileName))
-            {
-                return Assembly.LoadFile(assemblyFileName);
-            }
-            else
-            {
-                Console.WriteLine(p.StandardOutput.ReadToEnd());
-                Console.WriteLine(p.StandardError.ReadToEnd());
-                return null;
-            }
-#endif
-
-            var providerOptions = new Dictionary<string, string>();
-            providerOptions.Add("CompilerVersion", "v4.0");
-
-            CodeDomProvider compiler = new CSharpCodeProvider(providerOptions);
-            CompilerParameters cp = new CompilerParameters();
-
-            if (dllsToReference != null)
-            {
-                cp = new CompilerParameters(dllsToReference.ToArray());
-            }
-            cp.GenerateInMemory = true;
-            cp.WarningLevel = 3;
-            cp.OutputAssembly = newAssemblyName;
-            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                bool skip = false;
-                foreach (var s in cp.ReferencedAssemblies)
-                {
-                    if (Path.GetFileName(s) == Path.GetFileName(asm.Location))
-                    {
-                        skip = true;
-                        continue;
-                    }
+                else {
+                    errors = emitResult.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Select(m => m.GetMessage()).ToArray();
+                    return null;
                 }
-                if (skip) continue;
-                cp.ReferencedAssemblies.Add(asm.Location);
-            }
-
-            try
-            {
-                CompilerResults cr = compiler.CompileAssemblyFromSource(
-                    cp, sourceLines.ToArray()
-                    );
-
-                compilerResults = cr;
-                if (compilerResults.Errors.Count > 0) return null;
-
-                return cr.CompiledAssembly;
-            }
-            finally
-            {
-                if (File.Exists(newAssemblyName)) File.Delete(newAssemblyName);
             }
         }
 
-        private static int s_uid = 0;
 
     }
 
