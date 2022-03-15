@@ -1908,15 +1908,18 @@ namespace Aardvark.Base
 
         #region Weighted Sum
 
+        //# fdtypes.ForEach(t => {
+        //# var type = t.Name;
         [Pure]
-        public static double WeightedSum(this double[] items, double[] weights)
+        public static __type__ WeightedSum(this __type__[] items, __type__[] weights)
         {
-            var r = 0.0;
-            var count = weights.LongLength;
-            for (long i = 0; i < count; i++) r += weights[i] * items[i];
+            __type__ r = 0;
+            var count = weights.Length;
+            for (int i = 0; i < count; i++) r += weights[i] * items[i];
             return r;
         }
 
+        //# });
         #endregion
 
         #region Special Floating Point Value Checks

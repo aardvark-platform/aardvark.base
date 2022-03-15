@@ -6613,11 +6613,20 @@ namespace Aardvark.Base
         #region Weighted Sum
 
         [Pure]
+        public static float WeightedSum(this float[] items, float[] weights)
+        {
+            float r = 0;
+            var count = weights.Length;
+            for (int i = 0; i < count; i++) r += weights[i] * items[i];
+            return r;
+        }
+
+        [Pure]
         public static double WeightedSum(this double[] items, double[] weights)
         {
-            var r = 0.0;
-            var count = weights.LongLength;
-            for (long i = 0; i < count; i++) r += weights[i] * items[i];
+            double r = 0;
+            var count = weights.Length;
+            for (int i = 0; i < count; i++) r += weights[i] * items[i];
             return r;
         }
 
