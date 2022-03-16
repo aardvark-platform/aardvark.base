@@ -841,7 +841,7 @@ namespace Aardvark.Base
         public static __type__ VRVisGreen => new __type__(__d_to_ft__(0.698), __d_to_ft__(0.851), __d_to_ft__(0.008));
 
         //# for (int i = 1; i < 10; i++) {
-        //# var val = 0.1 * i; int percent = 10 * i;
+        //# var val = (double)(0.1m * i); int percent = 10 * i;
         public static __type__ Gray__percent__ => new __type__(__d_to_ft__(__val__));
         //# }
 
