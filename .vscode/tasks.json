@@ -30,6 +30,13 @@
             "group": "build"
         },
         {
+            "label": "codegen",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [ "run", "--project", "src/CodeGenerator/CodeGenerator.csproj" ],
+            "group": "build"
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "shell",
