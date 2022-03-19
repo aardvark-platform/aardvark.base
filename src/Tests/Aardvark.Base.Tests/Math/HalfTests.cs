@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading;
 using Aardvark.Base;
 using NUnit.Framework;
+using Half = Aardvark.Base.Half;
 
 namespace Aardvark.Tests
 {
