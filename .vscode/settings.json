@@ -1,4 +1,5 @@
 {
+    "dotnet-test-explorer.testProjectPath": "src/Aardvark.sln",
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,

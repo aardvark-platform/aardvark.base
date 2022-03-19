@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     <WarnOn>3389</WarnOn>
   </PropertyGroup>
@@ -13,7 +13,7 @@
     <OutputPath>..\..\..\bin\Release</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
-	<RunWorkingDirectory>$(OutputPath)\netcoreapp3.1</RunWorkingDirectory>
+	<RunWorkingDirectory>$(OutputPath)\net6.0</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />

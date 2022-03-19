@@ -98,7 +98,6 @@ public static class SourceGenerator
                                     + StandardClass
                                     + Class.ToString()
                                     + Epilogue;
-
             // ReportUsings();
         }
 
@@ -108,16 +107,20 @@ public static class SourceGenerator
             var generatorAssembly = CompilerServices.CompileAssembly(
                 GeneratorSourceCode.IntoArray(),
                 new string[] {
+                    "CodeGenerator.dll",
+                    "System.Runtime.dll",
+                    "System.Linq.dll",
+                    "System.Collections.dll",
                     "System.Xml.dll",
                     "System.Xml.Linq.dll",
                     "Aardvark.Base.dll"
                     //"System.ValueTuple.dll"
                 },
-                ".", out CompilerResults results);
-            if (results.Errors.Count > 0)
+                ".", out string[] errors);
+            if (generatorAssembly == null)
             {
                 Console.WriteLine("WARNING: build of generator failed!");
-                foreach (var x in results.Errors) Console.WriteLine("{0}", x);
+                foreach (var x in errors) Console.WriteLine("{0}", x);
                 Result = null;
                 return;
             }

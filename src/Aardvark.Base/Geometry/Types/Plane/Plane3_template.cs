@@ -27,6 +27,7 @@ namespace Aardvark.Base
     //#   var v3t = "V3" + tc;
     //#   var v4t = "V4" + tc;
     //#   var m44t = "M44" + tc;
+    //#   var euclidean3t = "Euclidean3" + tc;
     //#   var trafo3t = "Trafo3" + tc;
     //#   var box3t = "Box3" + tc;
     //#   var ray3t = "Ray3" + tc;
@@ -178,7 +179,7 @@ namespace Aardvark.Base
         public __v3t__ Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Normal * Distance; }
+            get { return Normal * Distance / Normal.LengthSquared; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Distance = Vec.Dot(Normal, value); }
@@ -288,20 +289,38 @@ namespace Aardvark.Base
         /// transposed matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __plane3t__ Transformed(__trafo3t__ trafo) => new __plane3t__(
-            trafo.Backward.TransposedTransformDir(Normal),
-            trafo.Forward.TransformPos(Point));
+        public __plane3t__ Transformed(__trafo3t__ trafo) 
+        {
+            return new __plane3t__(
+                new __v3t__(
+                    trafo.Backward.M00 * Normal.X + trafo.Backward.M10 * Normal.Y + trafo.Backward.M20 * Normal.Z - trafo.Backward.M30 * Distance,
+                    trafo.Backward.M01 * Normal.X + trafo.Backward.M11 * Normal.Y + trafo.Backward.M21 * Normal.Z - trafo.Backward.M31 * Distance,
+                    trafo.Backward.M02 * Normal.X + trafo.Backward.M12 * Normal.Y + trafo.Backward.M22 * Normal.Z - trafo.Backward.M32 * Distance
+                ),
+                trafo.Backward.M33 * Distance - trafo.Backward.M03 * Normal.X - trafo.Backward.M13 * Normal.Y - trafo.Backward.M23 * Normal.Z
+            );
+        }
 
         /// <summary>
         /// Transforms the plane with a given matrix. The matrix is assumed
-        /// to be the inverse transpose of the transformation.
-        /// The returned plane also gets normalized.
+        /// to represent a euclidean transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __plane3t__ Transformed(__m44t__ trafo)
         {
-            var p = trafo.Transform(Coefficients);
-            return new __plane3t__(p.XYZ, -p.W).Normalized;
+            var n = trafo.TransformDir(Normal);
+            var d = Distance + trafo.C0.Dot(trafo.C3) * Normal.X + trafo.C1.Dot(trafo.C3) * Normal.Y + trafo.C2.Dot(trafo.C3) * Normal.Z;
+            return new __plane3t__(n, d);
+        }
+
+        /// <summary>
+        /// Transforms the plane with a given __euclidean3t__.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __plane3t__ Transformed(__euclidean3t__ trafo)
+        {
+            var n1 = trafo.TransformDir(Normal);
+            return new __plane3t__(n1, Distance + trafo.Trans.Dot(n1));
         }
 
         #endregion

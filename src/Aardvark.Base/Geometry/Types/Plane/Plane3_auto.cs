@@ -156,7 +156,7 @@ namespace Aardvark.Base
         public V3f Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Normal * Distance; }
+            get { return Normal * Distance / Normal.LengthSquared; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Distance = Vec.Dot(Normal, value); }
@@ -266,20 +266,38 @@ namespace Aardvark.Base
         /// transposed matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane3f Transformed(Trafo3f trafo) => new Plane3f(
-            trafo.Backward.TransposedTransformDir(Normal),
-            trafo.Forward.TransformPos(Point));
+        public Plane3f Transformed(Trafo3f trafo) 
+        {
+            return new Plane3f(
+                new V3f(
+                    trafo.Backward.M00 * Normal.X + trafo.Backward.M10 * Normal.Y + trafo.Backward.M20 * Normal.Z - trafo.Backward.M30 * Distance,
+                    trafo.Backward.M01 * Normal.X + trafo.Backward.M11 * Normal.Y + trafo.Backward.M21 * Normal.Z - trafo.Backward.M31 * Distance,
+                    trafo.Backward.M02 * Normal.X + trafo.Backward.M12 * Normal.Y + trafo.Backward.M22 * Normal.Z - trafo.Backward.M32 * Distance
+                ),
+                trafo.Backward.M33 * Distance - trafo.Backward.M03 * Normal.X - trafo.Backward.M13 * Normal.Y - trafo.Backward.M23 * Normal.Z
+            );
+        }
 
         /// <summary>
         /// Transforms the plane with a given matrix. The matrix is assumed
-        /// to be the inverse transpose of the transformation.
-        /// The returned plane also gets normalized.
+        /// to represent a euclidean transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Plane3f Transformed(M44f trafo)
         {
-            var p = trafo.Transform(Coefficients);
-            return new Plane3f(p.XYZ, -p.W).Normalized;
+            var n = trafo.TransformDir(Normal);
+            var d = Distance + trafo.C0.Dot(trafo.C3) * Normal.X + trafo.C1.Dot(trafo.C3) * Normal.Y + trafo.C2.Dot(trafo.C3) * Normal.Z;
+            return new Plane3f(n, d);
+        }
+
+        /// <summary>
+        /// Transforms the plane with a given Euclidean3f.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Plane3f Transformed(Euclidean3f trafo)
+        {
+            var n1 = trafo.TransformDir(Normal);
+            return new Plane3f(n1, Distance + trafo.Trans.Dot(n1));
         }
 
         #endregion
@@ -1049,7 +1067,7 @@ namespace Aardvark.Base
         public V3d Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Normal * Distance; }
+            get { return Normal * Distance / Normal.LengthSquared; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Distance = Vec.Dot(Normal, value); }
@@ -1159,20 +1177,38 @@ namespace Aardvark.Base
         /// transposed matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane3d Transformed(Trafo3d trafo) => new Plane3d(
-            trafo.Backward.TransposedTransformDir(Normal),
-            trafo.Forward.TransformPos(Point));
+        public Plane3d Transformed(Trafo3d trafo) 
+        {
+            return new Plane3d(
+                new V3d(
+                    trafo.Backward.M00 * Normal.X + trafo.Backward.M10 * Normal.Y + trafo.Backward.M20 * Normal.Z - trafo.Backward.M30 * Distance,
+                    trafo.Backward.M01 * Normal.X + trafo.Backward.M11 * Normal.Y + trafo.Backward.M21 * Normal.Z - trafo.Backward.M31 * Distance,
+                    trafo.Backward.M02 * Normal.X + trafo.Backward.M12 * Normal.Y + trafo.Backward.M22 * Normal.Z - trafo.Backward.M32 * Distance
+                ),
+                trafo.Backward.M33 * Distance - trafo.Backward.M03 * Normal.X - trafo.Backward.M13 * Normal.Y - trafo.Backward.M23 * Normal.Z
+            );
+        }
 
         /// <summary>
         /// Transforms the plane with a given matrix. The matrix is assumed
-        /// to be the inverse transpose of the transformation.
-        /// The returned plane also gets normalized.
+        /// to represent a euclidean transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Plane3d Transformed(M44d trafo)
         {
-            var p = trafo.Transform(Coefficients);
-            return new Plane3d(p.XYZ, -p.W).Normalized;
+            var n = trafo.TransformDir(Normal);
+            var d = Distance + trafo.C0.Dot(trafo.C3) * Normal.X + trafo.C1.Dot(trafo.C3) * Normal.Y + trafo.C2.Dot(trafo.C3) * Normal.Z;
+            return new Plane3d(n, d);
+        }
+
+        /// <summary>
+        /// Transforms the plane with a given Euclidean3d.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Plane3d Transformed(Euclidean3d trafo)
+        {
+            var n1 = trafo.TransformDir(Normal);
+            return new Plane3d(n1, Distance + trafo.Trans.Dot(n1));
         }
 
         #endregion

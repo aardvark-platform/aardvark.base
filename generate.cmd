@@ -1,5 +1,3 @@
 @echo off
 dotnet build src\CodeGenerator\CodeGenerator.csproj
-dotnet build src\Aardvark.Base\Aardvark.Base.csproj
-pushd bin\Debug\net472\
-CodeGenerator.exe
+dotnet bin\Debug\net6.0\CodeGenerator.dll
