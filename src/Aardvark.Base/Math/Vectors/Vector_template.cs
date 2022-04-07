@@ -1346,9 +1346,9 @@ namespace Aardvark.Base
 
         //# }
         //# {
-        //# var ops = new[] {" + ", " - ", " * ", " / "};
-        //# var opactions = new[]  { "operator +", "operator -", "operator *", "operator /"};
-        //# var opnames = new[] {"sum", "difference", "product", "fraction"};
+        //# var ops = new[] {" + ", " - ", " * ", " / ", " % "};
+        //# var opactions = new[]  { "operator +", "operator -", "operator *", "operator /", "operator %"};
+        //# var opnames = new[] {"sum", "difference", "product", "fraction", "remainder"};
         //# for (int o = 0; o < ops.Length; o++) {
         //#     var op = ops[o];
         //#     var opname = opnames[o];
