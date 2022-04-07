@@ -411,41 +411,16 @@ namespace Aardvark.Base
             return -1;
         }
 
-        private static Dict<(Type, long), Format> s_defaultFormatMap =
-            new Dict<(Type, long), Format>
-            {
-                { (typeof(byte), 1L), Format.Gray },
-                { (typeof(byte), 2L), Format.NormalUV },
-                { (typeof(byte), 3L), Format.BGR },
-                { (typeof(byte), 4L), Format.BGRA },
-
-                { (typeof(ushort), 1L), Format.Gray },
-                { (typeof(ushort), 2L), Format.NormalUV },
-                { (typeof(ushort), 3L), Format.RGB },
-                { (typeof(ushort), 4L), Format.RGBA },
-
-                { (typeof(uint), 1L), Format.Gray },
-                { (typeof(uint), 2L), Format.NormalUV },
-                { (typeof(uint), 3L), Format.RGB },
-                { (typeof(uint), 4L), Format.RGBA },
-
-                { (typeof(float), 1L), Format.Gray },
-                { (typeof(float), 2L), Format.NormalUV },
-                { (typeof(float), 3L), Format.RGB },
-                { (typeof(float), 4L), Format.RGBA },
-
-                { (typeof(double), 1L), Format.Gray },
-                { (typeof(double), 2L), Format.NormalUV },
-                { (typeof(double), 3L), Format.RGB },
-                { (typeof(double), 4L), Format.RGBA },
-            };
-
         public static Format FormatDefaultOf(this Type type, long channelCount)
         {
-            if (s_defaultFormatMap.TryGetValue((type, channelCount),
-                                              out Format format))
-                return format;
-            throw new ArgumentException("no default format for this type and channel count");
+            return channelCount switch
+            {
+                1 => Format.Gray,
+                2 => Format.NormalUV,
+                3 => (type == typeof(byte)) ? Format.BGR : Format.RGB,
+                4 => (type == typeof(byte)) ? Format.BGRA : Format.RGBA,
+                _ => throw new ArgumentException($"No default format for {type} with {channelCount} channels"),
+            };
         }
 
         #endregion
