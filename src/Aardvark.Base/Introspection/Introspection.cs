@@ -1503,7 +1503,7 @@ namespace Aardvark.Base
             {
                 if(s_cache.TryGetValue((assembly, nativeName), out var path))
                 {
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
                     if (NativeLibrary.TryLoad(path, out var pp)) return pp;
                     else return IntPtr.Zero;
 #else
@@ -1559,7 +1559,7 @@ namespace Aardvark.Base
                 }
 
                 paths = nextToAssembly.Concat(paths);
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 
                 var realName = Path.GetFileNameWithoutExtension(nativeName);
                 Report.Begin(4, "probing paths for {0}", realName);
@@ -1658,7 +1658,7 @@ namespace Aardvark.Base
         {
             if (handle == IntPtr.Zero) return IntPtr.Zero;
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
             IntPtr ptr;
             if (NativeLibrary.TryGetExport(handle, name, out ptr)) return ptr;
             else return IntPtr.Zero;
@@ -1757,7 +1757,7 @@ namespace Aardvark.Base
                         }
 
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
 
                         string[] formats = new string[0];
                         var os = GetOS();
@@ -1855,7 +1855,7 @@ namespace Aardvark.Base
 
             Report.End();
 
-#if NETCOREAPP3_1
+#if NETCOREAPP3_1_OR_GREATER
             System.Runtime.Loader.AssemblyLoadContext.Default.ResolvingUnmanagedDll += (ass, name) =>
             {
                 Report.Line(4, "trying to resolve native library {0}", name);

@@ -666,7 +666,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this int v)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2((uint)v);
             #else
                 return Log2Int((float)v);
@@ -679,7 +679,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this uint v)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2(v);
             #else
                 return Log2Int((float)v);
@@ -692,7 +692,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this long v)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2((ulong)v);
             #else
                 return Log2Int((double)v);
@@ -705,7 +705,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this ulong v)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2(v);
             #else
                 return Log2Int((double)v);

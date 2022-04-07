@@ -960,7 +960,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Abs(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Abs(x);
             #else
                 return Math.Abs(x);
@@ -1172,7 +1172,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Floor(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Floor(x);
             #else
                 return (float) Math.Floor(x);
@@ -1210,7 +1210,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Ceiling(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Ceiling(x);
             #else
                 return (float) Math.Ceiling(x);
@@ -1248,7 +1248,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Round(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Round(x);
             #else
                 return (float) Math.Round(x);
@@ -1262,7 +1262,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Round(this float x, MidpointRounding mode)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Round(x, mode);
             #else
                 return (float) Math.Round(x, mode);
@@ -1276,7 +1276,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Round(this float x, int digits)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Round(x, digits);
             #else
                 return (float) Math.Round(x, digits);
@@ -1290,7 +1290,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Round(this float x, int digits, MidpointRounding mode)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Round(x, digits, mode);
             #else
                 return (float) Math.Round(x, digits, mode);
@@ -1388,7 +1388,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Truncate(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Truncate(x);
             #else
                 return (float) Math.Truncate(x);
@@ -2265,7 +2265,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Sign(x);
             #else
                 return Math.Sign(x);
@@ -2288,7 +2288,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Signum(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Sign(x);
             #else
                 return Math.Sign(x);
@@ -2421,7 +2421,7 @@ namespace Aardvark.Base
         public static ulong MultiplyAdd(ulong x, ulong y, ulong z)
             => ((x * y) + z);
 
-        #if NETCOREAPP3_1
+        #if NETCOREAPP3_1_OR_GREATER
         /// <summary>
         /// Returns (x * y) + z.
         /// Computes the result rounded as a single ternary operation.
@@ -2435,14 +2435,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float MultiplyAdd(float x, float y, float z)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.FusedMultiplyAdd(x, y, z);
             #else
                 return (x * y) + z;
             #endif
         }
 
-        #if NETCOREAPP3_1
+        #if NETCOREAPP3_1_OR_GREATER
         /// <summary>
         /// Returns (x * y) + z.
         /// Computes the result rounded as a single ternary operation.
@@ -2456,7 +2456,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double MultiplyAdd(double x, double y, double z)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.FusedMultiplyAdd(x, y, z);
             #else
                 return (x * y) + z;
@@ -2586,7 +2586,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float CopySign(float x, float y)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.CopySign(x, y);
             #else
                 var xbits = FloatToBits(x);
@@ -2608,7 +2608,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double CopySign(double x, double y)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.CopySign(x, y);
             #else
                 var xbits = FloatToBits(x);
@@ -2897,7 +2897,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Root(this float x, int n)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Pow(x, 1.0f / n);
             #else
                 return (float)Math.Pow(x, 1.0 / n);
@@ -3003,7 +3003,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sqrt(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Sqrt(x);
             #else
                 return (float)Math.Sqrt(x);
@@ -3027,7 +3027,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this byte x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return Math.Pow(x, Constant.OneThird);
@@ -3041,7 +3041,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this sbyte x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return x < 0 ? -Math.Pow(-x, Constant.OneThird)
@@ -3056,7 +3056,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this short x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return x < 0 ? -Math.Pow(-x, Constant.OneThird)
@@ -3071,7 +3071,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this ushort x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return Math.Pow(x, Constant.OneThird);
@@ -3085,7 +3085,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this int x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return x < 0 ? -Math.Pow(-x, Constant.OneThird)
@@ -3100,7 +3100,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this uint x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return Math.Pow(x, Constant.OneThird);
@@ -3115,7 +3115,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this long x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return x < 0 ? -Math.Pow(-x, Constant.OneThird)
@@ -3131,7 +3131,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this ulong x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return Math.Pow(x, Constant.OneThird);
@@ -3145,7 +3145,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cbrt(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Cbrt(x);
             #else
                 return x < 0 ? (float)-Math.Pow(-x, Constant.OneThird)
@@ -3160,7 +3160,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cbrt(this double x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
             #else
                 return x < 0 ? -Math.Pow(-x, Constant.OneThird)
@@ -3272,7 +3272,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this byte x, float y)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Pow(x, y);
             #else
                 return (float)Math.Pow(x, y);
@@ -3331,7 +3331,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this sbyte x, float y)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Pow(x, y);
             #else
                 return (float)Math.Pow(x, y);
@@ -3391,7 +3391,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this short x, float y)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Pow(x, y);
             #else
                 return (float)Math.Pow(x, y);
@@ -3451,7 +3451,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this ushort x, float y)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Pow(x, y);
             #else
                 return (float)Math.Pow(x, y);
@@ -3785,7 +3785,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Pow(this float x, float y)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Pow(x, y);
             #else
                 return (float)Math.Pow(x, y);
@@ -3898,7 +3898,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this byte x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -3952,7 +3952,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this sbyte x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -4006,7 +4006,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this short x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -4060,7 +4060,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this ushort x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -4114,7 +4114,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this int x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -4168,7 +4168,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this uint x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -4226,7 +4226,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this long x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -4285,7 +4285,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this ulong x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -4310,7 +4310,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Exp(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Exp(x);
             #else
                 return (float)Math.Exp(x);
@@ -4324,7 +4324,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Log(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Log(x);
             #else
                 return (float)Math.Log(x);
@@ -4338,7 +4338,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Log10(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Log10(x);
             #else
                 return (float)Math.Log10(x);
@@ -4352,7 +4352,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Log2(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 //return MathF.Log2(x); // MathF.Log2 actually uses a conversion to double internally and has bad perfromance, see Aardvark.Base.Benchmarks/Log2Int.cs
                 return x.Log() * ConstantF.Ln2Inv;
             #else
@@ -4367,7 +4367,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Log(this float x, float basis)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Log(x, basis);
             #else
                 return (float)Math.Log(x, basis);
@@ -4411,7 +4411,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Log2(this double x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Log2(x);
             #else
                 return x.Log() * Constant.Ln2Inv;
@@ -5177,7 +5177,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float PowerOfTwo(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Pow(2, x);
             #else
                 return (float)Math.Pow(2, x);
@@ -5284,7 +5284,7 @@ namespace Aardvark.Base
             }
             else
             {
-                #if NETCOREAPP3_1
+                #if NETCOREAPP3_1_OR_GREATER
                     return MathF.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
                 #else
                     return (float)Math.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
@@ -5299,7 +5299,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sin(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Sin(x);
             #else
                 return (float)Math.Sin(x);
@@ -5313,7 +5313,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cos(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Cos(x);
             #else
                 return (float)Math.Cos(x);
@@ -5327,7 +5327,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Tan(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Tan(x);
             #else
                 return (float)Math.Tan(x);
@@ -5341,7 +5341,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Asin(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Asin(x);
             #else
                 return (float)Math.Asin(x);
@@ -5355,7 +5355,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AsinClamped(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Asin(Clamp(x, -1, 1));
             #else
                 return (float)Math.Asin(Clamp(x, -1, 1));
@@ -5369,7 +5369,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Acos(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Acos(x);
             #else
                 return (float)Math.Acos(x);
@@ -5383,7 +5383,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AcosClamped(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Acos(Clamp(x, -1, 1));
             #else
                 return (float)Math.Acos(Clamp(x, -1, 1));
@@ -5397,7 +5397,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atan(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Atan(x);
             #else
                 return (float)Math.Atan(x);
@@ -5412,7 +5412,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atan2(float y, float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Atan2(y, x);
             #else
                 return (float)Math.Atan2(y, x);
@@ -5452,7 +5452,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Sinh(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Sinh(x);
             #else
                 return (float)Math.Sinh(x);
@@ -5466,7 +5466,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Cosh(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Cosh(x);
             #else
                 return (float)Math.Cosh(x);
@@ -5480,7 +5480,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Tanh(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Tanh(x);
             #else
                 return (float)Math.Tanh(x);
@@ -5494,7 +5494,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Asinh(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Asinh(x);
             #else
                 return Log(x + Sqrt(x * x + 1));
@@ -5508,7 +5508,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Acosh(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Acosh(x);
             #else
                 return Log(x + Sqrt(x * x - 1));
@@ -5523,7 +5523,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Atanh(this float x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Atanh(x);
             #else
                 return 0.5f * Log((1 + x) / (1 - x));
@@ -5702,7 +5702,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Asinh(this double x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Asinh(x);
             #else
                 return Log(x + Sqrt(x * x + 1));
@@ -5716,7 +5716,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Acosh(this double x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Acosh(x);
             #else
                 return Log(x + Sqrt(x * x - 1));
@@ -5731,7 +5731,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Atanh(this double x)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Math.Atanh(x);
             #else
                 return 0.5 * Log((1 + x) / (1 - x));
@@ -6668,7 +6668,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFinite(this float v)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Single.IsFinite(v);
             #else
                 return !(IsNaN(v) || IsInfinity(v));
@@ -6709,7 +6709,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsFinite(this double v)
         {
-            #if NETCOREAPP3_1
+            #if NETCOREAPP3_1_OR_GREATER
                 return Double.IsFinite(v);
             #else
                 return !(IsNaN(v) || IsInfinity(v));
