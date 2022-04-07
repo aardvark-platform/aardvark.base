@@ -245,13 +245,17 @@ namespace Aardvark.Base
             if (cnt > 5)
                 throw new Exception("Could not create writer (many instances running?)");
 
-            StreamWriter writer = null;
             try
             {
-                writer = new StreamWriter(
-                    new FileStream(fileName,
-                               FileMode.Create, FileAccess.Write, FileShare.Read));
-                return writer;
+                var dir = Path.GetDirectoryName(fileName);
+
+                if (!dir.IsNullOrEmpty() && !Directory.Exists(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                var stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+                return new StreamWriter(stream);
             }
 
             catch (IOException)
