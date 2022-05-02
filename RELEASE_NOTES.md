@@ -1,3 +1,12 @@
+### 5.2.3
+- Added transform methods for Trafo types
+- Added float32 overload for WeightedSum
+- Fixed Plane3d.Transformed methods
+- Added remainder operator for vector types
+- Made Col.FormatDefaultOf more flexible
+- [Report] Create directory for log file if it does not exist
+- Added RangeSet64
+
 ### 5.2.2
 - [ImageSharp] Implemented proper per row processing
 
