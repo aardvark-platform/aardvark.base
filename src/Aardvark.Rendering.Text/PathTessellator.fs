@@ -1008,20 +1008,24 @@ module internal Tessellator =
             coords.[cnt] <- V4f.Zero
             cnt <- cnt + 1
 
-        let inline add (pts : array<V2d>) (cs : array<V4f>) =
-            let newCnt = cnt + pts.Length
+        let inline add (p0 : V2d) (p1 : V2d) (p2 : V2d) (c0 : V4f) (c1 : V4f) (c2 : V4f) =
+            let flip = Triangle.WindingOrder(p0, p1, p2) < 0.0
+            let p0, p2, c0, c2 = if flip then p2, p0, c2, c0 else p0, p2, c0, c2
+
+            let newCnt = cnt + 3
             if newCnt > positions.Length then
                 System.Array.Resize(&positions, Fun.NextPowerOfTwo newCnt)
                 System.Array.Resize(&coords, positions.Length)
 
-            for i in 0 .. pts.Length - 1 do
-                let pt = V3f(V2f(toGlobal.TransformPos pts.[i]), 0.0f)
-                let c = cs.[i]
-                positions.[cnt] <- pt
-                coords.[cnt] <- c
-                cnt <- cnt + 1
-                
+            positions.[cnt] <- V2f(toGlobal.TransformPos p0).XYO
+            positions.[cnt + 1] <- V2f(toGlobal.TransformPos p1).XYO
+            positions.[cnt + 2] <- V2f(toGlobal.TransformPos p2).XYO
 
+            coords.[cnt] <- c0
+            coords.[cnt + 1] <- c1
+            coords.[cnt + 2] <- c2
+
+            cnt <- cnt + 3
 
         let edges = toBvhLine boundary
         // all polygonal parts not fully contained in the solid part need to be rendered.
@@ -1041,14 +1045,12 @@ module internal Tessellator =
 
                         | Bezier2(p0, p1, p2) ->
                             if hasEdge edges p0 p2 || (hasEdge edges p0 p1 && hasEdge edges p1 p2) then
-                                if containsPoint nonCurved p1 then 
-                                    add     
-                                        [| p0; p1; p2 |] 
-                                        [| V4f(0,0,-1,2); V4f(-0.5, 0.0,-1.0, 2.0); V4f(-1,1,-1,2)|]
+                                if containsPoint nonCurved p1 then
+                                    add p0 p1 p2
+                                        (V4f(0,0,-1,2)) (V4f(-0.5, 0.0,-1.0, 2.0)) (V4f(-1,1,-1,2))
                                 else
-                                    add 
-                                        [| p0; p1; p2 |] 
-                                        [|V4f(0,0,1,3); V4f(0.5, 0.0, 1.0,3.0); V4f(1,1,1,3)|]
+                                    add p0 p1 p2
+                                        (V4f(0,0,1,3)) (V4f(0.5, 0.0, 1.0,3.0)) (V4f(1,1,1,3))
 
                         | Arc(p0, p2, alpha0, dAlpha, ellipse) ->   
                             let uv2World = M33d.FromCols(V3d(ellipse.Axis0, 0.0), V3d(ellipse.Axis1, 0.0), V3d(ellipse.Center, 1.0))
@@ -1061,13 +1063,11 @@ module internal Tessellator =
                                 let c2 = world2UV.TransformPos p2
 
                                 if containsPoint nonCurved p1 then
-                                    add 
-                                        [| p0; p1; p2 |]
-                                        [| V4f(c0.X, c0.Y,-1.0, 4.0); V4f(c1.X, c1.Y,-1.0, 4.0); V4f(c2.X, c2.Y,-1.0,4.0) |]
+                                    add p0 p1 p2
+                                        (V4f(c0.X, c0.Y,-1.0, 4.0)) (V4f(c1.X, c1.Y,-1.0, 4.0)) (V4f(c2.X, c2.Y,-1.0,4.0))
                                 else
-                                    add 
-                                        [| p0; p1; p2 |]
-                                        [| V4f(c0.X, c0.Y,1.0, 5.0); V4f(c1.X, c1.Y,1.0, 5.0); V4f(c2.X, c2.Y,1.0,5.0) |]
+                                    add p0 p1 p2
+                                        (V4f(c0.X, c0.Y,1.0, 5.0)) (V4f(c1.X, c1.Y,1.0, 5.0)) (V4f(c2.X, c2.Y,1.0,5.0))
                     
 
                         | Bezier3(p0, p1, p2, p3) ->
@@ -1104,16 +1104,13 @@ module internal Tessellator =
                                     let ws = if extAngle > 0.0 then Array.map flip ws else ws
 
                                     if hull.Length = 3 then
-                                        add 
-                                            [| ps.[0]; ps.[1]; ps.[2] |]
-                                            [| V4f(ws.[0], float k); V4f(ws.[1], float k); V4f(ws.[2],float k) |]
+                                        add ps.[0] ps.[1] ps.[2]
+                                            (V4f(ws.[0], float k)) (V4f(ws.[1], float k)) (V4f(ws.[2],float k))
                                     else 
-                                        add 
-                                            [| ps.[0]; ps.[1]; ps.[3] |]
-                                            [| V4f(ws.[0], float k); V4f(ws.[1], float k); V4f(ws.[3],float k) |]
-                                        add 
-                                            [| ps.[3]; ps.[1]; ps.[2] |]
-                                            [| V4f(ws.[3], float k); V4f(ws.[1], float k); V4f(ws.[2],float k) |]
+                                        add ps.[0] ps.[1] ps.[3]
+                                            (V4f(ws.[0], float k)) (V4f(ws.[1], float k)) (V4f(ws.[3],float k))
+                                        add ps.[3] ps.[1] ps.[2]
+                                            (V4f(ws.[3], float k)) (V4f(ws.[1], float k)) (V4f(ws.[2],float k))
                                  
                         
                             | _ -> 
